@@ -1,0 +1,24 @@
+{
+  "name": "@mas/desktop-electron",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Thin Electron shell that loads the static export from apps/web/out",
+  "main": "dist/main.cjs",
+  "scripts": {
+    "dev": "tsc -p tsconfig.json && node scripts/rename.mjs && cross-env MAS_DEV_URL=http://localhost:3000 electron .",
+    "build": "tsc -p tsconfig.json && node scripts/rename.mjs && electron-builder --config electron-builder.yml",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "test": "echo \"electron shell: no unit tests\""
+  },
+  "devDependencies": {
+    "@mas/eslint-config": "workspace:*",
+    "@types/node": "22.20.1",
+    "cross-env": "10.1.0",
+    "electron": "44.1.1",
+    "electron-builder": "26.15.3",
+    "eslint": "9.39.5",
+    "typescript": "5.9.3"
+  }
+}

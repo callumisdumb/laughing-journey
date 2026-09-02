@@ -15,7 +15,14 @@ One line of rationale each. Newest at the bottom. Prefix D-nnn. Domain decisions
 - D-009 Zod 4 is imported from `zod` (the v4 API is the default export in 4.x); `@hookform/resolvers` 5.x supports it.
 - D-010 Tailwind 4 is used CSS-first with `@theme` in `apps/web/styles/tokens.css` and `@custom-variant` for `[data-theme]`; no `tailwind.config.js`.
 - D-011 Persistence: store changes are written to `localStorage` under a versioned key in the browser and to `@tauri-apps/plugin-store` in the Tauri shell; "Reset demo data" clears both.
-- D-012 Every screen accepts a development-only `?state=` query (loading, empty, error, restricted, offline, stale) so Playwright can capture designed states without mocking internals.
+- D-012 Every screen accepts a `?state=` query (loading, empty, error, restricted, offline, stale) so Playwright and demos can reach designed states without mocking internals. It is a demo affordance and stays in production builds because the mockup is always a demo.
+
+- D-013 TanStack Table stays on the 8.21 line rather than the 9.x rewrite: the v9 API (`useTable`, feature composition) is new and its docs were unreachable through the session proxy; 8.x is stable and maintained. Upgrade path noted in HANDOVER.
+- D-014 ESLint stays on 9.39 because `eslint-plugin-jsx-a11y` 6.10 declares no support for ESLint 10; the flat configs use `reactHooks.configs.flat.recommended` and `jsxA11y.flatConfigs.recommended`.
+- D-015 Print packs use dedicated `--color-print-*` tokens (pure black, white and a mid grey) so Stylelint's no-hex rule holds outside tokens.css while print stays black on white.
+- D-016 Decorative hairlines (`line-1`, `line-2`) are exempt from the 3:1 component check; a dedicated `line-3` token at 3:1 is used for every input and control boundary. The contrast script enforces `line-3`.
+- D-017 Screenshots are written to the repository `docs/SCREENSHOTS` from an absolute path in `tooling/playwright`, whatever the Playwright working directory.
+- D-018 Next.js telemetry is disabled through `apps/web/.env` (`NEXT_TELEMETRY_DISABLED=1`) so no build or dev command phones home.
 
 ## Design
 

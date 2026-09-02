@@ -1,0 +1,121 @@
+.bar {
+  display: flex;
+  grid-area: topbar;
+  gap: 12px;
+  align-items: center;
+  height: var(--topbar-height);
+  padding: 0 var(--content-gutter);
+  background: var(--color-paper-0);
+  border-bottom: 1px solid var(--color-line-1);
+}
+
+.search {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 160px;
+  max-width: 520px;
+  margin-right: auto;
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  color: var(--color-ink-3);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.searchInput {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px 0 38px;
+  font-size: var(--text-base);
+  color: var(--color-ink-1);
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-3);
+  border-radius: var(--radius-pill);
+}
+
+.searchInput::placeholder {
+  color: var(--color-ink-3);
+}
+
+.searchInput:focus-visible {
+  border-color: var(--color-accent-1);
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 1px;
+}
+
+.clocks {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px 0 10px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--color-ink-1);
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-pill);
+}
+
+.clocks[data-band='critical'] {
+  color: var(--color-risk-critical);
+  background: var(--color-risk-critical-soft);
+  border-color: transparent;
+}
+
+.clocks[data-band='high'] {
+  color: var(--color-risk-high);
+  background: var(--color-risk-high-soft);
+  border-color: transparent;
+}
+
+.clocks[data-band='medium'] {
+  color: var(--color-risk-medium);
+  background: var(--color-risk-medium-soft);
+  border-color: transparent;
+}
+
+.clocks:hover {
+  border-color: var(--color-ink-2);
+}
+
+.persona {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  height: 34px;
+  padding: 0 6px 0 10px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-ink-1);
+  background: transparent;
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-pill);
+}
+
+.persona:hover {
+  background: var(--color-paper-1);
+}
+
+.demoTag {
+  padding: 1px 6px;
+  font-size: var(--text-xs);
+  color: var(--color-accent-1);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-pill);
+}
+
+.notify {
+  position: relative;
+}
+
+.notifyBadge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}

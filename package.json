@@ -1,0 +1,36 @@
+{
+  "name": "mas-platform",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Multi-agency public protection platform (Scotland): high-fidelity desktop mockup",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @mas/web dev",
+    "build": "pnpm contrast && pnpm --filter @mas/web build",
+    "typecheck": "pnpm -r --workspace-concurrency=2 typecheck",
+    "lint": "pnpm -r --workspace-concurrency=2 lint && pnpm lint:css && pnpm contrast && pnpm lint:dashes",
+    "lint:css": "stylelint \"apps/web/**/*.css\" \"packages/ui/**/*.css\" --ignore-path .gitignore && node tooling/stylelint-config/unused-custom-properties.mjs",
+    "lint:dashes": "node tooling/no-em-dash.mjs",
+    "contrast": "node tooling/contrast/check.mjs",
+    "test": "pnpm -r --workspace-concurrency=2 test",
+    "e2e": "pnpm --filter @mas/web e2e",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "seed:export": "pnpm --filter @mas/mock-data seed:export",
+    "docs:data-model": "pnpm --filter @mas/domain docs:data-model",
+    "desktop:tauri:dev": "pnpm --filter @mas/desktop-tauri dev",
+    "desktop:tauri:build": "pnpm --filter @mas/web build && pnpm --filter @mas/desktop-tauri build",
+    "desktop:electron:dev": "pnpm --filter @mas/desktop-electron dev",
+    "desktop:electron:build": "pnpm --filter @mas/web build && pnpm --filter @mas/desktop-electron build"
+  },
+  "devDependencies": {
+    "prettier": "3.9.6",
+    "stylelint": "17.14.1",
+    "stylelint-config-standard": "40.0.0",
+    "stylelint-order": "8.1.1",
+    "typescript": "5.9.3"
+  }
+}

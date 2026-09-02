@@ -1,0 +1,11 @@
+{
+  "name": "@mas/playwright",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "index.ts",
+  "dependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.56.1"
+  }
+}

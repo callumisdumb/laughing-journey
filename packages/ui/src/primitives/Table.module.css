@@ -1,0 +1,108 @@
+.wrap {
+  --table-row: var(--density-row);
+  --table-cell: var(--density-cell);
+
+  width: 100%;
+  overflow: auto;
+  border: 1px solid var(--color-line-1);
+  border-radius: var(--radius-lg);
+}
+
+.table {
+  width: 100%;
+  font-size: var(--text-base);
+  border-collapse: collapse;
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: var(--table-row);
+  padding: 0 var(--table-cell) 0 calc(var(--table-cell) + 4px);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--color-ink-2);
+  background: var(--color-paper-2);
+  border-bottom: 1px solid var(--color-line-2);
+}
+
+.table td {
+  height: var(--table-row);
+  padding: calc(var(--table-cell) * 0.6) var(--table-cell) calc(var(--table-cell) * 0.6) calc(var(--table-cell) + 4px);
+  background: var(--color-paper-0);
+  border-bottom: 1px solid var(--color-line-1);
+  vertical-align: top;
+}
+
+.table tr:last-child td {
+  border-bottom: 0;
+}
+
+.table tbody tr[data-interactive='true'] {
+  cursor: pointer;
+}
+
+.table tbody tr[data-interactive='true']:hover td {
+  background: var(--color-paper-1);
+}
+
+.table tbody tr[data-state='selected'] td {
+  background: var(--color-accent-soft);
+}
+
+.table tbody tr:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: -2px;
+}
+
+.table td[data-align='num'],
+.table th[data-align='num'] {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.table td[data-muted='true'] {
+  color: var(--color-ink-3);
+}
+
+.sortButton {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+}
+
+.sortButton:hover {
+  color: var(--color-ink-1);
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 16px;
+  margin: 0;
+  font-size: var(--text-base);
+}
+
+.kv[data-columns='2'] {
+  grid-template-columns: max-content minmax(0, 1fr) max-content minmax(0, 1fr);
+}
+
+.kv dt {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-ink-2);
+}
+
+.kv dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}

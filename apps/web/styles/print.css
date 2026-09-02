@@ -1,0 +1,99 @@
+/* Print packs: case conference packs, minutes, chronology exports. */
+@media print {
+  html,
+  body {
+    color: var(--color-print-ink);
+    background: var(--color-print-paper);
+  }
+
+  .app-shell {
+    display: block;
+    height: auto;
+  }
+
+  .app-content {
+    overflow: visible;
+  }
+
+  .page {
+    max-width: none;
+    padding: 0;
+  }
+
+  .print-pack {
+    font-size: 10.5pt;
+    line-height: 1.4;
+  }
+
+  .print-pack h1 {
+    font-size: 18pt;
+  }
+
+  .print-pack h2 {
+    margin-top: 12pt;
+    font-size: 13pt;
+    break-after: avoid;
+  }
+
+  .print-pack table {
+    width: 100%;
+    font-size: 9.5pt;
+  }
+
+  .print-pack th,
+  .print-pack td {
+    padding: 3pt 4pt;
+    border-bottom: 0.5pt solid var(--color-print-rule);
+    vertical-align: top;
+  }
+
+  .print-pack tr {
+    break-inside: avoid;
+  }
+
+  .print-page {
+    break-after: page;
+  }
+
+  .print-page:last-child {
+    break-after: auto;
+  }
+
+  .print-running-head {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 4pt;
+    font-size: 8.5pt;
+    border-bottom: 0.5pt solid var(--color-print-ink);
+  }
+
+  .print-running-foot {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 4pt;
+    font-size: 8.5pt;
+    border-top: 0.5pt solid var(--color-print-ink);
+  }
+
+  .print-body {
+    padding-top: 14pt;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  @page {
+    margin: 18mm 16mm 20mm;
+    size: A4;
+  }
+}

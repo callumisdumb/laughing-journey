@@ -1,0 +1,101 @@
+/* App shell grid, content grid, wide mode. Components style their own insides. */
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--rail-width) minmax(0, 1fr) var(--drawer-width);
+  grid-template-rows: var(--topbar-height) minmax(0, 1fr);
+  grid-template-areas:
+    'rail topbar drawer'
+    'rail content drawer';
+  height: 100vh;
+  background: var(--color-paper-0);
+}
+
+.app-shell[data-rail='collapsed'] {
+  grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) var(--drawer-width);
+}
+
+.app-shell[data-drawer='collapsed'] {
+  grid-template-columns: var(--rail-width) minmax(0, 1fr) var(--drawer-width-collapsed);
+}
+
+.app-shell[data-rail='collapsed'][data-drawer='collapsed'] {
+  grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) var(--drawer-width-collapsed);
+}
+
+.app-shell[data-chrome='minimal'] {
+  grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) 0;
+}
+
+.app-content {
+  grid-area: content;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.page {
+  width: 100%;
+  max-width: calc(var(--content-max) + var(--content-gutter) * 2);
+  margin: 0 auto;
+  padding: var(--density-pad) var(--content-gutter) calc(var(--density-pad) * 2);
+}
+
+.page[data-width='wide'] {
+  max-width: none;
+}
+
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--density-gap) var(--content-gutter);
+}
+
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--density-gap);
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--density-pad);
+}
+
+.page-head-text {
+  min-width: 0;
+}
+
+.page-lede {
+  margin-top: 4px;
+  color: var(--color-ink-2);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--density-gap);
+}
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+@media (width <= 1279px) {
+  .app-shell,
+  .app-shell[data-rail='collapsed'],
+  .app-shell[data-drawer='collapsed'],
+  .app-shell[data-rail='collapsed'][data-drawer='collapsed'] {
+    grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) var(--drawer-width-collapsed);
+  }
+
+  .app-shell[data-drawer='open'] {
+    grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) var(--drawer-width);
+  }
+}
+
+@media (width <= 1023px) {
+  .grid-12 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}

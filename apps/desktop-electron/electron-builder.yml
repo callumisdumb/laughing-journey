@@ -1,0 +1,18 @@
+appId: scot.example.mas-platform
+productName: Platform
+directories:
+  output: release
+files:
+  - dist/**
+  - package.json
+extraResources:
+  - from: ../web/out
+    to: web/out
+mac:
+  category: public.app-category.productivity
+  target: [dmg]
+win:
+  target: [nsis, msi]
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

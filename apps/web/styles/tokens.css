@@ -1,0 +1,148 @@
+/*
+ * Design tokens. The only file allowed to contain hex colours.
+ * Light values live in @theme (Tailwind emits them on :root); dark values override under [data-theme="dark"].
+ * tooling/contrast/check.mjs reads this file and fails the build below WCAG AA.
+ */
+@import 'tailwindcss';
+
+@source '../../../packages/ui/src';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme {
+  --font-sans: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+  --text-4xl: 3rem;
+
+  /* Paper: warm, never pure white */
+  --color-paper-0: #fcfaf5;
+  --color-paper-1: #f6f2ea;
+  --color-paper-2: #eee8dc;
+  --color-line-1: #e3dbcc;
+  --color-line-2: #cfc5b2;
+
+  /* line-3 is the 3:1 boundary for inputs and controls; line-1 and line-2 are decorative rules */
+  --color-line-3: #857d6c;
+
+  /* Ink: warm near-black */
+  --color-ink-1: #22201b;
+  --color-ink-2: #514b41;
+  --color-ink-3: #6f6759;
+
+  /* Heather: the one accent */
+  --color-accent-1: #4f3d8b;
+  --color-accent-2: #6b58a8;
+  --color-accent-soft: #eee9f7;
+  --color-on-accent: #fcfaf5;
+
+  /* Risk: always paired with an icon and a word */
+  --color-risk-critical: #9e1b1b;
+  --color-risk-high: #b4400f;
+  --color-risk-medium: #8a5306;
+  --color-risk-low: #2f6f4f;
+  --color-risk-unknown: #6f6759;
+  --color-risk-critical-soft: #f8e3e3;
+  --color-risk-high-soft: #fbe6da;
+  --color-risk-medium-soft: #f7ebd3;
+  --color-risk-low-soft: #e1efe6;
+  --color-risk-unknown-soft: #eee8dc;
+
+  /* Agencies: categorical, always with a glyph and a label */
+  --color-agency-police: #1f3a93;
+  --color-agency-social-work: #3f6b3a;
+  --color-agency-health: #086a70;
+  --color-agency-education: #7a6000;
+  --color-agency-housing: #8c4a2f;
+  --color-agency-third-sector: #7a2e6e;
+  --color-agency-sps: #5a6472;
+  --color-agency-scra: #5b6b1f;
+  --color-agency-court: #3b3b6b;
+  --color-agency-regulator: #565b8a;
+  --color-agency-fire-rescue: #7a3b1f;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --shadow-1: 0 1px 0 rgb(34 32 27 / 6%);
+  --shadow-2: 0 4px 16px rgb(34 32 27 / 8%);
+
+  /* Print packs are pure black on white by design */
+  --color-print-ink: #000;
+  --color-print-paper: #fff;
+  --color-print-rule: #999;
+}
+
+[data-theme='dark'] {
+  --color-paper-0: #1a1815;
+  --color-paper-1: #221f1b;
+  --color-paper-2: #2c2823;
+  --color-line-1: #3a352e;
+  --color-line-2: #4c463d;
+  --color-line-3: #8a8172;
+  --color-ink-1: #f1ece2;
+  --color-ink-2: #cfc7b8;
+  --color-ink-3: #a69d8c;
+  --color-accent-1: #b4a6e4;
+  --color-accent-2: #c9bff0;
+  --color-accent-soft: #2a2440;
+  --color-on-accent: #1a1815;
+  --color-risk-critical: #f0a3a3;
+  --color-risk-high: #f3b08c;
+  --color-risk-medium: #e5c36b;
+  --color-risk-low: #8fd0ac;
+  --color-risk-unknown: #a69d8c;
+  --color-risk-critical-soft: #3a1f1f;
+  --color-risk-high-soft: #3b2418;
+  --color-risk-medium-soft: #38301a;
+  --color-risk-low-soft: #1c3128;
+  --color-risk-unknown-soft: #2c2823;
+  --color-agency-police: #9db4f5;
+  --color-agency-social-work: #9ccb94;
+  --color-agency-health: #7fd3d6;
+  --color-agency-education: #e3c65a;
+  --color-agency-housing: #e8a283;
+  --color-agency-third-sector: #e3a0d8;
+  --color-agency-sps: #b7c0cc;
+  --color-agency-scra: #c3cf7e;
+  --color-agency-court: #b3b3e6;
+  --color-agency-regulator: #b4b8ea;
+  --color-agency-fire-rescue: #f0a98a;
+  --shadow-1: 0 1px 0 rgb(0 0 0 / 30%);
+  --shadow-2: 0 4px 16px rgb(0 0 0 / 40%);
+}
+
+/* Layout and density tokens: plain custom properties, changed by data attributes without JS */
+:root {
+  --rail-width: 248px;
+  --rail-width-collapsed: 72px;
+  --topbar-height: 56px;
+  --drawer-width: 360px;
+  --drawer-width-collapsed: 40px;
+  --content-max: 1200px;
+  --content-gutter: 24px;
+  --density-row: 40px;
+  --density-pad: 20px;
+  --density-gap: 16px;
+  --density-cell: 10px;
+  --control-height: 40px;
+  --control-height-lg: 44px;
+  --focus-ring: 0 0 0 2px var(--color-paper-0), 0 0 0 4px var(--color-accent-1);
+}
+
+[data-density='compact'] {
+  --density-row: 32px;
+  --density-pad: 12px;
+  --density-gap: 10px;
+  --density-cell: 6px;
+  --control-height: 34px;
+  --control-height-lg: 40px;
+}

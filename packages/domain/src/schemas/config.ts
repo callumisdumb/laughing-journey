@@ -1,0 +1,116 @@
+import { z } from 'zod';
+import { AGENCIES, ALL_STAGES, CHANNELS, CLASSIFICATIONS, DETAIL_LEVELS, PROCESS_TYPES, ROLES } from '../enums';
+
+export const clockRuleSchema = z.object({
+  id: z.string(),
+  process: z.enum(PROCESS_TYPES),
+  label: z.string(),
+  trigger: z.string(),
+  unit: z.enum(['calendar-days', 'working-days', 'weeks', 'months']),
+  amount: z.number().positive(),
+  kind: z.enum(['deadline', 'warning', 'expiry', 'review']),
+  /** Days before due at which the clock turns medium (amber). */
+  warnDays: z.number().int().nonnegative(),
+  source: z.string(),
+  sourceRef: z.string().optional(),
+  confidence: z.enum(['high', 'verify', 'local', 'advisory']),
+  /** Optional local override note, e.g. "Clydeshore procedures 2025". */
+  localNote: z.string().optional(),
+  /** Where the value is unverified in a primary source; surfaces a marker in Admin. */
+  todoVerify: z.boolean().optional(),
+});
+export type ClockRule = z.infer<typeof clockRuleSchema>;
+
+export const needToKnowRowSchema = z.object({
+  id: z.string(),
+  process: z.enum(PROCESS_TYPES),
+  stage: z.enum(ALL_STAGES),
+  audience: z.object({
+    /** A concrete agency, or 'referrer' resolved from the process at runtime. */
+    agency: z.union([z.enum(AGENCIES), z.literal('referrer')]),
+    /** A role id, or 'any' for every role in the agency. */
+    role: z.union([z.enum(ROLES), z.literal('any')]),
+    label: z.string(),
+  }),
+  detailLevel: z.enum(DETAIL_LEVELS),
+  fields: z.array(z.string()).optional(),
+  channel: z.enum(CHANNELS),
+  trigger: z.string(),
+  /** Flag on the process that must be true for the row to apply (e.g. criminalElement). */
+  condition: z.string().optional(),
+  conditionLabel: z.string().optional(),
+  /** Lawful basis hint shown to the recipient. */
+  lawfulBasisHint: z.string(),
+});
+export type NeedToKnowRow = z.infer<typeof needToKnowRowSchema>;
+
+export const exclusionSchema = z.object({
+  id: z.string(),
+  process: z.enum(PROCESS_TYPES),
+  /** '*' for every stage. */
+  stage: z.union([z.enum(ALL_STAGES), z.literal('*')]),
+  /** Who is excluded, as a party key on the process. */
+  party: z.enum([
+    'perpetrator',
+    'perpetrator-associates',
+    'alleged-perpetrator',
+    'victim',
+    'employer',
+    'public',
+    'parents-if-risk',
+    'not-on-distribution',
+  ]),
+  label: z.string(),
+  reason: z.string(),
+  /** Some exclusions can be lifted by a recorded decision (e.g. a chair's decision). */
+  liftableBy: z.string().optional(),
+});
+export type Exclusion = z.infer<typeof exclusionSchema>;
+
+export const classificationMarkingSchema = z.object({
+  id: z.enum(CLASSIFICATIONS),
+  label: z.string(),
+  handling: z.string(),
+});
+
+export const formVersionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  process: z.enum(PROCESS_TYPES),
+  version: z.string(),
+  effectiveFrom: z.string(),
+  source: z.string(),
+});
+
+export const areaConfigSchema = z.object({
+  councilName: z.string(),
+  hscpName: z.string(),
+  healthBoardName: z.string(),
+  policeDivision: z.string(),
+  ppuBase: z.string(),
+  maracArea: z.string(),
+  sheriffCourt: z.string(),
+});
+
+export const configSchema = z.object({
+  area: areaConfigSchema,
+  labels: z.record(z.string(), z.string()),
+  clockRules: z.array(clockRuleSchema),
+  needToKnow: z.array(needToKnowRowSchema),
+  exclusions: z.array(exclusionSchema),
+  classificationMarkings: z.array(classificationMarkingSchema),
+  forms: z.array(formVersionSchema),
+  defaults: z.object({
+    theme: z.enum(['light', 'dark', 'system']),
+    density: z.enum(['comfortable', 'compact']),
+  }),
+  /** ASP s52 council officer eligibility, configurable per council. TODO(verify) against local rule. */
+  aspCouncilOfficerEligibility: z.array(z.string()),
+  /** Scottish bank holidays used by working-day clocks (ISO dates). */
+  bankHolidays: z.array(z.string()),
+  /** Break-glass window in hours. */
+  breakGlassHours: z.number().int().positive(),
+  /** Editions in use, shown in Help and Admin. */
+  guidanceEditions: z.array(z.object({ id: z.string(), label: z.string(), edition: z.string() })),
+});
+export type Config = z.infer<typeof configSchema>;
