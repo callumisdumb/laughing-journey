@@ -1,8 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
+import { ChronologyScreen } from '@/features/chronology/ChronologyScreen';
 import { Home } from '@/features/home/Home';
+import { Inbox } from '@/features/inbox/Inbox';
+import { PeopleList } from '@/features/people/PeopleList';
+import { Person360 } from '@/features/person/Person360';
 import { Placeholder } from '@/features/placeholder/Placeholder';
+import { Search } from '@/features/search/Search';
+import { Worklist } from '@/features/worklist/Worklist';
 import { useRoute } from '@/lib/router';
 
 /** Route table. Entity routes read their id from the path segments. */
@@ -19,15 +25,15 @@ export function Screen() {
     case undefined:
       return <Home />;
     case 'worklist':
-      return <Placeholder title="Worklist" phase={2} />;
+      return <Worklist />;
     case 'people':
-      if (id && sub === 'chronology') return <Placeholder title="Integrated chronology" phase={2} />;
-      if (id) return <Placeholder title="Person 360" phase={2} />;
-      return <Placeholder title="People" phase={2} />;
+      if (id && sub === 'chronology') return <ChronologyScreen personId={id} />;
+      if (id) return <Person360 personId={id} />;
+      return <PeopleList />;
     case 'search':
-      return <Placeholder title="Search" phase={2} />;
+      return <Search />;
     case 'inbox':
-      return <Placeholder title="Connector inbox" phase={2} />;
+      return <Inbox />;
     case 'processes':
       return <Placeholder title={id ? 'Process' : 'Processes'} phase={3} />;
     case 'meetings':

@@ -282,6 +282,94 @@ export function ContextDrawer() {
         </Section>
       </>
     ) : null;
+  } else if (selection?.kind === 'analysis') {
+    const an = data.analyses.find((a) => a.id === selection.id);
+    title = 'Analysis note';
+    body = an ? (
+      <>
+        <Section title="Professional judgement" icon={<FileCheck2 size={14} aria-hidden="true" />}>
+          <dl className={styles.kv}>
+            <dt>Title</dt>
+            <dd>{an.title}</dd>
+            <dt>Kind</dt>
+            <dd>{an.kind}</dd>
+            <dt>Author</dt>
+            <dd>
+              {an.authorName} (<AgencyMark agency={an.agency} />)
+            </dd>
+            <dt>Recorded</dt>
+            <dd>{formatDateTime(an.recordedAt)}</dd>
+            <dt>Text</dt>
+            <dd>{an.text}</dd>
+          </dl>
+        </Section>
+        <Section title={`Rests on ${an.eventIds.length} facts`} icon={<Scale size={14} aria-hidden="true" />}>
+          {an.eventIds.map((id) => {
+            const ev = data.events.find((e) => e.id === id);
+            return ev ? (
+              <div key={id} className={styles.auditItem}>
+                <span className={styles.auditTime}>{formatDateTime(ev.occurredAt)}</span>
+                <span className={styles.auditText}>{ev.title}</span>
+              </div>
+            ) : null;
+          })}
+        </Section>
+      </>
+    ) : null;
+  } else if (selection?.kind === 'share') {
+    const s = data.sharingRecords.find((x) => x.id === selection.id);
+    const basis = s ? data.lawfulBases.find((b) => b.id === s.lawfulBasisId) : undefined;
+    title = 'Share';
+    body = s ? (
+      <>
+        <Section title="Recipient" icon={<Users size={14} aria-hidden="true" />}>
+          <dl className={styles.kv}>
+            <dt>To</dt>
+            <dd>
+              {s.recipient.name}, {s.recipient.role} (<AgencyMark agency={s.recipient.agency} />)
+            </dd>
+            <dt>Level</dt>
+            <dd>{DETAIL_LEVEL_LABELS[s.detailLevel]}{s.fields ? `: ${s.fields.join('; ')}` : ''}</dd>
+            <dt>Why</dt>
+            <dd>{s.reason}</dd>
+            <dt>Channel</dt>
+            <dd>{s.channel.replace(/-/g, ' ')}</dd>
+            <dt>Status</dt>
+            <dd>{s.status}{s.readAt ? `, read ${formatDateTime(s.readAt)}` : ''}</dd>
+          </dl>
+        </Section>
+        <Section title="Lawful basis" icon={<Scale size={14} aria-hidden="true" />}>
+          {basis ? (
+            <dl className={styles.kv}>
+              <dt>Purpose</dt>
+              <dd>{basis.purpose}</dd>
+              <dt>Article 6</dt>
+              <dd>{basis.article6}</dd>
+              <dt>Article 9</dt>
+              <dd>{basis.article9Condition}</dd>
+              <dt>Offence data</dt>
+              <dd>{basis.article10Criminal}</dd>
+              <dt>Gateway</dt>
+              <dd>{basis.statutoryGateway.join('; ')}</dd>
+              <dt>Necessity</dt>
+              <dd>{basis.necessityAndProportionality}</dd>
+              <dt>Consent</dt>
+              <dd>{basis.consentStatus.replace(/-/g, ' ')}{basis.consentNote ? `. ${basis.consentNote}` : ''}</dd>
+              <dt>Authorised by</dt>
+              <dd>{basis.authorisedByName}</dd>
+              {basis.informationSharingAgreementRef ? (
+                <>
+                  <dt>ISA</dt>
+                  <dd>{basis.informationSharingAgreementRef}</dd>
+                </>
+              ) : null}
+            </dl>
+          ) : (
+            <p className={styles.empty}>No lawful basis record linked.</p>
+          )}
+        </Section>
+      </>
+    ) : null;
   } else {
     title = 'Your access';
     body = user ? (
@@ -315,7 +403,11 @@ export function ContextDrawer() {
           {collapsed ? <PanelRightOpen size={18} aria-hidden="true" /> : <PanelRightClose size={18} aria-hidden="true" />}
         </IconButton>
       </div>
-      {!collapsed ? <div className={styles.body}>{body}</div> : null}
+      {!collapsed ? (
+        <div className={styles.body} role="region" tabIndex={0} aria-label={`${title} details`}>
+          {body}
+        </div>
+      ) : null}
     </aside>
   );
 }

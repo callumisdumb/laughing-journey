@@ -24,6 +24,13 @@ One line of rationale each. Newest at the bottom. Prefix D-nnn. Domain decisions
 - D-017 Screenshots are written to the repository `docs/SCREENSHOTS` from an absolute path in `tooling/playwright`, whatever the Playwright working directory.
 - D-018 Next.js telemetry is disabled through `apps/web/.env` (`NEXT_TELEMETRY_DISABLED=1`) so no build or dev command phones home.
 
+- D-019 Chronology visibility per view: single-agency shows the user's own agency events; integrated shows events with `integrated` visibility plus the user's own agency events; the pack view shows integrated events of moderate or high significance only. Restricted events show only to full-access members of the restricted process.
+- D-020a Pattern lenses are pure functions in `packages/domain/src/chronology/lenses.ts`, each returning event ids, spans and a finding that always ends with the same "prompt, not a conclusion" sentence.
+- D-020b The add-event schema rejects a fact whose title or detail contains opinion markers ("I think", "seems", "probably") and points the user to an analysis note; an analysis note must link at least one fact.
+- D-020c Print packs paginate in JS (18 rows a page) because Chrome cannot render page counters in fixed running headers; each page carries the marking, reference, subject and page number.
+- D-020d Connector pulls run through TanStack Query with the mock latency (200 to 1500 ms) visible; pulled events land in the inbox as pending and never in a chronology.
+- D-020e Every Person 360 view writes a `read` audit entry and every chronology export writes an `export` entry; restricted reads use `read-restricted`.
+
 ## Design
 
 - D-020 ink-3 darkened to `#6F6759`, risk-high to `#B4400F`, risk-medium to `#8A5306` so every text colour passes 4.5:1 on every paper step; see DESIGN.md section 2.

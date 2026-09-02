@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCIES, AGENCY_SHORT, PROCESS_LABELS, PROCESS_TYPES, ageLabel, formatDate, stageLabel, type Agency, type Person, type ProcessType } from '@mas/domain';
+import { AGENCIES, AGENCY_SHORT, PROCESS_LABELS, PROCESS_TYPES, ageLabel, formatDate, stageLabel, type Agency, type Person } from '@mas/domain';
 import { AgencyMark, Pill, ProcessMark, SelectField, Table, TableWrap, TextField, tableStyles } from '@mas/ui';
 import { Lock, UserX } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -86,7 +86,9 @@ export function PeopleList() {
         </span>
       </div>
       <div className={styles.filters}>
-        <TextField className={styles.filterSearch} label="Name or address" type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder="Start typing a name" />
+        <div className={styles.filterSearch}>
+          <TextField label="Name or address" type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder="Start typing a name" />
+        </div>
         <SelectField label="Process" value={processFilter} onChange={(e) => setFilter('process', e.target.value)} placeholder="Any process" options={PROCESS_TYPES.map((t) => ({ value: t, label: PROCESS_LABELS[t] }))} />
         <SelectField label="Agency involved" value={agencyFilter} onChange={(e) => setFilter('agency', e.target.value)} placeholder="Any agency" options={AGENCIES.map((a) => ({ value: a, label: AGENCY_SHORT[a] }))} />
         <SelectField label="Locality" value={townFilter} onChange={(e) => setFilter('town', e.target.value)} placeholder="Any town" options={TOWNS.map((t) => ({ value: t.name, label: t.name }))} />
@@ -140,11 +142,11 @@ export function PeopleList() {
                             </Pill>
                           ) : access.level === 'presence' ? (
                             <span key={process.id} className={styles.notOnCase}>
-                              <ProcessMark type={process.type as ProcessType} />
+                              <ProcessMark type={process.type} />
                               <UserX size={12} aria-hidden="true" /> not on this case
                             </span>
                           ) : (
-                            <ProcessMark key={process.id} type={process.type as ProcessType} stage={stageLabel(process.type, process.stage)} />
+                            <ProcessMark key={process.id} type={process.type} stage={stageLabel(process.type, process.stage)} />
                           ),
                         )}
                       </span>

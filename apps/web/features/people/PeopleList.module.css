@@ -21,8 +21,8 @@
 }
 
 .name:hover {
-  color: var(--color-accent-1);
   text-decoration: underline;
+  color: var(--color-accent-1);
 }
 
 .sub {
