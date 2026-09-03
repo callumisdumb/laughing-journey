@@ -1,3 +1,4 @@
+import { t } from '@mas/messages';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import '@fontsource/atkinson-hyperlegible/400.css';
@@ -9,8 +10,8 @@ import './globals.css';
 import { APPEARANCE_BOOT_SCRIPT } from '@/lib/appearance';
 
 export const metadata: Metadata = {
-  title: 'Platform',
-  description: 'Multi-agency public protection platform (mockup, synthetic data only)',
+  title: t('common.app.name'),
+  description: t('common.app.tagline'),
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

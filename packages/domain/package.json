@@ -13,6 +13,7 @@
     "docs:data-model": "tsx scripts/generate-data-model.ts"
   },
   "dependencies": {
+    "@mas/messages": "workspace:*",
     "date-fns": "4.4.0",
     "date-fns-tz": "3.2.0",
     "zod": "4.5.4"

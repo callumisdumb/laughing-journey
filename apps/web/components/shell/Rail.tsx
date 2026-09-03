@@ -1,6 +1,7 @@
 'use client';
 
 import { ROLE_DEFINITIONS } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { AGENCY_GLYPHS, Badge, IconButton, WordmarkGlyph } from '@mas/ui';
 import { BarChart3, CalendarDays, ClipboardList, Home, ListChecks, PanelLeftClose, PanelLeftOpen, Plug, Send, Settings2, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -18,6 +19,7 @@ interface NavItem {
 }
 
 export function Rail() {
+  const t = useT();
   const collapsed = useAppearance((s) => s.railCollapsed);
   const toggle = useAppearance((s) => s.toggleRail);
   const user = useCurrentUser();
@@ -42,8 +44,8 @@ export function Rail() {
   return (
     <nav className={styles.rail} data-collapsed={collapsed ? 'true' : 'false'} aria-label="Main">
       <div className={styles.brand}>
-        <WordmarkGlyph size={24} variant="filled" title="Platform" />
-        <span className={styles.brandText}>Platform</span>
+        <WordmarkGlyph size={24} variant="filled" title={t('common.app.name')} />
+        <span className={styles.brandText}>{t('common.app.name')}</span>
       </div>
       <div className={styles.nav}>
         {items.map((it) => (

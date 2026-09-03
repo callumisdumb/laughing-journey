@@ -3,8 +3,8 @@
  * with index.html fallback so client-side routes deep-link correctly, and adds the same native
  * menu as the Tauri shell (About, Reset demo data, Toggle theme, Zoom).
  */
-import { app, BrowserWindow, Menu, net, protocol, shell, type MenuItemConstructorOptions } from 'electron';
-import { existsSync, statSync } from 'node:fs';
+import { app, BrowserWindow, ipcMain, Menu, net, protocol, shell, type MenuItemConstructorOptions } from 'electron';
+import { existsSync, readFileSync, statSync, writeFileSync, unlinkSync } from 'node:fs';
 import { join, normalize } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -77,6 +77,25 @@ function createWindow(): void {
 }
 
 app.setAboutPanelOptions({ applicationName: 'Platform', applicationVersion: app.getVersion(), credits: 'Multi-agency public protection platform (Scotland). Demonstration build with synthetic data only.' });
+
+/** Message overrides live beside the other app data, only the keys someone changed. */
+function overridesPath(): string {
+  return join(app.getPath('userData'), 'message-overrides.json');
+}
+
+ipcMain.handle('mas-overrides-load', () => {
+  const path = overridesPath();
+  return existsSync(path) ? readFileSync(path, 'utf8') : null;
+});
+
+ipcMain.handle('mas-overrides-save', (_event, json: string) => {
+  const path = overridesPath();
+  if (json === '{}') {
+    if (existsSync(path)) unlinkSync(path);
+    return;
+  }
+  writeFileSync(path, json);
+});
 
 void app.whenReady().then(() => {
   protocol.handle('app', (request) => {

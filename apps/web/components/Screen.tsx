@@ -1,5 +1,6 @@
 'use client';
 
+import { t } from '@mas/messages';
 import { useEffect } from 'react';
 import { Actions } from '@/features/actions/Actions';
 import { Admin } from '@/features/admin/Admin';
@@ -30,7 +31,7 @@ export function Screen() {
 
   useEffect(() => {
     const titles: Record<string, string> = { '': 'Home', worklist: 'Worklist', people: 'People', search: 'Search', inbox: 'Inbox', processes: 'Processes', meetings: 'Meetings', actions: 'Actions', sharing: 'Sharing', connectors: 'Connectors', reports: 'Reports', audit: 'Audit', admin: 'Admin', settings: 'Settings', help: 'Help' };
-    document.title = `${titles[head ?? ''] ?? 'Platform'}: Platform`;
+    document.title = t('common.app.titleWithScreen', { screen: titles[head ?? ''] ?? t('common.app.name'), app: t('common.app.name') });
   }, [head]);
 
   switch (head) {

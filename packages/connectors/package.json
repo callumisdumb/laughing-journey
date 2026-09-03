@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@mas/domain": "workspace:*",
+    "@mas/messages": "workspace:*",
     "@mas/mock-data": "workspace:*",
     "date-fns": "4.4.0"
   },

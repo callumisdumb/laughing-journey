@@ -21,6 +21,7 @@
     "@hookform/resolvers": "5.9.1",
     "@mas/connectors": "workspace:*",
     "@mas/domain": "workspace:*",
+    "@mas/messages": "workspace:*",
     "@mas/mock-data": "workspace:*",
     "@mas/ui": "workspace:*",
     "@tanstack/react-query": "5.102.8",

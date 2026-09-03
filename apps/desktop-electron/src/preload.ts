@@ -7,5 +7,9 @@ contextBridge.exposeInMainWorld('masDesktop', {
     ipcRenderer.on('mas-menu', listener);
     return () => ipcRenderer.removeListener('mas-menu', listener);
   },
+  overrides: {
+    load: (): Promise<string | null> => ipcRenderer.invoke('mas-overrides-load') as Promise<string | null>,
+    save: (json: string): Promise<void> => ipcRenderer.invoke('mas-overrides-save', json) as Promise<void>,
+  },
   shell: 'electron',
 });

@@ -1,3 +1,4 @@
+import { useT } from '@mas/messages';
 import { X } from 'lucide-react';
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { cn } from '../cn';
@@ -16,6 +17,7 @@ export interface DialogProps {
 
 /** Native dialog element: focus trapping, Escape and backdrop come from the platform. */
 export function Dialog({ open, onClose, title, children, actions, size = 'md', className }: DialogProps) {
+  const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -49,7 +51,7 @@ export function Dialog({ open, onClose, title, children, actions, size = 'md', c
         <h2 className={styles.title} id={titleId}>
           {title}
         </h2>
-        <IconButton aria-label="Close" onClick={onClose}>
+        <IconButton aria-label={t('common.actions.close')} onClick={onClose}>
           <X size={18} aria-hidden="true" />
         </IconButton>
       </div>

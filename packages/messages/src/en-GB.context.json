@@ -1,0 +1,28 @@
+{
+  "common": {
+    "actions": {
+      "close": {
+        "maxLength": 20,
+        "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+        "where": "Close control on every dialog and sheet, read by screen readers"
+      }
+    },
+    "app": {
+      "loading": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Loading state before the platform has booted, and its accessible label"
+      },
+      "name": {
+        "maxLength": 20,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "The placeholder wordmark beside the lantern in the rail, on sign-in and in the browser tab"
+      },
+      "tagline": {
+        "where": "The document description in the page head; not shown on screen"
+      },
+      "titleWithScreen": {
+        "where": "The browser tab title while a screen is open, with the screen name and the app name as arguments"
+      }
+    }
+  }
+}

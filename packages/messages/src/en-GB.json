@@ -1,0 +1,13 @@
+{
+  "common": {
+    "actions": {
+      "close": "Close"
+    },
+    "app": {
+      "loading": "Loading the platform",
+      "name": "Platform",
+      "tagline": "Multi-agency public protection platform (mockup, synthetic data only)",
+      "titleWithScreen": "{screen}: {app}"
+    }
+  }
+}

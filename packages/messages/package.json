@@ -1,12 +1,13 @@
 {
-  "name": "@mas/ui",
+  "name": "@mas/messages",
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "description": "The editable message catalogue: every string a person can see or hear, ICU MessageFormat, one locale file per language",
   "exports": {
     ".": "./src/index.ts",
-    "./glyphs": "./src/glyphs/index.ts",
-    "./styles/*": "./src/styles/*"
+    "./en-GB.json": "./src/en-GB.json",
+    "./en-GB.context.json": "./src/en-GB.context.json"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
@@ -14,18 +15,17 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@mas/domain": "workspace:*",
-    "@mas/messages": "workspace:*",
-    "lucide-react": "1.39.0"
+    "@formatjs/icu-messageformat-parser": "3.5.17",
+    "intl-messageformat": "11.2.14"
   },
   "peerDependencies": {
-    "react": "^19",
-    "react-dom": "^19"
+    "react": "^19"
   },
   "devDependencies": {
     "@mas/eslint-config": "workspace:*",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
+    "@types/node": "22.20.1",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
     "@vitejs/plugin-react": "6.1.1",
@@ -34,7 +34,6 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "typescript": "5.9.3",
-    "vitest": "4.1.11",
-    "@types/node": "22.20.1"
+    "vitest": "4.1.11"
   }
 }

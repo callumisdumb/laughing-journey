@@ -1,6 +1,7 @@
 'use client';
 
 import { ROLE_DEFINITIONS, type Organisation } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { AGENCY_GLYPHS, Pill, WordmarkGlyph } from '@mas/ui';
 import { Info, Lock, ShieldCheck, Sparkles } from 'lucide-react';
 import { useState } from 'react';
@@ -22,6 +23,7 @@ const KIND_LABEL: Record<Organisation['kind'], string> = {
 };
 
 export function SignIn() {
+  const t = useT();
   const data = useData();
   const signIn = useAppStore((s) => s.signIn);
   const navigate = useNavigate();
@@ -46,8 +48,8 @@ export function SignIn() {
     <div className={styles.screen} data-app-ready="true">
       <section className={styles.intro} aria-labelledby="signin-title">
         <div className={styles.brand}>
-          <WordmarkGlyph size={24} variant="filled" title="Platform" />
-          <span className={styles.brandText}>Platform</span>
+          <WordmarkGlyph size={24} variant="filled" title={t('common.app.name')} />
+          <span className={styles.brandText}>{t('common.app.name')}</span>
         </div>
         <div>
           <h1 className={styles.headline} id="signin-title">

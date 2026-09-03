@@ -11,7 +11,7 @@
     "dev": "pnpm --filter @mas/web dev",
     "build": "pnpm contrast && pnpm --filter @mas/web build",
     "typecheck": "pnpm -r --workspace-concurrency=2 typecheck",
-    "lint": "pnpm -r --workspace-concurrency=2 lint && pnpm lint:css && pnpm contrast && pnpm lint:dashes",
+    "lint": "pnpm -r --workspace-concurrency=2 lint && pnpm lint:css && pnpm contrast && pnpm lint:dashes && pnpm messages:check",
     "lint:css": "stylelint \"apps/web/**/*.css\" \"packages/ui/**/*.css\" --ignore-path .gitignore && node tooling/stylelint-config/unused-custom-properties.mjs",
     "lint:dashes": "node tooling/no-em-dash.mjs",
     "contrast": "node tooling/contrast/check.mjs",
@@ -25,7 +25,11 @@
     "desktop:tauri:dev": "pnpm --filter @mas/desktop-tauri dev",
     "desktop:tauri:build": "pnpm --filter @mas/web build && pnpm --filter @mas/desktop-tauri build",
     "desktop:electron:dev": "pnpm --filter @mas/desktop-electron dev",
-    "desktop:electron:build": "pnpm --filter @mas/web build && pnpm --filter @mas/desktop-electron build"
+    "desktop:electron:build": "pnpm --filter @mas/web build && pnpm --filter @mas/desktop-electron build",
+    "messages:types": "node tooling/messages/types.mjs",
+    "messages:check": "node tooling/messages/check.mjs",
+    "messages:extract": "node tooling/messages/extract.mjs",
+    "messages:merge": "node tooling/messages/merge.mjs"
   },
   "devDependencies": {
     "prettier": "3.9.6",

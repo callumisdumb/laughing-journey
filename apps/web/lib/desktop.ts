@@ -16,6 +16,8 @@ const ZOOM_STEPS = [80, 90, 100, 110, 125, 150] as const;
 
 interface ElectronBridge {
   onMenu: (handler: (action: string) => void) => () => void;
+  /** Message overrides persisted in the app data directory; JSON text in, JSON text out. */
+  overrides?: { load: () => Promise<string | null>; save: (json: string) => Promise<void> };
   shell: 'electron';
 }
 
