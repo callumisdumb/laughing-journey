@@ -3698,6 +3698,652 @@
       }
     }
   },
+  "meetings": {
+    "after": {
+      "clocks": {
+        "meta": {
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Meta line of the clocks sheet in the after phase of the meeting workspace"
+        },
+        "sub": {
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Line under each clock numeral in the after phase: due date, then the source reference or override reason"
+        },
+        "title": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Heading of the clocks sheet in the after phase of the meeting workspace"
+        }
+      },
+      "distribute": {
+        "clockNote": {
+          "where": "Note written on the CPPM record clock when the minute is distributed from the workspace; shows in the clock detail"
+        },
+        "distributed": {
+          "where": "Toast title and audit entry when the minute is distributed, with the recipient count"
+        },
+        "necessity": {
+          "where": "Necessity and proportionality note on the lawful basis record created when the minute is distributed; shows in the context panel"
+        },
+        "purpose": {
+          "where": "Purpose on the lawful basis record created when the minute is distributed; shows in the context panel"
+        },
+        "shareSummary": {
+          "where": "Summary of each sharing record created when the minute is distributed; shows on the sharing queue"
+        },
+        "toastText": {
+          "where": "Toast body when the minute is distributed"
+        }
+      },
+      "distribution": {
+        "attendeeReason": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Reason recorded against an attendee on the generated distribution list"
+        },
+        "generate": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Button on the distribution sheet that builds the list from need-to-know"
+        },
+        "levelLabel": {
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Visually hidden label of the detail level select for one recipient on the distribution list"
+        },
+        "meta": {
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Meta line of the distribution sheet in the after phase"
+        },
+        "reason": {
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Line under each recipient on the distribution list: reason, named fields for a partial level, and whether it has been sent"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Heading of the distribution sheet in the after phase"
+        },
+        "toastText": {
+          "where": "Toast body after the distribution list is generated: where detail levels come from, exclusions applied and anyone left off by case role"
+        },
+        "toastTitle": {
+          "where": "Toast title after the distribution list is generated, with the number of recipients added"
+        }
+      },
+      "minute": {
+        "chairApproves": {
+          "maxLength": 20,
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Button on the minute sheet that records chair approval"
+        },
+        "distribute": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Primary button on the minute sheet that distributes the minute, with the recipient count"
+        },
+        "markDraft": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Button on the minute sheet that marks the minute as a draft"
+        },
+        "meta": {
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Meta line of the minute sheet: status, then chair approval and distribution times when they exist"
+        },
+        "print": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Button on the minute sheet that opens the minutes print pack"
+        },
+        "reviewCleared": {
+          "maxLength": 12,
+          "where": "Toast body when the review date is set to nothing"
+        },
+        "reviewDate": {
+          "maxLength": 28,
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Compact date field label on the minute sheet; the format sits in the label because the row has no hint"
+        },
+        "reviewToast": {
+          "where": "Toast title when the review date is set"
+        },
+        "setReviewDate": {
+          "maxLength": 20,
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Button beside the review date field"
+        },
+        "title": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-after-light-comfortable.png",
+          "where": "Heading of the minute sheet in the after phase"
+        }
+      }
+    },
+    "audit": {
+      "held": {
+        "where": "Audit entry when a meeting is closed, with the meeting title"
+      },
+      "minutesPack": {
+        "where": "Audit entry when the minutes print pack is opened, with the meeting title"
+      }
+    },
+    "before": {
+      "invites": {
+        "generate": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Button on the invite list sheet that adds invitees from need-to-know"
+        },
+        "meta": {
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Meta line of the invite list sheet in the before phase"
+        },
+        "person": {
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Name and role of one invitee on the invite list; optional invitees carry the suffix"
+        },
+        "reason": {
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Line under each invitee on the invite list: the reason they are invited and the need-to-know rule that produced it"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Heading of the invite list sheet in the before phase"
+        },
+        "toastAdded": {
+          "where": "Toast title after invitees are added from need-to-know, with the count"
+        },
+        "toastComplete": {
+          "where": "Toast title when generating invitees adds nobody"
+        },
+        "toastText": {
+          "where": "Toast body after invitees are generated: the exclusions that applied and anyone left off by case role"
+        }
+      },
+      "pack": {
+        "empty": {
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Line on the pack builder sheet when the pack has no items"
+        },
+        "itemMeta": {
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Meta line beside each pack item: kind, chronology window and reference"
+        },
+        "meta": {
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Meta line of the pack builder sheet in the before phase"
+        },
+        "preview": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Button on the pack builder sheet that opens the chronology print pack"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Heading of the pack builder sheet in the before phase"
+        },
+        "today": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Stands in for the end of a pack item's chronology window when it runs to today"
+        }
+      },
+      "requests": {
+        "agency": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Select label in the send a request form"
+        },
+        "due": {
+          "maxLength": 20,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Compact date field label in the send a request form; the format sits in the label because the row has no hint"
+        },
+        "meta": {
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Meta line of the requests sheet: how many requests are back out of the total"
+        },
+        "overdue": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Pill on a sent request whose due date has passed"
+        },
+        "packLabel": {
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Label of the pack item added when a request is returned, with the agency short name"
+        },
+        "recordReturn": {
+          "maxLength": 20,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Quiet button beside a sent request that opens the record return dialog"
+        },
+        "returnedToast": {
+          "where": "Toast title after a return is recorded"
+        },
+        "send": {
+          "maxLength": 20,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Button that sends the information request"
+        },
+        "sendTitle": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Heading of the send a request form on the requests sheet"
+        },
+        "sentDue": {
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Line under each request: sent and due dates, then the return summary when one exists"
+        },
+        "title": {
+          "maxLength": 48,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Heading of the pre-meeting requests sheet in the before phase"
+        },
+        "to": {
+          "maxLength": 8,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Select label in the send a request form"
+        },
+        "toastText": {
+          "where": "Toast body after an information request is sent, with the recipient name or agency"
+        },
+        "toastTitle": {
+          "where": "Toast title after an information request is sent"
+        },
+        "toPlaceholder": {
+          "maxLength": 20,
+          "screenshot": "phase-4/meeting-before-light-comfortable.png",
+          "where": "Placeholder of the person select in the send a request form"
+        }
+      }
+    },
+    "close": {
+      "toastText": {
+        "where": "Toast body after the meeting is closed: which clocks completed and started"
+      },
+      "toastTitle": {
+        "maxLength": 20,
+        "where": "Toast title after the meeting is closed"
+      }
+    },
+    "during": {
+      "actions": {
+        "action": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Text field label in the capture action form"
+        },
+        "actionPlaceholder": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Placeholder of the action text field in the capture action form"
+        },
+        "capture": {
+          "maxLength": 20,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Primary button in the capture action form"
+        },
+        "complete": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Pill on a live action that is complete"
+        },
+        "due": {
+          "maxLength": 20,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Pill on a live action that is not complete, with the due date"
+        },
+        "dueField": {
+          "maxLength": 20,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Compact date field label in the capture action form; the format sits in the label because the row has no hint"
+        },
+        "meta": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Meta line of the live actions sheet: how many actions the meeting has"
+        },
+        "owner": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Select label in the capture action form"
+        },
+        "ownerPlaceholder": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Placeholder of the owner select in the capture action form"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Heading of the live actions sheet in the during phase"
+        }
+      },
+      "agenda": {
+        "done": {
+          "maxLength": 8,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Button on the current agenda item that marks it done"
+        },
+        "start": {
+          "maxLength": 8,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Button on a pending agenda item that makes it current"
+        },
+        "title": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Heading of the agenda sheet in the during phase"
+        }
+      },
+      "attendance": {
+        "meta": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Meta line of the attendance sheet: how many invitees are present"
+        },
+        "selectLabel": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Visually hidden label of the attendance select for one invitee"
+        },
+        "title": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Heading of the attendance sheet in the during phase"
+        }
+      },
+      "decisions": {
+        "addTitle": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Heading of the record a decision form"
+        },
+        "decision": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Text field label in the record a decision form"
+        },
+        "dissent": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Dissent line under a recorded decision: who dissented, their agency and what they said"
+        },
+        "dissentBy": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Select label in the record a decision form"
+        },
+        "dissentText": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Text field label in the record a decision form"
+        },
+        "meta": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Meta line of the decisions sheet: how many decisions are recorded"
+        },
+        "noDissent": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Placeholder of the dissent by select when nobody dissents"
+        },
+        "question": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Text field label in the record a decision form"
+        },
+        "rationale": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Rationale line under a recorded decision, with who decided and when"
+        },
+        "rationaleField": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Textarea label in the record a decision form"
+        },
+        "record": {
+          "maxLength": 20,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Button that records the decision"
+        },
+        "title": {
+          "maxLength": 40,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Heading of the decisions sheet in the during phase"
+        }
+      },
+      "shared": {
+        "addTitle": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Heading of the form for recording what the signed-in agency shared, with the agency short name"
+        },
+        "meta": {
+          "maxLength": 40,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Meta line of the information shared sheet"
+        },
+        "record": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Button that records the information shared"
+        },
+        "relevance": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Relevance line under each item of information shared"
+        },
+        "relevanceField": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Text field label for the relevance note in the information shared form"
+        },
+        "summary": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Textarea label for the facts shared in the information shared form"
+        },
+        "title": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Heading of the information shared sheet in the during phase"
+        }
+      },
+      "views": {
+        "meta": {
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Meta line of the views sheet: how many views have been read into the record"
+        },
+        "placeholder": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Placeholder of the select that reads recorded views into the record"
+        },
+        "readInto": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Label of the select that reads recorded views into the record"
+        },
+        "title": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-during-light-comfortable.png",
+          "where": "Heading of the views sheet in the during phase"
+        }
+      }
+    },
+    "head": {
+      "chair": {
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Meta line item in the meeting header: the chair"
+      },
+      "chairBanner": {
+        "screenshot": "phase-4/meeting-chair-light-comfortable.png",
+        "where": "Banner across the top of the workspace while chair mode is on"
+      },
+      "chairMode": {
+        "maxLength": 16,
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Button in the meeting header that turns chair mode on"
+      },
+      "close": {
+        "maxLength": 32,
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Primary button in the meeting header that closes the meeting"
+      },
+      "exitChairMode": {
+        "maxLength": 20,
+        "screenshot": "phase-4/meeting-chair-light-comfortable.png",
+        "where": "Button in the chair mode banner that turns chair mode off"
+      },
+      "minutePill": {
+        "maxLength": 24,
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Pill in the meeting header showing the minute status"
+      },
+      "minutes": {
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Meta line item in the meeting header: the minute taker"
+      },
+      "phaseGroup": {
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Accessible name of the before, during and after phase switch"
+      },
+      "when": {
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Meta line item in the meeting header: date, start time and end time"
+      }
+    },
+    "list": {
+      "columns": {
+        "chair": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meetings-light-comfortable.png",
+          "where": "Column header of the meetings list"
+        },
+        "meeting": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meetings-light-comfortable.png",
+          "where": "Column header of the meetings list"
+        },
+        "minute": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meetings-light-comfortable.png",
+          "where": "Column header of the meetings list"
+        },
+        "process": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meetings-light-comfortable.png",
+          "where": "Column header of the meetings list"
+        },
+        "status": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meetings-light-comfortable.png",
+          "where": "Column header of the meetings list"
+        },
+        "subject": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meetings-light-comfortable.png",
+          "where": "Column header of the meetings list"
+        },
+        "when": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meetings-light-comfortable.png",
+          "where": "Column header of the meetings list"
+        }
+      },
+      "empty": {
+        "pastText": {
+          "where": "Empty state body of the meetings list when held meetings are shown and none match"
+        },
+        "text": {
+          "where": "Empty state body of the meetings list when nothing upcoming matches"
+        },
+        "title": {
+          "maxLength": 24,
+          "where": "Empty state title of the meetings list"
+        }
+      },
+      "filters": {
+        "allTypes": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meetings-light-comfortable.png",
+          "where": "Placeholder of the meeting type filter meaning no filter"
+        },
+        "mine": {
+          "screenshot": "phase-4/meetings-light-comfortable.png",
+          "where": "Switch label above the meetings list"
+        },
+        "past": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meetings-light-comfortable.png",
+          "where": "Switch label above the meetings list"
+        },
+        "type": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meetings-light-comfortable.png",
+          "where": "Select label of the meeting type filter above the meetings list"
+        }
+      },
+      "lede": {
+        "screenshot": "phase-4/meetings-light-comfortable.png",
+        "where": "Lede under the meetings list title"
+      },
+      "title": {
+        "maxLength": 16,
+        "screenshot": "phase-4/meetings-light-comfortable.png",
+        "where": "Page title of the meetings list"
+      }
+    },
+    "notFound": {
+      "back": {
+        "maxLength": 16,
+        "where": "Link back to the meetings list from the meeting not found state"
+      },
+      "text": {
+        "where": "Body of the state shown when the meeting id is not in the dataset"
+      },
+      "title": {
+        "maxLength": 24,
+        "where": "Title of the state shown when the meeting id is not in the dataset"
+      }
+    },
+    "phase": {
+      "after": {
+        "maxLength": 8,
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Third button of the phase switch in the meeting workspace"
+      },
+      "before": {
+        "maxLength": 8,
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "First button of the phase switch in the meeting workspace"
+      },
+      "during": {
+        "maxLength": 8,
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Second button of the phase switch in the meeting workspace"
+      }
+    },
+    "restricted": {
+      "title": {
+        "where": "Title of the restricted state on the meeting workspace and the minutes print pack, with the meeting type"
+      },
+      "workspaceReason": {
+        "where": "Reason on the restricted state of the meeting workspace when the viewer is neither invited nor a full case member"
+      }
+    },
+    "returnDialog": {
+      "confirm": {
+        "maxLength": 32,
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Primary button of the record the return dialog"
+      },
+      "summary": {
+        "maxLength": 24,
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Textarea label in the record the return dialog"
+      },
+      "title": {
+        "maxLength": 24,
+        "screenshot": "phase-4/meeting-before-light-comfortable.png",
+        "where": "Title of the dialog that records a returned information request"
+      }
+    }
+  },
   "nav": {
     "drawer": {
       "access": {
@@ -5378,6 +6024,434 @@
       "subjectHead": {
         "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
         "where": "Centre of the running head on every print pack page: the person's name and date of birth"
+      }
+    },
+    "minutes": {
+      "actions": {
+        "empty": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Single row of the actions table on the minutes print pack when the meeting has no actions"
+        },
+        "status": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Status cell of the actions table on the minutes print pack: the status word, then the completion date for a completed action"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Section heading of the actions table on the minutes print pack"
+        }
+      },
+      "actionStatusLabels": {
+        "cancelled": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Status word in the actions table of the minutes print pack for a cancelled action"
+        },
+        "complete": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Status word in the actions table of the minutes print pack for a completed action"
+        },
+        "inProgress": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Status word in the actions table of the minutes print pack for an action in progress"
+        },
+        "open": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Status word in the actions table of the minutes print pack for an open action"
+        }
+      },
+      "agenda": {
+        "empty": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Line under the agenda heading on the minutes print pack when no agenda was recorded"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Section heading of the agenda on the minutes print pack"
+        }
+      },
+      "attendance": {
+        "empty": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Single row of the attendance table on the minutes print pack when nobody was invited"
+        },
+        "role": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Role cell of the attendance table on the minutes print pack; optional invitees carry the suffix"
+        },
+        "subjectFamily": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Line under the attendance table on the minutes print pack recording how the subject and family attended"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Section heading of the attendance table on the minutes print pack"
+        }
+      },
+      "attendanceLabels": {
+        "absent": {
+          "maxLength": 28,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Attendance word in the minutes print pack for an invitee who was absent"
+        },
+        "accepted": {
+          "maxLength": 28,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Attendance word in the minutes print pack for an invitee who accepted"
+        },
+        "apologies": {
+          "maxLength": 28,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Attendance word in the minutes print pack for an invitee who sent apologies"
+        },
+        "declined": {
+          "maxLength": 28,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Attendance word in the minutes print pack for an invitee who declined"
+        },
+        "invited": {
+          "maxLength": 28,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Attendance word in the minutes print pack for an invitee who has not yet replied"
+        },
+        "present": {
+          "maxLength": 28,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Attendance word in the minutes print pack for an invitee who was present in the room"
+        },
+        "remote": {
+          "maxLength": 28,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Attendance word in the minutes print pack for an invitee who joined by video link"
+        }
+      },
+      "columns": {
+        "action": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Column header of the actions table on the minutes print pack"
+        },
+        "agency": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Column header of the attendance and distribution tables on the minutes print pack"
+        },
+        "attendance": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Column header of the attendance table on the minutes print pack"
+        },
+        "detailLevel": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Column header of the distribution table on the minutes print pack"
+        },
+        "due": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Column header of the actions table on the minutes print pack"
+        },
+        "name": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Column header of the attendance table on the minutes print pack"
+        },
+        "owner": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Column header of the actions table on the minutes print pack"
+        },
+        "reason": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Column header of the distribution table on the minutes print pack"
+        },
+        "recipient": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Column header of the distribution table on the minutes print pack"
+        },
+        "role": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Column header of the attendance and distribution tables on the minutes print pack"
+        },
+        "status": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Column header of the actions table on the minutes print pack"
+        }
+      },
+      "controls": {
+        "back": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Button above the minutes print pack that returns to the meeting workspace; not printed"
+        }
+      },
+      "cover": {
+        "chair": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail label on the minutes print pack: the chair"
+        },
+        "dateTime": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail label on the minutes print pack: when the meeting was held"
+        },
+        "kicker": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Small line above the meeting title on the minutes print pack cover page"
+        },
+        "location": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail label on the minutes print pack: where the meeting was held"
+        },
+        "minuteStatus": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail label on the minutes print pack: the minute status line"
+        },
+        "minuteTaker": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail label on the minutes print pack: the minute taker"
+        },
+        "notRecorded": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Stands in for the minute taker and the subjects on the minutes print pack cover when none is recorded"
+        },
+        "process": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail label on the minutes print pack: the process the meeting belongs to"
+        },
+        "processLine": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail on the minutes print pack: process reference, title, process type and stage"
+        },
+        "recordDistributed": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail on the minutes print pack when the CPPM record clock has been met"
+        },
+        "recordDue": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail label on the minutes print pack: the CPPM record distribution deadline"
+        },
+        "recordDueDate": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail on the minutes print pack: the CPPM record distribution deadline and its rule"
+        },
+        "subjectBorn": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail on the minutes print pack: one subject with their date of birth"
+        },
+        "subjects": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail label on the minutes print pack: the subject or subjects of the meeting"
+        },
+        "type": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail label on the minutes print pack: the meeting type"
+        },
+        "when": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Cover page detail on the minutes print pack: date, start time and end time of the meeting"
+        }
+      },
+      "decisions": {
+        "decision": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Decision line of one decision on the minutes print pack"
+        },
+        "dissent": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Dissent line of one decision on the minutes print pack: who dissented, their agency and what they said"
+        },
+        "empty": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Line under the decisions heading on the minutes print pack when none were recorded"
+        },
+        "noDissent": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Muted line under a decision on the minutes print pack when nobody dissented"
+        },
+        "rationale": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Rationale line of one decision on the minutes print pack, with who decided and when"
+        },
+        "title": {
+          "maxLength": 40,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Section heading of the decisions on the minutes print pack"
+        }
+      },
+      "distribution": {
+        "empty": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Single row of the distribution table on the minutes print pack when no distribution list exists"
+        },
+        "level": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Detail level cell of the distribution table on the minutes print pack, with the named fields for a partial level"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Section heading of the distribution table on the minutes print pack"
+        }
+      },
+      "head": {
+        "title": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Centre of the running head on every minutes print pack page: the meeting title"
+        }
+      },
+      "purpose": {
+        "asMarked": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Handling instruction on the minutes print pack when the classification marking carries none"
+        },
+        "confidential": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Confidentiality paragraph in the purpose section of the minutes print pack"
+        },
+        "handling": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Handling line in the purpose section of the minutes print pack, with the marking's handling instruction"
+        },
+        "lawfulBasis": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Lawful basis paragraph in the purpose section of the minutes print pack: purpose, articles, gateways and who authorised it"
+        },
+        "noLawfulBasis": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Lawful basis paragraph in the purpose section of the minutes print pack when no record is linked"
+        },
+        "subjectNotRecorded": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Stands in for the subject names in the purpose line of the minutes print pack"
+        },
+        "summary": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "First line of the purpose section of the minutes print pack: meeting type, subjects, process and chair"
+        },
+        "title": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Section heading of the purpose and confidentiality section on the minutes print pack"
+        }
+      },
+      "restricted": {
+        "reason": {
+          "where": "Reason on the restricted state of the minutes print pack when the viewer is neither invited nor a full case member"
+        }
+      },
+      "shared": {
+        "empty": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Line under the information shared heading on the minutes print pack when nothing was recorded"
+        },
+        "entry": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "One item of information shared on the minutes print pack: bold name, then when and the summary"
+        },
+        "relevance": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Muted relevance note after an item of information shared on the minutes print pack"
+        },
+        "title": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Section heading of the information shared on the minutes print pack"
+        }
+      },
+      "signatures": {
+        "chair": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Signature line for the chair at the end of the minutes print pack"
+        },
+        "date": {
+          "maxLength": 12,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Signature line for the date at the end of the minutes print pack"
+        },
+        "minuteTaker": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Line in the review and approval section of the minutes print pack: minute taker, then the minute status line"
+        },
+        "reviewDate": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Line in the review and approval section of the minutes print pack: the review date"
+        },
+        "reviewNotSet": {
+          "maxLength": 16,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Stands in for the review date on the minutes print pack when none is set"
+        },
+        "takerNotRecorded": {
+          "maxLength": 32,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Stands in for the minute taker in the review and approval section when none is recorded"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Section heading of the review and approval section on the minutes print pack"
+        }
+      },
+      "status": {
+        "chairApproved": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Minute status line on the minutes print pack cover and signature block when the chair has approved"
+        },
+        "dateNotRecorded": {
+          "maxLength": 24,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Stands in for the approval or distribution date in the minute status line when none is recorded"
+        },
+        "distributed": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Minute status line on the minutes print pack cover and signature block when the minute has been distributed"
+        },
+        "draft": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Minute status line on the minutes print pack cover and signature block while the minute is a draft"
+        },
+        "notStarted": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Minute status line on the minutes print pack cover and signature block before the minute is drafted"
+        }
+      },
+      "views": {
+        "empty": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Line under the views heading on the minutes print pack when none were read into the record"
+        },
+        "meta": {
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Attribution line under a views quotation on the minutes print pack: bold name, date, who recorded it and how, and how they want it used"
+        },
+        "title": {
+          "maxLength": 48,
+          "screenshot": "phase-4/meeting-minutes-light-comfortable.png",
+          "where": "Section heading of the views section on the minutes print pack"
+        }
       }
     }
   },

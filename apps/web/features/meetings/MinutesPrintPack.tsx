@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCIES, AGENCY_LABELS, AGENCY_SHORT, CLASSIFICATION_LABELS, DETAIL_LEVEL_LABELS, MEETING_TYPE_LABELS, PROCESS_LABELS, VIEWS_KIND_LABELS, formatDate, formatDateTime, formatTime, type Action, type Dataset, type LawfulBasisRecord, type Meeting, dueDateFor, findClockRule, localDateOf } from '@mas/domain';
+import { useT, type MessageKey, type RichValues, type Translator } from '@mas/messages';
 import { Button, ClassificationBanner, RestrictedState } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
@@ -14,22 +15,25 @@ import styles from './MinutesPrintPack.module.css';
 type Attendance = Meeting['invitees'][number]['attendance'];
 
 /** Attendance is a word in print, never a colour. */
-const ATTENDANCE_WORDS: Record<Attendance, string> = {
-  invited: 'Invited, not yet confirmed',
-  accepted: 'Accepted',
-  declined: 'Declined',
-  present: 'Present',
-  remote: 'Present by video link',
-  apologies: 'Apologies',
-  absent: 'Absent',
-};
+const ATTENDANCE_KEYS = {
+  invited: 'print.minutes.attendanceLabels.invited',
+  accepted: 'print.minutes.attendanceLabels.accepted',
+  declined: 'print.minutes.attendanceLabels.declined',
+  present: 'print.minutes.attendanceLabels.present',
+  remote: 'print.minutes.attendanceLabels.remote',
+  apologies: 'print.minutes.attendanceLabels.apologies',
+  absent: 'print.minutes.attendanceLabels.absent',
+} as const satisfies Record<Attendance, MessageKey>;
 
-const ACTION_WORDS: Record<Action['status'], string> = {
-  open: 'Open',
-  'in-progress': 'In progress',
-  complete: 'Complete',
-  cancelled: 'Cancelled',
-};
+const ACTION_STATUS_KEYS = {
+  open: 'print.minutes.actionStatusLabels.open',
+  'in-progress': 'print.minutes.actionStatusLabels.inProgress',
+  complete: 'print.minutes.actionStatusLabels.complete',
+  cancelled: 'print.minutes.actionStatusLabels.cancelled',
+} as const satisfies Record<Action['status'], MessageKey>;
+
+/** Renders the <b> tag of a catalogue message as <strong>, for the bold lead-ins in the pack. */
+const STRONG: RichValues = { b: (chunks) => <strong>{chunks}</strong> };
 
 /** Rough lines a section takes on an A4 page, used to start a new page where a section is long. */
 const PAGE_BUDGET = 44;
@@ -49,16 +53,16 @@ function lawfulBasisForProcess(data: Dataset, processId: string): LawfulBasisRec
   return data.lawfulBases.find((b) => ids.has(b.id));
 }
 
-function minuteStatusLine(minute: Meeting['minute'], recipients: number): string {
+function minuteStatusLine(t: Translator, minute: Meeting['minute'], recipients: number): string {
   switch (minute.status) {
     case 'not-started':
-      return 'Not yet drafted. This pack is a working copy of the meeting record.';
+      return t('print.minutes.status.notStarted');
     case 'draft':
-      return `Draft, not yet approved${minute.draftedAt ? ` (drafted ${formatDate(minute.draftedAt)})` : ''}.`;
+      return t('print.minutes.status.draft', { hasDate: minute.draftedAt ? 'yes' : 'no', date: minute.draftedAt ? formatDate(minute.draftedAt) : '' });
     case 'chair-approved':
-      return `Approved by the chair on ${minute.approvedAt ? formatDate(minute.approvedAt) : 'a date not recorded'}.`;
+      return t('print.minutes.status.chairApproved', { date: minute.approvedAt ? formatDate(minute.approvedAt) : t('print.minutes.status.dateNotRecorded') });
     case 'distributed':
-      return `Distributed on ${minute.distributedAt ? formatDate(minute.distributedAt) : 'a date not recorded'} to ${recipients} ${recipients === 1 ? 'recipient' : 'recipients'}.`;
+      return t('print.minutes.status.distributed', { date: minute.distributedAt ? formatDate(minute.distributedAt) : t('print.minutes.status.dateNotRecorded'), count: recipients });
   }
 }
 
@@ -80,6 +84,7 @@ function paginate(sections: PackSection[]): PackSection[][] {
 
 /** The minute of a meeting as a paginated print pack: classification marking, running head and foot, attendance, views, decisions, actions, distribution and signatures. */
 export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
+  const t = useT();
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
@@ -98,7 +103,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
   useEffect(() => {
     if (!meeting || !process || !allowed) return;
     const restricted = process.classification === 'restricted';
-    const label = `Minutes pack: ${meeting.title}`;
+    const label = t('meetings.audit.minutesPack', { title: meeting.title });
     if (restricted) audit({ act: 'read-restricted', targetType: 'meeting', targetId: meeting.id, targetLabel: label, processId: process.id, restricted: true });
     audit({ act: 'export', targetType: 'meeting', targetId: meeting.id, targetLabel: label, processId: process.id, restricted });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,18 +111,17 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
 
   if (!user) return null;
   if (!meeting || !process) {
-  
-  return (
+    return (
       <div className="page">
-        <RestrictedState title="Meeting not found" reason="This meeting does not exist in the demo dataset." breakGlass="unavailable" />
-        <AppLink href="/meetings">All meetings</AppLink>
+        <RestrictedState title={t('meetings.notFound.title')} reason={t('meetings.notFound.text')} breakGlass="unavailable" />
+        <AppLink href="/meetings">{t('meetings.notFound.back')}</AppLink>
       </div>
     );
   }
   if (!allowed) {
     return (
       <div className="page">
-        <RestrictedState title={`${MEETING_TYPE_LABELS[meeting.type]}: not on the distribution list`} reason={access?.level === 'none' ? access.reason : 'You are not invited to this meeting and are not a full member of the case. The minute goes to attendees and the distribution list only.'} breakGlass="unavailable" />
+        <RestrictedState title={t('meetings.restricted.title', { type: MEETING_TYPE_LABELS[meeting.type] })} reason={access?.level === 'none' ? access.reason : t('print.minutes.restricted.reason')} breakGlass="unavailable" />
       </div>
     );
   }
@@ -130,7 +134,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
   const sharedAgencies = AGENCIES.filter((a) => shared.some((s) => s.agency === a));
   const lawfulBasis = lawfulBasisForProcess(data, process.id);
   const back = `${meetingPath(meeting.id)}${setQuery(route.query, { view: null })}`;
-  const subjectNames = subjects.map((s) => fullName(s)).join(', ') || 'Subject not recorded';
+  const subjectNames = subjects.map((s) => fullName(s)).join(', ') || t('print.minutes.purpose.subjectNotRecorded');
 
   const sections: PackSection[] = [
     {
@@ -138,8 +142,8 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
       weight: 3 + meeting.agenda.length,
       node: (
         <>
-          <h2>Agenda</h2>
-          {meeting.agenda.length === 0 ? <p className={styles.text}>No agenda recorded.</p> : null}
+          <h2>{t('print.minutes.agenda.title')}</h2>
+          {meeting.agenda.length === 0 ? <p className={styles.text}>{t('print.minutes.agenda.empty')}</p> : null}
           <ol className={styles.agenda}>
             {[...meeting.agenda]
               .sort((a, b) => a.order - b.order)
@@ -158,37 +162,34 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
       weight: 4 + meeting.invitees.length + (meeting.subjectAttendance ? 2 : 0),
       node: (
         <>
-          <h2>Attendance</h2>
+          <h2>{t('print.minutes.attendance.title')}</h2>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Agency</th>
-                <th scope="col">Role</th>
-                <th scope="col">Attendance</th>
+                <th scope="col">{t('print.minutes.columns.name')}</th>
+                <th scope="col">{t('print.minutes.columns.agency')}</th>
+                <th scope="col">{t('print.minutes.columns.role')}</th>
+                <th scope="col">{t('print.minutes.columns.attendance')}</th>
               </tr>
             </thead>
             <tbody>
               {meeting.invitees.length === 0 ? (
                 <tr>
-                  <td colSpan={4}>No invitees recorded.</td>
+                  <td colSpan={4}>{t('print.minutes.attendance.empty')}</td>
                 </tr>
               ) : (
                 meeting.invitees.map((i, idx) => (
                   <tr key={`${i.name}-${idx}`}>
                     <td>{i.name}</td>
                     <td>{AGENCY_LABELS[i.agency]}</td>
-                    <td>
-                      {i.role}
-                      {i.required ? '' : ' (optional)'}
-                    </td>
-                    <td>{ATTENDANCE_WORDS[i.attendance]}</td>
+                    <td>{t('print.minutes.attendance.role', { required: i.required ? 'yes' : 'no', role: i.role })}</td>
+                    <td>{t(ATTENDANCE_KEYS[i.attendance])}</td>
                   </tr>
                 ))
               )}
             </tbody>
           </table>
-          {meeting.subjectAttendance ? <p className={styles.text}>Subject and family: {meeting.subjectAttendance}</p> : null}
+          {meeting.subjectAttendance ? <p className={styles.text}>{t('print.minutes.attendance.subjectFamily', { text: meeting.subjectAttendance })}</p> : null}
         </>
       ),
     },
@@ -197,23 +198,28 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
       weight: 10 + (lawfulBasis ? 4 : 0),
       node: (
         <>
-          <h2>Purpose and confidentiality</h2>
-          <p className={styles.text}>
-            {MEETING_TYPE_LABELS[meeting.type]} for {subjectNames} under {process.reference} ({PROCESS_LABELS[process.type]}), chaired by {meeting.chairName}.
-          </p>
-          <p className={styles.text}>This minute is confidential to the recipients on the distribution list. It must not be copied or shared further without the chair&apos;s agreement. Each recipient receives only the detail level the need-to-know rules allow for this stage, and every copy is audited.</p>
+          <h2>{t('print.minutes.purpose.title')}</h2>
+          <p className={styles.text}>{t('print.minutes.purpose.summary', { type: MEETING_TYPE_LABELS[meeting.type], subjects: subjectNames, reference: process.reference, process: PROCESS_LABELS[process.type], chair: meeting.chairName })}</p>
+          <p className={styles.text}>{t('print.minutes.purpose.confidential')}</p>
           {lawfulBasis ? (
             <p className={styles.text}>
-              <strong>Lawful basis:</strong> {lawfulBasis.purpose}. {lawfulBasis.article6}; {lawfulBasis.article9Condition}
-              {lawfulBasis.article10Criminal !== 'not applicable' ? `; ${lawfulBasis.article10Criminal}` : ''}; {lawfulBasis.statutoryGateway.join('; ')}. Authorised by {lawfulBasis.authorisedByName}.
-              {lawfulBasis.informationSharingAgreementRef ? ` Information sharing agreement ${lawfulBasis.informationSharingAgreementRef}.` : ''}
+              {t.rich('print.minutes.purpose.lawfulBasis', {
+                ...STRONG,
+                purpose: lawfulBasis.purpose,
+                article6: lawfulBasis.article6,
+                article9: lawfulBasis.article9Condition,
+                hasArticle10: lawfulBasis.article10Criminal !== 'not applicable' ? 'yes' : 'no',
+                article10: lawfulBasis.article10Criminal,
+                gateway: lawfulBasis.statutoryGateway.join('; '),
+                name: lawfulBasis.authorisedByName,
+                hasIsa: lawfulBasis.informationSharingAgreementRef ? 'yes' : 'no',
+                isa: lawfulBasis.informationSharingAgreementRef ?? '',
+              })}
             </p>
           ) : (
-            <p className={styles.text}>
-              <strong>Lawful basis:</strong> no lawful basis record is linked to this process yet. Record one before the minute is distributed.
-            </p>
+            <p className={styles.text}>{t.rich('print.minutes.purpose.noLawfulBasis', { ...STRONG })}</p>
           )}
-          <p className={styles.text}>Handling: {marking.handling || 'As marked.'}</p>
+          <p className={styles.text}>{t('print.minutes.purpose.handling', { handling: marking.handling || t('print.minutes.purpose.asMarked') })}</p>
         </>
       ),
     },
@@ -222,8 +228,8 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
       weight: 3 + (views.length === 0 ? 2 : views.length * 7),
       node: (
         <>
-          <h2>Views of the person read into the record</h2>
-          {views.length === 0 ? <p className={styles.text}>No views were read into the record at this meeting.</p> : null}
+          <h2>{t('print.minutes.views.title')}</h2>
+          {views.length === 0 ? <p className={styles.text}>{t('print.minutes.views.empty')}</p> : null}
           {views.map((v) => {
             const p = personById(data, v.personId);
             return (
@@ -231,8 +237,16 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
                 <figcaption className={styles.voiceKind}>{VIEWS_KIND_LABELS[v.kind]}</figcaption>
                 <blockquote className={styles.voiceQuote}>{v.content}</blockquote>
                 <p className={styles.voiceMeta}>
-                  <strong>{p ? fullName(p) : 'Family'}</strong>, {formatDate(v.recordedAt)}. Recorded by {v.recordedByName} ({AGENCY_SHORT[v.recordedByAgency]}), {v.method}.
-                  {v.sharingPreference ? ` How they want it used: ${v.sharingPreference}` : ''}
+                  {t.rich('print.minutes.views.meta', {
+                    ...STRONG,
+                    name: p ? fullName(p) : t('common.person.family'),
+                    date: formatDate(v.recordedAt),
+                    recorder: v.recordedByName,
+                    agency: AGENCY_SHORT[v.recordedByAgency],
+                    method: v.method,
+                    hasPreference: v.sharingPreference ? 'yes' : 'no',
+                    preference: v.sharingPreference ?? '',
+                  })}
                 </p>
               </figure>
             );
@@ -245,8 +259,8 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
       weight: 3 + (shared.length === 0 ? 2 : sharedAgencies.length * 2 + shared.length * 4),
       node: (
         <>
-          <h2>Information shared by agency</h2>
-          {shared.length === 0 ? <p className={styles.text}>No information shared was recorded at this meeting.</p> : null}
+          <h2>{t('print.minutes.shared.title')}</h2>
+          {shared.length === 0 ? <p className={styles.text}>{t('print.minutes.shared.empty')}</p> : null}
           {sharedAgencies.map((a) => (
             <div key={a} className={styles.group}>
               <h3>{AGENCY_LABELS[a]}</h3>
@@ -254,7 +268,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
                 .filter((s) => s.agency === a)
                 .map((s) => (
                   <p key={s.id} className={styles.text}>
-                    <strong>{s.byName}</strong>, {formatDateTime(s.at)}. {s.summary} <span className={styles.muted}>Relevance: {s.relevance}</span>
+                    {t.rich('print.minutes.shared.entry', { ...STRONG, name: s.byName, when: formatDateTime(s.at), summary: s.summary })} <span className={styles.muted}>{t('print.minutes.shared.relevance', { relevance: s.relevance })}</span>
                   </p>
                 ))}
             </div>
@@ -267,24 +281,22 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
       weight: 3 + (meeting.decisions.length === 0 ? 2 : meeting.decisions.reduce((n, d) => n + 5 + d.dissent.length * 2, 0)),
       node: (
         <>
-          <h2>Decisions, rationale and dissent</h2>
-          {meeting.decisions.length === 0 ? <p className={styles.text}>No decisions were recorded at this meeting.</p> : null}
+          <h2>{t('print.minutes.decisions.title')}</h2>
+          {meeting.decisions.length === 0 ? <p className={styles.text}>{t('print.minutes.decisions.empty')}</p> : null}
           <ol className={styles.decisions}>
             {meeting.decisions.map((d) => (
               <li key={d.id} className={styles.decision}>
                 <p className={styles.text}>
                   <strong>{d.question}</strong>
                 </p>
-                <p className={styles.text}>Decision: {d.decision}</p>
-                <p className={styles.text}>
-                  Rationale: {d.rationale} Decided by {d.decidedByName}, {formatDateTime(d.decidedAt)}.
-                </p>
+                <p className={styles.text}>{t('print.minutes.decisions.decision', { decision: d.decision })}</p>
+                <p className={styles.text}>{t('print.minutes.decisions.rationale', { rationale: d.rationale, name: d.decidedByName, when: formatDateTime(d.decidedAt) })}</p>
                 {d.dissent.length === 0 ? (
-                  <p className={styles.muted}>No dissent recorded.</p>
+                  <p className={styles.muted}>{t('print.minutes.decisions.noDissent')}</p>
                 ) : (
                   d.dissent.map((x, i) => (
                     <p key={i} className={styles.dissent}>
-                      Dissent recorded by {x.byName} ({AGENCY_LABELS[x.agency]}): {x.text}
+                      {t('print.minutes.decisions.dissent', { name: x.byName, agency: AGENCY_LABELS[x.agency], text: x.text })}
                     </p>
                   ))
                 )}
@@ -299,20 +311,20 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
       weight: 4 + (actions.length === 0 ? 1 : actions.length * 2),
       node: (
         <>
-          <h2>Actions</h2>
+          <h2>{t('print.minutes.actions.title')}</h2>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th scope="col">Action</th>
-                <th scope="col">Owner</th>
-                <th scope="col">Due</th>
-                <th scope="col">Status</th>
+                <th scope="col">{t('print.minutes.columns.action')}</th>
+                <th scope="col">{t('print.minutes.columns.owner')}</th>
+                <th scope="col">{t('print.minutes.columns.due')}</th>
+                <th scope="col">{t('print.minutes.columns.status')}</th>
               </tr>
             </thead>
             <tbody>
               {actions.length === 0 ? (
                 <tr>
-                  <td colSpan={4}>No actions on this meeting.</td>
+                  <td colSpan={4}>{t('print.minutes.actions.empty')}</td>
                 </tr>
               ) : (
                 actions.map((a) => (
@@ -322,10 +334,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
                       {a.ownerName} ({AGENCY_SHORT[a.ownerAgency]})
                     </td>
                     <td className={styles.nowrap}>{formatDate(a.due)}</td>
-                    <td className={styles.nowrap}>
-                      {ACTION_WORDS[a.status]}
-                      {a.status === 'complete' && a.completedAt ? `, ${formatDate(a.completedAt)}` : ''}
-                    </td>
+                    <td className={styles.nowrap}>{t('print.minutes.actions.status', { status: t(ACTION_STATUS_KEYS[a.status]), hasCompleted: a.status === 'complete' && a.completedAt ? 'yes' : 'no', date: a.completedAt ? formatDate(a.completedAt) : '' })}</td>
                   </tr>
                 ))
               )}
@@ -339,21 +348,21 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
       weight: 4 + (meeting.distribution.length === 0 ? 1 : Math.ceil(meeting.distribution.length * 1.5)),
       node: (
         <>
-          <h2>Distribution list</h2>
+          <h2>{t('print.minutes.distribution.title')}</h2>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th scope="col">Recipient</th>
-                <th scope="col">Agency</th>
-                <th scope="col">Role</th>
-                <th scope="col">Detail level</th>
-                <th scope="col">Reason</th>
+                <th scope="col">{t('print.minutes.columns.recipient')}</th>
+                <th scope="col">{t('print.minutes.columns.agency')}</th>
+                <th scope="col">{t('print.minutes.columns.role')}</th>
+                <th scope="col">{t('print.minutes.columns.detailLevel')}</th>
+                <th scope="col">{t('print.minutes.columns.reason')}</th>
               </tr>
             </thead>
             <tbody>
               {meeting.distribution.length === 0 ? (
                 <tr>
-                  <td colSpan={5}>No distribution list yet. Generate it from need-to-know in the meeting workspace before the minute is distributed.</td>
+                  <td colSpan={5}>{t('print.minutes.distribution.empty')}</td>
                 </tr>
               ) : (
                 meeting.distribution.map((d) => (
@@ -361,10 +370,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
                     <td>{d.recipientName}</td>
                     <td>{AGENCY_LABELS[d.agency]}</td>
                     <td>{d.role}</td>
-                    <td>
-                      {DETAIL_LEVEL_LABELS[d.detailLevel]}
-                      {d.fields && d.fields.length > 0 ? `: ${d.fields.join('; ')}` : ''}
-                    </td>
+                    <td>{t('print.minutes.distribution.level', { level: DETAIL_LEVEL_LABELS[d.detailLevel], hasFields: d.fields && d.fields.length > 0 ? 'yes' : 'no', fields: d.fields?.join('; ') ?? '' })}</td>
                     <td>{d.reason}</td>
                   </tr>
                 ))
@@ -379,17 +385,17 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
       weight: 12,
       node: (
         <>
-          <h2>Review and approval</h2>
-          <p className={styles.text}>Review date: {meeting.reviewDate ? formatDate(meeting.reviewDate) : 'not yet set'}.</p>
-          <p className={styles.text}>Minute taken by {meeting.minuteTakerName ?? 'a minute taker not recorded'}. {minuteStatusLine(meeting.minute, meeting.distribution.length)}</p>
+          <h2>{t('print.minutes.signatures.title')}</h2>
+          <p className={styles.text}>{t('print.minutes.signatures.reviewDate', { date: meeting.reviewDate ? formatDate(meeting.reviewDate) : t('print.minutes.signatures.reviewNotSet') })}</p>
+          <p className={styles.text}>{t('print.minutes.signatures.minuteTaker', { name: meeting.minuteTakerName ?? t('print.minutes.signatures.takerNotRecorded'), status: minuteStatusLine(t, meeting.minute, meeting.distribution.length) })}</p>
           <div className={styles.signatures}>
             <div className={styles.signature}>
               <span className={styles.signatureLine} aria-hidden="true" />
-              <span>Signed, chair: {meeting.chairName}</span>
+              <span>{t('print.minutes.signatures.chair', { name: meeting.chairName })}</span>
             </div>
             <div className={styles.signature}>
               <span className={styles.signatureLine} aria-hidden="true" />
-              <span>Date</span>
+              <span>{t('print.minutes.signatures.date')}</span>
             </div>
           </div>
         </>
@@ -402,22 +408,23 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
 
   const recordRule = process.type === 'cp' ? findClockRule(config.clockRules, 'cp.cppm.record.distribute') : undefined;
   const recordTrigger = process.clocks.find((c) => c.ruleId === 'cp.cppm.record.distribute' && !c.completedAt);
-  const recordDeadline = recordRule && recordTrigger ? `${formatDate(localDateOf(dueDateFor(recordRule, recordTrigger.triggeredAt, { bankHolidays: config.bankHolidays, councilHolidays: config.councilHolidays })))} (10 working days after the meeting, Appendix D)` : recordRule && process.clocks.some((c) => c.ruleId === 'cp.cppm.record.distribute' && c.completedAt) ? 'Distributed within the 10 working days (Appendix D)' : null;
+  const recordDeadline =
+    recordRule && recordTrigger
+      ? t('print.minutes.cover.recordDueDate', { date: formatDate(localDateOf(dueDateFor(recordRule, recordTrigger.triggeredAt, { bankHolidays: config.bankHolidays, councilHolidays: config.councilHolidays }))) })
+      : recordRule && process.clocks.some((c) => c.ruleId === 'cp.cppm.record.distribute' && c.completedAt)
+        ? t('print.minutes.cover.recordDistributed')
+        : null;
 
   const head = (page: number) => (
     <div className={styles.head}>
-      <span>
-        {marking.label}. {process.reference}
-      </span>
-      <span>Minute: {meeting.title}</span>
-      <span>
-        Page {page} of {totalPages}
-      </span>
+      <span>{t('print.common.runningHead', { classification: marking.label, reference: process.reference })}</span>
+      <span>{t('print.minutes.head.title', { title: meeting.title })}</span>
+      <span>{t('print.common.page', { page, total: totalPages })}</span>
     </div>
   );
   const foot = (
     <div className={styles.foot}>
-      <span>Printed {formatDateTime(now)} from the platform. Synthetic demonstration data.</span>
+      <span>{t('print.common.printedFooter', { when: formatDateTime(now) })}</span>
       <span>{marking.label}</span>
     </div>
   );
@@ -426,10 +433,10 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
     <div className={`${styles.pack} print-pack`} data-minute={meeting.minute.status}>
       <div className={`${styles.controls} no-print`}>
         <Button variant="secondary" icon={<ArrowLeft size={16} aria-hidden="true" />} onClick={() => navigate(back)}>
-          Back to the meeting
+          {t('print.minutes.controls.back')}
         </Button>
         <Button variant="primary" size="lg" icon={<Printer size={16} aria-hidden="true" />} onClick={() => window.print()}>
-          Print
+          {t('print.common.print')}
         </Button>
       </div>
       <ClassificationBanner level={process.classification} />
@@ -438,56 +445,51 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
           {head(i + 1)}
           {i === 0 ? (
             <>
-              <p className={styles.kicker}>Minute of the meeting</p>
+              <p className={styles.kicker}>{t('print.minutes.cover.kicker')}</p>
               <h1 className={styles.title}>{meeting.title}</h1>
               <dl className={styles.meta}>
                 <div className={styles.metaRow}>
-                  <dt>Type</dt>
+                  <dt>{t('print.minutes.cover.type')}</dt>
                   <dd>{MEETING_TYPE_LABELS[meeting.type]}</dd>
                 </div>
                 <div className={styles.metaRow}>
-                  <dt>Date and time</dt>
-                  <dd>
-                    {formatDate(meeting.scheduledAt)}, {formatTime(meeting.scheduledAt)}
-                    {meeting.endsAt ? ` to ${formatTime(meeting.endsAt)}` : ''}
-                  </dd>
+                  <dt>{t('print.minutes.cover.dateTime')}</dt>
+                  <dd>{t('print.minutes.cover.when', { date: formatDate(meeting.scheduledAt), start: formatTime(meeting.scheduledAt), hasEnd: meeting.endsAt ? 'yes' : 'no', end: meeting.endsAt ? formatTime(meeting.endsAt) : '' })}</dd>
                 </div>
                 <div className={styles.metaRow}>
-                  <dt>Location</dt>
+                  <dt>{t('print.minutes.cover.location')}</dt>
                   <dd>{meeting.location}</dd>
                 </div>
                 <div className={styles.metaRow}>
-                  <dt>Chair</dt>
+                  <dt>{t('print.minutes.cover.chair')}</dt>
                   <dd>{meeting.chairName}</dd>
                 </div>
                 <div className={styles.metaRow}>
-                  <dt>Minute taker</dt>
-                  <dd>{meeting.minuteTakerName ?? 'Not recorded'}</dd>
+                  <dt>{t('print.minutes.cover.minuteTaker')}</dt>
+                  <dd>{meeting.minuteTakerName ?? t('print.minutes.cover.notRecorded')}</dd>
                 </div>
                 <div className={styles.metaRow}>
-                  <dt>{subjects.length === 1 ? 'Subject' : 'Subjects'}</dt>
+                  <dt>{t('print.minutes.cover.subjects', { count: subjects.length })}</dt>
                   <dd>
                     {subjects.length === 0
-                      ? 'Not recorded'
+                      ? t('print.minutes.cover.notRecorded')
                       : subjects.map((s) => (
                           <span key={s.id} className={styles.subject}>
-                            {fullName(s)}, born {s.dateOfBirth ? formatDate(s.dateOfBirth) : 'date not recorded'}
+                            {t('print.minutes.cover.subjectBorn', { name: fullName(s), date: s.dateOfBirth ? formatDate(s.dateOfBirth) : t('common.values.dateNotRecorded') })}
                           </span>
                         ))}
                   </dd>
                 </div>
                 <div className={styles.metaRow}>
-                  <dt>Process</dt>
-                  <dd>
-                    {process.reference}: {process.title} ({PROCESS_LABELS[process.type]}, {process.stage} stage)
-                  </dd>
+                  <dt>{t('print.minutes.cover.process')}</dt>
+                  <dd>{t('print.minutes.cover.processLine', { reference: process.reference, title: process.title, process: PROCESS_LABELS[process.type], stage: process.stage })}</dd>
                 </div>
                 <div className={styles.metaRow}>
-                  <dt>Minute status</dt>
-                  <dd>{minuteStatusLine(meeting.minute, meeting.distribution.length)}</dd>
+                  <dt>{t('print.minutes.cover.minuteStatus')}</dt>
+                  <dd>{minuteStatusLine(t, meeting.minute, meeting.distribution.length)}</dd>
                   {recordDeadline ? (
                     <>
-                      <dt>Record due</dt>
+                      <dt>{t('print.minutes.cover.recordDue')}</dt>
                       <dd>{recordDeadline}</dd>
                     </>
                   ) : null}

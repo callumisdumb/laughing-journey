@@ -1,6 +1,7 @@
 'use client';
 
 import { MEETING_TYPES, MEETING_TYPE_LABELS, PROCESS_SHORT, formatDate, formatTime } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { Pill, ProcessMark, SelectField, Switch, Table, TableWrap } from '@mas/ui';
 import { useEffect } from 'react';
 import { AppLink } from '@/components/AppLink';
@@ -12,6 +13,7 @@ import { accessForUser, fullName, personById } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
 
 export function MeetingList() {
+  const t = useT();
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
@@ -52,27 +54,27 @@ export function MeetingList() {
     <div className="page">
       <div className="page-head">
         <div className="page-head-text">
-          <h1>Meetings</h1>
-          <p className="page-lede">IRDs, planning meetings, case conferences, MARAC and MAPPA. Open one to prepare the pack, run the meeting and distribute the minute.</p>
+          <h1>{t('meetings.list.title')}</h1>
+          <p className="page-lede">{t('meetings.list.lede')}</p>
         </div>
       </div>
       <div className="cluster" style={{ marginBottom: 'var(--density-gap)', alignItems: 'flex-end', gap: 16 }}>
-        <SelectField label="Meeting type" value={typeFilter} onChange={(e) => set('type', e.target.value || null)} placeholder="All types" options={MEETING_TYPES.map((t) => ({ value: t, label: MEETING_TYPE_LABELS[t] }))} />
-        <Switch label="Only meetings I am invited to" checked={mine} onChange={(e) => set('mine', e.target.checked ? null : '0')} />
-        <Switch label="Show held meetings" checked={past} onChange={(e) => set('past', e.target.checked ? '1' : null)} />
+        <SelectField label={t('meetings.list.filters.type')} value={typeFilter} onChange={(e) => set('type', e.target.value || null)} placeholder={t('meetings.list.filters.allTypes')} options={MEETING_TYPES.map((type) => ({ value: type, label: MEETING_TYPE_LABELS[type] }))} />
+        <Switch label={t('meetings.list.filters.mine')} checked={mine} onChange={(e) => set('mine', e.target.checked ? null : '0')} />
+        <Switch label={t('meetings.list.filters.past')} checked={past} onChange={(e) => set('past', e.target.checked ? '1' : null)} />
       </div>
-      <ScreenState state={dev ?? (rows.length === 0 ? 'empty' : 'ready')} empty={{ title: 'No meetings', text: past ? 'No held meetings match.' : 'Nothing is scheduled for you. Turn off the invitation filter to see every meeting you can access.' }}>
+      <ScreenState state={dev ?? (rows.length === 0 ? 'empty' : 'ready')} empty={{ title: t('meetings.list.empty.title'), text: past ? t('meetings.list.empty.pastText') : t('meetings.list.empty.text') }}>
         <TableWrap>
           <Table>
             <thead>
               <tr>
-                <th scope="col">When</th>
-                <th scope="col">Meeting</th>
-                <th scope="col">Process</th>
-                <th scope="col">Subject</th>
-                <th scope="col">Chair</th>
-                <th scope="col">Status</th>
-                <th scope="col">Minute</th>
+                <th scope="col">{t('meetings.list.columns.when')}</th>
+                <th scope="col">{t('meetings.list.columns.meeting')}</th>
+                <th scope="col">{t('meetings.list.columns.process')}</th>
+                <th scope="col">{t('meetings.list.columns.subject')}</th>
+                <th scope="col">{t('meetings.list.columns.chair')}</th>
+                <th scope="col">{t('meetings.list.columns.status')}</th>
+                <th scope="col">{t('meetings.list.columns.minute')}</th>
               </tr>
             </thead>
             <tbody>

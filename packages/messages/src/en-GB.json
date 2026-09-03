@@ -1116,6 +1116,197 @@
       "title": "Research requests"
     }
   },
+  "meetings": {
+    "after": {
+      "clocks": {
+        "meta": "Holding the meeting completes and starts clocks by configuration",
+        "sub": "Due {date}. {source}",
+        "title": "Clocks after this meeting"
+      },
+      "distribute": {
+        "clockNote": "Record distributed from the meeting workspace",
+        "distributed": "Minute distributed to {count} recipients",
+        "necessity": "Each recipient is on the need-to-know list for this stage and receives only the detail level the rules allow.",
+        "purpose": "Distribution of the minute of {title}",
+        "shareSummary": "Minute of {title} ({level})",
+        "toastText": "Each share carries the lawful basis and the reason the recipient needs it."
+      },
+      "distribution": {
+        "attendeeReason": "Attendee",
+        "generate": "Generate from need-to-know",
+        "levelLabel": "Detail level for {name}",
+        "meta": "Detail level per recipient, from need-to-know. Excluded parties never appear.",
+        "reason": "{reason}{hasFields, select, yes {. Fields: {fields}} other {}}{sent, select, yes {. Sent.} other {}}",
+        "title": "Distribution list",
+        "toastText": "Detail level per recipient comes from the need-to-know rows for the {process} {stage} stage. Exclusions applied: {exclusions}.{leftOff, plural, =0 {} one { # person was left off because of their case role.} other { # people were left off because of their case role.}}",
+        "toastTitle": "{count} recipients added"
+      },
+      "minute": {
+        "chairApproves": "Chair approves",
+        "distribute": "Distribute to {count} recipients",
+        "markDraft": "Mark draft",
+        "meta": "Status: {status}{hasApproved, select, yes {. Chair approved {approved}} other {}}{hasDistributed, select, yes {. Distributed {distributed}} other {}}",
+        "print": "Print minutes",
+        "reviewCleared": "Cleared",
+        "reviewDate": "Review date (dd Mon yyyy)",
+        "reviewToast": "Review date set",
+        "setReviewDate": "Set review date",
+        "title": "Minute"
+      }
+    },
+    "audit": {
+      "held": "{title} held",
+      "minutesPack": "Minutes pack: {title}"
+    },
+    "before": {
+      "invites": {
+        "generate": "Generate from need-to-know",
+        "meta": "Generated from need-to-know for this stage. Every invitee carries the reason.",
+        "person": "{required, select, yes {{name}, {role}} other {{name}, {role} (optional)}}",
+        "reason": "{reason}{hasRule, select, yes { (rule {rowId})} other {}}",
+        "title": "Invite list",
+        "toastAdded": "{count, plural, one {# invitee} other {# invitees}} added from need-to-know",
+        "toastComplete": "Invite list already complete",
+        "toastText": "{rule, select, excluded {Excluded by rule: {labels}.} other {Every invitee carries the reason they are invited.}}{leftOff, plural, =0 {} one { # person was left off because of their case role.} other { # people were left off because of their case role.}}"
+      },
+      "pack": {
+        "empty": "No pack items yet. Returns you record are added automatically.",
+        "itemMeta": "{kind}{hasWindow, select, yes {, {from} to {to}} other {}}{hasRef, select, yes {, {ref}} other {}}",
+        "meta": "Choose the chronology window, the reports and the views that go in the pack.",
+        "preview": "Preview chronology pack",
+        "title": "Pack builder",
+        "today": "today"
+      },
+      "requests": {
+        "agency": "Agency",
+        "due": "Due (dd Mon yyyy)",
+        "meta": "{returned} of {total} back",
+        "overdue": "overdue",
+        "packLabel": "{agency} report",
+        "recordReturn": "Record return",
+        "returnedToast": "Return recorded and added to the pack",
+        "send": "Send request",
+        "sendTitle": "Send a request",
+        "sentDue": "Sent {sent}, due {due}. {summary}",
+        "title": "Pre-meeting information requests and returns",
+        "to": "To",
+        "toastText": "{name} will see it on their worklist with the purpose and lawful basis.",
+        "toastTitle": "Information request sent",
+        "toPlaceholder": "Choose a person"
+      }
+    },
+    "close": {
+      "toastText": "Clocks completed: {completed}. Clocks started: {started}. Minute is now a draft.",
+      "toastTitle": "Meeting closed"
+    },
+    "during": {
+      "actions": {
+        "action": "Action",
+        "actionPlaceholder": "Say what will happen, by whom, by when",
+        "capture": "Capture action",
+        "complete": "complete",
+        "due": "due {date}",
+        "dueField": "Due (dd Mon yyyy)",
+        "meta": "{count} on this meeting",
+        "owner": "Owner",
+        "ownerPlaceholder": "Choose an attendee",
+        "title": "Actions captured live"
+      },
+      "agenda": {
+        "done": "Done",
+        "start": "Start",
+        "title": "Agenda"
+      },
+      "attendance": {
+        "meta": "{count} present",
+        "selectLabel": "Attendance for {name}",
+        "title": "Attendance"
+      },
+      "decisions": {
+        "addTitle": "Record a decision",
+        "decision": "Decision",
+        "dissent": "Dissent: {name} ({agency}): {text}",
+        "dissentBy": "Dissent by",
+        "dissentText": "Dissent text",
+        "meta": "{count} recorded",
+        "noDissent": "No dissent",
+        "question": "Question",
+        "rationale": "Rationale: {rationale} Decided by {name}, {when}.",
+        "rationaleField": "Rationale",
+        "record": "Record decision",
+        "title": "Decisions, rationale and dissent"
+      },
+      "shared": {
+        "addTitle": "Add what {agency} shared",
+        "meta": "Structured, dated, attributable",
+        "record": "Record information shared",
+        "relevance": "Relevance: {relevance}",
+        "relevanceField": "Why it is relevant, necessary and proportionate",
+        "summary": "What was shared (facts, briefly)",
+        "title": "Information shared by agency"
+      },
+      "views": {
+        "meta": "{count, plural, =0 {None yet} other {# read}}",
+        "placeholder": "Choose recorded views",
+        "readInto": "Read into the record",
+        "title": "Views read into the record"
+      }
+    },
+    "head": {
+      "chair": "Chair {name}",
+      "chairBanner": "Chair mode: larger type, minimal chrome. The current agenda item is enlarged.",
+      "chairMode": "Chair mode",
+      "close": "Close meeting and update clocks",
+      "exitChairMode": "Exit chair mode",
+      "minutePill": "Minute: {status}",
+      "minutes": "Minutes {name}",
+      "phaseGroup": "Meeting phase",
+      "when": "{date} {start}{hasEnd, select, yes { to {end}} other {}}"
+    },
+    "list": {
+      "columns": {
+        "chair": "Chair",
+        "meeting": "Meeting",
+        "minute": "Minute",
+        "process": "Process",
+        "status": "Status",
+        "subject": "Subject",
+        "when": "When"
+      },
+      "empty": {
+        "pastText": "No held meetings match.",
+        "text": "Nothing is scheduled for you. Turn off the invitation filter to see every meeting you can access.",
+        "title": "No meetings"
+      },
+      "filters": {
+        "allTypes": "All types",
+        "mine": "Only meetings I am invited to",
+        "past": "Show held meetings",
+        "type": "Meeting type"
+      },
+      "lede": "IRDs, planning meetings, case conferences, MARAC and MAPPA. Open one to prepare the pack, run the meeting and distribute the minute.",
+      "title": "Meetings"
+    },
+    "notFound": {
+      "back": "All meetings",
+      "text": "This meeting does not exist in the demo dataset.",
+      "title": "Meeting not found"
+    },
+    "phase": {
+      "after": "After",
+      "before": "Before",
+      "during": "During"
+    },
+    "restricted": {
+      "title": "{type}: not on the distribution list",
+      "workspaceReason": "You are not invited to this meeting and are not a full member of the case. Meeting records go to attendees and the distribution list only."
+    },
+    "returnDialog": {
+      "confirm": "Record return and add to pack",
+      "summary": "Summary of the return",
+      "title": "Record the return"
+    }
+  },
   "nav": {
     "drawer": {
       "access": {
@@ -1587,6 +1778,128 @@
       "printedFooter": "Printed {when} from the platform. Synthetic demonstration data.",
       "runningHead": "{classification}. {reference}",
       "subjectHead": "{name}, born {date}"
+    },
+    "minutes": {
+      "actions": {
+        "empty": "No actions on this meeting.",
+        "status": "{status}{hasCompleted, select, yes {, {date}} other {}}",
+        "title": "Actions"
+      },
+      "actionStatusLabels": {
+        "cancelled": "Cancelled",
+        "complete": "Complete",
+        "inProgress": "In progress",
+        "open": "Open"
+      },
+      "agenda": {
+        "empty": "No agenda recorded.",
+        "title": "Agenda"
+      },
+      "attendance": {
+        "empty": "No invitees recorded.",
+        "role": "{required, select, yes {{role}} other {{role} (optional)}}",
+        "subjectFamily": "Subject and family: {text}",
+        "title": "Attendance"
+      },
+      "attendanceLabels": {
+        "absent": "Absent",
+        "accepted": "Accepted",
+        "apologies": "Apologies",
+        "declined": "Declined",
+        "invited": "Invited, not yet confirmed",
+        "present": "Present",
+        "remote": "Present by video link"
+      },
+      "columns": {
+        "action": "Action",
+        "agency": "Agency",
+        "attendance": "Attendance",
+        "detailLevel": "Detail level",
+        "due": "Due",
+        "name": "Name",
+        "owner": "Owner",
+        "reason": "Reason",
+        "recipient": "Recipient",
+        "role": "Role",
+        "status": "Status"
+      },
+      "controls": {
+        "back": "Back to the meeting"
+      },
+      "cover": {
+        "chair": "Chair",
+        "dateTime": "Date and time",
+        "kicker": "Minute of the meeting",
+        "location": "Location",
+        "minuteStatus": "Minute status",
+        "minuteTaker": "Minute taker",
+        "notRecorded": "Not recorded",
+        "process": "Process",
+        "processLine": "{reference}: {title} ({process}, {stage} stage)",
+        "recordDistributed": "Distributed within the 10 working days (Appendix D)",
+        "recordDue": "Record due",
+        "recordDueDate": "{date} (10 working days after the meeting, Appendix D)",
+        "subjectBorn": "{name}, born {date}",
+        "subjects": "{count, plural, one {Subject} other {Subjects}}",
+        "type": "Type",
+        "when": "{date}, {start}{hasEnd, select, yes { to {end}} other {}}"
+      },
+      "decisions": {
+        "decision": "Decision: {decision}",
+        "dissent": "Dissent recorded by {name} ({agency}): {text}",
+        "empty": "No decisions were recorded at this meeting.",
+        "noDissent": "No dissent recorded.",
+        "rationale": "Rationale: {rationale} Decided by {name}, {when}.",
+        "title": "Decisions, rationale and dissent"
+      },
+      "distribution": {
+        "empty": "No distribution list yet. Generate it from need-to-know in the meeting workspace before the minute is distributed.",
+        "level": "{level}{hasFields, select, yes {: {fields}} other {}}",
+        "title": "Distribution list"
+      },
+      "head": {
+        "title": "Minute: {title}"
+      },
+      "purpose": {
+        "asMarked": "As marked.",
+        "confidential": "This minute is confidential to the recipients on the distribution list. It must not be copied or shared further without the chair's agreement. Each recipient receives only the detail level the need-to-know rules allow for this stage, and every copy is audited.",
+        "handling": "Handling: {handling}",
+        "lawfulBasis": "<b>Lawful basis:</b> {purpose}. {article6}; {article9}{hasArticle10, select, yes {; {article10}} other {}}; {gateway}. Authorised by {name}.{hasIsa, select, yes { Information sharing agreement {isa}.} other {}}",
+        "noLawfulBasis": "<b>Lawful basis:</b> no lawful basis record is linked to this process yet. Record one before the minute is distributed.",
+        "subjectNotRecorded": "Subject not recorded",
+        "summary": "{type} for {subjects} under {reference} ({process}), chaired by {chair}.",
+        "title": "Purpose and confidentiality"
+      },
+      "restricted": {
+        "reason": "You are not invited to this meeting and are not a full member of the case. The minute goes to attendees and the distribution list only."
+      },
+      "shared": {
+        "empty": "No information shared was recorded at this meeting.",
+        "entry": "<b>{name}</b>, {when}. {summary}",
+        "relevance": "Relevance: {relevance}",
+        "title": "Information shared by agency"
+      },
+      "signatures": {
+        "chair": "Signed, chair: {name}",
+        "date": "Date",
+        "minuteTaker": "Minute taken by {name}. {status}",
+        "reviewDate": "Review date: {date}.",
+        "reviewNotSet": "not yet set",
+        "takerNotRecorded": "a minute taker not recorded",
+        "title": "Review and approval"
+      },
+      "status": {
+        "chairApproved": "Approved by the chair on {date}.",
+        "dateNotRecorded": "a date not recorded",
+        "distributed": "Distributed on {date} to {count, plural, one {# recipient} other {# recipients}}.",
+        "draft": "Draft, not yet approved{hasDate, select, yes { (drafted {date})} other {}}.",
+        "notStarted": "Not yet drafted. This pack is a working copy of the meeting record."
+      },
+      "views": {
+        "empty": "No views were read into the record at this meeting.",
+        "meta": "<b>{name}</b>, {date}. Recorded by {recorder} ({agency}), {method}.{hasPreference, select, yes { How they want it used: {preference}} other {}}",
+        "title": "Views of the person read into the record"
+      }
     }
   },
   "processes": {
