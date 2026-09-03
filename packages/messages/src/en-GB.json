@@ -73,6 +73,183 @@
       "truncated": "Showing the first {limit}. Refine the search to see the rest."
     }
   },
+  "asp": {
+    "closure": {
+      "title": "Closure"
+    },
+    "concern": {
+      "harmTypes": "Harm types",
+      "immediateSafety": "Immediate safety",
+      "meta": "Received {when} from {source} ({agency}){hasReference, select, yes {, {reference}} other {}}",
+      "policeInvolved": "Police involved",
+      "title": "Adult concern"
+    },
+    "consent": {
+      "advocacy": "Advocacy",
+      "advocacyNone": "Not yet offered",
+      "advocacyValue": "Offered{accepted, select, yes { and accepted} declined {, declined} other {}}{hasAdvocate, select, yes {: {advocate} ({provider})} other {}}",
+      "awiLink": "Linked Adults with Incapacity process",
+      "awiProcess": "AWI process",
+      "capacity": "Capacity",
+      "capacityValue": "{assessed, select, yes {Assessed} other {Not yet assessed}}{fluctuates, select, yes {, fluctuates} other {}}. {summary}",
+      "consent": "Consent",
+      "consentValue": "{status}. {note}",
+      "pending": "Recorded once an investigation opens.",
+      "title": "Consent, capacity and advocacy",
+      "unduePressure": "Undue pressure",
+      "unduePressureNone": "Not yet considered",
+      "unduePressureValue": "Considered: {found, select, yes {found} other {not found}}. {reasoning}"
+    },
+    "investigation": {
+      "adultDeclined": "Adult declined",
+      "columns": {
+        "detail": "Detail",
+        "power": "Power",
+        "status": "Status",
+        "when": "When"
+      },
+      "done": "Done",
+      "interview": "s8 interview",
+      "interviewDetail": "With {name}. {note}",
+      "medical": "s9 medical examination",
+      "meta": "Council officer {officer}{hasSecond, select, yes {, second worker {second}} other {}}",
+      "records": "s10 records",
+      "recordsDetail": "{holder} ({agency}). {note}",
+      "requested": "Requested",
+      "title": "Investigation powers used",
+      "visit": "s7 visit",
+      "visitDetail": "{names}. {note}"
+    },
+    "lsi": {
+      "meta": "Provider {provider}. {count, plural, one {# strand} other {# strands}}. Care Inspectorate {notified, select, yes {notified} other {not notified}}. Commissioning {involved, select, yes {involved} other {not involved}}.",
+      "strandLead": "Lead: {name}.",
+      "title": "Large Scale Investigation: {setting}"
+    },
+    "orders": {
+      "empty": "No orders considered yet.",
+      "meta": "Assessment (s11), removal (s14), banning (s19), warrants for entry",
+      "title": "Protection orders considered"
+    },
+    "screening": {
+      "agenciesContacted": "Agencies contacted",
+      "inquiryOpened": "Inquiry opened",
+      "inquiryOutcome": "Inquiry outcome",
+      "inquiryOutcomeValue": "{outcome}{hasDate, select, yes { on {date}} other {}}. {rationale}",
+      "notOpened": "Not opened",
+      "notRecorded": "Not yet recorded",
+      "screening": "Screening",
+      "screeningValue": "{outcome} ({date}, {name}). {rationale}",
+      "title": "Screening and inquiry (s4)"
+    },
+    "threePointTest": {
+      "limbs": {
+        "a": "Unable to safeguard their own wellbeing, property, rights or other interests",
+        "b": "At risk of harm",
+        "c": "More vulnerable to being harmed because of disability, mental disorder, illness or infirmity"
+      },
+      "limbTitle": "Limb ({limb}): {text}",
+      "meta": "Assessed {when} by {name}. All three limbs must be met.",
+      "outcomeLabel": "Outcome:",
+      "outcomeValue": "{outcome, select, met {adult at risk (all limbs met)} notMet {not an adult at risk} other {unclear, gather more information}}",
+      "record": "Record three-point test",
+      "title": "Three-point test (s3)"
+    }
+  },
+  "awi": {
+    "application": {
+      "hearing": "Hearing",
+      "interim": "Interim order",
+      "interimNotSought": "Not sought",
+      "interimValue": "{granted, select, yes {Granted {grantedAt}{hasExpiry, select, yes {, expires {expiresAt}} other {}}} other {Sought {soughtAt}, not yet granted}}. Renewals: {renewals}.",
+      "interimWarning": "Interim order in force for {days, plural, one {# day} other {# days}}. Interim orders run for 3 months by default and cannot exceed 6 months in total (AWI 2000 s57 as amended).{beyond, select, yes { Beyond the default period: check the renewal and the reasons for delay.} other {}}",
+      "lodged": "Lodged",
+      "medicalReport": "{practitioner} ({kind}): {status}{hasReceived, select, yes { {date}} other {}}",
+      "medicalReports": "Medical reports",
+      "meta": "{applicant, select, council {Council application} other {Private application}} by {name}{hasSolicitor, select, yes {, solicitor {solicitor}} other {}}. {court}.",
+      "mhoClock": "MHO report (s57(4))",
+      "mhoSub": "Notified {when}. Due {due}. {hasMho, select, yes {MHO {mho}. } other {}}Report {status}.",
+      "notFixed": "Not yet fixed",
+      "notLodged": "Not yet lodged",
+      "powersSought": "Powers sought",
+      "suitability": "Suitability report",
+      "suitabilityDefault": "requested",
+      "suitabilityNotRequired": "Not required (no financial powers)",
+      "title": "Guardianship application tracker"
+    },
+    "assessments": {
+      "assessor": "{name}, {role}",
+      "columns": {
+        "assessed": "Assessed",
+        "by": "By",
+        "decision": "Decision",
+        "evidence": "Evidence",
+        "outcome": "Outcome"
+      },
+      "communicationSupport": "Communication support: {support}.",
+      "empty": "No assessment recorded yet.",
+      "meta": "Capacity is decision-specific and time-specific (AWI 2000 s1).",
+      "record": "Record capacity assessment",
+      "title": "Capacity assessments by decision"
+    },
+    "concern": {
+      "decision": "Decision in question",
+      "meta": "Raised {when} by {source} ({agency})",
+      "summary": "Summary",
+      "title": "Capacity concern"
+    },
+    "opg": {
+      "guardianship": "Guardianship",
+      "guardianshipValue": "{name}: {powers}{hasExpiry, select, yes {, expires {date}} other {}}",
+      "meta": "Checked {when}, {reference}",
+      "notChecked": "Not yet checked",
+      "poa": "Power of attorney",
+      "poaNone": "None registered",
+      "poaValue": "{kind} attorney {name}{hasRegistered, select, yes {, registered {date}} other {}}",
+      "title": "Existing powers (OPG register)"
+    },
+    "orders": {
+      "item": "Granted {granted}{hasExpiry, select, yes {, expires {expires}} other {}}. Powers: {powers}.",
+      "meta": "{count, plural, one {# order} other {# orders}}",
+      "mwcNotified": "MWC notified {date}.",
+      "none": "No order in force",
+      "opgRegistered": "OPG registered {date}.",
+      "supervising": "Supervising officer {name}.",
+      "title": "Order register"
+    },
+    "route": {
+      "meta": "{date}, {name}",
+      "notDecided": "Not yet decided",
+      "rationale": "Rationale",
+      "route": "Route",
+      "s13za": "Section 13ZA",
+      "s13zaValue": "{considered, select, yes {Considered} other {Not considered}}{applied, select, yes {, applied} other {, not applied}}. {reasoning}{hasObjection, select, yes { Objection from {objector}.} other {}}",
+      "title": "Route decision"
+    },
+    "routes": {
+      "guardianshipCombined": "Combined welfare and financial guardianship",
+      "guardianshipFinancial": "Financial guardianship",
+      "guardianshipWelfare": "Welfare guardianship",
+      "informalSupport": "Informal support and supported decision making",
+      "interventionOrder": "Intervention order",
+      "part5Certificate": "Part 5 certificate of incapacity (s47)",
+      "poaCovers": "Existing power of attorney covers the decision",
+      "s13za": "Section 13ZA arrangement (Social Work (Scotland) Act 1968)"
+    },
+    "supervision": {
+      "empty": "Supervision starts once an order is granted (s10).",
+      "investigation": "Opened {date}: {summary}",
+      "title": "Supervision visits and investigations",
+      "visit": "{name}: {summary}"
+    },
+    "will": {
+      "consulted": "Consulted",
+      "meta": "Recorded {date} by {name}, {method}",
+      "notRecorded": "Not yet recorded",
+      "past": "Past wishes",
+      "present": "Present wishes",
+      "title": "Will and preferences"
+    }
+  },
   "chronology": {
     "addEvent": {
       "analysis": {
@@ -297,6 +474,91 @@
     },
     "voice": {
       "recordedBy": "Recorded by {name}, {method}."
+    }
+  },
+  "cp": {
+    "concern": {
+      "meta": "Received {when} from {source} ({agency}){hasReference, select, yes {, {reference}} other {}}",
+      "proceduresInitiated": "Child protection procedures initiated {when}: the 28 calendar day CPPM clock runs from here.",
+      "title": "Child concern"
+    },
+    "coreGroup": {
+      "firstMeeting": "First meeting {when}",
+      "leadProfessional": "(lead professional)",
+      "namedPerson": "(named person)",
+      "notSetUp": "Not yet set up",
+      "title": "Core group"
+    },
+    "cppm": {
+      "cppm": "CPPM",
+      "cppmValue": "{hasHeld, select, yes {Held {when}. } other {}}Decision: {decision}. {rationale}",
+      "daysOnRegister": "Days on register",
+      "deregistered": "De-registered",
+      "deregisteredValue": "{date}. {reason}",
+      "notHeld": "Not yet held",
+      "notOnRegister": "Not on the register",
+      "open": "Open CPPM",
+      "register": "Register",
+      "registered": "Registered {date}",
+      "title": "CPPM and register",
+      "transfer": "Transfer",
+      "transferValue": "{direction} {area} on {date}"
+    },
+    "investigation": {
+      "jii": "JII",
+      "jiiHeld": "Held {when} under {model}",
+      "jiiModelDefault": "SCIM",
+      "jiiNotNeeded": "Not needed",
+      "jiiPlanned": "Planned, not yet held",
+      "medical": "Medical",
+      "medicalHeld": "Held {when}",
+      "medicalNotHeld": "Not held",
+      "none": "No investigation opened.",
+      "opened": "Opened",
+      "summary": "Summary",
+      "title": "Investigation, JII and medical"
+    },
+    "ird": {
+      "childViews": "Child's views",
+      "decided": "Decided {when}{hasName, select, yes { by {name}} other {}}.",
+      "decisions": {
+        "emergencyMeasures": "Emergency measures",
+        "investigationNeeded": "Is a child protection investigation needed?",
+        "jii": "Is a Joint Investigative Interview needed?",
+        "medical": "Is a medical needed?",
+        "parentsInformed": "Information sharing with parents and carers",
+        "reporterReferral": "Referral to the Reporter",
+        "significantHarm": "Is the child at risk of significant harm?"
+      },
+      "decisionsHeading": "Decisions, each with rationale",
+      "dissent": "Dissent recorded: {name} ({agency}): {text}",
+      "information": "Information from each agency",
+      "interimPlan": "Interim safety plan",
+      "interimPlanNone": "None recorded",
+      "interimPlanValue": "{title}: {outcomes} ({status})",
+      "kind": "Kind: {kind}{hasConsent, select, yes {, consent by {consentBy}} other {}}{hasWhen, select, yes {, {when}} other {}}.",
+      "meta": "Held {when}{outOfHours, select, yes { (out of hours)} other {}}. {hasMeeting, select, yes {} other {No meeting record linked.}}",
+      "openMeeting": "Open meeting record",
+      "participant": "{name}, {role}",
+      "participants": "Participants",
+      "planned": "Planned by {planner}; informed by {hasInformedBy, select, yes {{informedBy}} other {not recorded}}.",
+      "rationale": "Rationale: {rationale}",
+      "siblings": "Siblings considered",
+      "title": "Inter-agency Referral Discussion",
+      "withheld": "Withheld: {withheld}."
+    },
+    "plan": {
+      "actionCount": "({count, plural, one {# action} other {# actions}})",
+      "actionsBelow": "Actions below",
+      "meta": "{title}. Agreed {date}{hasReview, select, yes {, review {review}} other {}}.",
+      "none": "No plan yet",
+      "title": "Child's plan"
+    },
+    "preBirth": {
+      "meta": "Expected delivery {edd}. About {weeks} weeks gestation today. 28 weeks falls on {cap}: the pre-birth CPPM must be held by then. Mother: {mother}.",
+      "note": "The subject of this process is the unborn baby. The mother is a parent here and may be the subject of her own process.",
+      "openMother": "Open the mother's record",
+      "title": "Pre-birth"
     }
   },
   "errors": {
@@ -686,6 +948,173 @@
       }
     },
     "title": "Connector inbox"
+  },
+  "mappa": {
+    "banner": "Restricted record. Distribution list only. Every read is audited. MAPPA information is not given to victims (the Victim Notification Scheme is a separate route), to employers, or to the public, except through a recorded disclosure decision.",
+    "disclosures": {
+      "approve": "Approve",
+      "columns": {
+        "decision": "Decision",
+        "facts": "Facts to disclose",
+        "rationale": "Rationale",
+        "recipient": "Recipient",
+        "status": "Status"
+      },
+      "decided": {
+        "text": "{status, select, approved {Only the recorded facts are disclosed, by the decision maker, and the recipient is told the limits.} other {No disclosure. The rationale is recorded.}}",
+        "title": "{status, select, approved {Disclosure approved} other {Disclosure declined}}"
+      },
+      "decidedBy": "{name}, {date}",
+      "decline": "Decline",
+      "empty": "No disclosure decisions.",
+      "meta": "Third parties receive specific facts only, by a recorded decision.",
+      "title": "Disclosure decisions register"
+    },
+    "era": {
+      "address": "Proposed address",
+      "addressValue": "{line1}, {town}, {postcode}",
+      "concerns": "Concerns",
+      "conclusion": "Conclusion",
+      "meta": "{status}. Started {date} by {name}.",
+      "notRecorded": "Not recorded",
+      "notStarted": "Not started",
+      "pending": "Pending",
+      "title": "Environmental Risk Assessment"
+    },
+    "exit": {
+      "meta": "{kind} on {date}",
+      "title": "Exit"
+    },
+    "identifiers": {
+      "custody": "Custody",
+      "inCustody": "In custody, {establishment}",
+      "leadRa": "Lead RA",
+      "noReferral": "No referral recorded",
+      "notification": "Notification",
+      "notificationValue": "{when} from {source} ({name})",
+      "notInCustody": "Not in custody",
+      "referral": "Referral",
+      "referralValue": "{when} by {name}: {reason}",
+      "released": "Released {date}{hasEstablishment, select, yes { from {establishment}} other {}}{hasLicence, select, yes {; licence to {licence}} other {}}",
+      "title": "Lead Responsible Authority and identifiers",
+      "visor": "ViSOR reference",
+      "visorNote": "(reference only; the platform is not ViSOR. MAPPS from 2028.)"
+    },
+    "level": {
+      "history": "Level {level} from {date}: {reason}",
+      "refer": "Refer to Level 2 or 3",
+      "title": "Category and level"
+    },
+    "licence": {
+      "meta": "{count} active",
+      "title": "Licence conditions"
+    },
+    "returns": {
+      "meta": "For the review on {hasDate, select, yes {{date}} other {the next meeting}}",
+      "title": "Pre-meeting returns"
+    },
+    "risk": {
+      "assessor": "{name} ({agency})",
+      "columns": {
+        "assessor": "Assessor",
+        "band": "Band",
+        "date": "Date",
+        "tool": "Tool"
+      },
+      "meta": "The platform records the tool, date, assessor and band. It does not implement the tools.",
+      "title": "Risk assessment tools"
+    },
+    "rmp": {
+      "accommodation": "Accommodation",
+      "associates": "Associates",
+      "contingencies": "Contingencies",
+      "controls": "Controls",
+      "employment": "Employment",
+      "meta": "Reviewed {date}. RMA FRAME standards.",
+      "title": "Risk Management Plan",
+      "triggers": "Triggers",
+      "victimSafety": "Victim safety"
+    },
+    "sonr": {
+      "compliance": "Compliance",
+      "compliant": "Compliant",
+      "end": "Requirements end",
+      "indefinite": "Indefinite",
+      "lastNotification": "Last notification",
+      "nextDue": "Next due",
+      "nonCompliant": "Non-compliant",
+      "notSet": "Not set",
+      "subject": "Subject to SONR",
+      "title": "Sex Offender Notification Requirements"
+    }
+  },
+  "marac": {
+    "checklist": {
+      "answer": "{answer, select, yes {yes} no {no} other {unknown}}",
+      "empty": "Record the DAQ to score the referral.",
+      "meta": "Completed {when} by {name} ({agency})",
+      "notRecorded": "Not recorded",
+      "overridden": "{band} (overridden to {override})",
+      "override": "Professional judgement override by {name}: {reason}",
+      "record": "Record DAQ",
+      "scoreLabel": "yes answers of {max}. {threshold} or more indicates high risk.",
+      "title": "{tool, select, dash {DASH} other {DAQ}} risk checklist",
+      "titleNone": "Risk checklist"
+    },
+    "feedback": {
+      "meta": "{count, plural, one {# entry} other {# entries}}",
+      "title": "IDAA feedback to the victim",
+      "victimResponse": "Victim's response: {response}"
+    },
+    "flags": {
+      "item": "on {system}: placed {placed}, expires {expires}. Receipt {receipt}.",
+      "meta": "{count, plural, one {# flag} other {# flags}}, 12 months from the hearing",
+      "none": "No MARAC flags yet",
+      "title": "Flags placed"
+    },
+    "links": {
+      "asp": "ASP process",
+      "cp": "Child protection process",
+      "dsdas": "DSDAS {considered, select, yes {considered} other {not considered}}",
+      "mappa": "MAPPA (perpetrator)",
+      "matac": "MATAC {considered, select, yes {considered{hasReferral, select, yes {, referred {date}} other {}}} other {not considered}}",
+      "noCp": "No child protection process",
+      "noMappa": "Perpetrator not MAPPA",
+      "title": "Links to other processes",
+      "transfer": "Transferred to {area} on {date} (receiving coordinator {coordinator})."
+    },
+    "meeting": {
+      "meta": "{title}, {when} ({status})",
+      "note": "The victim does not attend. The IDAA represents their wishes. The perpetrator is not told.",
+      "notListed": "Not yet listed",
+      "open": "Open",
+      "title": "Meeting slot"
+    },
+    "referral": {
+      "children": "Children",
+      "first": "First referral",
+      "idaa": "IDAA",
+      "idaaValue": "{name}, {organisation}",
+      "judgement": "Professional judgement referral",
+      "meta": "Received {when} from {name} ({agency})",
+      "mustNotReceive": "Must not receive anything about this process",
+      "perpetrator": "Perpetrator",
+      "repeat": "Repeat: last heard {hasDate, select, yes {{date}} other {within 12 months}}",
+      "title": "Referral",
+      "victim": "Victim"
+    },
+    "research": {
+      "columns": {
+        "agency": "Agency",
+        "due": "Due",
+        "return": "Return",
+        "sent": "Sent",
+        "status": "Status"
+      },
+      "empty": "Research requests are sent by the coordinator when the case is listed.",
+      "meta": "Each agency searches its records for the victim, the perpetrator and the children, and shares only what is relevant, necessary and proportionate. Names and dates of birth only in the request.",
+      "title": "Research requests"
+    }
   },
   "nav": {
     "drawer": {
@@ -1158,6 +1587,125 @@
       "printedFooter": "Printed {when} from the platform. Synthetic demonstration data.",
       "runningHead": "{classification}. {reference}",
       "subjectHead": "{name}, born {date}"
+    }
+  },
+  "processes": {
+    "access": {
+      "fieldsTitle": "Named fields only",
+      "summaryText": "Stage {stage}, lead {agency}, next date {hasNext, select, yes {{date}} other {none scheduled}}. The full record is not shared with your role at this stage.",
+      "summaryTitle": "Summary access"
+    },
+    "breakGlass": {
+      "category": {
+        "label": "Why you need it",
+        "placeholder": "Choose a reason category"
+      },
+      "granted": {
+        "text": "Access lasts {hours, plural, one {# hour} other {# hours}}. Every read is audited and the coordinator is told.",
+        "title": "Break-glass access granted"
+      },
+      "intro": "{reason} State why you need it now. Your reason, your name and every read are written to the audit log and shown to the coordinator.",
+      "reason": {
+        "hint": "At least 15 characters. Say what is happening now and why it cannot wait.",
+        "label": "Reason"
+      },
+      "submit": "Open with this reason",
+      "title": "Open a restricted record"
+    },
+    "clocks": {
+      "none": "No clock running",
+      "running": "{count} running",
+      "sub": "Due {date}. {source}{verify, select, yes { (local value, to verify)} other {}}{deferral, select, yes { {note}.} other {}}",
+      "title": "Clocks"
+    },
+    "head": {
+      "askToBeInvolved": "Ask to be involved",
+      "born": "born {date}",
+      "lead": "Lead: {agency}",
+      "nextMeeting": "Next: {title}, {date}",
+      "opened": "Opened {date}",
+      "requestSent": {
+        "text": "{hasLead, select, yes {{name}} other {The lead agency}} will see your request to be involved and the reason.",
+        "title": "Request sent to the lead"
+      },
+      "restrictedTitle": "{process} (restricted)",
+      "unborn": "unborn"
+    },
+    "list": {
+      "clockRemaining": "{label}: {overdue, select, yes {{days, plural, one {# day overdue} other {# days overdue}}} other {{days, plural, one {# day} other {# days}}}}",
+      "columns": {
+        "access": "Your access",
+        "clock": "Most urgent clock",
+        "lead": "Lead",
+        "nextMeeting": "Next meeting",
+        "reference": "Reference",
+        "subject": "Subject",
+        "typeAndStage": "Type and stage"
+      },
+      "empty": {
+        "text": "Clear the filters, or open a person record to start a process.",
+        "title": "No processes match"
+      },
+      "filters": {
+        "allTypes": "All types",
+        "includeClosed": "Include closed",
+        "mine": "My cases only",
+        "type": "Process type"
+      },
+      "lede": "Every open inquiry and protection process in Clydeshore, sorted by the most urgent clock. Restricted records show only that they exist.",
+      "nextMeetingCell": "{date}: {title}",
+      "noAccess": "no access",
+      "noClock": "None running",
+      "subjectWithMore": "{name}{count, plural, =0 {} other { and # more}}",
+      "title": "Processes"
+    },
+    "meetings": {
+      "held": "Held {time}. Minute {status}.",
+      "meta": "{count} on this process",
+      "scheduled": "{when}, {location}",
+      "title": "Meetings"
+    },
+    "notFound": {
+      "allProcesses": "All processes",
+      "text": "This process does not exist in the demo dataset.",
+      "title": "Process not found"
+    },
+    "participants": {
+      "member": "{role}. Since {date}. {reason}",
+      "meta": "{count} on the case",
+      "title": "Participants and roles"
+    },
+    "plans": {
+      "columns": {
+        "action": "Action",
+        "due": "Due",
+        "evidence": "Evidence",
+        "owner": "Owner",
+        "status": "Status"
+      },
+      "dueRelative": "{date} ({relative})",
+      "empty": "No actions recorded yet.",
+      "none": "No plan yet",
+      "overdue": "overdue",
+      "plan": "{title} ({status})",
+      "title": "Plans and actions"
+    },
+    "presence": {
+      "summary": "You can see that a {process} process exists at the {stage} stage, led by {agency}. {reason}"
+    },
+    "sharing": {
+      "item": "{reason} {date}.",
+      "meta": "{count, plural, one {# share recorded} other {# shares recorded}}, each with a lawful basis",
+      "title": "Sharing"
+    },
+    "stages": {
+      "label": "Process stages"
+    },
+    "views": {
+      "count": "{count} recorded",
+      "familyFallback": "Family",
+      "none": "Not yet recorded",
+      "title": "Views and voice"
     }
   },
   "search": {

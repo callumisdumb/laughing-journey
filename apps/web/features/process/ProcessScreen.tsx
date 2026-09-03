@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCY_SHORT, PROCESS_LABELS, PROCESS_SHORT, STAGES_BY_PROCESS, formatDate, formatDateTime, formatTime, relativeDays, stageLabel, type Process } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { AgencyMark, Button, ClassificationBanner, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { Lock, UserPlus } from 'lucide-react';
@@ -19,6 +20,7 @@ import { MaracPanels } from './panels/MaracPanels';
 import styles from './ProcessScreen.module.css';
 
 export function ProcessScreen({ processId }: { processId: string }) {
+  const t = useT();
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
@@ -48,7 +50,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   if (!process) {
     return (
       <div className="page">
-        <EmptyState title="Process not found" text="This process does not exist in the demo dataset." actions={<AppLink href="/processes">All processes</AppLink>} />
+        <EmptyState title={t('processes.notFound.title')} text={t('processes.notFound.text')} actions={<AppLink href="/processes">{t('processes.notFound.allProcesses')}</AppLink>} />
       </div>
     );
   }
@@ -71,6 +73,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
       const entry = [...process.stageHistory].reverse().find((h) => h.stage === s);
       return { id: s, label: stageLabel(process.type, s), state: i < currentIndex ? 'done' : i === currentIndex ? 'current' : 'upcoming', meta: entry ? `${formatDate(entry.at)}, ${entry.byName}` : undefined };
     });
+  const lead = process.leadUserId ? data.users.find((u) => u.id === process.leadUserId) : undefined;
 
   const state = dev ?? (access.level === 'none' ? 'restricted' : 'ready');
 
@@ -80,33 +83,29 @@ export function ProcessScreen({ processId }: { processId: string }) {
         <div className={styles.ref}>
           <ProcessMark type={process.type} stage={stageLabel(process.type, process.stage)} restricted={process.classification === 'restricted'} />
           <span>{process.reference}</span>
-          <span>Lead: {AGENCY_SHORT[process.leadAgency]}</span>
-          <span>Opened {formatDate(process.openedAt)}</span>
+          <span>{t('processes.head.lead', { agency: AGENCY_SHORT[process.leadAgency] })}</span>
+          <span>{t('processes.head.opened', { date: formatDate(process.openedAt) })}</span>
           <Pill size="sm" tone={process.status === 'open' ? 'low' : 'outline'}>
             {process.status}
           </Pill>
         </div>
-        <h1 className={styles.title}>{access.level === 'none' ? `${PROCESS_LABELS[process.type]} (restricted)` : process.title}</h1>
+        <h1 className={styles.title}>{access.level === 'none' ? t('processes.head.restrictedTitle', { process: PROCESS_LABELS[process.type] }) : process.title}</h1>
         {access.level !== 'none' ? (
           <div className={styles.subjects}>
             {subjects.map((s) => (
               <span key={s.id}>
                 <AppLink href={personPath(s.id)}>{fullName(s)}</AppLink>
-                {s.dateOfBirth ? `, born ${formatDate(s.dateOfBirth)}` : s.lifeStage === 'unborn' ? ', unborn' : ''}
+                {s.dateOfBirth ? `, ${t('processes.head.born', { date: formatDate(s.dateOfBirth) })}` : s.lifeStage === 'unborn' ? `, ${t('processes.head.unborn')}` : ''}
               </span>
             ))}
           </div>
         ) : null}
       </div>
       <div className={styles.headActions}>
-        {nextMeeting && access.level !== 'none' ? (
-          <AppLink href={meetingPath(nextMeeting.id)}>
-            Next: {nextMeeting.title}, {formatDate(nextMeeting.scheduledAt)}
-          </AppLink>
-        ) : null}
+        {nextMeeting && access.level !== 'none' ? <AppLink href={meetingPath(nextMeeting.id)}>{t('processes.head.nextMeeting', { title: nextMeeting.title, date: formatDate(nextMeeting.scheduledAt) })}</AppLink> : null}
         {access.level === 'presence' ? (
-          <Button variant="secondary" icon={<UserPlus size={16} aria-hidden="true" />} onClick={() => toast({ title: 'Request sent to the lead', text: `${process.leadUserId ? userName(data.users.find((u) => u.id === process.leadUserId)!) : 'The lead agency'} will see your request to be involved and the reason.` })}>
-            Ask to be involved
+          <Button variant="secondary" icon={<UserPlus size={16} aria-hidden="true" />} onClick={() => toast({ title: t('processes.head.requestSent.title'), text: t('processes.head.requestSent.text', { hasLead: lead ? 'yes' : 'no', name: lead ? userName(lead) : '' }) })}>
+            {t('processes.head.askToBeInvolved')}
           </Button>
         ) : null}
       </div>
@@ -123,20 +122,18 @@ export function ProcessScreen({ processId }: { processId: string }) {
       >
         {access.level === 'presence' ? (
           <div className={styles.summaryOnly}>
-            <p>
-              You can see that a {PROCESS_LABELS[process.type]} process exists at the {stageLabel(process.type, process.stage)} stage, led by {AGENCY_SHORT[process.leadAgency]}. {access.reason}
-            </p>
+            <p>{t('processes.presence.summary', { process: PROCESS_LABELS[process.type], stage: stageLabel(process.type, process.stage), agency: AGENCY_SHORT[process.leadAgency], reason: access.reason })}</p>
           </div>
         ) : (
           <>
             <div className={styles.stepper}>
-              <Stepper steps={steps} label="Process stages" />
+              <Stepper steps={steps} label={t('processes.stages.label')} />
             </div>
             <div className={styles.layout}>
               <div className={styles.main}>
                 {access.level === 'summary' || access.level === 'fields' ? (
                   <Sheet tone="well">
-                    <SheetHead title={access.level === 'summary' ? 'Summary access' : 'Named fields only'} meta={access.reason} />
+                    <SheetHead title={access.level === 'summary' ? t('processes.access.summaryTitle') : t('processes.access.fieldsTitle')} meta={access.reason} />
                     <SheetBody>
                       {access.level === 'fields' ? (
                         <ul>
@@ -145,9 +142,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                           ))}
                         </ul>
                       ) : (
-                        <p>
-                          Stage {stageLabel(process.type, process.stage)}, lead {AGENCY_SHORT[process.leadAgency]}, next date {nextMeeting ? formatDate(nextMeeting.scheduledAt) : 'none scheduled'}. The full record is not shared with your role at this stage.
-                        </p>
+                        <p>{t('processes.access.summaryText', { stage: stageLabel(process.type, process.stage), agency: AGENCY_SHORT[process.leadAgency], hasNext: nextMeeting ? 'yes' : 'no', date: nextMeeting ? formatDate(nextMeeting.scheduledAt) : '' })}</p>
                       )}
                     </SheetBody>
                   </Sheet>
@@ -157,17 +152,17 @@ export function ProcessScreen({ processId }: { processId: string }) {
               </div>
               <div className={styles.side}>
                 <Sheet>
-                  <SheetHead title="Clocks" meta={clocks.length === 0 ? 'No clock running' : `${clocks.filter((c) => c.status !== 'complete').length} running`} />
+                  <SheetHead title={t('processes.clocks.title')} meta={clocks.length === 0 ? t('processes.clocks.none') : t('processes.clocks.running', { count: clocks.filter((c) => c.status !== 'complete').length })} />
                   <SheetBody>
                     <div className={styles.clockList}>
                       {clocks.map((c) => (
-                        <ClockNumeral key={c.triggerId} daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={`Due ${formatDate(c.dueAt)}. ${c.overridden ? c.overrideReason : c.sourceRef}${c.todoVerify ? ' (local value, to verify)' : ''}${c.deferrable && c.deferralNote ? ` ${c.deferralNote}.` : ''}`} size="sm" />
+                        <ClockNumeral key={c.triggerId} daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={t('processes.clocks.sub', { date: formatDate(c.dueAt), source: (c.overridden ? c.overrideReason : c.sourceRef) ?? '', verify: c.todoVerify ? 'yes' : 'no', deferral: c.deferrable && c.deferralNote ? 'yes' : 'no', note: c.deferralNote ?? '' })} size="sm" />
                       ))}
                     </div>
                   </SheetBody>
                 </Sheet>
                 <Sheet>
-                  <SheetHead title="Participants and roles" meta={`${process.members.length} on the case`} />
+                  <SheetHead title={t('processes.participants.title')} meta={t('processes.participants.meta', { count: process.members.length })} />
                   <SheetBody>
                     <div className={styles.members}>
                       {membersByAgency(data, process).map((g) => (
@@ -176,9 +171,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                           {g.members.map((m) => (
                             <div key={m.membership.userId} className={styles.member} style={{ marginTop: 4, paddingLeft: 22 }}>
                               <span className={styles.memberName}>{m.user ? userName(m.user) : m.membership.userId}</span>
-                              <span className={styles.memberMeta}>
-                                {m.membership.caseRole}. Since {formatDate(m.membership.since)}. {m.membership.reason}
-                              </span>
+                              <span className={styles.memberMeta}>{t('processes.participants.member', { role: m.membership.caseRole, date: formatDate(m.membership.since), reason: m.membership.reason })}</span>
                             </div>
                           ))}
                         </div>
@@ -187,18 +180,18 @@ export function ProcessScreen({ processId }: { processId: string }) {
                   </SheetBody>
                 </Sheet>
                 <Sheet tone="paper">
-                  <SheetHead title="Views and voice" meta={views.length === 0 ? 'Not yet recorded' : `${views.length} recorded`} />
+                  <SheetHead title={t('processes.views.title')} meta={views.length === 0 ? t('processes.views.none') : t('processes.views.count', { count: views.length })} />
                   <SheetBody>
                     <div className={styles.voices}>
                       {views.slice(0, 2).map((v) => {
                         const p = personById(data, v.personId);
-                        return <VoiceBlock key={v.id} record={v} personName={p ? (p.preferredName ?? p.givenName) : 'Family'} size="sm" />;
+                        return <VoiceBlock key={v.id} record={v} personName={p ? (p.preferredName ?? p.givenName) : t('processes.views.familyFallback')} size="sm" />;
                       })}
                     </div>
                   </SheetBody>
                 </Sheet>
                 <Sheet>
-                  <SheetHead title="Meetings" meta={`${meetings.length} on this process`} />
+                  <SheetHead title={t('processes.meetings.title')} meta={t('processes.meetings.meta', { count: meetings.length })} />
                   <SheetBody>
                     <div className={styles.meetingList}>
                       {meetings.map((m) => (
@@ -206,7 +199,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                           <span className={styles.meetingDate}>{formatDate(m.scheduledAt).slice(0, 6)}</span>
                           <span className={styles.meetingTitle}>{m.title}</span>
                           <span className={styles.meetingMeta}>
-                            {m.status === 'held' ? `Held ${formatTime(m.scheduledAt)}. Minute ${m.minute.status.replace('-', ' ')}.` : m.status === 'scheduled' ? `${formatDateTime(m.scheduledAt)}, ${m.location}` : m.status}
+                            {m.status === 'held' ? t('processes.meetings.held', { time: formatTime(m.scheduledAt), status: m.minute.status.replace('-', ' ') }) : m.status === 'scheduled' ? t('processes.meetings.scheduled', { when: formatDateTime(m.scheduledAt), location: m.location }) : m.status}
                           </span>
                         </AppLink>
                       ))}
@@ -214,7 +207,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                   </SheetBody>
                 </Sheet>
                 <Sheet>
-                  <SheetHead title="Sharing" meta={`${shares.length} shares recorded, each with a lawful basis`} />
+                  <SheetHead title={t('processes.sharing.title')} meta={t('processes.sharing.meta', { count: shares.length })} />
                   <SheetBody>
                     <ul className={styles.members}>
                       {shares.slice(0, 6).map((s) => (
@@ -225,9 +218,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                               {s.detailLevel}
                             </Pill>
                           </span>
-                          <span className={styles.memberMeta}>
-                            {s.reason} {formatDate(s.createdAt)}.
-                          </span>
+                          <span className={styles.memberMeta}>{t('processes.sharing.item', { reason: s.reason, date: formatDate(s.createdAt) })}</span>
                         </li>
                       ))}
                     </ul>
@@ -236,23 +227,23 @@ export function ProcessScreen({ processId }: { processId: string }) {
               </div>
               <div className={styles.wide}>
                 <Sheet>
-                  <SheetHead title="Plans and actions" meta={plans.length === 0 ? 'No plan yet' : plans.map((p) => `${p.title} (${p.status})`).join('; ')} />
+                  <SheetHead title={t('processes.plans.title')} meta={plans.length === 0 ? t('processes.plans.none') : plans.map((p) => t('processes.plans.plan', { title: p.title, status: p.status })).join('; ')} />
                   <SheetBody flush>
                     <TableWrap style={{ border: 0, borderRadius: 0 }} className={styles.actionsTable}>
                       <Table>
                         <thead>
                           <tr>
-                            <th scope="col">Action</th>
-                            <th scope="col">Owner</th>
-                            <th scope="col">Due</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Evidence</th>
+                            <th scope="col">{t('processes.plans.columns.action')}</th>
+                            <th scope="col">{t('processes.plans.columns.owner')}</th>
+                            <th scope="col">{t('processes.plans.columns.due')}</th>
+                            <th scope="col">{t('processes.plans.columns.status')}</th>
+                            <th scope="col">{t('processes.plans.columns.evidence')}</th>
                           </tr>
                         </thead>
                         <tbody>
                           {actions.length === 0 ? (
                             <tr>
-                              <td colSpan={5}>No actions recorded yet.</td>
+                              <td colSpan={5}>{t('processes.plans.empty')}</td>
                             </tr>
                           ) : null}
                           {actions.map((a) => {
@@ -264,13 +255,10 @@ export function ProcessScreen({ processId }: { processId: string }) {
                                 <td>
                                   {a.ownerName} <span style={{ color: 'var(--color-ink-3)' }}>({AGENCY_SHORT[a.ownerAgency]})</span>
                                 </td>
-                                <td className={overdue ? styles.overdue : undefined}>
-                                  {formatDate(a.due)}
-                                  {a.status !== 'complete' ? ` (${relativeDays(days)})` : ''}
-                                </td>
+                                <td className={overdue ? styles.overdue : undefined}>{a.status !== 'complete' ? t('processes.plans.dueRelative', { date: formatDate(a.due), relative: relativeDays(days) }) : formatDate(a.due)}</td>
                                 <td>
                                   <Pill size="sm" tone={a.status === 'complete' ? 'low' : overdue ? 'critical' : a.status === 'in-progress' ? 'accent' : 'neutral'}>
-                                    {overdue ? 'overdue' : a.status.replace('-', ' ')}
+                                    {overdue ? t('processes.plans.overdue') : a.status.replace('-', ' ')}
                                   </Pill>
                                 </td>
                                 <td>{a.evidence ?? ''}</td>
@@ -291,11 +279,11 @@ export function ProcessScreen({ processId }: { processId: string }) {
       <Dialog
         open={breakGlassOpen}
         onClose={() => setBreakGlassOpen(false)}
-        title="Open a restricted record"
+        title={t('processes.breakGlass.title')}
         actions={
           <>
             <Button variant="quiet" onClick={() => setBreakGlassOpen(false)}>
-              Cancel
+              {t('common.actions.cancel')}
             </Button>
             <Button
               variant="danger"
@@ -306,17 +294,17 @@ export function ProcessScreen({ processId }: { processId: string }) {
                 setBreakGlassOpen(false);
                 setReason('');
                 setReasonCategory('');
-                toast({ title: 'Break-glass access granted', text: `Access lasts ${config.breakGlassHours} hours. Every read is audited and the coordinator is told.`, tone: 'info' });
+                toast({ title: t('processes.breakGlass.granted.title'), text: t('processes.breakGlass.granted.text', { hours: config.breakGlassHours }), tone: 'info' });
               }}
             >
-              Open with this reason
+              {t('processes.breakGlass.submit')}
             </Button>
           </>
         }
       >
-        <p>{access.reason} State why you need it now. Your reason, your name and every read are written to the audit log and shown to the coordinator.</p>
-        <SelectField label="Why you need it" required value={reasonCategory} onChange={(e) => setReasonCategory(e.target.value)} placeholder="Choose a reason category" options={config.breakGlassReasons.map((r) => ({ value: r, label: r }))} />
-        <TextareaField label="Reason" required value={reason} onChange={(e) => setReason(e.target.value)} hint="At least 15 characters. Say what is happening now and why it cannot wait." />
+        <p>{t('processes.breakGlass.intro', { reason: access.reason })}</p>
+        <SelectField label={t('processes.breakGlass.category.label')} required value={reasonCategory} onChange={(e) => setReasonCategory(e.target.value)} placeholder={t('processes.breakGlass.category.placeholder')} options={config.breakGlassReasons.map((r) => ({ value: r, label: r }))} />
+        <TextareaField label={t('processes.breakGlass.reason.label')} required value={reason} onChange={(e) => setReason(e.target.value)} hint={t('processes.breakGlass.reason.hint')} />
       </Dialog>
     </div>
   );

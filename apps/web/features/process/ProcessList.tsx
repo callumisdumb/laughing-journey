@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCY_SHORT, PROCESS_LABELS, PROCESS_TYPES, formatDate, stageLabel } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { Pill, ProcessMark, RiskBand, SelectField, Switch, Table, TableWrap } from '@mas/ui';
 import { Lock } from 'lucide-react';
 import { useEffect } from 'react';
@@ -13,6 +14,7 @@ import { accessForUser, clocksForProcess, fullName, personById } from '@/lib/sel
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
 
 export function ProcessList() {
+  const t = useT();
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
@@ -47,27 +49,27 @@ export function ProcessList() {
     <div className="page">
       <div className="page-head">
         <div className="page-head-text">
-          <h1>Processes</h1>
-          <p className="page-lede">Every open inquiry and protection process in Clydeshore, sorted by the most urgent clock. Restricted records show only that they exist.</p>
+          <h1>{t('processes.list.title')}</h1>
+          <p className="page-lede">{t('processes.list.lede')}</p>
         </div>
       </div>
       <div className="cluster" style={{ marginBottom: 'var(--density-gap)', alignItems: 'flex-end', gap: 16 }}>
-        <SelectField label="Process type" value={typeFilter} onChange={(e) => set('type', e.target.value || null)} placeholder="All types" options={PROCESS_TYPES.map((t) => ({ value: t, label: PROCESS_LABELS[t] }))} />
-        <Switch label="My cases only" checked={mine} onChange={(e) => set('mine', e.target.checked ? '1' : null)} />
-        <Switch label="Include closed" checked={showClosed} onChange={(e) => set('closed', e.target.checked ? '1' : null)} />
+        <SelectField label={t('processes.list.filters.type')} value={typeFilter} onChange={(e) => set('type', e.target.value || null)} placeholder={t('processes.list.filters.allTypes')} options={PROCESS_TYPES.map((type) => ({ value: type, label: PROCESS_LABELS[type] }))} />
+        <Switch label={t('processes.list.filters.mine')} checked={mine} onChange={(e) => set('mine', e.target.checked ? '1' : null)} />
+        <Switch label={t('processes.list.filters.includeClosed')} checked={showClosed} onChange={(e) => set('closed', e.target.checked ? '1' : null)} />
       </div>
-      <ScreenState state={dev ?? (rows.length === 0 ? 'empty' : 'ready')} empty={{ title: 'No processes match', text: 'Clear the filters, or open a person record to start a process.' }}>
+      <ScreenState state={dev ?? (rows.length === 0 ? 'empty' : 'ready')} empty={{ title: t('processes.list.empty.title'), text: t('processes.list.empty.text') }}>
         <TableWrap>
           <Table>
             <thead>
               <tr>
-                <th scope="col">Reference</th>
-                <th scope="col">Type and stage</th>
-                <th scope="col">Subject</th>
-                <th scope="col">Lead</th>
-                <th scope="col">Most urgent clock</th>
-                <th scope="col">Next meeting</th>
-                <th scope="col">Your access</th>
+                <th scope="col">{t('processes.list.columns.reference')}</th>
+                <th scope="col">{t('processes.list.columns.typeAndStage')}</th>
+                <th scope="col">{t('processes.list.columns.subject')}</th>
+                <th scope="col">{t('processes.list.columns.lead')}</th>
+                <th scope="col">{t('processes.list.columns.clock')}</th>
+                <th scope="col">{t('processes.list.columns.nextMeeting')}</th>
+                <th scope="col">{t('processes.list.columns.access')}</th>
               </tr>
             </thead>
             <tbody>
@@ -81,13 +83,23 @@ export function ProcessList() {
                   <td>
                     <ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.classification === 'restricted'} />
                   </td>
-                  <td>{access.level === 'none' ? <Pill tone="restricted" size="sm" icon={<Lock size={12} aria-hidden="true" />}>Restricted</Pill> : subject ? `${fullName(subject)}${p.subjectIds.length > 1 ? ` and ${p.subjectIds.length - 1} more` : ''}` : p.title}</td>
+                  <td>
+                    {access.level === 'none' ? (
+                      <Pill tone="restricted" size="sm" icon={<Lock size={12} aria-hidden="true" />}>
+                        {t('common.labels.restricted')}
+                      </Pill>
+                    ) : subject ? (
+                      t('processes.list.subjectWithMore', { name: fullName(subject), count: p.subjectIds.length - 1 })
+                    ) : (
+                      p.title
+                    )}
+                  </td>
                   <td style={{ whiteSpace: 'nowrap' }}>{AGENCY_SHORT[p.leadAgency]}</td>
-                  <td>{access.level === 'none' || access.level === 'presence' ? '' : clocks[0] ? <RiskBand band={clocks[0].band} label={`${clocks[0].label}: ${clocks[0].daysRemaining < 0 ? `${Math.abs(clocks[0].daysRemaining)} days overdue` : `${clocks[0].daysRemaining} days`}`} /> : <span style={{ color: 'var(--color-ink-3)' }}>None running</span>}</td>
-                  <td>{access.level === 'none' ? '' : next ? `${formatDate(next.scheduledAt)}: ${next.title.split(':')[0]}` : ''}</td>
+                  <td>{access.level === 'none' || access.level === 'presence' ? '' : clocks[0] ? <RiskBand band={clocks[0].band} label={t('processes.list.clockRemaining', { label: clocks[0].label, overdue: clocks[0].daysRemaining < 0 ? 'yes' : 'no', days: Math.abs(clocks[0].daysRemaining) })} /> : <span style={{ color: 'var(--color-ink-3)' }}>{t('processes.list.noClock')}</span>}</td>
+                  <td>{access.level === 'none' ? '' : next ? t('processes.list.nextMeetingCell', { date: formatDate(next.scheduledAt), title: next.title.split(':')[0] ?? next.title }) : ''}</td>
                   <td>
                     <Pill size="sm" tone={access.level === 'full' ? 'accent' : access.level === 'none' ? 'restricted' : 'outline'}>
-                      {access.level === 'none' ? 'no access' : access.level}
+                      {access.level === 'none' ? t('processes.list.noAccess') : access.level}
                     </Pill>
                   </td>
                 </tr>
