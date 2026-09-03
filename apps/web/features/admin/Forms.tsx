@@ -1,34 +1,38 @@
 'use client';
 
 import { PROCESS_LABELS, formatDate, type Config } from '@mas/domain';
+import { useT, type Translator } from '@mas/messages';
 import { Button, DateField, Dialog, ProcessMark, Table, TableWrap, TextField } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import styles from './Forms.module.css';
 import { SectionHead } from './SectionHead';
+import { sectionLabel } from './sections';
 import { useAdminConfig } from './useAdminConfig';
 
 type FormVersion = Config['forms'][number];
 
-function versionSchema(current: FormVersion) {
+function versionSchema(t: Translator, current: FormVersion) {
   return z
     .object({
-      version: z.string().trim().min(1, 'Enter the new version, for example 2026.1').max(20),
-      effectiveFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a date'),
-      source: z.string().trim().min(3, 'Say where the version comes from').max(160),
+      version: z.string().trim().min(1, t('admin.forms.errors.version')).max(20),
+      effectiveFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, t('admin.forms.errors.effective')),
+      source: z.string().trim().min(3, t('admin.forms.errors.source')).max(160),
     })
     .superRefine((v, ctx) => {
-      if (v.version === current.version) ctx.addIssue({ code: 'custom', path: ['version'], message: `Version ${current.version} is already in use` });
-      if (v.effectiveFrom <= current.effectiveFrom) ctx.addIssue({ code: 'custom', path: ['effectiveFrom'], message: `Must be after ${formatDate(current.effectiveFrom)}, when the current version took effect` });
+      if (v.version === current.version) ctx.addIssue({ code: 'custom', path: ['version'], message: t('admin.forms.errors.versionInUse', { version: current.version }) });
+      if (v.effectiveFrom <= current.effectiveFrom) ctx.addIssue({ code: 'custom', path: ['effectiveFrom'], message: t('admin.forms.errors.effectiveAfter', { date: formatDate(current.effectiveFrom) }) });
     });
 }
 type VersionValues = z.infer<ReturnType<typeof versionSchema>>;
 
 function VersionDialog({ form: current, canEdit, onClose, onSave }: { form: FormVersion; canEdit: boolean; onClose: () => void; onSave: (next: FormVersion) => string[] }) {
+  const t = useT();
   const [saveErrors, setSaveErrors] = useState<string[]>([]);
-  const rhf = useForm<VersionValues>({ resolver: zodResolver(versionSchema(current)), defaultValues: { version: '', effectiveFrom: '', source: current.source } });
+  const schema = useMemo(() => versionSchema(t, current), [t, current]);
+  const rhf = useForm<VersionValues>({ resolver: zodResolver(schema), defaultValues: { version: '', effectiveFrom: '', source: current.source } });
   const errors = rhf.formState.errors;
 
   function submit(values: VersionValues) {
@@ -41,25 +45,23 @@ function VersionDialog({ form: current, canEdit, onClose, onSave }: { form: Form
     <Dialog
       open
       onClose={onClose}
-      title={`Add a version: ${current.label}`}
+      title={t('admin.forms.dialog.title', { label: current.label })}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>
-            Cancel
+            {t('common.actions.cancel')}
           </Button>
           <Button variant="primary" disabled={!canEdit} onClick={() => void rhf.handleSubmit(submit)()}>
-            Add version
+            {t('admin.forms.addVersion')}
           </Button>
         </>
       }
     >
       <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
-        <p className={styles.current}>
-          Current: version {current.version}, effective from {formatDate(current.effectiveFrom)}. Source: {current.source}.
-        </p>
-        <TextField label="New version" required disabled={!canEdit} maxLength={20} placeholder="e.g. 2026.1" {...rhf.register('version')} error={errors.version?.message} />
-        <Controller control={rhf.control} name="effectiveFrom" render={({ field }) => <DateField label="Effective from" required disabled={!canEdit} value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.effectiveFrom?.message} hint="Records created on or after this date use the new version. Type it as dd Mon yyyy." />} />
-        <TextField label="Source" required disabled={!canEdit} maxLength={160} {...rhf.register('source')} error={errors.source?.message} />
+        <p className={styles.current}>{t('admin.forms.dialog.current', { version: current.version, date: formatDate(current.effectiveFrom), source: current.source })}</p>
+        <TextField label={t('admin.forms.dialog.versionField')} required disabled={!canEdit} maxLength={20} placeholder={t('admin.forms.dialog.versionPlaceholder')} {...rhf.register('version')} error={errors.version?.message} />
+        <Controller control={rhf.control} name="effectiveFrom" render={({ field }) => <DateField label={t('admin.forms.dialog.effectiveField')} required disabled={!canEdit} value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.effectiveFrom?.message} hint={t('admin.forms.dialog.effectiveHint')} />} />
+        <TextField label={t('admin.forms.dialog.sourceField')} required disabled={!canEdit} maxLength={160} {...rhf.register('source')} error={errors.source?.message} />
         {saveErrors.length > 0 ? (
           <ul className={styles.errors} role="alert">
             {saveErrors.map((e) => (
@@ -73,29 +75,30 @@ function VersionDialog({ form: current, canEdit, onClose, onSave }: { form: Form
 }
 
 export function Forms() {
+  const t = useT();
   const { config, canEdit, save } = useAdminConfig();
   const [adding, setAdding] = useState<FormVersion | null>(null);
 
   function saveVersion(next: FormVersion): string[] {
     const previous = config.forms.find((f) => f.id === next.id);
-    const result = save({ ...config, forms: config.forms.map((f) => (f.id === next.id ? next : f)) }, 'forms', `${next.label}: version ${previous?.version ?? '?'} to ${next.version}, effective ${formatDate(next.effectiveFrom)}`);
+    const result = save({ ...config, forms: config.forms.map((f) => (f.id === next.id ? next : f)) }, 'forms', t('admin.forms.audit', { label: next.label, previous: previous?.version ?? '?', next: next.version, date: formatDate(next.effectiveFrom) }));
     return result.errors;
   }
 
   return (
     <>
-      <SectionHead title="Forms" lede="The forms in use and the version that applies from a date. A new version never rewrites records made under the old one." />
-      <TableWrap label="Forms and versions">
+      <SectionHead title={sectionLabel('forms')} lede={t('admin.forms.lede')} />
+      <TableWrap label={t('admin.forms.tableLabel')}>
         <Table>
           <thead>
             <tr>
-              <th scope="col">Form</th>
-              <th scope="col">Process</th>
-              <th scope="col">Version</th>
-              <th scope="col">Effective from</th>
-              <th scope="col">Source</th>
+              <th scope="col">{t('admin.forms.columns.form')}</th>
+              <th scope="col">{t('admin.forms.columns.process')}</th>
+              <th scope="col">{t('admin.forms.columns.version')}</th>
+              <th scope="col">{t('admin.forms.columns.effectiveFrom')}</th>
+              <th scope="col">{t('admin.forms.columns.source')}</th>
               <th scope="col">
-                <span className="visually-hidden">Actions</span>
+                <span className="visually-hidden">{t('common.columns.actions')}</span>
               </th>
             </tr>
           </thead>
@@ -115,7 +118,7 @@ export function Forms() {
                 <td className={styles.source}>{f.source}</td>
                 <td>
                   <Button size="sm" variant="secondary" disabled={!canEdit} onClick={() => setAdding(f)}>
-                    Add version
+                    {t('admin.forms.addVersion')}
                   </Button>
                 </td>
               </tr>

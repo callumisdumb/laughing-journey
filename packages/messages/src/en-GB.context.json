@@ -217,6 +217,97 @@
     }
   },
   "admin": {
+    "actions": {
+      "discardChanges": {
+        "maxLength": 24,
+        "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+        "where": "Button that resets an admin form to the saved configuration"
+      }
+    },
+    "agencies": {
+      "columns": {
+        "agencies": {
+          "maxLength": 16,
+          "where": "Team table column header"
+        },
+        "base": {
+          "maxLength": 16,
+          "where": "Team table column header"
+        },
+        "members": {
+          "maxLength": 16,
+          "where": "Team table column header"
+        },
+        "team": {
+          "maxLength": 16,
+          "where": "Team table column header"
+        }
+      },
+      "kind": {
+        "council": {
+          "maxLength": 48,
+          "where": "Organisation kind, shown in the meta line under each organisation heading"
+        },
+        "court": {
+          "maxLength": 48,
+          "where": "Organisation kind, shown in the meta line under each organisation heading"
+        },
+        "fireRescue": {
+          "maxLength": 48,
+          "where": "Organisation kind, shown in the meta line under each organisation heading"
+        },
+        "healthBoard": {
+          "maxLength": 48,
+          "where": "Organisation kind, shown in the meta line under each organisation heading"
+        },
+        "hscp": {
+          "maxLength": 48,
+          "where": "Organisation kind, shown in the meta line under each organisation heading"
+        },
+        "police": {
+          "maxLength": 48,
+          "where": "Organisation kind, shown in the meta line under each organisation heading"
+        },
+        "regulator": {
+          "maxLength": 48,
+          "where": "Organisation kind, shown in the meta line under each organisation heading"
+        },
+        "scra": {
+          "maxLength": 48,
+          "where": "Organisation kind, shown in the meta line under each organisation heading"
+        },
+        "sps": {
+          "maxLength": 48,
+          "where": "Organisation kind, shown in the meta line under each organisation heading"
+        },
+        "thirdSector": {
+          "maxLength": 48,
+          "where": "Organisation kind, shown in the meta line under each organisation heading"
+        }
+      },
+      "lede": {
+        "where": "Lede of the Agencies section"
+      },
+      "noPersonas": {
+        "maxLength": 24,
+        "where": "Agencies cell when a team has no personas"
+      },
+      "orgMeta": {
+        "where": "Meta line under each organisation heading; kind is the organisation kind label"
+      },
+      "tableLabel": {
+        "where": "Accessible name of each organisation's team table"
+      }
+    },
+    "config": {
+      "issue": {
+        "where": "One line in the save error list: the field path and the schema message"
+      },
+      "savedToast": {
+        "maxLength": 16,
+        "where": "Toast title after any admin section is saved"
+      }
+    },
     "copy": {
       "audit": {
         "import": {
@@ -468,6 +559,1487 @@
       "truncated": {
         "screenshot": "phase-5/admin-copy-light-comfortable.png",
         "where": "Note under the table when more rows match than are shown"
+      }
+    },
+    "defaults": {
+      "appearance": {
+        "densityLegend": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Legend of the default density radio group"
+        },
+        "meta": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Meta line under the appearance heading on Defaults"
+        },
+        "themeLegend": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Legend of the default theme radio group"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Heading of the appearance sheet on Defaults"
+        }
+      },
+      "audit": {
+        "where": "Audit entry label when defaults are saved"
+      },
+      "bankHolidays": {
+        "add": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Label of the add bank holiday date field"
+        },
+        "addButton": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Button that adds the typed bank holiday"
+        },
+        "listLabel": {
+          "maxLength": 24,
+          "where": "Accessible name of the bank holidays list"
+        },
+        "meta": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Meta line under the bank holidays heading"
+        },
+        "remove": {
+          "where": "Accessible name of the remove button on a bank holiday; date is formatted"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Heading of the bank holidays sheet"
+        }
+      },
+      "breakGlass": {
+        "hours": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Label of the break-glass hours field"
+        },
+        "hoursHint": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Hint under the break-glass hours field"
+        },
+        "meta": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Meta line under the break-glass heading"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Heading of the break-glass sheet"
+        }
+      },
+      "councilHolidays": {
+        "add": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Label of the add council holiday date field"
+        },
+        "addButton": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Button that adds the typed council holiday"
+        },
+        "empty": {
+          "where": "List item shown when there are no council holidays"
+        },
+        "listLabel": {
+          "maxLength": 32,
+          "where": "Accessible name of the council holidays list"
+        },
+        "meta": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Meta line under the council holidays heading"
+        },
+        "remove": {
+          "where": "Accessible name of the remove button on a council holiday; date is formatted"
+        },
+        "title": {
+          "maxLength": 32,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Heading of the council holidays sheet"
+        }
+      },
+      "density": {
+        "comfortable": {
+          "maxLength": 20,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Default density option"
+        },
+        "compact": {
+          "maxLength": 20,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Default density option"
+        }
+      },
+      "densityHint": {
+        "comfortable": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Hint under the comfortable option"
+        },
+        "compact": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Hint under the compact option"
+        }
+      },
+      "eligibility": {
+        "add": {
+          "maxLength": 32,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Label of the add rule field"
+        },
+        "addButton": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Button that adds the typed eligibility rule"
+        },
+        "addPlaceholder": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Placeholder of the add rule field"
+        },
+        "empty": {
+          "where": "List item shown when there are no eligibility rules"
+        },
+        "listLabel": {
+          "maxLength": 24,
+          "where": "Accessible name of the eligibility rules list"
+        },
+        "meta": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Meta line under the eligibility heading"
+        },
+        "remove": {
+          "where": "Accessible name of the remove button on an eligibility rule"
+        },
+        "title": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Heading of the eligibility sheet"
+        }
+      },
+      "errors": {
+        "date": {
+          "where": "Error under the add-holiday field when the value is not a date"
+        },
+        "dateDuplicate": {
+          "where": "Error under the add-holiday field when the date is already listed; date is formatted"
+        },
+        "hours": {
+          "where": "Validation message when the hours value is not a number"
+        },
+        "hoursInt": {
+          "where": "Validation message when the hours value is not a whole number"
+        },
+        "hoursMax": {
+          "where": "Validation message when the hours value is above 24"
+        },
+        "hoursMin": {
+          "where": "Validation message when the hours value is below 1"
+        },
+        "rule": {
+          "where": "Error under the add-rule field when the rule is too short"
+        },
+        "ruleDuplicate": {
+          "where": "Error under the add-rule field when the rule is already listed"
+        }
+      },
+      "lede": {
+        "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+        "where": "Lede of the Defaults section"
+      },
+      "reasons": {
+        "add": {
+          "maxLength": 32,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Label of the add reason field"
+        },
+        "addButton": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Button that adds the typed reason category"
+        },
+        "addPlaceholder": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Placeholder of the add reason field"
+        },
+        "listLabel": {
+          "maxLength": 40,
+          "where": "Accessible name of the reason categories list"
+        },
+        "meta": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Meta line under the reason categories heading"
+        },
+        "remove": {
+          "where": "Accessible name of the remove button on a reason category"
+        },
+        "title": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Heading of the reason categories sheet"
+        }
+      },
+      "save": {
+        "maxLength": 24,
+        "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+        "where": "Primary button of the defaults form"
+      },
+      "theme": {
+        "dark": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Default theme option"
+        },
+        "light": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Default theme option"
+        },
+        "system": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Default theme option"
+        }
+      },
+      "themeHint": {
+        "dark": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Hint under the dark option"
+        },
+        "light": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Hint under the light option"
+        },
+        "system": {
+          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
+          "where": "Hint under the follow-the-device option"
+        }
+      }
+    },
+    "forms": {
+      "addVersion": {
+        "maxLength": 20,
+        "where": "Row button and dialog confirm button that adds a form version"
+      },
+      "audit": {
+        "where": "Audit entry label when a form version is added; date is formatted"
+      },
+      "columns": {
+        "effectiveFrom": {
+          "maxLength": 20,
+          "where": "Forms table column header"
+        },
+        "form": {
+          "maxLength": 16,
+          "where": "Forms table column header"
+        },
+        "process": {
+          "maxLength": 16,
+          "where": "Forms table column header"
+        },
+        "source": {
+          "maxLength": 16,
+          "where": "Forms table column header"
+        },
+        "version": {
+          "maxLength": 16,
+          "where": "Forms table column header"
+        }
+      },
+      "dialog": {
+        "current": {
+          "where": "Line at the top of the add-version dialog describing the version in use; date is formatted"
+        },
+        "effectiveField": {
+          "maxLength": 24,
+          "where": "Date field label in the add-version dialog"
+        },
+        "effectiveHint": {
+          "where": "Hint under the effective-from date field"
+        },
+        "sourceField": {
+          "maxLength": 24,
+          "where": "Field label in the add-version dialog"
+        },
+        "title": {
+          "where": "Title of the add-version dialog; label is the form name"
+        },
+        "versionField": {
+          "maxLength": 24,
+          "where": "Field label in the add-version dialog"
+        },
+        "versionPlaceholder": {
+          "maxLength": 24,
+          "where": "Placeholder of the new version field"
+        }
+      },
+      "errors": {
+        "effective": {
+          "where": "Validation message when the effective-from date is not a date"
+        },
+        "effectiveAfter": {
+          "where": "Validation message when the effective-from date is not after the current version; date is formatted"
+        },
+        "source": {
+          "where": "Validation message when the source is too short"
+        },
+        "version": {
+          "where": "Validation message when the new version is blank"
+        },
+        "versionInUse": {
+          "where": "Validation message when the new version equals the current one"
+        }
+      },
+      "lede": {
+        "where": "Lede of the Forms section"
+      },
+      "tableLabel": {
+        "maxLength": 24,
+        "where": "Accessible name of the forms table"
+      }
+    },
+    "markings": {
+      "audit": {
+        "where": "Audit entry label when markings are saved; labels lists the marking texts"
+      },
+      "bannerPreview": {
+        "where": "Accessible name of the banner preview for a marking"
+      },
+      "errors": {
+        "handlingMin": {
+          "where": "Validation message when the handling instruction is too short"
+        },
+        "textMax": {
+          "where": "Validation message when the marking text is too long"
+        },
+        "textMin": {
+          "where": "Validation message when the marking text is too short"
+        }
+      },
+      "handlingField": {
+        "maxLength": 24,
+        "where": "Field label for the handling instruction"
+      },
+      "lede": {
+        "where": "Lede of the Markings section"
+      },
+      "official": {
+        "title": {
+          "maxLength": 24,
+          "where": "Heading of the Official marking sheet"
+        },
+        "use": {
+          "where": "Meta line under the Official marking heading"
+        }
+      },
+      "officialSensitive": {
+        "title": {
+          "maxLength": 24,
+          "where": "Heading of the Official-sensitive marking sheet"
+        },
+        "use": {
+          "where": "Meta line under the Official-sensitive marking heading"
+        }
+      },
+      "restricted": {
+        "title": {
+          "maxLength": 24,
+          "where": "Heading of the Restricted marking sheet"
+        },
+        "use": {
+          "where": "Meta line under the Restricted marking heading"
+        }
+      },
+      "save": {
+        "maxLength": 24,
+        "where": "Primary button of the markings form"
+      },
+      "textField": {
+        "maxLength": 24,
+        "where": "Field label for the marking text"
+      }
+    },
+    "nav": {
+      "label": {
+        "maxLength": 24,
+        "where": "Accessible name of the admin sub-navigation"
+      },
+      "overview": {
+        "maxLength": 16,
+        "screenshot": "phase-5/admin-light-comfortable.png",
+        "where": "First link in the admin sub-navigation"
+      }
+    },
+    "needToKnow": {
+      "audience": {
+        "add": {
+          "maxLength": 20,
+          "where": "Confirm button of the add-audience dialog"
+        },
+        "addTitle": {
+          "where": "Title of the add-audience dialog and accessible name of the add button in each matrix cell"
+        },
+        "agency": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Fact label in the audience dialog"
+        },
+        "anyRoleAt": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Role option for any role at the agency; agency is the short agency name"
+        },
+        "anyRoleReferrer": {
+          "maxLength": 40,
+          "where": "Role option when the audience is the referrer"
+        },
+        "channel": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Field label in the audience dialog"
+        },
+        "condition": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Field label in the audience dialog"
+        },
+        "conditionHint": {
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Hint under the condition flag field"
+        },
+        "conditionLabel": {
+          "maxLength": 32,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Field label in the audience dialog"
+        },
+        "conditionLabelPlaceholder": {
+          "maxLength": 40,
+          "where": "Placeholder of the condition in plain words field"
+        },
+        "conditionPlaceholder": {
+          "maxLength": 24,
+          "where": "Placeholder of the condition flag field"
+        },
+        "detailLevel": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Field label in the audience dialog"
+        },
+        "editTitle": {
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Title of the edit-audience dialog; label is the audience label"
+        },
+        "fields": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Field label in the audience dialog"
+        },
+        "fieldsHintOnly": {
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Hint under the named fields field when the detail level is named fields only"
+        },
+        "fieldsHintOptional": {
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Hint under the named fields field for other detail levels"
+        },
+        "label": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Field label in the audience dialog"
+        },
+        "labelHint": {
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Hint under the audience label field"
+        },
+        "lawfulBasis": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Field label in the audience dialog"
+        },
+        "lawfulBasisHint": {
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Hint under the lawful basis field"
+        },
+        "processStage": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Fact label in the audience dialog"
+        },
+        "processStageValue": {
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Fact value in the audience dialog: process label and stage label"
+        },
+        "referrerAgency": {
+          "where": "Agency fact value when the audience is the referrer"
+        },
+        "referrerRoleError": {
+          "where": "Save error when a referrer audience names a specific role"
+        },
+        "remove": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Danger button in the edit-audience dialog"
+        },
+        "role": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Field label in the audience dialog"
+        },
+        "rowId": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Fact label in the edit-audience dialog"
+        },
+        "save": {
+          "maxLength": 20,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Confirm button of the edit-audience dialog"
+        },
+        "trigger": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Field label in the audience dialog"
+        },
+        "triggerHint": {
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Hint under the trigger field"
+        }
+      },
+      "audienceErrors": {
+        "condition": {
+          "where": "Validation message when the condition flag has characters other than letters"
+        },
+        "conditionLabel": {
+          "where": "Validation message when a condition flag has no plain-words label"
+        },
+        "fields": {
+          "where": "Validation message when named fields only has no fields"
+        },
+        "label": {
+          "where": "Validation message when the audience label is too short"
+        },
+        "lawfulBasis": {
+          "where": "Validation message when the lawful basis hint is too short"
+        },
+        "trigger": {
+          "where": "Validation message when the trigger is too short"
+        }
+      },
+      "audit": {
+        "where": "Audit entry label when need-to-know is saved; process is the short process name"
+      },
+      "channel": {
+        "connectorPush": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Channel option in the audience dialog"
+        },
+        "inApp": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Channel option in the audience dialog"
+        },
+        "secureEmailDigest": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-edit-light-comfortable.png",
+          "where": "Channel option in the audience dialog"
+        }
+      },
+      "detailWord": {
+        "fields": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Detail level word on a matrix chip and in the legend"
+        },
+        "full": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Detail level word on a matrix chip and in the legend"
+        },
+        "presence": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Detail level word on a matrix chip and in the legend"
+        },
+        "summary": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Detail level word on a matrix chip and in the legend"
+        }
+      },
+      "exclusion": {
+        "add": {
+          "maxLength": 20,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Button on the exclusions sheet and confirm button of the add-exclusion dialog"
+        },
+        "addTitle": {
+          "where": "Title of the add-exclusion dialog; process is the short process name"
+        },
+        "editTitle": {
+          "where": "Title of the edit-exclusion dialog; label is the exclusion label"
+        },
+        "everyStage": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Stage option and table cell for an exclusion that applies at every stage"
+        },
+        "hardNote": {
+          "where": "Banner in the exclusion dialog for a hard exclusion"
+        },
+        "label": {
+          "maxLength": 16,
+          "where": "Field label in the exclusion dialog"
+        },
+        "liftableBy": {
+          "maxLength": 24,
+          "where": "Field label in the exclusion dialog"
+        },
+        "liftableHint": {
+          "where": "Hint under the can-be-lifted-by field"
+        },
+        "liftablePlaceholder": {
+          "maxLength": 40,
+          "where": "Placeholder of the can-be-lifted-by field"
+        },
+        "party": {
+          "maxLength": 16,
+          "where": "Field label in the exclusion dialog"
+        },
+        "reason": {
+          "maxLength": 16,
+          "where": "Field label in the exclusion dialog"
+        },
+        "save": {
+          "maxLength": 20,
+          "where": "Confirm button of the edit-exclusion dialog"
+        },
+        "stage": {
+          "maxLength": 16,
+          "where": "Field label in the exclusion dialog"
+        }
+      },
+      "exclusionErrors": {
+        "label": {
+          "where": "Validation message when the exclusion label is too short"
+        },
+        "reason": {
+          "where": "Validation message when the exclusion reason is too short"
+        },
+        "stage": {
+          "where": "Validation message when no stage is chosen"
+        }
+      },
+      "exclusions": {
+        "cannotBeLifted": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Can-be-lifted-by cell when nobody can lift the exclusion"
+        },
+        "columnLiftableBy": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Exclusions table column header"
+        },
+        "columnParty": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Exclusions table column header"
+        },
+        "columnReason": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Exclusions table column header"
+        },
+        "columnStage": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Exclusions table column header"
+        },
+        "emptyText": {
+          "where": "Empty state text when a process has no exclusions"
+        },
+        "emptyTitle": {
+          "maxLength": 40,
+          "where": "Empty state title when a process has no exclusions"
+        },
+        "hardNote": {
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Note under a hard exclusion in the table, and the title of its disabled remove button"
+        },
+        "meta": {
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Meta line under the exclusions heading"
+        },
+        "remove": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Remove button on an exclusion row"
+        },
+        "rowSr": {
+          "where": "Hidden suffix after the Edit, View and Remove buttons on an exclusion row"
+        },
+        "tableLabel": {
+          "where": "Accessible name of the exclusions table; process is the short process name"
+        },
+        "title": {
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Heading of the exclusions sheet; process is the process label"
+        }
+      },
+      "issueRow": {
+        "maxLength": 8,
+        "where": "Path shown in a save error when the schema issue has no field path"
+      },
+      "lede": {
+        "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+        "where": "Lede of the Need-to-know section"
+      },
+      "mappaNote": {
+        "where": "Note at the foot of the MAPPA need-to-know tab"
+      },
+      "matrix": {
+        "chipSr": {
+          "where": "Hidden text after the detail word on a matrix chip; label is the audience label"
+        },
+        "chipSrConditional": {
+          "where": "Hidden text after the detail word on a conditional matrix chip; condition is the plain-words condition"
+        },
+        "conditionalMark": {
+          "maxLength": 6,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Suffix on a matrix chip whose row applies only when a flag is set"
+        },
+        "legendItem": {
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Legend text after each detail word; label is the detail level name"
+        },
+        "legendNote": {
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Note at the end of the matrix legend"
+        },
+        "meta": {
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Meta line under the matrix heading"
+        },
+        "referrerColumn": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Referrer column header of the matrix, and the referrer name in dialog titles"
+        },
+        "stageColumn": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "First column header of the matrix"
+        },
+        "tableLabel": {
+          "where": "Accessible name of the matrix table; process is the short process name"
+        },
+        "title": {
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Heading of the matrix sheet; process is the process label"
+        }
+      },
+      "party": {
+        "allegedPerpetrator": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Excluded party: option in the exclusion dialog and meta in the exclusions table"
+        },
+        "employer": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Excluded party: option in the exclusion dialog and meta in the exclusions table"
+        },
+        "notOnDistribution": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Excluded party: option in the exclusion dialog and meta in the exclusions table"
+        },
+        "parentsIfRisk": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Excluded party: option in the exclusion dialog and meta in the exclusions table"
+        },
+        "perpetrator": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Excluded party: option in the exclusion dialog and meta in the exclusions table"
+        },
+        "perpetratorAssociates": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Excluded party: option in the exclusion dialog and meta in the exclusions table"
+        },
+        "public": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Excluded party: option in the exclusion dialog and meta in the exclusions table"
+        },
+        "victim": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Excluded party: option in the exclusion dialog and meta in the exclusions table"
+        }
+      },
+      "preview": {
+        "agency": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview control label"
+        },
+        "everyone": {
+          "maxLength": 32,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview fact label"
+        },
+        "everything": {
+          "maxLength": 16,
+          "where": "Preview named fields value when the detail level is the full record"
+        },
+        "fieldsNone": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview named fields value when no fields are named"
+        },
+        "flags": {
+          "maxLength": 24,
+          "where": "Legend of the preview process flags group"
+        },
+        "lawfulBasis": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview fact label"
+        },
+        "level": {
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview result line: role label, short agency name, stage label and the resolved detail level"
+        },
+        "meta": {
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Meta line under the preview heading"
+        },
+        "mustNot": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview fact label"
+        },
+        "namedFields": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview fact label"
+        },
+        "nobody": {
+          "maxLength": 32,
+          "where": "Preview recipients value when nobody is told"
+        },
+        "noExclusions": {
+          "maxLength": 32,
+          "where": "Preview exclusions value when none apply"
+        },
+        "notApplicable": {
+          "maxLength": 16,
+          "where": "Preview lawful basis value when no row applies"
+        },
+        "nothing": {
+          "maxLength": 24,
+          "where": "Resolved level in the preview result line when no row matches"
+        },
+        "recipient": {
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "One recipient in the preview: audience label and detail word"
+        },
+        "referral": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview checkbox label"
+        },
+        "referralHint": {
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Hint under the preview referral checkbox"
+        },
+        "role": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview control label"
+        },
+        "rowsApply": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview fact label"
+        },
+        "rowsNone": {
+          "where": "Preview fact value when no row applies"
+        },
+        "stage": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview control label"
+        },
+        "title": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Heading of the preview sheet"
+        },
+        "why": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Preview fact label"
+        },
+        "whyNone": {
+          "where": "Preview fact value when no row applies"
+        }
+      },
+      "saveBar": {
+        "clean": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Save bar status when nothing has changed"
+        },
+        "dirty": {
+          "where": "Save bar status while there are unsaved changes"
+        },
+        "save": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-need-to-know-light-comfortable.png",
+          "where": "Primary button of the save bar"
+        }
+      },
+      "tabsLabel": {
+        "maxLength": 16,
+        "where": "Accessible name of the process tab list on Need-to-know"
+      }
+    },
+    "overview": {
+      "area": {
+        "audit": {
+          "where": "Audit entry label when the area details are saved; council is the council name entered"
+        },
+        "meta": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Meta line under the area details heading"
+        },
+        "save": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Primary button of the area details form"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Heading of the area details sheet"
+        }
+      },
+      "areaErrors": {
+        "councilName": {
+          "where": "Validation message when the area details field is blank"
+        },
+        "healthBoardName": {
+          "where": "Validation message when the area details field is blank"
+        },
+        "hscpName": {
+          "where": "Validation message when the area details field is blank"
+        },
+        "maracArea": {
+          "where": "Validation message when the area details field is blank"
+        },
+        "policeDivision": {
+          "where": "Validation message when the area details field is blank"
+        },
+        "ppuBase": {
+          "where": "Validation message when the area details field is blank"
+        },
+        "sheriffCourt": {
+          "where": "Validation message when the area details field is blank"
+        }
+      },
+      "areaFields": {
+        "councilName": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Field label in the area details form"
+        },
+        "healthBoardName": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Field label in the area details form"
+        },
+        "hscpName": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Field label in the area details form"
+        },
+        "maracArea": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Field label in the area details form"
+        },
+        "policeDivision": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Field label in the area details form"
+        },
+        "ppuBase": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Field label in the area details form"
+        },
+        "sheriffCourt": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Field label in the area details form"
+        }
+      },
+      "counts": {
+        "agencies": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Count line on the Agencies overview card"
+        },
+        "defaults": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Count line on the Defaults overview card; theme and density are the configured values"
+        },
+        "forms": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Count line on the Forms overview card"
+        },
+        "markings": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Count line on the Markings overview card"
+        },
+        "needToKnow": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Count line on the Need-to-know overview card"
+        },
+        "timescales": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Count line on the Timescales overview card"
+        },
+        "users": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Count line on the Users overview card"
+        }
+      },
+      "lede": {
+        "screenshot": "phase-5/admin-light-comfortable.png",
+        "where": "Lede of the admin overview"
+      },
+      "reset": {
+        "dialogText": {
+          "where": "Body of the reset confirmation dialog on the admin overview"
+        },
+        "dialogTitle": {
+          "maxLength": 32,
+          "where": "Title of the reset confirmation dialog on the admin overview"
+        },
+        "toastText": {
+          "where": "Toast text after the reset from the admin overview"
+        }
+      },
+      "sectionsHeading": {
+        "maxLength": 16,
+        "screenshot": "phase-5/admin-light-comfortable.png",
+        "where": "Heading above the section cards on the overview"
+      }
+    },
+    "readOnly": {
+      "error": {
+        "where": "Save error returned when a non-admin tries to save configuration"
+      },
+      "note": {
+        "screenshot": "phase-5/admin-light-comfortable.png",
+        "where": "Note under an admin section heading when the person cannot edit"
+      }
+    },
+    "sections": {
+      "agencies": {
+        "description": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section description on the overview card"
+        },
+        "label": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section name: sub-navigation link, overview card title and section heading"
+        }
+      },
+      "defaults": {
+        "description": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section description on the overview card"
+        },
+        "label": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section name: sub-navigation link, overview card title and section heading"
+        }
+      },
+      "forms": {
+        "description": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section description on the overview card"
+        },
+        "label": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section name: sub-navigation link, overview card title and section heading"
+        }
+      },
+      "labels": {
+        "description": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section description on the overview card"
+        },
+        "label": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section name: sub-navigation link, overview card title and section heading"
+        }
+      },
+      "markings": {
+        "description": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section description on the overview card"
+        },
+        "label": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section name: sub-navigation link, overview card title and section heading"
+        }
+      },
+      "needToKnow": {
+        "description": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section description on the overview card"
+        },
+        "label": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section name: sub-navigation link, overview card title and section heading"
+        }
+      },
+      "timescales": {
+        "description": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section description on the overview card"
+        },
+        "label": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section name: sub-navigation link, overview card title and section heading"
+        }
+      },
+      "users": {
+        "description": {
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section description on the overview card"
+        },
+        "label": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-light-comfortable.png",
+          "where": "Admin section name: sub-navigation link, overview card title and section heading"
+        }
+      }
+    },
+    "timescales": {
+      "audit": {
+        "where": "Audit entry label when a timescale is saved; timescale is the formatted amount and unit"
+      },
+      "columns": {
+        "clock": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Timescales column header"
+        },
+        "confidence": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Timescales column header"
+        },
+        "source": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Timescales column header"
+        },
+        "timescale": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Timescales column header"
+        },
+        "trigger": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Timescales column header"
+        }
+      },
+      "confidenceText": {
+        "advisory": {
+          "where": "Confidence explanation in the edit timescale dialog"
+        },
+        "high": {
+          "where": "Confidence explanation in the edit timescale dialog"
+        },
+        "local": {
+          "where": "Confidence explanation in the edit timescale dialog"
+        },
+        "verify": {
+          "where": "Confidence explanation in the edit timescale dialog"
+        }
+      },
+      "confidenceWord": {
+        "advisory": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Confidence pill on Timescales"
+        },
+        "high": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Confidence pill on Timescales"
+        },
+        "local": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Confidence pill on Timescales"
+        },
+        "verify": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Confidence pill on Timescales"
+        }
+      },
+      "dialog": {
+        "amount": {
+          "maxLength": 16,
+          "where": "Field label in the edit timescale dialog"
+        },
+        "confidence": {
+          "maxLength": 16,
+          "where": "Fact label in the edit timescale dialog"
+        },
+        "confidenceVerify": {
+          "where": "Confidence explanation in the dialog when the rule is still to verify; text is the confidence explanation"
+        },
+        "localNote": {
+          "maxLength": 16,
+          "where": "Field label in the edit timescale dialog"
+        },
+        "localNoteHint": {
+          "where": "Hint under the local note field"
+        },
+        "save": {
+          "maxLength": 24,
+          "where": "Confirm button of the edit timescale dialog"
+        },
+        "source": {
+          "maxLength": 16,
+          "where": "Fact label in the edit timescale dialog"
+        },
+        "statutoryNote": {
+          "where": "Note shown in the dialog for a statutory rule"
+        },
+        "title": {
+          "where": "Title of the edit timescale dialog; label is the clock name"
+        },
+        "trigger": {
+          "maxLength": 16,
+          "where": "Fact label in the edit timescale dialog"
+        },
+        "unit": {
+          "maxLength": 16,
+          "where": "Field label in the edit timescale dialog"
+        },
+        "warn": {
+          "maxLength": 32,
+          "where": "Field label in the edit timescale dialog"
+        },
+        "warnHint": {
+          "where": "Hint under the warn field"
+        }
+      },
+      "errors": {
+        "amount": {
+          "where": "Validation message when the amount is not a number"
+        },
+        "amountPositive": {
+          "where": "Validation message when the amount is zero or negative"
+        },
+        "localNoteMax": {
+          "where": "Validation message when the local note is too long"
+        },
+        "warnDays": {
+          "where": "Validation message when the warn days is not a number"
+        },
+        "warnDaysInt": {
+          "where": "Validation message when the warn days is not a whole number"
+        },
+        "warnDaysNonnegative": {
+          "where": "Validation message when the warn days is negative"
+        }
+      },
+      "groupMeta": {
+        "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+        "where": "Meta line under each process heading on Timescales"
+      },
+      "kind": {
+        "deadline": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Rule kind in the meta under a clock label"
+        },
+        "expiry": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Rule kind in the meta under a clock label"
+        },
+        "review": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Rule kind in the meta under a clock label"
+        },
+        "warning": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Rule kind in the meta under a clock label"
+        }
+      },
+      "kindAndId": {
+        "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+        "where": "Meta under a clock label: the rule kind and its identifier"
+      },
+      "lede": {
+        "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+        "where": "Lede of the Timescales section"
+      },
+      "tableLabel": {
+        "where": "Accessible name of each process's timescale table; process is the process label"
+      },
+      "toVerify": {
+        "maxLength": 16,
+        "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+        "where": "Flag beside the confidence pill of a rule still to verify"
+      },
+      "unit": {
+        "calendarDays": {
+          "maxLength": 16,
+          "where": "Unit option in the edit timescale dialog"
+        },
+        "months": {
+          "maxLength": 16,
+          "where": "Unit option in the edit timescale dialog"
+        },
+        "weeks": {
+          "maxLength": 16,
+          "where": "Unit option in the edit timescale dialog"
+        },
+        "workingDays": {
+          "maxLength": 16,
+          "where": "Unit option in the edit timescale dialog"
+        }
+      },
+      "warnAt": {
+        "maxLength": 24,
+        "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+        "where": "Meta under a timescale: days before due that the clock turns amber"
+      }
+    },
+    "title": {
+      "maxLength": 16,
+      "screenshot": "phase-5/admin-light-comfortable.png",
+      "where": "Kicker above every admin section heading, and the heading of the overview and unknown-section pages"
+    },
+    "unknown": {
+      "emptyText": {
+        "where": "Empty state text when the admin path names no section; section is the path segment typed"
+      },
+      "emptyTitle": {
+        "maxLength": 32,
+        "where": "Empty state title when the admin path names no section"
+      },
+      "lede": {
+        "maxLength": 40,
+        "where": "Lede when the admin path names no section"
+      }
+    },
+    "users": {
+      "columns": {
+        "agency": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-users-light-comfortable.png",
+          "where": "Personas table column header"
+        },
+        "base": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-users-light-comfortable.png",
+          "where": "Personas table column header"
+        },
+        "cases": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-users-light-comfortable.png",
+          "where": "Personas table column header"
+        },
+        "persona": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-users-light-comfortable.png",
+          "where": "Personas table column header"
+        },
+        "role": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-users-light-comfortable.png",
+          "where": "Personas table column header"
+        },
+        "team": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-users-light-comfortable.png",
+          "where": "Personas table column header"
+        }
+      },
+      "count": {
+        "maxLength": 32,
+        "screenshot": "phase-5/admin-users-light-comfortable.png",
+        "where": "Count beside the persona filter"
+      },
+      "empty": {
+        "where": "Table row shown when the filter matches nobody"
+      },
+      "filter": {
+        "maxLength": 24,
+        "screenshot": "phase-5/admin-users-light-comfortable.png",
+        "where": "Label of the persona filter field"
+      },
+      "filterPlaceholder": {
+        "screenshot": "phase-5/admin-users-light-comfortable.png",
+        "where": "Placeholder of the persona filter field"
+      },
+      "lede": {
+        "screenshot": "phase-5/admin-users-light-comfortable.png",
+        "where": "Lede of the Users section"
+      },
+      "noTeam": {
+        "maxLength": 16,
+        "where": "Team cell when the persona has no team"
+      },
+      "oversight": {
+        "maxLength": 32,
+        "screenshot": "phase-5/admin-users-light-comfortable.png",
+        "where": "Meta under a role that carries an oversight level; oversight is the level identifier"
+      },
+      "signInAs": {
+        "maxLength": 16,
+        "screenshot": "phase-5/admin-users-light-comfortable.png",
+        "where": "Visible part of the sign-in button; the persona name follows as hidden text"
+      },
+      "tableLabel": {
+        "maxLength": 24,
+        "where": "Accessible name of the personas table"
+      },
+      "you": {
+        "maxLength": 8,
+        "screenshot": "phase-5/admin-users-light-comfortable.png",
+        "where": "Pill on the row of the signed-in persona"
       }
     }
   },

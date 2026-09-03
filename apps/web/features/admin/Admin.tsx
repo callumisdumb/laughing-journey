@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@mas/messages';
 import { EmptyState } from '@mas/ui';
 import { useEffect, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
@@ -16,7 +17,7 @@ import { Overview } from './Overview';
 import { SectionHead } from './SectionHead';
 import { Timescales } from './Timescales';
 import { Users } from './Users';
-import { ADMIN_SECTIONS, isAdminSection } from './sections';
+import { ADMIN_SECTIONS, isAdminSection, sectionLabel } from './sections';
 
 export interface AdminProps {
   /** The path segment after /admin, or undefined for the overview. */
@@ -25,6 +26,7 @@ export interface AdminProps {
 
 /** Local configuration (brief 10.14): a left sub-navigation and one section at a time. */
 export function Admin({ section }: AdminProps) {
+  const t = useT();
   const user = useCurrentUser();
   const select = useSelection((s) => s.select);
 
@@ -39,8 +41,8 @@ export function Admin({ section }: AdminProps) {
   else if (!isAdminSection(section)) {
     body = (
       <>
-        <SectionHead title="Admin" lede="This section does not exist." />
-        <EmptyState title="No such admin section" text={`"${section}" is not an admin section. Choose one from the list.`} />
+        <SectionHead title={t('admin.title')} lede={t('admin.unknown.lede')} />
+        <EmptyState title={t('admin.unknown.emptyTitle')} text={t('admin.unknown.emptyText', { section })} />
       </>
     );
   } else {
@@ -75,13 +77,13 @@ export function Admin({ section }: AdminProps) {
   return (
     <div className="page">
       <div className={styles.layout}>
-        <nav className={styles.subnav} aria-label="Admin sections">
+        <nav className={styles.subnav} aria-label={t('admin.nav.label')}>
           <AppLink href="/admin" current="exact" className={styles.navLink}>
-            Overview
+            {t('admin.nav.overview')}
           </AppLink>
           {ADMIN_SECTIONS.map((s) => (
             <AppLink key={s.id} href={`/admin/${s.id}`} current="section" className={styles.navLink}>
-              {s.label}
+              {sectionLabel(s.id)}
             </AppLink>
           ))}
         </nav>

@@ -26,16 +26,18 @@ import {
   type RoleId,
   type Stage,
 } from '@mas/domain';
+import { tKey, useT, type Translator } from '@mas/messages';
 import { AGENCY_GLYPHS, Button, CheckboxField, Dialog, EmptyState, IconButton, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Table, TableWrap, Tabs, TextField, TextareaField } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, Lock, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { useAppStore } from '@/lib/store';
 import styles from './NeedToKnow.module.css';
 import { SectionHead } from './SectionHead';
+import { sectionLabel } from './sections';
 import { useAdminConfig } from './useAdminConfig';
 
 type AudienceAgency = NeedToKnowRow['audience']['agency'];
@@ -45,19 +47,22 @@ const COLUMNS: readonly AudienceAgency[] = [...AGENCIES, 'referrer'];
 const ROLE_OPTIONS = [...ROLES, 'any'] as const;
 const PARTIES = ['perpetrator', 'perpetrator-associates', 'alleged-perpetrator', 'victim', 'employer', 'public', 'parents-if-risk', 'not-on-distribution'] as const satisfies readonly Party[];
 
-const DETAIL_WORD: Record<DetailLevel, string> = { presence: 'presence', fields: 'fields', summary: 'summary', full: 'full' };
-const CHANNEL_LABELS: Record<Channel, string> = { 'in-app': 'In app', 'secure-email-digest': 'Secure email digest', 'connector-push': 'Connector push' };
-const PARTY_LABELS: Record<Party, string> = {
-  perpetrator: 'Perpetrator',
-  'perpetrator-associates': "Perpetrator's family or associates",
-  'alleged-perpetrator': 'Alleged perpetrator',
-  victim: 'Victims',
-  employer: 'Employers',
-  public: 'Public',
-  'parents-if-risk': 'Parents and carers where sharing increases risk',
-  'not-on-distribution': 'Anyone not on the distribution list',
+const CHANNEL_KEYS: Record<Channel, string> = { 'in-app': 'inApp', 'secure-email-digest': 'secureEmailDigest', 'connector-push': 'connectorPush' };
+const PARTY_KEYS: Record<Party, string> = {
+  perpetrator: 'perpetrator',
+  'perpetrator-associates': 'perpetratorAssociates',
+  'alleged-perpetrator': 'allegedPerpetrator',
+  victim: 'victim',
+  employer: 'employer',
+  public: 'public',
+  'parents-if-risk': 'parentsIfRisk',
+  'not-on-distribution': 'notOnDistribution',
 };
-const HARD_TEXT = 'Hard exclusion from the brief; cannot be lifted in the UI';
+
+/** The lower-case detail word on a matrix chip: presence, fields, summary or full. */
+const detailWord = (level: DetailLevel) => tKey(`admin.needToKnow.detailWord.${level}`);
+const channelLabel = (channel: Channel) => tKey(`admin.needToKnow.channel.${CHANNEL_KEYS[channel]}`);
+const partyLabel = (party: Party) => tKey(`admin.needToKnow.party.${PARTY_KEYS[party]}`);
 
 /** The brief's hard exclusions: MARAC never tells the perpetrator or their associates; MAPPA never tells victims. */
 function isHardExclusion(e: Exclusion): boolean {
@@ -66,36 +71,38 @@ function isHardExclusion(e: Exclusion): boolean {
   return false;
 }
 
-function columnLabel(a: AudienceAgency): string {
-  return a === 'referrer' ? 'Referrer' : AGENCY_SHORT[a];
+function columnLabel(t: Translator, a: AudienceAgency): string {
+  return a === 'referrer' ? t('admin.needToKnow.matrix.referrerColumn') : AGENCY_SHORT[a];
 }
 
-function issueList(issues: Array<{ path: PropertyKey[]; message: string }>): string[] {
-  return issues.map((i) => `${i.path.map(String).join('.') || 'row'}: ${i.message}`);
+function issueList(t: Translator, issues: Array<{ path: PropertyKey[]; message: string }>): string[] {
+  return issues.map((i) => t('admin.config.issue', { path: i.path.map(String).join('.') || t('admin.needToKnow.issueRow'), message: i.message }));
 }
 
-const audienceSchema = z
-  .object({
-    label: z.string().trim().min(2, 'Name the audience, for example "Social work senior"').max(80),
-    role: z.enum(ROLE_OPTIONS),
-    detailLevel: z.enum(DETAIL_LEVELS),
-    fields: z.string().max(400),
-    channel: z.enum(CHANNELS),
-    trigger: z.string().trim().min(3, 'Say what triggers the notification, for example "IRD convened"').max(120),
-    condition: z
-      .string()
-      .trim()
-      .max(40)
-      .regex(/^[A-Za-z]*$/, 'A flag name in letters only, for example schoolAge'),
-    conditionLabel: z.string().trim().max(160),
-    lawfulBasisHint: z.string().trim().min(5, 'Give the lawful basis the recipient will see').max(400),
-  })
-  .superRefine((v, ctx) => {
-    const fields = v.fields.split(',').map((s) => s.trim()).filter(Boolean);
-    if (v.detailLevel === 'fields' && fields.length === 0) ctx.addIssue({ code: 'custom', path: ['fields'], message: 'Named fields only needs at least one field, separated by commas' });
-    if (v.condition && !v.conditionLabel) ctx.addIssue({ code: 'custom', path: ['conditionLabel'], message: 'Say the condition in plain words, for example "If the child is school-age"' });
-  });
-type AudienceValues = z.infer<typeof audienceSchema>;
+function audienceSchema(t: Translator) {
+  return z
+    .object({
+      label: z.string().trim().min(2, t('admin.needToKnow.audienceErrors.label')).max(80),
+      role: z.enum(ROLE_OPTIONS),
+      detailLevel: z.enum(DETAIL_LEVELS),
+      fields: z.string().max(400),
+      channel: z.enum(CHANNELS),
+      trigger: z.string().trim().min(3, t('admin.needToKnow.audienceErrors.trigger')).max(120),
+      condition: z
+        .string()
+        .trim()
+        .max(40)
+        .regex(/^[A-Za-z]*$/, t('admin.needToKnow.audienceErrors.condition')),
+      conditionLabel: z.string().trim().max(160),
+      lawfulBasisHint: z.string().trim().min(5, t('admin.needToKnow.audienceErrors.lawfulBasis')).max(400),
+    })
+    .superRefine((v, ctx) => {
+      const fields = v.fields.split(',').map((s) => s.trim()).filter(Boolean);
+      if (v.detailLevel === 'fields' && fields.length === 0) ctx.addIssue({ code: 'custom', path: ['fields'], message: t('admin.needToKnow.audienceErrors.fields') });
+      if (v.condition && !v.conditionLabel) ctx.addIssue({ code: 'custom', path: ['conditionLabel'], message: t('admin.needToKnow.audienceErrors.conditionLabel') });
+    });
+}
+type AudienceValues = z.infer<ReturnType<typeof audienceSchema>>;
 
 interface AudienceTarget {
   row?: NeedToKnowRow;
@@ -104,11 +111,13 @@ interface AudienceTarget {
 }
 
 function AudienceDialog({ process, target, canEdit, onClose, onSave, onRemove }: { process: ProcessType; target: AudienceTarget; canEdit: boolean; onClose: () => void; onSave: (row: NeedToKnowRow) => void; onRemove: (id: string) => void }) {
+  const t = useT();
   const newId = useAppStore((s) => s.newId);
   const [saveErrors, setSaveErrors] = useState<string[]>([]);
   const row = target.row;
+  const schema = useMemo(() => audienceSchema(t), [t]);
   const form = useForm<AudienceValues>({
-    resolver: zodResolver(audienceSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       label: row?.audience.label ?? '',
       role: row?.audience.role ?? 'any',
@@ -125,13 +134,13 @@ function AudienceDialog({ process, target, canEdit, onClose, onSave, onRemove }:
   const detailLevel = form.watch('detailLevel');
   const roleOptions =
     target.agency === 'referrer'
-      ? [{ value: 'any', label: 'Any role at the referring agency' }]
-      : [{ value: 'any', label: `Any role at ${AGENCY_SHORT[target.agency]}` }, ...ROLES.filter((r) => ROLE_DEFINITIONS[r].agency === target.agency).map((r) => ({ value: r, label: ROLE_DEFINITIONS[r].label }))];
+      ? [{ value: 'any', label: t('admin.needToKnow.audience.anyRoleReferrer') }]
+      : [{ value: 'any', label: t('admin.needToKnow.audience.anyRoleAt', { agency: AGENCY_SHORT[target.agency] }) }, ...ROLES.filter((r) => ROLE_DEFINITIONS[r].agency === target.agency).map((r) => ({ value: r, label: ROLE_DEFINITIONS[r].label }))];
 
   function submit(values: AudienceValues) {
     const fields = values.fields.split(',').map((s) => s.trim()).filter(Boolean);
     if (target.agency === 'referrer' && values.role !== 'any') {
-      setSaveErrors(['role: the referrer audience applies to any role at the referring agency']);
+      setSaveErrors([t('admin.needToKnow.audience.referrerRoleError')]);
       return;
     }
     const candidate = {
@@ -149,7 +158,7 @@ function AudienceDialog({ process, target, canEdit, onClose, onSave, onRemove }:
     };
     const parsed = needToKnowRowSchema.safeParse(candidate);
     if (!parsed.success) {
-      setSaveErrors(issueList(parsed.error.issues));
+      setSaveErrors(issueList(t, parsed.error.issues));
       return;
     }
     onSave(parsed.data);
@@ -160,7 +169,7 @@ function AudienceDialog({ process, target, canEdit, onClose, onSave, onRemove }:
     <Dialog
       open
       onClose={onClose}
-      title={row ? `Edit audience: ${row.audience.label}` : `Add audience: ${stageLabel(process, target.stage)}, ${columnLabel(target.agency)}`}
+      title={row ? t('admin.needToKnow.audience.editTitle', { label: row.audience.label }) : t('admin.needToKnow.audience.addTitle', { stage: stageLabel(process, target.stage), agency: columnLabel(t, target.agency) })}
       size="lg"
       actions={
         <>
@@ -172,48 +181,46 @@ function AudienceDialog({ process, target, canEdit, onClose, onSave, onRemove }:
                 onClose();
               }}
             >
-              Remove this audience
+              {t('admin.needToKnow.audience.remove')}
             </Button>
           ) : null}
           <Button variant="quiet" onClick={onClose}>
-            Cancel
+            {t('common.actions.cancel')}
           </Button>
           <Button variant="primary" disabled={!canEdit} onClick={() => void form.handleSubmit(submit)()}>
-            {row ? 'Save audience' : 'Add audience'}
+            {row ? t('admin.needToKnow.audience.save') : t('admin.needToKnow.audience.add')}
           </Button>
         </>
       }
     >
       <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
         <dl className={styles.facts}>
-          <dt>Process and stage</dt>
-          <dd>
-            {PROCESS_LABELS[process]}, {stageLabel(process, target.stage)}
-          </dd>
-          <dt>Agency</dt>
-          <dd>{target.agency === 'referrer' ? 'The referring agency, resolved from the process at runtime' : AGENCY_SHORT[target.agency]}</dd>
+          <dt>{t('admin.needToKnow.audience.processStage')}</dt>
+          <dd>{t('admin.needToKnow.audience.processStageValue', { process: PROCESS_LABELS[process], stage: stageLabel(process, target.stage) })}</dd>
+          <dt>{t('admin.needToKnow.audience.agency')}</dt>
+          <dd>{target.agency === 'referrer' ? t('admin.needToKnow.audience.referrerAgency') : AGENCY_SHORT[target.agency]}</dd>
           {row ? (
             <>
-              <dt>Row id</dt>
+              <dt>{t('admin.needToKnow.audience.rowId')}</dt>
               <dd className={styles.mono}>{row.id}</dd>
             </>
           ) : null}
         </dl>
-        <TextField label="Audience label" required disabled={!canEdit} maxLength={80} {...form.register('label')} error={errors.label?.message} hint="What the recipient is called on the distribution list and in the drawer." />
+        <TextField label={t('admin.needToKnow.audience.label')} required disabled={!canEdit} maxLength={80} {...form.register('label')} error={errors.label?.message} hint={t('admin.needToKnow.audience.labelHint')} />
         <div className={styles.dialogGrid}>
-          <SelectField label="Role" required disabled={!canEdit} {...form.register('role')} options={roleOptions} error={errors.role?.message} />
-          <SelectField label="Detail level" required disabled={!canEdit} {...form.register('detailLevel')} options={DETAIL_LEVELS.map((d) => ({ value: d, label: DETAIL_LEVEL_LABELS[d] }))} error={errors.detailLevel?.message} />
+          <SelectField label={t('admin.needToKnow.audience.role')} required disabled={!canEdit} {...form.register('role')} options={roleOptions} error={errors.role?.message} />
+          <SelectField label={t('admin.needToKnow.audience.detailLevel')} required disabled={!canEdit} {...form.register('detailLevel')} options={DETAIL_LEVELS.map((d) => ({ value: d, label: DETAIL_LEVEL_LABELS[d] }))} error={errors.detailLevel?.message} />
         </div>
-        <TextField label="Named fields (comma separated)" required={detailLevel === 'fields'} disabled={!canEdit} maxLength={400} {...form.register('fields')} error={errors.fields?.message} hint={detailLevel === 'fields' ? 'Only these fields are shared, nothing else.' : 'Optional. Fields shared in addition to the detail level.'} />
+        <TextField label={t('admin.needToKnow.audience.fields')} required={detailLevel === 'fields'} disabled={!canEdit} maxLength={400} {...form.register('fields')} error={errors.fields?.message} hint={detailLevel === 'fields' ? t('admin.needToKnow.audience.fieldsHintOnly') : t('admin.needToKnow.audience.fieldsHintOptional')} />
         <div className={styles.dialogGrid}>
-          <SelectField label="Channel" required disabled={!canEdit} {...form.register('channel')} options={CHANNELS.map((c) => ({ value: c, label: CHANNEL_LABELS[c] }))} error={errors.channel?.message} />
-          <TextField label="Trigger" required disabled={!canEdit} maxLength={120} {...form.register('trigger')} error={errors.trigger?.message} hint="The event that sends the notification." />
+          <SelectField label={t('admin.needToKnow.audience.channel')} required disabled={!canEdit} {...form.register('channel')} options={CHANNELS.map((c) => ({ value: c, label: channelLabel(c) }))} error={errors.channel?.message} />
+          <TextField label={t('admin.needToKnow.audience.trigger')} required disabled={!canEdit} maxLength={120} {...form.register('trigger')} error={errors.trigger?.message} hint={t('admin.needToKnow.audience.triggerHint')} />
         </div>
         <div className={styles.dialogGrid}>
-          <TextField label="Condition flag" disabled={!canEdit} maxLength={40} placeholder="e.g. schoolAge" {...form.register('condition')} error={errors.condition?.message} hint="A flag on the process that must be true. Leave blank if the row always applies." />
-          <TextField label="Condition in plain words" disabled={!canEdit} maxLength={160} placeholder="e.g. If the child is school-age" {...form.register('conditionLabel')} error={errors.conditionLabel?.message} />
+          <TextField label={t('admin.needToKnow.audience.condition')} disabled={!canEdit} maxLength={40} placeholder={t('admin.needToKnow.audience.conditionPlaceholder')} {...form.register('condition')} error={errors.condition?.message} hint={t('admin.needToKnow.audience.conditionHint')} />
+          <TextField label={t('admin.needToKnow.audience.conditionLabel')} disabled={!canEdit} maxLength={160} placeholder={t('admin.needToKnow.audience.conditionLabelPlaceholder')} {...form.register('conditionLabel')} error={errors.conditionLabel?.message} />
         </div>
-        <TextareaField label="Lawful basis hint" required disabled={!canEdit} maxLength={400} {...form.register('lawfulBasisHint')} error={errors.lawfulBasisHint?.message} hint="Shown to the recipient with every notification under this row." />
+        <TextareaField label={t('admin.needToKnow.audience.lawfulBasis')} required disabled={!canEdit} maxLength={400} {...form.register('lawfulBasisHint')} error={errors.lawfulBasisHint?.message} hint={t('admin.needToKnow.audience.lawfulBasisHint')} />
         {saveErrors.length > 0 ? (
           <ul className={styles.errors} role="alert">
             {saveErrors.map((e) => (
@@ -226,21 +233,25 @@ function AudienceDialog({ process, target, canEdit, onClose, onSave, onRemove }:
   );
 }
 
-const exclusionFormSchema = z.object({
-  stage: z.string().min(1, 'Choose a stage'),
-  party: z.enum(PARTIES),
-  label: z.string().trim().min(2, 'Name who is excluded').max(80),
-  reason: z.string().trim().min(5, 'Say why they must not receive it').max(300),
-  liftableBy: z.string().trim().max(120),
-});
-type ExclusionValues = z.infer<typeof exclusionFormSchema>;
+function exclusionFormSchema(t: Translator) {
+  return z.object({
+    stage: z.string().min(1, t('admin.needToKnow.exclusionErrors.stage')),
+    party: z.enum(PARTIES),
+    label: z.string().trim().min(2, t('admin.needToKnow.exclusionErrors.label')).max(80),
+    reason: z.string().trim().min(5, t('admin.needToKnow.exclusionErrors.reason')).max(300),
+    liftableBy: z.string().trim().max(120),
+  });
+}
+type ExclusionValues = z.infer<ReturnType<typeof exclusionFormSchema>>;
 
 function ExclusionDialog({ process, exclusion, existingIds, canEdit, onClose, onSave }: { process: ProcessType; exclusion?: Exclusion; existingIds: string[]; canEdit: boolean; onClose: () => void; onSave: (e: Exclusion) => void }) {
+  const t = useT();
   const [saveErrors, setSaveErrors] = useState<string[]>([]);
   const stages: readonly Stage[] = STAGES_BY_PROCESS[process];
   const hard = exclusion ? isHardExclusion(exclusion) : false;
+  const schema = useMemo(() => exclusionFormSchema(t), [t]);
   const form = useForm<ExclusionValues>({
-    resolver: zodResolver(exclusionFormSchema),
+    resolver: zodResolver(schema),
     defaultValues: { stage: exclusion?.stage ?? '*', party: exclusion?.party ?? 'public', label: exclusion?.label ?? '', reason: exclusion?.reason ?? '', liftableBy: exclusion?.liftableBy ?? '' },
   });
   const errors = form.formState.errors;
@@ -255,7 +266,7 @@ function ExclusionDialog({ process, exclusion, existingIds, canEdit, onClose, on
     }
     const parsed = exclusionSchema.safeParse({ id, process, stage: values.stage, party: values.party, label: values.label, reason: values.reason, liftableBy: values.liftableBy || undefined });
     if (!parsed.success) {
-      setSaveErrors(issueList(parsed.error.issues));
+      setSaveErrors(issueList(t, parsed.error.issues));
       return;
     }
     onSave(parsed.data);
@@ -266,14 +277,14 @@ function ExclusionDialog({ process, exclusion, existingIds, canEdit, onClose, on
     <Dialog
       open
       onClose={onClose}
-      title={exclusion ? `Edit exclusion: ${exclusion.label}` : `Add exclusion: ${PROCESS_SHORT[process]}`}
+      title={exclusion ? t('admin.needToKnow.exclusion.editTitle', { label: exclusion.label }) : t('admin.needToKnow.exclusion.addTitle', { process: PROCESS_SHORT[process] })}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>
-            Cancel
+            {t('common.actions.cancel')}
           </Button>
           <Button variant="primary" disabled={!canEdit} onClick={() => void form.handleSubmit(submit)()}>
-            {exclusion ? 'Save exclusion' : 'Add exclusion'}
+            {exclusion ? t('admin.needToKnow.exclusion.save') : t('admin.needToKnow.exclusion.add')}
           </Button>
         </>
       }
@@ -282,16 +293,16 @@ function ExclusionDialog({ process, exclusion, existingIds, canEdit, onClose, on
         {hard ? (
           <p className={styles.hardBanner} role="note">
             <Lock size={14} aria-hidden="true" />
-            {HARD_TEXT}. The wording can change; the party and stage cannot.
+            {t('admin.needToKnow.exclusion.hardNote')}
           </p>
         ) : null}
         <div className={styles.dialogGrid}>
-          <SelectField label="Stage" required disabled={!canEdit || hard} {...form.register('stage')} options={[{ value: '*', label: 'Every stage' }, ...stages.map((s) => ({ value: s, label: stageLabel(process, s) }))]} error={errors.stage?.message} />
-          <SelectField label="Party" required disabled={!canEdit || hard} {...form.register('party')} options={PARTIES.map((p) => ({ value: p, label: PARTY_LABELS[p] }))} error={errors.party?.message} />
+          <SelectField label={t('admin.needToKnow.exclusion.stage')} required disabled={!canEdit || hard} {...form.register('stage')} options={[{ value: '*', label: t('admin.needToKnow.exclusion.everyStage') }, ...stages.map((s) => ({ value: s, label: stageLabel(process, s) }))]} error={errors.stage?.message} />
+          <SelectField label={t('admin.needToKnow.exclusion.party')} required disabled={!canEdit || hard} {...form.register('party')} options={PARTIES.map((p) => ({ value: p, label: partyLabel(p) }))} error={errors.party?.message} />
         </div>
-        <TextField label="Label" required disabled={!canEdit} maxLength={80} {...form.register('label')} error={errors.label?.message} />
-        <TextareaField label="Reason" required disabled={!canEdit} maxLength={300} {...form.register('reason')} error={errors.reason?.message} />
-        <TextField label="Can be lifted by" disabled={!canEdit || hard} maxLength={120} placeholder="e.g. Chair's recorded decision" {...form.register('liftableBy')} error={errors.liftableBy?.message} hint="Leave blank if the exclusion can never be lifted." />
+        <TextField label={t('admin.needToKnow.exclusion.label')} required disabled={!canEdit} maxLength={80} {...form.register('label')} error={errors.label?.message} />
+        <TextareaField label={t('admin.needToKnow.exclusion.reason')} required disabled={!canEdit} maxLength={300} {...form.register('reason')} error={errors.reason?.message} />
+        <TextField label={t('admin.needToKnow.exclusion.liftableBy')} disabled={!canEdit || hard} maxLength={120} placeholder={t('admin.needToKnow.exclusion.liftablePlaceholder')} {...form.register('liftableBy')} error={errors.liftableBy?.message} hint={t('admin.needToKnow.exclusion.liftableHint')} />
         {saveErrors.length > 0 ? (
           <ul className={styles.errors} role="alert">
             {saveErrors.map((e) => (
@@ -305,6 +316,7 @@ function ExclusionDialog({ process, exclusion, existingIds, canEdit, onClose, on
 }
 
 function Preview({ process, rows, exclusions }: { process: ProcessType; rows: NeedToKnowRow[]; exclusions: Exclusion[] }) {
+  const t = useT();
   const stages: readonly Stage[] = STAGES_BY_PROCESS[process];
   const [stage, setStage] = useState<Stage>(stages[0] ?? 'concern');
   const [agency, setAgency] = useState<Agency>('social-work');
@@ -326,13 +338,13 @@ function Preview({ process, rows, exclusions }: { process: ProcessType; rows: Ne
   return (
     <div className={styles.preview}>
       <div className={styles.previewControls}>
-        <SelectField label="Stage" value={stage} onChange={(e) => setStage(e.target.value as Stage)} options={stages.map((s) => ({ value: s, label: stageLabel(process, s) }))} />
-        <SelectField label="Agency" value={agency} onChange={(e) => changeAgency(e.target.value as Agency)} options={AGENCIES.map((a) => ({ value: a, label: AGENCY_SHORT[a] }))} />
-        <SelectField label="Role" value={role} onChange={(e) => setRole(e.target.value as RoleId)} options={roles.map((r) => ({ value: r, label: ROLE_DEFINITIONS[r].label }))} />
-        <CheckboxField label="This agency made the referral" checked={isReferrer} onChange={(e) => setIsReferrer(e.target.checked)} hint="Rows addressed to the referrer resolve to this agency." />
+        <SelectField label={t('admin.needToKnow.preview.stage')} value={stage} onChange={(e) => setStage(e.target.value as Stage)} options={stages.map((s) => ({ value: s, label: stageLabel(process, s) }))} />
+        <SelectField label={t('admin.needToKnow.preview.agency')} value={agency} onChange={(e) => changeAgency(e.target.value as Agency)} options={AGENCIES.map((a) => ({ value: a, label: AGENCY_SHORT[a] }))} />
+        <SelectField label={t('admin.needToKnow.preview.role')} value={role} onChange={(e) => setRole(e.target.value as RoleId)} options={roles.map((r) => ({ value: r, label: ROLE_DEFINITIONS[r].label }))} />
+        <CheckboxField label={t('admin.needToKnow.preview.referral')} checked={isReferrer} onChange={(e) => setIsReferrer(e.target.checked)} hint={t('admin.needToKnow.preview.referralHint')} />
         {conditions.length > 0 ? (
           <fieldset className={styles.conditions}>
-            <legend className={styles.legendText}>Process flags</legend>
+            <legend className={styles.legendText}>{t('admin.needToKnow.preview.flags')}</legend>
             {conditions.map(([key, label]) => (
               <CheckboxField key={key} label={label} checked={flags[key] ?? false} onChange={(e) => setFlags({ ...flags, [key]: e.target.checked })} />
             ))}
@@ -342,32 +354,32 @@ function Preview({ process, rows, exclusions }: { process: ProcessType; rows: Ne
       <div className={styles.previewResult} aria-live="polite">
         <div className={styles.previewLevel}>
           {match ? <Eye size={16} aria-hidden="true" /> : <Lock size={16} aria-hidden="true" />}
-          {ROLE_DEFINITIONS[role].label} ({AGENCY_SHORT[agency]}) at {stageLabel(process, stage)}: {match ? DETAIL_LEVEL_LABELS[match.detailLevel] : 'nothing, default deny'}
+          {t('admin.needToKnow.preview.level', { role: ROLE_DEFINITIONS[role].label, agency: AGENCY_SHORT[agency], stage: stageLabel(process, stage), level: match ? DETAIL_LEVEL_LABELS[match.detailLevel] : t('admin.needToKnow.preview.nothing') })}
         </div>
         <dl>
           <div className={styles.previewRow}>
-            <dt>Rows that apply</dt>
-            <dd>{match ? match.rowIds.join('; ') : <span className={styles.muted}>None. Case membership would still grant full access.</span>}</dd>
+            <dt>{t('admin.needToKnow.preview.rowsApply')}</dt>
+            <dd>{match ? match.rowIds.join('; ') : <span className={styles.muted}>{t('admin.needToKnow.preview.rowsNone')}</span>}</dd>
           </div>
           <div className={styles.previewRow}>
-            <dt>Why</dt>
-            <dd>{match ? match.reasons.join(' ') : <span className={styles.muted}>No row names this agency and role at this stage.</span>}</dd>
+            <dt>{t('admin.needToKnow.preview.why')}</dt>
+            <dd>{match ? match.reasons.join(' ') : <span className={styles.muted}>{t('admin.needToKnow.preview.whyNone')}</span>}</dd>
           </div>
           <div className={styles.previewRow}>
-            <dt>Named fields</dt>
-            <dd>{match && match.fields.length > 0 ? match.fields.join('; ') : match?.detailLevel === 'full' ? 'Everything' : <span className={styles.muted}>None</span>}</dd>
+            <dt>{t('admin.needToKnow.preview.namedFields')}</dt>
+            <dd>{match && match.fields.length > 0 ? match.fields.join('; ') : match?.detailLevel === 'full' ? t('admin.needToKnow.preview.everything') : <span className={styles.muted}>{t('admin.needToKnow.preview.fieldsNone')}</span>}</dd>
           </div>
           <div className={styles.previewRow}>
-            <dt>Lawful basis shown</dt>
-            <dd>{match ? match.lawfulBasisHints.join(' ') : <span className={styles.muted}>Not applicable</span>}</dd>
+            <dt>{t('admin.needToKnow.preview.lawfulBasis')}</dt>
+            <dd>{match ? match.lawfulBasisHints.join(' ') : <span className={styles.muted}>{t('admin.needToKnow.preview.notApplicable')}</span>}</dd>
           </div>
           <div className={styles.previewRow}>
-            <dt>Everyone told at this stage</dt>
-            <dd>{res.recipients.length > 0 ? res.recipients.map((r) => `${r.label} (${DETAIL_WORD[r.detailLevel]})`).join('; ') : <span className={styles.muted}>Nobody with the current flags</span>}</dd>
+            <dt>{t('admin.needToKnow.preview.everyone')}</dt>
+            <dd>{res.recipients.length > 0 ? res.recipients.map((r) => t('admin.needToKnow.preview.recipient', { label: r.label, level: detailWord(r.detailLevel) })).join('; ') : <span className={styles.muted}>{t('admin.needToKnow.preview.nobody')}</span>}</dd>
           </div>
           <div className={styles.previewRow}>
-            <dt>Must not receive</dt>
-            <dd>{res.exclusions.length > 0 ? res.exclusions.map((e) => e.label).join('; ') : <span className={styles.muted}>No exclusions at this stage</span>}</dd>
+            <dt>{t('admin.needToKnow.preview.mustNot')}</dt>
+            <dd>{res.exclusions.length > 0 ? res.exclusions.map((e) => e.label).join('; ') : <span className={styles.muted}>{t('admin.needToKnow.preview.noExclusions')}</span>}</dd>
           </div>
         </dl>
       </div>
@@ -381,6 +393,7 @@ interface Draft {
 }
 
 export function NeedToKnow() {
+  const t = useT();
   const { config, canEdit, save } = useAdminConfig();
   const route = useRoute();
   const navigate = useNavigate();
@@ -420,7 +433,7 @@ export function NeedToKnow() {
     touch();
   }
   function commit() {
-    const result = save({ ...config, needToKnow: draft.rows, exclusions: draft.exclusions }, 'need-to-know', `${PROCESS_SHORT[process]} need-to-know: ${changes} ${changes === 1 ? 'change' : 'changes'}`);
+    const result = save({ ...config, needToKnow: draft.rows, exclusions: draft.exclusions }, 'need-to-know', t('admin.needToKnow.audit', { process: PROCESS_SHORT[process], count: changes }));
     setSaveErrors(result.errors);
     if (result.ok) {
       setDirty(false);
@@ -439,21 +452,21 @@ export function NeedToKnow() {
 
   return (
     <>
-      <SectionHead title="Need-to-know" lede="Who is told what at each stage of each process, and who must never be. Default is deny: a person sees what a row for their agency and role allows, or what case membership grants. Changes are held here until you save them." />
+      <SectionHead title={sectionLabel('need-to-know')} lede={t('admin.needToKnow.lede')} />
       <div className={styles.tabs}>
-        <Tabs items={PROCESS_TYPES.map((p) => ({ id: p, label: PROCESS_SHORT[p], count: draft.rows.filter((r) => r.process === p).length }))} value={process} onChange={setProcess} label="Process" idPrefix="ntk" />
+        <Tabs items={PROCESS_TYPES.map((p) => ({ id: p, label: PROCESS_SHORT[p], count: draft.rows.filter((r) => r.process === p).length }))} value={process} onChange={setProcess} label={t('admin.needToKnow.tabsLabel')} idPrefix="ntk" />
       </div>
       <TabPanel id={process} active idPrefix="ntk">
         <div className={styles.saveBar} data-state={dirty ? 'dirty' : 'clean'}>
           <span className={styles.saveText} aria-live="polite">
-            {dirty ? `${changes} unsaved ${changes === 1 ? 'change' : 'changes'} across the matrix and exclusions. The preview below already reflects them.` : 'No unsaved changes.'}
+            {dirty ? t('admin.needToKnow.saveBar.dirty', { count: changes }) : t('admin.needToKnow.saveBar.clean')}
           </span>
           <div className={styles.saveActions}>
             <Button variant="quiet" disabled={!dirty} onClick={discard}>
-              Discard changes
+              {t('admin.actions.discardChanges')}
             </Button>
             <Button variant="primary" disabled={!dirty || !canEdit} onClick={commit}>
-              Save need-to-know
+              {t('admin.needToKnow.saveBar.save')}
             </Button>
           </div>
         </div>
@@ -466,20 +479,20 @@ export function NeedToKnow() {
         ) : null}
         <div className="stack">
           <Sheet>
-            <SheetHead title={`${PROCESS_LABELS[process]}: who is told what`} meta="Rows are stages in statutory order; columns are agencies. Each chip is an audience row showing its detail level. Choose a chip to edit it." divided />
+            <SheetHead title={t('admin.needToKnow.matrix.title', { process: PROCESS_LABELS[process] })} meta={t('admin.needToKnow.matrix.meta')} divided />
             <SheetBody flush>
-              <TableWrap label={`${PROCESS_SHORT[process]} need-to-know matrix`} className={styles.wrap}>
+              <TableWrap label={t('admin.needToKnow.matrix.tableLabel', { process: PROCESS_SHORT[process] })} className={styles.wrap}>
                 <table className={styles.matrix}>
                   <thead>
                     <tr>
                       <th scope="col" className={styles.stageHead}>
-                        Stage
+                        {t('admin.needToKnow.matrix.stageColumn')}
                       </th>
                       {COLUMNS.map((a) => {
                         if (a === 'referrer') {
                           return (
                             <th key={a} scope="col" className={styles.agencyHead}>
-                              <span className={styles.agencyName}>Referrer</span>
+                              <span className={styles.agencyName}>{t('admin.needToKnow.matrix.referrerColumn')}</span>
                             </th>
                           );
                         }
@@ -508,16 +521,13 @@ export function NeedToKnow() {
                               <div className={styles.chips}>
                                 {cellRows.map((r) => (
                                   <button key={r.id} type="button" className={styles.chip} data-level={r.detailLevel} onClick={() => setAudienceTarget({ row: r, stage, agency })}>
-                                    {DETAIL_WORD[r.detailLevel]}
-                                    {r.condition ? <span className={styles.cond}> (if)</span> : null}
-                                    <span className="visually-hidden">
-                                      : {r.audience.label}
-                                      {r.conditionLabel ? `, ${r.conditionLabel.toLowerCase()}` : ''}. Edit
-                                    </span>
+                                    {detailWord(r.detailLevel)}
+                                    {r.condition ? <span className={styles.cond}> {t('admin.needToKnow.matrix.conditionalMark')}</span> : null}
+                                    <span className="visually-hidden">{r.conditionLabel ? t('admin.needToKnow.matrix.chipSrConditional', { label: r.audience.label, condition: r.conditionLabel.toLowerCase() }) : t('admin.needToKnow.matrix.chipSr', { label: r.audience.label })}</span>
                                   </button>
                                 ))}
                                 {canEdit ? (
-                                  <IconButton size="sm" className={styles.add} aria-label={`Add audience: ${stageLabel(process, stage)}, ${columnLabel(agency)}`} onClick={() => setAudienceTarget({ stage, agency })}>
+                                  <IconButton size="sm" className={styles.add} aria-label={t('admin.needToKnow.audience.addTitle', { stage: stageLabel(process, stage), agency: columnLabel(t, agency) })} onClick={() => setAudienceTarget({ stage, agency })}>
                                     <Plus size={14} aria-hidden="true" />
                                   </IconButton>
                                 ) : null}
@@ -533,23 +543,23 @@ export function NeedToKnow() {
               <p className={styles.legend}>
                 {DETAIL_LEVELS.map((d) => (
                   <span key={d} className={styles.chip} data-level={d} data-static="true">
-                    {DETAIL_WORD[d]}
-                    <span className={styles.legendLabel}>: {DETAIL_LEVEL_LABELS[d].toLowerCase()}</span>
+                    {detailWord(d)}
+                    <span className={styles.legendLabel}>{t('admin.needToKnow.matrix.legendItem', { label: DETAIL_LEVEL_LABELS[d].toLowerCase() })}</span>
                   </span>
                 ))}
-                <span>(if) marks a row that applies only when a process flag is set.</span>
+                <span>{t('admin.needToKnow.matrix.legendNote')}</span>
               </p>
             </SheetBody>
           </Sheet>
 
           <Sheet>
             <SheetHead
-              title={`${PROCESS_LABELS[process]}: must not receive`}
-              meta="Hard exclusions from the brief cannot be lifted in the UI. Others can be changed here, and some can be lifted by a recorded decision on the case."
+              title={t('admin.needToKnow.exclusions.title', { process: PROCESS_LABELS[process] })}
+              meta={t('admin.needToKnow.exclusions.meta')}
               actions={
                 canEdit ? (
                   <Button size="sm" variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={() => setExclusionTarget({})}>
-                    Add exclusion
+                    {t('admin.needToKnow.exclusion.add')}
                   </Button>
                 ) : undefined
               }
@@ -558,19 +568,19 @@ export function NeedToKnow() {
             <SheetBody flush>
               {exclusions.length === 0 ? (
                 <div className={styles.emptyWrap}>
-                  <EmptyState title="No exclusions for this process" text="Add one when a party must never receive information at a stage, and say why." />
+                  <EmptyState title={t('admin.needToKnow.exclusions.emptyTitle')} text={t('admin.needToKnow.exclusions.emptyText')} />
                 </div>
               ) : (
-                <TableWrap label={`${PROCESS_SHORT[process]} exclusions`} className={styles.wrap}>
+                <TableWrap label={t('admin.needToKnow.exclusions.tableLabel', { process: PROCESS_SHORT[process] })} className={styles.wrap}>
                   <Table>
                     <thead>
                       <tr>
-                        <th scope="col">Party</th>
-                        <th scope="col">Stage</th>
-                        <th scope="col">Reason</th>
-                        <th scope="col">Can be lifted by</th>
+                        <th scope="col">{t('admin.needToKnow.exclusions.columnParty')}</th>
+                        <th scope="col">{t('admin.needToKnow.exclusions.columnStage')}</th>
+                        <th scope="col">{t('admin.needToKnow.exclusions.columnReason')}</th>
+                        <th scope="col">{t('admin.needToKnow.exclusions.columnLiftableBy')}</th>
                         <th scope="col">
-                          <span className="visually-hidden">Actions</span>
+                          <span className="visually-hidden">{t('common.columns.actions')}</span>
                         </th>
                       </tr>
                     </thead>
@@ -582,25 +592,26 @@ export function NeedToKnow() {
                           <tr key={e.id} data-state={hard ? 'hard' : undefined}>
                             <td>
                               <span className={styles.partyLabel}>{e.label}</span>
-                              <span className={styles.partyMeta}>{PARTY_LABELS[e.party]}</span>
+                              <span className={styles.partyMeta}>{partyLabel(e.party)}</span>
                               {hard ? (
                                 <span id={noteId} className={styles.hardNote}>
                                   <Lock size={12} aria-hidden="true" />
-                                  {HARD_TEXT}
+                                  {t('admin.needToKnow.exclusions.hardNote')}
                                 </span>
                               ) : null}
                             </td>
-                            <td className={styles.nowrap}>{e.stage === '*' ? 'Every stage' : stageLabel(process, e.stage)}</td>
+                            <td className={styles.nowrap}>{e.stage === '*' ? t('admin.needToKnow.exclusion.everyStage') : stageLabel(process, e.stage)}</td>
                             <td className={styles.reason}>{e.reason}</td>
-                            <td className={styles.reason}>{e.liftableBy ?? <span className={styles.muted}>Cannot be lifted</span>}</td>
+                            <td className={styles.reason}>{e.liftableBy ?? <span className={styles.muted}>{t('admin.needToKnow.exclusions.cannotBeLifted')}</span>}</td>
                             <td>
                               <div className={styles.rowActions}>
                                 <Button size="sm" variant="secondary" onClick={() => setExclusionTarget({ exclusion: e })}>
-                                  {canEdit ? 'Edit' : 'View'}
-                                  <span className="visually-hidden"> exclusion: {e.label}</span>
+                                  {canEdit ? t('common.actions.edit') : t('common.actions.view')}
+                                  <span className="visually-hidden"> {t('admin.needToKnow.exclusions.rowSr', { label: e.label })}</span>
                                 </Button>
-                                <Button size="sm" variant="quiet" disabled={!canEdit || hard} title={hard ? HARD_TEXT : undefined} aria-describedby={hard ? noteId : undefined} onClick={() => removeExclusion(e.id)}>
-                                  Remove<span className="visually-hidden"> exclusion: {e.label}</span>
+                                <Button size="sm" variant="quiet" disabled={!canEdit || hard} title={hard ? t('admin.needToKnow.exclusions.hardNote') : undefined} aria-describedby={hard ? noteId : undefined} onClick={() => removeExclusion(e.id)}>
+                                  {t('admin.needToKnow.exclusions.remove')}
+                                  <span className="visually-hidden"> {t('admin.needToKnow.exclusions.rowSr', { label: e.label })}</span>
                                 </Button>
                               </div>
                             </td>
@@ -615,7 +626,7 @@ export function NeedToKnow() {
           </Sheet>
 
           <Sheet>
-            <SheetHead title="Preview: what a role would get" meta="Resolved with the matrix as edited above, before you save it. Pick a stage, an agency and a role; set the process flags that apply." divided />
+            <SheetHead title={t('admin.needToKnow.preview.title')} meta={t('admin.needToKnow.preview.meta')} divided />
             <SheetBody>
               <Preview key={process} process={process} rows={rows} exclusions={exclusions} />
             </SheetBody>
@@ -623,7 +634,7 @@ export function NeedToKnow() {
           {process === 'mappa' ? (
             <p className={styles.hardBanner} role="note">
               <Lock size={14} aria-hidden="true" />
-              MAPPA records are restricted: the distribution list on each meeting, not this matrix alone, decides who reads the minute.
+              {t('admin.needToKnow.mappaNote')}
             </p>
           ) : null}
         </div>

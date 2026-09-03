@@ -1,6 +1,7 @@
 'use client';
 
 import { ROLE_DEFINITIONS, configSchema, type Config } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { useToast } from '@mas/ui';
 import { useAppStore, useConfig, useCurrentUser } from '@/lib/store';
 
@@ -23,6 +24,7 @@ export interface AdminConfigApi {
  * before it is stored, the change is audited against the section, and the user is told.
  */
 export function useAdminConfig(): AdminConfigApi {
+  const t = useT();
   const config = useConfig();
   const user = useCurrentUser();
   const setConfig = useAppStore((s) => s.setConfig);
@@ -31,14 +33,14 @@ export function useAdminConfig(): AdminConfigApi {
   const canEdit = user ? ROLE_DEFINITIONS[user.roleId].oversight === 'admin' : false;
 
   function save(next: Config, section: string, label: string): SaveResult {
-    if (!canEdit) return { ok: false, errors: ['Read-only: ask a system administrator'] };
+    if (!canEdit) return { ok: false, errors: [t('admin.readOnly.error')] };
     const parsed = configSchema.safeParse(next);
     if (!parsed.success) {
-      return { ok: false, errors: parsed.error.issues.map((i) => `${i.path.map(String).join('.')}: ${i.message}`) };
+      return { ok: false, errors: parsed.error.issues.map((i) => t('admin.config.issue', { path: i.path.map(String).join('.'), message: i.message })) };
     }
     setConfig(parsed.data);
     audit({ act: 'edit', targetType: 'config', targetId: section, targetLabel: label });
-    toast({ title: 'Saved', text: label, tone: 'success' });
+    toast({ title: t('admin.config.savedToast'), text: label, tone: 'success' });
     return { ok: true, errors: [] };
   }
 

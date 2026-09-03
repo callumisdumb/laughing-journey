@@ -67,6 +67,37 @@
     }
   },
   "admin": {
+    "actions": {
+      "discardChanges": "Discard changes"
+    },
+    "agencies": {
+      "columns": {
+        "agencies": "Agencies",
+        "base": "Base",
+        "members": "Members",
+        "team": "Team"
+      },
+      "kind": {
+        "council": "Council",
+        "court": "Court and prosecution",
+        "fireRescue": "Fire and rescue",
+        "healthBoard": "Health board",
+        "hscp": "Health and Social Care Partnership",
+        "police": "Police",
+        "regulator": "Regulator",
+        "scra": "Scottish Children's Reporter Administration",
+        "sps": "Scottish Prison Service",
+        "thirdSector": "Third sector"
+      },
+      "lede": "{organisations, plural, one {# organisation} other {# organisations}} and {teams, plural, one {# team} other {# teams}} as the seed holds them. A live system would take these from each organisation's directory, so they are read-only here.",
+      "noPersonas": "No personas",
+      "orgMeta": "{kind}. {teams, plural, one {# team} other {# teams}}, {members, plural, one {# persona} other {# personas}}. Short name: {shortName}.",
+      "tableLabel": "{shortName} teams"
+    },
+    "config": {
+      "issue": "{path}: {message}",
+      "savedToast": "Saved"
+    },
     "copy": {
       "audit": {
         "import": "Copy overrides imported: {count, plural, one {# key} other {# keys}}",
@@ -138,6 +169,460 @@
         "resetAll": "Reset all"
       },
       "truncated": "Showing the first {limit}. Refine the search to see the rest."
+    },
+    "defaults": {
+      "appearance": {
+        "densityLegend": "Density",
+        "meta": "Applied to a new sign-in on this device. Each person can change their own theme and density in Settings.",
+        "themeLegend": "Theme",
+        "title": "Appearance"
+      },
+      "audit": "Defaults: theme {theme}, density {density}, break-glass {hours, plural, one {# hour} other {# hours}}, {bankHolidays, plural, one {# bank holiday} other {# bank holidays}}, {councilHolidays, plural, one {# council holiday} other {# council holidays}}, {reasons, plural, one {# break-glass reason category} other {# break-glass reason categories}}, {rules, plural, one {# eligibility rule} other {# eligibility rules}}",
+      "bankHolidays": {
+        "add": "Add a bank holiday (dd Mon yyyy)",
+        "addButton": "Add date",
+        "listLabel": "Bank holidays",
+        "meta": "Scottish bank holidays, to verify against the current list. Working-day clocks skip these dates and weekends.",
+        "remove": "Remove {date}",
+        "title": "Bank holidays"
+      },
+      "breakGlass": {
+        "hours": "Hours",
+        "hoursHint": "Between 1 and 24. Every read within the window is audited.",
+        "meta": "How long access to a restricted record lasts after someone opens it with a recorded reason.",
+        "title": "Break-glass window"
+      },
+      "councilHolidays": {
+        "add": "Add a council holiday (dd Mon yyyy)",
+        "addButton": "Add date",
+        "empty": "No council holidays. Only the national list applies.",
+        "listLabel": "Council local holidays",
+        "meta": "Clydeshore's own holidays, kept apart from the national list. Working-day clocks skip these dates too. Fictional dates, to verify against the council calendar.",
+        "remove": "Remove council holiday {date}",
+        "title": "Council local holidays"
+      },
+      "density": {
+        "comfortable": "Comfortable",
+        "compact": "Compact"
+      },
+      "densityHint": {
+        "comfortable": "40px rows, 20px panel padding.",
+        "compact": "32px rows, 12px panel padding."
+      },
+      "eligibility": {
+        "add": "Add an eligibility rule",
+        "addButton": "Add rule",
+        "addPlaceholder": "e.g. Registered social worker with the required post-qualifying experience",
+        "empty": "No eligibility rules. Nobody can be recorded as a council officer until one is added.",
+        "listLabel": "Eligibility rules",
+        "meta": "Who may act as a council officer under section 52 of the Adult Support and Protection (Scotland) Act 2007, to verify against the local rule.",
+        "remove": "Remove rule: {rule}",
+        "title": "ASP council officer eligibility"
+      },
+      "errors": {
+        "date": "Enter a date",
+        "dateDuplicate": "{date} is already in the list",
+        "hours": "Enter whole hours",
+        "hoursInt": "Whole hours only",
+        "hoursMax": "No more than 24 hours",
+        "hoursMin": "At least 1 hour",
+        "rule": "Describe the eligibility rule in a sentence",
+        "ruleDuplicate": "That rule is already in the list"
+      },
+      "lede": "What a new sign-in on this device starts with, the break-glass window, and the calendar and eligibility values the clocks and ASP screens rely on.",
+      "reasons": {
+        "add": "Add a reason category",
+        "addButton": "Add category",
+        "addPlaceholder": "e.g. Immediate risk to a child",
+        "listLabel": "Break-glass reason categories",
+        "meta": "Offered in the dialog when someone opens a restricted record; the free-text reason is recorded with the category. At least one category must remain.",
+        "remove": "Remove reason category: {reason}",
+        "title": "Break-glass reason categories"
+      },
+      "save": "Save defaults",
+      "theme": {
+        "dark": "Dark",
+        "light": "Light",
+        "system": "Follow the device"
+      },
+      "themeHint": {
+        "dark": "Peat paper, pale ink.",
+        "light": "Cream paper, warm ink.",
+        "system": "Light or dark from the operating system."
+      }
+    },
+    "forms": {
+      "addVersion": "Add version",
+      "audit": "{label}: version {previous} to {next}, effective {date}",
+      "columns": {
+        "effectiveFrom": "Effective from",
+        "form": "Form",
+        "process": "Process",
+        "source": "Source",
+        "version": "Version"
+      },
+      "dialog": {
+        "current": "Current: version {version}, effective from {date}. Source: {source}.",
+        "effectiveField": "Effective from",
+        "effectiveHint": "Records created on or after this date use the new version. Type it as dd Mon yyyy.",
+        "sourceField": "Source",
+        "title": "Add a version: {label}",
+        "versionField": "New version",
+        "versionPlaceholder": "e.g. 2026.1"
+      },
+      "errors": {
+        "effective": "Enter a date",
+        "effectiveAfter": "Must be after {date}, when the current version took effect",
+        "source": "Say where the version comes from",
+        "version": "Enter the new version, for example 2026.1",
+        "versionInUse": "Version {version} is already in use"
+      },
+      "lede": "The forms in use and the version that applies from a date. A new version never rewrites records made under the old one.",
+      "tableLabel": "Forms and versions"
+    },
+    "markings": {
+      "audit": "Classification markings: {labels}",
+      "bannerPreview": "Banner preview: {label}",
+      "errors": {
+        "handlingMin": "Say how records with this marking are handled",
+        "textMax": "Keep the marking under 60 characters",
+        "textMin": "Enter the marking text"
+      },
+      "handlingField": "Handling instruction",
+      "lede": "Classification markings and their handling instructions. The banner preview is what practitioners see across the top of a restricted record.",
+      "official": {
+        "title": "Official",
+        "use": "Routine business records with no case content."
+      },
+      "officialSensitive": {
+        "title": "Official-sensitive",
+        "use": "Every person and process record by default."
+      },
+      "restricted": {
+        "title": "Restricted",
+        "use": "MAPPA and other records on a distribution list. Shown as a banner on the process screen; every read is audited."
+      },
+      "save": "Save markings",
+      "textField": "Marking text"
+    },
+    "nav": {
+      "label": "Admin sections",
+      "overview": "Overview"
+    },
+    "needToKnow": {
+      "audience": {
+        "add": "Add audience",
+        "addTitle": "Add audience: {stage}, {agency}",
+        "agency": "Agency",
+        "anyRoleAt": "Any role at {agency}",
+        "anyRoleReferrer": "Any role at the referring agency",
+        "channel": "Channel",
+        "condition": "Condition flag",
+        "conditionHint": "A flag on the process that must be true. Leave blank if the row always applies.",
+        "conditionLabel": "Condition in plain words",
+        "conditionLabelPlaceholder": "e.g. If the child is school-age",
+        "conditionPlaceholder": "e.g. schoolAge",
+        "detailLevel": "Detail level",
+        "editTitle": "Edit audience: {label}",
+        "fields": "Named fields (comma separated)",
+        "fieldsHintOnly": "Only these fields are shared, nothing else.",
+        "fieldsHintOptional": "Optional. Fields shared in addition to the detail level.",
+        "label": "Audience label",
+        "labelHint": "What the recipient is called on the distribution list and in the drawer.",
+        "lawfulBasis": "Lawful basis hint",
+        "lawfulBasisHint": "Shown to the recipient with every notification under this row.",
+        "processStage": "Process and stage",
+        "processStageValue": "{process}, {stage}",
+        "referrerAgency": "The referring agency, resolved from the process at runtime",
+        "referrerRoleError": "role: the referrer audience applies to any role at the referring agency",
+        "remove": "Remove this audience",
+        "role": "Role",
+        "rowId": "Row id",
+        "save": "Save audience",
+        "trigger": "Trigger",
+        "triggerHint": "The event that sends the notification."
+      },
+      "audienceErrors": {
+        "condition": "A flag name in letters only, for example schoolAge",
+        "conditionLabel": "Say the condition in plain words, for example \"If the child is school-age\"",
+        "fields": "Named fields only needs at least one field, separated by commas",
+        "label": "Name the audience, for example \"Social work senior\"",
+        "lawfulBasis": "Give the lawful basis the recipient will see",
+        "trigger": "Say what triggers the notification, for example \"IRD convened\""
+      },
+      "audit": "{process} need-to-know: {count, plural, one {# change} other {# changes}}",
+      "channel": {
+        "connectorPush": "Connector push",
+        "inApp": "In app",
+        "secureEmailDigest": "Secure email digest"
+      },
+      "detailWord": {
+        "fields": "fields",
+        "full": "full",
+        "presence": "presence",
+        "summary": "summary"
+      },
+      "exclusion": {
+        "add": "Add exclusion",
+        "addTitle": "Add exclusion: {process}",
+        "editTitle": "Edit exclusion: {label}",
+        "everyStage": "Every stage",
+        "hardNote": "Hard exclusion from the brief; cannot be lifted in the UI. The wording can change; the party and stage cannot.",
+        "label": "Label",
+        "liftableBy": "Can be lifted by",
+        "liftableHint": "Leave blank if the exclusion can never be lifted.",
+        "liftablePlaceholder": "e.g. Chair's recorded decision",
+        "party": "Party",
+        "reason": "Reason",
+        "save": "Save exclusion",
+        "stage": "Stage"
+      },
+      "exclusionErrors": {
+        "label": "Name who is excluded",
+        "reason": "Say why they must not receive it",
+        "stage": "Choose a stage"
+      },
+      "exclusions": {
+        "cannotBeLifted": "Cannot be lifted",
+        "columnLiftableBy": "Can be lifted by",
+        "columnParty": "Party",
+        "columnReason": "Reason",
+        "columnStage": "Stage",
+        "emptyText": "Add one when a party must never receive information at a stage, and say why.",
+        "emptyTitle": "No exclusions for this process",
+        "hardNote": "Hard exclusion from the brief; cannot be lifted in the UI",
+        "meta": "Hard exclusions from the brief cannot be lifted in the UI. Others can be changed here, and some can be lifted by a recorded decision on the case.",
+        "remove": "Remove",
+        "rowSr": "exclusion: {label}",
+        "tableLabel": "{process} exclusions",
+        "title": "{process}: must not receive"
+      },
+      "issueRow": "row",
+      "lede": "Who is told what at each stage of each process, and who must never be. Default is deny: a person sees what a row for their agency and role allows, or what case membership grants. Changes are held here until you save them.",
+      "mappaNote": "MAPPA records are restricted: the distribution list on each meeting, not this matrix alone, decides who reads the minute.",
+      "matrix": {
+        "chipSr": ": {label}. Edit",
+        "chipSrConditional": ": {label}, {condition}. Edit",
+        "conditionalMark": "(if)",
+        "legendItem": ": {label}",
+        "legendNote": "(if) marks a row that applies only when a process flag is set.",
+        "meta": "Rows are stages in statutory order; columns are agencies. Each chip is an audience row showing its detail level. Choose a chip to edit it.",
+        "referrerColumn": "Referrer",
+        "stageColumn": "Stage",
+        "tableLabel": "{process} need-to-know matrix",
+        "title": "{process}: who is told what"
+      },
+      "party": {
+        "allegedPerpetrator": "Alleged perpetrator",
+        "employer": "Employers",
+        "notOnDistribution": "Anyone not on the distribution list",
+        "parentsIfRisk": "Parents and carers where sharing increases risk",
+        "perpetrator": "Perpetrator",
+        "perpetratorAssociates": "Perpetrator's family or associates",
+        "public": "Public",
+        "victim": "Victims"
+      },
+      "preview": {
+        "agency": "Agency",
+        "everyone": "Everyone told at this stage",
+        "everything": "Everything",
+        "fieldsNone": "None",
+        "flags": "Process flags",
+        "lawfulBasis": "Lawful basis shown",
+        "level": "{role} ({agency}) at {stage}: {level}",
+        "meta": "Resolved with the matrix as edited above, before you save it. Pick a stage, an agency and a role; set the process flags that apply.",
+        "mustNot": "Must not receive",
+        "namedFields": "Named fields",
+        "nobody": "Nobody with the current flags",
+        "noExclusions": "No exclusions at this stage",
+        "notApplicable": "Not applicable",
+        "nothing": "nothing, default deny",
+        "recipient": "{label} ({level})",
+        "referral": "This agency made the referral",
+        "referralHint": "Rows addressed to the referrer resolve to this agency.",
+        "role": "Role",
+        "rowsApply": "Rows that apply",
+        "rowsNone": "None. Case membership would still grant full access.",
+        "stage": "Stage",
+        "title": "Preview: what a role would get",
+        "why": "Why",
+        "whyNone": "No row names this agency and role at this stage."
+      },
+      "saveBar": {
+        "clean": "No unsaved changes.",
+        "dirty": "{count, plural, one {# unsaved change} other {# unsaved changes}} across the matrix and exclusions. The preview below already reflects them.",
+        "save": "Save need-to-know"
+      },
+      "tabsLabel": "Process"
+    },
+    "overview": {
+      "area": {
+        "audit": "Area details: {council}",
+        "meta": "Shown in headers, packs and the sign-in screen. Fictional names only.",
+        "save": "Save area details",
+        "title": "Area details"
+      },
+      "areaErrors": {
+        "councilName": "Enter the council name",
+        "healthBoardName": "Enter the health board name",
+        "hscpName": "Enter the HSCP name",
+        "maracArea": "Enter the MARAC area",
+        "policeDivision": "Enter the police division",
+        "ppuBase": "Enter the Public Protection Unit base",
+        "sheriffCourt": "Enter the sheriff court"
+      },
+      "areaFields": {
+        "councilName": "Council",
+        "healthBoardName": "Health board",
+        "hscpName": "Health and Social Care Partnership",
+        "maracArea": "MARAC area",
+        "policeDivision": "Police division",
+        "ppuBase": "Public Protection Unit base",
+        "sheriffCourt": "Sheriff court"
+      },
+      "counts": {
+        "agencies": "{organisations, plural, one {# organisation} other {# organisations}}, {teams, plural, one {# team} other {# teams}}",
+        "defaults": "Theme {theme}, density {density}, break-glass {hours, plural, one {# hour} other {# hours}}, {bankHolidays, plural, one {# bank holiday} other {# bank holidays}}",
+        "forms": "{count, plural, one {# form} other {# forms}} across {processes, plural, one {# process} other {# processes}}",
+        "markings": "{count, plural, one {# marking} other {# markings}}",
+        "needToKnow": "{rows, plural, one {# audience row} other {# audience rows}}, {exclusions, plural, one {# exclusion} other {# exclusions}}",
+        "timescales": "{count, plural, one {# clock rule} other {# clock rules}}, {toVerify} to verify",
+        "users": "{count, plural, one {# persona} other {# personas}}"
+      },
+      "lede": "Local configuration for this area: names, timescales, forms, need-to-know, agencies, personas, markings and defaults. Every change is validated and audited.",
+      "reset": {
+        "dialogText": "Every change made on this device is discarded: records, meetings, actions, configuration and the local audit entries return to the seed. Your sign-in is kept.",
+        "dialogTitle": "Reset the demo data?",
+        "toastText": "Records, configuration and local changes are back to the seed. You are still signed in."
+      },
+      "sectionsHeading": "Sections"
+    },
+    "readOnly": {
+      "error": "Read-only: ask a system administrator",
+      "note": "Read-only: ask a system administrator to change configuration."
+    },
+    "sections": {
+      "agencies": {
+        "description": "Organisations, teams and bases, as the seed holds them.",
+        "label": "Agencies"
+      },
+      "defaults": {
+        "description": "Theme, density, break-glass window, bank holidays and ASP eligibility.",
+        "label": "Defaults"
+      },
+      "forms": {
+        "description": "Forms in use and the version that applies from a date.",
+        "label": "Forms"
+      },
+      "labels": {
+        "description": "Every label, heading and message in the product, editable with a live preview.",
+        "label": "Copy and labels"
+      },
+      "markings": {
+        "description": "Classification markings and their handling instructions.",
+        "label": "Markings"
+      },
+      "needToKnow": {
+        "description": "Who is told what at each stage of each process, and who must not be.",
+        "label": "Need-to-know"
+      },
+      "timescales": {
+        "description": "Statutory and local clock rules, with their source and confidence.",
+        "label": "Timescales"
+      },
+      "users": {
+        "description": "Demo personas, their roles and cases. Sign in as any of them.",
+        "label": "Users"
+      }
+    },
+    "timescales": {
+      "audit": "{label}: {timescale}, warn {days} days",
+      "columns": {
+        "clock": "Clock",
+        "confidence": "Confidence",
+        "source": "Source",
+        "timescale": "Timescale",
+        "trigger": "Trigger"
+      },
+      "confidenceText": {
+        "advisory": "Good practice rather than a requirement",
+        "high": "Read in the primary source",
+        "local": "Local procedure, not a national timescale",
+        "verify": "Seeded from an extract, not yet checked against the primary source"
+      },
+      "confidenceWord": {
+        "advisory": "Advisory",
+        "high": "Statutory",
+        "local": "Local",
+        "verify": "To verify"
+      },
+      "dialog": {
+        "amount": "Amount",
+        "confidence": "Confidence",
+        "confidenceVerify": "{text}. This rule stays marked to verify after editing.",
+        "localNote": "Local note",
+        "localNoteHint": "Where the local value comes from, for example the local procedures and their date.",
+        "save": "Save timescale",
+        "source": "Source",
+        "statutoryNote": "Changing the amount or unit of a statutory rule records it as a local value to verify. The national figure stays in the source column.",
+        "title": "Edit timescale: {label}",
+        "trigger": "Trigger",
+        "unit": "Unit",
+        "warn": "Warn (days before due)",
+        "warnHint": "The clock turns amber this many days before it is due."
+      },
+      "errors": {
+        "amount": "Enter a number",
+        "amountPositive": "Enter a number greater than zero",
+        "localNoteMax": "Keep the note under 300 characters",
+        "warnDays": "Enter whole days",
+        "warnDaysInt": "Whole days only",
+        "warnDaysNonnegative": "Zero or more days"
+      },
+      "groupMeta": "{count, plural, one {# rule} other {# rules}}, {toVerify} to verify",
+      "kind": {
+        "deadline": "Deadline",
+        "expiry": "Expiry",
+        "review": "Review",
+        "warning": "Warning"
+      },
+      "kindAndId": "{kind}. {id}",
+      "lede": "Statutory values come from national guidance and local values are configuration. {count, plural, one {# clock rule} other {# clock rules}}, {toVerify} marked to verify against a primary source or the local procedures.",
+      "tableLabel": "{process} timescales",
+      "toVerify": "to verify",
+      "unit": {
+        "calendarDays": "calendar days",
+        "months": "months",
+        "weeks": "weeks",
+        "workingDays": "working days"
+      },
+      "warnAt": "warn at {days} days"
+    },
+    "title": "Admin",
+    "unknown": {
+      "emptyText": "\"{section}\" is not an admin section. Choose one from the list.",
+      "emptyTitle": "No such admin section",
+      "lede": "This section does not exist."
+    },
+    "users": {
+      "columns": {
+        "agency": "Agency",
+        "base": "Base",
+        "cases": "Cases",
+        "persona": "Persona",
+        "role": "Role",
+        "team": "Team"
+      },
+      "count": "{shown} of {total} personas",
+      "empty": "No personas match. Clear the filter to see all {total}.",
+      "filter": "Filter personas",
+      "filterPlaceholder": "Name, role, agency, team or base",
+      "lede": "Every demo persona, their role, agency, team and case memberships. Signing in as a persona is recorded in the audit log as a persona switch.",
+      "noTeam": "No team",
+      "oversight": "Oversight: {oversight}",
+      "signInAs": "Sign in as",
+      "tableLabel": "Personas",
+      "you": "You"
     }
   },
   "asp": {

@@ -5,49 +5,51 @@ import { DEFAULT_CONFIG, type Config, type Dataset } from '@mas/domain';
 import { Button, Dialog, Sheet, SheetBody, SheetHead, TextField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RotateCcw } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { AppLink } from '@/components/AppLink';
 import { useAppStore, useData } from '@/lib/store';
 import styles from './Overview.module.css';
 import { SectionHead } from './SectionHead';
-import { ADMIN_SECTIONS, type AdminSectionId } from './sections';
+import { ADMIN_SECTIONS, sectionDescription, sectionLabel, type AdminSectionId } from './sections';
 import { useAdminConfig } from './useAdminConfig';
 
-const areaSchema = z.object({
-  councilName: z.string().trim().min(2, 'Enter the council name'),
-  hscpName: z.string().trim().min(2, 'Enter the HSCP name'),
-  healthBoardName: z.string().trim().min(2, 'Enter the health board name'),
-  policeDivision: z.string().trim().min(2, 'Enter the police division'),
-  ppuBase: z.string().trim().min(2, 'Enter the Public Protection Unit base'),
-  maracArea: z.string().trim().min(2, 'Enter the MARAC area'),
-  sheriffCourt: z.string().trim().min(2, 'Enter the sheriff court'),
-});
-type AreaValues = z.infer<typeof areaSchema>;
+function areaSchema(t: Translator) {
+  return z.object({
+    councilName: z.string().trim().min(2, t('admin.overview.areaErrors.councilName')),
+    hscpName: z.string().trim().min(2, t('admin.overview.areaErrors.hscpName')),
+    healthBoardName: z.string().trim().min(2, t('admin.overview.areaErrors.healthBoardName')),
+    policeDivision: z.string().trim().min(2, t('admin.overview.areaErrors.policeDivision')),
+    ppuBase: z.string().trim().min(2, t('admin.overview.areaErrors.ppuBase')),
+    maracArea: z.string().trim().min(2, t('admin.overview.areaErrors.maracArea')),
+    sheriffCourt: z.string().trim().min(2, t('admin.overview.areaErrors.sheriffCourt')),
+  });
+}
+type AreaValues = z.infer<ReturnType<typeof areaSchema>>;
 
-const AREA_FIELDS: Array<{ name: keyof AreaValues; label: string }> = [
-  { name: 'councilName', label: 'Council' },
-  { name: 'hscpName', label: 'Health and Social Care Partnership' },
-  { name: 'healthBoardName', label: 'Health board' },
-  { name: 'policeDivision', label: 'Police division' },
-  { name: 'ppuBase', label: 'Public Protection Unit base' },
-  { name: 'maracArea', label: 'MARAC area' },
-  { name: 'sheriffCourt', label: 'Sheriff court' },
-];
+const AREA_FIELDS = [
+  { name: 'councilName', label: 'admin.overview.areaFields.councilName' },
+  { name: 'hscpName', label: 'admin.overview.areaFields.hscpName' },
+  { name: 'healthBoardName', label: 'admin.overview.areaFields.healthBoardName' },
+  { name: 'policeDivision', label: 'admin.overview.areaFields.policeDivision' },
+  { name: 'ppuBase', label: 'admin.overview.areaFields.ppuBase' },
+  { name: 'maracArea', label: 'admin.overview.areaFields.maracArea' },
+  { name: 'sheriffCourt', label: 'admin.overview.areaFields.sheriffCourt' },
+] as const satisfies ReadonlyArray<{ name: keyof AreaValues; label: string }>;
 
 function sectionCounts(config: Config, data: Dataset, t: Translator): Record<AdminSectionId, string> {
   const toVerify = config.clockRules.filter((r) => r.confidence !== 'high' || r.todoVerify).length;
   const processes = new Set(config.forms.map((f) => f.process)).size;
   return {
     labels: t('admin.copy.overviewCount', { total: MESSAGE_KEYS.length, changed: Object.keys(sessionOverrides()).length }),
-    timescales: `${config.clockRules.length} clock rules, ${toVerify} to verify`,
-    forms: `${config.forms.length} forms across ${processes} processes`,
-    'need-to-know': `${config.needToKnow.length} audience rows, ${config.exclusions.length} exclusions`,
-    agencies: `${data.organisations.length} organisations, ${data.teams.length} teams`,
-    users: `${data.users.length} personas`,
-    markings: `${config.classificationMarkings.length} markings`,
-    defaults: `Theme ${config.defaults.theme}, density ${config.defaults.density}, break-glass ${config.breakGlassHours} hours, ${config.bankHolidays.length} bank holidays`,
+    timescales: t('admin.overview.counts.timescales', { count: config.clockRules.length, toVerify }),
+    forms: t('admin.overview.counts.forms', { count: config.forms.length, processes }),
+    'need-to-know': t('admin.overview.counts.needToKnow', { rows: config.needToKnow.length, exclusions: config.exclusions.length }),
+    agencies: t('admin.overview.counts.agencies', { organisations: data.organisations.length, teams: data.teams.length }),
+    users: t('admin.overview.counts.users', { count: data.users.length }),
+    markings: t('admin.overview.counts.markings', { count: config.classificationMarkings.length }),
+    defaults: t('admin.overview.counts.defaults', { theme: config.defaults.theme, density: config.defaults.density, hours: config.breakGlassHours, bankHolidays: config.bankHolidays.length }),
   };
 }
 
@@ -60,42 +62,43 @@ export function Overview() {
   const { toast } = useToast();
   const [resetOpen, setResetOpen] = useState(false);
   const [saveErrors, setSaveErrors] = useState<string[]>([]);
-  const form = useForm<AreaValues>({ resolver: zodResolver(areaSchema), defaultValues: config.area });
+  const schema = useMemo(() => areaSchema(t), [t]);
+  const form = useForm<AreaValues>({ resolver: zodResolver(schema), defaultValues: config.area });
   const errors = form.formState.errors;
   const counts = sectionCounts(config, data, t);
 
   function submit(values: AreaValues) {
-    const result = save({ ...config, area: values }, 'overview', `Area details: ${values.councilName}`);
+    const result = save({ ...config, area: values }, 'overview', t('admin.overview.area.audit', { council: values.councilName }));
     setSaveErrors(result.errors);
     if (result.ok) form.reset(values);
   }
 
   function confirmReset() {
     resetDemo();
-    audit({ act: 'edit', targetType: 'config', targetId: 'reset', targetLabel: 'Demo data reset to the seed' });
+    audit({ act: 'edit', targetType: 'config', targetId: 'reset', targetLabel: t('common.demoReset.audit') });
     setResetOpen(false);
     form.reset(DEFAULT_CONFIG.area);
-    toast({ title: 'Demo data reset', text: 'Records, configuration and local changes are back to the seed. You are still signed in.', tone: 'success' });
+    toast({ title: t('common.demoReset.toastTitle'), text: t('admin.overview.reset.toastText'), tone: 'success' });
   }
 
   return (
     <>
       <SectionHead
-        title="Admin"
-        lede="Local configuration for this area: names, timescales, forms, need-to-know, agencies, personas, markings and defaults. Every change is validated and audited."
+        title={t('admin.title')}
+        lede={t('admin.overview.lede')}
         actions={
           <Button variant="danger" icon={<RotateCcw size={16} aria-hidden="true" />} onClick={() => setResetOpen(true)}>
-            Reset demo data
+            {t('common.actions.resetDemo')}
           </Button>
         }
       />
       <div className="stack">
         <Sheet>
-          <SheetHead title="Area details" meta="Shown in headers, packs and the sign-in screen. Fictional names only." />
+          <SheetHead title={t('admin.overview.area.title')} meta={t('admin.overview.area.meta')} />
           <SheetBody>
             <form className={styles.areaForm} onSubmit={(e) => e.preventDefault()} noValidate>
               {AREA_FIELDS.map((f) => (
-                <TextField key={f.name} label={f.label} required disabled={!canEdit} maxLength={80} {...form.register(f.name)} error={errors[f.name]?.message} />
+                <TextField key={f.name} label={t(f.label)} required disabled={!canEdit} maxLength={80} {...form.register(f.name)} error={errors[f.name]?.message} />
               ))}
               {saveErrors.length > 0 ? (
                 <ul className={styles.errors} role="alert">
@@ -106,10 +109,10 @@ export function Overview() {
               ) : null}
               <div className={styles.formActions}>
                 <Button variant="primary" disabled={!canEdit || !form.formState.isDirty} onClick={() => void form.handleSubmit(submit)()}>
-                  Save area details
+                  {t('admin.overview.area.save')}
                 </Button>
                 <Button variant="quiet" disabled={!form.formState.isDirty} onClick={() => form.reset(config.area)}>
-                  Discard changes
+                  {t('admin.actions.discardChanges')}
                 </Button>
               </div>
             </form>
@@ -118,15 +121,15 @@ export function Overview() {
 
         <section aria-labelledby="admin-sections-heading">
           <h2 id="admin-sections-heading" className={styles.sectionsHeading}>
-            Sections
+            {t('admin.overview.sectionsHeading')}
           </h2>
           <div className={styles.cards}>
             {ADMIN_SECTIONS.map((s) => (
               <article key={s.id} className={styles.card}>
                 <h3 className={styles.cardTitle}>
-                  <AppLink href={`/admin/${s.id}`}>{s.label}</AppLink>
+                  <AppLink href={`/admin/${s.id}`}>{sectionLabel(s.id)}</AppLink>
                 </h3>
-                <p className={styles.cardText}>{s.description}</p>
+                <p className={styles.cardText}>{sectionDescription(s.id)}</p>
                 <p className={styles.cardCount}>{counts[s.id]}</p>
               </article>
             ))}
@@ -138,19 +141,19 @@ export function Overview() {
         <Dialog
           open
           onClose={() => setResetOpen(false)}
-          title="Reset the demo data?"
+          title={t('admin.overview.reset.dialogTitle')}
           actions={
             <>
               <Button variant="quiet" onClick={() => setResetOpen(false)}>
-                Cancel
+                {t('common.actions.cancel')}
               </Button>
               <Button variant="danger" onClick={confirmReset}>
-                Reset demo data
+                {t('common.actions.resetDemo')}
               </Button>
             </>
           }
         >
-          <p>Every change made on this device is discarded: records, meetings, actions, configuration and the local audit entries return to the seed. Your sign-in is kept.</p>
+          <p>{t('admin.overview.reset.dialogText')}</p>
         </Dialog>
       ) : null}
     </>

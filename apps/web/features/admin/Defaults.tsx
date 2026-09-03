@@ -1,27 +1,33 @@
 'use client';
 
 import { formatDate } from '@mas/domain';
+import { useT, type Translator } from '@mas/messages';
 import { Button, DateField, IconButton, RadioGroup, Sheet, SheetBody, SheetHead, TextField } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, X } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import styles from './Defaults.module.css';
 import { SectionHead } from './SectionHead';
+import { sectionLabel } from './sections';
 import { useAdminConfig } from './useAdminConfig';
 
-const defaultsSchema = z.object({
-  theme: z.enum(['light', 'dark', 'system']),
-  density: z.enum(['comfortable', 'compact']),
-  breakGlassHours: z.number({ error: 'Enter whole hours' }).int('Whole hours only').min(1, 'At least 1 hour').max(24, 'No more than 24 hours'),
-});
-type DefaultsValues = z.infer<typeof defaultsSchema>;
+function defaultsSchema(t: Translator) {
+  return z.object({
+    theme: z.enum(['light', 'dark', 'system']),
+    density: z.enum(['comfortable', 'compact']),
+    breakGlassHours: z.number({ error: t('admin.defaults.errors.hours') }).int(t('admin.defaults.errors.hoursInt')).min(1, t('admin.defaults.errors.hoursMin')).max(24, t('admin.defaults.errors.hoursMax')),
+  });
+}
+type DefaultsValues = z.infer<ReturnType<typeof defaultsSchema>>;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 export function Defaults() {
+  const t = useT();
   const { config, canEdit, save } = useAdminConfig();
-  const form = useForm<DefaultsValues>({ resolver: zodResolver(defaultsSchema), defaultValues: { theme: config.defaults.theme, density: config.defaults.density, breakGlassHours: config.breakGlassHours } });
+  const schema = useMemo(() => defaultsSchema(t), [t]);
+  const form = useForm<DefaultsValues>({ resolver: zodResolver(schema), defaultValues: { theme: config.defaults.theme, density: config.defaults.density, breakGlassHours: config.breakGlassHours } });
   const [holidays, setHolidays] = useState<string[]>(config.bankHolidays);
   const [newHoliday, setNewHoliday] = useState('');
   const [holidayError, setHolidayError] = useState<string | null>(null);
@@ -41,11 +47,11 @@ export function Defaults() {
   function addHoliday() {
     const v = newHoliday.trim();
     if (!ISO_DATE.test(v)) {
-      setHolidayError('Enter a date');
+      setHolidayError(t('admin.defaults.errors.date'));
       return;
     }
     if (holidays.includes(v)) {
-      setHolidayError(`${formatDate(v)} is already in the list`);
+      setHolidayError(t('admin.defaults.errors.dateDuplicate', { date: formatDate(v) }));
       return;
     }
     setHolidays([...holidays, v].sort());
@@ -61,11 +67,11 @@ export function Defaults() {
   function addCouncilHoliday() {
     const v = newCouncilHoliday.trim();
     if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) {
-      setCouncilHolidayError('Enter a date');
+      setCouncilHolidayError(t('admin.defaults.errors.date'));
       return;
     }
     if (councilHolidays.includes(v)) {
-      setCouncilHolidayError(`${formatDate(v)} is already in the list`);
+      setCouncilHolidayError(t('admin.defaults.errors.dateDuplicate', { date: formatDate(v) }));
       return;
     }
     setCouncilHolidays([...councilHolidays, v].sort());
@@ -95,11 +101,11 @@ export function Defaults() {
   function addRule() {
     const v = newRule.trim();
     if (v.length < 5) {
-      setRuleError('Describe the eligibility rule in a sentence');
+      setRuleError(t('admin.defaults.errors.rule'));
       return;
     }
     if (rules.includes(v)) {
-      setRuleError('That rule is already in the list');
+      setRuleError(t('admin.defaults.errors.ruleDuplicate'));
       return;
     }
     setRules([...rules, v]);
@@ -115,7 +121,7 @@ export function Defaults() {
     const result = save(
       { ...config, defaults: { theme: values.theme, density: values.density }, breakGlassHours: values.breakGlassHours, bankHolidays: holidays, councilHolidays, breakGlassReasons: reasons, aspCouncilOfficerEligibility: rules },
       'defaults',
-      `Defaults: theme ${values.theme}, density ${values.density}, break-glass ${values.breakGlassHours} hours, ${holidays.length} bank holidays, ${councilHolidays.length} council holidays, ${reasons.length} break-glass reason categories, ${rules.length} eligibility rules`,
+      t('admin.defaults.audit', { theme: values.theme, density: values.density, hours: values.breakGlassHours, bankHolidays: holidays.length, councilHolidays: councilHolidays.length, reasons: reasons.length, rules: rules.length }),
     );
     setSaveErrors(result.errors);
     if (result.ok) {
@@ -143,22 +149,22 @@ export function Defaults() {
   return (
     <>
       <SectionHead
-        title="Defaults"
-        lede="What a new sign-in on this device starts with, the break-glass window, and the calendar and eligibility values the clocks and ASP screens rely on."
+        title={sectionLabel('defaults')}
+        lede={t('admin.defaults.lede')}
         actions={
           <>
             <Button variant="quiet" disabled={!dirty} onClick={discard}>
-              Discard changes
+              {t('admin.actions.discardChanges')}
             </Button>
             <Button variant="primary" disabled={!canEdit || !dirty} onClick={() => void form.handleSubmit(submit)()}>
-              Save defaults
+              {t('admin.defaults.save')}
             </Button>
           </>
         }
       />
       <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
         <Sheet>
-          <SheetHead title="Appearance" meta="Applied to a new sign-in on this device. Each person can change their own theme and density in Settings." />
+          <SheetHead title={t('admin.defaults.appearance.title')} meta={t('admin.defaults.appearance.meta')} />
           <SheetBody>
             <div className={styles.twoUp}>
               <Controller
@@ -166,14 +172,14 @@ export function Defaults() {
                 name="theme"
                 render={({ field }) => (
                   <RadioGroup
-                    legend="Theme"
+                    legend={t('admin.defaults.appearance.themeLegend')}
                     name="theme"
                     value={field.value}
                     onChange={(v) => canEdit && field.onChange(v)}
                     options={[
-                      { value: 'system', label: 'Follow the device', hint: 'Light or dark from the operating system.' },
-                      { value: 'light', label: 'Light', hint: 'Cream paper, warm ink.' },
-                      { value: 'dark', label: 'Dark', hint: 'Peat paper, pale ink.' },
+                      { value: 'system', label: t('admin.defaults.theme.system'), hint: t('admin.defaults.themeHint.system') },
+                      { value: 'light', label: t('admin.defaults.theme.light'), hint: t('admin.defaults.themeHint.light') },
+                      { value: 'dark', label: t('admin.defaults.theme.dark'), hint: t('admin.defaults.themeHint.dark') },
                     ]}
                   />
                 )}
@@ -183,13 +189,13 @@ export function Defaults() {
                 name="density"
                 render={({ field }) => (
                   <RadioGroup
-                    legend="Density"
+                    legend={t('admin.defaults.appearance.densityLegend')}
                     name="density"
                     value={field.value}
                     onChange={(v) => canEdit && field.onChange(v)}
                     options={[
-                      { value: 'comfortable', label: 'Comfortable', hint: '40px rows, 20px panel padding.' },
-                      { value: 'compact', label: 'Compact', hint: '32px rows, 12px panel padding.' },
+                      { value: 'comfortable', label: t('admin.defaults.density.comfortable'), hint: t('admin.defaults.densityHint.comfortable') },
+                      { value: 'compact', label: t('admin.defaults.density.compact'), hint: t('admin.defaults.densityHint.compact') },
                     ]}
                   />
                 )}
@@ -199,18 +205,18 @@ export function Defaults() {
         </Sheet>
 
         <Sheet>
-          <SheetHead title="Break-glass window" meta="How long access to a restricted record lasts after someone opens it with a recorded reason." />
+          <SheetHead title={t('admin.defaults.breakGlass.title')} meta={t('admin.defaults.breakGlass.meta')} />
           <SheetBody>
             <div className={styles.hours}>
-              <TextField label="Hours" type="number" min={1} max={24} step={1} required disabled={!canEdit} {...form.register('breakGlassHours', { valueAsNumber: true })} error={errors.breakGlassHours?.message} hint="Between 1 and 24. Every read within the window is audited." />
+              <TextField label={t('admin.defaults.breakGlass.hours')} type="number" min={1} max={24} step={1} required disabled={!canEdit} {...form.register('breakGlassHours', { valueAsNumber: true })} error={errors.breakGlassHours?.message} hint={t('admin.defaults.breakGlass.hoursHint')} />
             </div>
           </SheetBody>
         </Sheet>
 
         <Sheet>
-          <SheetHead title="Bank holidays" meta="Scottish bank holidays, to verify against the current list. Working-day clocks skip these dates and weekends." />
+          <SheetHead title={t('admin.defaults.bankHolidays.title')} meta={t('admin.defaults.bankHolidays.meta')} />
           <SheetBody>
-            <ul className={styles.list} aria-label="Bank holidays">
+            <ul className={styles.list} aria-label={t('admin.defaults.bankHolidays.listLabel')}>
               {holidays.map((d) => (
                 <li key={d} className={styles.listItem}>
                   <span>
@@ -218,7 +224,7 @@ export function Defaults() {
                     <span className={styles.iso}>{d}</span>
                   </span>
                   {canEdit ? (
-                    <IconButton size="sm" aria-label={`Remove ${formatDate(d)}`} onClick={() => removeHoliday(d)}>
+                    <IconButton size="sm" aria-label={t('admin.defaults.bankHolidays.remove', { date: formatDate(d) })} onClick={() => removeHoliday(d)}>
                       <X size={14} aria-hidden="true" />
                     </IconButton>
                   ) : null}
@@ -227,9 +233,9 @@ export function Defaults() {
             </ul>
             {canEdit ? (
               <div className={styles.addRow}>
-                <DateField label="Add a bank holiday (dd Mon yyyy)" hint={null} value={newHoliday} onChange={setNewHoliday} onKeyDown={(e) => e.key === 'Enter' && addHoliday()} error={holidayError} />
+                <DateField label={t('admin.defaults.bankHolidays.add')} hint={null} value={newHoliday} onChange={setNewHoliday} onKeyDown={(e) => e.key === 'Enter' && addHoliday()} error={holidayError} />
                 <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addHoliday}>
-                  Add date
+                  {t('admin.defaults.bankHolidays.addButton')}
                 </Button>
               </div>
             ) : null}
@@ -237,28 +243,28 @@ export function Defaults() {
         </Sheet>
 
         <Sheet>
-          <SheetHead title="Council local holidays" meta="Clydeshore's own holidays, kept apart from the national list. Working-day clocks skip these dates too. Fictional dates, to verify against the council calendar." />
+          <SheetHead title={t('admin.defaults.councilHolidays.title')} meta={t('admin.defaults.councilHolidays.meta')} />
           <SheetBody>
-            <ul className={styles.list} aria-label="Council local holidays">
+            <ul className={styles.list} aria-label={t('admin.defaults.councilHolidays.listLabel')}>
               {councilHolidays.map((d) => (
                 <li key={d} className={styles.listItem}>
                   <span>
                     {formatDate(d)} <span className={styles.muted}>{d}</span>
                   </span>
                   {canEdit ? (
-                    <IconButton size="sm" aria-label={`Remove council holiday ${formatDate(d)}`} onClick={() => removeCouncilHoliday(d)}>
+                    <IconButton size="sm" aria-label={t('admin.defaults.councilHolidays.remove', { date: formatDate(d) })} onClick={() => removeCouncilHoliday(d)}>
                       <X size={14} aria-hidden="true" />
                     </IconButton>
                   ) : null}
                 </li>
               ))}
-              {councilHolidays.length === 0 ? <li className={styles.muted}>No council holidays. Only the national list applies.</li> : null}
+              {councilHolidays.length === 0 ? <li className={styles.muted}>{t('admin.defaults.councilHolidays.empty')}</li> : null}
             </ul>
             {canEdit ? (
               <div className={styles.addRow}>
-                <DateField label="Add a council holiday (dd Mon yyyy)" hint={null} value={newCouncilHoliday} onChange={setNewCouncilHoliday} onKeyDown={(e) => e.key === 'Enter' && addCouncilHoliday()} error={councilHolidayError} />
+                <DateField label={t('admin.defaults.councilHolidays.add')} hint={null} value={newCouncilHoliday} onChange={setNewCouncilHoliday} onKeyDown={(e) => e.key === 'Enter' && addCouncilHoliday()} error={councilHolidayError} />
                 <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addCouncilHoliday}>
-                  Add date
+                  {t('admin.defaults.councilHolidays.addButton')}
                 </Button>
               </div>
             ) : null}
@@ -266,26 +272,26 @@ export function Defaults() {
         </Sheet>
 
         <Sheet>
-          <SheetHead title="ASP council officer eligibility" meta="Who may act as a council officer under section 52 of the Adult Support and Protection (Scotland) Act 2007, to verify against the local rule." />
+          <SheetHead title={t('admin.defaults.eligibility.title')} meta={t('admin.defaults.eligibility.meta')} />
           <SheetBody>
-            <ul className={styles.rules} aria-label="Eligibility rules">
+            <ul className={styles.rules} aria-label={t('admin.defaults.eligibility.listLabel')}>
               {rules.map((r) => (
                 <li key={r} className={styles.listItem}>
                   <span>{r}</span>
                   {canEdit ? (
-                    <IconButton size="sm" aria-label={`Remove rule: ${r}`} onClick={() => removeRule(r)}>
+                    <IconButton size="sm" aria-label={t('admin.defaults.eligibility.remove', { rule: r })} onClick={() => removeRule(r)}>
                       <X size={14} aria-hidden="true" />
                     </IconButton>
                   ) : null}
                 </li>
               ))}
-              {rules.length === 0 ? <li className={styles.muted}>No eligibility rules. Nobody can be recorded as a council officer until one is added.</li> : null}
+              {rules.length === 0 ? <li className={styles.muted}>{t('admin.defaults.eligibility.empty')}</li> : null}
             </ul>
             {canEdit ? (
               <div className={styles.addRow}>
-                <TextField label="Add an eligibility rule" value={newRule} maxLength={160} placeholder="e.g. Registered social worker with the required post-qualifying experience" onChange={(e) => setNewRule(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addRule()} error={ruleError} className={styles.ruleInput} />
+                <TextField label={t('admin.defaults.eligibility.add')} value={newRule} maxLength={160} placeholder={t('admin.defaults.eligibility.addPlaceholder')} onChange={(e) => setNewRule(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addRule()} error={ruleError} className={styles.ruleInput} />
                 <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addRule}>
-                  Add rule
+                  {t('admin.defaults.eligibility.addButton')}
                 </Button>
               </div>
             ) : null}
@@ -293,14 +299,14 @@ export function Defaults() {
         </Sheet>
 
         <Sheet>
-          <SheetHead title="Break-glass reason categories" meta="Offered in the dialog when someone opens a restricted record; the free-text reason is recorded with the category. At least one category must remain." />
+          <SheetHead title={t('admin.defaults.reasons.title')} meta={t('admin.defaults.reasons.meta')} />
           <SheetBody>
-            <ul className={styles.rules} aria-label="Break-glass reason categories">
+            <ul className={styles.rules} aria-label={t('admin.defaults.reasons.listLabel')}>
               {reasons.map((r) => (
                 <li key={r} className={styles.listItem}>
                   <span>{r}</span>
                   {canEdit && reasons.length > 1 ? (
-                    <IconButton size="sm" aria-label={`Remove reason category: ${r}`} onClick={() => removeReason(r)}>
+                    <IconButton size="sm" aria-label={t('admin.defaults.reasons.remove', { reason: r })} onClick={() => removeReason(r)}>
                       <X size={14} aria-hidden="true" />
                     </IconButton>
                   ) : null}
@@ -309,9 +315,9 @@ export function Defaults() {
             </ul>
             {canEdit ? (
               <div className={styles.addRow}>
-                <TextField label="Add a reason category" value={newReason} maxLength={80} placeholder="e.g. Immediate risk to a child" onChange={(e) => setNewReason(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addReason()} />
+                <TextField label={t('admin.defaults.reasons.add')} value={newReason} maxLength={80} placeholder={t('admin.defaults.reasons.addPlaceholder')} onChange={(e) => setNewReason(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addReason()} />
                 <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addReason}>
-                  Add category
+                  {t('admin.defaults.reasons.addButton')}
                 </Button>
               </div>
             ) : null}
