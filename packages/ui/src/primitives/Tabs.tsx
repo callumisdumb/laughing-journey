@@ -1,4 +1,4 @@
-import { useId, useRef, type KeyboardEvent, type ReactNode } from 'react';
+import { useRef, type KeyboardEvent, type ReactNode } from 'react';
 import styles from './Tabs.module.css';
 
 export interface TabItem {
@@ -12,12 +12,12 @@ export interface TabsProps {
   value: string;
   onChange: (id: string) => void;
   label: string;
-  idPrefix?: string;
+  /** Shared with the matching TabPanels so tab and panel ids always pair up. */
+  idPrefix: string;
 }
 
 export function Tabs({ items, value, onChange, label, idPrefix }: TabsProps) {
-  const generated = useId();
-  const prefix = idPrefix ?? generated;
+  const prefix = idPrefix;
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
 
   function onKeyDown(e: KeyboardEvent<HTMLButtonElement>, index: number) {
@@ -62,11 +62,11 @@ export function Tabs({ items, value, onChange, label, idPrefix }: TabsProps) {
   );
 }
 
+/** The panel stays in the document when inactive (hidden) so every tab's aria-controls resolves; children render only when active. */
 export function TabPanel({ id, active, idPrefix, children }: { id: string; active: boolean; idPrefix: string; children: ReactNode }) {
-  if (!active) return null;
   return (
-    <div role="tabpanel" id={`${idPrefix}-panel-${id}`} aria-labelledby={`${idPrefix}-tab-${id}`} tabIndex={0} className={styles.panel}>
-      {children}
+    <div role="tabpanel" id={`${idPrefix}-panel-${id}`} aria-labelledby={`${idPrefix}-tab-${id}`} tabIndex={active ? 0 : -1} hidden={!active} className={styles.panel}>
+      {active ? children : null}
     </div>
   );
 }

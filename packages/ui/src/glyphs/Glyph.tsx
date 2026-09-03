@@ -1,4 +1,4 @@
-import type { SVGProps } from 'react';
+import type { ReactNode, SVGProps } from 'react';
 
 export type GlyphSize = 16 | 20 | 24;
 export type GlyphVariant = 'outline' | 'filled';
@@ -11,7 +11,7 @@ export interface GlyphProps extends Omit<SVGProps<SVGSVGElement>, 'width' | 'hei
 }
 
 /** Shared wrapper: 24-unit viewBox, currentColor, 1.75 stroke. */
-export function Glyph({ size = 20, title, children, ...rest }: GlyphProps & { children: React.ReactNode }) {
+export function Glyph({ size = 20, title, children, ...rest }: GlyphProps & { children: ReactNode }) {
   return (
     <svg
       width={size}

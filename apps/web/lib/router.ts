@@ -33,10 +33,11 @@ export const useRouterStore = create<RouterState>((set, get) => ({
     if (typeof window === 'undefined') return;
     const url = new URL(to, window.location.origin);
     const path = normalise(url.pathname);
+    const previous = get().path;
     if (options?.replace) window.history.replaceState({}, '', path + url.search + url.hash);
     else window.history.pushState({}, '', path + url.search + url.hash);
     set({ path, search: url.search });
-    if (path !== get().path || !options?.replace) window.scrollTo({ top: 0 });
+    if (path !== previous || !options?.replace) window.scrollTo({ top: 0 });
     const main = document.getElementById('main');
     if (main) main.scrollTop = 0;
   },

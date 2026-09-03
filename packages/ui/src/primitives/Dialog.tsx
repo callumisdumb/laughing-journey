@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { cn } from '../cn';
 import { IconButton } from './Button';
 import styles from './Dialog.module.css';
@@ -17,6 +17,7 @@ export interface DialogProps {
 /** Native dialog element: focus trapping, Escape and backdrop come from the platform. */
 export function Dialog({ open, onClose, title, children, actions, size = 'md', className }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
 
   useEffect(() => {
     const el = ref.current;
@@ -42,10 +43,10 @@ export function Dialog({ open, onClose, title, children, actions, size = 'md', c
       className={cn(styles.dialog, className)}
       data-size={size}
       onClose={onClose}
-      aria-labelledby="dialog-title"
+      aria-labelledby={titleId}
     >
       <div className={styles.head}>
-        <h2 className={styles.title} id="dialog-title">
+        <h2 className={styles.title} id={titleId}>
           {title}
         </h2>
         <IconButton aria-label="Close" onClick={onClose}>

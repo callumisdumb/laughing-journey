@@ -19,7 +19,7 @@ export interface BuildOptions {
   nowIso?: string;
   /** Number of background households on top of the scenarios. */
   households?: number;
-  /** Validate the whole dataset against the Zod schema (slow-ish; on by default in tests). */
+  /** Validate the whole dataset against the Zod schema. Off by default (it is slow-ish); the test suite validates the built dataset explicitly. */
   validate?: boolean;
 }
 

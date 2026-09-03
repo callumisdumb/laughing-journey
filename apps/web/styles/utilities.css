@@ -12,3 +12,8 @@
     display: none !important;
   }
 }
+
+/* Inactive tab panels and anything else the markup hides stay out of layout whatever their display rule. */
+[hidden] {
+  display: none !important;
+}
