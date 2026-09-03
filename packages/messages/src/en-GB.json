@@ -543,6 +543,274 @@
       "recordedBy": "Recorded by {name}, {method}."
     }
   },
+  "connectors": {
+    "adapters": {
+      "carefirst": {
+        "authModel": "Read-only database replica with a nightly extract; no write-back because the system is no longer developed.",
+        "cadence": "Nightly, historical only (pre-2023 records).",
+        "displayName": "OLM CareFirst (legacy social work)",
+        "notes": "Used for history during the migration period. Retire once ECLIPSE holds the full history.",
+        "systemName": "OLM CareFirst"
+      },
+      "eclipse": {
+        "authModel": "Council single sign-on (Entra ID) with ECLIPSE API keys held by the council; the platform reads via the ECLIPSE integration layer.",
+        "cadence": "Near real time for referrals and allocations; outcomes (registration, case conference decisions) pushed back on approval of the minute.",
+        "displayName": "Civica ECLIPSE (social work)",
+        "notes": "ECLIPSE remains the council case record. The platform holds the multi-agency picture and writes back decisions, not case notes.",
+        "systemName": "Civica ECLIPSE"
+      },
+      "emisWeb": {
+        "authModel": "NHS Scotland national identity with a practice-level data sharing agreement; the platform holds a service account per health board.",
+        "cadence": "Nightly pull for people with an open process; on-demand pull for an s10 records request; flags pushed on the day they are placed.",
+        "displayName": "EMIS Web (GP)",
+        "notes": "Health records are only inspected by a health professional. The adapter returns coded events, never free-text consultation notes.",
+        "systemName": "EMIS Web"
+      },
+      "ivpd": {
+        "authModel": "Police Scotland secure gateway with a signed data sharing agreement per Chief Officers Group; the platform is a receiving system only.",
+        "cadence": "Concern reports arrive within an hour of submission and land in the concern hub inbox.",
+        "displayName": "iVPD (Police Scotland concern reports)",
+        "notes": "The platform never writes to police systems. Charges and bail conditions are offence data and are shared onward only under a recorded lawful basis.",
+        "systemName": "interim Vulnerable Persons Database"
+      },
+      "morse": {
+        "authModel": "As TrakCare, via the health board integration engine.",
+        "cadence": "Daily.",
+        "displayName": "Morse (community and mental health)",
+        "notes": "Community contacts for children under five are the richest early-years signal in the chronology.",
+        "systemName": "Morse"
+      },
+      "opg": {
+        "authModel": "OPG public register search plus an authorised enquirer account for councils and health boards.",
+        "cadence": "On demand when an AWI or ASP financial harm process opens.",
+        "displayName": "OPG register (powers of attorney and guardianship)",
+        "notes": "The result is a register extract: whether a power exists, its type, the attorney or guardian, and dates.",
+        "systemName": "Office of the Public Guardian register"
+      },
+      "scra": {
+        "authModel": "SCRA secure referral gateway; the platform sends the referral decision and the Reporter returns the outcome.",
+        "cadence": "On decision.",
+        "displayName": "SCRA (Children's Reporter)",
+        "notes": "Every IRD and CPPM records whether a referral was made; the adapter sends the decision and reason.",
+        "systemName": "SCRA case management"
+      },
+      "seemis": {
+        "authModel": "Council education directorate account with SEEMIS Group API access; the named person authorises pulls for their pupils.",
+        "cadence": "Attendance monthly; pastoral categories and exclusions same day; child protection register status pushed as a pupil flag.",
+        "displayName": "SEEMIS (schools)",
+        "notes": "Free-text pastoral notes never leave SEEMIS. The head teacher promotes what is relevant.",
+        "systemName": "SEEMIS"
+      },
+      "trakcare": {
+        "authModel": "Health board integration engine with a patient-level consent and safeguarding override model; Caldicott guardian sign-off on the sharing agreement.",
+        "cadence": "Encounters within four hours of discharge.",
+        "displayName": "TrakCare (hospital patient management)",
+        "notes": "Diagnoses are not pulled; encounter type, date and screening outcome only.",
+        "systemName": "InterSystems TrakCare"
+      },
+      "visor": {
+        "authModel": "No data connection. ViSOR access stays inside the police and RA secure estate; the platform stores the nominal reference typed in by the MAPPA Coordinator.",
+        "cadence": "None.",
+        "displayName": "ViSOR (MAPPA reference only)",
+        "notes": "When MAPPS replaces ViSOR the same reference field applies.",
+        "systemName": "ViSOR (MAPPS from 2028)"
+      }
+    },
+    "capabilities": {
+      "flagRecord": "Place flags",
+      "lookupPerson": "Look up a person",
+      "pullEvents": "Pull events",
+      "pushOutcome": "Push outcomes",
+      "registerCheck": "Register check"
+    },
+    "card": {
+      "lastSync": "Last sync",
+      "latency": "Latency",
+      "noDataConnection": "No data connection",
+      "nothingPending": "Nothing waiting in the inbox",
+      "notYet": "Not yet",
+      "pending": "{count, plural, one {# event waiting in the inbox} other {# events waiting in the inbox}}",
+      "receivedTotal": "{count} received in total"
+    },
+    "demo": {
+      "auditLabel": "Connector demo controls: {name}",
+      "note": "Demo controls for this session. Each change is written to the audit log.",
+      "outage": "Simulate outage",
+      "outageReason": "Simulated outage {state, select, on {on} other {off}} for {name}",
+      "slow": "Simulate slow responses",
+      "slowReason": "Simulated slow responses {state, select, on {on} other {off}} for {name}"
+    },
+    "detail": {
+      "checking": "Checking the connection.",
+      "emptyNote": "Events pulled from this connector land in the <link>connector inbox</link> for a practitioner to review. Nothing reaches a chronology on its own.",
+      "lastSyncNotApplicable": "not applicable",
+      "lastSyncNotYet": "not yet",
+      "meta": "{system}. {agency}. {direction}.",
+      "noPull": "This connector has no pull capability",
+      "pendingNote": "<link>{count, plural, one {# event from this connector is} other {# events from this connector are}} waiting in the inbox</link>. A practitioner rewrites the title, sets the significance and promotes each one. Nothing reaches a chronology on its own.",
+      "statusMeta": "Last sync {lastSync}. Latency {latency}.",
+      "sync": "Sync now",
+      "tabsLabel": "Connector detail"
+    },
+    "direction": {
+      "both": "Both ways",
+      "inbound": "Into the platform only",
+      "outbound": "Out of the platform only"
+    },
+    "errors": {
+      "down": "{id} is not responding. The last successful sync is still available; try again in a few minutes."
+    },
+    "flags": {
+      "furtherNotice": "further notice",
+      "placed": "{kind} flag placed until {until}"
+    },
+    "health": {
+      "degraded": "{name} is slow to respond; some pulls may time out.",
+      "down": "{name} is not responding (simulated outage).",
+      "ok": "Connected."
+    },
+    "history": {
+      "columns": {
+        "duration": "Duration",
+        "events": "Events pulled",
+        "outcome": "Outcome",
+        "when": "When"
+      },
+      "empty": {
+        "pullable": "Press Sync now to pull events for the sample subject.",
+        "reference": "{name} holds a reference only. The platform never pulls its content.",
+        "title": "No sync history"
+      },
+      "noResponse": "no response",
+      "seededCompleted": "Completed.",
+      "seededSlow": "Source system slow to respond; the pull completed."
+    },
+    "latency": {
+      "measuring": "measuring",
+      "milliseconds": "{ms} ms"
+    },
+    "mapping": {
+      "columns": {
+        "eventType": "Platform event type",
+        "note": "Note",
+        "significance": "Significance",
+        "sourceField": "Source field",
+        "sourceValue": "Source value"
+      },
+      "intro": "How {system} vocabulary becomes platform events. The rule sets the event type and a starting significance; the practitioner can change the significance at review."
+    },
+    "page": {
+      "cardsLabel": "Connector health",
+      "emptyText": "Add an adapter in Admin to see its health here.",
+      "emptyTitle": "No connectors configured",
+      "lede": "Ten mock adapters behind the real connector interface. Everything they pull lands in the <link>connector inbox</link> for a practitioner to read, retitle and promote. Nothing goes straight into a chronology.",
+      "title": "Connectors"
+    },
+    "real": {
+      "authentication": "Authentication",
+      "boundary": "What crosses the boundary",
+      "cadence": "Cadence",
+      "direction": "Direction",
+      "intro": "If {system} were live, this is how it would connect. Nothing here is built: the adapter behind this screen is a mock behind the same interface a real one would implement."
+    },
+    "registers": {
+      "eclipse": {
+        "categories": "Categories",
+        "leadProfessional": "Lead professional",
+        "name": "Child Protection Register (Clydeshore)",
+        "status": "Status"
+      },
+      "emisWeb": {
+        "cpFlag": "Child protection flag",
+        "name": "GP record flags"
+      },
+      "opg": {
+        "guardianship": "Guardianship",
+        "name": "OPG register",
+        "noGuardianship": "No guardianship order",
+        "noPoa": "No registered power of attorney for {personId}",
+        "poa": "Power of attorney"
+      }
+    },
+    "ruleNotes": {
+      "carefirstCaseClosed": "Closure with reason.",
+      "carefirstContact": "Legacy referrals before the ECLIPSE migration.",
+      "eclipseAllocation": "Allocation changes are visible to the team, not integrated by default.",
+      "eclipseAssessment": "Outcome text is mapped from the assessment outcome field.",
+      "eclipseReferral": "Every referral is significant enough for the single-agency chronology.",
+      "eclipseService": "Service end maps to care.service-end.",
+      "emisConsultationRoutine": "Routine consultations are pulled only inside a process window.",
+      "emisConsultationSafeguardingContext": "Any consultation carrying a safeguarding code becomes a high-significance health event.",
+      "emisDiagnosisDisclosed": "Only with a recorded lawful basis; the GP confirms disclosure.",
+      "emisDna": "Did not attend.",
+      "ivpdAcr": "Adult concern reports feed the ASP duty screen.",
+      "ivpdBail": "Conditions are the fields most often shared to schools and housing.",
+      "ivpdCcr": "Concern reports without the child-present marker.",
+      "ivpdCcrChildPresent": "A child present at an incident is always high significance.",
+      "ivpdCharge": "Offence data: DPA 2018 s10 applies to onward sharing.",
+      "ivpdDa": "Domestic abuse reports carry the DAQ score when completed.",
+      "morseCmht": "Adult mental health contacts, shared only inside a process window.",
+      "morseHvDna": "Missed contacts are the pattern lens input.",
+      "morseHvReview": "Health visitor and school nurse reviews.",
+      "opgGuardianship": "Powers and expiry are register fields.",
+      "opgPoa": "Welfare, financial or combined.",
+      "scraHearing": "Children's hearing outcomes.",
+      "scraReferral": "Referral to the Reporter recorded either way.",
+      "seemisAttendanceMonthly": "Above 90 percent with no unauthorised absence is not pulled.",
+      "seemisEnrolment": "School and stage.",
+      "seemisExclusion": "Exclusions are always significant.",
+      "seemisPastoral": "Only the category and date are pulled; the note text stays in SEEMIS.",
+      "trakcareAdmission": "Discharge maps to health.discharge.",
+      "trakcareBirth": "Birth registered with weight and gestation.",
+      "trakcareEd": "Injury attendances for children carry the child protection screening result.",
+      "visorReference": "The platform stores the reference and never pulls ViSOR content."
+    },
+    "significance": {
+      "high": "High",
+      "low": "Low",
+      "moderate": "Moderate"
+    },
+    "speed": {
+      "auditLabel": "Connector demo controls: response speed",
+      "auditReason": "Response speed set to {choice} for every connector",
+      "fast": "Fast",
+      "instant": "Instant",
+      "label": "Response speed (demo)",
+      "realistic": "Realistic (200 to 1500 ms)"
+    },
+    "status": {
+      "checking": "Checking",
+      "degraded": "Degraded",
+      "down": "Down",
+      "ok": "Connected"
+    },
+    "summary": {
+      "connectors": "{count, plural, one {<b>#</b> connector} other {<b>#</b> connectors}}",
+      "outages": "{count, plural, one {<b>#</b> simulated outage} other {<b>#</b> simulated outages}}",
+      "pending": "{count, plural, one {<b>#</b> event waiting in the inbox across every connector} other {<b>#</b> events waiting in the inbox across every connector}}"
+    },
+    "sync": {
+      "alreadyKnown": "{count, plural, one {# event} other {# events}} already in the inbox or a chronology.",
+      "auditLabel": "Sync now: {name}",
+      "auditReason": "{pulled} pulled, {added} new in the inbox",
+      "failedReason": "Failed: connector not responding",
+      "failedTitle": "{name} did not respond",
+      "newEvents": "{count, plural, one {# new event} other {# new events}} sent to the inbox for review.",
+      "nothingNew": "Nothing new for the sample subject.",
+      "toastText": "{count, plural, one {# new event is} other {# new events are}} waiting in the inbox. Nothing reaches a chronology until a practitioner promotes it.",
+      "toastTitle": "{name}: sync complete"
+    },
+    "syncOutcome": {
+      "degraded": "Slow",
+      "failed": "Failed",
+      "ok": "Completed"
+    },
+    "tabs": {
+      "mapping": "Mapping preview",
+      "real": "How this would connect for real",
+      "sync": "Sync history"
+    }
+  },
   "cp": {
     "concern": {
       "meta": "Received {when} from {source} ({agency}){hasReference, select, yes {, {reference}} other {}}",

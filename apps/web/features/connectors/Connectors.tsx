@@ -2,6 +2,7 @@
 
 import { AGENCY_SHORT, formatDateTime, type ConnectorEvent, type ConnectorHealth } from '@mas/domain';
 import { MOCK_ADAPTERS, setDegraded, setLatencyScale, setOutage, simulation, type ConnectorCapability, type ConnectorNarrative, type MockAdapter } from '@mas/connectors';
+import { tKey, useT, type Translator } from '@mas/messages';
 import { AgencyMark, Button, EmptyState, KeyValue, Pill, SelectField, Sheet, SheetBody, SheetHead, Switch, TabPanel, Table, TableWrap, Tabs, useToast, type PillTone } from '@mas/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, CloudOff, Loader2, RefreshCw } from 'lucide-react';
@@ -15,8 +16,6 @@ import styles from './Connectors.module.css';
 
 type Status = ConnectorHealth['status'] | 'checking';
 
-const STATUS_WORD: Record<Status, string> = { ok: 'Connected', degraded: 'Degraded', down: 'Down', checking: 'Checking' };
-
 const STATUS_ICON: Record<Status, ReactNode> = {
   ok: <CheckCircle2 size={14} aria-hidden="true" />,
   degraded: <AlertTriangle size={14} aria-hidden="true" />,
@@ -24,30 +23,21 @@ const STATUS_ICON: Record<Status, ReactNode> = {
   checking: <Loader2 size={14} aria-hidden="true" />,
 };
 
-const CAPABILITY_LABELS: Record<ConnectorCapability, string> = {
-  lookupPerson: 'Look up a person',
-  pullEvents: 'Pull events',
-  pushOutcome: 'Push outcomes',
-  registerCheck: 'Register check',
-  flagRecord: 'Place flags',
-};
-
-const DIRECTION_LABELS: Record<ConnectorNarrative['direction'], string> = {
-  inbound: 'Into the platform only',
-  outbound: 'Out of the platform only',
-  both: 'Both ways',
-};
+const statusWord = (status: Status) => tKey(`connectors.status.${status}`);
+const capabilityLabel = (capability: ConnectorCapability) => tKey(`connectors.capabilities.${capability}`);
+const directionLabel = (direction: ConnectorNarrative['direction']) => tKey(`connectors.direction.${direction}`);
+const significanceLabel = (significance: 'low' | 'moderate' | 'high') => tKey(`connectors.significance.${significance}`);
 
 const SIGNIFICANCE_TONE: Record<'low' | 'moderate' | 'high', PillTone> = { low: 'low', moderate: 'medium', high: 'high' };
 
 type LatencyChoice = 'realistic' | 'fast' | 'instant';
+const LATENCY_CHOICES: LatencyChoice[] = ['realistic', 'fast', 'instant'];
 const LATENCY_SCALES: Record<LatencyChoice, number> = { realistic: 1, fast: 0.25, instant: 0 };
+const latencyChoiceLabel = (choice: LatencyChoice) => tKey(`connectors.speed.${choice}`);
 
-const TABS = [
-  { id: 'sync', label: 'Sync history' },
-  { id: 'mapping', label: 'Mapping preview' },
-  { id: 'real', label: 'How this would connect for real' },
-];
+type TabId = 'sync' | 'mapping' | 'real';
+const TAB_IDS: TabId[] = ['sync', 'mapping', 'real'];
+const tabLabel = (id: TabId) => tKey(`connectors.tabs.${id}`);
 
 interface SyncRow {
   id: string;
@@ -58,7 +48,7 @@ interface SyncRow {
   message: string;
 }
 
-const OUTCOME_WORD: Record<SyncRow['outcome'], string> = { ok: 'Completed', degraded: 'Slow', failed: 'Failed' };
+const outcomeWord = (outcome: SyncRow['outcome']) => tKey(`connectors.syncOutcome.${outcome}`);
 const OUTCOME_TONE: Record<SyncRow['outcome'], PillTone> = { ok: 'low', degraded: 'medium', failed: 'critical' };
 
 /** Deterministic 0 to 1 from a string, so seeded history never changes between renders or runs. */
@@ -73,7 +63,7 @@ function canPull(adapter: MockAdapter): boolean {
 }
 
 /** Three or four believable past syncs, derived from the demo clock and the adapter's stated cadence. */
-function seededHistory(adapter: MockAdapter, now: Date): SyncRow[] {
+function seededHistory(t: Translator, adapter: MockAdapter, now: Date): SyncRow[] {
   if (!canPull(adapter)) return [];
   const nightly = /nightly|daily/i.test(adapter.narrative.cadence);
   const stepMinutes = nightly ? 24 * 60 : 15;
@@ -88,21 +78,21 @@ function seededHistory(adapter: MockAdapter, now: Date): SyncRow[] {
       durationMs: slow ? base * 3 : base,
       events: Math.floor(jitter(`${adapter.id}:events:${k}`) * 3),
       outcome: slow ? 'degraded' : 'ok',
-      message: slow ? 'Source system slow to respond; the pull completed.' : 'Completed.',
+      message: slow ? t('connectors.history.seededSlow') : t('connectors.history.seededCompleted'),
     });
   }
   return rows;
 }
 
-function latencyLabel(health: ConnectorHealth | undefined): string {
-  return health ? `${Math.round(health.latencyMs)} ms` : 'measuring';
+function latencyLabel(t: Translator, health: ConnectorHealth | undefined): string {
+  return health ? t('connectors.latency.milliseconds', { ms: String(Math.round(health.latencyMs)) }) : t('connectors.latency.measuring');
 }
 
 function StatusWord({ status }: { status: Status }) {
   return (
     <span className={styles.status} data-status={status}>
       {STATUS_ICON[status]}
-      {STATUS_WORD[status]}
+      {statusWord(status)}
     </span>
   );
 }
@@ -117,6 +107,7 @@ interface CardProps {
 }
 
 function HealthCard({ adapter, selected, pending, received, lastSeededSync, onSelect }: CardProps) {
+  const t = useT();
   const health = useQuery({ queryKey: ['health', adapter.id], queryFn: () => adapter.health(), refetchInterval: 30_000 });
   const status: Status = health.data?.status ?? 'checking';
   const lastSync = health.data?.lastSyncAt ?? lastSeededSync;
@@ -133,19 +124,19 @@ function HealthCard({ adapter, selected, pending, received, lastSeededSync, onSe
       <div className={styles.caps}>
         {adapter.capabilities.map((c) => (
           <Pill key={c} size="sm" tone="outline">
-            {CAPABILITY_LABELS[c]}
+            {capabilityLabel(c)}
           </Pill>
         ))}
       </div>
       <dl className={styles.cardMeta}>
-        <dt>Last sync</dt>
-        <dd>{lastSync ? formatDateTime(lastSync) : canPull(adapter) ? 'Not yet' : 'No data connection'}</dd>
-        <dt>Latency</dt>
-        <dd>{latencyLabel(health.data)}</dd>
+        <dt>{t('connectors.card.lastSync')}</dt>
+        <dd>{lastSync ? formatDateTime(lastSync) : canPull(adapter) ? t('connectors.card.notYet') : t('connectors.card.noDataConnection')}</dd>
+        <dt>{t('connectors.card.latency')}</dt>
+        <dd>{latencyLabel(t, health.data)}</dd>
       </dl>
       <div className={styles.cardInbox}>
-        {pending > 0 ? <AppLink href="/inbox">{pending === 1 ? '1 event waiting in the inbox' : `${pending} events waiting in the inbox`}</AppLink> : <span>Nothing waiting in the inbox</span>}
-        {received > 0 ? <span className={styles.cardInboxTotal}>{received} received in total</span> : null}
+        {pending > 0 ? <AppLink href="/inbox">{t('connectors.card.pending', { count: pending })}</AppLink> : <span>{t('connectors.card.nothingPending')}</span>}
+        {received > 0 ? <span className={styles.cardInboxTotal}>{t('connectors.card.receivedTotal', { count: received })}</span> : null}
       </div>
     </li>
   );
@@ -166,6 +157,7 @@ interface DetailProps {
 }
 
 function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded, onOutage, onDegraded, tab, onTab }: DetailProps) {
+  const t = useT();
   const data = useData();
   const now = useNow();
   const upsert = useAppStore((s) => s.upsert);
@@ -203,29 +195,30 @@ function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded,
         added += 1;
       }
       const outcome: SyncRow['outcome'] = h.status === 'degraded' ? 'degraded' : 'ok';
-      const message = events.length === 0 ? 'Nothing new for the sample subject.' : added === 0 ? `${events.length} ${events.length === 1 ? 'event' : 'events'} already in the inbox or a chronology.` : `${added} new ${added === 1 ? 'event' : 'events'} sent to the inbox for review.`;
+      const message = events.length === 0 ? t('connectors.sync.nothingNew') : added === 0 ? t('connectors.sync.alreadyKnown', { count: events.length }) : t('connectors.sync.newEvents', { count: added });
       onRow({ id: newId('sync'), at: now.toISOString(), durationMs, events: events.length, outcome, message });
-      audit({ act: 'read', targetType: 'inbox', targetId: adapter.id, targetLabel: `Sync now: ${adapter.displayName}`, reason: `${events.length} pulled, ${added} new in the inbox` });
-      toast({ title: `${adapter.displayName}: sync complete`, text: added > 0 ? `${added} new ${added === 1 ? 'event is' : 'events are'} waiting in the inbox. Nothing reaches a chronology until a practitioner promotes it.` : message, tone: 'success' });
+      audit({ act: 'read', targetType: 'inbox', targetId: adapter.id, targetLabel: t('connectors.sync.auditLabel', { name: adapter.displayName }), reason: t('connectors.sync.auditReason', { pulled: events.length, added }) });
+      toast({ title: t('connectors.sync.toastTitle', { name: adapter.displayName }), text: added > 0 ? t('connectors.sync.toastText', { count: added }) : message, tone: 'success' });
     },
     onError: (err: Error) => {
       onRow({ id: newId('sync'), at: now.toISOString(), durationMs: 0, events: 0, outcome: 'failed', message: err.message });
-      audit({ act: 'read', targetType: 'inbox', targetId: adapter.id, targetLabel: `Sync now: ${adapter.displayName}`, reason: 'Failed: connector not responding' });
-      toast({ title: `${adapter.displayName} did not respond`, text: err.message, tone: 'error' });
+      audit({ act: 'read', targetType: 'inbox', targetId: adapter.id, targetLabel: t('connectors.sync.auditLabel', { name: adapter.displayName }), reason: t('connectors.sync.failedReason') });
+      toast({ title: t('connectors.sync.failedTitle', { name: adapter.displayName }), text: err.message, tone: 'error' });
     },
   });
 
   const lastSync = health.data?.lastSyncAt ?? history.find((r) => r.outcome !== 'failed')?.at;
+  const inboxLink = (chunks: ReactNode) => <AppLink href="/inbox">{chunks}</AppLink>;
 
   return (
     <Sheet aria-labelledby="connector-detail-title">
       <SheetHead
         id="connector-detail-title"
         title={adapter.displayName}
-        meta={`${adapter.systemName}. ${AGENCY_SHORT[adapter.agency]}. ${DIRECTION_LABELS[adapter.narrative.direction]}.`}
+        meta={t('connectors.detail.meta', { system: adapter.systemName, agency: AGENCY_SHORT[adapter.agency], direction: directionLabel(adapter.narrative.direction) })}
         actions={
-          <Button variant="primary" icon={<RefreshCw size={16} aria-hidden="true" />} loading={sync.isPending} disabled={!pullable} title={pullable ? undefined : 'This connector has no pull capability'} onClick={() => sync.mutate()}>
-            Sync now
+          <Button variant="primary" icon={<RefreshCw size={16} aria-hidden="true" />} loading={sync.isPending} disabled={!pullable} title={pullable ? undefined : t('connectors.detail.noPull')} onClick={() => sync.mutate()}>
+            {t('connectors.detail.sync')}
           </Button>
         }
         divided
@@ -233,47 +226,39 @@ function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded,
       <SheetBody>
         <div className={styles.statusRow} aria-live="polite">
           <StatusWord status={status} />
-          <span className={styles.statusMessage}>{health.data?.message ?? 'Checking the connection.'}</span>
-          <span className={styles.statusMeta}>Last sync {lastSync ? formatDateTime(lastSync) : pullable ? 'not yet' : 'not applicable'}. Latency {latencyLabel(health.data)}.</span>
+          <span className={styles.statusMessage}>{health.data?.message ?? t('connectors.detail.checking')}</span>
+          <span className={styles.statusMeta}>{t('connectors.detail.statusMeta', { lastSync: lastSync ? formatDateTime(lastSync) : pullable ? t('connectors.detail.lastSyncNotYet') : t('connectors.detail.lastSyncNotApplicable'), latency: latencyLabel(t, health.data) })}</span>
         </div>
-        <p className={styles.inboxNote}>
-          {pending > 0 ? (
-            <>
-              <AppLink href="/inbox">{pending === 1 ? '1 event from this connector is' : `${pending} events from this connector are`} waiting in the inbox</AppLink>. A practitioner rewrites the title, sets the significance and promotes each one. Nothing reaches a chronology on its own.
-            </>
-          ) : (
-            <>Events pulled from this connector land in the <AppLink href="/inbox">connector inbox</AppLink> for a practitioner to review. Nothing reaches a chronology on its own.</>
-          )}
-        </p>
+        <p className={styles.inboxNote}>{pending > 0 ? t.rich('connectors.detail.pendingNote', { count: pending, link: inboxLink }) : t.rich('connectors.detail.emptyNote', { link: inboxLink })}</p>
         <div className={styles.demo}>
-          <Switch label="Simulate outage" checked={outage} onChange={(e) => onOutage(e.target.checked)} />
-          <Switch label="Simulate slow responses" checked={degraded} onChange={(e) => onDegraded(e.target.checked)} />
-          <span className={styles.demoNote}>Demo controls for this session. Each change is written to the audit log.</span>
+          <Switch label={t('connectors.demo.outage')} checked={outage} onChange={(e) => onOutage(e.target.checked)} />
+          <Switch label={t('connectors.demo.slow')} checked={degraded} onChange={(e) => onDegraded(e.target.checked)} />
+          <span className={styles.demoNote}>{t('connectors.demo.note')}</span>
         </div>
-        <Tabs items={TABS} value={tab} onChange={onTab} label="Connector detail" idPrefix="connector" />
+        <Tabs items={TAB_IDS.map((id) => ({ id, label: tabLabel(id) }))} value={tab} onChange={onTab} label={t('connectors.detail.tabsLabel')} idPrefix="connector" />
         <TabPanel id="sync" active={tab === 'sync'} idPrefix="connector">
           {history.length === 0 ? (
-            <EmptyState title="No sync history" text={pullable ? 'Press Sync now to pull events for the sample subject.' : `${adapter.displayName} holds a reference only. The platform never pulls its content.`} />
+            <EmptyState title={t('connectors.history.empty.title')} text={pullable ? t('connectors.history.empty.pullable') : t('connectors.history.empty.reference', { name: adapter.displayName })} />
           ) : (
-            <TableWrap label="Sync history">
+            <TableWrap label={tabLabel('sync')}>
               <Table>
                 <thead>
                   <tr>
-                    <th scope="col">When</th>
-                    <th scope="col">Duration</th>
-                    <th scope="col">Events pulled</th>
-                    <th scope="col">Outcome</th>
+                    <th scope="col">{t('connectors.history.columns.when')}</th>
+                    <th scope="col">{t('connectors.history.columns.duration')}</th>
+                    <th scope="col">{t('connectors.history.columns.events')}</th>
+                    <th scope="col">{t('connectors.history.columns.outcome')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {history.map((r) => (
                     <tr key={r.id} data-outcome={r.outcome}>
                       <td className={styles.nowrap}>{formatDateTime(r.at)}</td>
-                      <td data-align="num">{r.outcome === 'failed' ? 'no response' : `${r.durationMs} ms`}</td>
+                      <td data-align="num">{r.outcome === 'failed' ? t('connectors.history.noResponse') : t('connectors.latency.milliseconds', { ms: String(r.durationMs) })}</td>
                       <td data-align="num">{r.events}</td>
                       <td>
                         <Pill size="sm" tone={OUTCOME_TONE[r.outcome]}>
-                          {OUTCOME_WORD[r.outcome]}
+                          {outcomeWord(r.outcome)}
                         </Pill>
                         <span className={styles.rowNote}>{r.message}</span>
                       </td>
@@ -285,16 +270,16 @@ function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded,
           )}
         </TabPanel>
         <TabPanel id="mapping" active={tab === 'mapping'} idPrefix="connector">
-          <p className={styles.panelIntro}>How {adapter.systemName} vocabulary becomes platform events. The rule sets the event type and a starting significance; the practitioner can change the significance at review.</p>
-          <TableWrap label="Mapping preview">
+          <p className={styles.panelIntro}>{t('connectors.mapping.intro', { system: adapter.systemName })}</p>
+          <TableWrap label={tabLabel('mapping')}>
             <Table>
               <thead>
                 <tr>
-                  <th scope="col">Source field</th>
-                  <th scope="col">Source value</th>
-                  <th scope="col">Platform event type</th>
-                  <th scope="col">Significance</th>
-                  <th scope="col">Note</th>
+                  <th scope="col">{t('connectors.mapping.columns.sourceField')}</th>
+                  <th scope="col">{t('connectors.mapping.columns.sourceValue')}</th>
+                  <th scope="col">{t('connectors.mapping.columns.eventType')}</th>
+                  <th scope="col">{t('connectors.mapping.columns.significance')}</th>
+                  <th scope="col">{t('connectors.mapping.columns.note')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -309,7 +294,7 @@ function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded,
                     </td>
                     <td>
                       <Pill size="sm" tone={SIGNIFICANCE_TONE[m.significance]}>
-                        {m.significance.charAt(0).toUpperCase() + m.significance.slice(1)}
+                        {significanceLabel(m.significance)}
                       </Pill>
                     </td>
                     <td className={styles.note}>{m.note}</td>
@@ -320,13 +305,13 @@ function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded,
           </TableWrap>
         </TabPanel>
         <TabPanel id="real" active={tab === 'real'} idPrefix="connector">
-          <p className={styles.panelIntro}>If {adapter.systemName} were live, this is how it would connect. Nothing here is built: the adapter behind this screen is a mock behind the same interface a real one would implement.</p>
+          <p className={styles.panelIntro}>{t('connectors.real.intro', { system: adapter.systemName })}</p>
           <KeyValue
             items={[
-              { key: 'Authentication', value: adapter.narrative.authModel },
-              { key: 'Direction', value: DIRECTION_LABELS[adapter.narrative.direction] },
-              { key: 'Cadence', value: adapter.narrative.cadence },
-              { key: 'What crosses the boundary', value: adapter.narrative.notes },
+              { key: t('connectors.real.authentication'), value: adapter.narrative.authModel },
+              { key: t('connectors.real.direction'), value: directionLabel(adapter.narrative.direction) },
+              { key: t('connectors.real.cadence'), value: adapter.narrative.cadence },
+              { key: t('connectors.real.boundary'), value: adapter.narrative.notes },
             ]}
           />
         </TabPanel>
@@ -336,6 +321,7 @@ function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded,
 }
 
 export function Connectors() {
+  const t = useT();
   const data = useData();
   const user = useCurrentUser();
   const now = useNow();
@@ -370,7 +356,7 @@ export function Connectors() {
   }
 
   function historyFor(a: MockAdapter): SyncRow[] {
-    return [...(history[a.id] ?? []), ...seededHistory(a, now)];
+    return [...(history[a.id] ?? []), ...seededHistory(t, a, now)];
   }
 
   function recordRow(id: string, row: SyncRow) {
@@ -384,21 +370,21 @@ export function Connectors() {
   function toggleOutage(a: MockAdapter, on: boolean) {
     setOutage(a.id, on);
     setOutages((xs) => (on ? [...xs.filter((x) => x !== a.id), a.id] : xs.filter((x) => x !== a.id)));
-    audit({ act: 'edit', targetType: 'config', targetId: `connector:${a.id}`, targetLabel: `Connector demo controls: ${a.displayName}`, reason: `Simulated outage ${on ? 'on' : 'off'} for ${a.displayName}` });
+    audit({ act: 'edit', targetType: 'config', targetId: `connector:${a.id}`, targetLabel: t('connectors.demo.auditLabel', { name: a.displayName }), reason: t('connectors.demo.outageReason', { state: on ? 'on' : 'off', name: a.displayName }) });
     refetchHealth(a.id);
   }
 
   function toggleDegraded(a: MockAdapter, on: boolean) {
     setDegraded(a.id, on);
     setDegradeds((xs) => (on ? [...xs.filter((x) => x !== a.id), a.id] : xs.filter((x) => x !== a.id)));
-    audit({ act: 'edit', targetType: 'config', targetId: `connector:${a.id}`, targetLabel: `Connector demo controls: ${a.displayName}`, reason: `Simulated slow responses ${on ? 'on' : 'off'} for ${a.displayName}` });
+    audit({ act: 'edit', targetType: 'config', targetId: `connector:${a.id}`, targetLabel: t('connectors.demo.auditLabel', { name: a.displayName }), reason: t('connectors.demo.slowReason', { state: on ? 'on' : 'off', name: a.displayName }) });
     refetchHealth(a.id);
   }
 
   function changeLatency(choice: LatencyChoice) {
     setLatencyScale(LATENCY_SCALES[choice]);
     setLatency(choice);
-    audit({ act: 'edit', targetType: 'config', targetId: 'connector:latency', targetLabel: 'Connector demo controls: response speed', reason: `Response speed set to ${choice} for every connector` });
+    audit({ act: 'edit', targetType: 'config', targetId: 'connector:latency', targetLabel: t('connectors.speed.auditLabel'), reason: t('connectors.speed.auditReason', { choice }) });
     void queryClient.invalidateQueries({ queryKey: ['health'] });
   }
 
@@ -406,45 +392,29 @@ export function Connectors() {
 
   const sampleSubject = data.connectorEvents.find((c) => c.connectorId === adapter.id)?.subjectId ?? data.processes.find((p) => p.status === 'open')?.subjectIds[0];
   const pendingTotal = data.connectorEvents.filter((c) => c.status === 'pending').length;
+  const bold = (chunks: ReactNode) => <strong>{chunks}</strong>;
 
   return (
     <div className="page">
       <div className="page-head">
         <div className="page-head-text">
-          <h1>Connectors</h1>
-          <p className="page-lede">
-            Ten mock adapters behind the real connector interface. Everything they pull lands in the <AppLink href="/inbox">connector inbox</AppLink> for a practitioner to read, retitle and promote. Nothing goes straight into a chronology.
-          </p>
+          <h1>{t('connectors.page.title')}</h1>
+          <p className="page-lede">{t.rich('connectors.page.lede', { link: (chunks) => <AppLink href="/inbox">{chunks}</AppLink> })}</p>
         </div>
         <div className={styles.headControls}>
-          <SelectField
-            label="Response speed (demo)"
-            value={latency}
-            onChange={(e) => changeLatency(e.target.value as LatencyChoice)}
-            options={[
-              { value: 'realistic', label: 'Realistic (200 to 1500 ms)' },
-              { value: 'fast', label: 'Fast' },
-              { value: 'instant', label: 'Instant' },
-            ]}
-          />
+          <SelectField label={t('connectors.speed.label')} value={latency} onChange={(e) => changeLatency(e.target.value as LatencyChoice)} options={LATENCY_CHOICES.map((choice) => ({ value: choice, label: latencyChoiceLabel(choice) }))} />
         </div>
       </div>
-      <ScreenState state={dev ?? 'ready'} empty={{ title: 'No connectors configured', text: 'Add an adapter in Admin to see its health here.' }}>
+      <ScreenState state={dev ?? 'ready'} empty={{ title: t('connectors.page.emptyTitle'), text: t('connectors.page.emptyText') }}>
         <div className={styles.summary}>
-          <span>
-            <strong>{MOCK_ADAPTERS.length}</strong> connectors
-          </span>
-          <span>
-            <strong>{outages.length}</strong> simulated {outages.length === 1 ? 'outage' : 'outages'}
-          </span>
-          <span>
-            <strong>{pendingTotal}</strong> {pendingTotal === 1 ? 'event' : 'events'} waiting in the inbox across every connector
-          </span>
+          <span>{t.rich('connectors.summary.connectors', { count: MOCK_ADAPTERS.length, b: bold })}</span>
+          <span>{t.rich('connectors.summary.outages', { count: outages.length, b: bold })}</span>
+          <span>{t.rich('connectors.summary.pending', { count: pendingTotal, b: bold })}</span>
         </div>
-        <ul className={styles.cards} aria-label="Connector health">
+        <ul className={styles.cards} aria-label={t('connectors.page.cardsLabel')}>
           {MOCK_ADAPTERS.map((a) => {
             const counts = countsFor(a.id);
-            return <HealthCard key={a.id} adapter={a} selected={a.id === adapter.id} pending={counts.pending} received={counts.received} lastSeededSync={seededHistory(a, now)[0]?.at} onSelect={() => setParams({ adapter: a.id })} />;
+            return <HealthCard key={a.id} adapter={a} selected={a.id === adapter.id} pending={counts.pending} received={counts.received} lastSeededSync={seededHistory(t, a, now)[0]?.at} onSelect={() => setParams({ adapter: a.id })} />;
           })}
         </ul>
         <Detail

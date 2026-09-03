@@ -1866,6 +1866,736 @@
       }
     }
   },
+  "connectors": {
+    "adapters": {
+      "carefirst": {
+        "authModel": {
+          "where": "Authentication row of the How this would connect for real tab for OLM CareFirst"
+        },
+        "cadence": {
+          "where": "Cadence row of the How this would connect for real tab for OLM CareFirst; a nightly or daily cadence also spaces the seeded sync history a day apart"
+        },
+        "displayName": {
+          "screenshot": "phase-5/connectors-light-comfortable.png",
+          "where": "Name of the OLM CareFirst connector on its health card, the detail sheet title, toasts and audit entries"
+        },
+        "notes": {
+          "where": "What crosses the boundary row of the How this would connect for real tab for OLM CareFirst"
+        },
+        "systemName": {
+          "where": "Product name under the OLM CareFirst card title and in the detail meta line and tab intros"
+        }
+      },
+      "eclipse": {
+        "authModel": {
+          "where": "Authentication row of the How this would connect for real tab for Civica ECLIPSE"
+        },
+        "cadence": {
+          "where": "Cadence row of the How this would connect for real tab for Civica ECLIPSE"
+        },
+        "displayName": {
+          "screenshot": "phase-5/connectors-light-comfortable.png",
+          "where": "Name of the Civica ECLIPSE connector on its health card, the detail sheet title, toasts and audit entries"
+        },
+        "notes": {
+          "where": "What crosses the boundary row of the How this would connect for real tab for Civica ECLIPSE"
+        },
+        "systemName": {
+          "where": "Product name under the Civica ECLIPSE card title and in the detail meta line and tab intros"
+        }
+      },
+      "emisWeb": {
+        "authModel": {
+          "where": "Authentication row of the How this would connect for real tab for EMIS Web"
+        },
+        "cadence": {
+          "where": "Cadence row of the How this would connect for real tab for EMIS Web; a nightly or daily cadence also spaces the seeded sync history a day apart"
+        },
+        "displayName": {
+          "screenshot": "phase-5/connectors-light-comfortable.png",
+          "where": "Name of the EMIS Web connector on its health card, the detail sheet title, toasts and audit entries"
+        },
+        "notes": {
+          "where": "What crosses the boundary row of the How this would connect for real tab for EMIS Web"
+        },
+        "systemName": {
+          "where": "Product name under the EMIS Web card title and in the detail meta line and tab intros"
+        }
+      },
+      "ivpd": {
+        "authModel": {
+          "where": "Authentication row of the How this would connect for real tab for iVPD"
+        },
+        "cadence": {
+          "where": "Cadence row of the How this would connect for real tab for iVPD"
+        },
+        "displayName": {
+          "screenshot": "phase-5/connectors-light-comfortable.png",
+          "where": "Name of the iVPD connector on its health card, the detail sheet title, toasts and audit entries"
+        },
+        "notes": {
+          "where": "What crosses the boundary row of the How this would connect for real tab for iVPD"
+        },
+        "systemName": {
+          "where": "Full system name under the iVPD card title and in the detail meta line and tab intros"
+        }
+      },
+      "morse": {
+        "authModel": {
+          "where": "Authentication row of the How this would connect for real tab for Morse"
+        },
+        "cadence": {
+          "where": "Cadence row of the How this would connect for real tab for Morse; a nightly or daily cadence also spaces the seeded sync history a day apart"
+        },
+        "displayName": {
+          "screenshot": "phase-5/connectors-light-comfortable.png",
+          "where": "Name of the Morse connector on its health card, the detail sheet title, toasts and audit entries"
+        },
+        "notes": {
+          "where": "What crosses the boundary row of the How this would connect for real tab for Morse"
+        },
+        "systemName": {
+          "where": "Product name under the Morse card title and in the detail meta line and tab intros"
+        }
+      },
+      "opg": {
+        "authModel": {
+          "where": "Authentication row of the How this would connect for real tab for the OPG register"
+        },
+        "cadence": {
+          "where": "Cadence row of the How this would connect for real tab for the OPG register"
+        },
+        "displayName": {
+          "screenshot": "phase-5/connectors-light-comfortable.png",
+          "where": "Name of the OPG register connector on its health card, the detail sheet title, toasts and audit entries"
+        },
+        "notes": {
+          "where": "What crosses the boundary row of the How this would connect for real tab for the OPG register"
+        },
+        "systemName": {
+          "where": "Full register name under the OPG card title and in the detail meta line and tab intros"
+        }
+      },
+      "scra": {
+        "authModel": {
+          "where": "Authentication row of the How this would connect for real tab for SCRA"
+        },
+        "cadence": {
+          "where": "Cadence row of the How this would connect for real tab for SCRA"
+        },
+        "displayName": {
+          "screenshot": "phase-5/connectors-light-comfortable.png",
+          "where": "Name of the SCRA connector on its health card, the detail sheet title, toasts and audit entries"
+        },
+        "notes": {
+          "where": "What crosses the boundary row of the How this would connect for real tab for SCRA"
+        },
+        "systemName": {
+          "where": "System name under the SCRA card title and in the detail meta line and tab intros"
+        }
+      },
+      "seemis": {
+        "authModel": {
+          "where": "Authentication row of the How this would connect for real tab for SEEMIS"
+        },
+        "cadence": {
+          "where": "Cadence row of the How this would connect for real tab for SEEMIS"
+        },
+        "displayName": {
+          "screenshot": "phase-5/connectors-light-comfortable.png",
+          "where": "Name of the SEEMIS connector on its health card, the detail sheet title, toasts and audit entries"
+        },
+        "notes": {
+          "where": "What crosses the boundary row of the How this would connect for real tab for SEEMIS"
+        },
+        "systemName": {
+          "where": "Product name under the SEEMIS card title and in the detail meta line and tab intros; SEEMIS is the product's own name"
+        }
+      },
+      "trakcare": {
+        "authModel": {
+          "where": "Authentication row of the How this would connect for real tab for TrakCare"
+        },
+        "cadence": {
+          "where": "Cadence row of the How this would connect for real tab for TrakCare"
+        },
+        "displayName": {
+          "screenshot": "phase-5/connectors-light-comfortable.png",
+          "where": "Name of the TrakCare connector on its health card, the detail sheet title, toasts and audit entries"
+        },
+        "notes": {
+          "where": "What crosses the boundary row of the How this would connect for real tab for TrakCare"
+        },
+        "systemName": {
+          "where": "Product name under the TrakCare card title and in the detail meta line and tab intros"
+        }
+      },
+      "visor": {
+        "authModel": {
+          "where": "Authentication row of the How this would connect for real tab for ViSOR"
+        },
+        "cadence": {
+          "where": "Cadence row of the How this would connect for real tab for ViSOR"
+        },
+        "displayName": {
+          "screenshot": "phase-5/connectors-light-comfortable.png",
+          "where": "Name of the ViSOR connector on its health card, the detail sheet title, toasts and audit entries"
+        },
+        "notes": {
+          "where": "What crosses the boundary row of the How this would connect for real tab for ViSOR"
+        },
+        "systemName": {
+          "where": "System name under the ViSOR card title and in the detail meta line and tab intros"
+        }
+      }
+    },
+    "capabilities": {
+      "flagRecord": {
+        "maxLength": 20,
+        "where": "Capability pill on a connector health card: the adapter can place a flag on the source record"
+      },
+      "lookupPerson": {
+        "maxLength": 20,
+        "where": "Capability pill on a connector health card: the adapter can look a person up"
+      },
+      "pullEvents": {
+        "maxLength": 20,
+        "where": "Capability pill on a connector health card: the adapter can pull events"
+      },
+      "pushOutcome": {
+        "maxLength": 20,
+        "where": "Capability pill on a connector health card: the adapter can push outcomes back"
+      },
+      "registerCheck": {
+        "maxLength": 20,
+        "where": "Capability pill on a connector health card: the adapter can check a register"
+      }
+    },
+    "card": {
+      "lastSync": {
+        "maxLength": 16,
+        "screenshot": "phase-5/connectors-light-comfortable.png",
+        "where": "Term for the last sync time on a connector health card"
+      },
+      "latency": {
+        "maxLength": 16,
+        "where": "Term for the measured latency on a connector health card"
+      },
+      "noDataConnection": {
+        "maxLength": 24,
+        "where": "Last sync value on a health card for an adapter that never pulls, such as ViSOR"
+      },
+      "nothingPending": {
+        "maxLength": 32,
+        "where": "Inbox line on a health card when no events from this connector are waiting"
+      },
+      "notYet": {
+        "maxLength": 16,
+        "where": "Last sync value on a health card for a pullable adapter that has not synced yet"
+      },
+      "pending": {
+        "where": "Inbox link on a health card when events from this connector are waiting for review"
+      },
+      "receivedTotal": {
+        "where": "Muted count after the inbox line on a health card: every event ever received from this connector"
+      }
+    },
+    "demo": {
+      "auditLabel": {
+        "where": "Target label of the audit entry written when a demo switch is flipped for a connector"
+      },
+      "note": {
+        "where": "Note under the two demo switches in the connector detail"
+      },
+      "outage": {
+        "maxLength": 24,
+        "screenshot": "phase-5/connectors-outage-light-comfortable.png",
+        "where": "Switch in the connector detail that simulates an outage"
+      },
+      "outageReason": {
+        "where": "Reason on the audit entry when the simulate outage switch is flipped; state is on or off"
+      },
+      "slow": {
+        "maxLength": 28,
+        "where": "Switch in the connector detail that simulates slow responses"
+      },
+      "slowReason": {
+        "where": "Reason on the audit entry when the simulate slow responses switch is flipped; state is on or off"
+      }
+    },
+    "detail": {
+      "checking": {
+        "maxLength": 32,
+        "where": "Status message in the connector detail while the first health check is running"
+      },
+      "emptyNote": {
+        "where": "Note under the status line in the connector detail when nothing from this connector is waiting; the link tag opens the connector inbox"
+      },
+      "lastSyncNotApplicable": {
+        "maxLength": 16,
+        "where": "Last sync value in the detail status line for an adapter that never pulls"
+      },
+      "lastSyncNotYet": {
+        "maxLength": 12,
+        "where": "Last sync value in the detail status line for a pullable adapter that has not synced yet"
+      },
+      "meta": {
+        "where": "Meta line under the connector detail title: the system name, the agency and the direction"
+      },
+      "noPull": {
+        "where": "Tooltip on the disabled Sync now button for an adapter that cannot pull events"
+      },
+      "pendingNote": {
+        "where": "Note under the status line in the connector detail when events from this connector are waiting; the link tag opens the connector inbox"
+      },
+      "statusMeta": {
+        "where": "Status line in the connector detail with the last sync time and the measured latency"
+      },
+      "sync": {
+        "maxLength": 16,
+        "screenshot": "phase-5/connectors-light-comfortable.png",
+        "where": "Primary button in the connector detail that pulls events now"
+      },
+      "tabsLabel": {
+        "maxLength": 24,
+        "where": "Accessible name of the tab list in the connector detail"
+      }
+    },
+    "direction": {
+      "both": {
+        "maxLength": 28,
+        "where": "Direction of a connection that flows both ways, in the detail meta line and the Direction row"
+      },
+      "inbound": {
+        "maxLength": 28,
+        "where": "Direction of a connection that only flows into the platform, in the detail meta line and the Direction row"
+      },
+      "outbound": {
+        "maxLength": 28,
+        "where": "Direction of a connection that only flows out of the platform, in the detail meta line and the Direction row"
+      }
+    },
+    "errors": {
+      "down": {
+        "where": "Error thrown by a mock adapter during a simulated outage; shown in the failed sync row and the error toast, with the adapter id"
+      }
+    },
+    "flags": {
+      "furtherNotice": {
+        "maxLength": 20,
+        "where": "Stands in for the end date in the flag receipt when a flag has no end date"
+      },
+      "placed": {
+        "where": "Receipt message returned by a mock adapter after it places a flag on the source record"
+      }
+    },
+    "health": {
+      "degraded": {
+        "where": "Health message from a mock adapter while slow responses are simulated"
+      },
+      "down": {
+        "screenshot": "phase-5/connectors-outage-light-comfortable.png",
+        "where": "Health message from a mock adapter while an outage is simulated"
+      },
+      "ok": {
+        "maxLength": 16,
+        "where": "Health message from a mock adapter when it is connected"
+      }
+    },
+    "history": {
+      "columns": {
+        "duration": {
+          "maxLength": 16,
+          "where": "Column header in the sync history table"
+        },
+        "events": {
+          "maxLength": 16,
+          "where": "Column header in the sync history table: events pulled by that sync"
+        },
+        "outcome": {
+          "maxLength": 16,
+          "where": "Column header in the sync history table"
+        },
+        "when": {
+          "maxLength": 16,
+          "where": "Column header in the sync history table"
+        }
+      },
+      "empty": {
+        "pullable": {
+          "where": "Empty state text on the sync history tab for an adapter that can pull but has no history"
+        },
+        "reference": {
+          "where": "Empty state text on the sync history tab for an adapter that holds a reference only"
+        },
+        "title": {
+          "maxLength": 24,
+          "where": "Empty state title on the sync history tab"
+        }
+      },
+      "noResponse": {
+        "maxLength": 16,
+        "where": "Duration cell of a failed sync row"
+      },
+      "seededCompleted": {
+        "maxLength": 16,
+        "where": "Note beside the outcome pill on a seeded sync row that completed normally"
+      },
+      "seededSlow": {
+        "where": "Note beside the outcome pill on a seeded sync row that was slow"
+      }
+    },
+    "latency": {
+      "measuring": {
+        "maxLength": 12,
+        "where": "Latency value on a health card and in the status line before the first health check returns"
+      },
+      "milliseconds": {
+        "where": "A latency or sync duration in milliseconds, on health cards, the status line and the Duration column"
+      }
+    },
+    "mapping": {
+      "columns": {
+        "eventType": {
+          "maxLength": 24,
+          "where": "Column header in the mapping preview table"
+        },
+        "note": {
+          "maxLength": 16,
+          "where": "Column header in the mapping preview table"
+        },
+        "significance": {
+          "maxLength": 16,
+          "where": "Column header in the mapping preview table"
+        },
+        "sourceField": {
+          "maxLength": 16,
+          "where": "Column header in the mapping preview table"
+        },
+        "sourceValue": {
+          "maxLength": 16,
+          "where": "Column header in the mapping preview table"
+        }
+      },
+      "intro": {
+        "where": "Intro paragraph on the mapping preview tab, with the source system name"
+      }
+    },
+    "page": {
+      "cardsLabel": {
+        "maxLength": 24,
+        "where": "Accessible name of the list of connector health cards"
+      },
+      "emptyText": {
+        "where": "Empty state text on the Connectors screen when no adapters are configured"
+      },
+      "emptyTitle": {
+        "maxLength": 32,
+        "where": "Empty state title on the Connectors screen when no adapters are configured"
+      },
+      "lede": {
+        "screenshot": "phase-5/connectors-light-comfortable.png",
+        "where": "Lede under the Connectors page title; the link tag opens the connector inbox"
+      },
+      "title": {
+        "maxLength": 16,
+        "screenshot": "phase-5/connectors-light-comfortable.png",
+        "where": "Connectors page title and navigation label"
+      }
+    },
+    "real": {
+      "authentication": {
+        "maxLength": 20,
+        "where": "Term for the authentication model on the How this would connect for real tab"
+      },
+      "boundary": {
+        "maxLength": 28,
+        "where": "Term for what crosses the boundary on the How this would connect for real tab"
+      },
+      "cadence": {
+        "maxLength": 16,
+        "where": "Term for the cadence on the How this would connect for real tab"
+      },
+      "direction": {
+        "maxLength": 16,
+        "where": "Term for the direction on the How this would connect for real tab"
+      },
+      "intro": {
+        "where": "Intro paragraph on the How this would connect for real tab, with the source system name"
+      }
+    },
+    "registers": {
+      "eclipse": {
+        "categories": {
+          "maxLength": 20,
+          "where": "Field label in the Civica ECLIPSE register check result"
+        },
+        "leadProfessional": {
+          "maxLength": 20,
+          "where": "Field label in the Civica ECLIPSE register check result"
+        },
+        "name": {
+          "where": "Name of the register the Civica ECLIPSE adapter checks"
+        },
+        "status": {
+          "maxLength": 20,
+          "where": "Field label in the Civica ECLIPSE register check result"
+        }
+      },
+      "emisWeb": {
+        "cpFlag": {
+          "maxLength": 24,
+          "where": "Field label in the EMIS Web register check result"
+        },
+        "name": {
+          "where": "Name of the register the EMIS Web adapter checks"
+        }
+      },
+      "opg": {
+        "guardianship": {
+          "maxLength": 20,
+          "where": "Field label in the OPG register check result"
+        },
+        "name": {
+          "maxLength": 20,
+          "where": "Name of the register the OPG adapter checks"
+        },
+        "noGuardianship": {
+          "where": "Value in the OPG register check result when no guardianship order is registered"
+        },
+        "noPoa": {
+          "where": "Value in the OPG register check result when no power of attorney is registered, with the person id"
+        },
+        "poa": {
+          "maxLength": 20,
+          "where": "Field label in the OPG register check result"
+        }
+      }
+    },
+    "ruleNotes": {
+      "carefirstCaseClosed": {
+        "where": "Note column of the mapping preview for the OLM CareFirst rule carefirst.case-closed"
+      },
+      "carefirstContact": {
+        "where": "Note column of the mapping preview for the OLM CareFirst rule carefirst.contact"
+      },
+      "eclipseAllocation": {
+        "where": "Note column of the mapping preview for the Civica ECLIPSE rule eclipse.allocation"
+      },
+      "eclipseAssessment": {
+        "where": "Note column of the mapping preview for the Civica ECLIPSE rule eclipse.assessment"
+      },
+      "eclipseReferral": {
+        "where": "Note column of the mapping preview for the Civica ECLIPSE rule eclipse.referral"
+      },
+      "eclipseService": {
+        "where": "Note column of the mapping preview for the Civica ECLIPSE rule eclipse.service"
+      },
+      "emisConsultationRoutine": {
+        "where": "Note column of the mapping preview for the EMIS Web rule emis.consultation.routine"
+      },
+      "emisConsultationSafeguardingContext": {
+        "where": "Note column of the mapping preview for the EMIS Web rule emis.consultation.safeguarding-context"
+      },
+      "emisDiagnosisDisclosed": {
+        "where": "Note column of the mapping preview for the EMIS Web rule emis.diagnosis.disclosed"
+      },
+      "emisDna": {
+        "where": "Note column of the mapping preview for the EMIS Web rule emis.dna"
+      },
+      "ivpdAcr": {
+        "where": "Note column of the mapping preview for the iVPD rule ivpd.acr"
+      },
+      "ivpdBail": {
+        "where": "Note column of the mapping preview for the iVPD rule ivpd.bail"
+      },
+      "ivpdCcr": {
+        "where": "Note column of the mapping preview for the iVPD rule ivpd.ccr"
+      },
+      "ivpdCcrChildPresent": {
+        "where": "Note column of the mapping preview for the iVPD rule ivpd.ccr.child-present"
+      },
+      "ivpdCharge": {
+        "where": "Note column of the mapping preview for the iVPD rule ivpd.charge"
+      },
+      "ivpdDa": {
+        "where": "Note column of the mapping preview for the iVPD rule ivpd.da"
+      },
+      "morseCmht": {
+        "where": "Note column of the mapping preview for the Morse rule morse.cmht"
+      },
+      "morseHvDna": {
+        "where": "Note column of the mapping preview for the Morse rule morse.hv-dna"
+      },
+      "morseHvReview": {
+        "where": "Note column of the mapping preview for the Morse rule morse.hv-review"
+      },
+      "opgGuardianship": {
+        "where": "Note column of the mapping preview for the OPG rule opg.guardianship"
+      },
+      "opgPoa": {
+        "where": "Note column of the mapping preview for the OPG rule opg.poa"
+      },
+      "scraHearing": {
+        "where": "Note column of the mapping preview for the SCRA rule scra.hearing"
+      },
+      "scraReferral": {
+        "where": "Note column of the mapping preview for the SCRA rule scra.referral"
+      },
+      "seemisAttendanceMonthly": {
+        "where": "Note column of the mapping preview for the SEEMIS rule seemis.attendance.monthly"
+      },
+      "seemisEnrolment": {
+        "where": "Note column of the mapping preview for the SEEMIS rule seemis.enrolment"
+      },
+      "seemisExclusion": {
+        "where": "Note column of the mapping preview for the SEEMIS rule seemis.exclusion"
+      },
+      "seemisPastoral": {
+        "where": "Note column of the mapping preview for the SEEMIS rule seemis.pastoral"
+      },
+      "trakcareAdmission": {
+        "where": "Note column of the mapping preview for the TrakCare rule trakcare.admission"
+      },
+      "trakcareBirth": {
+        "where": "Note column of the mapping preview for the TrakCare rule trakcare.birth"
+      },
+      "trakcareEd": {
+        "where": "Note column of the mapping preview for the TrakCare rule trakcare.ed"
+      },
+      "visorReference": {
+        "where": "Note column of the mapping preview for the ViSOR rule visor.reference"
+      }
+    },
+    "significance": {
+      "high": {
+        "maxLength": 12,
+        "where": "Significance pill in the mapping preview table"
+      },
+      "low": {
+        "maxLength": 12,
+        "where": "Significance pill in the mapping preview table"
+      },
+      "moderate": {
+        "maxLength": 12,
+        "where": "Significance pill in the mapping preview table"
+      }
+    },
+    "speed": {
+      "auditLabel": {
+        "where": "Target label of the audit entry written when the response speed is changed"
+      },
+      "auditReason": {
+        "where": "Reason on the audit entry when the response speed is changed; choice is the option id"
+      },
+      "fast": {
+        "maxLength": 16,
+        "where": "Response speed option on the Connectors screen"
+      },
+      "instant": {
+        "maxLength": 16,
+        "where": "Response speed option on the Connectors screen"
+      },
+      "label": {
+        "maxLength": 28,
+        "screenshot": "phase-5/connectors-light-comfortable.png",
+        "where": "Label of the response speed select in the Connectors page head"
+      },
+      "realistic": {
+        "maxLength": 28,
+        "where": "Response speed option on the Connectors screen: the seeded 200 to 1500 ms latency"
+      }
+    },
+    "status": {
+      "checking": {
+        "maxLength": 12,
+        "where": "Status word on a health card and in the detail while the health check runs"
+      },
+      "degraded": {
+        "maxLength": 12,
+        "where": "Status word on a health card and in the detail when the adapter is slow"
+      },
+      "down": {
+        "maxLength": 12,
+        "screenshot": "phase-5/connectors-outage-light-comfortable.png",
+        "where": "Status word on a health card and in the detail during an outage"
+      },
+      "ok": {
+        "maxLength": 12,
+        "screenshot": "phase-5/connectors-light-comfortable.png",
+        "where": "Status word on a health card and in the detail when the adapter is connected"
+      }
+    },
+    "summary": {
+      "connectors": {
+        "where": "First item in the summary strip above the health cards: how many connectors there are; the b tag sets the number in bold"
+      },
+      "outages": {
+        "where": "Second item in the summary strip: how many outages are being simulated; the b tag sets the number in bold"
+      },
+      "pending": {
+        "where": "Third item in the summary strip: events waiting in the inbox across every connector; the b tag sets the number in bold"
+      }
+    },
+    "sync": {
+      "alreadyKnown": {
+        "where": "Sync row message when every pulled event was already in the inbox or a chronology"
+      },
+      "auditLabel": {
+        "where": "Target label of the audit entry written by Sync now, with the connector name"
+      },
+      "auditReason": {
+        "where": "Reason on the audit entry written by a successful Sync now: events pulled and events new"
+      },
+      "failedReason": {
+        "where": "Reason on the audit entry written when Sync now fails"
+      },
+      "failedTitle": {
+        "where": "Title of the error toast when Sync now fails, with the connector name"
+      },
+      "newEvents": {
+        "where": "Sync row message when new events were sent to the inbox"
+      },
+      "nothingNew": {
+        "where": "Sync row message and toast text when the pull returned nothing for the sample subject"
+      },
+      "toastText": {
+        "where": "Text of the success toast after Sync now when new events are waiting"
+      },
+      "toastTitle": {
+        "where": "Title of the success toast after Sync now, with the connector name"
+      }
+    },
+    "syncOutcome": {
+      "degraded": {
+        "maxLength": 12,
+        "where": "Outcome pill on a sync history row that completed slowly"
+      },
+      "failed": {
+        "maxLength": 12,
+        "where": "Outcome pill on a sync history row that failed"
+      },
+      "ok": {
+        "maxLength": 12,
+        "where": "Outcome pill on a sync history row that completed"
+      }
+    },
+    "tabs": {
+      "mapping": {
+        "maxLength": 20,
+        "where": "Tab in the connector detail and accessible name of its table: the mapping preview"
+      },
+      "real": {
+        "maxLength": 36,
+        "where": "Tab in the connector detail: how this would connect for real"
+      },
+      "sync": {
+        "maxLength": 20,
+        "screenshot": "phase-5/connectors-light-comfortable.png",
+        "where": "Tab in the connector detail and accessible name of its table: the sync history"
+      }
+    }
+  },
   "cp": {
     "concern": {
       "meta": {

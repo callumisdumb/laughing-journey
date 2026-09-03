@@ -1,4 +1,5 @@
 import type { ConnectorHealth } from '@mas/domain';
+import { t } from '@mas/messages';
 
 /**
  * Simulation controls shared by the mock adapters: latency, outages and degraded status.
@@ -48,7 +49,7 @@ export async function simulateLatency(key: string): Promise<number> {
 
 export class ConnectorDownError extends Error {
   constructor(id: string) {
-    super(`${id} is not responding. The last successful sync is still available; try again in a few minutes.`);
+    super(t('connectors.errors.down', { id }));
     this.name = 'ConnectorDownError';
   }
 }
@@ -56,9 +57,9 @@ export class ConnectorDownError extends Error {
 export async function healthFor(id: string, displayName: string, key: string): Promise<ConnectorHealth> {
   const latencyMs = await simulateLatency(key);
   const lastSyncAt = simulation.lastSync.get(id);
-  if (simulation.outage.has(id)) return { status: 'down', lastSyncAt, latencyMs, message: `${displayName} is not responding (simulated outage).` };
-  if (simulation.degraded.has(id)) return { status: 'degraded', lastSyncAt, latencyMs: latencyMs * 3, message: `${displayName} is slow to respond; some pulls may time out.` };
-  return { status: 'ok', lastSyncAt, latencyMs, message: 'Connected.' };
+  if (simulation.outage.has(id)) return { status: 'down', lastSyncAt, latencyMs, message: t('connectors.health.down', { name: displayName }) };
+  if (simulation.degraded.has(id)) return { status: 'degraded', lastSyncAt, latencyMs: latencyMs * 3, message: t('connectors.health.degraded', { name: displayName }) };
+  return { status: 'ok', lastSyncAt, latencyMs, message: t('connectors.health.ok') };
 }
 
 export function guard(id: string): void {
