@@ -187,7 +187,7 @@ Variant 1
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `excludedUserIds` | array of string | yes |
+| `parties` | array of object { personId, userId, party, label, since, source, reason } | yes |
 | `type` | literal "asp" | yes |
 | `detail` | object { concern, threePointTest, screening, inquiry, investigation, ordersConsidered, planId, closure, lsi } | yes |
 
@@ -216,7 +216,7 @@ Variant 2
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `excludedUserIds` | array of string | yes |
+| `parties` | array of object { personId, userId, party, label, since, source, reason } | yes |
 | `type` | literal "cp" | yes |
 | `detail` | object { concern, proceduresInitiatedAt, ird, investigation, cppm, register, coreGroup, childsPlanId, preBirth } | yes |
 
@@ -245,7 +245,7 @@ Variant 3
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `excludedUserIds` | array of string | yes |
+| `parties` | array of object { personId, userId, party, label, since, source, reason } | yes |
 | `type` | literal "marac" | yes |
 | `detail` | object { referral, researchRequests, meetingId, actionPlanId, idaa, idaaFeedback, flags, links, safeLivesReturn, transfer } | yes |
 
@@ -274,9 +274,9 @@ Variant 4
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `excludedUserIds` | array of string | yes |
+| `parties` | array of object { personId, userId, party, label, since, source, reason } | yes |
 | `type` | literal "mappa" | yes |
-| `detail` | object { category, level, levelHistory, leadResponsibleAuthority, visorReference, notification, referral, sonr, custody, licenceConditions, riskAssessmentIds, rmp, era, disclosures, preMeetingReturns, reviewSchedule, exit, significantCaseReviewTrigger } | yes |
+| `detail` | object { category, level, levelHistory, leadResponsibleAuthority, visorReference, victimPersonIds, notification, referral, sonr, custody, licenceConditions, riskAssessmentIds, rmp, era, disclosures, preMeetingReturns, reviewSchedule, exit, significantCaseReviewTrigger } | yes |
 
 Variant 5
 
@@ -303,7 +303,7 @@ Variant 5
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `excludedUserIds` | array of string | yes |
+| `parties` | array of object { personId, userId, party, label, since, source, reason } | yes |
 | `type` | literal "awi" | yes |
 | `detail` | object { concern, capacityAssessments, willAndPreferences, opgResult, routeDecision, application, orders, supervisionVisits, investigations } | yes |
 
@@ -359,6 +359,7 @@ Variant 5
 | `levelHistory` | array of object { level, at, reason, meetingId } | yes |
 | `leadResponsibleAuthority` | "police" \| "social-work" \| "health" \| "sps" | yes |
 | `visorReference` | string | yes |
+| `victimPersonIds` | array of string | yes |
 | `notification` | object { at, source, byName } | yes |
 | `referral` | object { at, byName, riskAssessmentIds, reason } | no |
 | `sonr` | object { subject, compliant, lastNotificationAt, nextDueAt, endsAt } | yes |
@@ -669,6 +670,7 @@ Variant 5
 | `unit` | "calendar-days" \| "working-days" \| "weeks" \| "months" | yes |
 | `amount` | number | yes |
 | `kind` | "deadline" \| "warning" \| "expiry" \| "review" | yes |
+| `direction` | "after" \| "before" | no |
 | `warnDays` | integer | yes |
 | `source` | string | yes |
 | `sourceRef` | string | no |
@@ -710,7 +712,7 @@ Variant 5
 |---|---|---|
 | `area` | object { councilName, hscpName, healthBoardName, policeDivision, ppuBase, maracArea, sheriffCourt } | yes |
 | `labels` | object | yes |
-| `clockRules` | array of object { id, process, label, trigger, unit, amount, kind, warnDays, source, sourceRef, confidence, localNote, todoVerify } | yes |
+| `clockRules` | array of object { id, process, label, trigger, unit, amount, kind, direction, warnDays, source, sourceRef, confidence, localNote, todoVerify } | yes |
 | `needToKnow` | array of object { id, process, stage, audience, detailLevel, fields, channel, trigger, condition, conditionLabel, lawfulBasisHint } | yes |
 | `exclusions` | array of object { id, process, stage, party, label, reason, liftableBy } | yes |
 | `classificationMarkings` | array of object { id, label, handling } | yes |
@@ -718,6 +720,8 @@ Variant 5
 | `defaults` | object { theme, density } | yes |
 | `aspCouncilOfficerEligibility` | array of string | yes |
 | `bankHolidays` | array of string | yes |
+| `councilHolidays` | array of string | yes |
 | `breakGlassHours` | integer | yes |
+| `breakGlassReasons` | array of string | yes |
 | `guidanceEditions` | array of object { id, label, edition } | yes |
 

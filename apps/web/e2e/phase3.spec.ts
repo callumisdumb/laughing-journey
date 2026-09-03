@@ -82,7 +82,8 @@ test.describe('scenario dashboards', () => {
     await expect(page.getByText(/restricted record/i).first()).toBeVisible();
     await capture(page, { phase: PHASE, screen: 'process-mappa-restricted' });
     await page.getByRole('button', { name: 'Open with a reason' }).click();
-    await page.getByLabel('Reason').fill('Immediate safety concern for a child seen with the subject at 09:40 today');
+    await page.getByLabel(/^Why you need it/).selectOption('Immediate risk to a child');
+    await page.getByLabel(/^Reason/).fill('Immediate safety concern for a child seen with the subject at 09:40 today');
     await page.getByRole('button', { name: 'Open with this reason' }).click();
     await expect(page.getByText('Break-glass access granted')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Sex Offender Notification Requirements' })).toBeVisible();

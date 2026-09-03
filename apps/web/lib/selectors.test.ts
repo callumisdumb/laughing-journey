@@ -2,7 +2,7 @@ import { DEFAULT_CONFIG, demoNow } from '@mas/domain';
 import { AIDEN, USR, buildDataset } from '@mas/mock-data';
 import { describe, expect, it } from 'vitest';
 import { setQuery } from './router';
-import { accessForUser, clocksForUser, currentAddress, inboxForUser, personById, processesInvolving, userById } from './selectors';
+import { accessForUser, clocksForUser, currentAddress, inboxForUser, personById, processesInvolving, userById, clocksForProcess } from './selectors';
 
 const data = buildDataset();
 const now = demoNow();
@@ -14,13 +14,19 @@ describe('selectors', () => {
     expect(addr.line).toContain('Brae Wynd');
     expect(addr.moves).toBe(2);
   });
-  it('computes clocks for Janet Kerr with the local review override', () => {
+  it('computes clocks for Janet Kerr: the 6 month review, the notice clock counting back from the meeting, and the completed escalation', () => {
     const janet = userById(data, USR.janetKerr)!;
     const clocks = clocksForUser(data, DEFAULT_CONFIG, janet, now);
     const review = clocks.find((c) => c.ruleId === 'cp.cppm.review.first');
-    expect(review?.dueAt).toBe('2026-09-14');
-    expect(review?.daysRemaining).toBe(12);
-    expect(review?.overridden).toBe(true);
+    expect(review?.dueAt).toBe('2026-12-12');
+    expect(review?.daysRemaining).toBe(101);
+    expect(review?.overridden).toBe(false);
+    const notice = clocks.find((c) => c.ruleId === 'cp.cppm.notice' && c.triggerId === 'clk_aiden_notice');
+    expect(notice?.dueAt).toBe('2026-09-09');
+    expect(notice?.daysRemaining).toBe(7);
+    const aiden = data.processes.find((p) => p.id === AIDEN.process)!;
+    const escalation = clocksForProcess(data, DEFAULT_CONFIG, aiden, now).find((c) => c.ruleId === 'cp.coregroup.escalate');
+    expect(escalation?.status).toBe('complete');
   });
   it('gives the head teacher summary access and housing presence only', () => {
     const process = data.processes.find((p) => p.id === AIDEN.process)!;
