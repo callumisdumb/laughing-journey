@@ -1013,6 +1013,691 @@
       }
     }
   },
+  "errors": {
+    "capacity": {
+      "decision": {
+        "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+        "where": "Validation message under the specific decision field on the capacity assessment form"
+      },
+      "evidence": {
+        "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+        "where": "Validation message under the evidence field on the capacity assessment form"
+      },
+      "outcome": {
+        "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+        "where": "Validation message under the outcome radio group when every functional item is met but the outcome is lacks capacity"
+      },
+      "wishes": {
+        "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+        "where": "Validation message under the past and present wishes field on the capacity assessment form"
+      }
+    },
+    "daq": {
+      "answerEvery": {
+        "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+        "where": "Validation message under each unanswered question on the DAQ and DASH form"
+      },
+      "judgementBelowThreshold": {
+        "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+        "where": "Validation message under professional judgement when referring below the high-risk threshold without a reason"
+      }
+    },
+    "forms": {
+      "enterAssessmentDate": {
+        "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+        "where": "Validation message under the date of assessment on the three-point test and capacity assessment forms"
+      },
+      "enterDate": {
+        "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+        "where": "Validation message under a date field left empty or not a date (DAQ date completed)"
+      },
+      "maxLength": {
+        "where": "Validation message when a must-not-receive name, relationship or reason is longer than its limit"
+      }
+    },
+    "mappaReferral": {
+      "categoryThree": {
+        "where": "Validation message under level sought on the MAPPA referral form"
+      },
+      "imminentRisk": {
+        "where": "Validation message under the imminent risk checkbox when Level 3 is sought without it"
+      },
+      "reason": {
+        "where": "Validation message under the reason field on the MAPPA referral form"
+      },
+      "riskAssessment": {
+        "where": "Validation message on the MAPPA referral form when no risk assessment is ticked"
+      },
+      "victim": {
+        "where": "Validation message under victim considerations on the MAPPA referral form"
+      },
+      "visor": {
+        "where": "Validation message under the ViSOR reference on the MAPPA referral form"
+      }
+    },
+    "mustNotReceive": {
+      "name": {
+        "where": "Validation message under the name of a person who must not receive information"
+      },
+      "reason": {
+        "where": "Validation message under the reason for a person who must not receive information"
+      }
+    },
+    "threePointTest": {
+      "harmTypes": {
+        "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+        "where": "Validation message under the types of harm on the three-point test form"
+      },
+      "immediateSafety": {
+        "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+        "where": "Validation message under immediate safety on the three-point test form"
+      },
+      "reasoning": {
+        "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+        "where": "Validation message under the reasoning for a limb on the three-point test form"
+      }
+    }
+  },
+  "forms": {
+    "capacity": {
+      "answers": {
+        "partly": {
+          "maxLength": 12,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Middle option of each functional test item on the capacity assessment form"
+        }
+      },
+      "assessor": {
+        "label": {
+          "maxLength": 16,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Label of the assessor name field on the capacity assessment form"
+        }
+      },
+      "communication": {
+        "hint": {
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Hint under the communication support field on the capacity assessment form"
+        },
+        "label": {
+          "maxLength": 30,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Label of the communication support field on the capacity assessment form"
+        }
+      },
+      "date": {
+        "label": {
+          "maxLength": 16,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Label of the date field on the capacity assessment form"
+        }
+      },
+      "decision": {
+        "label": {
+          "maxLength": 30,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Label of the decision field on the capacity assessment form"
+        }
+      },
+      "evidence": {
+        "label": {
+          "maxLength": 30,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Label of the evidence field on the capacity assessment form"
+        }
+      },
+      "evidenceRecord": {
+        "where": "Evidence text written to the capacity assessment record: the typed evidence, the functional test answers and the wishes considered"
+      },
+      "functional": {
+        "acts": {
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Legend of the fifth functional test item on the capacity assessment form"
+        },
+        "communicates": {
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Legend of the fourth functional test item on the capacity assessment form"
+        },
+        "retains": {
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Legend of the second functional test item on the capacity assessment form"
+        },
+        "understands": {
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Legend of the first functional test item on the capacity assessment form"
+        },
+        "weighs": {
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Legend of the third functional test item on the capacity assessment form"
+        }
+      },
+      "intro": {
+        "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+        "where": "Intro paragraph of the capacity assessment dialog"
+      },
+      "outcome": {
+        "fluctuating": {
+          "maxLength": 20,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Outcome option on the capacity assessment form"
+        },
+        "hasCapacity": {
+          "maxLength": 20,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Outcome option on the capacity assessment form"
+        },
+        "lacksCapacity": {
+          "maxLength": 20,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Outcome option on the capacity assessment form"
+        },
+        "legend": {
+          "maxLength": 30,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Legend of the outcome radio group on the capacity assessment form"
+        }
+      },
+      "recorded": {
+        "text": {
+          "where": "Toast text after a capacity assessment is recorded: the decision and the outcome"
+        },
+        "title": {
+          "maxLength": 40,
+          "where": "Toast title after a capacity assessment is recorded"
+        }
+      },
+      "role": {
+        "label": {
+          "maxLength": 16,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Label of the assessor role field on the capacity assessment form"
+        }
+      },
+      "submit": {
+        "maxLength": 30,
+        "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+        "where": "Confirm button of the capacity assessment dialog"
+      },
+      "title": {
+        "maxLength": 40,
+        "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+        "where": "Title of the capacity assessment dialog"
+      },
+      "wishes": {
+        "label": {
+          "maxLength": 40,
+          "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
+          "where": "Label of the wishes field on the capacity assessment form"
+        }
+      }
+    },
+    "daq": {
+      "band": {
+        "below": {
+          "maxLength": 30,
+          "where": "Risk band label written to a DAQ or DASH assessment below the threshold"
+        },
+        "high": {
+          "maxLength": 30,
+          "screenshot": "phase-3/process-marac-light-comfortable.png",
+          "where": "Risk band label written to a DAQ or DASH assessment that meets the threshold"
+        }
+      },
+      "date": {
+        "label": {
+          "maxLength": 20,
+          "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+          "where": "Label of the date field on the DAQ and DASH form"
+        }
+      },
+      "instrument": {
+        "daq": {
+          "maxLength": 40,
+          "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+          "where": "Instrument option on the DAQ and DASH form, with the number of questions"
+        },
+        "dash": {
+          "maxLength": 40,
+          "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+          "where": "Instrument option on the DAQ and DASH form, with the number of questions"
+        },
+        "legend": {
+          "maxLength": 20,
+          "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+          "where": "Legend of the instrument choice on the DAQ and DASH form"
+        }
+      },
+      "judgement": {
+        "hint": {
+          "where": "Hint under the professional judgement field on the DAQ and DASH form"
+        },
+        "label": {
+          "maxLength": 30,
+          "where": "Label of the professional judgement field on the DAQ and DASH form"
+        }
+      },
+      "questions": {
+        "q1": {
+          "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+          "where": "Question 1 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q10": {
+          "where": "Question 10 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q11": {
+          "where": "Question 11 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q12": {
+          "where": "Question 12 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q13": {
+          "where": "Question 13 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q14": {
+          "where": "Question 14 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q15": {
+          "where": "Question 15 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q16": {
+          "where": "Question 16 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q17": {
+          "where": "Question 17 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q18": {
+          "where": "Question 18 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q19": {
+          "where": "Question 19 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q2": {
+          "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+          "where": "Question 2 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q20": {
+          "where": "Question 20 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q21": {
+          "where": "Question 21 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q22": {
+          "where": "Question 22 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q23": {
+          "where": "Question 23 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q24": {
+          "where": "Question 24 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q25": {
+          "where": "Question 25, one of the three child-focused questions Police Scotland's DAQ adds to DASH (plain-language paraphrase); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q26": {
+          "where": "Question 26, one of the three child-focused questions Police Scotland's DAQ adds to DASH (plain-language paraphrase); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q27": {
+          "where": "Question 27, one of the three child-focused questions Police Scotland's DAQ adds to DASH (plain-language paraphrase); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q3": {
+          "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+          "where": "Question 3 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q4": {
+          "where": "Question 4 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q5": {
+          "where": "Question 5 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q6": {
+          "where": "Question 6 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q7": {
+          "where": "Question 7 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q8": {
+          "where": "Question 8 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        },
+        "q9": {
+          "where": "Question 9 of the SafeLives DASH and Police Scotland DAQ checklists (plain-language paraphrase, not the published instrument); the legend of its radio group on the form and the item text on the MARAC dashboard"
+        }
+      },
+      "recorded": {
+        "text": {
+          "where": "Toast text after a DAQ or DASH is recorded, by outcome"
+        },
+        "title": {
+          "maxLength": 40,
+          "where": "Toast title after a DAQ or DASH is recorded: the instrument code and the score"
+        }
+      },
+      "referBelow": {
+        "label": {
+          "maxLength": 60,
+          "where": "Checkbox on the DAQ and DASH form that refers a case scoring below the threshold"
+        }
+      },
+      "relationshipHint": {
+        "maxLength": 60,
+        "where": "Hint under the relationship field of a person who must not receive information, on the DAQ"
+      },
+      "submit": {
+        "maxLength": 24,
+        "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+        "where": "Confirm button of the DAQ and DASH dialog"
+      },
+      "tally": {
+        "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+        "where": "Live tally above the questions on the DAQ and DASH form: yes answers so far and the distance to the threshold"
+      },
+      "title": {
+        "maxLength": 40,
+        "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+        "where": "Title of the DAQ and DASH dialog"
+      }
+    },
+    "mappaReferral": {
+      "accommodation": {
+        "label": {
+          "maxLength": 40,
+          "where": "Checkbox on the MAPPA referral form"
+        }
+      },
+      "category": {
+        "legend": {
+          "maxLength": 20,
+          "where": "Legend of the category radio group on the MAPPA referral form"
+        },
+        "one": {
+          "maxLength": 40,
+          "where": "Category option on the MAPPA referral form"
+        },
+        "three": {
+          "maxLength": 40,
+          "where": "Category option on the MAPPA referral form"
+        },
+        "two": {
+          "maxLength": 40,
+          "where": "Category option on the MAPPA referral form"
+        }
+      },
+      "disclosure": {
+        "label": {
+          "maxLength": 40,
+          "where": "Checkbox on the MAPPA referral form"
+        }
+      },
+      "historyReason": {
+        "where": "Reason written to the MAPPA level history when a referral is sent; shown in the category and level card"
+      },
+      "imminent": {
+        "label": {
+          "maxLength": 60,
+          "where": "Checkbox on the MAPPA referral form"
+        }
+      },
+      "intro": {
+        "where": "Intro paragraph of the MAPPA referral dialog"
+      },
+      "leadRa": {
+        "health": {
+          "maxLength": 40,
+          "where": "Lead Responsible Authority option on the MAPPA referral form"
+        },
+        "label": {
+          "maxLength": 30,
+          "where": "Label of the lead Responsible Authority select on the MAPPA referral form"
+        },
+        "police": {
+          "maxLength": 30,
+          "where": "Lead Responsible Authority option on the MAPPA referral form"
+        },
+        "socialWork": {
+          "maxLength": 30,
+          "where": "Lead Responsible Authority option on the MAPPA referral form"
+        },
+        "sps": {
+          "maxLength": 30,
+          "where": "Lead Responsible Authority option on the MAPPA referral form"
+        }
+      },
+      "level": {
+        "legend": {
+          "maxLength": 20,
+          "where": "Legend of the level radio group on the MAPPA referral form"
+        },
+        "three": {
+          "maxLength": 30,
+          "where": "Level option on the MAPPA referral form"
+        },
+        "two": {
+          "maxLength": 50,
+          "where": "Level option on the MAPPA referral form"
+        }
+      },
+      "reason": {
+        "label": {
+          "maxLength": 50,
+          "where": "Label of the reason field on the MAPPA referral form"
+        }
+      },
+      "referred": {
+        "text": {
+          "where": "Toast text after a MAPPA referral is sent"
+        },
+        "title": {
+          "maxLength": 30,
+          "where": "Toast title after a MAPPA referral is sent"
+        }
+      },
+      "relationshipHint": {
+        "maxLength": 60,
+        "where": "Hint under the relationship field of a person who must not receive information, on the MAPPA referral"
+      },
+      "riskAssessments": {
+        "legend": {
+          "maxLength": 60,
+          "where": "Legend of the risk assessment checkboxes on the MAPPA referral form"
+        },
+        "option": {
+          "where": "One risk assessment checkbox on the MAPPA referral form: tool code, band label and date"
+        }
+      },
+      "submit": {
+        "maxLength": 24,
+        "where": "Confirm button of the MAPPA referral dialog"
+      },
+      "title": {
+        "maxLength": 40,
+        "where": "Title of the MAPPA referral dialog"
+      },
+      "victim": {
+        "hint": {
+          "where": "Hint under the victim considerations field on the MAPPA referral form"
+        },
+        "label": {
+          "maxLength": 30,
+          "where": "Label of the victim considerations field on the MAPPA referral form"
+        }
+      },
+      "visor": {
+        "label": {
+          "maxLength": 30,
+          "where": "Label of the ViSOR reference field on the MAPPA referral form"
+        }
+      }
+    },
+    "mustNotReceive": {
+      "add": {
+        "maxLength": 20,
+        "where": "Button that adds a must-not-receive entry"
+      },
+      "count": {
+        "where": "Live count under the must-not-receive hint: how many people will join the register"
+      },
+      "hint": {
+        "where": "Hint under the must-not-receive legend"
+      },
+      "name": {
+        "label": {
+          "maxLength": 16,
+          "where": "Label of the name field of a must-not-receive entry"
+        }
+      },
+      "party": {
+        "label": {
+          "maxLength": 20,
+          "where": "Label of the party select of a must-not-receive entry"
+        }
+      },
+      "person": {
+        "maxLength": 16,
+        "where": "Heading of each must-not-receive entry, numbered from one"
+      },
+      "question": {
+        "where": "Legend of the must-not-receive section on the DAQ and the MAPPA referral; also the domain constant the register reads"
+      },
+      "reason": {
+        "hint": {
+          "where": "Hint under the reason field of a must-not-receive entry"
+        },
+        "label": {
+          "maxLength": 16,
+          "where": "Label of the reason field of a must-not-receive entry"
+        }
+      },
+      "registerUpdated": {
+        "text": {
+          "where": "Toast text after must-not-receive entries are written to the register"
+        },
+        "title": {
+          "maxLength": 40,
+          "where": "Toast title after must-not-receive entries are written to the register"
+        }
+      },
+      "relationship": {
+        "label": {
+          "maxLength": 30,
+          "where": "Label of the relationship field of a must-not-receive entry"
+        }
+      },
+      "remove": {
+        "maxLength": 16,
+        "where": "Button that removes a must-not-receive entry"
+      },
+      "removeLabel": {
+        "maxLength": 24,
+        "where": "Accessible name of the button that removes a must-not-receive entry"
+      }
+    },
+    "threePointTest": {
+      "date": {
+        "label": {
+          "maxLength": 24,
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Label of the date field on the three-point test form"
+        }
+      },
+      "harm": {
+        "legend": {
+          "maxLength": 40,
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Legend of the harm type checkboxes on the three-point test form"
+        }
+      },
+      "intro": {
+        "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+        "where": "Intro paragraph of the three-point test dialog"
+      },
+      "limbA": {
+        "label": {
+          "maxLength": 40,
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Label of limb (a) of the three-point test, from the domain limb definitions"
+        },
+        "text": {
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Question for limb (a) of the three-point test, from the domain limb definitions"
+        }
+      },
+      "limbB": {
+        "label": {
+          "maxLength": 40,
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Label of limb (b) of the three-point test, from the domain limb definitions"
+        },
+        "text": {
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Question for limb (b) of the three-point test, from the domain limb definitions"
+        }
+      },
+      "limbC": {
+        "label": {
+          "maxLength": 40,
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Label of limb (c) of the three-point test, from the domain limb definitions"
+        },
+        "text": {
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Question for limb (c) of the three-point test, from the domain limb definitions"
+        }
+      },
+      "limbLegend": {
+        "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+        "where": "Legend of each limb radio group on the three-point test form: the limb label, then its question"
+      },
+      "met": {
+        "met": {
+          "maxLength": 12,
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Met option on each limb of the three-point test form, and the pill on the ASP dashboard"
+        },
+        "notMet": {
+          "maxLength": 12,
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Not met option on each limb of the three-point test form, and the pill on the ASP dashboard"
+        },
+        "unclear": {
+          "maxLength": 12,
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Unclear option on each limb of the three-point test form, and the pill on the ASP dashboard"
+        }
+      },
+      "reasoning": {
+        "label": {
+          "maxLength": 30,
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Label of the reasoning field for each limb on the three-point test form"
+        }
+      },
+      "recorded": {
+        "text": {
+          "where": "Toast text after a three-point test is recorded, by outcome"
+        },
+        "title": {
+          "maxLength": 40,
+          "where": "Toast title after a three-point test is recorded"
+        }
+      },
+      "safety": {
+        "label": {
+          "maxLength": 24,
+          "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+          "where": "Label of the immediate safety field on the three-point test form"
+        }
+      },
+      "submit": {
+        "maxLength": 30,
+        "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+        "where": "Confirm button of the three-point test dialog"
+      },
+      "title": {
+        "maxLength": 40,
+        "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
+        "where": "Title of the three-point test dialog"
+      }
+    }
+  },
   "home": {
     "clocks": {
       "count": {

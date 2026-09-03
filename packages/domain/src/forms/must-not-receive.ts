@@ -1,3 +1,4 @@
+import { t } from '@mas/messages';
 import { z } from 'zod';
 import { EXCLUSION_PARTIES, EXCLUSION_PARTY_LABELS, type ExclusionParty } from '../enums';
 import { normalisePartyName } from '../need-to-know/parties';
@@ -10,8 +11,13 @@ import type { CaseParty } from '../schemas/process';
  * names someone the record does not already link to the case. It goes on the case-role register as a
  * manual entry keyed by the typed name, so the hard exclusions for the process catch them. The parties
  * offered on each form are the roles the exclusion rows name for that process.
+ *
+ * The question text lives in the catalogue (forms.mustNotReceive.question); read it here so an
+ * Admin override applies wherever the domain quotes it.
  */
-export const MUST_NOT_RECEIVE_QUESTION = 'Is there anyone else who must not receive information about this case?';
+export function mustNotReceiveQuestion(): string {
+  return t('forms.mustNotReceive.question');
+}
 
 /** MARAC: the perpetrator and the perpetrator's family or associates. */
 export const MARAC_MUST_NOT_RECEIVE_PARTIES = ['perpetrator-associates', 'perpetrator'] as const satisfies readonly ExclusionParty[];
@@ -19,10 +25,22 @@ export const MARAC_MUST_NOT_RECEIVE_PARTIES = ['perpetrator-associates', 'perpet
 export const MAPPA_MUST_NOT_RECEIVE_PARTIES = ['victim', 'employer', 'perpetrator-associates', 'public'] as const satisfies readonly ExclusionParty[];
 
 export const mustNotReceiveEntrySchema = z.object({
-  name: z.string().trim().min(2, 'Enter their name').max(120, 'Use 120 characters or fewer'),
+  name: z
+    .string()
+    .trim()
+    .min(2, { error: () => t('errors.mustNotReceive.name') })
+    .max(120, { error: () => t('errors.forms.maxLength', { max: 120 }) }),
   party: z.enum(EXCLUSION_PARTIES),
-  relationship: z.string().trim().max(120, 'Use 120 characters or fewer').optional(),
-  reason: z.string().trim().min(5, 'Say why they must not receive information').max(400, 'Use 400 characters or fewer'),
+  relationship: z
+    .string()
+    .trim()
+    .max(120, { error: () => t('errors.forms.maxLength', { max: 120 }) })
+    .optional(),
+  reason: z
+    .string()
+    .trim()
+    .min(5, { error: () => t('errors.mustNotReceive.reason') })
+    .max(400, { error: () => t('errors.forms.maxLength', { max: 400 }) }),
 });
 export type MustNotReceiveEntry = z.infer<typeof mustNotReceiveEntrySchema>;
 export type MustNotReceiveEntryInput = z.input<typeof mustNotReceiveEntrySchema>;

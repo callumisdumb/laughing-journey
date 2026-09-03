@@ -299,6 +299,265 @@
       "recordedBy": "Recorded by {name}, {method}."
     }
   },
+  "errors": {
+    "capacity": {
+      "decision": "Name the specific decision (capacity is decision-specific)",
+      "evidence": "Record the evidence for the conclusion (at least {min} characters)",
+      "outcome": "Every functional item is met; explain why the outcome is lacks capacity, or change it",
+      "wishes": "Record the adult's past and present wishes"
+    },
+    "daq": {
+      "answerEvery": "Answer every question",
+      "judgementBelowThreshold": "A referral below {threshold} yes answers needs your professional judgement"
+    },
+    "forms": {
+      "enterAssessmentDate": "Enter the date of assessment",
+      "enterDate": "Enter the date",
+      "maxLength": "Use {max} characters or fewer"
+    },
+    "mappaReferral": {
+      "categoryThree": "Category 3 cannot be managed at Level 1",
+      "imminentRisk": "Level 3 is for the critical few: confirm imminent risk of serious harm",
+      "reason": "Explain why active multi-agency management is needed (at least {min} characters)",
+      "riskAssessment": "A referral must be informed by a current risk assessment",
+      "victim": "Record victim safety considerations; the Victim Notification Scheme is separate",
+      "visor": "Enter the ViSOR (MAPPS) reference"
+    },
+    "mustNotReceive": {
+      "name": "Enter their name",
+      "reason": "Say why they must not receive information"
+    },
+    "threePointTest": {
+      "harmTypes": "Record at least one type of harm",
+      "immediateSafety": "Say what is in place for immediate safety",
+      "reasoning": "Give the reasoning for this limb (at least {min} characters)"
+    }
+  },
+  "forms": {
+    "capacity": {
+      "answers": {
+        "partly": "Partly"
+      },
+      "assessor": {
+        "label": "Assessor"
+      },
+      "communication": {
+        "hint": "Interpreter, communication aid, best time of day.",
+        "label": "Communication support used"
+      },
+      "date": {
+        "label": "Date"
+      },
+      "decision": {
+        "label": "The specific decision"
+      },
+      "evidence": {
+        "label": "Evidence for the conclusion"
+      },
+      "evidenceRecord": "{evidence} Functional test: understands {understands}, retains {retains}, weighs {weighs}, communicates {communicates}, acts {acts}. Wishes: {wishes}",
+      "functional": {
+        "acts": "Can act on the decision",
+        "communicates": "Communicates the decision by any means",
+        "retains": "Retains that information long enough to decide",
+        "understands": "Understands the information relevant to the decision",
+        "weighs": "Weighs it up to reach a decision"
+      },
+      "intro": "Capacity is decision-specific and time-specific. Record the decision, the functional test item by item, the evidence, and the adult's past and present wishes.",
+      "outcome": {
+        "fluctuating": "Fluctuating",
+        "hasCapacity": "Has capacity",
+        "lacksCapacity": "Lacks capacity",
+        "legend": "Outcome for this decision"
+      },
+      "recorded": {
+        "text": "{decision}: {outcome}.",
+        "title": "Capacity assessment recorded"
+      },
+      "role": {
+        "label": "Role"
+      },
+      "submit": "Record assessment",
+      "title": "Capacity assessment (AWI 2000)",
+      "wishes": {
+        "label": "Past and present wishes considered"
+      }
+    },
+    "daq": {
+      "band": {
+        "below": "Below threshold ({score} of {max})",
+        "high": "High risk ({threshold} or more)"
+      },
+      "date": {
+        "label": "Date completed"
+      },
+      "instrument": {
+        "daq": "Police Scotland DAQ ({count} questions)",
+        "dash": "SafeLives DASH ({count} questions)",
+        "legend": "Instrument"
+      },
+      "judgement": {
+        "hint": "Required for a referral below the threshold. Why the score understates the risk.",
+        "label": "Professional judgement"
+      },
+      "questions": {
+        "q1": "Has the current incident resulted in injury?",
+        "q10": "Is the abuse happening more often?",
+        "q11": "Is the abuse getting worse?",
+        "q12": "Does the person try to control everything you do or are they excessively jealous?",
+        "q13": "Has the person ever used weapons or objects to hurt you?",
+        "q14": "Has the person ever threatened to kill you or someone else and you believed them?",
+        "q15": "Has the person ever attempted to strangle, choke, suffocate or drown you?",
+        "q16": "Does the person do or say things of a sexual nature that make you feel bad or physically hurt you?",
+        "q17": "Is there any other person who has threatened you or who you are afraid of?",
+        "q18": "Do you know if the person has hurt anyone else?",
+        "q19": "Has the person ever mistreated an animal or the family pet?",
+        "q2": "Are you very frightened?",
+        "q20": "Are there any financial issues, for example are you dependent on the person for money?",
+        "q21": "Has the person had problems in the past year with drugs, alcohol or mental health?",
+        "q22": "Has the person ever threatened or attempted suicide?",
+        "q23": "Has the person ever breached bail or an injunction, or formal agreements about contact?",
+        "q24": "Do you know if the person has ever been in trouble with the police or has a criminal history?",
+        "q25": "Were any children present during, or exposed to, the incident?",
+        "q26": "Has the person ever threatened to hurt the children or to take them away?",
+        "q27": "Are there concerns about the children's safety or wellbeing arising from the abuse?",
+        "q3": "What are you afraid of? Is it further injury or violence?",
+        "q4": "Do you feel isolated from family or friends?",
+        "q5": "Are you feeling depressed or having suicidal thoughts?",
+        "q6": "Have you separated or tried to separate in the past year?",
+        "q7": "Is there conflict over child contact?",
+        "q8": "Does the person constantly text, call, contact, follow, stalk or harass you?",
+        "q9": "Are you pregnant or have you recently had a baby?"
+      },
+      "recorded": {
+        "text": "{outcome, select, high {High risk: refer to MARAC.} referred {Below threshold; referred on professional judgement.} other {Below threshold; no MARAC referral.}}",
+        "title": "{tool} recorded: {count, plural, one {# yes answer} other {# yes answers}}"
+      },
+      "referBelow": {
+        "label": "Refer on professional judgement even if below {threshold}"
+      },
+      "relationshipHint": "For example the perpetrator's brother.",
+      "submit": "Record and score",
+      "tally": "{count, plural, one {# yes answer} other {# yes answers}} so far. {high, select, yes {High risk: this meets the referral threshold.} other {{remaining} more for the high-risk threshold.}}",
+      "title": "Domestic abuse risk checklist"
+    },
+    "mappaReferral": {
+      "accommodation": {
+        "label": "Accommodation issue (ERA needed)"
+      },
+      "category": {
+        "legend": "Category",
+        "one": "1: registered sex offender",
+        "three": "3: other risk of serious harm",
+        "two": "2: restricted patient"
+      },
+      "disclosure": {
+        "label": "Disclosure to a third party considered"
+      },
+      "historyReason": "Referral by {name}: {reason}",
+      "imminent": {
+        "label": "Imminent risk of serious harm (required for Level 3)"
+      },
+      "intro": "A referral must be informed by a current risk assessment (MAPPA National Guidance 2022). Category 3 cannot be managed at Level 1. Level 3 is for the critical few.",
+      "leadRa": {
+        "health": "Health board (restricted patients)",
+        "label": "Lead Responsible Authority",
+        "police": "Police Scotland",
+        "socialWork": "Justice social work",
+        "sps": "SPS (in custody)"
+      },
+      "level": {
+        "legend": "Level sought",
+        "three": "Level 3: MAPPP",
+        "two": "Level 2: active multi-agency management"
+      },
+      "reason": {
+        "label": "Why active multi-agency management is needed"
+      },
+      "referred": {
+        "text": "The MAPPA Coordinator passes the referral to a single point of contact in each Responsible Authority for pre-meeting returns.",
+        "title": "Referred to Level {level}"
+      },
+      "relationshipHint": "For example the victim's mother.",
+      "riskAssessments": {
+        "legend": "Current risk assessments informing the referral",
+        "option": "{tool}: {band}, {date}"
+      },
+      "submit": "Send referral",
+      "title": "MAPPA referral (Level 2 or 3)",
+      "victim": {
+        "hint": "MAPPA information is not given to victims; the Victim Notification Scheme is separate.",
+        "label": "Victim considerations"
+      },
+      "visor": {
+        "label": "ViSOR (MAPPS) reference"
+      }
+    },
+    "mustNotReceive": {
+      "add": "Add a person",
+      "count": "{count, plural, =0 {No one added.} one {# person will go on the register when you save.} other {# people will go on the register when you save.}}",
+      "hint": "Anyone the record does not already link to the perpetrator, or a victim who must not hear of the process through it. Each entry goes on the case-role register with your name and the reason.",
+      "name": {
+        "label": "Name"
+      },
+      "party": {
+        "label": "Excluded as"
+      },
+      "person": "Person {n}",
+      "question": "Is there anyone else who must not receive information about this case?",
+      "reason": {
+        "hint": "Recorded on the register beside your name.",
+        "label": "Reason"
+      },
+      "registerUpdated": {
+        "text": "{count, plural, one {# person} other {# people}} recorded as \"Must not receive\" for this case.",
+        "title": "Case-role register updated"
+      },
+      "relationship": {
+        "label": "Relationship to the case"
+      },
+      "remove": "Remove",
+      "removeLabel": "Remove person {n}"
+    },
+    "threePointTest": {
+      "date": {
+        "label": "Date of assessment"
+      },
+      "harm": {
+        "legend": "Types of harm (all harm counts)"
+      },
+      "intro": "All three limbs must be met. Record your reasoning for each limb; the reasoning is what a reviewer or an inspector reads.",
+      "limbA": {
+        "label": "Limb (a): unable to safeguard",
+        "text": "Is the adult unable to safeguard their own wellbeing, property, rights or other interests?"
+      },
+      "limbB": {
+        "label": "Limb (b): at risk of harm",
+        "text": "Is the adult at risk of harm? Harm is all harm: physical, sexual, psychological, financial, neglect, self-harm and self-neglect."
+      },
+      "limbC": {
+        "label": "Limb (c): more vulnerable",
+        "text": "Because the adult is affected by disability, mental disorder, illness or physical or mental infirmity, are they more vulnerable to being harmed than adults who are not so affected?"
+      },
+      "limbLegend": "{label}. {text}",
+      "met": {
+        "met": "Met",
+        "notMet": "Not met",
+        "unclear": "Unclear"
+      },
+      "reasoning": {
+        "label": "Reasoning for limb ({limb})"
+      },
+      "recorded": {
+        "text": "{outcome, select, met {All three limbs met: adult at risk of harm.} notMet {A limb is not met: the adult is not an adult at risk under s3. Consider other support.} other {A limb is unclear: gather more information under the inquiry.}}",
+        "title": "Three-point test recorded"
+      },
+      "safety": {
+        "label": "Immediate safety"
+      },
+      "submit": "Record three-point test",
+      "title": "Three-point test (ASP 2007 s3)"
+    }
+  },
   "home": {
     "clocks": {
       "count": "{count} running",
