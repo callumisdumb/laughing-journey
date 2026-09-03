@@ -9,6 +9,7 @@ import { Screen } from '@/components/Screen';
 import { useAppearance } from '@/lib/appearance';
 import { useDesktop } from '@/lib/desktop';
 import { messagesStore } from '@/lib/messages-store';
+import { primeDeviceKey } from '@/lib/localStore';
 import { useRoute, useRouterStore } from '@/lib/router';
 import { useAppStore } from '@/lib/store';
 import { SignIn } from '@/features/sign-in/SignIn';
@@ -36,7 +37,13 @@ function Boot() {
   useEffect(() => {
     hydrate();
     sync();
-    init();
+    // The device key comes from the OS keychain, which is asynchronous, and everything the store
+    // persists is encrypted under a key derived from it. Priming it first means nothing is ever
+    // written before there is a key to write it under: a failure to protect must not silently
+    // become a failure to encrypt (lib/localStore.ts).
+    void primeDeviceKey().then(() => {
+      init();
+    });
   }, [hydrate, sync, init]);
 
   if (!ready || !route.ready) {

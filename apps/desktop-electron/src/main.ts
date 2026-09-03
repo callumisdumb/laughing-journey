@@ -4,7 +4,7 @@
  * menu as the Tauri shell (About, Reset demo data, Toggle theme, Zoom). Menu and About text come
  * from the message catalogue, with any saved overrides applied, so both shells read identically.
  */
-import { app, BrowserWindow, ipcMain, Menu, net, protocol, shell, type MenuItemConstructorOptions } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, net, protocol, safeStorage, shell, type MenuItemConstructorOptions } from 'electron';
 import { existsSync, readFileSync, statSync, writeFileSync, unlinkSync } from 'node:fs';
 import { join, normalize } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -135,6 +135,41 @@ function createWindow(): void {
   if (DEV_URL) void win.loadURL(DEV_URL);
   else void win.loadURL('app://platform/');
 }
+
+/**
+ * The device key, protected by the OS keychain.
+ *
+ * `safeStorage` is backed by the Keychain on macOS, DPAPI on Windows and the Secret Service on
+ * Linux, so the key on disk is bound to the OS user account and, on most platforms, to hardware. The
+ * renderer never sees the encrypted form: it asks for the key, the main process unseals it, and the
+ * local store is encrypted under a key derived from it. Close the app, open the data file, and there
+ * is nothing to read.
+ *
+ * Where the platform has no keychain available, the key is refused rather than written in the clear.
+ * A device key sitting in plaintext beside the data it protects is worse than no device key at all,
+ * because it looks like protection.
+ */
+function deviceKeyPath(): string {
+  return join(app.getPath('userData'), 'device-key.bin');
+}
+
+ipcMain.handle('mas-device-key-load', () => {
+  if (!safeStorage.isEncryptionAvailable()) return null;
+  const path = deviceKeyPath();
+  if (!existsSync(path)) return null;
+  try {
+    return safeStorage.decryptString(readFileSync(path));
+  } catch {
+    // A key sealed by a different OS user or a reinstalled keychain: start clean rather than refuse
+    // to launch, which for a safeguarding product is the worse failure.
+    return null;
+  }
+});
+
+ipcMain.handle('mas-device-key-save', (_event, base64: string) => {
+  if (!safeStorage.isEncryptionAvailable()) return;
+  writeFileSync(deviceKeyPath(), safeStorage.encryptString(base64));
+});
 
 ipcMain.handle('mas-overrides-load', () => {
   const path = overridesPath();

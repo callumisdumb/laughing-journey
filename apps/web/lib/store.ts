@@ -7,6 +7,7 @@
 import { DEFAULT_CONFIG, demoNow, roleLabel, type AuditEntry, type Config, type Dataset, type User } from '@mas/domain';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
+import { isSealedBlob, openLocal, sealLocal } from '@/lib/localStore';
 import { buildVault, type Vault } from '@/lib/vault';
 import { create } from 'zustand';
 
@@ -81,10 +82,28 @@ const EMPTY: Dataset = {
   audit: [],
 };
 
+/**
+ * The local store is encrypted at rest under a device key held in the OS keychain (see
+ * lib/localStore.ts). What reaches disk is a nonce and a ciphertext: close the desktop app, open the
+ * data file, and there is nothing to read.
+ *
+ * Before the device key is primed, and where no key can be had at all, nothing is written. A failure
+ * to protect must not silently become a failure to encrypt, because the difference is invisible
+ * until someone looks at the file.
+ */
 function readJson<T>(key: string): T | null {
   try {
     const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : null;
+    if (!raw) return null;
+    const parsed: unknown = JSON.parse(raw);
+    if (isSealedBlob(parsed)) return openLocal<T>(key, parsed) ?? null;
+    // A store written before the local store was encrypted, which every existing installation will
+    // have. It is read once and immediately re-sealed, so the plaintext is gone by the next write
+    // rather than persisting because nobody thought about the upgrade. Accepting it is bounded: it
+    // only ever converts what is already on this device, and never weakens a record's own
+    // encryption, which has no plaintext form anywhere.
+    writeJson(key, parsed);
+    return parsed as T;
   } catch {
     return null;
   }
@@ -92,7 +111,9 @@ function readJson<T>(key: string): T | null {
 
 function writeJson(key: string, value: unknown): void {
   try {
-    window.localStorage.setItem(key, JSON.stringify(value));
+    const sealed = sealLocal(key, value);
+    if (!sealed) return;
+    window.localStorage.setItem(key, JSON.stringify(sealed));
   } catch {
     /* storage unavailable */
   }
