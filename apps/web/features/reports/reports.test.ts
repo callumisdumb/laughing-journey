@@ -3,7 +3,8 @@ import { t } from '@mas/messages';
 import { buildDataset } from '@mas/mock-data';
 import { describe, expect, it } from 'vitest';
 import { buildModel } from './buildModel';
-import { MAPPA_ANNEX3_TABLES, annexTitle } from './mappaAnnex3';
+import { ETHNICITY_NOT_HELD_ROW, ETHNICITY_ZERO_ROWS, MAPPA_ANNEX3_TABLES, annexTitle } from './mappaAnnex3';
+import type { AnnexTable } from './mappaAnnex3';
 import type { ReportKind } from './model';
 import { periodsFor, resolvePeriod } from './period';
 
@@ -80,17 +81,53 @@ describe('report figures are computed from the seed, never typed in', () => {
     expect(y2027.model.sections.filter((s) => s.chart).map((s) => s.id)).toEqual(['table-3']);
 
     // Figures are keyed on row ids, so the checks read the cells by position rather than by label.
-    const values = (model: typeof y2027.model, id: string) => model.sections.find((s) => s.id === id)?.tables[0]?.rows.map((r) => r.slice(1));
-    expect(values(y2027.model, 'table-1')).toEqual([[1], [notHeld], [0], [notHeld], [0]]);
-    expect(values(y2027.model, 'table-2')).toEqual([[0], [0], [0], [0], [1], [1], [0], [0], [notHeld]]);
-    expect(values(y2026.model, 'table-2')?.[4]).toEqual([0]);
-    expect(values(y2027.model, 'table-3')).toEqual([[0, 1, 0, 1]]);
-    expect(values(y2027.model, 'table-4')).toEqual([[0], [0], [0], [0]]);
-    expect(values(y2027.model, 'table-5')).toEqual([[0], [0], [0], [0]]);
-    expect(values(y2027.model, 'table-6')).toEqual([[1], [0], [0], [1]]);
-    expect(values(y2027.model, 'table-7')).toEqual([[1], [0], [1]]);
-    expect(values(y2027.model, 'table-8')?.flat()).toEqual([notHeld, notHeld, notHeld]);
-    expect(values(y2027.model, 'table-9')).toEqual([[0], [1], [0], [0]]);
+    const rowsOf = (model: typeof y2027.model, id: string) => model.sections.find((s) => s.id === id)?.tables[0]?.rows ?? [];
+    const values = (model: typeof y2027.model, id: string) => rowsOf(model, id).map((r) => r.slice(1));
+    const cellsFor = (model: typeof y2027.model, tableId: AnnexTable['id'], rowId: string) => {
+      const table = MAPPA_ANNEX3_TABLES.find((x) => x.id === tableId);
+      const index = table?.rows.findIndex((r) => r.id === rowId) ?? -1;
+      return rowsOf(model, tableId)[index]?.slice(1);
+    };
+
+    // A lettered heading the annex prints above its numbered parts carries no figure.
+    for (const table of MAPPA_ANNEX3_TABLES) {
+      table.rows.forEach((row, i) => {
+        if (row.group) expect(rowsOf(y2027.model, table.id)[i]?.slice(1).every((c) => c === '')).toBe(true);
+      });
+    }
+
+    expect(cellsFor(y2027.model, 'table-1', 'at-liberty')).toEqual([1]);
+    expect(cellsFor(y2027.model, 'table-1', 'per-100k')).toEqual([notHeld]);
+    expect(cellsFor(y2027.model, 'table-1', 'wanted')).toEqual([notHeld]);
+    expect(cellsFor(y2027.model, 'table-2', 'shpo-in-force')).toEqual([1]);
+    expect(cellsFor(y2027.model, 'table-2', 'shpo-granted')).toEqual([1]);
+    expect(cellsFor(y2027.model, 'table-2', 'sopo-in-force')).toEqual([0]);
+    expect(cellsFor(y2026.model, 'table-2', 'shpo-in-force')).toEqual([0]);
+    // Table 3 splits each level across custody and liberty: the one RSO is at liberty at Level 2.
+    expect(cellsFor(y2027.model, 'table-3', 'level-2')).toEqual([0, 1, 1]);
+    expect(cellsFor(y2027.model, 'table-3', 'level-1')).toEqual([0, 0, 0]);
+    expect(cellsFor(y2027.model, 'table-4', 'living-in-area')).toEqual([0]);
+    expect(cellsFor(y2027.model, 'table-5', 'level-2')).toEqual([0]);
+
+    // The annex gives Category 3 offenders no Level 1 row: they cannot be managed at Level 1.
+    const table5 = MAPPA_ANNEX3_TABLES.find((x) => x.id === 'table-5');
+    expect(table5?.rows.map((r) => r.id)).not.toContain('level-1');
+    expect(table5?.rows.filter((r) => r.id.includes('level-1'))).toEqual([]);
+
+    // Table 6 bands the one RSO by age; Table 7 by sex. Both carry a percentage.
+    expect(values(y2027.model, 'table-6')?.filter((c) => c[0] === 1)).toHaveLength(2); // the band and the total
+    expect(cellsFor(y2027.model, 'table-6', 'total')).toEqual([1, '100.0']);
+    expect(cellsFor(y2027.model, 'table-7', 'male')).toEqual([1, '100.0']);
+    expect(cellsFor(y2027.model, 'table-7', 'other')).toEqual([0, '0.0']);
+
+    // Table 8 renders in full: every ethnicity row is zero and the whole population sits under Data Not held.
+    expect(rowsOf(y2027.model, 'table-8')).toHaveLength(22);
+    for (const rowId of ETHNICITY_ZERO_ROWS) expect(cellsFor(y2027.model, 'table-8', rowId)).toEqual([0, '0.0']);
+    expect(cellsFor(y2027.model, 'table-8', ETHNICITY_NOT_HELD_ROW)).toEqual([1, '100.0']);
+    expect(cellsFor(y2027.model, 'table-8', 'total')).toEqual([1, '100.0']);
+
+    expect(cellsFor(y2027.model, 'table-9', 'statutory-supervision')).toEqual([1, '100.0']);
+    expect(cellsFor(y2027.model, 'table-9', 'notification-only')).toEqual([0, '0.0']);
 
     const json = JSON.stringify(y2027.model);
     for (const identifying of ['Muir', 'Derek', 'MAPPA-2026-0034', '1974-06-08', '08 Jun 1974', 'ViSOR', 'Ardvale Sheriff Court']) expect(json).not.toContain(identifying);

@@ -5,9 +5,9 @@
  * lives in the catalogue under reports.mappaAnnex3 (see mappaAnnex3.ts); every figure here is
  * keyed on a row id, never on the label.
  */
-import { dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, type ClockRule, type Config, type Dataset, type MappaProcess } from '@mas/domain';
+import { ageAt, dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, type ClockRule, type Config, type Dataset, type MappaProcess } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
-import { MAPPA_ANNEX3_TABLES, annexColumns, annexRowLabel, annexTitle, dataNotHeld, type AnnexTable } from './mappaAnnex3';
+import { ETHNICITY_NOT_HELD_ROW, MAPPA_ANNEX3_TABLES, annexColumns, annexRowLabel, annexTitle, dataNotHeld, type AnnexTable } from './mappaAnnex3';
 import { messageSegment, scaleColour, sum, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
 import { inPeriod, type Period } from './period';
 
@@ -55,14 +55,21 @@ function orderInForceOn(o: Order, date: string): boolean {
   return o.status !== 'discharged' && o.madeAt <= date && (!o.expiresAt || o.expiresAt >= date);
 }
 
-/** An Annex 3 table with its cells keyed on the row id; a row with no cells reads "Data not held" in every column. */
+/**
+ * An Annex 3 table with its cells keyed on the row id. A lettered heading the annex prints above
+ * its numbered parts carries no figure, so its cells are blank; any other row the record store
+ * cannot fill reads "Data not held" rather than a zero, which in a return to Ministers would be a
+ * claim rather than an absence.
+ */
 function annexTableSpec(table: AnnexTable, cells: Record<string, Cell[]>): TableSpec {
   const width = table.columnCount - 1;
+  const blank = Array.from({ length: width }, () => '');
+  const notHeld = Array.from({ length: width }, () => dataNotHeld());
   return {
     id: `mappa-${table.id}`,
     columns: annexColumns(table),
     numeric: Array.from({ length: width }, (_, i) => i + 1),
-    rows: table.rows.map((row) => [annexRowLabel(table, row), ...(cells[row.id] ?? Array.from({ length: width }, () => dataNotHeld()))]),
+    rows: table.rows.map((row) => [annexRowLabel(table, row), ...(row.group ? blank : (cells[row.id] ?? notHeld))]),
   };
 }
 
@@ -109,7 +116,6 @@ export function mappaModel(data: Dataset, config: Config, now: Date, period: Per
   // Tables 4 and 5.
   const patients = inCategory(atEnd, 2);
   const category3 = inCategory(atEnd, 3);
-  const category3Referred = inCategory(mappas, 3).filter((p) => p.detail.referral && inPeriod(p.detail.referral.at, period)).length;
 
   // Table 6.
   const bySex = (sex: 'male' | 'female' | 'not-recorded') => community.filter((p) => (personOf(p)?.sex ?? 'not-recorded') === sex).length;
@@ -118,35 +124,121 @@ export function mappaModel(data: Dataset, config: Config, now: Date, period: Per
   const supervised = rsosAtEnd.filter((p) => p.detail.sonr.subject && onLicenceOn(p, end)).length;
   const sonrOnly = rsosAtEnd.filter((p) => p.detail.sonr.subject && !onLicenceOn(p, end)).length;
 
+  // Table 8. The dataset holds no ethnicity by design, so every category reads zero and the whole
+  // population sits under "Data Not held". Asserted in reports.test.ts.
+  const ethnicityCells: Record<string, Cell[]> = Object.fromEntries(
+    (MAPPA_ANNEX3_TABLES.find((table) => table.id === 'table-8')?.rows ?? []).map((row) => {
+      if (row.id === ETHNICITY_NOT_HELD_ROW || row.id === 'total') return [row.id, [rsosAtEnd.length, rsosAtEnd.length === 0 ? '0.0' : '100.0']];
+      return [row.id, [0, '0.0']];
+    }),
+  );
+
+  // Formal disclosure decisions recorded on the Category 1 records open at the year end.
+  const disclosures = rsosAtEnd.filter((p) => p.detail.disclosures.some((d) => d.status === 'made')).length;
+
   // Table 9. A return to custody is a police custody event on a Category 1 record after the recorded release.
   const rsos = inCategory(mappas, 1);
-  const releasedIn = rsosDuring.filter((p) => inPeriod(p.detail.custody.releasedAt, period)).length;
   const returned = data.events.filter((e) => {
     if (e.eventType !== 'police.custody' || !inPeriod(e.occurredAt, period)) return false;
     return rsos.some((p) => e.linkedProcessIds.includes(p.id) && Boolean(p.detail.custody.releasedAt) && localDateOf(e.occurredAt) > (p.detail.custody.releasedAt ?? ''));
   }).length;
-  const licenceBreaches = sum(rsosDuring.map((p) => p.detail.licenceConditions.filter((l) => l.status === 'breached').length));
+
+  // Tables 6 to 9 carry a percentage of the RSO population, to one decimal place as the annex prints it.
+  const pct = (n: number, of: number) => (of === 0 ? '0.0' : ((n / of) * 100).toFixed(1));
+  const ageOf = (p: MappaProcess) => {
+    const dob = personOf(p)?.dateOfBirth;
+    return dob ? ageAt(dob, new Date(`${end}T12:00:00+01:00`)) : undefined;
+  };
+  const inBand = (lo: number, hi: number) => rsosAtEnd.filter((p) => { const a = ageOf(p); return a !== undefined && a >= lo && a <= hi; }).length;
+  const ageRow = (lo: number, hi: number) => [inBand(lo, hi), pct(inBand(lo, hi), rsosAtEnd.length)];
+  const sexRow = (sex: 'male' | 'female' | 'other') => {
+    const n = sex === 'other' ? rsosAtEnd.length - bySex('male') - bySex('female') : bySex(sex);
+    return [n, pct(n, rsosAtEnd.length)];
+  };
+  const inCustody = (list: MappaProcess[]) => list.filter((p) => inCustodyOn(p, end)).length;
+  // Table 3 splits each level across custody and liberty.
+  const levelSplit = (level: Level) => {
+    const atLevel = rsosAtEnd.filter((p) => levelAt(p, end) === level);
+    const custody = inCustody(atLevel);
+    return [custody, atLevel.length - custody, atLevel.length];
+  };
+  const splitRow = (n: Cell) => [dataNotHeld(), dataNotHeld(), n];
 
   const cells: Record<AnnexTable['id'], Record<string, Cell[]>> = {
-    'table-1': { community: [community.length], 'per-100k': [dataNotHeld()], breach: [sonrBreaches], wanted: [dataNotHeld()], missing: [missingAtEnd] },
+    'table-1': {
+      'at-liberty': [community.length],
+      'per-100k': [dataNotHeld()],
+      breaches: [sonrBreaches],
+      wanted: [dataNotHeld()],
+      missing: [missingAtEnd],
+    },
     'table-2': {
       'sopo-in-force': [inForce('sopo')],
-      'sopo-made': [made('sopo')],
+      'sopo-granted': [made('sopo')],
       'rsho-in-force': [inForce('rsho')],
-      'rsho-made': [made('rsho')],
       'shpo-in-force': [inForce('shpo')],
-      'shpo-made': [made('shpo')],
+      'shpo-granted': [made('shpo')],
       'sro-in-force': [inForce('sro')],
-      'sro-made': [made('sro')],
-      'breach-convictions': [dataNotHeld()],
+      'sopo-breach': [dataNotHeld()],
+      'shpo-breach': [dataNotHeld()],
+      'rsho-breach': [dataNotHeld()],
+      'sro-breach': [dataNotHeld()],
+      'foreign-travel': [made('fto')],
+      'notification-orders': [made('notification-order')],
     },
-    'table-3': { rso: [...LEVELS.map((level) => levelCount(rsosAtEnd, level)), rsosAtEnd.length] },
-    'table-4': { total: [patients.length], 'level-1': [levelCount(patients, 1)], 'level-2': [levelCount(patients, 2)], 'level-3': [levelCount(patients, 3)] },
-    'table-5': { total: [category3.length], 'level-2': [levelCount(category3, 2)], 'level-3': [levelCount(category3, 3)], referred: [category3Referred] },
-    'table-6': { male: [bySex('male')], female: [bySex('female')], 'not-recorded': [bySex('not-recorded')], total: [community.length] },
-    'table-7': { supervision: [supervised], 'sonr-only': [sonrOnly], total: [supervised + sonrOnly] },
-    'table-8': {},
-    'table-9': { 'in-custody': [rsosAtEnd.length - community.length], released: [releasedIn], returned: [returned], 'licence-breaches': [licenceBreaches] },
+    'table-3': {
+      'level-1': levelSplit(1),
+      'level-2': levelSplit(2),
+      'level-3': levelSplit(3),
+      'further-conviction': splitRow(dataNotHeld()),
+      'returned-to-custody': splitRow(returned),
+      'sonr-indefinite-review': splitRow(dataNotHeld()),
+      'notification-continuation': splitRow(dataNotHeld()),
+      'formal-disclosure': splitRow(disclosures),
+    },
+    'table-4': {
+      'living-in-area': [patients.length],
+      'during-year': [inCategory(during, 2).length],
+      'state-hospital': [dataNotHeld()],
+      'other-hospital': [dataNotHeld()],
+      community: [dataNotHeld()],
+      'level-1': [levelCount(patients, 1)],
+      'level-2': [levelCount(patients, 2)],
+      'level-3': [levelCount(patients, 3)],
+      recalled: [dataNotHeld()],
+    },
+    'table-5': {
+      'level-2': [levelCount(category3, 2)],
+      'level-3': [levelCount(category3, 3)],
+      'further-conviction-level-2': [dataNotHeld()],
+      'further-conviction-level-3': [dataNotHeld()],
+      'returned-to-custody': [dataNotHeld()],
+      'dwp-notifications': [dataNotHeld()],
+    },
+    'table-6': {
+      'under-18': ageRow(0, 17),
+      'age-18-21': ageRow(18, 21),
+      'age-22-25': ageRow(22, 25),
+      'age-26-30': ageRow(26, 30),
+      'age-31-40': ageRow(31, 40),
+      'age-41-50': ageRow(41, 50),
+      'age-51-60': ageRow(51, 60),
+      'age-61-70': ageRow(61, 70),
+      'over-70': ageRow(71, 200),
+      total: [rsosAtEnd.length, pct(rsosAtEnd.length, rsosAtEnd.length)],
+    },
+    'table-7': {
+      male: sexRow('male'),
+      female: sexRow('female'),
+      other: sexRow('other'),
+      total: [rsosAtEnd.length, pct(rsosAtEnd.length, rsosAtEnd.length)],
+    },
+    'table-8': ethnicityCells,
+    'table-9': {
+      'statutory-supervision': [supervised, pct(supervised, supervised + sonrOnly)],
+      'notification-only': [sonrOnly, pct(sonrOnly, supervised + sonrOnly)],
+      total: [supervised + sonrOnly, pct(supervised + sonrOnly, supervised + sonrOnly)],
+    },
   };
 
   const notes: Record<AnnexTable['id'], string> = {
@@ -155,10 +247,10 @@ export function mappaModel(data: Dataset, config: Config, now: Date, period: Per
     'table-3': t('reports.mappa.notes.table3', { date: endLabel, level2: intervalText(rules[2]), level3: intervalText(rules[3]) }),
     'table-4': t('reports.mappa.notes.table4', { date: endLabel }),
     'table-5': t('reports.mappa.notes.table5', { date: endLabel }),
-    'table-6': t('reports.mappa.notes.table6'),
-    'table-7': t('reports.mappa.notes.table7', { date: endLabel }),
+    'table-6': t('reports.mappa.notes.table6', { date: endLabel }),
+    'table-7': t('reports.mappa.notes.table7'),
     'table-8': t('reports.mappa.notes.table8'),
-    'table-9': t('reports.mappa.notes.table9'),
+    'table-9': t('reports.mappa.notes.table9', { date: endLabel }),
   };
 
   const chart: ChartSpec = {
@@ -178,11 +270,8 @@ export function mappaModel(data: Dataset, config: Config, now: Date, period: Per
     title: t('reports.mappa.sections.tableTitle', { number: table.number, title: annexTitle(table) }),
     note: notes[table.id],
     ...(table.id === 'table-3' ? { chart } : {}),
-    tables: [annexTableSpec(table, table.source === 'not-held' ? {} : cells[table.id])],
+    tables: [annexTableSpec(table, cells[table.id])],
   }));
-
-  const extracted = MAPPA_ANNEX3_TABLES.filter((table) => table.confidence === 'extract').map((table) => table.number).join(', ');
-  const reconstructed = MAPPA_ANNEX3_TABLES.filter((table) => table.confidence === 'reconstructed').map((table) => table.number).join(', ');
 
   return {
     kind: 'mappa',
@@ -190,8 +279,8 @@ export function mappaModel(data: Dataset, config: Config, now: Date, period: Per
     lede: t('reports.mappa.lede'),
     period,
     classification: 'official-sensitive',
-    meta: [t('reports.meta.period', { period: period.label }), t('reports.mappa.meta.computed', { dateTime: formatDateTime(now), records: mappas.length, managed: during.length }), t('reports.mappa.meta.fieldSet')],
-    verify: [t('reports.mappa.verify.wording', { extracted, reconstructed }), t('reports.mappa.verify.interval')],
+    meta: [t('reports.meta.period', { period: period.label }), t('reports.mappa.meta.reportingPeriod'), t('reports.mappa.meta.computed', { dateTime: formatDateTime(now), records: mappas.length, managed: during.length }), t('reports.mappa.meta.fieldSet'), t('reports.mappa.meta.noNames')],
+    verify: [t('reports.mappa.verify.interval')],
     sources: [t('reports.mappa.sources.guidance'), t('reports.mappa.sources.sogReports'), t('reports.mappa.sources.overview')],
     figures: [
       { id: 'at-end', label: t('reports.mappa.figures.atEnd', { date: endLabel }), value: String(atEnd.length) },

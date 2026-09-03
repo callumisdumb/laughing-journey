@@ -13706,7 +13706,16 @@
           "where": "Meta line under the MAPPA report controls: when it was computed and from how many records"
         },
         "fieldSet": {
-          "where": "Last meta line under the MAPPA report controls: the confirmed field set"
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Meta line naming Annex 3 and the statutory duty as the source of the field set"
+        },
+        "noNames": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Meta line stating that the report carries counts only"
+        },
+        "reportingPeriod": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Meta line giving the reporting period and who publishes the report"
         }
       },
       "notes": {
@@ -13726,16 +13735,20 @@
           "where": "Note under the Table 5 section title on the MAPPA report, with the period end date"
         },
         "table6": {
-          "where": "Note under the Table 6 section title on the MAPPA report"
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Note beneath Annex 3 Table 6 (age)"
         },
         "table7": {
-          "where": "Note under the Table 7 section title on the MAPPA report, with the period end date"
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Note beneath Annex 3 Table 7 (sex)"
         },
         "table8": {
-          "where": "Note under the Table 8 section title on the MAPPA report"
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Note beneath Annex 3 Table 8 (ethnicity) explaining why the whole population sits under Data Not held"
         },
         "table9": {
-          "where": "Note under the Table 9 section title on the MAPPA report"
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Note beneath Annex 3 Table 9 (statutory conditions)"
         }
       },
       "periodLabel": {
@@ -13791,304 +13804,641 @@
       "verify": {
         "interval": {
           "where": "Verification note in the field set and sources panel of the MAPPA report"
-        },
-        "wording": {
-          "where": "Verification note in the field set and sources panel of the MAPPA report, listing which tables were read from extracts and which were reconstructed"
         }
       }
     },
     "mappaAnnex3": {
       "dataNotHeld": {
-        "maxLength": 16,
-        "screenshot": "phase-5/report-mappa-annex3-light-comfortable.png",
-        "verbatim": true,
-        "where": "Cell value in the MAPPA Annex 3 tables where the record store holds no figure"
+        "maxLength": 20,
+        "screenshot": "phase-5/report-mappa-light-comfortable.png",
+        "where": "The cell value where the record store holds no figure for an Annex 3 row"
       },
       "table1": {
         "column1": {
-          "verbatim": true,
-          "where": "First column header of MAPPA Annex 3 Table 1; placeholder for the published template text"
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Column 1 header of Annex 3 Table 1 (our accessible heading; the annex leaves this corner blank)"
         },
         "column2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Second column header of MAPPA Annex 3 Table 1; placeholder for the published template text"
+          "where": "Column 2 header of Annex 3 Table 1"
         },
-        "rowBreach": {
+        "rowAtLiberty": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 1; placeholder for the published template text"
+          "where": "Row \"1) At liberty and living in your area on\" of Annex 3 Table 1"
         },
-        "rowCommunity": {
+        "rowBreaches": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 1; placeholder for the published template text"
+          "where": "Row \"b) The number of RSOs having a notificat\" of Annex 3 Table 1"
         },
         "rowMissing": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 1; placeholder for the published template text"
+          "where": "Row \"d) The number of \"missing\" RSOs on 31 Ma\" of Annex 3 Table 1"
         },
         "rowPer100k": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 1; placeholder for the published template text"
+          "where": "Row \"2) Per 100,000 of the population on 31 M\" of Annex 3 Table 1"
+        },
+        "rowRsos": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"a) Number of Registered Sex Offenders:\" of Annex 3 Table 1"
         },
         "rowWanted": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 1; placeholder for the published template text"
+          "where": "Row \"c) The number of \"wanted\" RSOs on 31 Mar\" of Annex 3 Table 1"
         },
         "title": {
-          "screenshot": "phase-5/report-mappa-annex3-light-comfortable.png",
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Title of MAPPA Annex 3 Table 1; placeholder for the published template text"
+          "where": "Title of Annex 3 Table 1 in the MAPPA annual report"
         }
       },
       "table2": {
         "column1": {
-          "verbatim": true,
-          "where": "First column header of MAPPA Annex 3 Table 2; placeholder for the published template text"
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Column 1 header of Annex 3 Table 2 (our accessible heading; the annex leaves this corner blank)"
         },
         "column2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Second column header of MAPPA Annex 3 Table 2; placeholder for the published template text"
+          "where": "Column 2 header of Annex 3 Table 2"
         },
-        "rowBreachConvictions": {
+        "rowForeignTravel": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+          "where": "Row \"k) Number of Foreign Travel Orders impos\" of Annex 3 Table 2"
+        },
+        "rowNotificationOrders": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"l) Number of Notification Orders imposed\" of Annex 3 Table 2"
+        },
+        "rowRshoBreach": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"i) Number of people convicted of a breac\" of Annex 3 Table 2"
         },
         "rowRshoInForce": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+          "where": "Row \"c) Risk of Sexual Harm Orders (RSHOs) in\" of Annex 3 Table 2"
         },
-        "rowRshoMade": {
+        "rowShpoBreach": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+          "where": "Row \"h) Number of RSOs convicted of breaching\" of Annex 3 Table 2"
+        },
+        "rowShpoGranted": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"e) SHPOs granted by courts between 1 Apr\" of Annex 3 Table 2"
         },
         "rowShpoInForce": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+          "where": "Row \"d) Sexual Harm Prevention Orders (SHPOs)\" of Annex 3 Table 2"
         },
-        "rowShpoMade": {
+        "rowSopoBreach": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+          "where": "Row \"g) Number of RSOs convicted of breaching\" of Annex 3 Table 2"
+        },
+        "rowSopoGranted": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"b) SOPOs granted by courts between 1 Apr\" of Annex 3 Table 2"
         },
         "rowSopoInForce": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+          "where": "Row \"a) Sexual Offences Prevention Orders (SO\" of Annex 3 Table 2"
         },
-        "rowSopoMade": {
+        "rowSroBreach": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+          "where": "Row \"j) Number of people convicted of breachi\" of Annex 3 Table 2"
         },
         "rowSroInForce": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
-        },
-        "rowSroMade": {
-          "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+          "where": "Row \"f) Sexual Risk Orders (SROs) in force on\" of Annex 3 Table 2"
         },
         "title": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Title of MAPPA Annex 3 Table 2; placeholder for the published template text"
+          "where": "Title of Annex 3 Table 2 in the MAPPA annual report"
         }
       },
       "table3": {
         "column1": {
-          "verbatim": true,
-          "where": "First column header of MAPPA Annex 3 Table 3; placeholder for the published template text"
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Column 1 header of Annex 3 Table 3 (our accessible heading; the annex leaves this corner blank)"
         },
         "column2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Second column header of MAPPA Annex 3 Table 3; placeholder for the published template text"
+          "where": "Column 2 header of Annex 3 Table 3"
         },
         "column3": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Third column header of MAPPA Annex 3 Table 3; placeholder for the published template text"
+          "where": "Column 3 header of Annex 3 Table 3"
         },
         "column4": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Fourth column header of MAPPA Annex 3 Table 3; placeholder for the published template text"
+          "where": "Column 4 header of Annex 3 Table 3"
         },
-        "column5": {
+        "rowByLevel": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Fifth column header of MAPPA Annex 3 Table 3; placeholder for the published template text"
+          "where": "Row \"a) Number of RSOs managed by MAPPA level\" of Annex 3 Table 3"
         },
-        "rowRso": {
+        "rowFormalDisclosure": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 3; placeholder for the published template text"
+          "where": "Row \"f) Number of RSOs subject to formal disc\" of Annex 3 Table 3"
+        },
+        "rowFurtherConviction": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"b) Number of RSOs convicted of a further\" of Annex 3 Table 3"
+        },
+        "rowLevel1": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"1) MAPPA Level 1:\" of Annex 3 Table 3"
+        },
+        "rowLevel2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"2) MAPPA Level 2:\" of Annex 3 Table 3"
+        },
+        "rowLevel3": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"3) MAPPA Level 3:\" of Annex 3 Table 3"
+        },
+        "rowNotificationContinuation": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"e) Number of notification continuation o\" of Annex 3 Table 3"
+        },
+        "rowReturnedToCustody": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"c) Number of RSOs returned to custody fo\" of Annex 3 Table 3"
+        },
+        "rowSonrIndefiniteReview": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"d) Number of individuals subject to the \" of Annex 3 Table 3"
         },
         "title": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Title of MAPPA Annex 3 Table 3; placeholder for the published template text"
+          "where": "Title of Annex 3 Table 3 in the MAPPA annual report"
         }
       },
       "table4": {
         "column1": {
-          "verbatim": true,
-          "where": "First column header of MAPPA Annex 3 Table 4; placeholder for the published template text"
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Column 1 header of Annex 3 Table 4 (our accessible heading; the annex leaves this corner blank)"
         },
         "column2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Second column header of MAPPA Annex 3 Table 4; placeholder for the published template text"
+          "where": "Column 2 header of Annex 3 Table 4"
+        },
+        "rowByLevel": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"c) Number managed by MAPPA level on 31 M\" of Annex 3 Table 4"
+        },
+        "rowCommunity": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"3) Community (Conditional Discharge):\" of Annex 3 Table 4"
+        },
+        "rowDuringYear": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"2) During the reporting year:\" of Annex 3 Table 4"
         },
         "rowLevel1": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 4; placeholder for the published template text"
+          "where": "Row \"1) MAPPA Level 1\" of Annex 3 Table 4"
         },
         "rowLevel2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 4; placeholder for the published template text"
+          "where": "Row \"2) MAPPA Level 2\" of Annex 3 Table 4"
         },
         "rowLevel3": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 4; placeholder for the published template text"
+          "where": "Row \"3) MAPPA Level 3\" of Annex 3 Table 4"
         },
-        "rowTotal": {
+        "rowLivingInArea": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 4; placeholder for the published template text"
+          "where": "Row \"1) Living in your area on 31 March:\" of Annex 3 Table 4"
+        },
+        "rowOtherHospital": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"2) Other hospital in area\" of Annex 3 Table 4"
+        },
+        "rowPatients": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"a) Number of RPs:\" of Annex 3 Table 4"
+        },
+        "rowRecalled": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"d) Number of RPs recalled by Scottish Mi\" of Annex 3 Table 4"
+        },
+        "rowSetting": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"b) Number within hospital/community on 3\" of Annex 3 Table 4"
+        },
+        "rowStateHospital": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"1) State Hospital:\" of Annex 3 Table 4"
         },
         "title": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Title of MAPPA Annex 3 Table 4; placeholder for the published template text"
+          "where": "Title of Annex 3 Table 4 in the MAPPA annual report"
         }
       },
       "table5": {
         "column1": {
-          "verbatim": true,
-          "where": "First column header of MAPPA Annex 3 Table 5; placeholder for the published template text"
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Column 1 header of Annex 3 Table 5 (our accessible heading; the annex leaves this corner blank)"
         },
         "column2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Second column header of MAPPA Annex 3 Table 5; placeholder for the published template text"
+          "where": "Column 2 header of Annex 3 Table 5"
+        },
+        "note": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Note printed beneath Annex 3 Table 5"
+        },
+        "rowByLevel": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"a) Number of offenders managed by MAPPA \" of Annex 3 Table 5"
+        },
+        "rowDwpNotifications": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"d) Number of notifications made to DWP u\" of Annex 3 Table 5"
+        },
+        "rowFurtherConviction": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"b) Number of offenders convicted of a fu\" of Annex 3 Table 5"
+        },
+        "rowFurtherConvictionLevel2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"1) MAPPA Level 2:\" of Annex 3 Table 5"
+        },
+        "rowFurtherConvictionLevel3": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"2) MAPPA Level 3:\" of Annex 3 Table 5"
         },
         "rowLevel2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 5; placeholder for the published template text"
+          "where": "Row \"1) MAPPA Level 2:\" of Annex 3 Table 5"
         },
         "rowLevel3": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 5; placeholder for the published template text"
+          "where": "Row \"2) MAPPA Level 3:\" of Annex 3 Table 5"
         },
-        "rowReferred": {
+        "rowReturnedToCustody": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 5; placeholder for the published template text"
-        },
-        "rowTotal": {
-          "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 5; placeholder for the published template text"
+          "where": "Row \"c) Number of offenders returned to custo\" of Annex 3 Table 5"
         },
         "title": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Title of MAPPA Annex 3 Table 5; placeholder for the published template text"
+          "where": "Title of Annex 3 Table 5 in the MAPPA annual report"
         }
       },
       "table6": {
         "column1": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "First column header of MAPPA Annex 3 Table 6; placeholder for the published template text"
+          "where": "Column 1 header of Annex 3 Table 6"
         },
         "column2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Second column header of MAPPA Annex 3 Table 6; placeholder for the published template text"
+          "where": "Column 2 header of Annex 3 Table 6"
         },
-        "rowFemale": {
+        "column3": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 6; placeholder for the published template text"
+          "where": "Column 3 header of Annex 3 Table 6"
         },
-        "rowMale": {
-          "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 6; placeholder for the published template text"
+        "note": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Note printed beneath Annex 3 Table 6"
         },
-        "rowNotRecorded": {
+        "rowAge1821": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 6; placeholder for the published template text"
+          "where": "Row \"b) 18-21\" of Annex 3 Table 6"
+        },
+        "rowAge2225": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"c) 22-25\" of Annex 3 Table 6"
+        },
+        "rowAge2630": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"d) 26-30\" of Annex 3 Table 6"
+        },
+        "rowAge3140": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"e) 31-40\" of Annex 3 Table 6"
+        },
+        "rowAge4150": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"f) 41-50\" of Annex 3 Table 6"
+        },
+        "rowAge5160": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"g) 51-60\" of Annex 3 Table 6"
+        },
+        "rowAge6170": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"h) 61-70\" of Annex 3 Table 6"
+        },
+        "rowOver70": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"i) over 70\" of Annex 3 Table 6"
         },
         "rowTotal": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 6; placeholder for the published template text"
+          "where": "Row \"Total\" of Annex 3 Table 6"
+        },
+        "rowUnder18": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"a) Under 18\" of Annex 3 Table 6"
         },
         "title": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Title of MAPPA Annex 3 Table 6; placeholder for the published template text"
+          "where": "Title of Annex 3 Table 6 in the MAPPA annual report"
         }
       },
       "table7": {
         "column1": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "First column header of MAPPA Annex 3 Table 7; placeholder for the published template text"
+          "where": "Column 1 header of Annex 3 Table 7"
         },
         "column2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Second column header of MAPPA Annex 3 Table 7; placeholder for the published template text"
+          "where": "Column 2 header of Annex 3 Table 7"
         },
-        "rowSonrOnly": {
+        "column3": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 7; placeholder for the published template text"
+          "where": "Column 3 header of Annex 3 Table 7"
         },
-        "rowSupervision": {
+        "note": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Note printed beneath Annex 3 Table 7"
+        },
+        "rowFemale": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 7; placeholder for the published template text"
+          "where": "Row \"b) Female\" of Annex 3 Table 7"
+        },
+        "rowMale": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"a) Male\" of Annex 3 Table 7"
+        },
+        "rowOther": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"c) Other\" of Annex 3 Table 7"
         },
         "rowTotal": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 7; placeholder for the published template text"
+          "where": "Row \"Total\" of Annex 3 Table 7"
         },
         "title": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Title of MAPPA Annex 3 Table 7; placeholder for the published template text"
+          "where": "Title of Annex 3 Table 7 in the MAPPA annual report"
         }
       },
       "table8": {
         "column1": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "First column header of MAPPA Annex 3 Table 8; placeholder for the published template text"
+          "where": "Column 1 header of Annex 3 Table 8"
         },
         "column2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Second column header of MAPPA Annex 3 Table 8; placeholder for the published template text"
+          "where": "Column 2 header of Annex 3 Table 8"
         },
-        "rowCategory1": {
+        "column3": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 8; placeholder for the published template text"
+          "where": "Column 3 header of Annex 3 Table 8"
         },
-        "rowCategory2": {
-          "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 8; placeholder for the published template text"
+        "note": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Note printed beneath Annex 3 Table 8"
         },
-        "rowCategory3": {
+        "rowAfrican": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 8; placeholder for the published template text"
+          "where": "Row \"African, African Scottish or African Bri\" of Annex 3 Table 8"
+        },
+        "rowArab": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Arab, Arab Scottish or Arab British\" of Annex 3 Table 8"
+        },
+        "rowBangladeshi": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Bangladeshi, Bangladeshi Scottish or Ban\" of Annex 3 Table 8"
+        },
+        "rowBlack": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Black, Black Scottish or Black British\" of Annex 3 Table 8"
+        },
+        "rowCaribbean": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Caribbean, Caribbean Scottish or Caribbe\" of Annex 3 Table 8"
+        },
+        "rowChinese": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Chinese, Chinese Scottish or Chinese Bri\" of Annex 3 Table 8"
+        },
+        "rowDataNotHeld": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Data Not held\" of Annex 3 Table 8"
+        },
+        "rowGypsyTraveller": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Gypsy Traveller\" of Annex 3 Table 8"
+        },
+        "rowIndian": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Indian, Indian Scottish or Indian Britis\" of Annex 3 Table 8"
+        },
+        "rowIrish": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Irish\" of Annex 3 Table 8"
+        },
+        "rowMixedOrMultiple": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Mixed or Multiple Ethnic Group\" of Annex 3 Table 8"
+        },
+        "rowOtherAfrican": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Other African\" of Annex 3 Table 8"
+        },
+        "rowOtherAsian": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Other Asian\" of Annex 3 Table 8"
+        },
+        "rowOtherBritish": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Other British\" of Annex 3 Table 8"
+        },
+        "rowOtherCaribbeanOrBlack": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Other Caribbean or Black\" of Annex 3 Table 8"
+        },
+        "rowOtherEthnicGroup": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Other Ethnic Group - Other\" of Annex 3 Table 8"
+        },
+        "rowOtherWhite": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Other White Ethnic Group\" of Annex 3 Table 8"
+        },
+        "rowPakistani": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Pakistani, Pakistani Scottish or Pakista\" of Annex 3 Table 8"
+        },
+        "rowPolish": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Polish\" of Annex 3 Table 8"
+        },
+        "rowPreferNotToSay": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Prefer not to say\" of Annex 3 Table 8"
+        },
+        "rowTotal": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Total\" of Annex 3 Table 8"
+        },
+        "rowWhiteScottish": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"White Scottish\" of Annex 3 Table 8"
         },
         "title": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Title of MAPPA Annex 3 Table 8; placeholder for the published template text"
+          "where": "Title of Annex 3 Table 8 in the MAPPA annual report"
         }
       },
       "table9": {
         "column1": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "First column header of MAPPA Annex 3 Table 9; placeholder for the published template text"
+          "where": "Column 1 header of Annex 3 Table 9"
         },
         "column2": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Second column header of MAPPA Annex 3 Table 9; placeholder for the published template text"
+          "where": "Column 2 header of Annex 3 Table 9"
         },
-        "rowInCustody": {
+        "column3": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 9; placeholder for the published template text"
+          "where": "Column 3 header of Annex 3 Table 9"
         },
-        "rowLicenceBreaches": {
-          "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 9; placeholder for the published template text"
+        "note": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Note printed beneath Annex 3 Table 9"
         },
-        "rowReleased": {
+        "rowNotificationOnly": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 9; placeholder for the published template text"
+          "where": "Row \"b) Subject to notification requirements \" of Annex 3 Table 9"
         },
-        "rowReturned": {
+        "rowStatutorySupervision": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Row label in MAPPA Annex 3 Table 9; placeholder for the published template text"
+          "where": "Row \"a) On Statutory supervision:\" of Annex 3 Table 9"
+        },
+        "rowTotal": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "verbatim": true,
+          "where": "Row \"Total\" of Annex 3 Table 9"
         },
         "title": {
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
           "verbatim": true,
-          "where": "Title of MAPPA Annex 3 Table 9; placeholder for the published template text"
+          "where": "Title of Annex 3 Table 9 in the MAPPA annual report"
         }
       }
     },

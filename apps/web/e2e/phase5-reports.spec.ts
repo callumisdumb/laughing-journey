@@ -9,7 +9,7 @@ const REPORTS = [
   { kind: 'asp', title: 'ASP biennial report figures', user: 'usr_moira_gilmour', chart: /Referrals by quarter and source agency/, fieldSet: TO_VERIFY },
   { kind: 'cp', title: 'Child Protection Register statistics', user: 'usr_janet_kerr', chart: /Registrations and de-registrations by month/, fieldSet: TO_VERIFY },
   { kind: 'marac', title: 'MARAC SafeLives return', user: 'usr_karen_findlay', chart: /Referrals by agency/, fieldSet: TO_VERIFY },
-  { kind: 'mappa', title: 'MAPPA annual report counts', user: 'usr_priya_sharif', chart: /Offenders by level and category/, fieldSet: 'Field set High: Annex 3 Tables 1 to 9' },
+  { kind: 'mappa', title: 'MAPPA annual report counts', user: 'usr_priya_sharif', chart: /Offenders by level and category/, fieldSet: 'Annex 3 of the MAPPA National Guidance (2022) sets Tables 1 to 9' },
   { kind: 'awi', title: 'AWI application timeliness', user: 'usr_graeme_dunlop', chart: /Applications by route and applicant/, fieldSet: TO_VERIFY },
 ] as const;
 
@@ -51,7 +51,7 @@ test.describe('reports', () => {
     await capture(page, { phase: PHASE, screen: 'report-asp-current', fullPage: true });
   });
 
-  test('MAPPA report carries Annex 3 Tables 1 to 9 with no names, Table 8 as data not held, and the review interval caveat', async ({ page }) => {
+  test('MAPPA report carries Annex 3 Tables 1 to 9 verbatim, ethnicity in full as data not held, and no names', async ({ page }) => {
     await signInAs(page, 'usr_priya_sharif');
     await page.goto('/reports/mappa?period=y2027');
     await waitForData(page);
@@ -59,8 +59,17 @@ test.describe('reports', () => {
     await expect(page.getByLabel('Reporting period')).toHaveValue('y2027');
     for (const n of [1, 2, 3, 4, 5, 6, 7, 8, 9]) await expect(page.getByRole('heading', { name: new RegExp(`^Table ${n}:`) })).toBeVisible();
     await expect(page.getByRole('img', { name: /Offenders by level and category/ })).toHaveCount(1);
-    await expect(page.getByRole('region', { name: /^Table 8:/ }).getByText('Data not held')).toHaveCount(3);
+    // Table 8 renders every ethnicity row of the annex, all zero, with the population under "Data Not held".
+    const table8 = page.getByRole('region', { name: /^Table 8:/ });
+    await expect(table8.getByRole('row')).toHaveCount(23); // 22 rows plus the header
+    await expect(table8.getByRole('row', { name: /Gypsy Traveller/ })).toContainText('0');
+    await expect(table8.getByRole('row', { name: /Data Not held/ })).toContainText('100.0');
+    await expect(table8.getByText(/The dataset holds no ethnicity, by design/)).toBeVisible();
+    // Table 5 has no Level 1 row: Category 3 offenders cannot be managed at Level 1.
+    await expect(page.getByRole('region', { name: /^Table 5:/ }).getByRole('row', { name: /MAPPA Level 1/ })).toHaveCount(0);
+    await expect(page.getByRole('region', { name: /^Table 3:/ }).getByRole('columnheader', { name: 'At Liberty' })).toBeVisible();
     await expect(page.getByRole('region', { name: /^Table 2:/ }).getByRole('row', { name: /Sexual Harm Prevention Orders \(SHPOs\) in force/ })).toContainText('1');
+    await expect(page.getByText(/Annex 3 of the MAPPA National Guidance \(2022\) sets Tables 1 to 9/)).toBeVisible();
     await expect(page.getByText(/Review interval to verify against the current MAPPA National Guidance/).first()).toBeVisible();
     await expect(page.getByText('Derek Muir')).toHaveCount(0);
     await expect(page.getByText('Ardvale Sheriff Court')).toHaveCount(0);
