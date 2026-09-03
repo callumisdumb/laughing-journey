@@ -187,7 +187,7 @@ Variant 1
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `parties` | array of object { personId, userId, party, label, since, source, reason } | yes |
+| `parties` | array of object { personId, userId, name, party, label, since, source, reason } | yes |
 | `type` | literal "asp" | yes |
 | `detail` | object { concern, threePointTest, screening, inquiry, investigation, ordersConsidered, planId, closure, lsi } | yes |
 
@@ -216,7 +216,7 @@ Variant 2
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `parties` | array of object { personId, userId, party, label, since, source, reason } | yes |
+| `parties` | array of object { personId, userId, name, party, label, since, source, reason } | yes |
 | `type` | literal "cp" | yes |
 | `detail` | object { concern, proceduresInitiatedAt, ird, investigation, cppm, register, coreGroup, childsPlanId, preBirth } | yes |
 
@@ -245,7 +245,7 @@ Variant 3
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `parties` | array of object { personId, userId, party, label, since, source, reason } | yes |
+| `parties` | array of object { personId, userId, name, party, label, since, source, reason } | yes |
 | `type` | literal "marac" | yes |
 | `detail` | object { referral, researchRequests, meetingId, actionPlanId, idaa, idaaFeedback, flags, links, safeLivesReturn, transfer } | yes |
 
@@ -274,9 +274,9 @@ Variant 4
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `parties` | array of object { personId, userId, party, label, since, source, reason } | yes |
+| `parties` | array of object { personId, userId, name, party, label, since, source, reason } | yes |
 | `type` | literal "mappa" | yes |
-| `detail` | object { category, level, levelHistory, leadResponsibleAuthority, visorReference, victimPersonIds, notification, referral, sonr, custody, licenceConditions, riskAssessmentIds, rmp, era, disclosures, preMeetingReturns, reviewSchedule, exit, significantCaseReviewTrigger } | yes |
+| `detail` | object { category, level, levelHistory, leadResponsibleAuthority, visorReference, victimPersonIds, notification, referral, sonr, custody, licenceConditions, orders, riskAssessmentIds, rmp, era, disclosures, preMeetingReturns, reviewSchedule, exit, significantCaseReviewTrigger } | yes |
 
 Variant 5
 
@@ -303,7 +303,7 @@ Variant 5
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `parties` | array of object { personId, userId, party, label, since, source, reason } | yes |
+| `parties` | array of object { personId, userId, name, party, label, since, source, reason } | yes |
 | `type` | literal "awi" | yes |
 | `detail` | object { concern, capacityAssessments, willAndPreferences, opgResult, routeDecision, application, orders, supervisionVisits, investigations } | yes |
 
@@ -365,6 +365,7 @@ Variant 5
 | `sonr` | object { subject, compliant, lastNotificationAt, nextDueAt, endsAt } | yes |
 | `custody` | object { releasedAt, licenceExpiresAt, establishment } | yes |
 | `licenceConditions` | array of object { id, text, status } | yes |
+| `orders` | array of object { id, kind, madeAt, expiresAt, court, status } | yes |
 | `riskAssessmentIds` | array of string | yes |
 | `rmp` | object { planId, triggers, contingencies, controls, victimSafety, accommodation, employment, associates, reviewedAt } | no |
 | `era` | object { status, proposedAddressId, assessorName, startedAt, concerns, conclusion } | no |
@@ -677,6 +678,8 @@ Variant 5
 | `confidence` | "high" \| "verify" \| "local" \| "advisory" | yes |
 | `localNote` | string | no |
 | `todoVerify` | boolean | no |
+| `deferrable` | boolean | no |
+| `deferralNote` | string | no |
 
 ### NeedToKnowRow
 
@@ -712,7 +715,7 @@ Variant 5
 |---|---|---|
 | `area` | object { councilName, hscpName, healthBoardName, policeDivision, ppuBase, maracArea, sheriffCourt } | yes |
 | `labels` | object | yes |
-| `clockRules` | array of object { id, process, label, trigger, unit, amount, kind, direction, warnDays, source, sourceRef, confidence, localNote, todoVerify } | yes |
+| `clockRules` | array of object { id, process, label, trigger, unit, amount, kind, direction, warnDays, source, sourceRef, confidence, localNote, todoVerify, deferrable, deferralNote } | yes |
 | `needToKnow` | array of object { id, process, stage, audience, detailLevel, fields, channel, trigger, condition, conditionLabel, lawfulBasisHint } | yes |
 | `exclusions` | array of object { id, process, stage, party, label, reason, liftableBy } | yes |
 | `classificationMarkings` | array of object { id, label, handling } | yes |

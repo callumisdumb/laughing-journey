@@ -83,7 +83,7 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 
 ## 5. Screenshot index
 
-135 screenshots under `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 (full page where the screen scrolls). Light comfortable is the default; dark and compact variants are listed where captured. Phase 6 holds the dark and compact sweep of every screen.
+138 screenshots under `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 (full page where the screen scrolls). Light comfortable is the default; dark and compact variants are listed where captured. Phase 6 holds the dark and compact sweep of every screen.
 
 ### phase-1
 
@@ -153,6 +153,8 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | meeting-before | light comfortable |
 | meeting-chair | dark comfortable, light comfortable |
 | meeting-during | light comfortable |
+| meeting-minutes | light comfortable |
+| meeting-minutes-print | light comfortable |
 | meetings | light comfortable |
 | sharing-inbound | light comfortable |
 | sharing-outbound | light comfortable |
@@ -179,6 +181,7 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | report-awi | light comfortable |
 | report-cp | dark comfortable, light comfortable |
 | report-cp-print | light comfortable |
+| report-mappa-annex3 | light comfortable |
 | report-mappa | light comfortable |
 | report-marac | light comfortable, light compact |
 | reports | light comfortable |

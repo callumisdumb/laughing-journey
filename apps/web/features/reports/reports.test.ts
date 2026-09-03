@@ -67,7 +67,7 @@ describe('report figures are computed from the seed, never typed in', () => {
     expect(y2027.map['l2']).toBe('1');
     expect(y2027.map['late']).toBe('0');
     expect(y2027.map['orders']).toBe('1');
-    expect(y2027.model.meta.join(' ')).toContain('Annex 3 tables 1 to 9 (MAPPA National Guidance)');
+    expect(y2027.model.meta.join(' ')).toContain('Field set High: Annex 3 Tables 1 to 9');
     expect(y2027.model.meta.join(' ')).not.toContain('Field set to verify');
 
     // Nine sections, one per table, in the annex order, and the only chart sits on Table 3.
