@@ -1,21 +1,23 @@
 'use client';
 
 import { HARM_TYPES, HARM_TYPE_LABELS, THREE_POINT_LIMBS, threePointTestFormSchema, type AspProcess, type ThreePointTestForm } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
 
 export function ThreePointTestDialog({ open, onClose, process }: { open: boolean; onClose: () => void; process: AspProcess }) {
+  const t = useT();
   const user = useCurrentUser();
   const now = useNow();
   const upsert = useAppStore((s) => s.upsert);
   const audit = useAppStore((s) => s.audit);
   const { toast } = useToast();
-  const t = process.detail.threePointTest;
+  const current = process.detail.threePointTest;
   const form = useForm<ThreePointTestForm>({
     resolver: zodResolver(threePointTestFormSchema),
-    defaultValues: { assessedAt: now.toISOString().slice(0, 10), a: { met: t.a.met, reasoning: t.a.reasoning }, b: { met: t.b.met, reasoning: t.b.reasoning }, c: { met: t.c.met, reasoning: t.c.reasoning }, harmTypes: process.detail.concern.harmTypes, immediateSafety: process.detail.concern.immediateSafety },
+    defaultValues: { assessedAt: now.toISOString().slice(0, 10), a: { met: current.a.met, reasoning: current.a.reasoning }, b: { met: current.b.met, reasoning: current.b.reasoning }, c: { met: current.c.met, reasoning: current.c.reasoning }, harmTypes: process.detail.concern.harmTypes, immediateSafety: process.detail.concern.immediateSafety },
   });
   const errors = form.formState.errors;
 
@@ -32,7 +34,7 @@ export function ThreePointTestDialog({ open, onClose, process }: { open: boolean
       },
     });
     audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `Three-point test recorded: ${parsed.outcome}`, processId: process.id });
-    toast({ title: 'Three-point test recorded', text: parsed.outcome === 'met' ? 'All three limbs met: adult at risk of harm.' : parsed.outcome === 'not-met' ? 'A limb is not met: the adult is not an adult at risk under s3. Consider other support.' : 'A limb is unclear: gather more information under the inquiry.', tone: 'success' });
+    toast({ title: t('forms.threePointTest.recorded.title'), text: t('forms.threePointTest.recorded.text', { outcome: parsed.outcome === 'not-met' ? 'notMet' : parsed.outcome }), tone: 'success' });
     onClose();
   }
 
@@ -40,26 +42,26 @@ export function ThreePointTestDialog({ open, onClose, process }: { open: boolean
     <Dialog
       open={open}
       onClose={onClose}
-      title="Three-point test (ASP 2007 s3)"
+      title={t('forms.threePointTest.title')}
       size="lg"
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>
-            Cancel
+            {t('common.actions.cancel')}
           </Button>
           <Button variant="primary" onClick={() => void form.handleSubmit(submit)()}>
-            Record three-point test
+            {t('forms.threePointTest.submit')}
           </Button>
         </>
       }
     >
       <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
-        <p>All three limbs must be met. Record your reasoning for each limb; the reasoning is what a reviewer or an inspector reads.</p>
-        <Controller control={form.control} name="assessedAt" render={({ field }) => <DateField label="Date of assessment" required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.assessedAt?.message} />} />
+        <p>{t('forms.threePointTest.intro')}</p>
+        <Controller control={form.control} name="assessedAt" render={({ field }) => <DateField label={t('forms.threePointTest.date.label')} required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.assessedAt?.message} />} />
         {(['a', 'b', 'c'] as const).map((k) => (
           <div key={k} className="stack" style={{ gap: 8 }}>
-            <Controller control={form.control} name={`${k}.met`} render={({ field }) => <RadioGroup legend={`${THREE_POINT_LIMBS[k].label}. ${THREE_POINT_LIMBS[k].text}`} name={`${k}-met`} value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'yes', label: 'Met' }, { value: 'no', label: 'Not met' }, { value: 'unclear', label: 'Unclear' }]} />} />
-            <TextareaField label={`Reasoning for limb (${k})`} required {...form.register(`${k}.reasoning`)} error={errors[k]?.reasoning?.message} />
+            <Controller control={form.control} name={`${k}.met`} render={({ field }) => <RadioGroup legend={t('forms.threePointTest.limbLegend', { label: THREE_POINT_LIMBS[k].label, text: THREE_POINT_LIMBS[k].text })} name={`${k}-met`} value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'yes', label: t('forms.threePointTest.met.met') }, { value: 'no', label: t('forms.threePointTest.met.notMet') }, { value: 'unclear', label: t('forms.threePointTest.met.unclear') }]} />} />
+            <TextareaField label={t('forms.threePointTest.reasoning.label', { limb: k })} required {...form.register(`${k}.reasoning`)} error={errors[k]?.reasoning?.message} />
           </div>
         ))}
         <Controller
@@ -67,7 +69,7 @@ export function ThreePointTestDialog({ open, onClose, process }: { open: boolean
           name="harmTypes"
           render={({ field }) => (
             <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
-              <legend style={{ fontWeight: 700, fontSize: 'var(--text-sm)', marginBottom: 6 }}>Types of harm (all harm counts)</legend>
+              <legend style={{ fontWeight: 700, fontSize: 'var(--text-sm)', marginBottom: 6 }}>{t('forms.threePointTest.harm.legend')}</legend>
               {errors.harmTypes ? <div role="alert" style={{ color: 'var(--color-risk-critical)', fontSize: 'var(--text-sm)' }}>{errors.harmTypes.message}</div> : null}
               <div className="cluster">
                 {HARM_TYPES.map((h) => (
@@ -77,7 +79,7 @@ export function ThreePointTestDialog({ open, onClose, process }: { open: boolean
             </fieldset>
           )}
         />
-        <TextareaField label="Immediate safety" required {...form.register('immediateSafety')} error={errors.immediateSafety?.message} />
+        <TextareaField label={t('forms.threePointTest.safety.label')} required {...form.register('immediateSafety')} error={errors.immediateSafety?.message} />
       </form>
     </Dialog>
   );

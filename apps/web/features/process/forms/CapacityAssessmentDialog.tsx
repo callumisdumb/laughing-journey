@@ -1,20 +1,17 @@
 'use client';
 
 import { capacityAssessmentFormSchema, type AwiProcess, type CapacityAssessmentForm } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { Button, DateField, Dialog, RadioGroup, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
 
-const FUNCTIONAL = [
-  { key: 'understands', label: 'Understands the information relevant to the decision' },
-  { key: 'retains', label: 'Retains that information long enough to decide' },
-  { key: 'weighs', label: 'Weighs it up to reach a decision' },
-  { key: 'communicates', label: 'Communicates the decision by any means' },
-  { key: 'acts', label: 'Can act on the decision' },
-] as const;
+/** The functional test items, in order; each has a legend under forms.capacity.functional. */
+const FUNCTIONAL = ['understands', 'retains', 'weighs', 'communicates', 'acts'] as const;
 
 export function CapacityAssessmentDialog({ open, onClose, process }: { open: boolean; onClose: () => void; process: AwiProcess }) {
+  const t = useT();
   const user = useCurrentUser();
   const now = useNow();
   const upsert = useAppStore((s) => s.upsert);
@@ -36,12 +33,21 @@ export function CapacityAssessmentDialog({ open, onClose, process }: { open: boo
         ...process.detail,
         capacityAssessments: [
           ...process.detail.capacityAssessments,
-          { id: newId('cap'), decision: v.decision, assessedAt: `${v.assessedAt}T${now.toISOString().slice(11, 19)}+01:00`, assessorName: v.assessorName, assessorRole: v.assessorRole, outcome: v.outcome, evidence: `${v.evidence} Functional test: understands ${v.understands}, retains ${v.retains}, weighs ${v.weighs}, communicates ${v.communicates}, acts ${v.acts}. Wishes: ${v.wishesConsidered}`, communicationSupport: v.communicationSupport || undefined },
+          {
+            id: newId('cap'),
+            decision: v.decision,
+            assessedAt: `${v.assessedAt}T${now.toISOString().slice(11, 19)}+01:00`,
+            assessorName: v.assessorName,
+            assessorRole: v.assessorRole,
+            outcome: v.outcome,
+            evidence: t('forms.capacity.evidenceRecord', { evidence: v.evidence, understands: v.understands, retains: v.retains, weighs: v.weighs, communicates: v.communicates, acts: v.acts, wishes: v.wishesConsidered }),
+            communicationSupport: v.communicationSupport || undefined,
+          },
         ],
       },
     });
     audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `Capacity assessment recorded: ${v.outcome}`, processId: process.id });
-    toast({ title: 'Capacity assessment recorded', text: `${v.decision}: ${v.outcome.replace('-', ' ')}.`, tone: 'success' });
+    toast({ title: t('forms.capacity.recorded.title'), text: t('forms.capacity.recorded.text', { decision: v.decision, outcome: v.outcome.replace('-', ' ') }), tone: 'success' });
     onClose();
   }
 
@@ -49,34 +55,34 @@ export function CapacityAssessmentDialog({ open, onClose, process }: { open: boo
     <Dialog
       open={open}
       onClose={onClose}
-      title="Capacity assessment (AWI 2000)"
+      title={t('forms.capacity.title')}
       size="lg"
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>
-            Cancel
+            {t('common.actions.cancel')}
           </Button>
           <Button variant="primary" onClick={() => void form.handleSubmit(submit)()}>
-            Record assessment
+            {t('forms.capacity.submit')}
           </Button>
         </>
       }
     >
       <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
-        <p>Capacity is decision-specific and time-specific. Record the decision, the functional test item by item, the evidence, and the adult&apos;s past and present wishes.</p>
-        <TextField label="The specific decision" required {...form.register('decision')} error={errors.decision?.message} />
+        <p>{t('forms.capacity.intro')}</p>
+        <TextField label={t('forms.capacity.decision.label')} required {...form.register('decision')} error={errors.decision?.message} />
         <div className="cluster" style={{ alignItems: 'flex-start' }}>
-          <Controller control={form.control} name="assessedAt" render={({ field }) => <DateField label="Date" required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.assessedAt?.message} />} />
-          <TextField label="Assessor" required {...form.register('assessorName')} error={errors.assessorName?.message} />
-          <TextField label="Role" required {...form.register('assessorRole')} error={errors.assessorRole?.message} />
+          <Controller control={form.control} name="assessedAt" render={({ field }) => <DateField label={t('forms.capacity.date.label')} required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.assessedAt?.message} />} />
+          <TextField label={t('forms.capacity.assessor.label')} required {...form.register('assessorName')} error={errors.assessorName?.message} />
+          <TextField label={t('forms.capacity.role.label')} required {...form.register('assessorRole')} error={errors.assessorRole?.message} />
         </div>
-        <TextField label="Communication support used" {...form.register('communicationSupport')} hint="Interpreter, communication aid, best time of day." />
-        {FUNCTIONAL.map((f) => (
-          <Controller key={f.key} control={form.control} name={f.key} render={({ field }) => <RadioGroup legend={f.label} name={f.key} value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'yes', label: 'Yes' }, { value: 'partly', label: 'Partly' }, { value: 'no', label: 'No' }]} />} />
+        <TextField label={t('forms.capacity.communication.label')} {...form.register('communicationSupport')} hint={t('forms.capacity.communication.hint')} />
+        {FUNCTIONAL.map((item) => (
+          <Controller key={item} control={form.control} name={item} render={({ field }) => <RadioGroup legend={t(`forms.capacity.functional.${item}` as const)} name={item} value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'yes', label: t('common.answers.yes') }, { value: 'partly', label: t('forms.capacity.answers.partly') }, { value: 'no', label: t('common.answers.no') }]} />} />
         ))}
-        <TextareaField label="Evidence for the conclusion" required {...form.register('evidence')} error={errors.evidence?.message} />
-        <Controller control={form.control} name="outcome" render={({ field }) => <RadioGroup legend="Outcome for this decision" name="outcome" value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'has-capacity', label: 'Has capacity' }, { value: 'lacks-capacity', label: 'Lacks capacity' }, { value: 'fluctuating', label: 'Fluctuating' }]} error={errors.outcome?.message} />} />
-        <TextareaField label="Past and present wishes considered" required {...form.register('wishesConsidered')} error={errors.wishesConsidered?.message} />
+        <TextareaField label={t('forms.capacity.evidence.label')} required {...form.register('evidence')} error={errors.evidence?.message} />
+        <Controller control={form.control} name="outcome" render={({ field }) => <RadioGroup legend={t('forms.capacity.outcome.legend')} name="outcome" value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'has-capacity', label: t('forms.capacity.outcome.hasCapacity') }, { value: 'lacks-capacity', label: t('forms.capacity.outcome.lacksCapacity') }, { value: 'fluctuating', label: t('forms.capacity.outcome.fluctuating') }]} error={errors.outcome?.message} />} />
+        <TextareaField label={t('forms.capacity.wishes.label')} required {...form.register('wishesConsidered')} error={errors.wishesConsidered?.message} />
       </form>
     </Dialog>
   );

@@ -1,6 +1,7 @@
 'use client';
 
-import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, MARAC_MUST_NOT_RECEIVE_PARTIES, daqFormSchema, registerUpdateLabel, withMustNotReceive, type DaqForm, type MaracProcess, type RiskAssessment } from '@mas/domain';
+import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, MARAC_MUST_NOT_RECEIVE_PARTIES, daqFormSchema, daqQuestionText, registerUpdateLabel, withMustNotReceive, type DaqForm, type MaracProcess, type RiskAssessment } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
@@ -8,6 +9,7 @@ import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
 import { MustNotReceiveFields } from './MustNotReceiveFields';
 
 export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: () => void; process: MaracProcess }) {
+  const t = useT();
   const user = useCurrentUser();
   const now = useNow();
   const upsert = useAppStore((s) => s.upsert);
@@ -38,8 +40,8 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
       score: r.score,
       maxScore: r.maxScore,
       band: r.highRisk ? 'high' : 'medium',
-      bandLabel: r.highRisk ? `High risk (${HIGH_RISK_THRESHOLD} or more)` : `Below threshold (${r.score} of ${r.maxScore})`,
-      items: questions.map((q) => ({ id: q.id, question: q.text, answer: r.answers[q.id] ?? 'unknown' })),
+      bandLabel: r.highRisk ? t('forms.daq.band.high', { threshold: HIGH_RISK_THRESHOLD }) : t('forms.daq.band.below', { score: r.score, max: r.maxScore }),
+      items: questions.map((q) => ({ id: q.id, question: daqQuestionText(q.id), answer: r.answers[q.id] ?? 'unknown' })),
       evidenceRefs: [],
       judgementOverride: !r.highRisk && r.refer ? { band: 'high', reason: r.professionalJudgement ?? '', byName: by } : undefined,
     };
@@ -48,11 +50,11 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
     upsert('riskAssessments', ra);
     upsert('processes', { ...process, riskAssessmentIds: [...process.riskAssessmentIds, ra.id], parties: register.parties, detail: { ...process.detail, referral: { ...process.detail.referral, riskAssessmentId: ra.id, professionalJudgementReferral: !r.highRisk && r.refer } } });
     audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `${r.tool.toUpperCase()} recorded: ${r.score} of ${r.maxScore}`, processId: process.id });
-    toast({ title: `${r.tool.toUpperCase()} recorded: ${r.score} yes answers`, text: r.highRisk ? 'High risk: refer to MARAC.' : r.refer ? 'Below threshold; referred on professional judgement.' : 'Below threshold; no MARAC referral.', tone: 'success' });
+    toast({ title: t('forms.daq.recorded.title', { tool: r.tool.toUpperCase(), count: r.score }), text: t('forms.daq.recorded.text', { outcome: r.highRisk ? 'high' : r.refer ? 'referred' : 'none' }), tone: 'success' });
     const recorded = register.added + register.updated;
     if (recorded > 0) {
       audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: registerUpdateLabel(register, 'the DAQ'), processId: process.id });
-      toast({ title: 'Case-role register updated', text: `${recorded === 1 ? '1 person' : `${recorded} people`} recorded as "Must not receive" for this case.`, tone: 'success' });
+      toast({ title: t('forms.mustNotReceive.registerUpdated.title'), text: t('forms.mustNotReceive.registerUpdated.text', { count: recorded }), tone: 'success' });
     }
     form.reset();
     onClose();
@@ -62,34 +64,34 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
     <Dialog
       open={open}
       onClose={onClose}
-      title="Domestic abuse risk checklist"
+      title={t('forms.daq.title')}
       size="lg"
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>
-            Cancel
+            {t('common.actions.cancel')}
           </Button>
           <Button variant="primary" onClick={() => void form.handleSubmit(submit)()}>
-            Record and score
+            {t('forms.daq.submit')}
           </Button>
         </>
       }
     >
       <FormProvider {...form}>
         <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
-          <Controller control={form.control} name="tool" render={({ field }) => <RadioGroup legend="Instrument" name="tool" value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'daq', label: 'Police Scotland DAQ (27 questions)' }, { value: 'dash', label: 'SafeLives DASH (24 questions)' }]} />} />
-          <Controller control={form.control} name="assessedAt" render={({ field }) => <DateField label="Date completed" required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.assessedAt?.message} />} />
+          <Controller control={form.control} name="tool" render={({ field }) => <RadioGroup legend={t('forms.daq.instrument.legend')} name="tool" value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'daq', label: t('forms.daq.instrument.daq', { count: DAQ_QUESTIONS.length }) }, { value: 'dash', label: t('forms.daq.instrument.dash', { count: DASH_QUESTIONS.length }) }]} />} />
+          <Controller control={form.control} name="assessedAt" render={({ field }) => <DateField label={t('forms.daq.date.label')} required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.assessedAt?.message} />} />
           <p aria-live="polite" style={{ fontWeight: 700 }}>
-            {yes} yes answers so far. {yes >= HIGH_RISK_THRESHOLD ? 'High risk: this meets the referral threshold.' : `${HIGH_RISK_THRESHOLD - yes} more for the high-risk threshold.`}
+            {t('forms.daq.tally', { count: yes, high: yes >= HIGH_RISK_THRESHOLD ? 'yes' : 'no', remaining: HIGH_RISK_THRESHOLD - yes })}
           </p>
           <div className="stack" style={{ gap: 6, maxHeight: 360, overflow: 'auto', paddingRight: 8 }}>
             {questions.map((q) => (
-              <Controller key={q.id} control={form.control} name={`answers.${q.id}`} render={({ field }) => <RadioGroup legend={q.text} name={q.id} value={field.value ?? ''} onChange={field.onChange} orientation="horizontal" options={[{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }, { value: 'unknown', label: 'Not known' }]} error={errors.answers?.[q.id]?.message} />} />
+              <Controller key={q.id} control={form.control} name={`answers.${q.id}`} render={({ field }) => <RadioGroup legend={daqQuestionText(q.id)} name={q.id} value={field.value ?? ''} onChange={field.onChange} orientation="horizontal" options={[{ value: 'yes', label: t('common.answers.yes') }, { value: 'no', label: t('common.answers.no') }, { value: 'unknown', label: t('common.answers.notKnown') }]} error={errors.answers?.[q.id]?.message} />} />
             ))}
           </div>
-          <CheckboxField label="Refer on professional judgement even if below 14" {...form.register('referBelowThreshold')} />
-          <TextareaField label="Professional judgement" {...form.register('professionalJudgement')} error={errors.professionalJudgement?.message} hint="Required for a referral below the threshold. Why the score understates the risk." />
-          <MustNotReceiveFields parties={MARAC_MUST_NOT_RECEIVE_PARTIES} relationshipHint="For example the perpetrator's brother." />
+          <CheckboxField label={t('forms.daq.referBelow.label', { threshold: HIGH_RISK_THRESHOLD })} {...form.register('referBelowThreshold')} />
+          <TextareaField label={t('forms.daq.judgement.label')} {...form.register('professionalJudgement')} error={errors.professionalJudgement?.message} hint={t('forms.daq.judgement.hint')} />
+          <MustNotReceiveFields parties={MARAC_MUST_NOT_RECEIVE_PARTIES} relationshipHint={t('forms.daq.relationshipHint')} />
         </form>
       </FormProvider>
     </Dialog>

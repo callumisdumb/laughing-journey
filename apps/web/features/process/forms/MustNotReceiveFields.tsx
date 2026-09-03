@@ -1,6 +1,7 @@
 'use client';
 
-import { EXCLUSION_PARTY_LABELS, MUST_NOT_RECEIVE_QUESTION, type ExclusionParty, type MustNotReceiveEntryInput } from '@mas/domain';
+import { EXCLUSION_PARTY_LABELS, type ExclusionParty, type MustNotReceiveEntryInput } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { Button, SelectField, TextField, TextareaField } from '@mas/ui';
 import { Plus, X } from 'lucide-react';
 import { useId } from 'react';
@@ -13,6 +14,7 @@ export interface MustNotReceiveValues {
 }
 
 export function MustNotReceiveFields({ parties, relationshipHint }: { parties: readonly [ExclusionParty, ...ExclusionParty[]]; relationshipHint: string }) {
+  const t = useT();
   const {
     control,
     register,
@@ -35,12 +37,12 @@ export function MustNotReceiveFields({ parties, relationshipHint }: { parties: r
 
   return (
     <fieldset className={styles.group} aria-describedby={hintId}>
-      <legend className={styles.legend}>{MUST_NOT_RECEIVE_QUESTION}</legend>
+      <legend className={styles.legend}>{t('forms.mustNotReceive.question')}</legend>
       <p className={styles.hint} id={hintId}>
-        Anyone the record does not already link to the perpetrator, or a victim who must not hear of the process through it. Each entry goes on the case-role register with your name and the reason.
+        {t('forms.mustNotReceive.hint')}
       </p>
       <p className={styles.count} aria-live="polite">
-        {fields.length === 0 ? 'No one added.' : `${fields.length === 1 ? '1 person' : `${fields.length} people`} will go on the register when you save.`}
+        {t('forms.mustNotReceive.count', { count: fields.length })}
       </p>
       {fields.length > 0 ? (
         <ol className={styles.entries}>
@@ -49,16 +51,16 @@ export function MustNotReceiveFields({ parties, relationshipHint }: { parties: r
             return (
               <li key={field.id} className={styles.entry} data-state={rowErrors ? 'invalid' : undefined}>
                 <div className={styles.entryHead}>
-                  <span className={styles.entryTitle}>Person {i + 1}</span>
-                  <Button size="sm" variant="quiet" icon={<X size={14} aria-hidden="true" />} aria-label={`Remove person ${i + 1}`} onClick={() => removeEntry(i)}>
-                    Remove
+                  <span className={styles.entryTitle}>{t('forms.mustNotReceive.person', { n: i + 1 })}</span>
+                  <Button size="sm" variant="quiet" icon={<X size={14} aria-hidden="true" />} aria-label={t('forms.mustNotReceive.removeLabel', { n: i + 1 })} onClick={() => removeEntry(i)}>
+                    {t('forms.mustNotReceive.remove')}
                   </Button>
                 </div>
-                <TextField label="Name" required autoComplete="off" {...register(`mustNotReceive.${i}.name`)} error={rowErrors?.name?.message} />
-                <TextField label="Relationship to the case" autoComplete="off" hint={relationshipHint} {...register(`mustNotReceive.${i}.relationship`)} error={rowErrors?.relationship?.message} />
-                <SelectField label="Excluded as" required options={options} {...register(`mustNotReceive.${i}.party`)} error={rowErrors?.party?.message} />
+                <TextField label={t('forms.mustNotReceive.name.label')} required autoComplete="off" {...register(`mustNotReceive.${i}.name`)} error={rowErrors?.name?.message} />
+                <TextField label={t('forms.mustNotReceive.relationship.label')} autoComplete="off" hint={relationshipHint} {...register(`mustNotReceive.${i}.relationship`)} error={rowErrors?.relationship?.message} />
+                <SelectField label={t('forms.mustNotReceive.party.label')} required options={options} {...register(`mustNotReceive.${i}.party`)} error={rowErrors?.party?.message} />
                 <div className={styles.full}>
-                  <TextareaField label="Reason" required hint="Recorded on the register beside your name." {...register(`mustNotReceive.${i}.reason`)} error={rowErrors?.reason?.message} />
+                  <TextareaField label={t('forms.mustNotReceive.reason.label')} required hint={t('forms.mustNotReceive.reason.hint')} {...register(`mustNotReceive.${i}.reason`)} error={rowErrors?.reason?.message} />
                 </div>
               </li>
             );
@@ -67,7 +69,7 @@ export function MustNotReceiveFields({ parties, relationshipHint }: { parties: r
       ) : null}
       <div>
         <Button id={addId} size="sm" icon={<Plus size={14} aria-hidden="true" />} onClick={add}>
-          Add a person
+          {t('forms.mustNotReceive.add')}
         </Button>
       </div>
     </fieldset>
