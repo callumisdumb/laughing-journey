@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { MARAC_MUST_NOT_RECEIVE_PARTIES, mustNotReceiveListSchema } from './must-not-receive';
 
 /**
  * Domestic abuse risk questions. The SafeLives DASH checklist has 24 questions; the Police Scotland
@@ -49,6 +50,8 @@ export const daqFormSchema = z
     answers: z.record(z.string(), z.enum(['yes', 'no', 'unknown'])),
     professionalJudgement: z.string().max(1200).optional(),
     referBelowThreshold: z.boolean().optional(),
+    /** Anyone else who must not receive information about this case; each entry feeds the case-role register. */
+    mustNotReceive: mustNotReceiveListSchema(MARAC_MUST_NOT_RECEIVE_PARTIES),
   })
   .superRefine((v, ctx) => {
     const expected = v.tool === 'daq' ? DAQ_QUESTIONS : DASH_QUESTIONS;

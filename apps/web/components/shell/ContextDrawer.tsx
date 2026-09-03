@@ -69,7 +69,9 @@ function NeedToKnow({ process }: { process: Process }) {
     const person = personById(data, p.personId);
     if (person) return fullName(person);
     const u = userById(data, p.userId);
-    return u ? userName(u) : undefined;
+    if (u) return userName(u);
+    // Recorded by name on a referral form: there is no record or account to look up.
+    return p.name;
   };
   return (
     <div>
@@ -106,7 +108,7 @@ function NeedToKnow({ process }: { process: Process }) {
           const who = partyName(p);
           const notes = [who ? p.label : undefined, p.reason ?? e.reason].filter(Boolean).join('. ');
           return (
-            <div key={`${e.id}:${p.personId ?? p.userId ?? p.label}`} className={styles.exclusion}>
+            <div key={`${e.id}:${p.personId ?? p.userId ?? p.name ?? p.label}`} className={styles.exclusion}>
               <Ban size={14} aria-hidden="true" />
               <span>
                 <strong>

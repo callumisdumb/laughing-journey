@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { casePartySchema, type CaseParty } from '../schemas/process';
 import { capacityAssessmentFormSchema } from './capacity-assessment';
 import { DAQ_QUESTIONS, DASH_QUESTIONS, daqFormSchema } from './daq';
 import { mappaReferralFormSchema } from './mappa-referral';
+import { casePartyFromMustNotReceive, mustNotReceiveEntrySchema, registerUpdateLabel, withMustNotReceive } from './must-not-receive';
 import { threePointTestFormSchema } from './three-point-test';
 
 describe('three-point test', () => {
@@ -62,5 +64,55 @@ describe('capacity assessment', () => {
   it('flags an inconsistent lacks-capacity outcome', () => {
     expect(capacityAssessmentFormSchema.safeParse({ ...base, outcome: 'lacks-capacity' }).success).toBe(false);
     expect(capacityAssessmentFormSchema.safeParse({ ...base, retains: 'no', outcome: 'lacks-capacity' }).success).toBe(true);
+  });
+});
+
+describe('must not receive', () => {
+  const entry = { name: '  Iain Docherty ', party: 'perpetrator-associates' as const, relationship: "perpetrator's brother", reason: 'Works in the housing office and would tell the perpetrator. ' };
+  const daqBase = { tool: 'daq' as const, assessedAt: '2026-09-03', answers: Object.fromEntries(DAQ_QUESTIONS.map((q) => [q.id, 'no'])) };
+  const mappaBase = { category: 1 as const, levelSought: 2 as const, leadResponsibleAuthority: 'police' as const, riskAssessmentIds: ['ra_1'], reason: 'Active multi-agency management is needed because of accommodation risk and a pending disclosure decision.', imminentRisk: false, victimConsiderations: 'Victim safety through VNS; exclusion zone.', accommodationIssue: true, disclosureConsidered: true, visorReference: 'ViSOR 2022/0451/Z' };
+
+  it('is optional on both forms and defaults to an empty list', () => {
+    expect(daqFormSchema.parse(daqBase).mustNotReceive).toEqual([]);
+    expect(mappaReferralFormSchema.parse(mappaBase).mustNotReceive).toEqual([]);
+  });
+  it('trims the answer and limits the parties to those that make sense for the process', () => {
+    const daq = daqFormSchema.parse({ ...daqBase, mustNotReceive: [entry] });
+    expect(daq.mustNotReceive).toEqual([{ name: 'Iain Docherty', party: 'perpetrator-associates', relationship: "perpetrator's brother", reason: 'Works in the housing office and would tell the perpetrator.' }]);
+    expect(daqFormSchema.safeParse({ ...daqBase, mustNotReceive: [{ ...entry, party: 'perpetrator' }] }).success).toBe(true);
+    expect(daqFormSchema.safeParse({ ...daqBase, mustNotReceive: [{ ...entry, party: 'victim' }] }).success).toBe(false);
+    for (const party of ['victim', 'employer', 'perpetrator-associates', 'public']) {
+      expect(mappaReferralFormSchema.safeParse({ ...mappaBase, mustNotReceive: [{ ...entry, party }] }).success).toBe(true);
+    }
+    expect(mappaReferralFormSchema.safeParse({ ...mappaBase, mustNotReceive: [{ ...entry, party: 'alleged-perpetrator' }] }).success).toBe(false);
+  });
+  it('needs a name and a reason; the relationship is optional', () => {
+    expect(mustNotReceiveEntrySchema.safeParse({ ...entry, name: ' A ' }).success).toBe(false);
+    expect(mustNotReceiveEntrySchema.safeParse({ ...entry, reason: 'no' }).success).toBe(false);
+    expect(mustNotReceiveEntrySchema.safeParse({ ...entry, relationship: undefined }).success).toBe(true);
+    expect(mustNotReceiveEntrySchema.safeParse({ ...entry, relationship: '' }).success).toBe(true);
+  });
+  it('becomes a manual register entry keyed by the typed name', () => {
+    const parsed = mustNotReceiveEntrySchema.parse(entry);
+    const party = casePartyFromMustNotReceive(parsed, '2026-09-03', 'the DAQ');
+    expect(party).toEqual({ name: 'Iain Docherty', party: 'perpetrator-associates', label: "Perpetrator's family or associates: perpetrator's brother (named on the DAQ)", since: '2026-09-03', source: 'manual', reason: 'Works in the housing office and would tell the perpetrator.' });
+    expect(casePartySchema.safeParse(party).success).toBe(true);
+    expect(casePartyFromMustNotReceive({ ...parsed, relationship: '' }, '2026-09-03', 'the MAPPA referral').label).toBe("Perpetrator's family or associates (named on the MAPPA referral)");
+  });
+  it('merges into the register and replaces a name already recorded for the same party', () => {
+    const parsed = mustNotReceiveEntrySchema.parse(entry);
+    const existing: CaseParty[] = [
+      { personId: 'per_perp', party: 'perpetrator', label: 'Perpetrator (named in the referral)', source: 'referral' },
+      { name: 'iain docherty', party: 'perpetrator-associates', label: 'Earlier entry', source: 'manual', reason: 'Old reason' },
+    ];
+    const update = withMustNotReceive(existing, [parsed, { ...parsed, name: 'Morag Docherty', relationship: undefined }], '2026-09-03', 'the DAQ');
+    expect(update.added).toBe(1);
+    expect(update.updated).toBe(1);
+    expect(update.parties).toHaveLength(3);
+    expect(update.parties[1]).toMatchObject({ name: 'Iain Docherty', reason: 'Works in the housing office and would tell the perpetrator.' });
+    expect(update.parties[2]).toMatchObject({ name: 'Morag Docherty', party: 'perpetrator-associates', source: 'manual' });
+    expect(registerUpdateLabel(update, 'the DAQ')).toBe('Case-role register: 1 entry added, 1 entry updated from the DAQ');
+    expect(registerUpdateLabel({ parties: [], added: 2, updated: 0 }, 'the DAQ')).toBe('Case-role register: 2 entries added from the DAQ');
+    expect(withMustNotReceive(existing, [], '2026-09-03', 'the DAQ')).toEqual({ parties: existing, added: 0, updated: 0 });
   });
 });

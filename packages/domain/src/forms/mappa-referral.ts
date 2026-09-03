@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { MAPPA_MUST_NOT_RECEIVE_PARTIES, mustNotReceiveListSchema } from './must-not-receive';
 
 /**
  * MAPPA referral to Level 2 or 3. Must be informed by a current risk assessment
@@ -16,6 +17,8 @@ export const mappaReferralFormSchema = z
     accommodationIssue: z.boolean(),
     disclosureConsidered: z.boolean(),
     visorReference: z.string().min(3, 'Enter the ViSOR (MAPPS) reference'),
+    /** Anyone else who must not receive information about this case; each entry feeds the case-role register. */
+    mustNotReceive: mustNotReceiveListSchema(MAPPA_MUST_NOT_RECEIVE_PARTIES),
   })
   .superRefine((v, ctx) => {
     if (v.category === 3 && v.levelSought < 2) ctx.addIssue({ code: 'custom', path: ['levelSought'], message: 'Category 3 cannot be managed at Level 1' });

@@ -56,6 +56,8 @@ export const casePartySchema = z
     personId: idSchema.optional(),
     /** A platform user who holds the role, for example a persona seeded as a perpetrator's associate. */
     userId: idSchema.optional(),
+    /** A typed name for someone with neither a record nor an account, for example named on a referral form. */
+    name: z.string().optional(),
     party: z.enum(EXCLUSION_PARTIES),
     /** How the person is described, e.g. "Perpetrator (named in the referral)". */
     label: z.string(),
@@ -63,7 +65,7 @@ export const casePartySchema = z
     source: z.enum(CASE_PARTY_SOURCES),
     reason: z.string().optional(),
   })
-  .refine((party) => Boolean(party.personId || party.userId), { message: 'A case party needs a personId or a userId' });
+  .refine((party) => Boolean(party.personId || party.userId || party.name), { message: 'A case party needs a personId, a userId or a name' });
 export type CaseParty = z.infer<typeof casePartySchema>;
 
 const decisionRecordSchema = z.object({
@@ -292,6 +294,19 @@ export const mappaDetailSchema = z.object({
   }),
   custody: z.object({ releasedAt: isoDate.optional(), licenceExpiresAt: isoDate.optional(), establishment: z.string().optional() }),
   licenceConditions: z.array(z.object({ id: idSchema, text: z.string(), status: z.enum(['active', 'breached', 'ended']) })),
+  /**
+   * Civil order register, counted in Annex 3 Table 2 of the MAPPA annual report. SOPOs, RSHOs and
+   * FTOs were replaced by SHPOs and SROs on 31 Mar 2023 (Abusive Behaviour and Sexual Harm
+   * (Scotland) Act 2016); orders made before then stay on the register until they end.
+   */
+  orders: z.array(z.object({
+    id: idSchema,
+    kind: z.enum(['sopo', 'rsho', 'fto', 'shpo', 'sro', 'notification-order']),
+    madeAt: isoDate,
+    expiresAt: isoDate.optional(),
+    court: z.string().optional(),
+    status: z.enum(['active', 'expired', 'discharged']),
+  })).default([]),
   riskAssessmentIds: z.array(idSchema),
   rmp: z.object({
     planId: idSchema,

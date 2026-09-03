@@ -154,8 +154,13 @@ export function partiesFromRoles(process: Process, relationships: Relationship[]
   }
 }
 
+/** Names on hand-recorded entries match case-insensitively, after trimming and collapsing spaces. */
+export function normalisePartyName(name: string): string {
+  return name.trim().replace(/\s+/g, ' ').toLocaleLowerCase('en-GB');
+}
+
 function partyKey(p: CaseParty): string {
-  return `${p.personId ?? ''}|${p.userId ?? ''}|${p.party}`;
+  return `${p.personId ?? ''}|${p.userId ?? ''}|${p.name ? normalisePartyName(p.name) : ''}|${p.party}`;
 }
 
 /** The explicit register on the process merged with the derived entries. Explicit entries win. */
@@ -174,6 +179,8 @@ export function partyRegister(process: Process, relationships: Relationship[] = 
 export interface PartyCandidate {
   personId?: string;
   userId?: string;
+  /** A typed name, for someone with neither a record nor an account; matched against hand-recorded name entries. */
+  name?: string;
 }
 
 export interface ExcludedPartyMatch {
@@ -182,9 +189,10 @@ export interface ExcludedPartyMatch {
 }
 
 /**
- * Whether a person or user must not receive information about a process: they hold a party role in
- * the register that an exclusion names for this process type and stage. Returns the exclusion and
- * the register entry, or null. Hard exclusions cannot be lifted here.
+ * Whether a person, a user or someone known only by name must not receive information about a
+ * process: they hold a party role in the register that an exclusion names for this process type and
+ * stage. Ids match exactly; a name matches hand-recorded name entries case-insensitively after
+ * trimming. Returns the exclusion and the register entry, or null. Hard exclusions cannot be lifted here.
  */
 export function isExcludedParty(
   process: Process,
@@ -193,13 +201,17 @@ export function isExcludedParty(
   stage: Stage = process.stage,
   relationships: Relationship[] = [],
 ): ExcludedPartyMatch | null {
-  if (!candidate.personId && !candidate.userId) return null;
+  const name = candidate.name ? normalisePartyName(candidate.name) : '';
+  if (!candidate.personId && !candidate.userId && !name) return null;
   const rules = applicableExclusions(process.type, stage, exclusions);
   if (rules.length === 0) return null;
   const byParty = new Map<ExclusionParty, Exclusion>();
   for (const rule of rules) if (!byParty.has(rule.party)) byParty.set(rule.party, rule);
   for (const party of partyRegister(process, relationships)) {
-    const hit = (candidate.personId !== undefined && party.personId === candidate.personId) || (candidate.userId !== undefined && party.userId === candidate.userId);
+    const hit =
+      (candidate.personId !== undefined && party.personId === candidate.personId) ||
+      (candidate.userId !== undefined && party.userId === candidate.userId) ||
+      (name !== '' && party.name !== undefined && normalisePartyName(party.name) === name);
     if (!hit) continue;
     const exclusion = byParty.get(party.party);
     if (exclusion) return { exclusion, party };

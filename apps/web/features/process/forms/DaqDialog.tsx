@@ -1,10 +1,11 @@
 'use client';
 
-import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, daqFormSchema, type DaqForm, type MaracProcess, type RiskAssessment } from '@mas/domain';
+import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, MARAC_MUST_NOT_RECEIVE_PARTIES, daqFormSchema, registerUpdateLabel, withMustNotReceive, type DaqForm, type MaracProcess, type RiskAssessment } from '@mas/domain';
 import { Button, CheckboxField, Dialog, RadioGroup, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
+import { MustNotReceiveFields } from './MustNotReceiveFields';
 
 export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: () => void; process: MaracProcess }) {
   const user = useCurrentUser();
@@ -13,7 +14,7 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
   const audit = useAppStore((s) => s.audit);
   const newId = useAppStore((s) => s.newId);
   const { toast } = useToast();
-  const form = useForm<DaqForm>({ resolver: zodResolver(daqFormSchema), defaultValues: { tool: 'daq', assessedAt: now.toISOString().slice(0, 10), answers: {}, referBelowThreshold: false, professionalJudgement: '' } });
+  const form = useForm<DaqForm>({ resolver: zodResolver(daqFormSchema), defaultValues: { tool: 'daq', assessedAt: now.toISOString().slice(0, 10), answers: {}, referBelowThreshold: false, professionalJudgement: '', mustNotReceive: [] } });
   const tool = form.watch('tool');
   const answers = form.watch('answers');
   const questions = tool === 'dash' ? DASH_QUESTIONS : DAQ_QUESTIONS;
@@ -42,10 +43,17 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
       evidenceRefs: [],
       judgementOverride: !r.highRisk && r.refer ? { band: 'high', reason: r.professionalJudgement ?? '', byName: by } : undefined,
     };
+    // Anyone named as "must not receive" joins the case-role register as a manual entry from today.
+    const register = withMustNotReceive(process.parties, r.mustNotReceive, now.toISOString().slice(0, 10), 'the DAQ');
     upsert('riskAssessments', ra);
-    upsert('processes', { ...process, riskAssessmentIds: [...process.riskAssessmentIds, ra.id], detail: { ...process.detail, referral: { ...process.detail.referral, riskAssessmentId: ra.id, professionalJudgementReferral: !r.highRisk && r.refer } } });
+    upsert('processes', { ...process, riskAssessmentIds: [...process.riskAssessmentIds, ra.id], parties: register.parties, detail: { ...process.detail, referral: { ...process.detail.referral, riskAssessmentId: ra.id, professionalJudgementReferral: !r.highRisk && r.refer } } });
     audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `${r.tool.toUpperCase()} recorded: ${r.score} of ${r.maxScore}`, processId: process.id });
     toast({ title: `${r.tool.toUpperCase()} recorded: ${r.score} yes answers`, text: r.highRisk ? 'High risk: refer to MARAC.' : r.refer ? 'Below threshold; referred on professional judgement.' : 'Below threshold; no MARAC referral.', tone: 'success' });
+    const recorded = register.added + register.updated;
+    if (recorded > 0) {
+      audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: registerUpdateLabel(register, 'the DAQ'), processId: process.id });
+      toast({ title: 'Case-role register updated', text: `${recorded === 1 ? '1 person' : `${recorded} people`} recorded as "Must not receive" for this case.`, tone: 'success' });
+    }
     form.reset();
     onClose();
   }
@@ -67,20 +75,23 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
         </>
       }
     >
-      <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
-        <Controller control={form.control} name="tool" render={({ field }) => <RadioGroup legend="Instrument" name="tool" value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'daq', label: 'Police Scotland DAQ (27 questions)' }, { value: 'dash', label: 'SafeLives DASH (24 questions)' }]} />} />
-        <TextField label="Date completed" type="date" required {...form.register('assessedAt')} error={errors.assessedAt?.message} />
-        <p aria-live="polite" style={{ fontWeight: 700 }}>
-          {yes} yes answers so far. {yes >= HIGH_RISK_THRESHOLD ? 'High risk: this meets the referral threshold.' : `${HIGH_RISK_THRESHOLD - yes} more for the high-risk threshold.`}
-        </p>
-        <div className="stack" style={{ gap: 6, maxHeight: 360, overflow: 'auto', paddingRight: 8 }}>
-          {questions.map((q) => (
-            <Controller key={q.id} control={form.control} name={`answers.${q.id}`} render={({ field }) => <RadioGroup legend={q.text} name={q.id} value={field.value ?? ''} onChange={field.onChange} orientation="horizontal" options={[{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }, { value: 'unknown', label: 'Not known' }]} error={errors.answers?.[q.id]?.message} />} />
-          ))}
-        </div>
-        <CheckboxField label="Refer on professional judgement even if below 14" {...form.register('referBelowThreshold')} />
-        <TextareaField label="Professional judgement" {...form.register('professionalJudgement')} error={errors.professionalJudgement?.message} hint="Required for a referral below the threshold. Why the score understates the risk." />
-      </form>
+      <FormProvider {...form}>
+        <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
+          <Controller control={form.control} name="tool" render={({ field }) => <RadioGroup legend="Instrument" name="tool" value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'daq', label: 'Police Scotland DAQ (27 questions)' }, { value: 'dash', label: 'SafeLives DASH (24 questions)' }]} />} />
+          <TextField label="Date completed" type="date" required {...form.register('assessedAt')} error={errors.assessedAt?.message} />
+          <p aria-live="polite" style={{ fontWeight: 700 }}>
+            {yes} yes answers so far. {yes >= HIGH_RISK_THRESHOLD ? 'High risk: this meets the referral threshold.' : `${HIGH_RISK_THRESHOLD - yes} more for the high-risk threshold.`}
+          </p>
+          <div className="stack" style={{ gap: 6, maxHeight: 360, overflow: 'auto', paddingRight: 8 }}>
+            {questions.map((q) => (
+              <Controller key={q.id} control={form.control} name={`answers.${q.id}`} render={({ field }) => <RadioGroup legend={q.text} name={q.id} value={field.value ?? ''} onChange={field.onChange} orientation="horizontal" options={[{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }, { value: 'unknown', label: 'Not known' }]} error={errors.answers?.[q.id]?.message} />} />
+            ))}
+          </div>
+          <CheckboxField label="Refer on professional judgement even if below 14" {...form.register('referBelowThreshold')} />
+          <TextareaField label="Professional judgement" {...form.register('professionalJudgement')} error={errors.professionalJudgement?.message} hint="Required for a referral below the threshold. Why the score understates the risk." />
+          <MustNotReceiveFields parties={MARAC_MUST_NOT_RECEIVE_PARTIES} relationshipHint="For example the perpetrator's brother, or someone who lives with the perpetrator." />
+        </form>
+      </FormProvider>
     </Dialog>
   );
 }

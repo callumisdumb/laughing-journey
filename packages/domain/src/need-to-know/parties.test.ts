@@ -144,10 +144,12 @@ const awi: Process = {
 };
 
 describe('casePartySchema', () => {
-  it('needs a person or a user', () => {
+  it('needs a person, a user or a name', () => {
     expect(casePartySchema.safeParse({ party: 'perpetrator', label: 'x', source: 'manual' }).success).toBe(false);
+    expect(casePartySchema.safeParse({ name: '', party: 'perpetrator', label: 'x', source: 'manual' }).success).toBe(false);
     expect(casePartySchema.safeParse({ personId: 'per_1', party: 'perpetrator', label: 'x', source: 'referral' }).success).toBe(true);
     expect(casePartySchema.safeParse({ userId: 'usr_1', party: 'victim', label: 'x', source: 'manual', since: '2026-01-01', reason: 'r' }).success).toBe(true);
+    expect(casePartySchema.safeParse({ name: 'Iain Docherty', party: 'perpetrator-associates', label: 'x', source: 'manual', since: '2026-09-03', reason: 'r' }).success).toBe(true);
   });
   it('defaults the register and MAPPA victims to empty', () => {
     const { parties: _p, ...withoutParties } = marac;
@@ -261,6 +263,22 @@ describe('isExcludedParty', () => {
     expect(hit?.exclusion.id).toBe('marac.all.associates');
     expect(hit?.party.source).toBe('manual');
     expect(isExcludedParty(asp, { userId: 'usr_alleged' })?.exclusion.id).toBe('asp.conference.alleged-perpetrator');
+  });
+  it('excludes someone recorded by name, case-insensitively after trimming', () => {
+    const byName: MaracProcess = { ...marac, parties: [{ name: 'Iain Docherty', party: 'perpetrator-associates', label: "Perpetrator's family or associates: brother (named on the DAQ)", source: 'manual', since: '2026-09-03', reason: 'Would tell the perpetrator' }] };
+    const hit = isExcludedParty(byName, { name: '  iain   DOCHERTY ' });
+    expect(hit?.exclusion.id).toBe('marac.all.associates');
+    expect(hit?.party.name).toBe('Iain Docherty');
+    expect(hit?.party.source).toBe('manual');
+    expect(isExcludedParty(byName, { userId: 'usr_new', name: 'iain docherty' })?.party.name).toBe('Iain Docherty');
+    expect(isExcludedParty(byName, { name: 'Iain Dochert' })).toBeNull();
+    expect(isExcludedParty(byName, { name: '   ' })).toBeNull();
+    // A name never matches an entry held by person or user id.
+    expect(isExcludedParty(marac, { name: 'per_perp' })).toBeNull();
+    // The name entry sits alongside the derived ones in the register.
+    const register = partyRegister(byName, relationships);
+    expect(register.filter((p) => p.name).map((p) => p.name)).toEqual(['Iain Docherty']);
+    expect(register.some((p) => p.personId === 'per_brother')).toBe(true);
   });
   it('does not exclude a user with no party entry', () => {
     expect(isExcludedParty(marac, { userId: 'usr_coordinator' }, EXCLUSIONS, 'meeting', relationships)).toBeNull();
