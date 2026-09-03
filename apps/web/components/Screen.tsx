@@ -2,6 +2,9 @@
 
 import { useEffect } from 'react';
 import { Actions } from '@/features/actions/Actions';
+import { Audit } from '@/features/audit/Audit';
+import { Connectors } from '@/features/connectors/Connectors';
+import { Help } from '@/features/help/Help';
 import { ChronologyScreen } from '@/features/chronology/ChronologyScreen';
 import { Home } from '@/features/home/Home';
 import { Inbox } from '@/features/inbox/Inbox';
@@ -13,6 +16,7 @@ import { Placeholder } from '@/features/placeholder/Placeholder';
 import { ProcessList } from '@/features/process/ProcessList';
 import { ProcessScreen } from '@/features/process/ProcessScreen';
 import { Search } from '@/features/search/Search';
+import { Settings } from '@/features/settings/Settings';
 import { Sharing } from '@/features/sharing/Sharing';
 import { Worklist } from '@/features/worklist/Worklist';
 import { useRoute } from '@/lib/router';
@@ -49,17 +53,17 @@ export function Screen() {
     case 'sharing':
       return <Sharing />;
     case 'connectors':
-      return <Placeholder title="Connectors" phase={5} />;
+      return <Connectors />;
     case 'reports':
       return <Placeholder title="Reports" phase={5} />;
     case 'audit':
-      return <Placeholder title="Audit" phase={5} />;
+      return <Audit />;
     case 'admin':
       return <Placeholder title="Admin" phase={5} />;
     case 'settings':
-      return <Placeholder title="Settings" phase={5} />;
+      return <Settings />;
     case 'help':
-      return <Placeholder title="Help" phase={5} />;
+      return <Help />;
     default:
       return <Placeholder title="Not found" phase={0} />;
   }
