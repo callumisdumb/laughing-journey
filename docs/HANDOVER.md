@@ -1,6 +1,6 @@
 # Handover
 
-What was built, what was decided, what was verified, and what is left. Read with `docs/BRIEF.md` (the request), `docs/PLAN.md` (the shape), `docs/DESIGN.md` (the look), `docs/DECISIONS.md` (the why), `docs/NOTES.md` (the phase logs), `docs/RESEARCH.md` (the sources) and `docs/DEMO.md` (the demo script), `docs/THREAT-MODEL.md`, `docs/SECURITY.md`, `docs/CRYPTO-INVENTORY.md` and `docs/DPIA-NOTES.md` (the cryptographic architecture, what it does not do, and the mapping to Article 32).
+What was built, what was decided, what was verified, and what is left. Read with `docs/BRIEF.md` (the request), `docs/PLAN.md` (the shape), `docs/DESIGN.md` (the look), `docs/DECISIONS.md` (the why), `docs/NOTES.md` (the phase logs), `docs/RESEARCH.md` (the sources), `docs/DEMO.md` (the demo script) and, for the cryptography, `docs/THREAT-MODEL.md`, `docs/SECURITY.md`, `docs/CRYPTO-INVENTORY.md` and `docs/DPIA-NOTES.md` (the architecture, what it does not do, and the mapping to Article 32).
 
 Everything in the dataset is fictional. Postcodes are in the Q, V and X ranges, CHI numbers are synthetic, and every person, address, organisation and record was invented for this mockup.
 

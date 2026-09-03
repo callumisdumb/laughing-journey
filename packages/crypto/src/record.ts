@@ -46,8 +46,9 @@ export interface EncryptedRecord {
 }
 
 /**
- * Bucket a timestamp to the day, for record types where the time of day would itself say something.
- * A burst of activity at 03:00 on a MAPPA record is information; the date alone is much less.
+ * Bucket a timestamp to the day, because the time of day is itself information. A burst of activity
+ * at 03:00 on a MAPPA record says something; the date alone says much less. The vault applies this to
+ * every record rather than to a list of sensitive types, since a list is something somebody forgets.
  */
 export function bucketTimestamp(isoDateTime: string): string {
   return isoDateTime.slice(0, 10);

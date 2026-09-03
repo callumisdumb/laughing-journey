@@ -161,7 +161,7 @@ With every defence working as designed, an adversary with full storage access st
 | Timestamps, bucketed to the day | Roughly when activity happens |
 | The existence of a link between records | That two records concern related matters |
 
-Four things keep it small: principal identifiers are opaque and rotated, record types are coarse ("MAPPA process", never "MAPPA Level 3 review with disclosure decision"), timestamps on the most sensitive types are bucketed to the day, and presence is the designed leak, which is a concept the need-to-know model already has and practitioners already understand.
+Four things keep it small. Principal identifiers are opaque and rotated. Record types are coarse: "MAPPA process", never "MAPPA Level 3 review with disclosure decision". Timestamps are bucketed to the day, and to the day on every record rather than on a list of sensitive types, because a list is something somebody forgets to add to. And presence is the designed leak, which is a concept the need-to-know model already has and practitioners already understand.
 
 This table is on the "What the host can see" screen in Admin and on the Security page in Help, with the real values, not a sanitised version.
 

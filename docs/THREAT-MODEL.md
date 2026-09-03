@@ -133,7 +133,7 @@ Four things minimise it deliberately:
 
 - **Principal identifiers are opaque and rotated.** Not names, not email addresses, not staff numbers.
 - **Record types are coarse.** "MAPPA process" rather than "MAPPA Level 3 review with disclosure decision".
-- **Timestamps on the most sensitive record types are bucketed to the day**, not the second, so a burst of activity does not reveal an incident's timing.
+- **Timestamps are bucketed to the day**, not the second, so a burst of activity at three in the morning on a MAPPA record does not reveal an incident's timing. The bucketing is applied to every record rather than to a list of sensitive types, because a list is something somebody forgets to add to.
 - **Presence is the designed leak.** The need-to-know model already has a presence level, which tells an unentitled party that a record exists and nothing more. That level is exactly what an operator sees, which means the leakage is a concept practitioners already understand rather than a new one.
 
 This table is reproduced on the "What the host can see" screen in Admin and on the Security page in Help. The screen shows the real metadata, not a sanitised version: a demonstration that showed only ciphertext would be a lie, and the one person in the room who knows that is the one who needs convincing.
