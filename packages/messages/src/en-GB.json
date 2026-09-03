@@ -3601,6 +3601,84 @@
       "restrictedSubject": "restricted"
     }
   },
+  "settings": {
+    "appearance": {
+      "density": {
+        "comfortable": "Comfortable",
+        "compact": "Compact"
+      },
+      "densityHint": {
+        "comfortable": "40 px rows.",
+        "compact": "32 px rows for long lists."
+      },
+      "densityLegend": "Density",
+      "meta": "Both themes and both densities are designed. Pick what suits the room.",
+      "theme": {
+        "dark": "Dark",
+        "light": "Light",
+        "system": "Match this device"
+      },
+      "themeHint": {
+        "dark": "Peat paper for dim rooms.",
+        "light": "Cream paper, warm ink.",
+        "system": "Follows the operating system."
+      },
+      "themeLegend": "Theme",
+      "title": "Appearance"
+    },
+    "clock": {
+      "frozen": "The demo is frozen at {frozen} unless the live clock is on. Right now the product thinks it is {now}.",
+      "live": "Live clock",
+      "meta": "Every clock, due date and overdue marker is calculated from this instant.",
+      "note": "Turn the live clock on to watch clocks tick over in a long demo. Turn it off to get the scenarios back to their designed state.",
+      "title": "Demo clock"
+    },
+    "demoData": {
+      "meta": "Everything you change in the demo is kept on this device until you reset it.",
+      "note": "Discards every local change and regenerates the eight scenarios from the seed. Sign-in and appearance are kept.",
+      "title": "Demo data"
+    },
+    "lede": "Appearance and notification preferences are kept on this device. The demo clock and the reset control live here too. Nothing is sent anywhere.",
+    "notifications": {
+      "clocksDueThisWeek": {
+        "hint": "A summary of statutory clocks on your cases that fall due in the next seven days.",
+        "label": "Clocks due this week"
+      },
+      "connectorInbox": {
+        "hint": "New events from your agency\u2019s systems waiting for review.",
+        "label": "Connector inbox items"
+      },
+      "meetingInvites": {
+        "hint": "Invitations, pre-meeting report requests and distributed minutes.",
+        "label": "Meeting invites"
+      },
+      "meta": "Demo preferences, stored on this device only.",
+      "newShares": {
+        "hint": "When another agency shares something with you, with the reason they did.",
+        "label": "New shares to me"
+      },
+      "title": "Notifications"
+    },
+    "reset": {
+      "auditReason": "Every local change discarded; the eight scenarios regenerated from the seed",
+      "dialogText": "This removes every change made on this device since the seed: events, minutes, shares, promoted inbox items and audit entries you added. The eight scenarios come back exactly as shipped. Your sign-in and appearance are kept.",
+      "dialogTitle": "Reset demo data?",
+      "toastText": "The eight scenarios are back exactly as shipped. Your sign-in and appearance are unchanged."
+    },
+    "signedIn": {
+      "agency": "Agency",
+      "base": "Base",
+      "meta": "The persona switcher in the top bar changes who you are. This is a demo; there is no real sign-in.",
+      "name": "Name",
+      "note": "Use the persona switcher (marked Demo) to see the same records as a different role. Each switch is written to the audit log.",
+      "noTeam": "None",
+      "organisation": "Organisation",
+      "role": "Role",
+      "team": "Team",
+      "title": "Signed in as"
+    },
+    "title": "Settings"
+  },
   "sharing": {
     "audit": {
       "responded": "Responded to {name}: {count} fields",

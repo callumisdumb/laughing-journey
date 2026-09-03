@@ -11594,6 +11594,249 @@
       }
     }
   },
+  "settings": {
+    "appearance": {
+      "density": {
+        "comfortable": {
+          "maxLength": 20,
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Density option: comfortable"
+        },
+        "compact": {
+          "maxLength": 20,
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Density option: compact"
+        }
+      },
+      "densityHint": {
+        "comfortable": {
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Hint under the comfortable density option"
+        },
+        "compact": {
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Hint under the compact density option"
+        }
+      },
+      "densityLegend": {
+        "maxLength": 16,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Legend of the density radio group"
+      },
+      "meta": {
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Meta line under the appearance heading"
+      },
+      "theme": {
+        "dark": {
+          "maxLength": 20,
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Theme option: dark"
+        },
+        "light": {
+          "maxLength": 20,
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Theme option: light"
+        },
+        "system": {
+          "maxLength": 24,
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Theme option: follow the operating system"
+        }
+      },
+      "themeHint": {
+        "dark": {
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Hint under the dark theme option"
+        },
+        "light": {
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Hint under the light theme option"
+        },
+        "system": {
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Hint under the match-this-device theme option"
+        }
+      },
+      "themeLegend": {
+        "maxLength": 16,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Legend of the theme radio group"
+      },
+      "title": {
+        "maxLength": 24,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Heading of the appearance sheet"
+      }
+    },
+    "clock": {
+      "frozen": {
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Sentence under the live clock switch; frozen and now are formatted date-times shown in bold"
+      },
+      "live": {
+        "maxLength": 24,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Label of the live clock switch"
+      },
+      "meta": {
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Meta line under the demo clock heading"
+      },
+      "note": {
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Note at the foot of the demo clock sheet"
+      },
+      "title": {
+        "maxLength": 24,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Heading of the demo clock sheet"
+      }
+    },
+    "demoData": {
+      "meta": {
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Meta line under the demo data heading"
+      },
+      "note": {
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Note beside the reset button"
+      },
+      "title": {
+        "maxLength": 24,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Heading of the demo data sheet"
+      }
+    },
+    "lede": {
+      "screenshot": "phase-5/settings-light-comfortable.png",
+      "where": "Settings page lede under the heading"
+    },
+    "notifications": {
+      "clocksDueThisWeek": {
+        "hint": {
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Hint under the clocks-due switch"
+        },
+        "label": {
+          "maxLength": 32,
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Notification switch label"
+        }
+      },
+      "connectorInbox": {
+        "hint": {
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Hint under the connector-inbox switch"
+        },
+        "label": {
+          "maxLength": 32,
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Notification switch label"
+        }
+      },
+      "meetingInvites": {
+        "hint": {
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Hint under the meeting-invites switch"
+        },
+        "label": {
+          "maxLength": 32,
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Notification switch label"
+        }
+      },
+      "meta": {
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Meta line under the notifications heading"
+      },
+      "newShares": {
+        "hint": {
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Hint under the new-shares switch"
+        },
+        "label": {
+          "maxLength": 32,
+          "screenshot": "phase-5/settings-light-comfortable.png",
+          "where": "Notification switch label"
+        }
+      },
+      "title": {
+        "maxLength": 24,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Heading of the notifications sheet"
+      }
+    },
+    "reset": {
+      "auditReason": {
+        "where": "Reason recorded on the audit entry for a reset from Settings"
+      },
+      "dialogText": {
+        "where": "Body of the reset confirmation dialog"
+      },
+      "dialogTitle": {
+        "maxLength": 32,
+        "where": "Title of the reset confirmation dialog"
+      },
+      "toastText": {
+        "where": "Toast text after the reset from Settings"
+      }
+    },
+    "signedIn": {
+      "agency": {
+        "maxLength": 16,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Key in the signed-in key-value list"
+      },
+      "base": {
+        "maxLength": 16,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Key in the signed-in key-value list"
+      },
+      "meta": {
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Meta line under the signed-in heading"
+      },
+      "name": {
+        "maxLength": 16,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Key in the signed-in key-value list"
+      },
+      "note": {
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Note at the foot of the signed-in sheet"
+      },
+      "noTeam": {
+        "maxLength": 16,
+        "where": "Team value when the persona has no team"
+      },
+      "organisation": {
+        "maxLength": 16,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Key in the signed-in key-value list"
+      },
+      "role": {
+        "maxLength": 16,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Key in the signed-in key-value list"
+      },
+      "team": {
+        "maxLength": 16,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Key in the signed-in key-value list"
+      },
+      "title": {
+        "maxLength": 24,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Heading of the signed-in sheet"
+      }
+    },
+    "title": {
+      "maxLength": 24,
+      "screenshot": "phase-5/settings-light-comfortable.png",
+      "where": "Settings page heading"
+    }
+  },
   "sharing": {
     "audit": {
       "responded": {
