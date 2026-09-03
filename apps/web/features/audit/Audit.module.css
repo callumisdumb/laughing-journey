@@ -1,6 +1,6 @@
 .filters {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 10px 12px;
   align-items: end;
   margin-bottom: 10px;
@@ -69,6 +69,10 @@
 
 .ledger table {
   font-size: var(--text-sm);
+}
+
+.ledger td:nth-child(4) {
+  min-width: 14rem;
 }
 
 .time {

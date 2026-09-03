@@ -12,8 +12,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   const drawerCollapsed = useAppearance((s) => s.drawerCollapsed);
   const route = useRoute();
   const chair = route.query.get('mode') === 'chair';
+  const head = route.segments[0];
+  // Configuration and reporting screens have no selection for the drawer, so they take the full width (D-026).
+  const chrome = chair ? 'minimal' : head === 'admin' || head === 'reports' ? 'wide' : undefined;
   return (
-    <div className="app-shell" data-rail={railCollapsed ? 'collapsed' : 'expanded'} data-drawer={drawerCollapsed ? 'collapsed' : 'open'} data-chrome={chair ? 'minimal' : undefined} data-app-ready="true">
+    <div className="app-shell" data-rail={railCollapsed ? 'collapsed' : 'expanded'} data-drawer={drawerCollapsed ? 'collapsed' : 'open'} data-chrome={chrome} data-app-ready="true">
       <Rail />
       <TopBar />
       <main id="main" className="app-content" tabIndex={-1}>

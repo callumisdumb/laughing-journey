@@ -32,6 +32,7 @@ One line of rationale each. Newest at the bottom. Prefix D-nnn. Domain decisions
 - D-020e Every Person 360 view writes a `read` audit entry and every chronology export writes an `export` entry; restricted reads use `read-restricted`.
 - D-024 `TableWrap` renders a labelled, focusable region (`role="region"`, `aria-label`, `tabindex=0`) because wide tables scroll sideways and WCAG 2.1.1 needs a keyboard way to scroll them. Cost: one extra tab stop per table. Callers pass `label` where "Table" is not descriptive.
 - D-025 Scenario seeders are ordered 01 to 08 in `SCENARIOS` and run before the bulk population, so scenario ids are stable and never collide with generated ids. Seeders may not edit `build.ts`; wiring is a separate step.
+- D-026 Admin and Reports render with the context drawer column closed (`data-chrome='wide'`), because configuration and returns have no selection for the drawer to describe and the tables need the width. Chair mode uses the same mechanism with the rail collapsed too.
 
 ## Design
 

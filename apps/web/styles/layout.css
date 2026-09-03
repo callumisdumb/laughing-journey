@@ -26,6 +26,14 @@
   grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) 0;
 }
 
+.app-shell[data-chrome='wide'] {
+  grid-template-columns: var(--rail-width) minmax(0, 1fr) 0;
+}
+
+.app-shell[data-chrome='wide'][data-rail='collapsed'] {
+  grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) 0;
+}
+
 .app-content {
   grid-area: content;
   min-width: 0;

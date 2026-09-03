@@ -98,3 +98,22 @@ Running log of what was tried visually, what was rejected and why. Newest at the
 - During: agenda items on one line each with the Start control; the child's voice block is the most prominent thing on the row, as intended. Chair mode shot: rail collapsed, larger type, agenda enlarged.
 - After: the minute steps (draft, chair approves, distribute) disable in order; the toasts from generating the distribution and distributing overlap the list for a moment, which is acceptable.
 - Actions: overdue rows carry the date in red plus "18 days overdue" in words. Sharing preview: the reason, matched rule and exclusions read clearly in a two-column layout.
+
+## Phase 5
+
+### What was tried and rejected
+
+- Operations screens were built in parallel by three agents to a shared conventions file (tokens only, CSS modules, the Field and Table primitives, audit every act, no edits outside the assigned folder). Wiring into the route table and the build stayed with one pair of hands, the same way the scenarios were done in Phase 3.
+- Connectors: tried a single table of adapters. Rejected: the status word and the "events waiting in the inbox" link are the two things a demo audience looks for, and cards carry them at a glance. The detail area under the cards holds sync history, the mapping preview and the "how this would connect for real" copy, chosen by `?adapter=` so a URL can point at one system. Outage and slow-response toggles are per adapter and audited; the response speed select makes the simulated latency instant for a room that does not want to wait.
+- Audit: the ledger deliberately overrides the density variables so it is tighter than any other table; timestamps are the one place JetBrains Mono appears. Break-glass rows carry a glyph, a word and a left rule, never colour alone. Scope follows the role: oversight roles see everything, everyone else sees their own entries, and the lede says which.
+- Settings: the live clock switch explains that the demo is frozen at 02 Sep 2026 09:00; the reset sits behind a confirm dialog. Help says plainly that there are no global keyboard shortcuts yet rather than listing keys that do not exist.
+- Admin need-to-know: tried a long editable table of rows. Rejected: nobody can see a stage by agency picture in a 31-row table. The matrix (stages down, agencies across, one chip per audience row) with a draft state and a preview that resolves against the draft before saving is what a coordinator can reason about. Hard exclusions (MARAC perpetrator and associates, MAPPA victim) have their remove button disabled with the reason beside it.
+- Timescales: editing a statutory amount demotes the rule to local confidence and marks it to verify, so a local override can never masquerade as the national value.
+- Admin and Reports close the context drawer column (D-026): configuration has no selection to describe, and the Users and Timescales tables were unreadable at the width the drawer left.
+
+### Screenshot review
+
+- Connectors, light and dark: cards read well; the selected card carries the accent border; "Nothing waiting in the inbox" is a sentence, not a zero.
+- Audit: the target column wrapped the reference over three lines and the To date fell onto its own row; the target column now has a minimum width and the filter grid wraps evenly.
+- Admin overview, need-to-know matrix, edit dialog, defaults in dark: all fine. Users and Timescales were squeezed by the drawer (columns wrapping one word per line, the Edit button clipped); fixed by the wide chrome above.
+- The Playwright "simulate outage" test could not click the switch because the real input was a 1px hidden element behind the drawn track. The input now covers the whole label, which also gives pointer and touch users the full target (44px tall in comfortable density).
