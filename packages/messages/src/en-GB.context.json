@@ -1263,6 +1263,210 @@
       }
     }
   },
+  "inbox": {
+    "dismiss": {
+      "reason": {
+        "maxLength": 20,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Label of the reason field in the dismiss event dialog"
+      },
+      "reasonHint": {
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Hint under the reason field in the dismiss event dialog"
+      },
+      "submit": {
+        "maxLength": 24,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Danger button that confirms the dismiss event dialog"
+      },
+      "title": {
+        "maxLength": 30,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Title of the dismiss event dialog"
+      },
+      "toast": {
+        "text": {
+          "screenshot": "phase-2/inbox-light-comfortable.png",
+          "where": "Toast text after a connector event is dismissed"
+        },
+        "title": {
+          "maxLength": 30,
+          "screenshot": "phase-2/inbox-light-comfortable.png",
+          "where": "Toast title after a connector event is dismissed"
+        }
+      }
+    },
+    "empty": {
+      "text": {
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Empty state text on the connector inbox, with the user's agency as an argument"
+      },
+      "title": {
+        "maxLength": 30,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Empty state title on the connector inbox when nothing is pending"
+      }
+    },
+    "item": {
+      "dismiss": {
+        "maxLength": 16,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Quiet button on an inbox item that opens the dismiss dialog"
+      },
+      "meta": {
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Meta line under an inbox item title: when it was received, its external reference and the mapping rule"
+      },
+      "promoteIntegrated": {
+        "maxLength": 40,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Primary button on an inbox item that opens the integrated promote dialog"
+      },
+      "promoteSingle": {
+        "maxLength": 40,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Secondary button on an inbox item that opens the single-agency promote dialog"
+      },
+      "proposed": {
+        "maxLength": 32,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Heading of the right-hand panel of an inbox item, the editable proposed chronology entry"
+      },
+      "received": {
+        "maxLength": 32,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Heading of the left-hand panel of an inbox item, the raw payload from the connector"
+      },
+      "significance": {
+        "maxLength": 20,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Label of the significance select on an inbox item"
+      },
+      "title": {
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Title of an inbox item: the subject's name as a link, then the connector name"
+      },
+      "titleField": {
+        "maxLength": 30,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Label of the editable title field on an inbox item"
+      },
+      "titleHint": {
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Hint under the title field on an inbox item: when the event occurred and its mapped type"
+      }
+    },
+    "lede": {
+      "screenshot": "phase-2/inbox-light-comfortable.png",
+      "where": "Lede under the connector inbox heading"
+    },
+    "promote": {
+      "basisNote": {
+        "screenshot": "phase-2/inbox-promote-light-comfortable.png",
+        "where": "Small print at the foot of the integrated promote dialog naming the articles that will be recorded"
+      },
+      "intro": {
+        "screenshot": "phase-2/inbox-promote-light-comfortable.png",
+        "where": "Opening paragraph of the integrated promote dialog"
+      },
+      "necessity": {
+        "maxLength": 32,
+        "screenshot": "phase-2/inbox-promote-light-comfortable.png",
+        "where": "Label of the necessity field in the integrated promote dialog"
+      },
+      "necessityHint": {
+        "screenshot": "phase-2/inbox-promote-light-comfortable.png",
+        "where": "Hint under the necessity field in the integrated promote dialog"
+      },
+      "purpose": {
+        "maxLength": 20,
+        "screenshot": "phase-2/inbox-promote-light-comfortable.png",
+        "where": "Label of the purpose field in the integrated promote dialog"
+      },
+      "purposePlaceholder": {
+        "screenshot": "phase-2/inbox-promote-light-comfortable.png",
+        "where": "Placeholder in the purpose field of the integrated promote dialog"
+      },
+      "singleNote": {
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Body of the single-agency promote dialog"
+      },
+      "submitIntegrated": {
+        "maxLength": 36,
+        "screenshot": "phase-2/inbox-promote-light-comfortable.png",
+        "where": "Primary button of the integrated promote dialog"
+      },
+      "submitSingle": {
+        "maxLength": 16,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Primary button of the single-agency promote dialog"
+      },
+      "titleIntegrated": {
+        "maxLength": 40,
+        "screenshot": "phase-2/inbox-promote-light-comfortable.png",
+        "where": "Title of the integrated promote dialog"
+      },
+      "titleSingle": {
+        "maxLength": 40,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Title of the single-agency promote dialog"
+      },
+      "toast": {
+        "integrated": {
+          "maxLength": 40,
+          "screenshot": "phase-2/inbox-promote-light-comfortable.png",
+          "where": "Toast title after an event is promoted to the integrated chronology; the event title is the toast text"
+        },
+        "single": {
+          "maxLength": 40,
+          "screenshot": "phase-2/inbox-light-comfortable.png",
+          "where": "Toast title after an event is added to the single-agency chronology; the event title is the toast text"
+        }
+      }
+    },
+    "pull": {
+      "button": {
+        "maxLength": 30,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Button above the inbox that pulls events from one connector, with the connector's display name"
+      },
+      "checking": {
+        "maxLength": 12,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Health status beside a pull button while the health check is in flight"
+      },
+      "latency": {
+        "maxLength": 12,
+        "screenshot": "phase-2/inbox-light-comfortable.png",
+        "where": "Latency appended to the health status beside a pull button"
+      },
+      "toast": {
+        "failed": {
+          "maxLength": 40,
+          "screenshot": "phase-2/inbox-light-comfortable.png",
+          "where": "Toast title when a connector pull fails; the error text is the toast text"
+        },
+        "nothingNew": {
+          "screenshot": "phase-2/inbox-light-comfortable.png",
+          "where": "Toast text after a pull that found nothing new"
+        },
+        "review": {
+          "screenshot": "phase-2/inbox-light-comfortable.png",
+          "where": "Toast text after a pull that added events to the inbox"
+        },
+        "title": {
+          "maxLength": 40,
+          "screenshot": "phase-2/inbox-light-comfortable.png",
+          "where": "Toast title after a connector pull, with the connector name and the number of new events"
+        }
+      }
+    },
+    "title": {
+      "maxLength": 24,
+      "screenshot": "phase-2/inbox-light-comfortable.png",
+      "where": "Page heading of the connector inbox"
+    }
+  },
   "nav": {
     "drawer": {
       "access": {

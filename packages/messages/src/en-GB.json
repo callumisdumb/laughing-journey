@@ -370,6 +370,64 @@
       "title": "Waiting on you"
     }
   },
+  "inbox": {
+    "dismiss": {
+      "reason": "Reason",
+      "reasonHint": "Recorded in the audit log. The connector record itself is not changed.",
+      "submit": "Dismiss with reason",
+      "title": "Dismiss this event",
+      "toast": {
+        "text": "The connector record is unchanged. The reason is in the audit log.",
+        "title": "Event dismissed"
+      }
+    },
+    "empty": {
+      "text": "No {agency} connector events are waiting. Pull from a connector above to check for new ones.",
+      "title": "Nothing to review"
+    },
+    "item": {
+      "dismiss": "Dismiss",
+      "meta": "Received {when}. Reference {reference}. Mapping rule {rule}.",
+      "promoteIntegrated": "Promote to integrated chronology",
+      "promoteSingle": "Promote to single-agency chronology",
+      "proposed": "Proposed for the chronology",
+      "received": "As received from {connector}",
+      "significance": "Significance",
+      "title": "{subject}: {connector} event",
+      "titleField": "Title in plain language",
+      "titleHint": "Occurred {when}. Type: {type}."
+    },
+    "lede": "Events from your agency's systems wait here until a practitioner reads them, rewrites the title in plain language, sets the significance and promotes them. Nothing reaches a chronology on its own.",
+    "promote": {
+      "basisNote": "Article 6(1)(e) public task and Article 9(2)(g) with DPA 2018 Schedule 1 Part 2 paragraph 18 will be recorded, with the statutory gateway for each open process.",
+      "intro": "Sharing into the integrated chronology is a disclosure to the other agencies on the case. Record why it is necessary and proportionate for a legitimate aim (Human Rights Act 1998, Article 8).",
+      "necessity": "Necessity and proportionality",
+      "necessityHint": "Why the other agencies need this event to protect the person, and why nothing less would do.",
+      "purpose": "Purpose",
+      "purposePlaceholder": "e.g. Child protection planning for Aiden Boyle",
+      "singleNote": "The event joins your agency's chronology and is visible to your agency only. You can promote it to the integrated chronology later with a lawful basis.",
+      "submitIntegrated": "Record lawful basis and promote",
+      "submitSingle": "Promote",
+      "titleIntegrated": "Promote to the integrated chronology",
+      "titleSingle": "Add to your single-agency chronology",
+      "toast": {
+        "integrated": "Promoted to the integrated chronology",
+        "single": "Added to your single-agency chronology"
+      }
+    },
+    "pull": {
+      "button": "Pull from {connector}",
+      "checking": "checking",
+      "latency": "{ms} ms",
+      "toast": {
+        "failed": "{connector} did not respond",
+        "nothingNew": "Everything the connector holds is already in the inbox or the chronology.",
+        "review": "Review each one before it reaches a chronology.",
+        "title": "{connector}: {count, plural, one {# new event} other {# new events}}"
+      }
+    },
+    "title": "Connector inbox"
+  },
   "nav": {
     "drawer": {
       "access": {

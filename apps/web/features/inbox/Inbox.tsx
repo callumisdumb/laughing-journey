@@ -2,6 +2,7 @@
 
 import { SIGNIFICANCES, formatDate, formatDateTime, type ChronologyEvent, type ConnectorEvent, type LawfulBasisRecord } from '@mas/domain';
 import { MOCK_ADAPTERS, type ExternalEvent } from '@mas/connectors';
+import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, Dialog, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, useToast } from '@mas/ui';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Activity, CloudOff, RefreshCw } from 'lucide-react';
@@ -16,6 +17,7 @@ import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
 import styles from './Inbox.module.css';
 
 function ConnectorPull({ adapterId, subjectIds }: { adapterId: string; subjectIds: string[] }) {
+  const t = useT();
   const adapter = MOCK_ADAPTERS.find((a) => a.id === adapterId)!;
   const upsert = useAppStore((s) => s.upsert);
   const newId = useAppStore((s) => s.newId);
@@ -42,20 +44,20 @@ function ConnectorPull({ adapterId, subjectIds }: { adapterId: string; subjectId
         upsert('connectorEvents', rec);
         added += 1;
       }
-      toast({ title: `${adapter.displayName}: ${added} new ${added === 1 ? 'event' : 'events'}`, text: added === 0 ? 'Everything the connector holds is already in the inbox or the chronology.' : 'Review each one before it reaches a chronology.', tone: 'success' });
+      toast({ title: t('inbox.pull.toast.title', { connector: adapter.displayName, count: added }), text: added === 0 ? t('inbox.pull.toast.nothingNew') : t('inbox.pull.toast.review'), tone: 'success' });
     },
-    onError: (err: Error) => toast({ title: `${adapter.displayName} did not respond`, text: err.message, tone: 'error' }),
+    onError: (err: Error) => toast({ title: t('inbox.pull.toast.failed', { connector: adapter.displayName }), text: err.message, tone: 'error' }),
   });
   const status = health.data?.status ?? (health.isLoading ? 'checking' : 'unknown');
   return (
     <span className={styles.pull}>
       <Button size="sm" variant="secondary" icon={<RefreshCw size={14} aria-hidden="true" />} loading={pull.isPending} onClick={() => pull.mutate()} disabled={status === 'down'}>
-        Pull from {adapter.displayName}
+        {t('inbox.pull.button', { connector: adapter.displayName })}
       </Button>
       <span className={styles.status} data-status={status} aria-live="polite">
         {status === 'down' ? <CloudOff size={12} aria-hidden="true" /> : <Activity size={12} aria-hidden="true" />}
-        {status === 'checking' ? 'checking' : status}
-        {health.data?.latencyMs ? `, ${Math.round(health.data.latencyMs)} ms` : ''}
+        {status === 'checking' ? t('inbox.pull.checking') : status}
+        {health.data?.latencyMs ? `, ${t('inbox.pull.latency', { ms: Math.round(health.data.latencyMs) })}` : ''}
       </span>
     </span>
   );
@@ -67,6 +69,7 @@ interface PromoteState {
 }
 
 export function Inbox() {
+  const t = useT();
   const data = useData();
   const user = useCurrentUser();
   const now = useNow();
@@ -144,7 +147,7 @@ export function Inbox() {
     setPromote(null);
     setPurpose('');
     setNecessity('');
-    toast({ title: promote.integrated ? 'Promoted to the integrated chronology' : 'Added to your single-agency chronology', text: ev.title, tone: 'success' });
+    toast({ title: promote.integrated ? t('inbox.promote.toast.integrated') : t('inbox.promote.toast.single'), text: ev.title, tone: 'success' });
   }
 
   function doDismiss() {
@@ -153,7 +156,7 @@ export function Inbox() {
     audit({ act: 'edit', targetType: 'inbox', targetId: dismissing.id, targetLabel: `Dismissed: ${dismissing.mapped.title}`, reason: dismissReason });
     setDismissing(null);
     setDismissReason('');
-    toast({ title: 'Event dismissed', text: 'The connector record is unchanged. The reason is in the audit log.' });
+    toast({ title: t('inbox.dismiss.toast.title'), text: t('inbox.dismiss.toast.text') });
   }
 
   const state = dev ?? (items.length === 0 ? 'empty' : 'ready');
@@ -162,8 +165,8 @@ export function Inbox() {
     <div className="page">
       <div className="page-head">
         <div className="page-head-text">
-          <h1>Connector inbox</h1>
-          <p className="page-lede">Events from your agency&apos;s systems wait here until a practitioner reads them, rewrites the title in plain language, sets the significance and promotes them. Nothing reaches a chronology on its own.</p>
+          <h1>{t('inbox.title')}</h1>
+          <p className="page-lede">{t('inbox.lede')}</p>
         </div>
       </div>
       {adapters.length > 0 ? (
@@ -173,22 +176,20 @@ export function Inbox() {
           ))}
         </div>
       ) : null}
-      <ScreenState state={state} empty={{ title: 'Nothing to review', text: `No ${user.agency.replace('-', ' ')} connector events are waiting. Pull from a connector above to check for new ones.` }}>
+      <ScreenState state={state} empty={{ title: t('inbox.empty.title'), text: t('inbox.empty.text', { agency: user.agency.replace('-', ' ') }) }}>
         <div className="stack">
           {items.map((c) => {
             const subject = personById(data, c.subjectId);
             const e = edited(c);
+            // The subject is a link, so the title goes through the rich renderer with the node as an argument.
+            const titleValues: RichValues = { subject: <span className={styles.subject}>{subject ? <AppLink href={personPath(subject.id)}>{fullName(subject)}</AppLink> : c.subjectId}</span>, connector: c.connectorId };
             return (
               <Sheet key={c.id} id={`inbox-${c.id}`} selected={focus === c.id} onMouseEnter={() => subject && select({ kind: 'person', id: subject.id })}>
                 <SheetHead
-                  title={
-                    <>
-                      <span className={styles.subject}>{subject ? <AppLink href={personPath(subject.id)}>{fullName(subject)}</AppLink> : c.subjectId}</span>: {c.connectorId} event
-                    </>
-                  }
+                  title={t.rich('inbox.item.title', titleValues)}
                   meta={
                     <>
-                      <AgencyMark agency={c.agency} /> Received {formatDateTime(c.receivedAt)}. Reference {c.externalRef}. Mapping rule {c.mapped.mappingRule}.
+                      <AgencyMark agency={c.agency} /> {t('inbox.item.meta', { when: formatDateTime(c.receivedAt), reference: c.externalRef, rule: c.mapped.mappingRule })}
                     </>
                   }
                   divided
@@ -196,7 +197,7 @@ export function Inbox() {
                 <SheetBody>
                   <div className={styles.item}>
                     <div className={styles.received}>
-                      <div className={styles.receivedTitle}>As received from {c.connectorId}</div>
+                      <div className={styles.receivedTitle}>{t('inbox.item.received', { connector: c.connectorId })}</div>
                       <dl className={styles.raw}>
                         {Object.entries(c.sourcePayload).map(([k, v]) => (
                           <div key={k} style={{ display: 'contents' }}>
@@ -207,19 +208,19 @@ export function Inbox() {
                       </dl>
                     </div>
                     <div className={styles.proposed}>
-                      <div className={styles.proposedTitle}>Proposed for the chronology</div>
-                      <TextField label="Title in plain language" value={e.title} maxLength={120} onChange={(ev) => setEdits({ ...edits, [c.id]: { ...e, title: ev.target.value } })} hint={`Occurred ${c.mapped.hasTime ? formatDateTime(c.mapped.occurredAt) : formatDate(c.mapped.occurredAt)}. Type: ${c.mapped.eventType}.`} />
-                      <SelectField label="Significance" value={e.significance} onChange={(ev) => setEdits({ ...edits, [c.id]: { ...e, significance: ev.target.value as ChronologyEvent['significance'] } })} options={SIGNIFICANCES.map((s) => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))} />
+                      <div className={styles.proposedTitle}>{t('inbox.item.proposed')}</div>
+                      <TextField label={t('inbox.item.titleField')} value={e.title} maxLength={120} onChange={(ev) => setEdits({ ...edits, [c.id]: { ...e, title: ev.target.value } })} hint={t('inbox.item.titleHint', { when: c.mapped.hasTime ? formatDateTime(c.mapped.occurredAt) : formatDate(c.mapped.occurredAt), type: c.mapped.eventType })} />
+                      <SelectField label={t('inbox.item.significance')} value={e.significance} onChange={(ev) => setEdits({ ...edits, [c.id]: { ...e, significance: ev.target.value as ChronologyEvent['significance'] } })} options={SIGNIFICANCES.map((s) => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))} />
                       <p className={styles.mappingNote}>{c.mapped.detail}</p>
                       <div className={styles.actions}>
                         <Button variant="secondary" onClick={() => setPromote({ event: c, integrated: false })}>
-                          Promote to single-agency chronology
+                          {t('inbox.item.promoteSingle')}
                         </Button>
                         <Button variant="primary" onClick={() => setPromote({ event: c, integrated: true })}>
-                          Promote to integrated chronology
+                          {t('inbox.item.promoteIntegrated')}
                         </Button>
                         <Button variant="quiet" onClick={() => setDismissing(c)}>
-                          Dismiss
+                          {t('inbox.item.dismiss')}
                         </Button>
                       </div>
                     </div>
@@ -234,46 +235,46 @@ export function Inbox() {
       <Dialog
         open={promote !== null}
         onClose={() => setPromote(null)}
-        title={promote?.integrated ? 'Promote to the integrated chronology' : 'Add to your single-agency chronology'}
+        title={promote?.integrated ? t('inbox.promote.titleIntegrated') : t('inbox.promote.titleSingle')}
         actions={
           <>
             <Button variant="quiet" onClick={() => setPromote(null)}>
-              Cancel
+              {t('common.actions.cancel')}
             </Button>
             <Button variant="primary" onClick={doPromote} disabled={promote?.integrated ? purpose.trim().length < 5 || necessity.trim().length < 20 : false}>
-              {promote?.integrated ? 'Record lawful basis and promote' : 'Promote'}
+              {promote?.integrated ? t('inbox.promote.submitIntegrated') : t('inbox.promote.submitSingle')}
             </Button>
           </>
         }
       >
         {promote?.integrated ? (
           <div className="stack">
-            <p>Sharing into the integrated chronology is a disclosure to the other agencies on the case. Record why it is necessary and proportionate for a legitimate aim (Human Rights Act 1998, Article 8).</p>
-            <TextField label="Purpose" required value={purpose} onChange={(e) => setPurpose(e.target.value)} placeholder="e.g. Child protection planning for Aiden Boyle" />
-            <TextareaField label="Necessity and proportionality" required value={necessity} onChange={(e) => setNecessity(e.target.value)} hint="Why the other agencies need this event to protect the person, and why nothing less would do." />
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-ink-3)' }}>Article 6(1)(e) public task and Article 9(2)(g) with DPA 2018 Schedule 1 Part 2 paragraph 18 will be recorded, with the statutory gateway for each open process.</p>
+            <p>{t('inbox.promote.intro')}</p>
+            <TextField label={t('inbox.promote.purpose')} required value={purpose} onChange={(e) => setPurpose(e.target.value)} placeholder={t('inbox.promote.purposePlaceholder')} />
+            <TextareaField label={t('inbox.promote.necessity')} required value={necessity} onChange={(e) => setNecessity(e.target.value)} hint={t('inbox.promote.necessityHint')} />
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-ink-3)' }}>{t('inbox.promote.basisNote')}</p>
           </div>
         ) : (
-          <p>The event joins your agency&apos;s chronology and is visible to your agency only. You can promote it to the integrated chronology later with a lawful basis.</p>
+          <p>{t('inbox.promote.singleNote')}</p>
         )}
       </Dialog>
 
       <Dialog
         open={dismissing !== null}
         onClose={() => setDismissing(null)}
-        title="Dismiss this event"
+        title={t('inbox.dismiss.title')}
         actions={
           <>
             <Button variant="quiet" onClick={() => setDismissing(null)}>
-              Cancel
+              {t('common.actions.cancel')}
             </Button>
             <Button variant="danger" onClick={doDismiss} disabled={dismissReason.trim().length < 5}>
-              Dismiss with reason
+              {t('inbox.dismiss.submit')}
             </Button>
           </>
         }
       >
-        <TextareaField label="Reason" required value={dismissReason} onChange={(e) => setDismissReason(e.target.value)} hint="Recorded in the audit log. The connector record itself is not changed." />
+        <TextareaField label={t('inbox.dismiss.reason')} required value={dismissReason} onChange={(e) => setDismissReason(e.target.value)} hint={t('inbox.dismiss.reasonHint')} />
       </Dialog>
     </div>
   );
