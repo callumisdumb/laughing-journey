@@ -1,6 +1,6 @@
 'use client';
 
-import { t } from '@mas/messages';
+import { useT, type MessageKey } from '@mas/messages';
 import { useEffect } from 'react';
 import { Actions } from '@/features/actions/Actions';
 import { Admin } from '@/features/admin/Admin';
@@ -24,15 +24,37 @@ import { Sharing } from '@/features/sharing/Sharing';
 import { Worklist } from '@/features/worklist/Worklist';
 import { useRoute } from '@/lib/router';
 
+/** Browser tab title for each route head; entity routes take their section's title. */
+const TITLE_KEYS = {
+  '': 'nav.titles.home',
+  worklist: 'nav.titles.worklist',
+  people: 'nav.titles.people',
+  search: 'nav.titles.search',
+  inbox: 'nav.titles.inbox',
+  processes: 'nav.titles.processes',
+  meetings: 'nav.titles.meetings',
+  actions: 'nav.titles.actions',
+  sharing: 'nav.titles.sharing',
+  connectors: 'nav.titles.connectors',
+  reports: 'nav.titles.reports',
+  audit: 'nav.titles.audit',
+  admin: 'nav.titles.admin',
+  settings: 'nav.titles.settings',
+  help: 'nav.titles.help',
+} as const satisfies Record<string, MessageKey>;
+
+type TitleKey = (typeof TITLE_KEYS)[keyof typeof TITLE_KEYS];
+
 /** Route table. Entity routes read their id from the path segments. */
 export function Screen() {
+  const t = useT();
   const route = useRoute();
   const [head, id, sub] = route.segments;
 
   useEffect(() => {
-    const titles: Record<string, string> = { '': 'Home', worklist: 'Worklist', people: 'People', search: 'Search', inbox: 'Inbox', processes: 'Processes', meetings: 'Meetings', actions: 'Actions', sharing: 'Sharing', connectors: 'Connectors', reports: 'Reports', audit: 'Audit', admin: 'Admin', settings: 'Settings', help: 'Help' };
-    document.title = t('common.app.titleWithScreen', { screen: titles[head ?? ''] ?? t('common.app.name'), app: t('common.app.name') });
-  }, [head]);
+    const key = (TITLE_KEYS as Record<string, TitleKey>)[head ?? ''];
+    document.title = t('common.app.titleWithScreen', { screen: key ? t(key) : t('common.app.name'), app: t('common.app.name') });
+  }, [head, t]);
 
   switch (head) {
     case undefined:
@@ -68,6 +90,6 @@ export function Screen() {
     case 'help':
       return <Help />;
     default:
-      return <Placeholder title="Not found" phase={0} />;
+      return <Placeholder title={t('states.placeholder.notFound')} phase={0} />;
   }
 }

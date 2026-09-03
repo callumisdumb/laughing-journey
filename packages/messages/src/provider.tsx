@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useSyncExternalStore, ty
 import { currentMessages, hydrateOverrides, memoryStore, subscribe, type OverridesStore } from './overrides';
 import type { FormatXMLElementFn } from 'intl-messageformat';
 import { formatMessage, formatRich } from './format';
-import type { MessageArgs, MessageKey } from './keys.generated';
+import type { MessageKey } from './keys.generated';
 import type { TArgs } from './t';
 
 export type RichValues = Record<string, Date | ReactNode | FormatXMLElementFn<ReactNode>>;
@@ -12,7 +12,7 @@ export type RichValues = Record<string, Date | ReactNode | FormatXMLElementFn<Re
 export interface Translator {
   <K extends MessageKey>(key: K, ...rest: TArgs<K>): string;
   /** A message whose tags render React nodes; pass { b: (chunks) => <strong>{chunks}</strong> } for a <b> tag. */
-  rich: <K extends MessageKey>(key: K, values?: RichValues & Partial<MessageArgs[K]>) => ReactNode;
+  rich: (key: MessageKey, values?: RichValues) => ReactNode;
   /** The current message text for a key, unformatted; the Admin editor shows it. */
   raw: (key: string) => string | undefined;
 }

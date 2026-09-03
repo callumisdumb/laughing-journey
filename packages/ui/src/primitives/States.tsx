@@ -1,3 +1,4 @@
+import { useT } from '@mas/messages';
 import { AlertTriangle, CloudOff, Inbox, Lock, ShieldAlert, TimerOff } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import { cn } from '../cn';
@@ -43,12 +44,13 @@ export function ErrorState(p: Omit<StateShellProps, 'kind'>) {
 }
 
 export function OfflineState(p: Partial<Omit<StateShellProps, 'kind'>>) {
+  const t = useT();
   return (
     <StateShell
       kind="offline"
       role="status"
-      title={p.title ?? 'You are offline'}
-      text={p.text ?? 'The record you are looking at is the last copy held on this device. Changes will be kept locally and sent when the connection returns.'}
+      title={p.title ?? t('states.offline.title')}
+      text={p.text ?? t('states.offline.text')}
       actions={p.actions}
       className={p.className}
     />
@@ -56,12 +58,13 @@ export function OfflineState(p: Partial<Omit<StateShellProps, 'kind'>>) {
 }
 
 export function StaleState(p: Partial<Omit<StateShellProps, 'kind'>> & { lastSyncLabel?: string }) {
+  const t = useT();
   return (
     <StateShell
       kind="stale"
       role="status"
-      title={p.title ?? 'Connector data may be out of date'}
-      text={p.text ?? `The last successful sync was ${p.lastSyncLabel ?? 'some time ago'}. Events since then have not been pulled in.`}
+      title={p.title ?? t('states.stale.title')}
+      text={p.text ?? t('states.stale.text', { lastSync: p.lastSyncLabel ?? t('states.stale.unknownSync') })}
       actions={p.actions}
       className={p.className}
     />
@@ -78,17 +81,28 @@ export interface RestrictedStateProps {
 }
 
 export function RestrictedState({ title, reason, breakGlass, breakGlassAction, className }: RestrictedStateProps) {
+  const t = useT();
   return (
     <StateShell
       kind="restricted"
       role="status"
       icon={breakGlass === 'available' ? <ShieldAlert size={22} aria-hidden="true" /> : undefined}
-      title={title ?? 'Restricted record'}
+      title={title ?? t('states.restricted.title')}
       text={
         <>
           {reason}
-          {breakGlass === 'available' ? ' You can open it with a recorded reason. Access lasts four hours and every read is audited.' : null}
-          {breakGlass === 'unavailable' ? ' Break-glass access is not available for your agency or role.' : null}
+          {breakGlass === 'available' ? (
+            <>
+              {' '}
+              {t('states.restricted.breakGlassAvailable')}
+            </>
+          ) : null}
+          {breakGlass === 'unavailable' ? (
+            <>
+              {' '}
+              {t('states.restricted.breakGlassUnavailable')}
+            </>
+          ) : null}
         </>
       }
       actions={breakGlass === 'available' ? breakGlassAction : undefined}
@@ -108,10 +122,11 @@ export function Skeleton({ width, height, className }: SkeletonProps) {
   return <span className={cn(styles.skeleton, className)} style={style} aria-hidden="true" />;
 }
 
-export function SkeletonLines({ lines = 3, label = 'Loading' }: { lines?: number; label?: string }) {
+export function SkeletonLines({ lines = 3, label }: { lines?: number; label?: string }) {
+  const t = useT();
   const widths = ['92%', '78%', '64%', '84%', '58%'];
   return (
-    <div className={styles.skeletonStack} role="status" aria-live="polite" aria-label={label}>
+    <div className={styles.skeletonStack} role="status" aria-live="polite" aria-label={label ?? t('states.loading.label')}>
       {Array.from({ length: lines }, (_, i) => (
         <Skeleton key={i} width={widths[i % widths.length]} height="0.9em" />
       ))}

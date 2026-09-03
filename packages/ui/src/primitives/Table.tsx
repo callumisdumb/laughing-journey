@@ -1,3 +1,4 @@
+import { useT } from '@mas/messages';
 import type { HTMLAttributes, ReactNode, TableHTMLAttributes } from 'react';
 import { cn } from '../cn';
 import styles from './Table.module.css';
@@ -7,9 +8,10 @@ export interface TableWrapProps extends HTMLAttributes<HTMLDivElement> {
   label?: string;
 }
 
-export function TableWrap({ className, children, label = 'Table', ...rest }: TableWrapProps) {
+export function TableWrap({ className, children, label, ...rest }: TableWrapProps) {
+  const t = useT();
   return (
-    <div className={cn(styles.wrap, className)} role="region" aria-label={label} tabIndex={0} {...rest}>
+    <div className={cn(styles.wrap, className)} role="region" aria-label={label ?? t('common.table.region')} tabIndex={0} {...rest}>
       {children}
     </div>
   );

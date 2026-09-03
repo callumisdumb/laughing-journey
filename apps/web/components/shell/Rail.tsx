@@ -7,7 +7,7 @@ import { BarChart3, CalendarDays, ClipboardList, Home, ListChecks, PanelLeftClos
 import type { ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { useAppearance } from '@/lib/appearance';
-import { actionsForUser, inboxForUser } from '@/lib/selectors';
+import { actionsForUser, inboxForUser, userName } from '@/lib/selectors';
 import { useCurrentUser, useData } from '@/lib/store';
 import styles from './Rail.module.css';
 
@@ -16,6 +16,8 @@ interface NavItem {
   label: string;
   icon: ReactNode;
   count?: number;
+  /** What the count badge counts, read after the number. */
+  waiting?: string;
 }
 
 export function Rail() {
@@ -28,21 +30,21 @@ export function Rail() {
   const actionCount = user ? actionsForUser(data, user).length : 0;
 
   const items: NavItem[] = [
-    { href: '/', label: 'Home', icon: <Home size={20} aria-hidden="true" /> },
-    { href: '/worklist', label: 'Worklist', icon: <ClipboardList size={20} aria-hidden="true" />, count: inboxCount },
-    { href: '/people', label: 'People', icon: <Users size={20} aria-hidden="true" /> },
-    { href: '/meetings', label: 'Meetings', icon: <CalendarDays size={20} aria-hidden="true" /> },
-    { href: '/actions', label: 'Actions', icon: <ListChecks size={20} aria-hidden="true" />, count: actionCount },
-    { href: '/sharing', label: 'Sharing', icon: <Send size={20} aria-hidden="true" /> },
-    { href: '/reports', label: 'Reports', icon: <BarChart3 size={20} aria-hidden="true" /> },
-    { href: '/connectors', label: 'Connectors', icon: <Plug size={20} aria-hidden="true" /> },
-    { href: '/admin', label: 'Admin', icon: <Settings2 size={20} aria-hidden="true" /> },
+    { href: '/', label: t('nav.rail.items.home'), icon: <Home size={20} aria-hidden="true" /> },
+    { href: '/worklist', label: t('nav.rail.items.worklist'), icon: <ClipboardList size={20} aria-hidden="true" />, count: inboxCount, waiting: t('nav.rail.waiting.worklist') },
+    { href: '/people', label: t('nav.rail.items.people'), icon: <Users size={20} aria-hidden="true" /> },
+    { href: '/meetings', label: t('nav.rail.items.meetings'), icon: <CalendarDays size={20} aria-hidden="true" /> },
+    { href: '/actions', label: t('nav.rail.items.actions'), icon: <ListChecks size={20} aria-hidden="true" />, count: actionCount, waiting: t('nav.rail.waiting.actions') },
+    { href: '/sharing', label: t('nav.rail.items.sharing'), icon: <Send size={20} aria-hidden="true" /> },
+    { href: '/reports', label: t('nav.rail.items.reports'), icon: <BarChart3 size={20} aria-hidden="true" /> },
+    { href: '/connectors', label: t('nav.rail.items.connectors'), icon: <Plug size={20} aria-hidden="true" /> },
+    { href: '/admin', label: t('nav.rail.items.admin'), icon: <Settings2 size={20} aria-hidden="true" /> },
   ];
 
   const AgencyGlyph = user ? AGENCY_GLYPHS[user.agency] : null;
 
   return (
-    <nav className={styles.rail} data-collapsed={collapsed ? 'true' : 'false'} aria-label="Main">
+    <nav className={styles.rail} data-collapsed={collapsed ? 'true' : 'false'} aria-label={t('nav.rail.label')}>
       <div className={styles.brand}>
         <WordmarkGlyph size={24} variant="filled" title={t('common.app.name')} />
         <span className={styles.brandText}>{t('common.app.name')}</span>
@@ -52,13 +54,13 @@ export function Rail() {
           <AppLink key={it.href} href={it.href} className={styles.item} current={it.href === '/' ? 'exact' : 'section'} title={collapsed ? it.label : undefined}>
             <span className={styles.icon}>{it.icon}</span>
             <span className={styles.label}>{it.label}</span>
-            {it.count ? <Badge className={styles.count} count={it.count} label={`${it.label.toLowerCase()} waiting`} /> : null}
+            {it.count && it.waiting ? <Badge className={styles.count} count={it.count} label={it.waiting} /> : null}
           </AppLink>
         ))}
       </div>
       <div className={styles.foot}>
         {user && AgencyGlyph ? (
-          <div className={styles.persona} title={collapsed ? `${user.givenName} ${user.familyName}, ${ROLE_DEFINITIONS[user.roleId].label}` : undefined}>
+          <div className={styles.persona} title={collapsed ? t('nav.rail.personaTitle', { name: userName(user), role: ROLE_DEFINITIONS[user.roleId].label }) : undefined}>
             <span className={styles.icon} style={{ color: `var(--color-agency-${user.agency})` }}>
               <AgencyGlyph size={24} variant="filled" title={collapsed ? user.agency : undefined} />
             </span>
@@ -70,7 +72,7 @@ export function Rail() {
             </span>
           </div>
         ) : null}
-        <IconButton className={styles.collapse} aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'} aria-expanded={!collapsed} onClick={toggle}>
+        <IconButton className={styles.collapse} aria-label={collapsed ? t('nav.rail.expand') : t('nav.rail.collapse')} aria-expanded={!collapsed} onClick={toggle}>
           {collapsed ? <PanelLeftOpen size={18} aria-hidden="true" /> : <PanelLeftClose size={18} aria-hidden="true" />}
         </IconButton>
       </div>

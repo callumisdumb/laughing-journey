@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCY_SHORT, DETAIL_LEVEL_LABELS, EXCLUSION_PARTY_LABELS, ROLE_DEFINITIONS, contextFor, formatDateTime, partyRegister, resolveNeedToKnow, stageLabel, type CaseParty, type Process } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { AgencyMark, IconButton, Pill, RiskBand } from '@mas/ui';
 import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -23,8 +24,9 @@ function Section({ title, icon, children }: { title: string; icon: ReactNode; ch
 }
 
 function WhoIsInvolved({ processes }: { processes: Process[] }) {
+  const t = useT();
   const data = useData();
-  if (processes.length === 0) return <p className={styles.empty}>No open process. Nobody is on a case for this person yet.</p>;
+  if (processes.length === 0) return <p className={styles.empty}>{t('nav.drawer.involved.empty')}</p>;
   const seen = new Set<string>();
   const groups = new Map<string, Array<{ name: string; role: string; caseRole: string; contact: string; agency: Process['members'][number]['agency'] }>>();
   for (const p of processes) {
@@ -60,6 +62,7 @@ function WhoIsInvolved({ processes }: { processes: Process[] }) {
 }
 
 function NeedToKnow({ process }: { process: Process }) {
+  const t = useT();
   const data = useData();
   const config = useConfig();
   const res = resolveNeedToKnow(contextFor(process), config.needToKnow, config.exclusions);
@@ -75,9 +78,7 @@ function NeedToKnow({ process }: { process: Process }) {
   };
   return (
     <div>
-      <p className={styles.empty}>
-        Stage: {stageLabel(process.type, process.stage)}. Default is deny; these audiences are told.
-      </p>
+      <p className={styles.empty}>{t('nav.drawer.needToKnow.stage', { stage: stageLabel(process.type, process.stage) })}</p>
       {res.recipients.map((r) => (
         <div key={r.rowId} className={styles.row}>
           <span className={styles.rowLabel}>
@@ -87,19 +88,25 @@ function NeedToKnow({ process }: { process: Process }) {
             {DETAIL_LEVEL_LABELS[r.detailLevel]}
           </Pill>
           <span className={styles.rowReason}>
-            {r.reason} {r.fields ? `Fields: ${r.fields.join('; ')}.` : ''}
+            {r.reason} {r.fields ? t('nav.drawer.needToKnow.fields', { fields: r.fields.join('; ') }) : ''}
           </span>
         </div>
       ))}
       {res.exclusions.map((e) => {
         const holders = register.filter((p) => p.party === e.party);
+        const liftable = e.liftableBy ? t('nav.drawer.needToKnow.liftableBy', { by: e.liftableBy }) : undefined;
         if (holders.length === 0) {
           return (
             <div key={e.id} className={styles.exclusion}>
               <Ban size={14} aria-hidden="true" />
               <span>
-                <strong>Must not receive: {e.label}.</strong> {e.reason}. Nobody is recorded in this role yet.
-                {e.liftableBy ? ` Can be lifted only by: ${e.liftableBy}.` : ''}
+                <strong>{t('nav.drawer.needToKnow.mustNotReceive', { who: e.label })}</strong> {t('nav.drawer.needToKnow.nobodyRecorded', { reason: e.reason })}
+                {liftable ? (
+                  <>
+                    {' '}
+                    {liftable}
+                  </>
+                ) : null}
               </span>
             </div>
           );
@@ -111,10 +118,13 @@ function NeedToKnow({ process }: { process: Process }) {
             <div key={`${e.id}:${p.personId ?? p.userId ?? p.name ?? p.label}`} className={styles.exclusion}>
               <Ban size={14} aria-hidden="true" />
               <span>
-                <strong>
-                  Must not receive: {who ?? p.label} ({EXCLUSION_PARTY_LABELS[p.party]}).
-                </strong>{' '}
-                {notes}. Source: {p.source}.{e.liftableBy ? ` Can be lifted only by: ${e.liftableBy}.` : ''}
+                <strong>{t('nav.drawer.needToKnow.mustNotReceiveParty', { who: who ?? p.label, party: EXCLUSION_PARTY_LABELS[p.party] })}</strong> {t('nav.drawer.needToKnow.source', { notes, source: p.source })}
+                {liftable ? (
+                  <>
+                    {' '}
+                    {liftable}
+                  </>
+                ) : null}
               </span>
             </div>
           );
@@ -125,27 +135,28 @@ function NeedToKnow({ process }: { process: Process }) {
 }
 
 function LawfulBasis({ process }: { process: Process }) {
+  const t = useT();
   const data = useData();
   const ids = new Set(data.sharingRecords.filter((s) => s.processId === process.id).map((s) => s.lawfulBasisId));
   const bases = data.lawfulBases.filter((b) => ids.has(b.id));
-  if (bases.length === 0) return <p className={styles.empty}>No share has been recorded for this process yet.</p>;
+  if (bases.length === 0) return <p className={styles.empty}>{t('nav.drawer.lawfulBasis.empty')}</p>;
   return (
     <div>
       {bases.map((b) => (
         <dl key={b.id} className={styles.kv}>
-          <dt>Purpose</dt>
+          <dt>{t('nav.drawer.fields.purpose')}</dt>
           <dd>{b.purpose}</dd>
-          <dt>Article 6</dt>
+          <dt>{t('nav.drawer.fields.article6')}</dt>
           <dd>{b.article6}</dd>
-          <dt>Article 9</dt>
+          <dt>{t('nav.drawer.fields.article9')}</dt>
           <dd>{b.article9Condition}</dd>
-          <dt>Gateway</dt>
+          <dt>{t('nav.drawer.fields.gateway')}</dt>
           <dd>{b.statutoryGateway.join('; ')}</dd>
-          <dt>Necessity</dt>
+          <dt>{t('nav.drawer.fields.necessity')}</dt>
           <dd>{b.necessityAndProportionality}</dd>
-          <dt>Consent</dt>
+          <dt>{t('nav.drawer.fields.consent')}</dt>
           <dd>{b.consentStatus.replace(/-/g, ' ')}</dd>
-          <dt>Authorised by</dt>
+          <dt>{t('nav.drawer.fields.authorisedBy')}</dt>
           <dd>{b.authorisedByName}</dd>
         </dl>
       ))}
@@ -154,25 +165,27 @@ function LawfulBasis({ process }: { process: Process }) {
 }
 
 function AuditTrail({ processIds, personId }: { processIds: string[]; personId?: string }) {
+  const t = useT();
   const data = useData();
   const entries = data.audit.filter((a) => (a.processId && processIds.includes(a.processId)) || (personId && a.targetType === 'person' && a.targetId === personId)).slice(0, 8);
-  if (entries.length === 0) return <p className={styles.empty}>No reads recorded yet.</p>;
+  if (entries.length === 0) return <p className={styles.empty}>{t('nav.drawer.audit.empty')}</p>;
   return (
     <div>
-      {entries.map((a) => (
-        <div key={a.id} className={styles.auditItem}>
-          <span className={styles.auditTime}>{formatDateTime(a.at)}</span>
-          <span className={styles.auditText}>
-            {a.userName} ({AGENCY_SHORT[a.agency]}): {a.act.replace(/-/g, ' ')}
-            {a.restricted ? ' (restricted)' : ''}
-          </span>
-        </div>
-      ))}
+      {entries.map((a) => {
+        const args = { user: a.userName, agency: AGENCY_SHORT[a.agency], act: a.act.replace(/-/g, ' ') };
+        return (
+          <div key={a.id} className={styles.auditItem}>
+            <span className={styles.auditTime}>{formatDateTime(a.at)}</span>
+            <span className={styles.auditText}>{a.restricted ? t('nav.drawer.audit.entryRestricted', args) : t('nav.drawer.audit.entry', args)}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 function YourAccess({ process }: { process: Process }) {
+  const t = useT();
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
@@ -180,68 +193,69 @@ function YourAccess({ process }: { process: Process }) {
   const now = useNow();
   if (!user) return null;
   const access = accessForUser(data, config, user, process, grants, now);
-  const level = access.level === 'none' ? 'No access' : DETAIL_LEVEL_LABELS[access.level];
+  const level = access.level === 'none' ? t('nav.drawer.access.none') : DETAIL_LEVEL_LABELS[access.level];
   return (
     <div className={styles.access}>
       <span className={styles.accessLevel}>
         <Eye size={14} aria-hidden="true" /> {level}
-        {access.restricted ? <Pill size="sm" tone="restricted">Restricted</Pill> : null}
+        {access.restricted ? <Pill size="sm" tone="restricted">{t('common.labels.restricted')}</Pill> : null}
       </span>
       <span>{access.reason}</span>
-      {access.fields.length > 0 ? <span>Fields: {access.fields.join('; ')}.</span> : null}
-      {access.lawfulBasisHints.length > 0 ? <span className={styles.empty}>Basis: {access.lawfulBasisHints.join(' ')}</span> : null}
+      {access.fields.length > 0 ? <span>{t('nav.drawer.needToKnow.fields', { fields: access.fields.join('; ') })}</span> : null}
+      {access.lawfulBasisHints.length > 0 ? <span className={styles.empty}>{t('nav.drawer.access.basis', { hints: access.lawfulBasisHints.join(' ') })}</span> : null}
     </div>
   );
 }
 
 export function ContextDrawer() {
+  const t = useT();
   const collapsed = useAppearance((s) => s.drawerCollapsed);
   const toggle = useAppearance((s) => s.toggleDrawer);
   const selection = useSelection((s) => s.selection);
   const data = useData();
   const user = useCurrentUser();
 
-  let title = 'Context';
+  let title: string;
   let body: ReactNode = null;
 
   if (selection?.kind === 'person') {
     const person = personById(data, selection.id);
     const processes = person ? processesInvolving(data, person.id).filter((p) => p.status === 'open') : [];
-    title = person ? fullName(person) : 'Person';
+    title = person ? fullName(person) : t('nav.drawer.title.person');
     body = (
       <>
-        <Section title="Who is involved" icon={<Users size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.whoIsInvolved')} icon={<Users size={14} aria-hidden="true" />}>
           <WhoIsInvolved processes={processes} />
         </Section>
         {processes.map((p) => (
-          <Section key={p.id} title={`Need to know: ${p.reference}`} icon={<FileCheck2 size={14} aria-hidden="true" />}>
+          <Section key={p.id} title={t('nav.drawer.section.needToKnowFor', { reference: p.reference })} icon={<FileCheck2 size={14} aria-hidden="true" />}>
             <YourAccess process={p} />
             <NeedToKnow process={p} />
           </Section>
         ))}
-        <Section title="Audit" icon={<Scale size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.audit')} icon={<Scale size={14} aria-hidden="true" />}>
           <AuditTrail processIds={processes.map((p) => p.id)} personId={person?.id} />
         </Section>
       </>
     );
   } else if (selection?.kind === 'process') {
     const process = processById(data, selection.id);
-    title = process ? process.reference : 'Process';
+    title = process ? process.reference : t('nav.drawer.title.process');
     body = process ? (
       <>
-        <Section title="Your access" icon={<Eye size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.yourAccess')} icon={<Eye size={14} aria-hidden="true" />}>
           <YourAccess process={process} />
         </Section>
-        <Section title="Who is involved" icon={<Users size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.whoIsInvolved')} icon={<Users size={14} aria-hidden="true" />}>
           <WhoIsInvolved processes={[process]} />
         </Section>
-        <Section title="Need to know at this stage" icon={<FileCheck2 size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.needToKnowStage')} icon={<FileCheck2 size={14} aria-hidden="true" />}>
           <NeedToKnow process={process} />
         </Section>
-        <Section title="Lawful basis" icon={<Scale size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.lawfulBasis')} icon={<Scale size={14} aria-hidden="true" />}>
           <LawfulBasis process={process} />
         </Section>
-        <Section title="Audit" icon={<Scale size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.audit')} icon={<Scale size={14} aria-hidden="true" />}>
           <AuditTrail processIds={[process.id]} />
         </Section>
       </>
@@ -249,59 +263,56 @@ export function ContextDrawer() {
   } else if (selection?.kind === 'event') {
     const ev = data.events.find((e) => e.id === selection.id);
     const basis = ev?.lawfulBasisId ? data.lawfulBases.find((b) => b.id === ev.lawfulBasisId) : undefined;
-    title = 'Event';
+    title = t('nav.drawer.title.event');
     body = ev ? (
       <>
-        <Section title="Event" icon={<FileCheck2 size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.event')} icon={<FileCheck2 size={14} aria-hidden="true" />}>
           <dl className={styles.kv}>
-            <dt>Title</dt>
+            <dt>{t('nav.drawer.fields.title')}</dt>
             <dd>{ev.title}</dd>
-            <dt>When</dt>
-            <dd>
-              {formatDateTime(ev.occurredAt)}
-              {ev.approximate ? ' (approximate)' : ''}
-            </dd>
-            <dt>Agency</dt>
+            <dt>{t('nav.drawer.fields.when')}</dt>
+            <dd>{ev.approximate ? t('nav.drawer.event.whenApproximate', { when: formatDateTime(ev.occurredAt) }) : formatDateTime(ev.occurredAt)}</dd>
+            <dt>{t('nav.drawer.fields.agency')}</dt>
             <dd>
               <AgencyMark agency={ev.agency} />
             </dd>
-            <dt>Source</dt>
-            <dd>{ev.sourceSystem === 'manual' ? `Recorded by ${ev.recordedByName}` : `${ev.sourceSystem} connector`}</dd>
-            <dt>Significance</dt>
+            <dt>{t('nav.drawer.fields.source')}</dt>
+            <dd>{ev.sourceSystem === 'manual' ? t('nav.drawer.event.recordedBy', { name: ev.recordedByName }) : t('nav.drawer.event.connector', { system: ev.sourceSystem })}</dd>
+            <dt>{t('nav.drawer.fields.significance')}</dt>
             <dd>
               <RiskBand band={ev.significance === 'high' ? 'high' : ev.significance === 'moderate' ? 'medium' : 'low'} label={ev.significance} />
             </dd>
-            <dt>Visibility</dt>
+            <dt>{t('nav.drawer.fields.visibility')}</dt>
             <dd>{ev.visibility.replace(/-/g, ' ')}</dd>
             {ev.response ? (
               <>
-                <dt>Response</dt>
+                <dt>{t('nav.drawer.fields.response')}</dt>
                 <dd>{ev.response}</dd>
               </>
             ) : null}
             {ev.outcome ? (
               <>
-                <dt>Outcome</dt>
+                <dt>{t('nav.drawer.fields.outcome')}</dt>
                 <dd>{ev.outcome}</dd>
               </>
             ) : null}
           </dl>
         </Section>
-        <Section title="Lawful basis for inclusion" icon={<Scale size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.lawfulBasisInclusion')} icon={<Scale size={14} aria-hidden="true" />}>
           {basis ? (
             <dl className={styles.kv}>
-              <dt>Purpose</dt>
+              <dt>{t('nav.drawer.fields.purpose')}</dt>
               <dd>{basis.purpose}</dd>
-              <dt>Gateway</dt>
+              <dt>{t('nav.drawer.fields.gateway')}</dt>
               <dd>{basis.statutoryGateway.join('; ')}</dd>
-              <dt>Necessity</dt>
+              <dt>{t('nav.drawer.fields.necessity')}</dt>
               <dd>{basis.necessityAndProportionality}</dd>
             </dl>
           ) : (
-            <p className={styles.empty}>Single-agency record. No sharing basis needed until it is promoted to the integrated chronology.</p>
+            <p className={styles.empty}>{t('nav.drawer.lawfulBasis.singleAgency')}</p>
           )}
         </Section>
-        <Section title="Versions" icon={<Scale size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.versions')} icon={<Scale size={14} aria-hidden="true" />}>
           {ev.versions.map((v, i) => (
             <div key={i} className={styles.auditItem}>
               <span className={styles.auditTime}>{formatDateTime(v.at)}</span>
@@ -315,10 +326,10 @@ export function ContextDrawer() {
     ) : null;
   } else if (selection?.kind === 'meeting') {
     const m = data.meetings.find((x) => x.id === selection.id);
-    title = m ? m.title : 'Meeting';
+    title = m ? m.title : t('nav.drawer.title.meeting');
     body = m ? (
       <>
-        <Section title="Who is invited and why" icon={<Users size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.invitees')} icon={<Users size={14} aria-hidden="true" />}>
           {m.invitees.map((i, idx) => (
             <div key={`${i.name}-${idx}`} className={styles.member} style={{ paddingLeft: 0 }}>
               <span className={styles.memberName}>
@@ -328,8 +339,8 @@ export function ContextDrawer() {
             </div>
           ))}
         </Section>
-        <Section title="Distribution" icon={<FileCheck2 size={14} aria-hidden="true" />}>
-          {m.distribution.length === 0 ? <p className={styles.empty}>No distribution list yet. Generate it from need-to-know after the meeting.</p> : null}
+        <Section title={t('nav.drawer.section.distribution')} icon={<FileCheck2 size={14} aria-hidden="true" />}>
+          {m.distribution.length === 0 ? <p className={styles.empty}>{t('nav.drawer.meeting.noDistribution')}</p> : null}
           {m.distribution.map((d) => (
             <div key={d.id} className={styles.row}>
               <span className={styles.rowLabel}>{d.recipientName}</span>
@@ -345,25 +356,25 @@ export function ContextDrawer() {
   } else if (selection?.kind === 'action') {
     const a = data.actions.find((x) => x.id === selection.id);
     const p = a ? data.processes.find((x) => x.id === a.processId) : undefined;
-    title = 'Action';
+    title = t('nav.drawer.title.action');
     body = a ? (
-      <Section title="Action" icon={<FileCheck2 size={14} aria-hidden="true" />}>
+      <Section title={t('nav.drawer.section.action')} icon={<FileCheck2 size={14} aria-hidden="true" />}>
         <dl className={styles.kv}>
-          <dt>Action</dt>
+          <dt>{t('nav.drawer.fields.action')}</dt>
           <dd>{a.title}</dd>
-          <dt>Owner</dt>
+          <dt>{t('nav.drawer.fields.owner')}</dt>
           <dd>
             {a.ownerName} (<AgencyMark agency={a.ownerAgency} />)
           </dd>
-          <dt>Due</dt>
+          <dt>{t('nav.drawer.fields.due')}</dt>
           <dd>{formatDateTime(a.due + 'T09:00:00+01:00').slice(0, 11)}</dd>
-          <dt>Status</dt>
+          <dt>{t('nav.drawer.fields.status')}</dt>
           <dd>{a.status}</dd>
-          <dt>Process</dt>
+          <dt>{t('nav.drawer.fields.process')}</dt>
           <dd>{p ? `${p.reference}: ${p.title}` : ''}</dd>
           {a.evidence ? (
             <>
-              <dt>Evidence</dt>
+              <dt>{t('nav.drawer.fields.evidence')}</dt>
               <dd>{a.evidence}</dd>
             </>
           ) : null}
@@ -372,26 +383,26 @@ export function ContextDrawer() {
     ) : null;
   } else if (selection?.kind === 'analysis') {
     const an = data.analyses.find((a) => a.id === selection.id);
-    title = 'Analysis note';
+    title = t('nav.drawer.title.analysis');
     body = an ? (
       <>
-        <Section title="Professional judgement" icon={<FileCheck2 size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.judgement')} icon={<FileCheck2 size={14} aria-hidden="true" />}>
           <dl className={styles.kv}>
-            <dt>Title</dt>
+            <dt>{t('nav.drawer.fields.title')}</dt>
             <dd>{an.title}</dd>
-            <dt>Kind</dt>
+            <dt>{t('nav.drawer.fields.kind')}</dt>
             <dd>{an.kind}</dd>
-            <dt>Author</dt>
+            <dt>{t('nav.drawer.fields.author')}</dt>
             <dd>
               {an.authorName} (<AgencyMark agency={an.agency} />)
             </dd>
-            <dt>Recorded</dt>
+            <dt>{t('nav.drawer.fields.recorded')}</dt>
             <dd>{formatDateTime(an.recordedAt)}</dd>
-            <dt>Text</dt>
+            <dt>{t('nav.drawer.fields.text')}</dt>
             <dd>{an.text}</dd>
           </dl>
         </Section>
-        <Section title={`Rests on ${an.eventIds.length} facts`} icon={<Scale size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.restsOn', { count: an.eventIds.length })} icon={<Scale size={14} aria-hidden="true" />}>
           {an.eventIds.map((id) => {
             const ev = data.events.find((e) => e.id === id);
             return ev ? (
@@ -407,92 +418,92 @@ export function ContextDrawer() {
   } else if (selection?.kind === 'share') {
     const s = data.sharingRecords.find((x) => x.id === selection.id);
     const basis = s ? data.lawfulBases.find((b) => b.id === s.lawfulBasisId) : undefined;
-    title = 'Share';
+    title = t('nav.drawer.title.share');
     body = s ? (
       <>
-        <Section title="Recipient" icon={<Users size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.recipient')} icon={<Users size={14} aria-hidden="true" />}>
           <dl className={styles.kv}>
-            <dt>To</dt>
+            <dt>{t('nav.drawer.fields.to')}</dt>
             <dd>
               {s.recipient.name}, {s.recipient.role} (<AgencyMark agency={s.recipient.agency} />)
             </dd>
-            <dt>Level</dt>
+            <dt>{t('nav.drawer.fields.level')}</dt>
             <dd>{DETAIL_LEVEL_LABELS[s.detailLevel]}{s.fields ? `: ${s.fields.join('; ')}` : ''}</dd>
-            <dt>Why</dt>
+            <dt>{t('nav.drawer.fields.why')}</dt>
             <dd>{s.reason}</dd>
-            <dt>Channel</dt>
+            <dt>{t('nav.drawer.fields.channel')}</dt>
             <dd>{s.channel.replace(/-/g, ' ')}</dd>
-            <dt>Status</dt>
-            <dd>{s.status}{s.readAt ? `, read ${formatDateTime(s.readAt)}` : ''}</dd>
+            <dt>{t('nav.drawer.fields.status')}</dt>
+            <dd>{s.readAt ? t('nav.drawer.share.statusRead', { status: s.status, when: formatDateTime(s.readAt) }) : s.status}</dd>
           </dl>
         </Section>
-        <Section title="Lawful basis" icon={<Scale size={14} aria-hidden="true" />}>
+        <Section title={t('nav.drawer.section.lawfulBasis')} icon={<Scale size={14} aria-hidden="true" />}>
           {basis ? (
             <dl className={styles.kv}>
-              <dt>Purpose</dt>
+              <dt>{t('nav.drawer.fields.purpose')}</dt>
               <dd>{basis.purpose}</dd>
-              <dt>Article 6</dt>
+              <dt>{t('nav.drawer.fields.article6')}</dt>
               <dd>{basis.article6}</dd>
-              <dt>Article 9</dt>
+              <dt>{t('nav.drawer.fields.article9')}</dt>
               <dd>{basis.article9Condition}</dd>
-              <dt>Offence data</dt>
+              <dt>{t('nav.drawer.fields.offenceData')}</dt>
               <dd>{basis.article10Criminal}</dd>
-              <dt>Gateway</dt>
+              <dt>{t('nav.drawer.fields.gateway')}</dt>
               <dd>{basis.statutoryGateway.join('; ')}</dd>
-              <dt>Necessity</dt>
+              <dt>{t('nav.drawer.fields.necessity')}</dt>
               <dd>{basis.necessityAndProportionality}</dd>
-              <dt>Consent</dt>
+              <dt>{t('nav.drawer.fields.consent')}</dt>
               <dd>{basis.consentStatus.replace(/-/g, ' ')}{basis.consentNote ? `. ${basis.consentNote}` : ''}</dd>
-              <dt>Authorised by</dt>
+              <dt>{t('nav.drawer.fields.authorisedBy')}</dt>
               <dd>{basis.authorisedByName}</dd>
               {basis.informationSharingAgreementRef ? (
                 <>
-                  <dt>ISA</dt>
+                  <dt>{t('nav.drawer.fields.isa')}</dt>
                   <dd>{basis.informationSharingAgreementRef}</dd>
                 </>
               ) : null}
             </dl>
           ) : (
-            <p className={styles.empty}>No lawful basis record linked.</p>
+            <p className={styles.empty}>{t('nav.drawer.lawfulBasis.notLinked')}</p>
           )}
         </Section>
       </>
     ) : null;
   } else {
-    title = 'Your access';
+    title = t('nav.drawer.title.yourAccess');
     body = user ? (
-      <Section title="Signed in as" icon={<Eye size={14} aria-hidden="true" />}>
+      <Section title={t('nav.drawer.section.signedIn')} icon={<Eye size={14} aria-hidden="true" />}>
         <dl className={styles.kv}>
-          <dt>Name</dt>
+          <dt>{t('nav.drawer.fields.name')}</dt>
           <dd>
             {user.givenName} {user.familyName}
           </dd>
-          <dt>Role</dt>
+          <dt>{t('nav.drawer.fields.role')}</dt>
           <dd>{ROLE_DEFINITIONS[user.roleId].label}</dd>
-          <dt>Agency</dt>
+          <dt>{t('nav.drawer.fields.agency')}</dt>
           <dd>
             <AgencyMark agency={user.agency} />
           </dd>
-          <dt>Cases</dt>
-          <dd>{user.caseMemberships.length} open</dd>
+          <dt>{t('nav.drawer.fields.cases')}</dt>
+          <dd>{t('nav.drawer.signedIn.casesOpen', { count: user.caseMemberships.length })}</dd>
         </dl>
         <p className={styles.empty} style={{ marginTop: 10 }}>
-          Select a person, process or event and this panel shows who is involved, who needs to know, the lawful basis and the audit trail.
+          {t('nav.drawer.signedIn.help')}
         </p>
       </Section>
     ) : null;
   }
 
   return (
-    <aside className={styles.drawer} data-collapsed={collapsed ? 'true' : 'false'} aria-label="Context">
+    <aside className={styles.drawer} data-collapsed={collapsed ? 'true' : 'false'} aria-label={t('nav.drawer.label')}>
       <div className={styles.head}>
         {!collapsed ? <span className={styles.title}>{title}</span> : null}
-        <IconButton aria-label={collapsed ? 'Open context panel' : 'Collapse context panel'} aria-expanded={!collapsed} onClick={toggle}>
+        <IconButton aria-label={collapsed ? t('nav.drawer.open') : t('nav.drawer.collapse')} aria-expanded={!collapsed} onClick={toggle}>
           {collapsed ? <PanelRightOpen size={18} aria-hidden="true" /> : <PanelRightClose size={18} aria-hidden="true" />}
         </IconButton>
       </div>
       {!collapsed ? (
-        <div className={styles.body} role="region" tabIndex={0} aria-label={`${title} details`}>
+        <div className={styles.body} role="region" tabIndex={0} aria-label={t('nav.drawer.details', { title })}>
           {body}
         </div>
       ) : null}

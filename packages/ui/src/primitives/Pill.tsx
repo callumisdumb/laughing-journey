@@ -1,3 +1,4 @@
+import { useT } from '@mas/messages';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { cn } from '../cn';
 import styles from './Pill.module.css';
@@ -22,12 +23,14 @@ export function Pill({ tone = 'neutral', size = 'md', icon, className, children,
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   count: number;
   tone?: 'accent' | 'critical' | 'neutral';
+  /** What is counted, read after the number: "unread", "actions waiting". */
   label: string;
 }
 
 export function Badge({ count, tone = 'accent', label, className, ...rest }: BadgeProps) {
+  const t = useT();
   return (
-    <span className={cn(styles.badge, className)} data-tone={tone} aria-label={`${count} ${label}`} {...rest}>
+    <span className={cn(styles.badge, className)} data-tone={tone} aria-label={t('common.badge.count', { count, label })} {...rest}>
       {count > 99 ? '99+' : count}
     </span>
   );

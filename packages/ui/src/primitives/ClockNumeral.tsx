@@ -1,4 +1,5 @@
 import type { RiskBand } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { AlertOctagon, AlertTriangle, Check } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { cn } from '../cn';
@@ -17,25 +18,26 @@ export interface ClockNumeralProps {
 
 /** A statutory countdown set as typography: numeral, unit, label, trigger. */
 export function ClockNumeral({ daysRemaining, band, status, label, sub, size = 'md', className }: ClockNumeralProps) {
+  const t = useT();
   const overdue = status === 'overdue';
   const n = Math.abs(daysRemaining);
-  const unit = status === 'complete' ? 'done' : n === 1 ? 'day' : 'days';
+  const unit = status === 'complete' ? t('states.clock.unit.done') : overdue ? t('states.clock.unit.overdue', { count: n }) : t('states.clock.unit.days', { count: n });
   const flag =
     status === 'complete' ? (
       <span className={styles.flag}>
-        <Check size={14} aria-hidden="true" /> complete
+        <Check size={14} aria-hidden="true" /> {t('states.clock.flag.complete')}
       </span>
     ) : overdue ? (
       <span className={styles.flag}>
-        <AlertOctagon size={14} aria-hidden="true" /> overdue
+        <AlertOctagon size={14} aria-hidden="true" /> {t('states.clock.flag.overdue')}
       </span>
     ) : band === 'high' || band === 'medium' ? (
       <span className={styles.flag}>
-        <AlertTriangle size={14} aria-hidden="true" /> due soon
+        <AlertTriangle size={14} aria-hidden="true" /> {t('states.clock.flag.dueSoon')}
       </span>
     ) : null;
   const labelText = typeof label === 'string' ? label : undefined;
-  const srText = labelText === undefined ? undefined : status === 'complete' ? `${labelText}: complete` : overdue ? `${labelText}: ${n} ${unit} overdue` : `${labelText}: ${n} ${unit} remaining`;
+  const srText = labelText === undefined ? undefined : status === 'complete' ? t('states.clock.sr.complete', { label: labelText }) : overdue ? t('states.clock.sr.overdue', { label: labelText, count: n }) : t('states.clock.sr.remaining', { label: labelText, count: n });
   return (
     <div className={cn(styles.clock, className)} data-band={band} data-status={status} data-size={size} aria-label={srText}>
       <span className={styles.numeral} aria-hidden="true">
@@ -43,7 +45,6 @@ export function ClockNumeral({ daysRemaining, band, status, label, sub, size = '
       </span>
       <span className={styles.unit} aria-hidden="true">
         {unit}
-        {overdue ? ' overdue' : ''}
         {flag}
       </span>
       <span className={styles.label}>{label}</span>

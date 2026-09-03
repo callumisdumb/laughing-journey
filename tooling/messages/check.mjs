@@ -29,7 +29,7 @@ for (const key of keys) {
 }
 
 // ICU syntax.
-const ACRONYMS = /^(ASP|CP|MARAC|MAPPA|MAPPP|AWI|IRD|CPPM|MHO|IDAA|DAQ|DASH|NHS|GP|SPS|SCRA|CHI|ID|CSV|JSON|PDF|RSO|RSOs|SHPO|SHPOs|SOPO|SOPOs|RSHO|RSHOs|SRO|SROs|FTO|FTOs|LSI|RMP|ERA|ViSOR|VISOR|PPU|SONR|HSCP|UK|DS|PC|DC|DI|A|I|OK|NMDS|SOG|MOG|AWIA|POA|PPO|NASSO|IMPACT|DVPO|DVPN|HMP|SCR|ICR|WCAG|URL|API|UI|CLDR|ICU|IT|TODO|EDD|DOB|GIRFEC|SHANARRI|SPOC|SPOCs|NSPCC|HR|VAT|FTE|GIRFEC)$/;
+const ACRONYMS = /^(ASP|CP|MARAC|MAPPA|MAPPP|AWI|IRD|CPPM|MHO|IDAA|DAQ|DASH|NHS|GP|SPS|SCRA|CHI|ID|CSV|JSON|PDF|RSO|RSOs|SHPO|SHPOs|SOPO|SOPOs|RSHO|RSHOs|SRO|SROs|FTO|FTOs|LSI|RMP|ERA|ViSOR|VISOR|PPU|SONR|HSCP|UK|DS|PC|DC|DI|A|I|OK|NMDS|SOG|MOG|AWIA|POA|PPO|NASSO|IMPACT|DVPO|DVPN|HMP|SCR|ICR|WCAG|URL|API|UI|CLDR|ICU|IT|TODO|EDD|DOB|GIRFEC|SHANARRI|SPOC|SPOCs|NSPCC|HR|VAT|FTE|SEEMIS|RM|LSCMI|VISOR|OPG|MWC|SSSC|NRS|COPFS|SCTS|CJSW|RSHO|OLR|PPC|DAQ|DASH|SARA|ARMS|OASys|SDA|SPARRA|ECLIPSE|EMIS|PNC|CHS|MAPPP|NHSS|HMPPS|PF|SW|HV|CPN)$/;
 const AMERICAN = /\b(color|colors|colour\b(?!)|organiz\w*|center\b|centers\b|favor\w*|behavior\w*|analyz\w*|catalog\b|catalogs\b|defense|gray\b|program\b(?! (code|that|which))|license\b(?= (number|plate|to)|$)|licenses\b|practise\w* not|apologize|realize|recognize|neighbor\w*|traveled|canceled|enrollment|jewelry|mom\b|math\b|fall\b(?= term))\b/i;
 for (const [key, message] of Object.entries(catalogue)) {
   if (typeof message !== 'string') continue;

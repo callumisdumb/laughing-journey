@@ -75,13 +75,297 @@
   },
   "common": {
     "actions": {
-      "close": "Close"
+      "cancel": "Cancel",
+      "close": "Close",
+      "edit": "Edit",
+      "resetDemo": "Reset demo data",
+      "view": "View"
+    },
+    "answers": {
+      "no": "No",
+      "notKnown": "Not known",
+      "yes": "Yes"
     },
     "app": {
       "loading": "Loading the platform",
       "name": "Platform",
       "tagline": "Multi-agency public protection platform (mockup, synthetic data only)",
       "titleWithScreen": "{screen}: {app}"
+    },
+    "badge": {
+      "count": "{count} {label}"
+    },
+    "clockUnit": {
+      "calendarDays": "{count, plural, one {# calendar day} other {# calendar days}}",
+      "months": "{count, plural, one {# month} other {# months}}",
+      "weeks": "{count, plural, one {# week} other {# weeks}}",
+      "workingDays": "{count, plural, one {# working day} other {# working days}}"
+    },
+    "columns": {
+      "actions": "Actions"
+    },
+    "dateField": {
+      "formatError": "Enter the date as {format}, for example {example}",
+      "hint": "{format}, for example {example}"
+    },
+    "demoReset": {
+      "audit": "Demo data reset to the seed",
+      "toastTitle": "Demo data reset"
+    },
+    "keyValue": {
+      "none": "None"
+    },
+    "labels": {
+      "restricted": "Restricted"
+    },
+    "marks": {
+      "classification": "Classification: {level}"
+    },
+    "person": {
+      "ageBorn": "{age}, born {date}",
+      "ageNotRecorded": "Age not recorded",
+      "family": "Family",
+      "unborn": "Unborn"
+    },
+    "table": {
+      "region": "Table"
+    },
+    "toast": {
+      "dismiss": "Dismiss notification",
+      "region": "Notifications"
+    },
+    "values": {
+      "dateNotRecorded": "date not recorded",
+      "none": "none",
+      "notApplicable": "Not applicable",
+      "notRecorded": "not recorded"
+    },
+    "voice": {
+      "recordedBy": "Recorded by {name}, {method}."
+    }
+  },
+  "nav": {
+    "drawer": {
+      "access": {
+        "basis": "Basis: {hints}",
+        "none": "No access"
+      },
+      "audit": {
+        "empty": "No reads recorded yet.",
+        "entry": "{user} ({agency}): {act}",
+        "entryRestricted": "{user} ({agency}): {act} (restricted)"
+      },
+      "collapse": "Collapse context panel",
+      "details": "{title} details",
+      "event": {
+        "connector": "{system} connector",
+        "recordedBy": "Recorded by {name}",
+        "whenApproximate": "{when} (approximate)"
+      },
+      "fields": {
+        "action": "Action",
+        "agency": "Agency",
+        "article6": "Article 6",
+        "article9": "Article 9",
+        "author": "Author",
+        "authorisedBy": "Authorised by",
+        "cases": "Cases",
+        "channel": "Channel",
+        "consent": "Consent",
+        "due": "Due",
+        "evidence": "Evidence",
+        "gateway": "Gateway",
+        "isa": "ISA",
+        "kind": "Kind",
+        "level": "Level",
+        "name": "Name",
+        "necessity": "Necessity",
+        "offenceData": "Offence data",
+        "outcome": "Outcome",
+        "owner": "Owner",
+        "process": "Process",
+        "purpose": "Purpose",
+        "recorded": "Recorded",
+        "response": "Response",
+        "role": "Role",
+        "significance": "Significance",
+        "source": "Source",
+        "status": "Status",
+        "text": "Text",
+        "title": "Title",
+        "to": "To",
+        "visibility": "Visibility",
+        "when": "When",
+        "why": "Why"
+      },
+      "involved": {
+        "empty": "No open process. Nobody is on a case for this person yet."
+      },
+      "label": "Context",
+      "lawfulBasis": {
+        "empty": "No share has been recorded for this process yet.",
+        "notLinked": "No lawful basis record linked.",
+        "singleAgency": "Single-agency record. No sharing basis needed until it is promoted to the integrated chronology."
+      },
+      "meeting": {
+        "noDistribution": "No distribution list yet. Generate it from need-to-know after the meeting."
+      },
+      "needToKnow": {
+        "fields": "Fields: {fields}.",
+        "liftableBy": "Can be lifted only by: {by}.",
+        "mustNotReceive": "Must not receive: {who}.",
+        "mustNotReceiveParty": "Must not receive: {who} ({party}).",
+        "nobodyRecorded": "{reason}. Nobody is recorded in this role yet.",
+        "source": "{notes}. Source: {source}.",
+        "stage": "Stage: {stage}. Default is deny; these audiences are told."
+      },
+      "open": "Open context panel",
+      "section": {
+        "action": "Action",
+        "audit": "Audit",
+        "distribution": "Distribution",
+        "event": "Event",
+        "invitees": "Who is invited and why",
+        "judgement": "Professional judgement",
+        "lawfulBasis": "Lawful basis",
+        "lawfulBasisInclusion": "Lawful basis for inclusion",
+        "needToKnowFor": "Need to know: {reference}",
+        "needToKnowStage": "Need to know at this stage",
+        "recipient": "Recipient",
+        "restsOn": "Rests on {count} facts",
+        "signedIn": "Signed in as",
+        "versions": "Versions",
+        "whoIsInvolved": "Who is involved",
+        "yourAccess": "Your access"
+      },
+      "share": {
+        "statusRead": "{status}, read {when}"
+      },
+      "signedIn": {
+        "casesOpen": "{count} open",
+        "help": "Select a person, process or event and this panel shows who is involved, who needs to know, the lawful basis and the audit trail."
+      },
+      "title": {
+        "action": "Action",
+        "analysis": "Analysis note",
+        "event": "Event",
+        "meeting": "Meeting",
+        "person": "Person",
+        "process": "Process",
+        "share": "Share",
+        "yourAccess": "Your access"
+      }
+    },
+    "personaSwitcher": {
+      "note": "This is a demo affordance. In the product, identity comes from your organisation's single sign-on. Switching is recorded in the audit log.",
+      "title": "Switch persona (demo)"
+    },
+    "rail": {
+      "collapse": "Collapse navigation",
+      "expand": "Expand navigation",
+      "items": {
+        "actions": "Actions",
+        "admin": "Admin",
+        "connectors": "Connectors",
+        "home": "Home",
+        "meetings": "Meetings",
+        "people": "People",
+        "reports": "Reports",
+        "sharing": "Sharing",
+        "worklist": "Worklist"
+      },
+      "label": "Main",
+      "personaTitle": "{name}, {role}",
+      "waiting": {
+        "actions": "actions waiting",
+        "worklist": "worklist waiting"
+      }
+    },
+    "search": {
+      "label": "Search people, cases and reference numbers",
+      "personMeta": "{age}. {address}. Matched on {matched}.",
+      "placeholder": "Search people, cases, reference numbers",
+      "processMeta": "{process} process. Matched on {matched}.",
+      "showAll": "Press Enter to see all results",
+      "suggestions": "Search suggestions"
+    },
+    "titles": {
+      "actions": "Actions",
+      "admin": "Admin",
+      "audit": "Audit",
+      "connectors": "Connectors",
+      "help": "Help",
+      "home": "Home",
+      "inbox": "Inbox",
+      "meetings": "Meetings",
+      "people": "People",
+      "processes": "Processes",
+      "reports": "Reports",
+      "search": "Search",
+      "settings": "Settings",
+      "sharing": "Sharing",
+      "worklist": "Worklist"
+    },
+    "topBar": {
+      "clocksDue": "{count, plural, =0 {No clocks due this week} one {# clock due this week} other {# clocks due this week}}",
+      "clocksLabel": "{count} statutory clocks due within 7 days",
+      "demo": "Demo",
+      "notifications": "Notifications, {count} unread",
+      "signIn": "Sign in",
+      "unread": "unread"
+    }
+  },
+  "states": {
+    "clock": {
+      "flag": {
+        "complete": "complete",
+        "dueSoon": "due soon",
+        "overdue": "overdue"
+      },
+      "sr": {
+        "complete": "{label}: complete",
+        "overdue": "{label}: {count, plural, one {# day} other {# days}} overdue",
+        "remaining": "{label}: {count, plural, one {# day} other {# days}} remaining"
+      },
+      "unit": {
+        "days": "{count, plural, one {day} other {days}}",
+        "done": "done",
+        "overdue": "{count, plural, one {day} other {days}} overdue"
+      }
+    },
+    "empty": {
+      "title": "Nothing here yet"
+    },
+    "error": {
+      "retry": "Try again",
+      "text": "The local record store returned an error. Try again, and if it happens twice, reset the demo data from Settings.",
+      "title": "This screen could not load"
+    },
+    "loading": {
+      "label": "Loading"
+    },
+    "offline": {
+      "text": "The record you are looking at is the last copy held on this device. Changes will be kept locally and sent when the connection returns.",
+      "title": "You are offline"
+    },
+    "placeholder": {
+      "lede": "This screen is built in phase {phase}.",
+      "notFound": "Not found",
+      "text": "The route, navigation and need-to-know plumbing are in place. The screen arrives in a later phase of the build.",
+      "title": "{title} is not built yet"
+    },
+    "restricted": {
+      "breakGlassAvailable": "You can open it with a recorded reason. Access lasts four hours and every read is audited.",
+      "breakGlassUnavailable": "Break-glass access is not available for your agency or role.",
+      "open": "Open with a reason",
+      "reason": "You are not on the distribution list for this record.",
+      "title": "Restricted record"
+    },
+    "stale": {
+      "refresh": "Sync now",
+      "text": "The last successful sync was {lastSync}. Events since then have not been pulled in.",
+      "title": "Connector data may be out of date",
+      "unknownSync": "some time ago"
     }
   }
 }

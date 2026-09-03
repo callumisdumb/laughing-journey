@@ -256,10 +256,42 @@
   },
   "common": {
     "actions": {
+      "cancel": {
+        "maxLength": 16,
+        "where": "Cancel button in dialogs across the product"
+      },
       "close": {
         "maxLength": 20,
         "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
         "where": "Close control on every dialog and sheet, read by screen readers"
+      },
+      "edit": {
+        "maxLength": 12,
+        "where": "Edit button on a table row"
+      },
+      "resetDemo": {
+        "maxLength": 24,
+        "screenshot": "phase-5/settings-light-comfortable.png",
+        "where": "Button that opens the reset confirmation, in Settings and on the Admin overview"
+      },
+      "view": {
+        "maxLength": 12,
+        "where": "View button on a table row when the person cannot edit"
+      }
+    },
+    "answers": {
+      "no": {
+        "maxLength": 8,
+        "where": "A no in a table cell, such as the Care Inspectorate notified column of the ASP report and the Restricted column of the audit log"
+      },
+      "notKnown": {
+        "maxLength": 16,
+        "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
+        "where": "Not known option on the DAQ and DASH question radio groups"
+      },
+      "yes": {
+        "maxLength": 8,
+        "where": "A yes in a table cell, such as the Care Inspectorate notified column of the ASP report"
       }
     },
     "app": {
@@ -277,6 +309,859 @@
       },
       "titleWithScreen": {
         "where": "The browser tab title while a screen is open, with the screen name and the app name as arguments"
+      }
+    },
+    "badge": {
+      "count": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Accessible name of a count badge in the rail and top bar: the number, then the label the caller supplies, for example 3 unread"
+      }
+    },
+    "clockUnit": {
+      "calendarDays": {
+        "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+        "where": "A clock timescale with its amount, calendar-day unit (Help clock rules, Admin timescales)"
+      },
+      "months": {
+        "where": "A clock timescale with its amount, month unit (Help clock rules, Admin timescales)"
+      },
+      "weeks": {
+        "where": "A clock timescale with its amount, week unit (Help clock rules, Admin timescales)"
+      },
+      "workingDays": {
+        "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+        "where": "A clock timescale with its amount, working-day unit (Help clock rules, Admin timescales)"
+      }
+    },
+    "columns": {
+      "actions": {
+        "maxLength": 20,
+        "where": "Visually hidden header of a table actions column"
+      }
+    },
+    "dateField": {
+      "formatError": {
+        "where": "Error under a date field when the typed text is not a date; the format and example come from the domain date constants"
+      },
+      "hint": {
+        "maxLength": 40,
+        "where": "Default hint under every date field; the format and example come from the domain date constants"
+      }
+    },
+    "demoReset": {
+      "audit": {
+        "where": "Audit entry label when the demo data is reset"
+      },
+      "toastTitle": {
+        "maxLength": 32,
+        "where": "Toast title after the demo data is reset, in Settings and Admin"
+      }
+    },
+    "keyValue": {
+      "none": {
+        "maxLength": 12,
+        "screenshot": "phase-3/process-marac-light-comfortable.png",
+        "where": "Sentence-case placeholder for an empty value in a key-value list: children on a MARAC referral, siblings considered at an IRD, last notification under SONR, guardianship on the OPG check"
+      }
+    },
+    "labels": {
+      "restricted": {
+        "maxLength": 16,
+        "screenshot": "phase-2/search-results-light-comfortable.png",
+        "where": "Pill on a process the person may not see: search suggestions, search results and the context panel's access line"
+      }
+    },
+    "marks": {
+      "classification": {
+        "where": "Accessible name of the classification banner on print packs and restricted records, with the classification label as argument"
+      }
+    },
+    "person": {
+      "ageBorn": {
+        "screenshot": "phase-2/search-results-light-comfortable.png",
+        "where": "Age and date of birth line for a person in search suggestions and results; the age comes from the domain age label"
+      },
+      "ageNotRecorded": {
+        "maxLength": 24,
+        "where": "Stands in for the age line in search results when no date of birth is held"
+      },
+      "family": {
+        "maxLength": 12,
+        "where": "Stands in for the person name on a views block when the views were recorded from the family rather than one person"
+      },
+      "unborn": {
+        "maxLength": 16,
+        "where": "Stands in for the age line in search suggestions and results when the person is an unborn child"
+      }
+    },
+    "table": {
+      "region": {
+        "maxLength": 20,
+        "where": "Default accessible name of the scrollable region around a table when the screen gives none"
+      }
+    },
+    "toast": {
+      "dismiss": {
+        "maxLength": 24,
+        "where": "Close control on each toast, read by screen readers"
+      },
+      "region": {
+        "maxLength": 20,
+        "where": "Accessible name of the toast region at the edge of the screen"
+      }
+    },
+    "values": {
+      "dateNotRecorded": {
+        "maxLength": 20,
+        "where": "Stands in for a date of birth that is not held, after \"born\" on the minutes print pack cover"
+      },
+      "none": {
+        "maxLength": 20,
+        "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+        "where": "Lower-case placeholder where a record has no value, such as a missing CHI in the print pack details"
+      },
+      "notApplicable": {
+        "maxLength": 16,
+        "where": "Stands in for a value that does not apply: the lawful basis line of the sharing preview"
+      },
+      "notRecorded": {
+        "maxLength": 20,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Lower-case placeholder for a missing date: last contact on the Person 360 contacts sheet, date of birth in the print pack running head"
+      }
+    },
+    "voice": {
+      "recordedBy": {
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Attribution line under a person's own words, after their name and the date: who recorded it and how"
+      }
+    }
+  },
+  "nav": {
+    "drawer": {
+      "access": {
+        "basis": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, your access block: the lawful basis hints for the selected process"
+        },
+        "none": {
+          "maxLength": 16,
+          "where": "Context panel, your access block: the level shown when you may not see the selected process"
+        }
+      },
+      "audit": {
+        "empty": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, audit section, when no read of the selection has been recorded"
+        },
+        "entry": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, audit section: one audit line with the reader, their agency and the act"
+        },
+        "entryRestricted": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, audit section: an audit line for a read of a restricted record"
+        }
+      },
+      "collapse": {
+        "maxLength": 24,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Button that collapses the context panel, read by screen readers"
+      },
+      "details": {
+        "where": "Accessible name of the context panel body, with the panel title as argument"
+      },
+      "event": {
+        "connector": {
+          "where": "Context panel, event section, source row when the event came in through a connector, with the system name as argument"
+        },
+        "recordedBy": {
+          "where": "Context panel, event section, source row when a practitioner recorded the event by hand"
+        },
+        "whenApproximate": {
+          "where": "Context panel, event section, when row for an event with an approximate date"
+        }
+      },
+      "fields": {
+        "action": {
+          "maxLength": 16,
+          "where": "Context panel, action section: row label for the action title"
+        },
+        "agency": {
+          "maxLength": 16,
+          "where": "Context panel: row label for an agency in the event and signed-in sections"
+        },
+        "article6": {
+          "maxLength": 16,
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, lawful basis: row label for the UK GDPR Article 6 basis"
+        },
+        "article9": {
+          "maxLength": 16,
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, lawful basis: row label for the Article 9 condition"
+        },
+        "author": {
+          "maxLength": 16,
+          "where": "Context panel, analysis section: row label for the author"
+        },
+        "authorisedBy": {
+          "maxLength": 16,
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, lawful basis: row label for who authorised the share"
+        },
+        "cases": {
+          "maxLength": 16,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Context panel, signed-in section: row label for the count of open cases"
+        },
+        "channel": {
+          "maxLength": 16,
+          "where": "Context panel, share section: row label for the channel the share went by"
+        },
+        "consent": {
+          "maxLength": 16,
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, lawful basis: row label for the consent status"
+        },
+        "due": {
+          "maxLength": 16,
+          "where": "Context panel, action section: row label for the due date"
+        },
+        "evidence": {
+          "maxLength": 16,
+          "where": "Context panel, action section: row label for the evidence of completion"
+        },
+        "gateway": {
+          "maxLength": 16,
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, lawful basis: row label for the statutory gateway"
+        },
+        "isa": {
+          "maxLength": 16,
+          "where": "Context panel, share section: row label for the information sharing agreement reference"
+        },
+        "kind": {
+          "maxLength": 16,
+          "where": "Context panel, analysis section: row label for the kind of note"
+        },
+        "level": {
+          "maxLength": 16,
+          "where": "Context panel, share section: row label for the detail level shared"
+        },
+        "name": {
+          "maxLength": 16,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Context panel, signed-in section: row label for your name"
+        },
+        "necessity": {
+          "maxLength": 16,
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, lawful basis: row label for the necessity and proportionality note"
+        },
+        "offenceData": {
+          "maxLength": 16,
+          "where": "Context panel, share section: row label for the Article 10 criminal offence data basis"
+        },
+        "outcome": {
+          "maxLength": 16,
+          "where": "Context panel, event section: row label for the outcome"
+        },
+        "owner": {
+          "maxLength": 16,
+          "where": "Context panel, action section: row label for the owner"
+        },
+        "process": {
+          "maxLength": 16,
+          "where": "Context panel, action section: row label for the linked process"
+        },
+        "purpose": {
+          "maxLength": 16,
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, lawful basis: row label for the purpose of the share"
+        },
+        "recorded": {
+          "maxLength": 16,
+          "where": "Context panel, analysis section: row label for when the note was recorded"
+        },
+        "response": {
+          "maxLength": 16,
+          "where": "Context panel, event section: row label for the response"
+        },
+        "role": {
+          "maxLength": 16,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Context panel, signed-in section: row label for your role"
+        },
+        "significance": {
+          "maxLength": 16,
+          "where": "Context panel, event section: row label for the significance band"
+        },
+        "source": {
+          "maxLength": 16,
+          "where": "Context panel, event section: row label for where the event came from"
+        },
+        "status": {
+          "maxLength": 16,
+          "where": "Context panel: row label for the status in the action and share sections"
+        },
+        "text": {
+          "maxLength": 16,
+          "where": "Context panel, analysis section: row label for the note text"
+        },
+        "title": {
+          "maxLength": 16,
+          "where": "Context panel: row label for the title in the event and analysis sections"
+        },
+        "to": {
+          "maxLength": 16,
+          "where": "Context panel, share section: row label for the recipient"
+        },
+        "visibility": {
+          "maxLength": 16,
+          "where": "Context panel, event section: row label for the visibility"
+        },
+        "when": {
+          "maxLength": 16,
+          "where": "Context panel, event section: row label for when the event happened"
+        },
+        "why": {
+          "maxLength": 16,
+          "where": "Context panel, share section: row label for the reason for the share"
+        }
+      },
+      "involved": {
+        "empty": {
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Context panel, who is involved section, when the selected person has no open process"
+        }
+      },
+      "label": {
+        "maxLength": 16,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Accessible name of the context panel on the right of every screen"
+      },
+      "lawfulBasis": {
+        "empty": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, lawful basis section, when no share has been recorded on the selected process"
+        },
+        "notLinked": {
+          "where": "Context panel, lawful basis section of a selected share that has no lawful basis record"
+        },
+        "singleAgency": {
+          "where": "Context panel, lawful basis for inclusion section of a selected event that has none"
+        }
+      },
+      "meeting": {
+        "noDistribution": {
+          "where": "Context panel, distribution section of a selected meeting with no distribution list yet"
+        }
+      },
+      "needToKnow": {
+        "fields": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel: the fields a partial-detail audience receives, in the need-to-know rows and the your access block"
+        },
+        "liftableBy": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, need-to-know exclusion: who can lift it"
+        },
+        "mustNotReceive": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, need-to-know exclusion heading when nobody holds the excluded role yet"
+        },
+        "mustNotReceiveParty": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, need-to-know exclusion heading naming the person who holds the excluded role"
+        },
+        "nobodyRecorded": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, need-to-know exclusion body when nobody holds the excluded role yet"
+        },
+        "source": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, need-to-know exclusion body: the notes on the holder and where the role came from"
+        },
+        "stage": {
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel, need-to-know section: the stage line above the audiences"
+        }
+      },
+      "open": {
+        "maxLength": 24,
+        "where": "Button that opens the collapsed context panel, read by screen readers"
+      },
+      "section": {
+        "action": {
+          "maxLength": 32,
+          "where": "Context panel section heading for a selected action"
+        },
+        "audit": {
+          "maxLength": 32,
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel section heading for the audit trail"
+        },
+        "distribution": {
+          "maxLength": 32,
+          "where": "Context panel section heading for a selected meeting's distribution list"
+        },
+        "event": {
+          "maxLength": 32,
+          "where": "Context panel section heading for a selected event"
+        },
+        "invitees": {
+          "maxLength": 32,
+          "where": "Context panel section heading for a selected meeting's invitees"
+        },
+        "judgement": {
+          "maxLength": 32,
+          "where": "Context panel section heading for a selected analysis note"
+        },
+        "lawfulBasis": {
+          "maxLength": 32,
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel section heading for the lawful basis of a process or share"
+        },
+        "lawfulBasisInclusion": {
+          "maxLength": 32,
+          "where": "Context panel section heading for the lawful basis of a selected event's inclusion"
+        },
+        "needToKnowFor": {
+          "maxLength": 40,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Context panel section heading for need-to-know on one of a selected person's processes, with the reference as argument"
+        },
+        "needToKnowStage": {
+          "maxLength": 32,
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel section heading for need-to-know on a selected process"
+        },
+        "recipient": {
+          "maxLength": 32,
+          "where": "Context panel section heading for a selected share's recipient"
+        },
+        "restsOn": {
+          "maxLength": 32,
+          "where": "Context panel section heading listing the facts a selected analysis note rests on, with their number as argument"
+        },
+        "signedIn": {
+          "maxLength": 32,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Context panel section heading when nothing is selected"
+        },
+        "versions": {
+          "maxLength": 32,
+          "where": "Context panel section heading for a selected event's version history"
+        },
+        "whoIsInvolved": {
+          "maxLength": 32,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Context panel section heading for the case members"
+        },
+        "yourAccess": {
+          "maxLength": 32,
+          "screenshot": "phase-3/process-cp-light-comfortable.png",
+          "where": "Context panel section heading for your access to a selected process"
+        }
+      },
+      "share": {
+        "statusRead": {
+          "where": "Context panel, share section, status row when the recipient has read the share"
+        }
+      },
+      "signedIn": {
+        "casesOpen": {
+          "maxLength": 16,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Context panel, signed-in section: the count of your open cases"
+        },
+        "help": {
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Context panel help text when nothing is selected"
+        }
+      },
+      "title": {
+        "action": {
+          "maxLength": 24,
+          "where": "Context panel title when an action is selected"
+        },
+        "analysis": {
+          "maxLength": 24,
+          "where": "Context panel title when an analysis note is selected"
+        },
+        "event": {
+          "maxLength": 24,
+          "where": "Context panel title when an event is selected"
+        },
+        "meeting": {
+          "maxLength": 24,
+          "where": "Context panel title when a selected meeting cannot be found"
+        },
+        "person": {
+          "maxLength": 24,
+          "where": "Context panel title when a selected person cannot be found"
+        },
+        "process": {
+          "maxLength": 24,
+          "where": "Context panel title when a selected process cannot be found"
+        },
+        "share": {
+          "maxLength": 24,
+          "where": "Context panel title when a share is selected"
+        },
+        "yourAccess": {
+          "maxLength": 24,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Context panel title when nothing is selected"
+        }
+      }
+    },
+    "personaSwitcher": {
+      "note": {
+        "where": "Note at the top of the persona switcher dialog opened from the top bar"
+      },
+      "title": {
+        "maxLength": 32,
+        "where": "Title of the persona switcher dialog opened from the top bar"
+      }
+    },
+    "rail": {
+      "collapse": {
+        "maxLength": 24,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Button at the foot of the navigation rail that collapses it, read by screen readers"
+      },
+      "expand": {
+        "maxLength": 24,
+        "screenshot": "phase-1/home-rail-collapsed-light-comfortable.png",
+        "where": "Button at the foot of the collapsed navigation rail that expands it, read by screen readers"
+      },
+      "items": {
+        "actions": {
+          "maxLength": 14,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Navigation rail item for the actions register"
+        },
+        "admin": {
+          "maxLength": 14,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Navigation rail item for administration"
+        },
+        "connectors": {
+          "maxLength": 14,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Navigation rail item for the connectors screen"
+        },
+        "home": {
+          "maxLength": 14,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Navigation rail item for the home screen"
+        },
+        "meetings": {
+          "maxLength": 14,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Navigation rail item for meetings"
+        },
+        "people": {
+          "maxLength": 14,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Navigation rail item for the people list"
+        },
+        "reports": {
+          "maxLength": 14,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Navigation rail item for reports"
+        },
+        "sharing": {
+          "maxLength": 14,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Navigation rail item for sharing and notifications"
+        },
+        "worklist": {
+          "maxLength": 14,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Navigation rail item for the worklist"
+        }
+      },
+      "label": {
+        "maxLength": 16,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Accessible name of the navigation rail"
+      },
+      "personaTitle": {
+        "screenshot": "phase-1/home-rail-collapsed-light-comfortable.png",
+        "where": "Tooltip on the signed-in persona at the foot of the collapsed rail: name and role"
+      },
+      "waiting": {
+        "actions": {
+          "maxLength": 24,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Label after the count in the actions badge on the rail, read by screen readers as a number then this"
+        },
+        "worklist": {
+          "maxLength": 24,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Label after the count in the worklist badge on the rail, read by screen readers as a number then this"
+        }
+      }
+    },
+    "search": {
+      "label": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Visually hidden label of the search box in the top bar"
+      },
+      "personMeta": {
+        "screenshot": "phase-2/search-typeahead-light-comfortable.png",
+        "where": "Search suggestion line under a person: age, address and what matched"
+      },
+      "placeholder": {
+        "maxLength": 40,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Placeholder in the search box in the top bar"
+      },
+      "processMeta": {
+        "screenshot": "phase-2/search-typeahead-light-comfortable.png",
+        "where": "Search suggestion line under a process: the process type and what matched"
+      },
+      "showAll": {
+        "maxLength": 40,
+        "screenshot": "phase-2/search-typeahead-light-comfortable.png",
+        "where": "Last line of the search suggestions list"
+      },
+      "suggestions": {
+        "maxLength": 24,
+        "screenshot": "phase-2/search-typeahead-light-comfortable.png",
+        "where": "Accessible name of the search suggestions list under the search box"
+      }
+    },
+    "titles": {
+      "actions": {
+        "maxLength": 24,
+        "where": "Browser tab title while the actions register is open"
+      },
+      "admin": {
+        "maxLength": 24,
+        "where": "Browser tab title while an admin screen is open"
+      },
+      "audit": {
+        "maxLength": 24,
+        "where": "Browser tab title while the audit ledger is open"
+      },
+      "connectors": {
+        "maxLength": 24,
+        "where": "Browser tab title while the connectors screen is open"
+      },
+      "help": {
+        "maxLength": 24,
+        "where": "Browser tab title while help is open"
+      },
+      "home": {
+        "maxLength": 24,
+        "where": "Browser tab title while the home screen is open"
+      },
+      "inbox": {
+        "maxLength": 24,
+        "where": "Browser tab title while the inbox is open"
+      },
+      "meetings": {
+        "maxLength": 24,
+        "where": "Browser tab title while a meetings screen is open"
+      },
+      "people": {
+        "maxLength": 24,
+        "where": "Browser tab title while a people screen is open"
+      },
+      "processes": {
+        "maxLength": 24,
+        "where": "Browser tab title while a process screen is open"
+      },
+      "reports": {
+        "maxLength": 24,
+        "where": "Browser tab title while a report is open"
+      },
+      "search": {
+        "maxLength": 24,
+        "where": "Browser tab title while search results are open"
+      },
+      "settings": {
+        "maxLength": 24,
+        "where": "Browser tab title while settings are open"
+      },
+      "sharing": {
+        "maxLength": 24,
+        "where": "Browser tab title while sharing and notifications is open"
+      },
+      "worklist": {
+        "maxLength": 24,
+        "where": "Browser tab title while the worklist is open"
+      }
+    },
+    "topBar": {
+      "clocksDue": {
+        "maxLength": 32,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Clock summary in the top bar, linking to the worklist clocks view"
+      },
+      "clocksLabel": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Accessible name of the clock summary link in the top bar"
+      },
+      "demo": {
+        "maxLength": 8,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Tag beside the signed-in name in the top bar marking the persona picker as a demo affordance"
+      },
+      "notifications": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Accessible name of the bell button in the top bar, with the unread count as argument"
+      },
+      "signIn": {
+        "maxLength": 16,
+        "where": "Persona button in the top bar when nobody is signed in"
+      },
+      "unread": {
+        "maxLength": 16,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Label after the count in the unread badge on the bell, read by screen readers as a number then this"
+      }
+    }
+  },
+  "states": {
+    "clock": {
+      "flag": {
+        "complete": {
+          "maxLength": 12,
+          "where": "Flag beside the unit of a statutory clock that has been met"
+        },
+        "dueSoon": {
+          "maxLength": 12,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Flag beside the unit of a statutory clock in its medium or high band"
+        },
+        "overdue": {
+          "maxLength": 12,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Flag beside the unit of a statutory clock that has passed its due date"
+        }
+      },
+      "sr": {
+        "complete": {
+          "where": "Accessible name of a met statutory clock, with the clock label as argument"
+        },
+        "overdue": {
+          "where": "Accessible name of an overdue statutory clock: label, then days past due"
+        },
+        "remaining": {
+          "where": "Accessible name of a running statutory clock: label, then days left"
+        }
+      },
+      "unit": {
+        "days": {
+          "maxLength": 8,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Unit under the numeral of a running statutory clock"
+        },
+        "done": {
+          "maxLength": 8,
+          "where": "Unit under the tick of a met statutory clock"
+        },
+        "overdue": {
+          "maxLength": 16,
+          "screenshot": "phase-1/home-light-comfortable.png",
+          "where": "Unit under the numeral of an overdue statutory clock"
+        }
+      }
+    },
+    "empty": {
+      "title": {
+        "maxLength": 32,
+        "where": "Default title of a screen's empty state when the screen gives none"
+      }
+    },
+    "error": {
+      "retry": {
+        "maxLength": 16,
+        "screenshot": "phase-1/home-state-error-light-comfortable.png",
+        "where": "Retry button on a screen's error state"
+      },
+      "text": {
+        "screenshot": "phase-1/home-state-error-light-comfortable.png",
+        "where": "Default body of a screen's error state"
+      },
+      "title": {
+        "maxLength": 40,
+        "screenshot": "phase-1/home-state-error-light-comfortable.png",
+        "where": "Default title of a screen's error state"
+      }
+    },
+    "loading": {
+      "label": {
+        "maxLength": 16,
+        "screenshot": "phase-1/home-state-loading-light-comfortable.png",
+        "where": "Default accessible label of the skeleton lines shown while a screen loads"
+      }
+    },
+    "offline": {
+      "text": {
+        "screenshot": "phase-1/home-state-offline-light-comfortable.png",
+        "where": "Body of the offline notice above a screen"
+      },
+      "title": {
+        "maxLength": 24,
+        "screenshot": "phase-1/home-state-offline-light-comfortable.png",
+        "where": "Title of the offline notice above a screen"
+      }
+    },
+    "placeholder": {
+      "lede": {
+        "where": "Lede of the holding screen for a route a later phase builds, with the phase number as argument"
+      },
+      "notFound": {
+        "maxLength": 24,
+        "where": "Title of the holding screen for a path the app does not know"
+      },
+      "text": {
+        "where": "Body of the holding screen's empty state"
+      },
+      "title": {
+        "where": "Title of the holding screen's empty state, with the screen name as argument"
+      }
+    },
+    "restricted": {
+      "breakGlassAvailable": {
+        "where": "Sentence after the reason on a restricted record when break-glass access is available"
+      },
+      "breakGlassUnavailable": {
+        "where": "Sentence after the reason on a restricted record when break-glass access is not available"
+      },
+      "open": {
+        "maxLength": 24,
+        "where": "Break-glass button on a screen's restricted state"
+      },
+      "reason": {
+        "where": "Default reason on a screen's restricted state when the screen gives none"
+      },
+      "title": {
+        "maxLength": 24,
+        "where": "Default title of a restricted record state"
+      }
+    },
+    "stale": {
+      "refresh": {
+        "maxLength": 16,
+        "where": "Refresh button on the stale connector data notice"
+      },
+      "text": {
+        "where": "Body of the stale connector data notice, with the last sync time as argument"
+      },
+      "title": {
+        "maxLength": 40,
+        "where": "Title of the stale connector data notice above a screen"
+      },
+      "unknownSync": {
+        "maxLength": 20,
+        "where": "Stands in for the last sync time in the stale notice when it is not known"
       }
     }
   }

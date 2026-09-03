@@ -35,7 +35,7 @@ function argTypes(message) {
           for (const option of Object.values(el.options)) walk(option.value);
           break;
         case TYPE.tag:
-          note(el.value, '(chunks: string) => string');
+          note(el.value, '(chunks: string[]) => string');
           walk(el.children);
           break;
         default:

@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@mas/messages';
 import { Button, EmptyState, ErrorState, OfflineState, RestrictedState, SkeletonLines, StaleState } from '@mas/ui';
 import type { ReactNode } from 'react';
 import { useRoute } from '@/lib/router';
@@ -28,25 +29,26 @@ export interface ScreenStateProps {
 
 /** One wrapper so every screen reaches every designed state the same way. */
 export function ScreenState({ state, children, empty, error, restricted, stale, loadingLines = 6 }: ScreenStateProps) {
+  const t = useT();
   switch (state) {
     case 'loading':
       return <SkeletonLines lines={loadingLines} />;
     case 'empty':
-      return <EmptyState title={empty?.title ?? 'Nothing here yet'} text={empty?.text} actions={empty?.actions} />;
+      return <EmptyState title={empty?.title ?? t('states.empty.title')} text={empty?.text} actions={empty?.actions} />;
     case 'error':
       return (
         <ErrorState
-          title={error?.title ?? 'This screen could not load'}
-          text={error?.text ?? 'The local record store returned an error. Try again, and if it happens twice, reset the demo data from Settings.'}
-          actions={error?.onRetry ? <Button variant="secondary" onClick={error.onRetry}>Try again</Button> : undefined}
+          title={error?.title ?? t('states.error.title')}
+          text={error?.text ?? t('states.error.text')}
+          actions={error?.onRetry ? <Button variant="secondary" onClick={error.onRetry}>{t('states.error.retry')}</Button> : undefined}
         />
       );
     case 'restricted':
       return (
         <RestrictedState
-          reason={restricted?.reason ?? 'You are not on the distribution list for this record.'}
+          reason={restricted?.reason ?? t('states.restricted.reason')}
           breakGlass={restricted?.breakGlass ?? 'unavailable'}
-          breakGlassAction={restricted?.onBreakGlass ? <Button variant="primary" onClick={restricted.onBreakGlass}>Open with a reason</Button> : undefined}
+          breakGlassAction={restricted?.onBreakGlass ? <Button variant="primary" onClick={restricted.onBreakGlass}>{t('states.restricted.open')}</Button> : undefined}
         />
       );
     case 'offline':
@@ -59,7 +61,7 @@ export function ScreenState({ state, children, empty, error, restricted, stale, 
     case 'stale':
       return (
         <>
-          <StaleState lastSyncLabel={stale?.lastSyncLabel} actions={stale?.onRefresh ? <Button variant="secondary" onClick={stale.onRefresh}>Sync now</Button> : undefined} />
+          <StaleState lastSyncLabel={stale?.lastSyncLabel} actions={stale?.onRefresh ? <Button variant="secondary" onClick={stale.onRefresh}>{t('states.stale.refresh')}</Button> : undefined} />
           {children}
         </>
       );

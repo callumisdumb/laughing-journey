@@ -1,12 +1,14 @@
 'use client';
 
 import { ROLE_DEFINITIONS } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { AGENCY_GLYPHS, Dialog } from '@mas/ui';
 import { useNavigate } from '@/lib/router';
 import { useAppStore, useCurrentUser, useData } from '@/lib/store';
 import styles from './PersonaSwitcher.module.css';
 
 export function PersonaSwitcher({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const t = useT();
   const data = useData();
   const user = useCurrentUser();
   const signIn = useAppStore((s) => s.signIn);
@@ -15,8 +17,8 @@ export function PersonaSwitcher({ open, onClose }: { open: boolean; onClose: () 
   const groups = data.organisations.map((org) => ({ org, users: data.users.filter((u) => u.organisationId === org.id) })).filter((g) => g.users.length > 0);
 
   return (
-    <Dialog open={open} onClose={onClose} title="Switch persona (demo)" size="lg">
-      <p className={styles.note}>This is a demo affordance. In the product, identity comes from your organisation's single sign-on. Switching is recorded in the audit log.</p>
+    <Dialog open={open} onClose={onClose} title={t('nav.personaSwitcher.title')} size="lg">
+      <p className={styles.note}>{t('nav.personaSwitcher.note')}</p>
       <div className={styles.groups}>
         {groups.map(({ org, users }) => (
           <div key={org.id}>

@@ -1,6 +1,7 @@
 'use client';
 
 import { PROCESS_SHORT, ageLabel, formatDate, stageLabel } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { Pill, ProcessMark } from '@mas/ui';
 import { Lock, Search } from 'lucide-react';
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
@@ -13,6 +14,7 @@ import styles from './SearchBox.module.css';
 
 /** Global search with a typeahead listbox: name, alias, date of birth, CHI, address, reference. */
 export function SearchBox() {
+  const t = useT();
   const id = useId();
   const navigate = useNavigate();
   const route = useRoute();
@@ -69,7 +71,7 @@ export function SearchBox() {
         <Search size={16} aria-hidden="true" />
       </span>
       <label htmlFor={`${id}-input`} className="visually-hidden">
-        Search people, cases and reference numbers
+        {t('nav.search.label')}
       </label>
       <input
         id={`${id}-input`}
@@ -80,7 +82,7 @@ export function SearchBox() {
         aria-controls={listId}
         aria-autocomplete="list"
         aria-activedescendant={open && hits[active] ? `${id}-opt-${active}` : undefined}
-        placeholder="Search people, cases, reference numbers"
+        placeholder={t('nav.search.placeholder')}
         autoComplete="off"
         value={q}
         onChange={(e) => {
@@ -92,39 +94,36 @@ export function SearchBox() {
         onKeyDown={onKey}
       />
       {open && hits.length > 0 && user ? (
-        <ul className={styles.list} role="listbox" id={listId} aria-label="Search suggestions">
+        <ul className={styles.list} role="listbox" id={listId} aria-label={t('nav.search.suggestions')}>
           {hits.map((h, i) => {
             if (h.kind === 'process') {
               const access = accessForUser(data, config, user, h.process, grants, now);
               return (
                 <li key={h.process.id} id={`${id}-opt-${i}`} role="option" aria-selected={i === active} className={styles.option} onMouseDown={() => go(h)} onMouseEnter={() => setActive(i)}>
                   <span className={styles.optionName}>{h.process.reference}</span>
-                  <span className={styles.optionMarks}>{access.level === 'none' ? <Pill tone="restricted" size="sm" icon={<Lock size={12} aria-hidden="true" />}>Restricted</Pill> : <ProcessMark type={h.process.type} stage={stageLabel(h.process.type, h.process.stage)} />}</span>
-                  <span className={styles.optionMeta}>
-                    {PROCESS_SHORT[h.process.type]} process. Matched on {h.matched}.
-                  </span>
+                  <span className={styles.optionMarks}>{access.level === 'none' ? <Pill tone="restricted" size="sm" icon={<Lock size={12} aria-hidden="true" />}>{t('common.labels.restricted')}</Pill> : <ProcessMark type={h.process.type} stage={stageLabel(h.process.type, h.process.stage)} />}</span>
+                  <span className={styles.optionMeta}>{t('nav.search.processMeta', { process: PROCESS_SHORT[h.process.type], matched: h.matched })}</span>
                 </li>
               );
             }
             const p = h.person;
             const processes = processesInvolving(data, p.id).filter((x) => x.status === 'open');
+            const age = p.dateOfBirth ? t('common.person.ageBorn', { age: ageLabel(p.dateOfBirth, now), date: formatDate(p.dateOfBirth) }) : t('common.person.unborn');
             return (
               <li key={p.id} id={`${id}-opt-${i}`} role="option" aria-selected={i === active} className={styles.option} onMouseDown={() => go(h)} onMouseEnter={() => setActive(i)}>
                 <span className={styles.optionName}>{fullName(p)}</span>
                 <span className={styles.optionMarks}>
                   {processes.slice(0, 3).map((pr) => {
                     const access = accessForUser(data, config, user, pr, grants, now);
-                    return access.level === 'none' ? <Pill key={pr.id} tone="restricted" size="sm" icon={<Lock size={12} aria-hidden="true" />}>Restricted</Pill> : <ProcessMark key={pr.id} type={pr.type} />;
+                    return access.level === 'none' ? <Pill key={pr.id} tone="restricted" size="sm" icon={<Lock size={12} aria-hidden="true" />}>{t('common.labels.restricted')}</Pill> : <ProcessMark key={pr.id} type={pr.type} />;
                   })}
                 </span>
-                <span className={styles.optionMeta}>
-                  {p.dateOfBirth ? `${ageLabel(p.dateOfBirth, now)}, born ${formatDate(p.dateOfBirth)}` : 'Unborn'}. {currentAddress(data, p).line}. Matched on {h.matched}.
-                </span>
+                <span className={styles.optionMeta}>{t('nav.search.personMeta', { age, address: currentAddress(data, p).line, matched: h.matched })}</span>
               </li>
             );
           })}
           <li className={styles.footer} role="presentation">
-            Press Enter to see all results
+            {t('nav.search.showAll')}
           </li>
         </ul>
       ) : null}
