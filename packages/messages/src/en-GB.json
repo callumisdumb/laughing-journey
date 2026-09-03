@@ -222,6 +222,93 @@
       "title": "Three-point test (s3)"
     }
   },
+  "audit": {
+    "acts": {
+      "breakGlass": "Break-glass",
+      "edit": "Edit",
+      "export": "Export",
+      "personaSwitch": "Persona switch",
+      "promote": "Promote",
+      "read": "Read",
+      "readRestricted": "Restricted read",
+      "share": "Share",
+      "signIn": "Sign in"
+    },
+    "columns": {
+      "act": "Act",
+      "expires": "Break-glass expires",
+      "reason": "Reason",
+      "restricted": "Restricted",
+      "target": "Target",
+      "when": "When",
+      "who": "Who"
+    },
+    "empty": {
+      "quick": "No break-glass grants or restricted reads in this range. Clear the quick filter to see every act.",
+      "text": "Widen the date range or clear the filters. Entries are added as the demo runs.",
+      "title": "No entries match"
+    },
+    "export": {
+      "auditLabel": "Audit log export: {count, plural, one {# entry} other {# entries}}",
+      "button": "Export audit log as CSV",
+      "toastText": "{count, plural, one {# entry} other {# entries}} written to {file}. The export is itself now in the log.",
+      "toastTitle": "Audit log exported"
+    },
+    "filters": {
+      "act": "Act",
+      "agency": "Agency",
+      "allActs": "All acts",
+      "allAgencies": "All agencies",
+      "anyone": "Anyone",
+      "from": "From (dd Mon yyyy)",
+      "text": "Person or process",
+      "textPlaceholder": "Name, reference or record id",
+      "to": "To (dd Mon yyyy)",
+      "user": "User"
+    },
+    "page": {
+      "ledeFull": "Showing every entry: {role} has oversight.",
+      "ledeOwn": "Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone\u2019s.",
+      "ledeTail": "Every read of a restricted record, every share, every break-glass and every persona switch is here, newest first.",
+      "title": "Audit"
+    },
+    "quick": {
+      "label": "Break-glass and restricted reads only",
+      "shown": "{shown} of {total, plural, one {# entry} other {# entries}} shown"
+    },
+    "scope": {
+      "act": "act {act}",
+      "agency": "agency {agency}",
+      "all": "Scope: every entry",
+      "from": "from {date}",
+      "own": "Scope: own entries",
+      "quick": "break-glass and restricted reads only",
+      "text": "text \"{text}\"",
+      "to": "to {date}",
+      "user": "user {name}"
+    },
+    "summary": {
+      "breakGlass": "Break-glass grants",
+      "label": "Summary of the entries shown",
+      "personaSwitches": "Persona switches",
+      "restrictedReads": "Restricted reads",
+      "shares": "Shares"
+    },
+    "table": {
+      "label": "Audit log"
+    },
+    "targets": {
+      "config": "Configuration",
+      "event": "Chronology event",
+      "inbox": "Connector inbox",
+      "meeting": "Meeting",
+      "person": "Person",
+      "process": "Process",
+      "report": "Report",
+      "session": "Session",
+      "sharing": "Share"
+    }
+  },
   "awi": {
     "application": {
       "hearing": "Hearing",

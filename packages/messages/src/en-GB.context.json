@@ -762,6 +762,273 @@
       }
     }
   },
+  "audit": {
+    "acts": {
+      "breakGlass": {
+        "maxLength": 16,
+        "where": "Act pill and act filter option on the Audit screen for a break-glass grant"
+      },
+      "edit": {
+        "maxLength": 16,
+        "where": "Act pill and act filter option on the Audit screen for an edit"
+      },
+      "export": {
+        "maxLength": 16,
+        "where": "Act pill and act filter option on the Audit screen for an export"
+      },
+      "personaSwitch": {
+        "maxLength": 16,
+        "where": "Act pill and act filter option on the Audit screen for a persona switch"
+      },
+      "promote": {
+        "maxLength": 16,
+        "where": "Act pill and act filter option on the Audit screen for a promotion from the inbox"
+      },
+      "read": {
+        "maxLength": 16,
+        "screenshot": "phase-5/audit-light-comfortable.png",
+        "where": "Act pill and act filter option on the Audit screen for a read"
+      },
+      "readRestricted": {
+        "maxLength": 16,
+        "where": "Act pill and act filter option on the Audit screen for a read of a restricted record"
+      },
+      "share": {
+        "maxLength": 16,
+        "where": "Act pill and act filter option on the Audit screen for a share"
+      },
+      "signIn": {
+        "maxLength": 16,
+        "where": "Act pill and act filter option on the Audit screen for a sign in"
+      }
+    },
+    "columns": {
+      "act": {
+        "maxLength": 12,
+        "where": "Column header in the audit log table"
+      },
+      "expires": {
+        "maxLength": 24,
+        "where": "Column header in the audit log table: when a break-glass grant expires"
+      },
+      "reason": {
+        "maxLength": 12,
+        "where": "Column header in the audit log table"
+      },
+      "restricted": {
+        "maxLength": 12,
+        "where": "Column header in the audit log table"
+      },
+      "target": {
+        "maxLength": 12,
+        "where": "Column header in the audit log table"
+      },
+      "when": {
+        "maxLength": 12,
+        "screenshot": "phase-5/audit-light-comfortable.png",
+        "where": "Column header in the audit log table"
+      },
+      "who": {
+        "maxLength": 12,
+        "where": "Column header in the audit log table"
+      }
+    },
+    "empty": {
+      "quick": {
+        "where": "Empty state text on the Audit screen when the break-glass quick filter matches nothing"
+      },
+      "text": {
+        "where": "Empty state text on the Audit screen when the filters match nothing"
+      },
+      "title": {
+        "maxLength": 24,
+        "where": "Empty state title on the Audit screen"
+      }
+    },
+    "export": {
+      "auditLabel": {
+        "where": "Target label of the audit entry written by the CSV export, with the number of entries"
+      },
+      "button": {
+        "maxLength": 28,
+        "screenshot": "phase-5/audit-light-comfortable.png",
+        "where": "Secondary button in the Audit page head that downloads the log as CSV"
+      },
+      "toastText": {
+        "where": "Text of the success toast after the CSV export, with the entry count and the file name"
+      },
+      "toastTitle": {
+        "maxLength": 24,
+        "where": "Title of the success toast after the CSV export"
+      }
+    },
+    "filters": {
+      "act": {
+        "maxLength": 12,
+        "where": "Label of the act filter select on the Audit screen"
+      },
+      "agency": {
+        "maxLength": 12,
+        "where": "Label of the agency filter select on the Audit screen"
+      },
+      "allActs": {
+        "maxLength": 16,
+        "where": "Placeholder of the act filter select when no act is chosen"
+      },
+      "allAgencies": {
+        "maxLength": 16,
+        "where": "Placeholder of the agency filter select when no agency is chosen"
+      },
+      "anyone": {
+        "maxLength": 12,
+        "where": "Placeholder of the user filter select when no user is chosen"
+      },
+      "from": {
+        "maxLength": 20,
+        "screenshot": "phase-5/audit-light-comfortable.png",
+        "where": "Label of the compact from date field on the Audit screen; carries the date format because the field shows no hint"
+      },
+      "text": {
+        "maxLength": 20,
+        "where": "Label of the free text filter on the Audit screen"
+      },
+      "textPlaceholder": {
+        "maxLength": 32,
+        "where": "Placeholder of the free text filter on the Audit screen"
+      },
+      "to": {
+        "maxLength": 20,
+        "where": "Label of the compact to date field on the Audit screen; carries the date format because the field shows no hint"
+      },
+      "user": {
+        "maxLength": 12,
+        "where": "Label of the user filter select on the Audit screen"
+      }
+    },
+    "page": {
+      "ledeFull": {
+        "where": "First sentence of the Audit lede for an oversight role, with the role label"
+      },
+      "ledeOwn": {
+        "where": "First sentences of the Audit lede for a role that sees only its own entries"
+      },
+      "ledeTail": {
+        "screenshot": "phase-5/audit-light-comfortable.png",
+        "where": "Closing sentence of the Audit lede for every role"
+      },
+      "title": {
+        "maxLength": 12,
+        "screenshot": "phase-5/audit-light-comfortable.png",
+        "where": "Audit page title"
+      }
+    },
+    "quick": {
+      "label": {
+        "maxLength": 40,
+        "where": "Quick filter switch on the Audit screen that keeps only break-glass grants and restricted reads"
+      },
+      "shown": {
+        "where": "Count beside the quick filter switch: entries shown out of the entries in scope"
+      }
+    },
+    "scope": {
+      "act": {
+        "where": "Part of the export reason recorded in the audit log: the act filter, by id"
+      },
+      "agency": {
+        "where": "Part of the export reason recorded in the audit log: the agency filter, by id"
+      },
+      "all": {
+        "where": "First part of the export reason recorded in the audit log when every entry was in scope"
+      },
+      "from": {
+        "where": "Part of the export reason recorded in the audit log: the from date"
+      },
+      "own": {
+        "where": "First part of the export reason recorded in the audit log when only the user's own entries were in scope"
+      },
+      "quick": {
+        "where": "Part of the export reason recorded in the audit log when the quick filter was on"
+      },
+      "text": {
+        "where": "Part of the export reason recorded in the audit log: the free text filter"
+      },
+      "to": {
+        "where": "Part of the export reason recorded in the audit log: the to date"
+      },
+      "user": {
+        "where": "Part of the export reason recorded in the audit log: the user filter, by name"
+      }
+    },
+    "summary": {
+      "breakGlass": {
+        "maxLength": 20,
+        "where": "Term in the summary strip on the Audit screen"
+      },
+      "label": {
+        "maxLength": 32,
+        "where": "Accessible name of the summary strip on the Audit screen"
+      },
+      "personaSwitches": {
+        "maxLength": 20,
+        "where": "Term in the summary strip on the Audit screen"
+      },
+      "restrictedReads": {
+        "maxLength": 20,
+        "screenshot": "phase-5/audit-light-comfortable.png",
+        "where": "Term in the summary strip on the Audit screen"
+      },
+      "shares": {
+        "maxLength": 20,
+        "where": "Term in the summary strip on the Audit screen"
+      }
+    },
+    "table": {
+      "label": {
+        "maxLength": 16,
+        "where": "Accessible name of the scrollable audit log table"
+      }
+    },
+    "targets": {
+      "config": {
+        "maxLength": 20,
+        "where": "Muted target type under the target in an audit row"
+      },
+      "event": {
+        "maxLength": 20,
+        "where": "Muted target type under the target in an audit row"
+      },
+      "inbox": {
+        "maxLength": 20,
+        "where": "Muted target type under the target in an audit row"
+      },
+      "meeting": {
+        "maxLength": 20,
+        "where": "Muted target type under the target in an audit row"
+      },
+      "person": {
+        "maxLength": 20,
+        "screenshot": "phase-5/audit-light-comfortable.png",
+        "where": "Muted target type under the target in an audit row"
+      },
+      "process": {
+        "maxLength": 20,
+        "where": "Muted target type under the target in an audit row"
+      },
+      "report": {
+        "maxLength": 20,
+        "where": "Muted target type under the target in an audit row"
+      },
+      "session": {
+        "maxLength": 20,
+        "where": "Muted target type under the target in an audit row"
+      },
+      "sharing": {
+        "maxLength": 20,
+        "where": "Muted target type under the target in an audit row"
+      }
+    }
+  },
   "awi": {
     "application": {
       "hearing": {

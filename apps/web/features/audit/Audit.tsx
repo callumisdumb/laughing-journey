@@ -1,6 +1,7 @@
 'use client';
 
-import { AGENCIES, AGENCY_LABELS, AUDIT_ACTS, ROLE_DEFINITIONS, formatDateTime, formatTime, localDateOf, type AuditAct, type AuditEntry, type Dataset } from '@mas/domain';
+import { AGENCIES, AGENCY_LABELS, AUDIT_ACTS, ROLE_DEFINITIONS, formatDate, formatDateTime, formatTime, localDateOf, type AuditAct, type AuditEntry, type Dataset } from '@mas/domain';
+import { tKey, useT } from '@mas/messages';
 import { AgencyMark, Button, DateField, Pill, SelectField, Switch, Table, TableWrap, TextField, useToast, type PillTone } from '@mas/ui';
 import { Download, Lock, ShieldAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -12,17 +13,16 @@ import { useSelection, type Selection } from '@/lib/selection';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
 import styles from './Audit.module.css';
 
-const ACT_LABELS: Record<AuditAct, string> = {
-  read: 'Read',
-  'read-restricted': 'Restricted read',
-  share: 'Share',
-  'break-glass': 'Break-glass',
-  'persona-switch': 'Persona switch',
-  export: 'Export',
-  edit: 'Edit',
-  promote: 'Promote',
-  'sign-in': 'Sign in',
-};
+/** `read-restricted` to `readRestricted`: the catalogue key segment for an act. */
+function segment(id: string): string {
+  return id
+    .split('-')
+    .map((part, i) => (i === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1)))
+    .join('');
+}
+
+const actLabel = (act: AuditAct) => tKey(`audit.acts.${segment(act)}`);
+const targetLabel = (type: AuditEntry['targetType']) => tKey(`audit.targets.${type}`);
 
 const ACT_TONES: Record<AuditAct, PillTone> = {
   read: 'neutral',
@@ -34,18 +34,6 @@ const ACT_TONES: Record<AuditAct, PillTone> = {
   edit: 'outline',
   promote: 'accent',
   'sign-in': 'low',
-};
-
-const TARGET_LABELS: Record<AuditEntry['targetType'], string> = {
-  person: 'Person',
-  process: 'Process',
-  event: 'Chronology event',
-  meeting: 'Meeting',
-  sharing: 'Share',
-  report: 'Report',
-  config: 'Configuration',
-  session: 'Session',
-  inbox: 'Connector inbox',
 };
 
 function targetHref(data: Dataset, a: AuditEntry): string | undefined {
@@ -89,6 +77,7 @@ function csvCell(value: string | undefined): string {
 }
 
 export function Audit() {
+  const t = useT();
   const data = useData();
   const user = useCurrentUser();
   const now = useNow();
@@ -142,14 +131,14 @@ export function Audit() {
   const userOptions = [...new Map(scoped.map((a) => [a.userId, a.userName] as const)).entries()].sort((a, b) => a[1].localeCompare(b[1])).map(([value, label]) => ({ value, label }));
 
   function describeFilters(): string {
-    const parts: string[] = [full ? 'Scope: every entry' : 'Scope: own entries'];
-    if (q) parts.push(`text "${text.trim()}"`);
-    if (userFilter) parts.push(`user ${userOptions.find((u) => u.value === userFilter)?.label ?? userFilter}`);
-    if (agencyFilter) parts.push(`agency ${agencyFilter}`);
-    if (actFilter) parts.push(`act ${actFilter}`);
-    if (from) parts.push(`from ${from}`);
-    if (to) parts.push(`to ${to}`);
-    if (quick) parts.push('break-glass and restricted reads only');
+    const parts: string[] = [full ? t('audit.scope.all') : t('audit.scope.own')];
+    if (q) parts.push(t('audit.scope.text', { text: text.trim() }));
+    if (userFilter) parts.push(t('audit.scope.user', { name: userOptions.find((u) => u.value === userFilter)?.label ?? userFilter }));
+    if (agencyFilter) parts.push(t('audit.scope.agency', { agency: agencyFilter }));
+    if (actFilter) parts.push(t('audit.scope.act', { act: actFilter }));
+    if (from) parts.push(t('audit.scope.from', { date: formatDate(from) }));
+    if (to) parts.push(t('audit.scope.to', { date: formatDate(to) }));
+    if (quick) parts.push(t('audit.scope.quick'));
     return parts.join('; ');
   }
 
@@ -167,8 +156,8 @@ export function Audit() {
     anchor.click();
     anchor.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    audit({ act: 'export', targetType: 'report', targetId: 'audit-export', targetLabel: `Audit log export: ${rows.length} ${rows.length === 1 ? 'entry' : 'entries'}`, reason: describeFilters() });
-    toast({ title: 'Audit log exported', text: `${rows.length} ${rows.length === 1 ? 'entry' : 'entries'} written to ${name}. The export is itself now in the log.`, tone: 'success' });
+    audit({ act: 'export', targetType: 'report', targetId: 'audit-export', targetLabel: t('audit.export.auditLabel', { count: rows.length }), reason: describeFilters() });
+    toast({ title: t('audit.export.toastTitle'), text: t('audit.export.toastText', { count: rows.length, file: name }), tone: 'success' });
   }
 
   const state = dev ?? (rows.length === 0 ? 'empty' : 'ready');
@@ -177,66 +166,63 @@ export function Audit() {
     <div className="page">
       <div className="page-head">
         <div className="page-head-text">
-          <h1>Audit</h1>
+          <h1>{t('audit.page.title')}</h1>
           <p className="page-lede">
-            {full ? `Showing every entry: ${role.label} has oversight. ` : 'Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone’s. '}
-            Every read of a restricted record, every share, every break-glass and every persona switch is here, newest first.
+            {full ? t('audit.page.ledeFull', { role: role.label }) : t('audit.page.ledeOwn')} {t('audit.page.ledeTail')}
           </p>
         </div>
         <Button variant="secondary" icon={<Download size={16} aria-hidden="true" />} onClick={exportCsv} disabled={rows.length === 0}>
-          Export audit log as CSV
+          {t('audit.export.button')}
         </Button>
       </div>
 
       <div className={styles.filters}>
         <div className={styles.filtersText}>
-          <TextField label="Person or process" value={text} onChange={(e) => setText(e.target.value)} placeholder="Name, reference or record id" />
+          <TextField label={t('audit.filters.text')} value={text} onChange={(e) => setText(e.target.value)} placeholder={t('audit.filters.textPlaceholder')} />
         </div>
-        <SelectField label="User" value={userFilter} onChange={(e) => set('user', e.target.value || null)} placeholder="Anyone" options={userOptions} />
-        <SelectField label="Agency" value={agencyFilter} onChange={(e) => set('agency', e.target.value || null)} placeholder="All agencies" options={AGENCIES.map((a) => ({ value: a, label: AGENCY_LABELS[a] }))} />
-        <SelectField label="Act" value={actFilter} onChange={(e) => set('act', e.target.value || null)} placeholder="All acts" options={AUDIT_ACTS.map((a) => ({ value: a, label: ACT_LABELS[a] }))} />
-        <DateField label="From (dd Mon yyyy)" hint={null} value={from} onChange={(v) => set('from', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />
-        <DateField label="To (dd Mon yyyy)" hint={null} value={to} onChange={(v) => set('to', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />
+        <SelectField label={t('audit.filters.user')} value={userFilter} onChange={(e) => set('user', e.target.value || null)} placeholder={t('audit.filters.anyone')} options={userOptions} />
+        <SelectField label={t('audit.filters.agency')} value={agencyFilter} onChange={(e) => set('agency', e.target.value || null)} placeholder={t('audit.filters.allAgencies')} options={AGENCIES.map((a) => ({ value: a, label: AGENCY_LABELS[a] }))} />
+        <SelectField label={t('audit.filters.act')} value={actFilter} onChange={(e) => set('act', e.target.value || null)} placeholder={t('audit.filters.allActs')} options={AUDIT_ACTS.map((a) => ({ value: a, label: actLabel(a) }))} />
+        <DateField label={t('audit.filters.from')} hint={null} value={from} onChange={(v) => set('from', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />
+        <DateField label={t('audit.filters.to')} hint={null} value={to} onChange={(v) => set('to', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />
       </div>
       <div className={styles.quick}>
-        <Switch label="Break-glass and restricted reads only" checked={quick} onChange={(e) => set('quick', e.target.checked ? '1' : null)} />
-        <span>
-          {rows.length} of {scoped.length} {scoped.length === 1 ? 'entry' : 'entries'} shown
-        </span>
+        <Switch label={t('audit.quick.label')} checked={quick} onChange={(e) => set('quick', e.target.checked ? '1' : null)} />
+        <span>{t('audit.quick.shown', { shown: rows.length, total: scoped.length })}</span>
       </div>
 
-      <div className={styles.summary} role="group" aria-label="Summary of the entries shown">
+      <div className={styles.summary} role="group" aria-label={t('audit.summary.label')}>
         <dl className={styles.stat} data-tone={counts.restrictedReads > 0 ? 'critical' : undefined}>
-          <dt>Restricted reads</dt>
+          <dt>{t('audit.summary.restrictedReads')}</dt>
           <dd>{counts.restrictedReads}</dd>
         </dl>
         <dl className={styles.stat}>
-          <dt>Shares</dt>
+          <dt>{t('audit.summary.shares')}</dt>
           <dd>{counts.shares}</dd>
         </dl>
         <dl className={styles.stat} data-tone={counts.breakGlass > 0 ? 'critical' : undefined}>
-          <dt>Break-glass grants</dt>
+          <dt>{t('audit.summary.breakGlass')}</dt>
           <dd>{counts.breakGlass}</dd>
         </dl>
         <dl className={styles.stat}>
-          <dt>Persona switches</dt>
+          <dt>{t('audit.summary.personaSwitches')}</dt>
           <dd>{counts.personaSwitches}</dd>
         </dl>
       </div>
 
-      <ScreenState state={state} empty={{ title: 'No entries match', text: quick ? 'No break-glass grants or restricted reads in this range. Clear the quick filter to see every act.' : 'Widen the date range or clear the filters. Entries are added as the demo runs.' }}>
+      <ScreenState state={state} empty={{ title: t('audit.empty.title'), text: quick ? t('audit.empty.quick') : t('audit.empty.text') }}>
         <div className={styles.ledger}>
-          <TableWrap label="Audit log">
+          <TableWrap label={t('audit.table.label')}>
             <Table>
               <thead>
                 <tr>
-                  <th scope="col">When</th>
-                  <th scope="col">Who</th>
-                  <th scope="col">Act</th>
-                  <th scope="col">Target</th>
-                  <th scope="col">Reason</th>
-                  <th scope="col">Restricted</th>
-                  <th scope="col">Break-glass expires</th>
+                  <th scope="col">{t('audit.columns.when')}</th>
+                  <th scope="col">{t('audit.columns.who')}</th>
+                  <th scope="col">{t('audit.columns.act')}</th>
+                  <th scope="col">{t('audit.columns.target')}</th>
+                  <th scope="col">{t('audit.columns.reason')}</th>
+                  <th scope="col">{t('audit.columns.restricted')}</th>
+                  <th scope="col">{t('audit.columns.expires')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -254,22 +240,22 @@ export function Audit() {
                       </td>
                       <td>
                         <Pill size="sm" tone={ACT_TONES[a.act]} icon={a.act === 'break-glass' ? <ShieldAlert size={12} aria-hidden="true" /> : undefined}>
-                          {ACT_LABELS[a.act]}
+                          {actLabel(a.act)}
                         </Pill>
                       </td>
                       <td>
                         {href ? <AppLink href={href}>{a.targetLabel}</AppLink> : a.targetLabel}
-                        <span className={styles.targetType}>{TARGET_LABELS[a.targetType]}</span>
+                        <span className={styles.targetType}>{targetLabel(a.targetType)}</span>
                       </td>
                       <td className={styles.reason}>{a.reason ?? ''}</td>
                       <td>
                         {a.restricted ? (
                           <span className={styles.restricted}>
                             <Lock size={12} aria-hidden="true" />
-                            Restricted
+                            {t('common.labels.restricted')}
                           </span>
                         ) : (
-                          <span className={styles.muted}>No</span>
+                          <span className={styles.muted}>{t('common.answers.no')}</span>
                         )}
                       </td>
                       <td className={styles.time}>{a.expiresAt ? formatDateTime(a.expiresAt) : ''}</td>
