@@ -34,6 +34,12 @@
   grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) 0;
 }
 
+/* With the drawer column at zero the drawer itself leaves the page, so nothing overflows or stays in the tab order. */
+.app-shell[data-chrome='minimal'] > aside,
+.app-shell[data-chrome='wide'] > aside {
+  display: none;
+}
+
 .app-content {
   grid-area: content;
   min-width: 0;
