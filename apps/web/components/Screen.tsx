@@ -16,6 +16,7 @@ import { Person360 } from '@/features/person/Person360';
 import { Placeholder } from '@/features/placeholder/Placeholder';
 import { ProcessList } from '@/features/process/ProcessList';
 import { ProcessScreen } from '@/features/process/ProcessScreen';
+import { Reports } from '@/features/reports/Reports';
 import { Search } from '@/features/search/Search';
 import { Settings } from '@/features/settings/Settings';
 import { Sharing } from '@/features/sharing/Sharing';
@@ -56,7 +57,7 @@ export function Screen() {
     case 'connectors':
       return <Connectors />;
     case 'reports':
-      return <Placeholder title="Reports" phase={5} />;
+      return <Reports kind={id} />;
     case 'audit':
       return <Audit />;
     case 'admin':

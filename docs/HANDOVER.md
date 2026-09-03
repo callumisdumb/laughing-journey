@@ -81,7 +81,28 @@ PLACEHOLDER_SCREENSHOTS
 
 ## 6. Known gaps and TODO(verify)
 
-PLACEHOLDER_GAPS
+Everything marked here is either configuration seeded from research rather than a primary source, or a deliberate limit of a mockup with no backend.
+
+### Statutory and local values to verify (also in `docs/RESEARCH.md` and Admin, Timescales)
+- `asp.inquiry.decision` (5 working days), `asp.caseconference.initial` (21 calendar days), `asp.plan.review` (3 months) and `marac.research.return` (5 working days): local values; confirm against the Clydeshore equivalent's own procedures.
+- `cp.cppm.review.first`: seeded at the national 6 months with a note that some areas hold the first review at 3 months; the Aiden Boyle scenario carries a 3 month local override with its reason.
+- `awi.interim.warning`: the 6 month statutory limit is High confidence; the Expert Working Group citation for the warning is Verify.
+- Scottish bank holidays used by working-day clocks (`bankHolidays` in `default-config.ts`): confirm against the published list each year.
+- ASP s52 council officer eligibility wording (`aspCouncilOfficerEligibility`): confirm against the local rule.
+- Report field sets (ASP biennial, CP register, MARAC SafeLives return, MAPPA annual, AWI timeliness): the figures are computed from the dataset, but the column sets follow search extracts of the current templates because the source sites were unreachable through the session proxy. Each report says "Field set to verify against the current template" in its meta line; sources are in `docs/RESEARCH.md` section 5.
+
+### Product limits by design
+- No backend, no real integrations, no authentication. Personas are a switcher; every switch is audited.
+- Connector outage, slow response and speed toggles live in module state and reset on reload (the screen says so).
+- Admin can save the default theme and density (`config.defaults`) but the appearance store does not read them yet; the Defaults screen says they apply to new sign-ins. Small follow-up: read `config.defaults` in `useAppearance.hydrate` when no local preference exists.
+- No global keyboard shortcuts beyond the ones the controls themselves provide (search box, tab lists, rows, dialogs); Help says so rather than listing keys that do not exist.
+- Tauri binary not built in this environment (no GTK or WebKitGTK); see section 4. Electron packaging verified on Linux only.
+- Print packs exist for the chronology and for every report; meeting minutes and case conference packs print through the browser's print of the screen, without a dedicated pack.
+- The MAPPA report is counts only, by design, and the unit test asserts that no name reaches its model.
+
+### Grep points
+- `TODO(verify)` in code marks the two configuration points above; every clock rule with `todoVerify: true` is listed in section 3.
+- `docs/DECISIONS.md` D-041 to D-046 and D-026 carry the domain and layout choices most likely to be questioned.
 
 ## 7. Commands
 
