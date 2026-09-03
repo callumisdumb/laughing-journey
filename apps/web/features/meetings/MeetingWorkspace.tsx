@@ -312,7 +312,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   <div className="cluster" style={{ alignItems: 'flex-end' }}>
                     <SelectField label="Agency" value={requestForm.agency} onChange={(e) => setRequestForm({ ...requestForm, agency: e.target.value as Agency, to: '' })} options={AGENCIES.map((a) => ({ value: a, label: AGENCY_SHORT[a] }))} />
                     <SelectField label="To" value={requestForm.to} onChange={(e) => setRequestForm({ ...requestForm, to: e.target.value })} placeholder="Choose a person" options={personas.filter((u) => u.agency === requestForm.agency).map((u) => ({ value: u.id, label: `${userName(u)}, ${ROLE_DEFINITIONS[u.roleId].label}` }))} />
-                    <DateField label="Due" value={requestForm.due} onChange={(due) => setRequestForm({ ...requestForm, due })} />
+                    <DateField label="Due (dd Mon yyyy)" hint={null} value={requestForm.due} onChange={(due) => setRequestForm({ ...requestForm, due })} />
                     <Button variant="secondary" icon={<Send size={14} aria-hidden="true" />} onClick={sendRequest} disabled={!requestForm.due}>
                       Send request
                     </Button>
@@ -482,7 +482,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                       <TextField label="Action" value={actionForm.title} onChange={(e) => setActionForm({ ...actionForm, title: e.target.value })} placeholder="Say what will happen, by whom, by when" />
                     </div>
                     <SelectField label="Owner" value={actionForm.owner} onChange={(e) => setActionForm({ ...actionForm, owner: e.target.value })} placeholder="Choose an attendee" options={meeting.invitees.filter((i) => i.userId).map((i) => ({ value: i.userId!, label: `${i.name} (${AGENCY_SHORT[i.agency]})` }))} />
-                    <DateField label="Due" value={actionForm.due} onChange={(due) => setActionForm({ ...actionForm, due })} />
+                    <DateField label="Due (dd Mon yyyy)" hint={null} value={actionForm.due} onChange={(due) => setActionForm({ ...actionForm, due })} />
                     <Button variant="primary" onClick={addAction} disabled={!actionForm.owner || !actionForm.due || actionForm.title.trim().length < 5}>
                       Capture action
                     </Button>
@@ -514,7 +514,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                 </div>
                 <div className={styles.form} style={{ marginTop: 12 }}>
                   <div className="cluster" style={{ alignItems: 'flex-end' }}>
-                    <DateField label="Review date" value={reviewDate} onChange={setReviewDate} />
+                    <DateField label="Review date (dd Mon yyyy)" hint={null} value={reviewDate} onChange={setReviewDate} />
                     <Button variant="secondary" onClick={() => { update({ reviewDate: reviewDate || undefined }); toast({ title: 'Review date set', text: reviewDate ? formatDate(reviewDate) : 'Cleared' }); }}>
                       Set review date
                     </Button>

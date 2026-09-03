@@ -227,7 +227,7 @@ export function Defaults() {
             </ul>
             {canEdit ? (
               <div className={styles.addRow}>
-                <DateField label="Add a bank holiday" value={newHoliday} onChange={setNewHoliday} onKeyDown={(e) => e.key === 'Enter' && addHoliday()} error={holidayError} />
+                <DateField label="Add a bank holiday (dd Mon yyyy)" hint={null} value={newHoliday} onChange={setNewHoliday} onKeyDown={(e) => e.key === 'Enter' && addHoliday()} error={holidayError} />
                 <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addHoliday}>
                   Add date
                 </Button>
@@ -256,7 +256,7 @@ export function Defaults() {
             </ul>
             {canEdit ? (
               <div className={styles.addRow}>
-                <DateField label="Add a council holiday" value={newCouncilHoliday} onChange={setNewCouncilHoliday} onKeyDown={(e) => e.key === 'Enter' && addCouncilHoliday()} error={councilHolidayError} />
+                <DateField label="Add a council holiday (dd Mon yyyy)" hint={null} value={newCouncilHoliday} onChange={setNewCouncilHoliday} onKeyDown={(e) => e.key === 'Enter' && addCouncilHoliday()} error={councilHolidayError} />
                 <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addCouncilHoliday}>
                   Add date
                 </Button>

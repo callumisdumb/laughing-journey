@@ -6,6 +6,7 @@ import { TextField } from './Field';
 
 export interface DateFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type' | 'required'> {
   label: ReactNode;
+  /** Omit for the format hint with an example; pass null in a compact row and put the format in the label instead. */
   hint?: ReactNode;
   error?: ReactNode;
   required?: boolean;
@@ -38,7 +39,7 @@ export function DateField({ label, hint, error, required, value, onChange, onBlu
   return (
     <TextField
       label={label}
-      hint={hint ?? `${UI_DATE_FORMAT}, for example ${UI_DATE_EXAMPLE}`}
+      hint={hint === undefined ? `${UI_DATE_FORMAT}, for example ${UI_DATE_EXAMPLE}` : hint || undefined}
       error={error ?? formatError}
       required={required}
       className={cn(styles.date, className)}

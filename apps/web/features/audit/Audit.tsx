@@ -195,8 +195,8 @@ export function Audit() {
         <SelectField label="User" value={userFilter} onChange={(e) => set('user', e.target.value || null)} placeholder="Anyone" options={userOptions} />
         <SelectField label="Agency" value={agencyFilter} onChange={(e) => set('agency', e.target.value || null)} placeholder="All agencies" options={AGENCIES.map((a) => ({ value: a, label: AGENCY_LABELS[a] }))} />
         <SelectField label="Act" value={actFilter} onChange={(e) => set('act', e.target.value || null)} placeholder="All acts" options={AUDIT_ACTS.map((a) => ({ value: a, label: ACT_LABELS[a] }))} />
-        <DateField label="From" value={from} onChange={(v) => set('from', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />
-        <DateField label="To" value={to} onChange={(v) => set('to', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />
+        <DateField label="From (dd Mon yyyy)" hint={null} value={from} onChange={(v) => set('from', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />
+        <DateField label="To (dd Mon yyyy)" hint={null} value={to} onChange={(v) => set('to', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />
       </div>
       <div className={styles.quick}>
         <Switch label="Break-glass and restricted reads only" checked={quick} onChange={(e) => set('quick', e.target.checked ? '1' : null)} />
