@@ -2108,6 +2108,10 @@
       }
     },
     "concern": {
+      "clientGroup": {
+        "maxLength": 24,
+        "where": "Row label on the ASP concern sheet: the workbook's primary client group"
+      },
       "harmTypes": {
         "maxLength": 20,
         "screenshot": "phase-3/process-asp-light-comfortable.png",
@@ -2118,6 +2122,10 @@
         "screenshot": "phase-3/process-asp-light-comfortable.png",
         "where": "Key in the adult concern card"
       },
+      "locationOfHarm": {
+        "maxLength": 24,
+        "where": "Row label on the ASP concern sheet: the workbook's primary location of harm"
+      },
       "meta": {
         "screenshot": "phase-3/process-asp-light-comfortable.png",
         "where": "Meta of the adult concern card: when it was received, from whom and any source reference"
@@ -2126,6 +2134,14 @@
         "maxLength": 20,
         "screenshot": "phase-3/process-asp-light-comfortable.png",
         "where": "Key in the adult concern card"
+      },
+      "primaryHarmType": {
+        "maxLength": 24,
+        "where": "Row label on the ASP concern sheet: the one harm the return counts"
+      },
+      "referralSource": {
+        "maxLength": 24,
+        "where": "Row label on the ASP concern sheet: the workbook's referral source"
       },
       "title": {
         "maxLength": 24,
@@ -5090,73 +5106,160 @@
         "where": "Kind of an analysis note on the chronology screen, print pack and drawer"
       }
     },
+    "aspAgeBands": {
+      "age16to17": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      },
+      "age18to24": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      },
+      "age25to34": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      },
+      "age35to44": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      },
+      "age45to54": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      },
+      "age55to64": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      },
+      "age65to69": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      },
+      "age70to74": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      },
+      "age75to79": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      },
+      "age80to84": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      },
+      "age85plus": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      },
+      "notKnown": {
+        "verbatim": true,
+        "where": "Age band (ASP data workbook 2026-27, indicator 13)"
+      }
+    },
     "aspClientGroups": {
       "acquiredBrainInjury": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Primary client group \"Acquired brain injury\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary client group (ASP data workbook 2026-27, indicator 17)"
       },
       "alcoholRelatedBrainDamage": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Primary client group \"Alcohol related brain damage\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary client group (ASP data workbook 2026-27, indicator 17)"
       },
       "autism": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
-        "verbatim": true,
-        "where": "Primary client group \"Autism/autism spectrum\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary client group (ASP data workbook 2026-27, indicator 17). The workbook spells this two ways: \"Autism / Autism spectrum\" on sheet 17a and \"Autism/ Autism spectrum\" on 17b. 17a is used."
       },
       "dementia": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Primary client group \"Dementia\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary client group (ASP data workbook 2026-27, indicator 17)"
+      },
+      "infirmityFrailty": {
+        "verbatim": true,
+        "where": "Primary client group (ASP data workbook 2026-27, indicator 17)"
       },
       "learningDisability": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Primary client group \"Learning disability\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary client group (ASP data workbook 2026-27, indicator 17)"
       },
       "mentalHealth": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Primary client group \"Mental health (excluding dementia)\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary client group (ASP data workbook 2026-27, indicator 17)"
       },
       "other": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
-        "verbatim": true,
-        "where": "Primary client group \"Other\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary client group (ASP data workbook 2026-27, indicator 17). The workbook row reads \"Other (please specify below)\"; the instruction is dropped and clientGroupOther carries the detail."
       },
       "palliativeCare": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Primary client group \"Palliative care\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary client group (ASP data workbook 2026-27, indicator 17)"
       },
       "physicalDisability": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Primary client group \"Physical disability\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary client group (ASP data workbook 2026-27, indicator 17)"
       },
       "substanceMisuse": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Primary client group \"Substance misuse/addiction\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary client group (ASP data workbook 2026-27, indicator 17)"
+      }
+    },
+    "aspEthnicities": {
+      "african": {
+        "verbatim": true,
+        "where": "Ethnicity, mirroring Scotland's Census 2022 (ASP data workbook 2026-27, indicator 14)"
+      },
+      "asian": {
+        "verbatim": true,
+        "where": "Ethnicity, mirroring Scotland's Census 2022 (ASP data workbook 2026-27, indicator 14)"
+      },
+      "caribbeanOrBlack": {
+        "verbatim": true,
+        "where": "Ethnicity, mirroring Scotland's Census 2022 (ASP data workbook 2026-27, indicator 14)"
+      },
+      "mixedOrMultiple": {
+        "verbatim": true,
+        "where": "Ethnicity, mirroring Scotland's Census 2022 (ASP data workbook 2026-27, indicator 14)"
+      },
+      "notDisclosed": {
+        "verbatim": true,
+        "where": "Ethnicity, mirroring Scotland's Census 2022 (ASP data workbook 2026-27, indicator 14)"
+      },
+      "notKnown": {
+        "verbatim": true,
+        "where": "Ethnicity, mirroring Scotland's Census 2022 (ASP data workbook 2026-27, indicator 14)"
+      },
+      "otherEthnicGroup": {
+        "verbatim": true,
+        "where": "Ethnicity, mirroring Scotland's Census 2022 (ASP data workbook 2026-27, indicator 14)"
+      },
+      "white": {
+        "verbatim": true,
+        "where": "Ethnicity, mirroring Scotland's Census 2022 (ASP data workbook 2026-27, indicator 14)"
       }
     },
     "aspGenders": {
+      "female": {
+        "verbatim": true,
+        "where": "Gender (ASP data workbook 2026-27, indicator 13)"
+      },
+      "male": {
+        "verbatim": true,
+        "where": "Gender (ASP data workbook 2026-27, indicator 13)"
+      },
       "men": {
         "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
         "where": "ASP National Minimum Dataset gender category \"Men\""
       },
       "preferNotToSay": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "ASP National Minimum Dataset gender category \"Prefer not to say\""
+        "where": "Gender (ASP data workbook 2026-27, indicator 13)"
       },
       "transAndNonBinary": {
         "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
         "where": "ASP National Minimum Dataset gender category \"Trans and non-binary\""
+      },
+      "transOrNonBinary": {
+        "verbatim": true,
+        "where": "Gender (ASP data workbook 2026-27, indicator 13)"
       },
       "women": {
         "screenshot": "phase-5/report-asp-light-comfortable.png",
@@ -5164,36 +5267,75 @@
         "where": "ASP National Minimum Dataset gender category \"Women\""
       }
     },
+    "aspHarmLocations": {
+      "careHome": {
+        "verbatim": true,
+        "where": "Primary location of harm (ASP data workbook 2026-27, indicator 16)"
+      },
+      "dayCentre": {
+        "verbatim": true,
+        "where": "Primary location of harm (ASP data workbook 2026-27, indicator 16)"
+      },
+      "independentHospital": {
+        "verbatim": true,
+        "where": "Primary location of harm (ASP data workbook 2026-27, indicator 16)"
+      },
+      "nhsFacility": {
+        "verbatim": true,
+        "where": "Primary location of harm (ASP data workbook 2026-27, indicator 16)"
+      },
+      "notKnown": {
+        "verbatim": true,
+        "where": "Primary location of harm (ASP data workbook 2026-27, indicator 16)"
+      },
+      "online": {
+        "verbatim": true,
+        "where": "Primary location of harm (ASP data workbook 2026-27, indicator 16)"
+      },
+      "other": {
+        "where": "Primary location of harm (ASP data workbook 2026-27, indicator 16). The workbook row reads \"Other (please specify below)\"; the instruction is dropped and locationOfHarmOther carries the detail."
+      },
+      "otherPrivateAddress": {
+        "verbatim": true,
+        "where": "Primary location of harm (ASP data workbook 2026-27, indicator 16)"
+      },
+      "ownHome": {
+        "verbatim": true,
+        "where": "Primary location of harm (ASP data workbook 2026-27, indicator 16)"
+      },
+      "publicPlace": {
+        "verbatim": true,
+        "where": "Primary location of harm (ASP data workbook 2026-27, indicator 16)"
+      },
+      "shelteredOrSupported": {
+        "verbatim": true,
+        "where": "Primary location of harm (ASP data workbook 2026-27, indicator 16)"
+      }
+    },
     "aspInquiryActions": {
       "criteriaNoOpportunity": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Action taken following inquiry, category criteriaNoOpportunity, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+        "where": "Action taken following an inquiry (ASP data workbook 2026-27, indicator 10 and 11)"
       },
       "criteriaOngoing": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Action taken following inquiry, category criteriaOngoing, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+        "where": "Action taken following an inquiry (ASP data workbook 2026-27, indicator 10 and 11)"
       },
       "criteriaSupport": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Action taken following inquiry, category criteriaSupport, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+        "where": "Action taken following an inquiry (ASP data workbook 2026-27, indicator 10 and 11)"
       },
       "noCriteriaNoAction": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Action taken following inquiry, category noCriteriaNoAction, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+        "where": "Action taken following an inquiry (ASP data workbook 2026-27, indicator 10 and 11)"
       },
       "noCriteriaSupport": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Action taken following inquiry, category noCriteriaSupport, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+        "where": "Action taken following an inquiry (ASP data workbook 2026-27, indicator 10 and 11)"
       },
       "pendingUnknown": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Action taken following inquiry, category pendingUnknown, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+        "where": "Action taken following an inquiry (ASP data workbook 2026-27, indicator 10 and 11)"
       }
     },
     "aspInquiryOutcomes": {
@@ -5252,6 +5394,138 @@
       "warrantForEntry": {
         "maxLength": 24,
         "where": "Protection order considered, in the ASP orders panel"
+      }
+    },
+    "aspReferralSources": {
+      "ambulance": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "anonymous": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "careAtHome": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "careHome": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "careInspectorate": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "childrensServices": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "dwpOrSocialSecurityScotland": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "education": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "familyFriendOrNeighbour": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "financialInstitution": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "fireAndRescue": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "his": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "housing": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "mentalHealthServices": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "mwc": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "nhs24": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "nhsAcute": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "nhsCommunityHealth": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "nhsDrugAndAlcohol": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "nhsPrimaryCare": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "opg": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "other": {
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1). The workbook row reads \"Other (please specify below)\"; the instruction is dropped and referralSourceOther carries the detail."
+      },
+      "otherCouncilService": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "otherHealth": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "otherMemberOfThePublic": {
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1). The workbook row reads \"Other member of the public (not covered by 20 or 21)\", whose row numbers do not survive outside the workbook, so the qualifier is dropped."
+      },
+      "outOfRegionSocialWork": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "police": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "prisonService": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "self": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "socialWorkAdults": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "socialWorkChildren": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "thirdSector": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
+      },
+      "unpaidCarer": {
+        "verbatim": true,
+        "where": "ASP referral source (ASP data workbook 2026-27, indicator 1)"
       }
     },
     "aspScreeningOutcomes": {
@@ -6076,59 +6350,50 @@
     },
     "harmTypes": {
       "discriminatory": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Type of harm \"Discriminatory harm\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15)"
       },
       "domesticAbuse": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Type of harm \"Domestic abuse\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15)"
       },
       "financial": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Type of harm \"Financial or material harm\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15)"
+      },
+      "hoarding": {
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15). The workbook cell carries a trailing space, which is trimmed."
       },
       "neglect": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Type of harm \"Neglect and acts of omission\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15)"
       },
       "other": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
-        "verbatim": true,
-        "where": "Type of harm \"Other\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15). The workbook row reads \"Other (please specify below)\"; the instruction to the person filling the workbook is dropped, and harmTypeOther carries the detail."
       },
       "physical": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Type of harm \"Physical harm\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15)"
       },
       "psychological": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Type of harm \"Psychological/emotional harm\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15)"
       },
       "selfHarm": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Type of harm \"Self harm\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15)"
       },
       "selfNeglect": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Type of harm \"Self neglect\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15)"
       },
       "sexual": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Type of harm \"Sexual harm\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15)"
       },
       "trafficking": {
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
         "verbatim": true,
-        "where": "Type of harm \"Human trafficking and/or exploitation\", ASP National Minimum Dataset Annex 2 glossary"
+        "where": "Primary type of harm (ASP data workbook 2026-27, indicator 15)"
       }
     },
     "irdMedicalKinds": {
@@ -6275,6 +6540,35 @@
       "ended": {
         "maxLength": 12,
         "where": "Licence condition status in the MAPPA panel"
+      }
+    },
+    "lsiServiceTypes": {
+      "careHome": {
+        "verbatim": true,
+        "where": "Large Scale Investigation service type (ASP data workbook 2026-27, indicator 19a)"
+      },
+      "communityGroups": {
+        "verbatim": true,
+        "where": "Large Scale Investigation service type (ASP data workbook 2026-27, indicator 19a)"
+      },
+      "nhsCommunityOrSecondary": {
+        "verbatim": true,
+        "where": "Large Scale Investigation service type (ASP data workbook 2026-27, indicator 19a)"
+      },
+      "nhsHospital": {
+        "verbatim": true,
+        "where": "Large Scale Investigation service type (ASP data workbook 2026-27, indicator 19a)"
+      },
+      "nhsPrimaryCare": {
+        "verbatim": true,
+        "where": "Large Scale Investigation service type (ASP data workbook 2026-27, indicator 19a)"
+      },
+      "other": {
+        "where": "Large Scale Investigation service type (ASP data workbook 2026-27, indicator 19a). The workbook row reads \"Other (please specify below)\"; the instruction is dropped."
+      },
+      "supportServices": {
+        "verbatim": true,
+        "where": "Large Scale Investigation service type (ASP data workbook 2026-27, indicator 19a)"
       }
     },
     "lsiStrandStatuses": {
@@ -13129,46 +13423,14 @@
   },
   "reports": {
     "asp": {
-      "ageBands": {
-        "age16to17": {
-          "maxLength": 16,
-          "screenshot": "phase-5/report-asp-light-comfortable.png",
-          "where": "ASP report age band 16 to 17"
+      "attendance": {
+        "adult": {
+          "maxLength": 24,
+          "where": "Row label: the adult at risk, in the case conference attendance table"
         },
-        "age18to24": {
-          "maxLength": 16,
-          "screenshot": "phase-5/report-asp-light-comfortable.png",
-          "where": "ASP report age band 18 to 24"
-        },
-        "age25to39": {
-          "maxLength": 16,
-          "screenshot": "phase-5/report-asp-light-comfortable.png",
-          "where": "ASP report age band 25 to 39"
-        },
-        "age40to54": {
-          "maxLength": 16,
-          "screenshot": "phase-5/report-asp-light-comfortable.png",
-          "where": "ASP report age band 40 to 54"
-        },
-        "age55to64": {
-          "maxLength": 16,
-          "screenshot": "phase-5/report-asp-light-comfortable.png",
-          "where": "ASP report age band 55 to 64"
-        },
-        "age65to74": {
-          "maxLength": 16,
-          "screenshot": "phase-5/report-asp-light-comfortable.png",
-          "where": "ASP report age band 65 to 74"
-        },
-        "age75to84": {
-          "maxLength": 16,
-          "screenshot": "phase-5/report-asp-light-comfortable.png",
-          "where": "ASP report age band 75 to 84"
-        },
-        "age85plus": {
-          "maxLength": 16,
-          "screenshot": "phase-5/report-asp-light-comfortable.png",
-          "where": "ASP report age band 85 and over"
+        "advocate": {
+          "maxLength": 24,
+          "where": "Row label: an independent advocate, in the case conference attendance table"
         }
       },
       "chart": {
@@ -13208,6 +13470,14 @@
         "appliedFor": {
           "maxLength": 16,
           "where": "Column header in the ASP protection orders table"
+        },
+        "attended": {
+          "maxLength": 16,
+          "where": "Column header: how many of those invited attended"
+        },
+        "attendee": {
+          "maxLength": 24,
+          "where": "Column header of the case conference attendance table"
         },
         "careInspectorateNotified": {
           "maxLength": 28,
@@ -13249,6 +13519,10 @@
           "screenshot": "phase-5/report-asp-light-comfortable.png",
           "where": "Column header counting inquiries"
         },
+        "invited": {
+          "maxLength": 16,
+          "where": "Column header: how many invitations were issued"
+        },
         "locationOfHarm": {
           "maxLength": 20,
           "where": "Column header in the ASP location of harm table"
@@ -13273,6 +13547,10 @@
           "maxLength": 12,
           "where": "Column header in the ASP referrals, harm type and location tables"
         },
+        "referralSource": {
+          "maxLength": 24,
+          "where": "Column header: the ASP data workbook's referral source (indicator 1)"
+        },
         "refused": {
           "maxLength": 12,
           "where": "Column header in the ASP protection orders table"
@@ -13292,6 +13570,10 @@
         "strandsOpen": {
           "maxLength": 16,
           "where": "Column header in the ASP Large Scale Investigations table"
+        },
+        "uptake": {
+          "maxLength": 16,
+          "where": "Column header: attendances as a percentage of invitations"
         }
       },
       "conferences": {
@@ -13303,11 +13585,6 @@
           "maxLength": 28,
           "where": "Row label in the ASP case conferences table"
         }
-      },
-      "ethnicityCensus": {
-        "maxLength": 32,
-        "screenshot": "phase-5/report-asp-light-comfortable.png",
-        "where": "The single ethnicity row, standing for the whole census category set"
       },
       "figures": {
         "conferences": {
@@ -13348,20 +13625,6 @@
       "lede": {
         "screenshot": "phase-5/report-asp-light-comfortable.png",
         "where": "Lede under the ASP report title"
-      },
-      "location": {
-        "careHome": {
-          "maxLength": 40,
-          "where": "Row label in the ASP location of harm table, derived from the address"
-        },
-        "hospital": {
-          "maxLength": 16,
-          "where": "Row label in the ASP location of harm table, derived from the address"
-        },
-        "ownHome": {
-          "maxLength": 16,
-          "where": "Row label in the ASP location of harm table, derived from the address"
-        }
       },
       "measures": {
         "adultsDeclined": {
@@ -13410,6 +13673,10 @@
           "screenshot": "phase-5/report-asp-light-comfortable.png",
           "where": "Meta line naming the NMDS Annex 2 glossary as the source of the field set"
         }
+      },
+      "notApplicable": {
+        "maxLength": 24,
+        "where": "Cell value where no invitations were issued, so an uptake percentage would mislead"
       },
       "notCollected": {
         "maxLength": 20,

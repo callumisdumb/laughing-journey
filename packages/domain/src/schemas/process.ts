@@ -4,7 +4,9 @@ import {
   AGENCIES,
   ALL_STAGES,
   ASP_CLIENT_GROUPS,
+  ASP_HARM_LOCATIONS,
   ASP_INQUIRY_ACTIONS,
+  ASP_REFERRAL_SOURCES,
   CASE_PARTY_SOURCES,
   CLASSIFICATIONS,
   CONSENT_STATUSES,
@@ -12,6 +14,7 @@ import {
   CP_DEREGISTRATION_REASONS,
   EXCLUSION_PARTIES,
   HARM_TYPES,
+  LSI_SERVICE_TYPES,
   MAPPA_CATEGORIES,
   MAPPA_LEVELS,
   TRAFFICKING_KINDS,
@@ -97,6 +100,10 @@ export const aspDetailSchema = z.object({
     sourceAgency: z.enum(AGENCIES),
     sourceReference: z.string().optional(),
     summary: z.string(),
+    /** The workbook's referral source (indicator 1), which is finer-grained than the agency list. */
+    referralSource: z.enum(ASP_REFERRAL_SOURCES),
+    /** Free-text detail the workbook asks for where the referral source is Other. */
+    referralSourceOther: z.string().optional(),
     harmTypes: z.array(z.enum(HARM_TYPES)),
     /** The one harm the National Minimum Dataset counts for this inquiry. Defaults to the first recorded. */
     primaryHarmType: z.enum(HARM_TYPES).optional(),
@@ -108,6 +115,14 @@ export const aspDetailSchema = z.object({
     primaryClientGroup: z.enum(ASP_CLIENT_GROUPS).optional(),
     /** Free-text detail the glossary requires where the client group is Other. */
     clientGroupOther: z.string().optional(),
+    /**
+     * The workbook's primary location of harm (indicator 16). Recorded, not derived: reading it off
+     * the adult's address on the day was a guess, and a guess in a national return is worse than
+     * "Not known".
+     */
+    locationOfHarm: z.enum(ASP_HARM_LOCATIONS),
+    /** Free-text detail the workbook asks for where the location is Other. */
+    locationOfHarmOther: z.string().optional(),
     immediateSafety: z.string(),
     policeInvolved: z.boolean(),
   }),
@@ -163,6 +178,12 @@ export const aspDetailSchema = z.object({
   lsi: z.object({
     setting: z.string(),
     provider: z.string(),
+    /** Indicator 19a: the workbook's service type for the setting under investigation. */
+    serviceType: z.enum(LSI_SERVICE_TYPES),
+    /** Indicator 19b: the Care Inspectorate's unique CS number, where the service is registered with it. */
+    careInspectorateCsNumber: z.string().optional(),
+    /** Indicator 19c: the national hospital location code, where the setting is an NHS hospital. */
+    nhsHospitalLocationCode: z.string().optional(),
     strands: z.array(z.object({ subjectId: idSchema, concern: z.string(), status: z.enum(['open', 'reviewed', 'closed']), leadUserId: idSchema.optional() })),
     agenciesInvolved: z.array(z.enum(AGENCIES)),
     careInspectorateNotified: z.boolean(),

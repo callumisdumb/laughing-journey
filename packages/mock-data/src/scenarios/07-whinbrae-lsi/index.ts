@@ -171,8 +171,10 @@ export function seedWhinbraeLsi(ctx: BuildContext): void {
         source: 'Care Inspectorate, following an unannounced inspection on 28 and 29 Jul 2026',
         sourceAgency: 'regulator',
         sourceReference: 'Care Inspectorate notification CI-ASP-2026-0771',
+        referralSource: 'care-inspectorate',
         summary: 'Inspectors found medication administration errors on the July MAR charts affecting several residents: omitted doses, a double dose of an anticoagulant, and time-critical medication given late. One agency nurse covered most of the evening shifts concerned. A separate allegation followed on 5 Aug from a relative about money missing from a resident\'s personal allowance account.',
         harmTypes: ['neglect', 'physical', 'financial'],
+        locationOfHarm: 'care-home',
         immediateSafety: 'The provider agreed on 30 Jul that two registered nurses cover every evening round and that the agency nurse concerned does not work at Whinbrae House pending the investigation. The GP practice reviewed the residents most affected on 31 Jul.',
         policeInvolved: true,
       },
@@ -236,6 +238,10 @@ export function seedWhinbraeLsi(ctx: BuildContext): void {
       lsi: {
         setting: 'Whinbrae House',
         provider: 'Whinbrae House Care (Scotland) Ltd',
+        serviceType: 'care-home',
+        // Indicator 19b: the Care Inspectorate's unique CS number for the registered service. Synthetic,
+        // in the CS number format (CS plus a year and a six-digit sequence) but assigned to no real service.
+        careInspectorateCsNumber: 'CS2026099471',
         strands: [
           { subjectId: wilma.id, concern: 'Money missing from her personal allowance account: withdrawals in June and July that she and her daughter cannot account for.', status: 'open', leadUserId: stuart },
           { subjectId: jean.id, concern: 'Donepezil omitted on six consecutive evenings in July; attorney not informed. Capacity lacking; attorney consulted.', status: 'reviewed', leadUserId: moira },

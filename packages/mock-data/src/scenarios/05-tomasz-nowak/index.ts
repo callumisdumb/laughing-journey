@@ -135,8 +135,12 @@ export function seedTomaszNowak(ctx: BuildContext): void {
         source: 'Scottish Fire and Rescue Service, Community Safety, Dunlarrick (Gordon Nairn) after a home fire safety visit',
         sourceAgency: 'fire-rescue',
         sourceReference: 'SFRS-HFSV-2026-0611',
+        referralSource: 'fire-and-rescue',
         summary: 'Home fire safety visit requested by housing after a neighbour reported the smoke alarm sounding. Newspapers and magazines stacked floor to ceiling in the living room and hall; rear door blocked; one working alarm; paper within half a metre of the cooker. Mr Nowak was polite, accepted alarms and declined help to clear.',
-        harmTypes: ['self-neglect'],
+        // The 2026-27 workbook separates hoarding behaviour from self-neglect, and self-neglect is
+        // qualified "excluding hoarding behaviour". Newspapers stacked floor to ceiling is the former.
+        harmTypes: ['hoarding'],
+        locationOfHarm: 'own-home',
         immediateSafety: 'Fire risk rated high by SFRS. Two additional smoke alarms fitted on the day. Mr Nowak agreed to keep the cooker area clear. No immediate risk to life provided the alarms work; SFRS to re-check within two weeks.',
         policeInvolved: false,
       },
@@ -376,6 +380,8 @@ export function seedTomaszNowak(ctx: BuildContext): void {
       { id: 'dist_tomasz_cc_5', recipientName: `Dr ${name(gp)}`, recipientUserId: gp, agency: 'health', role: 'GP', detailLevel: 'full', reason: 'Report submitted; action owner' },
     ],
     reviewDate: '2026-10-08',
+    // Indicators 5 and 6: invited and attended, which is the uptake the return reports.
+    aspAttendance: { adultInvited: true, adultAttended: true, advocateInvited: true, advocateAttended: true },
     subjectAttendance: 'Mr Nowak attended throughout with Polish interpreter Ewa Zielińska and his advocate Tam Guthrie. He spoke first and was asked for his view before each decision. The minute and plan were sent to him in Polish.',
   });
 
@@ -393,6 +399,7 @@ export function seedTomaszNowak(ctx: BuildContext): void {
     chairName: name(chair),
     minuteTakerUserId: minutes,
     minuteTakerName: name(minutes),
+    aspAttendance: { adultInvited: true, adultAttended: false, advocateInvited: true, advocateAttended: false },
     invitees: [
       ...professional(false),
       { userId: adv, name: name(adv), agency: 'third-sector', role: 'Independent advocate', required: true, attendance: 'accepted', reason: 'Supports Mr Nowak to take part', needToKnowRowId: 'asp.conference.advocate' },

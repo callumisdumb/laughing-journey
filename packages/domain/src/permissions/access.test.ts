@@ -44,7 +44,7 @@ const aspBase = {
   flags: { criminalElement: true },
   parties: [{ userId: 'usr_excluded', party: 'alleged-perpetrator' as const, label: 'Alleged perpetrator (persona)', since: '2026-08-01', source: 'manual' as const, reason: 'Named in the concern' }],
   detail: {
-    concern: { receivedAt: '2026-08-01T09:00:00+01:00', source: 'Bank via police', sourceAgency: 'police' as const, summary: 'x', harmTypes: ['financial' as const], immediateSafety: 'none', policeInvolved: true },
+    concern: { receivedAt: '2026-08-01T09:00:00+01:00', source: 'Bank via police', sourceAgency: 'police' as const, referralSource: 'financial-institution' as const, summary: 'x', harmTypes: ['financial' as const], locationOfHarm: 'own-home' as const, immediateSafety: 'none', policeInvolved: true },
     threePointTest: { assessedAt: '2026-08-01T10:00:00+01:00', byName: 'A', a: { met: 'yes' as const, reasoning: 'r' }, b: { met: 'yes' as const, reasoning: 'r' }, c: { met: 'yes' as const, reasoning: 'r' }, outcome: 'met' as const },
     ordersConsidered: [],
   },

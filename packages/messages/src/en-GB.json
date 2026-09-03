@@ -650,10 +650,14 @@
       "title": "Closure"
     },
     "concern": {
+      "clientGroup": "Primary client group",
       "harmTypes": "Harm types",
       "immediateSafety": "Immediate safety",
+      "locationOfHarm": "Location of harm",
       "meta": "Received {when} from {source} ({agency}){hasReference, select, yes {, {reference}} other {}}",
       "policeInvolved": "Police involved",
+      "primaryHarmType": "Primary type of harm",
+      "referralSource": "Referral source",
       "title": "Adult concern"
     },
     "consent": {
@@ -1587,31 +1591,72 @@
       "recommendation": "Recommendation",
       "risk": "Risk"
     },
+    "aspAgeBands": {
+      "age16to17": "16-17",
+      "age18to24": "18-24",
+      "age25to34": "25-34",
+      "age35to44": "35-44",
+      "age45to54": "45-54",
+      "age55to64": "55-64",
+      "age65to69": "65-69",
+      "age70to74": "70-74",
+      "age75to79": "75-79",
+      "age80to84": "80-84",
+      "age85plus": "85 +",
+      "notKnown": "Not known"
+    },
     "aspClientGroups": {
       "acquiredBrainInjury": "Acquired brain injury",
-      "alcoholRelatedBrainDamage": "Alcohol related brain damage",
-      "autism": "Autism/autism spectrum",
+      "alcoholRelatedBrainDamage": "Alcohol-related brain damage",
+      "autism": "Autism / Autism spectrum",
       "dementia": "Dementia",
-      "learningDisability": "Learning disability",
-      "mentalHealth": "Mental health (excluding dementia)",
+      "infirmityFrailty": "Infirmity/frailty due to age",
+      "learningDisability": "Learning Disability",
+      "mentalHealth": "Mental Health (excl. dementia)",
       "other": "Other",
       "palliativeCare": "Palliative care",
-      "physicalDisability": "Physical disability",
+      "physicalDisability": "Physical Disability",
       "substanceMisuse": "Substance misuse/addiction"
     },
+    "aspEthnicities": {
+      "african": "African, Scottish African or British African",
+      "asian": "Asian, Scottish Asian or British Asian",
+      "caribbeanOrBlack": "Caribbean or Black",
+      "mixedOrMultiple": "Mixed or multiple ethnic groups",
+      "notDisclosed": "Not disclosed",
+      "notKnown": "Not known",
+      "otherEthnicGroup": "Other ethnic group",
+      "white": "White"
+    },
     "aspGenders": {
+      "female": "Female",
+      "male": "Male",
       "men": "Men",
       "preferNotToSay": "Prefer not to say",
       "transAndNonBinary": "Trans and non-binary",
+      "transOrNonBinary": "Trans or non-binary",
       "women": "Women"
+    },
+    "aspHarmLocations": {
+      "careHome": "Care Home",
+      "dayCentre": "Day Centre",
+      "independentHospital": "Independent hospital",
+      "nhsFacility": "NHS facility",
+      "notKnown": "Not known",
+      "online": "Online",
+      "other": "Other",
+      "otherPrivateAddress": "Other private address",
+      "ownHome": "Own home",
+      "publicPlace": "Public place",
+      "shelteredOrSupported": "Sheltered housing/other supported accommodation"
     },
     "aspInquiryActions": {
       "criteriaNoOpportunity": "Meets three-point criteria — no opportunity for further ASP intervention",
-      "criteriaOngoing": "Meets three-point criteria – ongoing ASP work",
+      "criteriaOngoing": "Meets three-point criteria — ongoing ASP work",
       "criteriaSupport": "Meets three-point criteria — non-ASP support provided or offered",
-      "noCriteriaNoAction": "Does not meet the three-point criteria – no further action",
-      "noCriteriaSupport": "Does not meet the three-point criteria – non-ASP support offered or provided",
-      "pendingUnknown": "Pending / Unknown"
+      "noCriteriaNoAction": "Does not meet three-point criteria — NFA",
+      "noCriteriaSupport": "Does not meet three point criteria - non-ASP support provided or offered",
+      "pendingUnknown": "Pending/Unknown"
     },
     "aspInquiryOutcomes": {
       "noFurtherAction": "No further action",
@@ -1631,6 +1676,41 @@
       "banningOrderS19": "Banning order (s19)",
       "removalOrderS14": "Removal order (s14)",
       "warrantForEntry": "Warrant for entry"
+    },
+    "aspReferralSources": {
+      "ambulance": "Scottish Ambulance Service",
+      "anonymous": "Anonymous",
+      "careAtHome": "Care at home provider",
+      "careHome": "Care Home",
+      "careInspectorate": "Care Inspectorate",
+      "childrensServices": "Children's Services",
+      "dwpOrSocialSecurityScotland": "DWP / Social Security Scotland",
+      "education": "Education",
+      "familyFriendOrNeighbour": "Family, friend or neighbour (who is not an unpaid carer)",
+      "financialInstitution": "Financial institution",
+      "fireAndRescue": "Scottish Fire and Rescue",
+      "his": "Healthcare Improvement Scotland",
+      "housing": "Housing",
+      "mentalHealthServices": "Mental Health Services – Hospital and Community",
+      "mwc": "Mental Welfare Commission for Scotland",
+      "nhs24": "NHS 24",
+      "nhsAcute": "NHS Acute Services",
+      "nhsCommunityHealth": "NHS Community Health Services",
+      "nhsDrugAndAlcohol": "NHS Specialist Drug and Alcohol Services",
+      "nhsPrimaryCare": "NHS Primary Care",
+      "opg": "Office of the Public Guardian",
+      "other": "Other",
+      "otherCouncilService": "Other local authority service (internal) excluding social work",
+      "otherHealth": "Other health (eg public health, private healthcare, prison healthcare)",
+      "otherMemberOfThePublic": "Other member of the public",
+      "outOfRegionSocialWork": "Out of region social work / other (external) local authority",
+      "police": "Police Scotland",
+      "prisonService": "Scottish Prison Service",
+      "self": "Self (adult at risk)",
+      "socialWorkAdults": "Social Work - Adults (including MHOs)",
+      "socialWorkChildren": "Social work - Children and Families",
+      "thirdSector": "Third sector organisation (not covered by the above)",
+      "unpaidCarer": "Unpaid carer"
     },
     "aspScreeningOutcomes": {
       "emergencyAction": "Emergency action",
@@ -1910,15 +1990,16 @@
     "harmTypes": {
       "discriminatory": "Discriminatory harm",
       "domesticAbuse": "Domestic abuse",
-      "financial": "Financial or material harm",
-      "neglect": "Neglect and acts of omission",
+      "financial": "Financial or Material harm",
+      "hoarding": "Hoarding behaviour",
+      "neglect": "Neglect and Acts of Omission",
       "other": "Other",
       "physical": "Physical harm",
       "psychological": "Psychological/emotional harm",
       "selfHarm": "Self harm",
-      "selfNeglect": "Self neglect",
+      "selfNeglect": "Self-neglect (excluding hoarding behaviour)",
       "sexual": "Sexual harm",
-      "trafficking": "Human trafficking and/or exploitation"
+      "trafficking": "Human trafficking and/or Exploitation"
     },
     "irdMedicalKinds": {
       "comprehensive": "Comprehensive",
@@ -1974,6 +2055,15 @@
       "active": "Active",
       "breached": "Breached",
       "ended": "Ended"
+    },
+    "lsiServiceTypes": {
+      "careHome": "Care homes",
+      "communityGroups": "Community groups (religious settings etc)",
+      "nhsCommunityOrSecondary": "NHS Community/Secondary Care",
+      "nhsHospital": "NHS Hospital",
+      "nhsPrimaryCare": "NHS Primary Care (excl. Hospital) eg GP staff, dentists etc.",
+      "other": "Other",
+      "supportServices": "Support services (adult day care, care at home, sheltered housing or small group living support, etc)"
     },
     "lsiStrandStatuses": {
       "closed": "Closed",
@@ -4149,15 +4239,9 @@
   },
   "reports": {
     "asp": {
-      "ageBands": {
-        "age16to17": "16 to 17",
-        "age18to24": "18 to 24",
-        "age25to39": "25 to 39",
-        "age40to54": "40 to 54",
-        "age55to64": "55 to 64",
-        "age65to74": "65 to 74",
-        "age75to84": "75 to 84",
-        "age85plus": "85 and over"
+      "attendance": {
+        "adult": "Adult at risk",
+        "advocate": "Independent advocate"
       },
       "chart": {
         "summary": "Referrals by quarter and source agency: {referrals, plural, one {# referral} other {# referrals}} over {quarters, plural, one {# quarter} other {# quarters}}{from}.",
@@ -4171,6 +4255,8 @@
         "ageBand": "Age band",
         "agenciesInvolved": "Agencies involved",
         "appliedFor": "Applied for",
+        "attended": "Attended",
+        "attendee": "Invited to attend",
         "careInspectorateNotified": "Care Inspectorate notified",
         "clientGroup": "Primary client group",
         "drafting": "Application in drafting",
@@ -4180,23 +4266,25 @@
         "harmType": "Harm type",
         "held": "Held in period",
         "inquiries": "Inquiries",
+        "invited": "Invitations",
         "locationOfHarm": "Location of harm",
         "meeting": "Meeting",
         "notRequired": "Considered, not required",
         "order": "Order",
         "provider": "Provider",
         "referrals": "Referrals",
+        "referralSource": "Referral source",
         "refused": "Refused",
         "scheduled": "Scheduled, not yet held",
         "setting": "Setting",
         "sourceAgency": "Source agency",
-        "strandsOpen": "Strands open"
+        "strandsOpen": "Strands open",
+        "uptake": "Uptake"
       },
       "conferences": {
         "initial": "Initial case conference",
         "review": "Review case conference"
       },
-      "ethnicityCensus": "Census categories (all)",
       "figures": {
         "conferences": "Case conferences held",
         "inquiries": "Inquiries",
@@ -4208,11 +4296,6 @@
       },
       "hint": "{count, plural, one {# referral} other {# referrals}}",
       "lede": "The activity figures an Adult Protection Committee needs for its biennial report, computed from the adult concern records, inquiries undertaken with and without the use of investigatory powers, case conferences and orders in the record store.",
-      "location": {
-        "careHome": "Care home or other regulated setting",
-        "hospital": "Hospital",
-        "ownHome": "Own home"
-      },
       "measures": {
         "adultsDeclined": "Adults who declined to be interviewed",
         "advocacyOffered": "Inquiries where independent advocacy was offered",
@@ -4228,6 +4311,7 @@
         "computed": "Computed {dateTime} from the local record store: {records, plural, one {# ASP record} other {# ASP records}} in total, {referrals} with a concern received in the period, about {adults, plural, one {# adult} other {# adults}}.",
         "fieldSet": "Field set from the ASP National Minimum Dataset 2024-25 Annex 2 glossary. The dataset counts inquiries undertaken with and without the use of investigatory powers."
       },
+      "notApplicable": "Not applicable",
       "notCollected": "Not collected",
       "orders": {
         "assessmentOrderS11": "Assessment order (section 11)",

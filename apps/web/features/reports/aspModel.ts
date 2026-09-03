@@ -2,35 +2,21 @@
  * ASP biennial report figures, computed from adult concern records, inquiries, investigations,
  * case conferences and orders in the record store for the chosen biennium.
  */
-import { AGENCIES, ASP_CLIENT_GROUPS, ASP_GENDERS, ASP_INQUIRY_ACTIONS, HARM_TYPES, ageAt, agencyShort, aspClientGroupLabel, aspGenderLabel, aspInquiryActionLabel, formatDateTime, harmTypeLabel, localDateOf, type AspProcess, type Dataset } from '@mas/domain';
+import { AGENCIES, ASP_AGE_BANDS, ASP_CLIENT_GROUPS, ASP_ETHNICITIES, ASP_GENDERS, ASP_HARM_LOCATIONS, ASP_INQUIRY_ACTIONS, ASP_REFERRAL_SOURCES, HARM_TYPES, ageAt, agencyShort, aspAgeBandLabel, aspAgeBandOf, aspClientGroupLabel, aspEthnicityLabel, aspGenderLabel, aspHarmLocationLabel, aspInquiryActionLabel, aspReferralSourceLabel, formatDateTime, harmTypeLabel, localDateOf, type AspProcess, type Dataset } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
 import { agencyColourVar } from '@mas/ui';
-import { personById } from '@/lib/selectors';
-import { addressLineAt } from './helpers';
 import { countBy, messageSegment, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
 import { inPeriod, quarterKeyOf, quartersIn, type Period } from './period';
 
 const ORDER_TYPES = ['assessment-order-s11', 'removal-order-s14', 'banning-order-s19', 'warrant-for-entry'] as const;
 type OrderType = (typeof ORDER_TYPES)[number];
 type OrderDecision = AspProcess['detail']['ordersConsidered'][number]['decision'];
-type Location = 'care-home' | 'hospital' | 'own-home';
 
 const orderLabel = (type: OrderType) => tKey(`reports.asp.orders.${messageSegment(type)}`);
-const locationLabel = (location: Location) => tKey(`reports.asp.location.${messageSegment(location)}`);
 
 function investigationStartedAt(p: AspProcess): string | undefined {
   if (!p.detail.investigation) return undefined;
   return p.stageHistory.find((s) => s.stage === 'investigation')?.at ?? p.detail.investigation.visits[0]?.at;
-}
-
-/** The concern record has no location field yet, so the location is read from the adult's address on the day. */
-function locationOfHarm(data: Dataset, p: AspProcess): Location {
-  if (p.detail.lsi) return 'care-home';
-  const subject = personById(data, p.subjectIds[0]);
-  const line = subject ? (addressLineAt(data, subject, p.detail.concern.receivedAt) ?? '') : '';
-  if (/care home/i.test(line)) return 'care-home';
-  if (/infirmary|hospital|ward/i.test(line)) return 'hospital';
-  return 'own-home';
 }
 
 export function aspModel(data: Dataset, now: Date, period: Period): ReportModel {
@@ -81,7 +67,18 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
   const harm = countBy(referrals, (p) => { const h = primaryHarm(p); return h ? [h] : []; });
   const clientGroup = countBy(referrals, (p) => { const g = p.detail.concern.primaryClientGroup; return g ? [g] : []; });
   const inquiryAction = countBy(inquiries, (p) => { const a = p.detail.inquiry?.action; return a ? [a] : ['pending-unknown']; });
-  const location = countBy(referrals, (p) => locationOfHarm(data, p));
+  const location = countBy(referrals, (p) => p.detail.concern.locationOfHarm);
+  const referralSource = countBy(referrals, (p) => p.detail.concern.referralSource);
+
+  // Indicator 1: the workbook's own thirty-three sources, in its order, showing only the ones with a
+  // figure. The by-agency table stays as well: it is the one an area's own oversight group reads.
+  const referralSourceTable: TableSpec = {
+    id: 'asp-referrals-by-source',
+    columns: [t('reports.asp.columns.referralSource'), t('reports.asp.columns.referrals')],
+    numeric: [1],
+    rows: ASP_REFERRAL_SOURCES.filter((source) => (referralSource.get(source) ?? 0) > 0).map((source) => [aspReferralSourceLabel(source), referralSource.get(source) ?? 0]),
+    empty: t('reports.asp.tables.referralsEmpty'),
+  };
 
   const referralTable: TableSpec = {
     id: 'asp-referrals-by-agency',
@@ -119,6 +116,26 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     ],
   };
 
+  // Indicators 5 and 6: invitations to a case conference and the uptake of them, for the adult at
+  // risk and for an independent advocate. The uptake is the point of the pair, so it is reported as
+  // a percentage of the invitations rather than as a second raw count, and reads as not applicable
+  // where nobody was invited: nought per cent of nothing is a false negative.
+  const invitations = (of: 'adult' | 'advocate') => conferences.filter((m) => (of === 'adult' ? m.aspAttendance?.adultInvited : m.aspAttendance?.advocateInvited)).length;
+  const uptake = (of: 'adult' | 'advocate') => conferences.filter((m) => (of === 'adult' ? m.aspAttendance?.adultAttended : m.aspAttendance?.advocateAttended)).length;
+  const uptakePercent = (of: 'adult' | 'advocate') => {
+    const invited = invitations(of);
+    return invited === 0 ? t('reports.asp.notApplicable') : `${Math.round((uptake(of) / invited) * 100)}%`;
+  };
+  const attendanceTable: TableSpec = {
+    id: 'asp-conference-attendance',
+    columns: [t('reports.asp.columns.attendee'), t('reports.asp.columns.invited'), t('reports.asp.columns.attended'), t('reports.asp.columns.uptake')],
+    numeric: [1, 2],
+    rows: [
+      [t('reports.asp.attendance.adult'), invitations('adult'), uptake('adult'), uptakePercent('adult')],
+      [t('reports.asp.attendance.advocate'), invitations('advocate'), uptake('advocate'), uptakePercent('advocate')],
+    ],
+  };
+
   const orderTable: TableSpec = {
     id: 'asp-orders',
     columns: [t('reports.asp.columns.order'), t('reports.asp.columns.granted'), t('reports.asp.columns.appliedFor'), t('reports.asp.columns.refused'), t('reports.asp.columns.drafting'), t('reports.asp.columns.notRequired')],
@@ -152,26 +169,17 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     rows: ASP_CLIENT_GROUPS.map((g) => [aspClientGroupLabel(g), clientGroup.get(g) ?? 0]),
   };
 
-  // Age and gender. The NMDS revised its age bandings to align with other national datasets and the
-  // glossary does not print the list, so the platform's bands stay and say so; the 16 and 17 band is
-  // kept distinct because the indicator has a category for it. Gender has four categories: the record
-  // holds sex, so trans and non-binary and prefer not to say read as not collected rather than zero.
-  const ageBands: Array<[string, (age: number) => boolean]> = [
-    [t('reports.asp.ageBands.age16to17'), (age) => age >= 16 && age <= 17],
-    [t('reports.asp.ageBands.age18to24'), (age) => age >= 18 && age <= 24],
-    [t('reports.asp.ageBands.age25to39'), (age) => age >= 25 && age <= 39],
-    [t('reports.asp.ageBands.age40to54'), (age) => age >= 40 && age <= 54],
-    [t('reports.asp.ageBands.age55to64'), (age) => age >= 55 && age <= 64],
-    [t('reports.asp.ageBands.age65to74'), (age) => age >= 65 && age <= 74],
-    [t('reports.asp.ageBands.age75to84'), (age) => age >= 75 && age <= 84],
-    [t('reports.asp.ageBands.age85plus'), (age) => age >= 85],
-  ];
-  const adultAges = referrals.flatMap((p) => p.subjectIds.map((id) => data.people.find((x) => x.id === id))).filter((person) => person?.dateOfBirth).map((person) => ageAt(person!.dateOfBirth!, now));
+  // Age and gender, indicator 13. The twelve bands are the workbook's own and live in the domain
+  // package with the ranges they cover, so the report and the export cannot disagree about them. An
+  // adult with no date of birth lands in "Not known" rather than being dropped from the table.
+  // Gender has four categories: the record holds sex, so trans or non-binary and prefer not to say
+  // read as not collected rather than zero. A return that reports zero has claimed to have asked.
+  const adultAges = referrals.flatMap((p) => p.subjectIds.map((id) => data.people.find((x) => x.id === id))).map((person) => (person?.dateOfBirth ? ageAt(person.dateOfBirth, now) : undefined));
   const ageTable: TableSpec = {
     id: 'asp-age',
     columns: [t('reports.asp.columns.ageBand'), t('reports.asp.columns.adults')],
     numeric: [1],
-    rows: ageBands.map(([label, test]) => [label, adultAges.filter(test).length]),
+    rows: ASP_AGE_BANDS.map((band) => [aspAgeBandLabel(band), adultAges.filter((age) => aspAgeBandOf(age) === band).length]),
   };
 
   const sexOf = (p: AspProcess) => data.people.find((x) => x.id === p.subjectIds[0])?.sex;
@@ -180,32 +188,35 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     columns: [t('reports.asp.columns.gender'), t('reports.asp.columns.adults')],
     numeric: [1],
     rows: ASP_GENDERS.map((g) => {
-      if (g === 'men') return [aspGenderLabel(g), referrals.filter((p) => sexOf(p) === 'male').length];
-      if (g === 'women') return [aspGenderLabel(g), referrals.filter((p) => sexOf(p) === 'female').length];
+      if (g === 'male') return [aspGenderLabel(g), referrals.filter((p) => sexOf(p) === 'male').length];
+      if (g === 'female') return [aspGenderLabel(g), referrals.filter((p) => sexOf(p) === 'female').length];
       return [aspGenderLabel(g), t('reports.asp.notCollected')];
     }),
   };
 
-  // Ethnicity is based on census categories for comparability. The dataset holds none, by design.
+  // Ethnicity, indicator 14: the eight categories mirror Scotland's Census 2022 for comparability.
+  // Every row is present and every one reads as not collected, because the dataset holds no ethnicity
+  // by design (brief section 9). A return that showed zero in every category would be claiming to
+  // have asked and been told nothing; showing the rows and saying they are not held is the honest form.
   const ethnicityTable: TableSpec = {
     id: 'asp-ethnicity',
     columns: [t('reports.asp.columns.ethnicity'), t('reports.asp.columns.adults')],
     numeric: [1],
-    rows: [[t('reports.asp.ethnicityCensus'), t('reports.asp.notCollected')]],
+    rows: ASP_ETHNICITIES.map((e) => [aspEthnicityLabel(e), t('reports.asp.notCollected')]),
   };
 
   const locationTable: TableSpec = {
     id: 'asp-location',
     columns: [t('reports.asp.columns.locationOfHarm'), t('reports.asp.columns.referrals')],
     numeric: [1],
-    rows: [...location.entries()].sort((a, b) => b[1] - a[1]).map(([k, v]) => [locationLabel(k), v]),
+    rows: ASP_HARM_LOCATIONS.map((l) => [aspHarmLocationLabel(l), location.get(l) ?? 0]),
     empty: t('reports.asp.tables.referralsEmpty'),
   };
 
   const sections: ReportSection[] = [
-    { id: 'referrals', title: t('reports.asp.sections.referrals'), note: t('reports.asp.sections.referralsNote'), chart, tables: [referralTable] },
+    { id: 'referrals', title: t('reports.asp.sections.referrals'), note: t('reports.asp.sections.referralsNote'), chart, tables: [referralSourceTable, referralTable] },
     { id: 'inquiries', title: t('reports.asp.sections.inquiries'), note: t('reports.asp.sections.inquiriesNote'), tables: [inquiryTable] },
-    { id: 'conferences', title: t('reports.asp.sections.conferences'), note: t('reports.asp.sections.conferencesNote'), tables: [conferenceTable] },
+    { id: 'conferences', title: t('reports.asp.sections.conferences'), note: t('reports.asp.sections.conferencesNote'), tables: [conferenceTable, attendanceTable] },
     { id: 'orders', title: t('reports.asp.sections.orders'), note: t('reports.asp.sections.ordersNote', { granted: granted === 0 ? 'none' : 'some', drafting }), tables: [orderTable] },
     { id: 'lsi', title: t('reports.asp.sections.lsi'), note: t('reports.asp.sections.lsiNote'), tables: [lsiTable] },
     { id: 'harm', title: t('reports.asp.sections.harm'), note: t('reports.asp.sections.harmNote'), tables: [harmTable] },

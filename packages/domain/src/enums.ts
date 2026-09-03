@@ -520,9 +520,13 @@ export function roleLabel(id: RoleId): string {
 export const ROLE_DEFINITIONS: Record<RoleId, RoleDefinition> = ROLE_DATA;
 
 /**
- * Types of harm, in the order and with the labels of the ASP National Minimum Dataset (Annex 2
- * glossary of the 2024-25 technical report). The return counts one primary harm per inquiry; the
- * record may carry more than one, and `primaryHarmType` on the concern says which one is counted.
+ * Types of harm, in the order and with the labels of indicator 15 of the ASP data workbook 2026-27
+ * (sheet "15 TYPES OF HARM", rows A7 to A18). Hoarding behaviour is its own type, which is why
+ * self-neglect is qualified "excluding hoarding behaviour": the workbook separates them and a return
+ * that folds one into the other does not agree with the template it is filling.
+ *
+ * The return counts one primary harm per inquiry; the record may carry more than one, and
+ * `primaryHarmType` on the concern says which one is counted.
  */
 export const HARM_TYPES = [
   'physical',
@@ -535,6 +539,7 @@ export const HARM_TYPES = [
   'self-neglect',
   'domestic-abuse',
   'trafficking',
+  'hoarding',
   'other',
 ] as const;
 export type HarmType = (typeof HARM_TYPES)[number];
@@ -555,16 +560,21 @@ export function traffickingKindLabel(kind: TraffickingKind): string {
  * Primary client group: the NMDS's term for the primary vulnerability someone has which would
  * potentially contribute to their meeting the three-point criteria. Only the primary group is
  * collected. The autism category needs no formal diagnosis.
+ *
+ * Eleven groups, in the order of indicator 17 of the ASP data workbook 2026-27 (sheet
+ * "17 CLIENT GROUP", rows A7 to A18). Infirmity or frailty due to age is a group in its own right:
+ * folding it into physical disability would hide the largest single group in most areas' returns.
  */
 export const ASP_CLIENT_GROUPS = [
-  'acquired-brain-injury',
-  'alcohol-related-brain-damage',
-  'autism',
   'dementia',
   'mental-health',
   'learning-disability',
-  'palliative-care',
+  'autism',
   'physical-disability',
+  'infirmity-frailty',
+  'palliative-care',
+  'acquired-brain-injury',
+  'alcohol-related-brain-damage',
   'substance-misuse',
   'other',
 ] as const;
@@ -575,15 +585,20 @@ export function aspClientGroupLabel(group: AspClientGroup): string {
 }
 
 /**
- * Actions taken following inquiries: the NMDS's six categories, and the closest thing the return
- * has to an outcome taxonomy, so they drive ASP closure as well as the report. The labels are the
- * glossary's own, including its inconsistent dashes, and are flagged verbatim in the catalogue.
+ * Actions taken following inquiries: indicators 10 and 11 of the ASP data workbook 2026-27 (sheet
+ * "10-11 ACTIONS TAKEN", rows A7 to A13), in the workbook's order. These are the closest thing the
+ * return has to an outcome taxonomy, so they drive ASP closure as well as the report.
+ *
+ * The labels are the workbook's own, character for character, including the em dashes in five of the
+ * six and the hyphen in the odd one out. They are flagged `verbatim` in the context file so the copy
+ * checker does not normalise them (D-055): paraphrasing a mandated field label would make a
+ * submitted return disagree with the template it is filling.
  */
 export const ASP_INQUIRY_ACTIONS = [
   'no-criteria-no-action',
   'no-criteria-support',
-  'criteria-support',
   'criteria-ongoing',
+  'criteria-support',
   'criteria-no-opportunity',
   'pending-unknown',
 ] as const;
@@ -606,8 +621,165 @@ export function isSeniorCouncilOfficer(roleId: RoleId): boolean {
   return role.organisation === 'council' && (LSI_CHAIR_ROLES as readonly string[]).includes(roleId);
 }
 
-/** The NMDS gender categories. The record holds sex, so the last two read as not collected. */
-export const ASP_GENDERS = ['men', 'women', 'trans-and-non-binary', 'prefer-not-to-say'] as const;
+/**
+ * The twelve age bands of indicator 13 of the ASP data workbook 2026-27 (sheet "13 AGE & GENDER",
+ * rows A7 to A18). The bands were revised for data collected at inquiry stage and are narrower
+ * above 65 than the earlier set, because that is where the volume is. The 16 to 17 band captures
+ * adults in transition from or spanning children's and adult services.
+ */
+export const ASP_AGE_BANDS = [
+  'age16to17',
+  'age18to24',
+  'age25to34',
+  'age35to44',
+  'age45to54',
+  'age55to64',
+  'age65to69',
+  'age70to74',
+  'age75to79',
+  'age80to84',
+  'age85plus',
+  'notKnown',
+] as const;
+export type AspAgeBand = (typeof ASP_AGE_BANDS)[number];
+
+/** The inclusive age range each band covers. `notKnown` covers no range: a missing date of birth lands there. */
+export const ASP_AGE_BAND_RANGES: Record<AspAgeBand, { from: number; to?: number } | undefined> = {
+  age16to17: { from: 16, to: 17 },
+  age18to24: { from: 18, to: 24 },
+  age25to34: { from: 25, to: 34 },
+  age35to44: { from: 35, to: 44 },
+  age45to54: { from: 45, to: 54 },
+  age55to64: { from: 55, to: 64 },
+  age65to69: { from: 65, to: 69 },
+  age70to74: { from: 70, to: 74 },
+  age75to79: { from: 75, to: 79 },
+  age80to84: { from: 80, to: 84 },
+  age85plus: { from: 85 },
+  notKnown: undefined,
+};
+
+export function aspAgeBandLabel(band: AspAgeBand): string {
+  return tKey(`domain.aspAgeBands.${band}`);
+}
+
+/** The band an age falls in, or `notKnown` where there is no age. */
+export function aspAgeBandOf(age: number | undefined): AspAgeBand {
+  if (age === undefined || Number.isNaN(age)) return 'notKnown';
+  for (const band of ASP_AGE_BANDS) {
+    const range = ASP_AGE_BAND_RANGES[band];
+    if (range && age >= range.from && (range.to === undefined || age <= range.to)) return band;
+  }
+  return 'notKnown';
+}
+
+/**
+ * The eight ethnicity categories of indicator 14 of the ASP data workbook 2026-27 (sheet
+ * "14 ETHNICITY", rows A6 to A13). They mirror Scotland's Census 2022 question set so the return is
+ * comparable with it. This product's dataset holds no ethnicity by design (brief section 9), so the
+ * return reports it as not held rather than as zero in every category.
+ */
+export const ASP_ETHNICITIES = ['white', 'mixed-or-multiple', 'asian', 'african', 'caribbean-or-black', 'other-ethnic-group', 'not-disclosed', 'not-known'] as const;
+export type AspEthnicity = (typeof ASP_ETHNICITIES)[number];
+
+export function aspEthnicityLabel(ethnicity: AspEthnicity): string {
+  return tKey(`domain.aspEthnicities.${keySegment(ethnicity)}`);
+}
+
+/**
+ * The eleven locations of harm of indicator 16 of the ASP data workbook 2026-27 (sheet
+ * "16 LOCATION OF HARM", rows A7 to A17). Primary location only. The concern record carries the
+ * location as a field of its own: deriving it from the adult's address on the day was a guess, and a
+ * guess in a national return is worse than "Not known".
+ */
+export const ASP_HARM_LOCATIONS = [
+  'own-home',
+  'other-private-address',
+  'care-home',
+  'sheltered-or-supported',
+  'day-centre',
+  'public-place',
+  'nhs-facility',
+  'independent-hospital',
+  'online',
+  'other',
+  'not-known',
+] as const;
+export type AspHarmLocation = (typeof ASP_HARM_LOCATIONS)[number];
+
+export function aspHarmLocationLabel(location: AspHarmLocation): string {
+  return tKey(`domain.aspHarmLocations.${keySegment(location)}`);
+}
+
+/**
+ * The seven service types of indicator 19a of the ASP data workbook 2026-27 (sheet "19 LSIs", rows
+ * A8 to A14). Where the service is registered with the Care Inspectorate the return also carries its
+ * unique CS number (19b); an NHS hospital carries the national hospital location code (19c).
+ */
+export const LSI_SERVICE_TYPES = ['care-home', 'support-services', 'nhs-hospital', 'nhs-primary-care', 'nhs-community-or-secondary', 'community-groups', 'other'] as const;
+export type LsiServiceType = (typeof LSI_SERVICE_TYPES)[number];
+
+export function lsiServiceTypeLabel(type: LsiServiceType): string {
+  return tKey(`domain.lsiServiceTypes.${keySegment(type)}`);
+}
+
+/**
+ * The thirty-three referral sources of indicator 1 of the ASP data workbook 2026-27 (sheet
+ * "1 ASP REFERRALS", rows A6 to A38), in the workbook's order.
+ *
+ * The list is finer-grained than the product's agency list on purpose: the indicator exists to show
+ * which stakeholders are referring, so that training and awareness raising can be aimed at the ones
+ * that are not. Several sources map to one agency (four NHS rows to `nhs`), and several map to no
+ * agency at all (self, unpaid carer, anonymous), so `referralSource` on the concern is its own field
+ * rather than something derived from `sourceAgency`.
+ */
+export const ASP_REFERRAL_SOURCES = [
+  'mwc',
+  'care-inspectorate',
+  'his',
+  'opg',
+  'police',
+  'nhs-24',
+  'nhs-primary-care',
+  'nhs-acute',
+  'nhs-drug-and-alcohol',
+  'nhs-community-health',
+  'mental-health-services',
+  'other-health',
+  'social-work-adults',
+  'social-work-children',
+  'out-of-region-social-work',
+  'other-council-service',
+  'ambulance',
+  'fire-and-rescue',
+  'prison-service',
+  'care-home',
+  'care-at-home',
+  'housing',
+  'education',
+  'childrens-services',
+  'self',
+  'unpaid-carer',
+  'family-friend-or-neighbour',
+  'other-member-of-the-public',
+  'third-sector',
+  'financial-institution',
+  'dwp-or-social-security-scotland',
+  'anonymous',
+  'other',
+] as const;
+export type AspReferralSource = (typeof ASP_REFERRAL_SOURCES)[number];
+
+export function aspReferralSourceLabel(source: AspReferralSource): string {
+  return tKey(`domain.aspReferralSources.${keySegment(source)}`);
+}
+
+/**
+ * The four gender categories of indicator 13 of the ASP data workbook 2026-27 (sheet
+ * "13 AGE & GENDER", rows A46 to A49). The record holds sex, so the last two read as not collected
+ * rather than zero: a return that reports zero trans or non-binary adults is claiming to have asked.
+ */
+export const ASP_GENDERS = ['male', 'female', 'trans-or-non-binary', 'prefer-not-to-say'] as const;
 export type AspGender = (typeof ASP_GENDERS)[number];
 
 export function aspGenderLabel(gender: AspGender): string {

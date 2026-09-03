@@ -116,7 +116,7 @@ const asp: Process = {
   stage: 'case-conference',
   parties: [{ userId: 'usr_alleged', party: 'alleged-perpetrator', label: 'Alleged perpetrator (persona)', source: 'manual', since: '2026-08-01', reason: 'Named in the concern' }],
   detail: {
-    concern: { receivedAt: '2026-08-01T09:00:00+01:00', source: 'Bank', sourceAgency: 'police', summary: 'x', harmTypes: ['financial'], immediateSafety: 'none', policeInvolved: true },
+    concern: { receivedAt: '2026-08-01T09:00:00+01:00', source: 'Bank', sourceAgency: 'police', referralSource: 'financial-institution', summary: 'x', harmTypes: ['financial'], locationOfHarm: 'own-home', immediateSafety: 'none', policeInvolved: true },
     threePointTest: { assessedAt: '2026-08-01T10:00:00+01:00', byName: 'A', a: { met: 'yes', reasoning: 'r' }, b: { met: 'yes', reasoning: 'r' }, c: { met: 'yes', reasoning: 'r' }, outcome: 'met' },
     ordersConsidered: [],
   },

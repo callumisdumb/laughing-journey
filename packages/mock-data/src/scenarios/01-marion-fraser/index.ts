@@ -152,8 +152,12 @@ export function seedMarionFraser(ctx: BuildContext): void {
         source: 'Police Scotland Adult Concern Report (iVPD) following a vulnerable customer referral from Clydeshore Savings Bank, Portlennan branch',
         sourceAgency: 'police',
         sourceReference: 'IVPD-ACR-2026-08-1187',
+        // Indicator 1 counts the act of the sender, so the source is the police who made the referral,
+        // not the bank that raised it with them.
+        referralSource: 'police',
         summary: 'The bank reported 31 cash machine withdrawals totalling £2,410 between 8 Jun and 17 Aug 2026, most at Auchentorran and several late in the evening. Marion attended the branch on 18 Aug unsure why her balance was low and said her nephew Callum "keeps my card for me". She has a diagnosis of vascular dementia.',
         harmTypes: ['financial', 'psychological'],
+        locationOfHarm: 'own-home',
         immediateSafety: 'No immediate physical risk. Marion is at home with care at home visits twice a day. The bank has placed a temporary limit of £100 a day on cash withdrawals pending contact with the council.',
         policeInvolved: true,
       },
@@ -418,6 +422,8 @@ export function seedMarionFraser(ctx: BuildContext): void {
     actionIds: actions.map((a) => a.id),
     viewsRecordIds: ['vw_marion_1'],
     minute: { status: 'not-started' },
+    // Indicators 5 and 6: invited and, at a scheduled conference, not yet attended.
+    aspAttendance: { adultInvited: true, adultAttended: false, advocateInvited: true, advocateAttended: false },
     subjectAttendance: 'Marion will attend the first part with her advocate Tam Guthrie; a morning slot was chosen because she is clearer then. Callum Fraser is not invited: alleged perpetrator, chair\'s decision recorded 1 Sep; he will be told the outcome by the council officer.',
   });
 

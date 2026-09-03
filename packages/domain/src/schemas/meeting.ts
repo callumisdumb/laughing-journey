@@ -120,5 +120,25 @@ export const meetingSchema = z.object({
   reviewDate: isoDate.optional(),
   /** Subject or family attendance and support (advocate, interpreter). */
   subjectAttendance: z.string().optional(),
+  /**
+   * Indicators 5 and 6 of the ASP data workbook 2026-27: whether the adult at risk and an
+   * independent advocate were invited to the case conference, and whether they took the invitation
+   * up. Both are counted, and the return reports the uptake as a percentage of the invitations, so
+   * invited and attended have to be separate flags. An attendance with no invitation is possible
+   * and is not an error: the point of the indicator is the gap between the two.
+   *
+   * "Invited" is the workbook's own word and does not imply the adult was expected to attend. Where
+   * more than one advocate was ever invited on the adult's behalf, the workbook counts it once.
+   */
+  aspAttendance: z
+    .object({
+      adultInvited: z.boolean(),
+      adultAttended: z.boolean(),
+      advocateInvited: z.boolean(),
+      advocateAttended: z.boolean(),
+      /** Why the adult was not invited, where they were not. The presumption is that they attend. */
+      adultNotInvitedReason: z.string().optional(),
+    })
+    .optional(),
 });
 export type Meeting = z.infer<typeof meetingSchema>;

@@ -1,0 +1,436 @@
+{
+  "harmTypes": [
+    {
+      "id": "physical",
+      "workbookRow": "Physical harm"
+    },
+    {
+      "id": "sexual",
+      "workbookRow": "Sexual harm"
+    },
+    {
+      "id": "psychological",
+      "workbookRow": "Psychological/emotional harm"
+    },
+    {
+      "id": "financial",
+      "workbookRow": "Financial or Material harm"
+    },
+    {
+      "id": "neglect",
+      "workbookRow": "Neglect and Acts of Omission"
+    },
+    {
+      "id": "discriminatory",
+      "workbookRow": "Discriminatory harm"
+    },
+    {
+      "id": "self-harm",
+      "workbookRow": "Self harm"
+    },
+    {
+      "id": "self-neglect",
+      "workbookRow": "Self-neglect (excluding hoarding behaviour)"
+    },
+    {
+      "id": "domestic-abuse",
+      "workbookRow": "Domestic abuse"
+    },
+    {
+      "id": "trafficking",
+      "workbookRow": "Human trafficking and/or Exploitation"
+    },
+    {
+      "id": "hoarding",
+      "workbookRow": "Hoarding behaviour "
+    },
+    {
+      "id": "other",
+      "workbookRow": "Other (please specify below)"
+    }
+  ],
+  "aspClientGroups": [
+    {
+      "id": "dementia",
+      "workbookRow": "Dementia"
+    },
+    {
+      "id": "mental-health",
+      "workbookRow": "Mental Health (excl. dementia)"
+    },
+    {
+      "id": "learning-disability",
+      "workbookRow": "Learning Disability"
+    },
+    {
+      "id": "autism",
+      "workbookRow": "Autism / Autism spectrum"
+    },
+    {
+      "id": "physical-disability",
+      "workbookRow": "Physical Disability"
+    },
+    {
+      "id": "infirmity-frailty",
+      "workbookRow": "Infirmity/frailty due to age"
+    },
+    {
+      "id": "palliative-care",
+      "workbookRow": "Palliative care"
+    },
+    {
+      "id": "acquired-brain-injury",
+      "workbookRow": "Acquired brain injury"
+    },
+    {
+      "id": "alcohol-related-brain-damage",
+      "workbookRow": "Alcohol-related brain damage"
+    },
+    {
+      "id": "substance-misuse",
+      "workbookRow": "Substance misuse/addiction"
+    },
+    {
+      "id": "other",
+      "workbookRow": "Other (please specify below)"
+    }
+  ],
+  "aspInquiryActions": [
+    {
+      "id": "no-criteria-no-action",
+      "workbookRow": "Does not meet three-point criteria — NFA"
+    },
+    {
+      "id": "no-criteria-support",
+      "workbookRow": "Does not meet three point criteria - non-ASP support provided or offered"
+    },
+    {
+      "id": "criteria-ongoing",
+      "workbookRow": "Meets three-point criteria — ongoing ASP work"
+    },
+    {
+      "id": "criteria-support",
+      "workbookRow": "Meets three-point criteria — non-ASP support provided or offered"
+    },
+    {
+      "id": "criteria-no-opportunity",
+      "workbookRow": "Meets three-point criteria — no opportunity for further ASP intervention"
+    },
+    {
+      "id": "pending-unknown",
+      "workbookRow": "Pending/Unknown"
+    }
+  ],
+  "aspAgeBands": [
+    {
+      "id": "age16to17",
+      "workbookRow": "16-17"
+    },
+    {
+      "id": "age18to24",
+      "workbookRow": "18-24"
+    },
+    {
+      "id": "age25to34",
+      "workbookRow": "25-34"
+    },
+    {
+      "id": "age35to44",
+      "workbookRow": "35-44"
+    },
+    {
+      "id": "age45to54",
+      "workbookRow": "45-54"
+    },
+    {
+      "id": "age55to64",
+      "workbookRow": "55-64"
+    },
+    {
+      "id": "age65to69",
+      "workbookRow": "65-69"
+    },
+    {
+      "id": "age70to74",
+      "workbookRow": "70-74"
+    },
+    {
+      "id": "age75to79",
+      "workbookRow": "75-79"
+    },
+    {
+      "id": "age80to84",
+      "workbookRow": "80-84"
+    },
+    {
+      "id": "age85plus",
+      "workbookRow": "85 +"
+    },
+    {
+      "id": "notKnown",
+      "workbookRow": "Not known"
+    }
+  ],
+  "aspGenders": [
+    {
+      "id": "male",
+      "workbookRow": "Male"
+    },
+    {
+      "id": "female",
+      "workbookRow": "Female"
+    },
+    {
+      "id": "trans-or-non-binary",
+      "workbookRow": "Trans or non-binary"
+    },
+    {
+      "id": "prefer-not-to-say",
+      "workbookRow": "Prefer not to say"
+    }
+  ],
+  "aspEthnicities": [
+    {
+      "id": "white",
+      "workbookRow": "White"
+    },
+    {
+      "id": "mixed-or-multiple",
+      "workbookRow": "Mixed or multiple ethnic groups"
+    },
+    {
+      "id": "asian",
+      "workbookRow": "Asian, Scottish Asian or British Asian"
+    },
+    {
+      "id": "african",
+      "workbookRow": "African, Scottish African or British African"
+    },
+    {
+      "id": "caribbean-or-black",
+      "workbookRow": "Caribbean or Black"
+    },
+    {
+      "id": "other-ethnic-group",
+      "workbookRow": "Other ethnic group"
+    },
+    {
+      "id": "not-disclosed",
+      "workbookRow": "Not disclosed"
+    },
+    {
+      "id": "not-known",
+      "workbookRow": "Not known"
+    }
+  ],
+  "aspHarmLocations": [
+    {
+      "id": "own-home",
+      "workbookRow": "Own home"
+    },
+    {
+      "id": "other-private-address",
+      "workbookRow": "Other private address"
+    },
+    {
+      "id": "care-home",
+      "workbookRow": "Care Home"
+    },
+    {
+      "id": "sheltered-or-supported",
+      "workbookRow": "Sheltered housing/other supported accommodation"
+    },
+    {
+      "id": "day-centre",
+      "workbookRow": "Day Centre"
+    },
+    {
+      "id": "public-place",
+      "workbookRow": "Public place"
+    },
+    {
+      "id": "nhs-facility",
+      "workbookRow": "NHS facility"
+    },
+    {
+      "id": "independent-hospital",
+      "workbookRow": "Independent hospital"
+    },
+    {
+      "id": "online",
+      "workbookRow": "Online"
+    },
+    {
+      "id": "other",
+      "workbookRow": "Other (please specify below)"
+    },
+    {
+      "id": "not-known",
+      "workbookRow": "Not known"
+    }
+  ],
+  "lsiServiceTypes": [
+    {
+      "id": "care-home",
+      "workbookRow": "Care homes"
+    },
+    {
+      "id": "support-services",
+      "workbookRow": "Support services (adult day care, care at home, sheltered housing or small group living support, etc)"
+    },
+    {
+      "id": "nhs-hospital",
+      "workbookRow": "NHS Hospital"
+    },
+    {
+      "id": "nhs-primary-care",
+      "workbookRow": "NHS Primary Care (excl. Hospital) eg GP staff, dentists etc."
+    },
+    {
+      "id": "nhs-community-or-secondary",
+      "workbookRow": "NHS Community/Secondary Care"
+    },
+    {
+      "id": "community-groups",
+      "workbookRow": "Community groups (religious settings etc)"
+    },
+    {
+      "id": "other",
+      "workbookRow": "Other (please specify below)"
+    }
+  ],
+  "aspReferralSources": [
+    {
+      "id": "mwc",
+      "workbookRow": "Mental Welfare Commission for Scotland"
+    },
+    {
+      "id": "care-inspectorate",
+      "workbookRow": "Care Inspectorate"
+    },
+    {
+      "id": "his",
+      "workbookRow": "Healthcare Improvement Scotland"
+    },
+    {
+      "id": "opg",
+      "workbookRow": "Office of the Public Guardian"
+    },
+    {
+      "id": "police",
+      "workbookRow": "Police Scotland"
+    },
+    {
+      "id": "nhs-24",
+      "workbookRow": "NHS 24"
+    },
+    {
+      "id": "nhs-primary-care",
+      "workbookRow": "NHS Primary Care"
+    },
+    {
+      "id": "nhs-acute",
+      "workbookRow": "NHS Acute Services"
+    },
+    {
+      "id": "nhs-drug-and-alcohol",
+      "workbookRow": "NHS Specialist Drug and Alcohol Services"
+    },
+    {
+      "id": "nhs-community-health",
+      "workbookRow": "NHS Community Health Services"
+    },
+    {
+      "id": "mental-health-services",
+      "workbookRow": "Mental Health Services – Hospital and Community"
+    },
+    {
+      "id": "other-health",
+      "workbookRow": "Other health (eg public health, private healthcare, prison healthcare)"
+    },
+    {
+      "id": "social-work-adults",
+      "workbookRow": "Social Work - Adults (including MHOs)"
+    },
+    {
+      "id": "social-work-children",
+      "workbookRow": "Social work - Children and Families"
+    },
+    {
+      "id": "out-of-region-social-work",
+      "workbookRow": "Out of region social work / other (external) local authority"
+    },
+    {
+      "id": "other-council-service",
+      "workbookRow": "Other local authority service (internal) excluding social work"
+    },
+    {
+      "id": "ambulance",
+      "workbookRow": "Scottish Ambulance Service"
+    },
+    {
+      "id": "fire-and-rescue",
+      "workbookRow": "Scottish Fire and Rescue"
+    },
+    {
+      "id": "prison-service",
+      "workbookRow": "Scottish Prison Service"
+    },
+    {
+      "id": "care-home",
+      "workbookRow": "Care Home"
+    },
+    {
+      "id": "care-at-home",
+      "workbookRow": "Care at home provider"
+    },
+    {
+      "id": "housing",
+      "workbookRow": "Housing"
+    },
+    {
+      "id": "education",
+      "workbookRow": "Education"
+    },
+    {
+      "id": "childrens-services",
+      "workbookRow": "Children's Services"
+    },
+    {
+      "id": "self",
+      "workbookRow": "Self (adult at risk)"
+    },
+    {
+      "id": "unpaid-carer",
+      "workbookRow": "Unpaid carer"
+    },
+    {
+      "id": "family-friend-or-neighbour",
+      "workbookRow": "Family, friend or neighbour (who is not an unpaid carer)"
+    },
+    {
+      "id": "other-member-of-the-public",
+      "workbookRow": "Other member of the public (not covered by 20 or 21)"
+    },
+    {
+      "id": "third-sector",
+      "workbookRow": "Third sector organisation (not covered by the above)"
+    },
+    {
+      "id": "financial-institution",
+      "workbookRow": "Financial institution"
+    },
+    {
+      "id": "dwp-or-social-security-scotland",
+      "workbookRow": "DWP / Social Security Scotland"
+    },
+    {
+      "id": "anonymous",
+      "workbookRow": "Anonymous"
+    },
+    {
+      "id": "other",
+      "workbookRow": "Other (please specify below)"
+    }
+  ]
+}

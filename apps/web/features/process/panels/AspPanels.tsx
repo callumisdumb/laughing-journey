@@ -1,6 +1,6 @@
 'use client';
 
-import { agencyShort, aspInquiryOutcomeLabel, aspOrderDecisionLabel, aspOrderLabel, aspScreeningOutcomeLabel, consentStatusLabel, formatDate, formatDateTime, harmTypeLabel, lsiStrandStatusLabel, requestStatusLabel, type AspProcess } from '@mas/domain';
+import { agencyShort, aspClientGroupLabel, aspHarmLocationLabel, aspInquiryOutcomeLabel, aspReferralSourceLabel, aspOrderDecisionLabel, aspOrderLabel, aspScreeningOutcomeLabel, consentStatusLabel, formatDate, formatDateTime, harmTypeLabel, lsiStrandStatusLabel, requestStatusLabel, type AspProcess } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, KeyValue, Pill, Sheet, SheetBody, SheetHead, Table, TableWrap } from '@mas/ui';
 import { CheckCircle2, CircleDashed, XCircle } from 'lucide-react';
@@ -23,6 +23,8 @@ export function AspPanels({ process }: { process: AspProcess }) {
   const t = useT();
   const data = useData();
   const d = process.detail;
+  // The return counts one primary harm; where none is named the first recorded stands in.
+  const primaryHarm = d.concern.primaryHarmType ?? d.concern.harmTypes[0];
   const [testOpen, setTestOpen] = useState(false);
   const inv = d.investigation;
   const officer = inv ? userById(data, inv.councilOfficerUserId) : undefined;
@@ -69,7 +71,11 @@ export function AspPanels({ process }: { process: AspProcess }) {
           <p style={{ marginBottom: 10 }}>{d.concern.summary}</p>
           <KeyValue
             items={[
+              { key: t('asp.concern.referralSource'), value: d.concern.referralSource === 'other' ? (d.concern.referralSourceOther ?? aspReferralSourceLabel('other')) : aspReferralSourceLabel(d.concern.referralSource) },
               { key: t('asp.concern.harmTypes'), value: <span className={styles.pills}>{d.concern.harmTypes.map((h) => <Pill key={h} size="sm" tone="high">{harmTypeLabel(h)}</Pill>)}</span> },
+              { key: t('asp.concern.primaryHarmType'), value: primaryHarm ? harmTypeLabel(primaryHarm) : t('common.values.notRecorded') },
+              { key: t('asp.concern.locationOfHarm'), value: d.concern.locationOfHarm === 'other' ? (d.concern.locationOfHarmOther ?? aspHarmLocationLabel('other')) : aspHarmLocationLabel(d.concern.locationOfHarm) },
+              { key: t('asp.concern.clientGroup'), value: d.concern.primaryClientGroup === undefined ? t('common.values.notRecorded') : d.concern.primaryClientGroup === 'other' ? (d.concern.clientGroupOther ?? aspClientGroupLabel('other')) : aspClientGroupLabel(d.concern.primaryClientGroup) },
               { key: t('asp.concern.immediateSafety'), value: d.concern.immediateSafety },
               { key: t('asp.concern.policeInvolved'), value: d.concern.policeInvolved ? t('common.answers.yes') : t('common.answers.no') },
             ]}
