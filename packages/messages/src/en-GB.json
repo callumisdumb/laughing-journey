@@ -4309,7 +4309,7 @@
       },
       "meta": {
         "computed": "Computed {dateTime} from the local record store: {records, plural, one {# ASP record} other {# ASP records}} in total, {referrals} with a concern received in the period, about {adults, plural, one {# adult} other {# adults}}.",
-        "fieldSet": "Field set from the ASP National Minimum Dataset 2024-25 Annex 2 glossary. The dataset counts inquiries undertaken with and without the use of investigatory powers."
+        "fieldSet": "Field set from the ASP data workbook 2026-27, read from the workbook itself. The dataset counts inquiries undertaken with and without the use of investigatory powers."
       },
       "notApplicable": "Not applicable",
       "notCollected": "Not collected",
@@ -4356,8 +4356,7 @@
       },
       "title": "ASP biennial report figures",
       "verify": {
-        "ageBands": "Age bands to verify against the current NMDS template; every other field set on this report comes from the Annex 2 glossary.",
-        "location": "Location of harm is derived from the address, not recorded on the concern; treat that table as indicative."
+        "deadlines": "The four quarterly submission deadlines are seeded from the product owner; the guidance says the current dates are published on the ASP data collection web page rather than in the workbook."
       }
     },
     "awi": {

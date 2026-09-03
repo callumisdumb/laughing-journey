@@ -13813,12 +13813,8 @@
         "where": "Title of the ASP report on the index card, the report screen, its print pack and the audit entry"
       },
       "verify": {
-        "ageBands": {
-          "screenshot": "phase-5/report-asp-light-comfortable.png",
-          "where": "The one field set on the ASP report still to verify"
-        },
-        "location": {
-          "where": "Verification note in the field set and sources panel of the ASP report"
+        "deadlines": {
+          "where": "Verify note on the ASP report: the NMDS submission deadlines are seeded, not published in the workbook"
         }
       }
     },

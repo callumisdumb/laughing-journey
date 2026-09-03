@@ -6,8 +6,9 @@ const PHASE = 'phase-5';
 const TO_VERIFY = 'Field set to verify against the current template';
 
 const REPORTS = [
-  { kind: 'asp', title: 'ASP biennial report figures', user: 'usr_moira_gilmour', chart: /Referrals by quarter and source agency/, fieldSet: TO_VERIFY },
-  { kind: 'cp', title: 'Child Protection Register statistics', user: 'usr_janet_kerr', chart: /Registrations and de-registrations by month/, fieldSet: TO_VERIFY },
+  // ASP, CP and MAPPA now cite the template their field set came from; MARAC and AWI still await theirs.
+  { kind: 'asp', title: 'ASP biennial report figures', user: 'usr_moira_gilmour', chart: /Referrals by quarter and source agency/, fieldSet: 'Field set from the ASP data workbook 2026-27, read from the workbook itself' },
+  { kind: 'cp', title: 'Child Protection Register statistics', user: 'usr_janet_kerr', chart: /Registrations and de-registrations by month/, fieldSet: "Field set from Children's Social Work Statistics: Child Protection 2024-25" },
   { kind: 'marac', title: 'MARAC SafeLives return', user: 'usr_karen_findlay', chart: /Referrals by agency/, fieldSet: TO_VERIFY },
   { kind: 'mappa', title: 'MAPPA annual report counts', user: 'usr_priya_sharif', chart: /Offenders by level and category/, fieldSet: 'Annex 3 of the MAPPA National Guidance (2022) sets Tables 1 to 9' },
   { kind: 'awi', title: 'AWI application timeliness', user: 'usr_graeme_dunlop', chart: /Applications by route and applicant/, fieldSet: TO_VERIFY },
@@ -64,7 +65,8 @@ test.describe('reports', () => {
     await expect(table8.getByRole('row')).toHaveCount(23); // 22 rows plus the header
     await expect(table8.getByRole('row', { name: /Gypsy Traveller/ })).toContainText('0');
     await expect(table8.getByRole('row', { name: /Data Not held/ })).toContainText('100.0');
-    await expect(table8.getByText(/The dataset holds no ethnicity, by design/)).toBeVisible();
+    // The note is the section's, printed above the table rather than inside its region.
+    await expect(page.getByText(/The dataset holds no ethnicity, by design/)).toBeVisible();
     // Table 5 has no Level 1 row: Category 3 offenders cannot be managed at Level 1.
     await expect(page.getByRole('region', { name: /^Table 5:/ }).getByRole('row', { name: /MAPPA Level 1/ })).toHaveCount(0);
     await expect(page.getByRole('region', { name: /^Table 3:/ }).getByRole('columnheader', { name: 'At Liberty' })).toBeVisible();
@@ -96,11 +98,13 @@ test.describe('reports', () => {
     await capture(page, { phase: PHASE, screen: 'report-cp', theme: 'dark', fullPage: true });
   });
 
-  test('CP print pack carries the classification marking and paginates', async ({ page }) => {
+  test('CP print pack paginates and, being aggregate counts, carries no marking', async ({ page }) => {
     await signInAs(page, 'usr_janet_kerr');
     await page.goto('/reports/cp?print=1');
     await waitForData(page);
-    await expect(page.getByRole('note', { name: /Classification/ })).toBeVisible();
+    // Annex 2 paragraph 5: routine Official information needs no marking, and a report of counts
+    // that names nobody is exactly that. The pack used to stamp OFFICIAL-SENSITIVE on every page.
+    await expect(page.getByRole('note', { name: /Classification/ })).toHaveCount(0);
     await expect(page.getByRole('heading', { name: 'Child Protection Register statistics', exact: true })).toBeVisible();
     await expect(page.getByText(/Page 1 of/)).toBeVisible();
     await expect(page.getByRole('button', { name: 'Print', exact: true })).toBeVisible();

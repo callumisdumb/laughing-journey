@@ -324,18 +324,61 @@ Accessed 2026-09-03 (the demo clock reads 02 Sep 2026; this is the real date the
 ### 5.12 How the Reports screen applies this
 - Reporting periods follow each return's calendar and are selectable with ?period=: CP the year to 31 July (default the last complete year, y2026); ASP the two years to 31 March in even years (default b2026); MAPPA the year to 31 March (default y2026); AWI the reporting year to date from 1 April (ytd); MARAC "the last four quarters" read as the rolling four quarters ending with the current quarter, which is in progress. Every report also offers the cycle in progress, and when the default period holds nothing the screen says so and points at the period in progress rather than showing an unexplained page of zeros. TODO(verify): whether Adult Protection Committees in Clydeshore report on even years; the platform seeds even years because the national biennial reports covered 2020-22 and 2022-24.
 - The MARAC rate per 10,000 uses an adult female population of 41,000 for Clydeshore. Clydeshore is fictional and the figure is a placeholder; it is editable on the screen (?pop=) and the report says so.
-- Location of harm for ASP is derived from the adult's recorded address on the day the concern was received (care home, hospital, own home) because the concern record has no location field; the table is labelled derived.
+- Location of harm for ASP was derived from the adult's recorded address on the day the concern was received (care home, hospital, own home) because the concern record had no location field. Superseded on 03 Sep 2026: the concern record now carries `locationOfHarm`, one of the eleven values of indicator 16, because a guess in a national return is worse than "Not known" (5.14).
 - MAPPA level at the period end comes from the level history; an offender is treated as Level 1 until the first multi-agency level decision. Review timeliness uses the mappa.level2.review (12 weeks) and mappa.level3.review (6 weeks) clock rules and the report repeats "Review interval to verify against the current MAPPA National Guidance" beside the table.
 - MHO report timeliness uses the awi.mho.report rule (21 days from notice, s57(4)) and interim order age uses awi.interim.warning (3 months) and awi.interim.maximum (6 months). Where a rule is missing from Admin the report falls back to 21, 91 and 183 calendar days and says no rule is configured.
 - Fields the record store cannot answer (LGBT and disabled victims for MARAC) are shown as "Not recorded", never as zero.
 
 | Report | Verified from extracts | The product's own until the template is checked |
 |---|---|---|
-| ASP biennial figures | Biennial report duty and content expectation; NMDS referrals, inquiries, LSIs, harm type and location of harm | Table layout, harm and location category lists, case conference and order definitions |
+| ASP biennial figures | Biennial report duty and content expectation; every NMDS field set, read from the 2026-27 workbook itself (5.14) | Table layout only. The field sets are no longer to verify: they are the workbook's own |
 | CP register statistics | 31 July reference date; registrations, de-registrations, unborn share, two year re-registration line, concern categories, under 6 months band | Age bands, the other length bands |
 | MARAC SafeLives return | Meeting-level counts; cases, repeats, children, referral agency, disability, cases per 10,000 adult women; older victims from 61 | Exact agency list, LGBT and male victim definitions, new workbook data points |
 | MAPPA annual report counts | Tables 1 to 9 required; Table 1 rows; 31 March reference; categories, levels, breaches, returns to custody, disclosures, civil orders appear | Titles and rows of Tables 2 to 9 |
 | AWI timeliness | Welfare, financial and combined split; private against local authority; orders granted; duration bands; interim orders exist | Interim order counts, MHO timeliness and application-to-order days (local measures) |
+
+### 5.13 Government Security Classification (MAPPA National Guidance, Annex 2)
+- Source: Annex 2 of the MAPPA National Guidance (31 March 2022 edition), supplied verbatim by the product owner on 03 Sep 2026.
+- Accessed: 2026-09-03 (supplied text, not fetched)
+- Finding: all Scottish Government departments, non-departmental public bodies and agencies follow the UK Government Security Classification scheme, which has three levels: Official, Secret and Top Secret. A classification indicates the sensitivity of information in terms of the likely impact of compromise, loss or misuse, and the need to defend against different threats.
+  - **Official** is the lowest level and covers the majority of information the public sector creates or processes, including routine business operations and services. Some of it could have damaging consequences if lost, stolen or published in the media, but it is not subject to a heightened threat profile. There is **no requirement to explicitly mark routine Official information**.
+  - **Official-Sensitive** is a limited subset of Official information that could have more damaging consequences if lost, stolen or published. It **must be clearly marked** Official-Sensitive, and special handling instructions may be added where the sensitivity justifies strict restrictions on sharing.
+  - Annex 2 gives four examples of Official-Sensitive: case details involving vulnerable individuals where a serious risk of harm or criminal activity may result from disclosure; information about investigations, civil or criminal proceedings that could disrupt law enforcement or prejudice legal cases; security information; and personal data defined as special category or sensitive under data protection legislation.
+  - Chapter 11 adds that the Minute and the Risk Management Plan are always Official and may be Official-Sensitive, and that an agency cannot share them widely with its personnel unless the chair of the MAPPA meeting has agreed.
+- Confidence: High for the three levels, the "no requirement to mark routine Official" rule and the four examples; Verify the handling instruction descriptors against the organisation's own information security policy, because descriptor practice varies by organisation and has changed across editions of the UK scheme.
+- How the product applies it: D-058 and D-059. Secret and Top Secret are deliberately absent from `CLASSIFICATION_LEVELS`; nothing in scope reaches defence, diplomacy or national security, and the glossary says so. The rule table is `CLASSIFICATION_RULES` in `packages/domain/src/classification/classify.ts` and is shown read-only in Admin.
+
+### 5.14 ASP data workbook 2026-27 and the July 2025 guidance
+- Source: three documents supplied by the product owner on 03 Sep 2026 and committed under `docs/templates/`:
+  - `ASP-data-workbook-2026-27.xlsx`, the mandated quarterly return workbook (version 1.1, mid 2026), returned to ASPData@gov.scot.
+  - `ASP-NMDS-guidance-July-2025.docx`, the single guidance document for the National Minimum Dataset.
+  - `ASP-NMDS-glossary-July-2025.docx`, the glossary in alphabetical order.
+- Accessed: 2026-09-03 (supplied files, read directly)
+- Finding: the workbook has fifteen sheets, one per indicator group, each a block of labelled rows against a column per quarter from Q1 2023/24 to Q4 2031/32. Q1 2026/27 is column O. Sheet 13 is the exception: it crosses twelve age bands with four genders, so it uses five columns per quarter and Q1 2026/27 starts at BK. Every Total row and the All adults column are SUM formulas.
+- Field sets read from column A of each sheet, transcribed mechanically into `packages/domain/src/nmds/workbook-2026-27.fields.json`:
+
+| Indicator | Sheet | Rows | Count |
+|---|---|---|---|
+| 1 | 1 ASP REFERRALS | A6 to A38 | 33 referral sources |
+| 2 and 3 | 2-3 INQUIRIES | A7, A11 | inquiries without and with investigatory powers |
+| 4 | 4 CCs | A7, A8 | initial and review case conferences |
+| 5 and 6 | 5-7 CC ATTENDEES | A9, A10, A14, A15 | adult and advocate invitations and uptake |
+| 8 and 9 | 8-9 ASPPs & POWERS | A9, A10, A14 to A16, A20 to A22 | plans, orders applied for, orders granted |
+| 10 and 11 | 10-11 ACTIONS TAKEN | A7 to A12, A17 to A22 | 6 actions, twice |
+| 13 | 13 AGE & GENDER | A7 to A18, C6 to F6 | 12 age bands by 4 genders |
+| 14 | 14 ETHNICITY | A6 to A13 | 8 census categories |
+| 15 | 15 TYPES OF HARM | A7 to A18, A23 to A34 | 12 harm types, twice |
+| 16 | 16 LOCATION OF HARM | A7 to A17, A22 to A32 | 11 locations, twice |
+| 17 | 17 CLIENT GROUP | A7 to A17, A22 to A32 | 11 client groups, twice |
+| 18 | 18 CARING RESPONSIBILITIES | A7, A8, A12 | child care, other caring, child present |
+| 19 | 19 LSIs | A8 to A14, A29, A38, A47 | 7 service types, CS numbers, hospital codes |
+
+- Changes this forced on the product, all of which were previously reconstructed from the 2024-25 technical report's glossary: harm types from eleven to twelve (hoarding behaviour separated from self-neglect); client groups from ten to eleven (infirmity or frailty due to age added); age bands from the platform's invented eight to the workbook's twelve; ethnicity from a single "not collected" line to the eight census categories; gender wording from Men and Women to Male and Female; location of harm from a three-value derivation to an eleven-value recorded field; referral source from the eleven-agency list to the workbook's thirty-three; LSI service type, CS number and hospital code added.
+- The six action-taken labels are reproduced character for character, including the em dashes in five of them and the hyphen in the second. They are flagged `verbatim` in `en-GB.context.json` (D-055). Seven labels are deliberately adjusted, each named in `packages/domain/src/nmds/fieldSets.test.ts` and annotated in the context file: six drop the workbook's "(please specify below)" instruction to the person filling it, and one drops row numbers that do not survive outside the workbook.
+- Guidance notes that shape the counting: an ASP referral is determined by the act of the sender, except where the referral comes from a non-professional or where a welfare concern is escalated, when a worker decides; it is the trigger point of an inquiry that determines its quarter; actions taken are tracked up to the submission date; an ASPP is closed when there is no longer any ASP oversight of support actions, and a plan revised at a review conference is not a new plan; where more than one independent advocate was invited on the adult's behalf it is counted once; the uptake percentage is entered without a per cent sign.
+- Glossary confirmations for the four protection order clocks already implemented: assessment orders are valid for 7 days; removal orders are effective for a maximum of 7 days after the day the person is removed, which must take place within 72 hours of the order being granted; banning and temporary banning orders may last a period not exceeding 6 months, and in urgency a council may apply to a justice of the peace.
+- Submission deadlines: the guidance does not print them. Its worked example names "August 12th, the Scottish Government submission date for returns" for Q1, and says the current deadlines live on the ASP data collection web page. The four 2026-27 dates were supplied by the product owner and are seeded as `asp.nmds.q1` to `asp.nmds.q4` with `confidence: 'verify'` and a note to confirm them against that page.
+- Confidence: High for every field set, sheet name, row number and formula cell, all read from the supplied file. Verify the submission deadlines annually.
 
 ## 6. Round 2 (03 Sep 2026): council officers, holidays, place names, new clocks
 

@@ -17,10 +17,11 @@ import styles from './Classification.module.css';
  * instructions after it. This is the one place the marking is mandatory and prominent.
  */
 export function ClassificationMarking({ classification, className }: { classification: Classification; className?: string }) {
+  const t = useT();
   const text = marking(classification);
   if (!text) return null;
   return (
-    <div className={cn(styles.print, className)} role="note">
+    <div className={cn(styles.print, className)} role="note" aria-label={t('common.marks.classification', { level: text })}>
       {text}
     </div>
   );

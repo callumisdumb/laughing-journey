@@ -234,7 +234,7 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
     classification: 'official',
     meta: [t('reports.meta.period', { period: period.label }), t('reports.asp.meta.computed', { dateTime: formatDateTime(now), records: asp.length, referrals: referrals.length, adults: adults.size }), t('reports.asp.meta.fieldSet')],
-    verify: [t('reports.asp.verify.ageBands'), t('reports.asp.verify.location')],
+    verify: [t('reports.asp.verify.deadlines')],
     sources: [t('reports.asp.sources.apcGuidance'), t('reports.asp.sources.nmds'), t('reports.asp.sources.statistics')],
     figures: [
       { id: 'referrals', label: t('reports.asp.figures.referrals'), value: String(referrals.length), note: t('reports.asp.figures.referralsNote', { count: adults.size }) },

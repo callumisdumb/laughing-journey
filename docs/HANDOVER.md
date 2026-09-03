@@ -84,7 +84,7 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 
 ## 5. Screenshot index
 
-139 screenshots under `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 (full page where the screen scrolls). Light comfortable is the default; dark and compact variants are listed where captured. Phase 6 holds the dark and compact sweep of every screen.
+148 screenshots under `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 (full page where the screen scrolls). Light comfortable is the default; dark and compact variants are listed where captured. Phase 6 holds the dark and compact sweep of every screen. The `classification` and `nmds` folders are the two rounds added on 03 September 2026 and are captured by their own specs.
 
 ### phase-1
 
@@ -102,8 +102,8 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 
 | Screen | Variants |
 |---|---|
-| chronology-add-event-validation | light comfortable |
 | chronology | dark comfortable, light comfortable, light compact |
+| chronology-add-event-validation | light comfortable |
 | chronology-event-selected | light comfortable |
 | chronology-lenses | light comfortable |
 | chronology-print-pack | light comfortable |
@@ -113,16 +113,16 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | inbox | light comfortable |
 | inbox-promote | light comfortable |
 | people | light comfortable |
-| person-record-chronology | light comfortable |
 | person-record | dark comfortable, light comfortable, light compact |
+| person-record-chronology | light comfortable |
 | person-record-presence-only | light comfortable |
 | person-record-processes | light comfortable |
 | person-record-sharing | light comfortable |
 | person-record-voice | light comfortable |
 | search-results | light comfortable |
 | search-typeahead | light comfortable |
-| worklist-clocks | light comfortable |
 | worklist | light comfortable |
+| worklist-clocks | light comfortable |
 
 ### phase-3
 
@@ -133,22 +133,22 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | process-asp-lsi | light comfortable |
 | process-asp-support-only | light comfortable |
 | process-asp-three-point-form | light comfortable |
-| process-awi-capacity-form | light comfortable |
 | process-awi | light comfortable |
+| process-awi-capacity-form | light comfortable |
 | process-cp | dark comfortable, light comfortable |
 | process-cp-prebirth | light comfortable |
 | process-mappa | light comfortable |
 | process-mappa-restricted | light comfortable |
-| process-marac-daq-form | light comfortable |
 | process-marac | light comfortable |
+| process-marac-daq-form | light comfortable |
 | processes | light comfortable |
 
 ### phase-4
 
 | Screen | Variants |
 |---|---|
-| actions-complete | light comfortable |
 | actions | light comfortable |
+| actions-complete | light comfortable |
 | actions-team | light compact |
 | meeting-after | light comfortable |
 | meeting-before | light comfortable |
@@ -165,11 +165,11 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 
 | Screen | Variants |
 |---|---|
+| admin | light comfortable |
 | admin-copy | light comfortable |
 | admin-defaults | dark comfortable, light comfortable |
-| admin | light comfortable |
-| admin-need-to-know-edit | light comfortable |
 | admin-need-to-know | light comfortable, light compact |
+| admin-need-to-know-edit | light comfortable |
 | admin-need-to-know-marac | light comfortable |
 | admin-timescales | light comfortable |
 | admin-users | light comfortable |
@@ -178,13 +178,13 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | connectors-outage | light comfortable |
 | help-about | light comfortable |
 | help-glossary | light comfortable |
-| report-asp-current | light comfortable |
 | report-asp | light comfortable |
+| report-asp-current | light comfortable |
 | report-awi | light comfortable |
 | report-cp | dark comfortable, light comfortable |
 | report-cp-print | light comfortable |
-| report-mappa-annex3 | light comfortable |
 | report-mappa | light comfortable |
+| report-mappa-annex3 | light comfortable |
 | report-marac | light comfortable, light compact |
 | reports | light comfortable |
 | settings | light comfortable |
@@ -209,8 +209,8 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | person-record | dark comfortable, light compact |
 | process-asp | dark comfortable, light compact |
 | process-awi | dark comfortable, light compact |
-| process-cp-1024 | dark compact, light comfortable |
 | process-cp | dark comfortable, light compact |
+| process-cp-1024 | dark compact, light comfortable |
 | process-mappa | dark comfortable, light compact |
 | process-marac | dark comfortable, light compact |
 | processes | dark comfortable, light compact |
@@ -218,6 +218,22 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | settings | dark comfortable, light compact |
 | sharing | dark comfortable, light compact |
 | worklist | dark comfortable, light compact |
+
+### classification
+
+| Screen | Variants |
+|---|---|
+| admin-markings | dark comfortable, light comfortable |
+| classification-dialog | dark comfortable, light comfortable |
+| process-marked | dark comfortable, light comfortable |
+| report-unmarked | light comfortable |
+
+### nmds
+
+| Screen | Variants |
+|---|---|
+| nmds-filled | light comfortable |
+| nmds-return | light comfortable |
 
 ## 6. Known gaps and TODO(verify)
 
@@ -229,7 +245,9 @@ Everything marked here is either configuration seeded from research rather than 
 - `awi.interim.warning`: High. The 3 month default and 6 month total limit are s57 as amended, and the warning cites the Adults with Incapacity Reform Expert Working Group minutes of April 2026 (section 6.5).
 - Scottish bank holidays used by working-day clocks: the committed gov.uk feed fixture (`packages/domain/src/config/bank-holidays.json`, Scotland division, 2025 to 2027, including 15 June 2026); refresh with `pnpm holidays:sync`. The council holiday list in `default-config.ts` is fictional and marked to verify.
 - ASP s52 council officer eligibility wording (`aspCouncilOfficerEligibility`): seeded from SSI 2008/306; confirm against the local rule.
-- Report field sets for the ASP biennial, CP register, MARAC SafeLives return and AWI timeliness reports: the figures are computed from the dataset, but the column sets follow search extracts of the current templates because the source sites were unreachable through the session proxy. Each of those four says "Field set to verify against the current template" in its meta line; sources are in `docs/RESEARCH.md` section 5.
+- ASP: the field sets are now High. All nine were read from the supplied ASP data workbook 2026-27 (`docs/templates/`), which corrected nine of them; see `docs/RESEARCH.md` 5.14 and D-061. The four NMDS submission deadlines (`asp.nmds.q1` to `asp.nmds.q4`) are the only ASP item left to verify: the guidance says the current dates live on the ASP data collection web page rather than in the workbook, so they are seeded from the product owner and marked `confidence: 'verify'`.
+- Report field sets for the CP register, MARAC SafeLives return and AWI timeliness reports: the figures are computed from the dataset, but the column sets follow search extracts of the current templates because the source sites were unreachable through the session proxy. Each of those three says "Field set to verify against the current template" in its meta line; sources are in `docs/RESEARCH.md` section 5.
+- Government Security Classification: High. Annex 2 of the MAPPA National Guidance, supplied verbatim (`docs/RESEARCH.md` 5.13). The handling instruction descriptors are the one thing to check against the organisation's own information security policy, because descriptor practice varies; they are editable in Admin.
 - MAPPA annual report: the field set is High (Annex 3 Tables 1 to 9, year 1 April to 31 March, D-048). Only the label wording is a placeholder, in `apps/web/features/reports/mappaAnnex3.ts`, until the supplied Annex 3 text is pasted in (section 6.7).
 
 ### Product limits by design
@@ -242,7 +260,7 @@ Everything marked here is either configuration seeded from research rather than 
 
 ### Waiting on the product owner
 - Ayrshire values for the four local clocks (ASP inquiry decision, ASP initial case conference, ASP plan review, MARAC research return): seeded values stay until then and are marked to verify.
-- Official report templates in `docs/templates/` (see the README there); the five returns are reconciled against them when they arrive.
+- Official report templates for the CP register, MARAC, MAPPA and AWI returns, in `docs/templates/` (see the README there); each is reconciled against its template when it arrives. The three ASP documents arrived on 03 Sep 2026 and are reconciled.
 - The supplied Annex 3 table text for the MAPPA annual report, to paste over the placeholder labels in `apps/web/features/reports/mappaAnnex3.ts` (the field set and the figures behind the nine tables are complete; only the wording waits).
 
 ### Grep points
