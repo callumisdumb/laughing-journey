@@ -110,7 +110,7 @@ test.describe('admin', () => {
     const field = page.getByLabel('New text for admin.copy.title');
     await field.fill('Copy and labels {');
     await page.getByRole('button', { name: 'Save' }).click();
-    await expect(page.getByRole('alert')).toContainText('ICU syntax');
+    await expect(page.getByText(/^ICU syntax:/)).toBeVisible();
     await field.fill('Copy and labels (Clydeshore)');
     await expect(page.getByText('Copy and labels (Clydeshore)').first()).toBeVisible();
     await page.getByRole('button', { name: 'Save' }).click();

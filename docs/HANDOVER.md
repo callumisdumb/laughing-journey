@@ -84,7 +84,7 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 
 ## 5. Screenshot index
 
-138 screenshots under `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 (full page where the screen scrolls). Light comfortable is the default; dark and compact variants are listed where captured. Phase 6 holds the dark and compact sweep of every screen.
+139 screenshots under `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 (full page where the screen scrolls). Light comfortable is the default; dark and compact variants are listed where captured. Phase 6 holds the dark and compact sweep of every screen.
 
 ### phase-1
 
@@ -165,6 +165,7 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 
 | Screen | Variants |
 |---|---|
+| admin-copy | light comfortable |
 | admin-defaults | dark comfortable, light comfortable |
 | admin | light comfortable |
 | admin-need-to-know-edit | light comfortable |
