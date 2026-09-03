@@ -2,7 +2,7 @@
 
 import { STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, CLASSIFICATION_LEVELS, applyOverride, canLower, classificationFor, classificationLevelLabel, marking, relativeDays, stageLabel, type ClassificationLevel, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
-import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
+import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { Lock, ShieldCheck, UserPlus } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
@@ -11,7 +11,8 @@ import { ScreenState, useDevState } from '@/components/ScreenState';
 import { meetingPath, personPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, clocksForProcess, fullName, membersByAgency, personById, userName } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useAppStore, useConfig, useCurrentUser, useData, useNow, useVault } from '@/lib/store';
+import { readProcessDetail } from '@/lib/vault';
 import { AspPanels } from './panels/AspPanels';
 import { AwiPanels } from './panels/AwiPanels';
 import { CpPanels } from './panels/CpPanels';
@@ -23,6 +24,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const t = useT();
   const data = useData();
   const config = useConfig();
+  const vault = useVault();
   const user = useCurrentUser();
   const now = useNow();
   const select = useSelection((s) => s.select);
@@ -60,6 +62,10 @@ export function ProcessScreen({ processId }: { processId: string }) {
   }
 
   const access = accessForUser(data, config, user, process, grants, now);
+  // The record's content comes from the vault, which either unwraps a key for this user or does not.
+  // The access level below decides which of presence, summary or full to *draw*; it does not decide
+  // whether the content may be shown. That is decided here, by whether the unwrap succeeded.
+  const decrypted = readProcessDetail(vault, process, user, access.breakGlass === 'active');
   // Annex 2: the level is derived from the record and a recorded override is applied as stored.
   const derived = classificationFor(config, process.classification);
   const classification = classificationFor(config, process.classification, process.classificationOverride);
@@ -168,8 +174,10 @@ export function ProcessScreen({ processId }: { processId: string }) {
                       )}
                     </SheetBody>
                   </Sheet>
+                ) : decrypted.detail ? (
+                  <TypePanels process={{ ...process, detail: decrypted.detail } as Process} />
                 ) : (
-                  <TypePanels process={process} />
+                  <RestrictedState title={t('processes.encrypted.title')} reason={t('processes.encrypted.reason')} breakGlass={access.breakGlass === 'available' ? 'available' : 'unavailable'} />
                 )}
               </div>
               <div className={styles.side}>

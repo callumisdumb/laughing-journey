@@ -7,6 +7,7 @@
 import { DEFAULT_CONFIG, demoNow, roleLabel, type AuditEntry, type Config, type Dataset, type User } from '@mas/domain';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
+import { buildVault, type Vault } from '@/lib/vault';
 import { create } from 'zustand';
 
 export type Collection = Exclude<keyof Dataset, 'meta'>;
@@ -32,6 +33,11 @@ interface AppState {
   ready: boolean;
   data: Dataset;
   config: Config;
+  /**
+   * The encrypted store: ciphertext for every process record, wrapped to the principals the
+   * need-to-know matrix entitles. Built beside the dataset so it is never rebuilt on a render.
+   */
+  vault: Vault;
   session: Session;
   init: () => void;
   now: () => Date;
@@ -136,6 +142,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   ready: false,
   data: EMPTY,
   config: DEFAULT_CONFIG,
+  vault: buildVault(EMPTY, DEFAULT_CONFIG),
   session: { userId: null, breakGlass: [], liveClock: false },
   init: () => {
     if (get().ready) return;
@@ -148,7 +155,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     session.breakGlass = (session.breakGlass ?? []).filter((g) => g.expiresAt > nowIso);
     // Older persisted overlays may predate new configuration keys; defaults fill the gaps.
     const config: Config = overlay.config ? { ...DEFAULT_CONFIG, ...overlay.config } : DEFAULT_CONFIG;
-    set({ data, config, session: { ...session, breakGlass: session.breakGlass, liveClock: session.liveClock ?? false }, ready: true });
+    set({ data, config, vault: buildVault(data, config), session: { ...session, breakGlass: session.breakGlass, liveClock: session.liveClock ?? false }, ready: true });
     applyConfiguredAppearanceDefaults(config);
   },
   now: () => (get().session.liveClock ? new Date() : demoNow()),
@@ -253,7 +260,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       /* ignore */
     }
     const seed = process.env.NEXT_PUBLIC_SEED ?? DEFAULT_SEED;
-    set({ data: buildDataset({ seed }), config: DEFAULT_CONFIG });
+    const rebuilt = buildDataset({ seed });
+    set({ data: rebuilt, config: DEFAULT_CONFIG, vault: buildVault(rebuilt, DEFAULT_CONFIG) });
   },
   newId: (prefix) => {
     counter += 1;
@@ -263,6 +271,22 @@ export const useAppStore = create<AppState>((set, get) => ({
 
 export function useData(): Dataset {
   return useAppStore((s) => s.data);
+}
+
+/**
+ * The encrypted store.
+ *
+ * Built once when the dataset loads and held in the store beside it, rather than memoised in a hook:
+ * building it costs a hybrid key pair per principal and a wrap per entitled principal per record,
+ * and it must not happen again on every render.
+ *
+ * In production a client fetches ciphertext and holds only its own keys. Here it holds every key,
+ * which is what lets the "What the host can see" screen draw both views side by side. The Security
+ * page says so, rather than leaving the impression that a browser in the field would hold the whole
+ * key set.
+ */
+export function useVault(): Vault {
+  return useAppStore((s) => s.vault);
 }
 
 export function useConfig(): Config {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Process } from '../schemas/process';
 import type { User } from '../schemas/user';
-import { accessFor, canSee, contextFor } from './access';
+import { accessFor, accessRank, contextFor } from './access';
 
 function user(over: Partial<User>): User {
   return {
@@ -168,10 +168,13 @@ describe('accessFor', () => {
   });
 });
 
-describe('canSee', () => {
+describe('accessRank', () => {
   it('compares levels', () => {
-    expect(canSee('full', 'summary')).toBe(true);
-    expect(canSee('presence', 'summary')).toBe(false);
-    expect(canSee('none', 'presence')).toBe(false);
+    // Ranks a level for choosing what to render. It is not a permission: content is gated by
+    // whether the key unwraps, and canSee (which returned a boolean a caller could forget) is gone.
+    expect(accessRank('full')).toBeGreaterThan(accessRank('summary'));
+    expect(accessRank('summary')).toBeGreaterThan(accessRank('presence'));
+    expect(accessRank('presence')).toBeGreaterThan(accessRank('none'));
+    expect(accessRank('none')).toBe(0);
   });
 });

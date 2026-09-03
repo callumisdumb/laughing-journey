@@ -13115,6 +13115,15 @@
         "where": "Sheet title of the statutory clocks card on the process screen"
       }
     },
+    "encrypted": {
+      "reason": {
+        "where": "Explanation on the restricted state shown when the record's key does not unwrap for this user"
+      },
+      "title": {
+        "maxLength": 48,
+        "where": "Title of the restricted state shown when the record's key does not unwrap"
+      }
+    },
     "head": {
       "askToBeInvolved": {
         "maxLength": 30,

@@ -4143,6 +4143,10 @@
       "sub": "Due {date}. {source}{verify, select, yes { (local value, to verify)} other {}}{deferral, select, yes { {note}.} other {}}",
       "title": "Clocks"
     },
+    "encrypted": {
+      "reason": "This record's content is encrypted to the people the need-to-know rules entitle, and your keys do not open it. This is not a setting someone can change for you: there is no copy of the key held for you to be given. If you need to be on this case, ask the lead to add you, which wraps the key to you from that point on.",
+      "title": "You hold no key for this record"
+    },
     "head": {
       "askToBeInvolved": "Ask to be involved",
       "born": "born {date}",

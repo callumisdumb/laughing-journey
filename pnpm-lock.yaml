@@ -71,6 +71,9 @@ importers:
       '@mas/connectors':
         specifier: workspace:*
         version: link:../../packages/connectors
+      '@mas/crypto':
+        specifier: workspace:*
+        version: link:../../packages/crypto
       '@mas/domain':
         specifier: workspace:*
         version: link:../../packages/domain

@@ -124,7 +124,17 @@ export function accessFor(user: User, process: Process, options: AccessOptions =
   return { ...base, level: 'presence', reason: t('domain.access.notOnCase') };
 }
 
-export function canSee(level: AccessLevel, needed: DetailLevel): boolean {
+/**
+ * The rank of an access level, for choosing *what to render*: presence, summary or full are three
+ * different screens and the UI has to pick one.
+ *
+ * This deliberately replaced `canSee(level, needed)`, which returned a permission boolean. A boolean
+ * is something a caller may forget to consult, and a caller that forgot rendered the record anyway.
+ * Content is now gated by whether the key unwraps (see permissions/principals.ts and the vault in
+ * the web app), so this function decides layout and nothing else. It must never be used to decide
+ * whether content may be shown; if it appears in that position, the encryption has been bypassed.
+ */
+export function accessRank(level: AccessLevel): number {
   const rank: Record<AccessLevel, number> = { none: 0, presence: 1, fields: 2, summary: 3, full: 4 };
-  return rank[level] >= rank[needed];
+  return rank[level];
 }
