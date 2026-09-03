@@ -22,7 +22,7 @@ import type {
   ViewsRecord,
   Visibility,
 } from '@mas/domain';
-import { officialSensitive } from '@mas/domain';
+import { classificationOfShare, officialSensitive } from '@mas/domain';
 import type { BuildContext } from './context';
 
 export type Partialish<T, K extends keyof T> = Omit<T, K | 'synthetic'> & Partial<Pick<T, K>>;
@@ -204,8 +204,21 @@ export function makeLawfulBasis(
   return rec;
 }
 
-export function makeShare(ctx: BuildContext, s: Partialish<SharingRecord, 'id' | 'status' | 'createdAt' | 'channel'>): SharingRecord {
-  const rec: SharingRecord = { ...s, id: s.id ?? ctx.ids.next('shr'), synthetic: true, status: s.status ?? 'sent', createdAt: s.createdAt ?? ctx.nowIso, channel: s.channel ?? 'in-app' };
+export function makeShare(ctx: BuildContext, s: Partialish<SharingRecord, 'id' | 'status' | 'createdAt' | 'channel' | 'classification' | 'accessRestriction'>): SharingRecord {
+  // Copied from the process at the moment of the share, never resolved later: the record has to say
+  // what went out under what marking even if the source is raised afterwards.
+  const source = ctx.data.processes.find((p) => p.id === s.processId);
+  const carried = source ? classificationOfShare(source) : { classification: officialSensitive(), accessRestriction: 'none' as const };
+  const rec: SharingRecord = {
+    ...s,
+    id: s.id ?? ctx.ids.next('shr'),
+    synthetic: true,
+    status: s.status ?? 'sent',
+    createdAt: s.createdAt ?? ctx.nowIso,
+    channel: s.channel ?? 'in-app',
+    classification: s.classification ?? carried.classification,
+    accessRestriction: s.accessRestriction ?? carried.accessRestriction,
+  };
   ctx.data.sharingRecords.push(rec);
   return rec;
 }

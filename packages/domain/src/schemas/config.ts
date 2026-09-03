@@ -105,6 +105,16 @@ export const configSchema = z.object({
   classificationMarkings: z.array(classificationMarkingSchema),
   /** Roles permitted to lower a derived classification, Annex 2. A lower outside them is refused, not silent. */
   classificationLowerableBy: z.array(z.enum(ROLES)),
+  /**
+   * Roles that may not receive Official-Sensitive content. A share to one of these carries the
+   * marking and the reason and withholds the content, rather than arriving and being read.
+   *
+   * Stated as an exclusion rather than a permission list on purpose: a permitted-roles list is wrong
+   * the first time a role is added and nobody remembers to extend it, and it would be wrong in the
+   * direction that withholds information from someone who needs it. TODO(verify) against the
+   * partnership's own information sharing agreement, which is what actually decides this.
+   */
+  officialSensitiveWithheldFrom: z.array(z.enum(ROLES)),
   forms: z.array(formVersionSchema),
   defaults: z.object({
     theme: z.enum(['light', 'dark', 'system']),

@@ -1,4 +1,4 @@
-import { datasetSchema } from '@mas/domain';
+import { classificationOfShare, datasetSchema, shareIsNoWeakerThanSource } from '@mas/domain';
 import { describe, expect, it } from 'vitest';
 import { buildDataset } from './generator/build';
 import { AIDEN } from './scenarios/04-aiden-boyle';
@@ -49,6 +49,32 @@ describe('buildDataset', () => {
     expect(data.connectorEvents.filter((c) => c.subjectId === AIDEN.aiden).length).toBe(3);
     const janet = data.users.find((u) => u.id === 'usr_janet_kerr');
     expect(janet?.caseMemberships).toContain(AIDEN.process);
+  });
+
+  it('never lets a share carry a weaker classification than the record it came from', () => {
+    // The invariant the captured classification exists for. A share that went out marked lower than
+    // its source is a quiet downgrade, and by the time anyone notices it has already been read.
+    const byId = new Map(data.processes.map((p) => [p.id, p]));
+    const weaker = data.sharingRecords.filter((share) => {
+      const source = byId.get(share.processId);
+      return source !== undefined && !shareIsNoWeakerThanSource(share, source);
+    });
+    expect(weaker.map((s) => `${s.id} on ${s.processId}`)).toEqual([]);
+    expect(data.sharingRecords.length).toBeGreaterThan(0);
+  });
+
+  it('carries the access restriction onto every share from a restricted record', () => {
+    const restricted = new Set(data.processes.filter((p) => p.accessRestriction === 'restricted').map((p) => p.id));
+    for (const share of data.sharingRecords) {
+      if (restricted.has(share.processId)) expect(share.accessRestriction).toBe('restricted');
+    }
+  });
+
+  it('copies the classification onto a share rather than pointing at the source', () => {
+    const share = data.sharingRecords[0]!;
+    const source = data.processes.find((p) => p.id === share.processId)!;
+    expect(share.classification).toEqual(classificationOfShare(source).classification);
+    expect(share.classification).not.toBe(source.classification);
   });
 
   it('keeps ages and schools consistent', () => {

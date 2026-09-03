@@ -109,6 +109,17 @@
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
+/** A note under a drawer section: the withhold rule that applies to a share's recipient. */
+.note {
+  margin-top: 8px;
+  padding: 8px 10px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-1);
+  background: var(--color-paper-2);
+  border-left: 3px solid var(--color-risk-medium);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
 .auditItem {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

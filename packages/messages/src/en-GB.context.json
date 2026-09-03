@@ -11391,6 +11391,10 @@
         }
       },
       "fields": {
+        "accessRestriction": {
+          "maxLength": 16,
+          "where": "Drawer field label for whether a share came from an access-restricted record"
+        },
         "action": {
           "maxLength": 16,
           "where": "Context panel, action section: row label for the action title"
@@ -11508,6 +11512,10 @@
           "maxLength": 16,
           "screenshot": "phase-1/home-light-comfortable.png",
           "where": "Context panel, signed-in section: row label for your role"
+        },
+        "sharedUnder": {
+          "maxLength": 16,
+          "where": "Drawer field label for the marking a share carried when it was sent"
         },
         "significance": {
           "maxLength": 16,
@@ -11684,6 +11692,9 @@
       "share": {
         "statusRead": {
           "where": "Context panel, share section, status row when the recipient has read the share"
+        },
+        "withheldFromRecipient": {
+          "where": "Drawer note on a share whose recipient's role may not receive Official-Sensitive content, with the role name"
         }
       },
       "signedIn": {
@@ -17137,6 +17148,10 @@
     },
     "inbound": {
       "notifications": {
+        "beforeOpening": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Line on a received notification showing the marking before the recipient opens it"
+        },
         "empty": {
           "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
           "where": "Line in the notifications sheet when nothing has been shared with the viewer"
@@ -17163,6 +17178,14 @@
         "whyYou": {
           "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
           "where": "Line under each notification giving the reason the viewer received it"
+        },
+        "withheld": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Line on a received notification whose content is withheld from this recipient's role"
+        },
+        "withheldPill": {
+          "maxLength": 12,
+          "where": "Pill on a received notification whose content is withheld"
         }
       },
       "requests": {
@@ -17360,6 +17383,11 @@
           "screenshot": "phase-4/sharing-preview-light-comfortable.png",
           "where": "Row label of the preview card"
         },
+        "marking": {
+          "maxLength": 32,
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Row label in the what would X see preview for the marking that recipient would get"
+        },
         "namedFields": {
           "maxLength": 16,
           "screenshot": "phase-4/sharing-preview-light-comfortable.png",
@@ -17400,6 +17428,14 @@
         "maxLength": 8,
         "screenshot": "phase-4/sharing-preview-light-comfortable.png",
         "where": "Detail row of the preview card for full access"
+      },
+      "wouldReceiveMarking": {
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Preview value when the chosen recipient's role may not receive Official-Sensitive content"
+      },
+      "wouldReceiveNoMarking": {
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Preview value when what the recipient would get is routine Official and carries no marking"
       },
       "wouldSee": {
         "screenshot": "phase-4/sharing-preview-light-comfortable.png",

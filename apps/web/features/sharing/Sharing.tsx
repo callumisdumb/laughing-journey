@@ -1,6 +1,6 @@
 'use client';
 
-import { agencyShort, classificationFor, contextFor, detailLevelLabel, exclusionPartyLabel, formatDate, formatDateTime, isExcludedParty, marking, processShort, resolveNeedToKnow, roleLabel, shareStatusLabel, stageLabel, type Config, type Dataset, type InformationRequest, type Process, type User } from '@mas/domain';
+import { agencyShort, classificationFor, classificationOfShare, contextFor, detailLevelLabel, exclusionPartyLabel, formatDate, formatDateTime, isExcludedParty, marking, processShort, recipientView, resolveNeedToKnow, roleLabel, shareStatusLabel, stageLabel, type ClassifiedShare, type Config, type InformationRequest, type Process, type User } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, CheckboxField, Dialog, EmptyState, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Table, TableWrap, Tabs, TextareaField, useToast } from '@mas/ui';
 import { Eye, Lock } from 'lucide-react';
@@ -22,9 +22,12 @@ const STRONG: RichValues = { b: (chunks) => <strong>{chunks}</strong> };
  * Undefined at Official: a share of routine information is not marked, and saying so in words is
  * better than an empty cell.
  */
-function shareMarking(config: Config, data: Dataset, lawfulBasisId: string): string | undefined {
-  const basis = data.lawfulBases.find((b) => b.id === lawfulBasisId);
-  return basis ? marking(classificationFor(config, basis)) : undefined;
+/**
+ * The marking a share carried when it was sent, from the share's own record rather than resolved
+ * from the source. A source raised after the fact does not change what the recipient was given.
+ */
+function shareMarking(config: Config, share: ClassifiedShare): string | undefined {
+  return marking(classificationFor(config, share));
 }
 
 export function Sharing() {
@@ -141,7 +144,7 @@ export function Sharing() {
                         {detailLevelLabel(s.detailLevel)}
                         {s.fields ? <span className={styles.rowReason}>{s.fields.join('; ')}</span> : null}
                       </td>
-                      <td>{shareMarking(config, data, s.lawfulBasisId) ?? <span className={styles.rowReason}>{t('nav.drawer.fields.noMarking')}</span>}</td>
+                      <td>{shareMarking(config, s) ?? <span className={styles.rowReason}>{t('nav.drawer.fields.noMarking')}</span>}</td>
                       <td>
                         {s.summary}
                         <span className={styles.rowReason}>{s.reason}</span>
@@ -172,17 +175,29 @@ export function Sharing() {
                   <tbody>
                     {received.map((s) => {
                       const p = data.processes.find((x) => x.id === s.processId);
+                      // The marking is shown before the recipient opens anything, and where their role
+                      // may not receive Official-Sensitive material the summary itself is withheld.
+                      const mark = shareMarking(config, s);
+                      const view = recipientView(config, s, user.roleId);
                       return (
                         <tr key={s.id} onMouseEnter={() => select({ kind: 'share', id: s.id })}>
                           <td style={{ whiteSpace: 'nowrap' }}>{formatDate(s.createdAt)}</td>
                           <td>
-                            {s.summary}
+                            {mark ? <span className={styles.rowMarking}>{t('sharing.inbound.notifications.beforeOpening', { marking: mark })}</span> : null}
+                            {view.showContent ? s.summary : <span className={styles.redacted}>{t('sharing.inbound.notifications.withheld')}</span>}
                             <span className={styles.rowReason}>{t('sharing.inbound.notifications.whyYou', { reason: s.reason })}</span>
-                            {shareMarking(config, data, s.lawfulBasisId) ? <span className={styles.rowMarking}>{shareMarking(config, data, s.lawfulBasisId)}</span> : null}
                           </td>
                           <td>{p ? <AppLink href={processPath(p.id)}>{p.reference}</AppLink> : ''}</td>
                           <td>{detailLevelLabel(s.detailLevel)}</td>
-                          <td>{s.status !== 'read' ? <Button size="sm" variant="quiet" onClick={() => markRead(s.id)}>{t('sharing.inbound.notifications.markRead')}</Button> : <Pill size="sm" tone="low">{t('sharing.inbound.notifications.read')}</Pill>}</td>
+                          <td>
+                            {!view.showContent ? (
+                              <Pill size="sm" tone="restricted">{t('sharing.inbound.notifications.withheldPill')}</Pill>
+                            ) : s.status !== 'read' ? (
+                              <Button size="sm" variant="quiet" onClick={() => markRead(s.id)}>{t('sharing.inbound.notifications.markRead')}</Button>
+                            ) : (
+                              <Pill size="sm" tone="low">{t('sharing.inbound.notifications.read')}</Pill>
+                            )}
+                          </td>
                         </tr>
                       );
                     })}
@@ -318,6 +333,20 @@ function Preview({ process, viewer }: { process: Process; viewer: User }) {
         <div className={styles.previewRow}>
           <dt>{t('sharing.preview.rows.exclusions')}</dt>
           <dd>{res.exclusions.map((e) => e.label).join('; ') || t('sharing.preview.noExclusions')}</dd>
+        </div>
+        <div className={styles.previewRow}>
+          <dt>{t('sharing.preview.rows.marking')}</dt>
+          <dd>
+            {(() => {
+              // What this recipient would actually be given, marking first. A recipient whose role may
+              // not receive Official-Sensitive material is told so here rather than after the share.
+              const carried = classificationFor(config, classificationOfShare(process));
+              const mark = marking(carried);
+              const view = recipientView(config, classificationOfShare(process), viewer.roleId);
+              if (!mark) return t('sharing.preview.wouldReceiveNoMarking');
+              return view.showContent ? mark : t('sharing.preview.wouldReceiveMarking', { marking: mark });
+            })()}
+          </dd>
         </div>
         <div className={styles.previewRow}>
           <dt>{t('sharing.preview.rows.lawfulBasis')}</dt>

@@ -611,6 +611,8 @@ Variant 5
 | `createdAt` | string (date-time) | yes |
 | `sentAt` | string (date-time) | no |
 | `readAt` | string (date-time) | no |
+| `classification` | object { level, sensitive, handling } | yes |
+| `accessRestriction` | "none" \| "restricted" | yes |
 | `reason` | string | yes |
 | `needToKnowRowId` | string | no |
 | `createdByUserId` | string | no |
@@ -634,6 +636,8 @@ Variant 5
 | `purpose` | string | yes |
 | `fields` | array of string | yes |
 | `lawfulBasisId` | string | yes |
+| `classification` | object { level, sensitive, handling } | yes |
+| `accessRestriction` | "none" \| "restricted" | yes |
 | `status` | "open" \| "responded" \| "declined" | yes |
 | `createdAt` | string (date-time) | yes |
 | `dueAt` | string (date) | no |
@@ -733,6 +737,7 @@ Variant 5
 | `exclusions` | array of object { id, process, stage, party, label, reason, liftableBy } | yes |
 | `classificationMarkings` | array of object { id, handling, instructions } | yes |
 | `classificationLowerableBy` | array of enum (38 values) | yes |
+| `officialSensitiveWithheldFrom` | array of enum (38 values) | yes |
 | `forms` | array of object { id, label, process, version, effectiveFrom, source } | yes |
 | `defaults` | object { theme, density } | yes |
 | `aspCouncilOfficerEligibility` | array of string | yes |

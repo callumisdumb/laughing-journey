@@ -57,6 +57,14 @@ export const sharingRecordSchema = z.object({
   createdAt: isoDateTime,
   sentAt: isoDateTime.optional(),
   readAt: isoDateTime.optional(),
+  /**
+   * The classification of what was shared, captured at the moment of the share. Not resolved from
+   * the source at render time: the record has to say what went out under what marking even if the
+   * source is raised afterwards, because the recipient acted on what they were given.
+   */
+  classification: classificationSchema,
+  /** Whether what was shared came from an access-restricted record. */
+  accessRestriction: z.enum(ACCESS_RESTRICTIONS),
   /** Shown to the recipient: why they are receiving this. */
   reason: z.string(),
   needToKnowRowId: z.string().optional(),
@@ -80,6 +88,9 @@ export const informationRequestSchema = z.object({
   purpose: z.string(),
   fields: z.array(z.string()),
   lawfulBasisId: idSchema,
+  /** The classification of the record the request concerns, captured when the request was made. */
+  classification: classificationSchema,
+  accessRestriction: z.enum(ACCESS_RESTRICTIONS),
   status: z.enum(['open', 'responded', 'declined']),
   createdAt: isoDateTime,
   dueAt: isoDate.optional(),

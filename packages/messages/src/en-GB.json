@@ -3696,6 +3696,7 @@
         "whenApproximate": "{when} (approximate)"
       },
       "fields": {
+        "accessRestriction": "Access",
         "action": "Action",
         "agency": "Agency",
         "article6": "Article 6",
@@ -3723,6 +3724,7 @@
         "recorded": "Recorded",
         "response": "Response",
         "role": "Role",
+        "sharedUnder": "Shared as",
         "significance": "Significance",
         "source": "Source",
         "status": "Status",
@@ -3774,7 +3776,8 @@
         "yourAccess": "Your access"
       },
       "share": {
-        "statusRead": "{status}, read {when}"
+        "statusRead": "{status}, read {when}",
+        "withheldFromRecipient": "Content withheld. {role} may not receive Official-Sensitive material under the local information sharing agreement, so this recipient sees the marking and the reason and nothing else."
       },
       "signedIn": {
         "casesOpen": "{count} open",
@@ -5429,12 +5432,15 @@
     },
     "inbound": {
       "notifications": {
+        "beforeOpening": "Marked {marking} before you open it.",
         "empty": "Nothing has been shared with you yet.",
         "markRead": "Mark read",
         "meta": "{count} unread. Each one says why you received it.",
         "read": "read",
         "title": "Notifications to you",
-        "whyYou": "Why you: {reason}"
+        "whyYou": "Why you: {reason}",
+        "withheld": "Content withheld: your role may not receive Official-Sensitive material. You can see that this exists and why you were told. Ask the sender if you need it.",
+        "withheldPill": "Withheld"
       },
       "requests": {
         "asksAbout": "{name} ({agency}) asks about {subject}",
@@ -5489,6 +5495,7 @@
         "excludedParty": "Excluded party",
         "exclusions": "Exclusions at this stage",
         "lawfulBasis": "Lawful basis shown",
+        "marking": "Marking they would get",
         "namedFields": "Named fields",
         "processExists": "Process exists",
         "rules": "Rules that apply",
@@ -5498,6 +5505,8 @@
       "seenAs": "Seen as",
       "seenAsPlaceholder": "Choose a role",
       "visible": "Visible",
+      "wouldReceiveMarking": "{marking}, content withheld: this role may not receive Official-Sensitive material.",
+      "wouldReceiveNoMarking": "No marking required. Routine Official information is not marked.",
       "wouldSee": "{name} would see: {level}{redacted, select, yes { (names redacted)} other {}}"
     },
     "respondDialog": {

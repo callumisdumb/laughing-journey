@@ -1,6 +1,6 @@
 'use client';
 
-import { actionStatusLabel, agencyShort, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type ClassifiedRecord, type Process } from '@mas/domain';
+import { accessRestrictionLabel, actionStatusLabel, agencyShort, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, recipientView, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type ClassifiedRecord, type Process } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { AgencyMark, IconButton, Pill, RiskBand } from '@mas/ui';
 import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, Users } from 'lucide-react';
@@ -430,6 +430,7 @@ export function ContextDrawer() {
   } else if (selection?.kind === 'share') {
     const s = data.sharingRecords.find((x) => x.id === selection.id);
     const basis = s ? data.lawfulBases.find((b) => b.id === s.lawfulBasisId) : undefined;
+    const recipientRole = s?.recipient.userId ? data.users.find((u) => u.id === s.recipient.userId)?.roleId : undefined;
     title = t('nav.drawer.title.share');
     body = s ? (
       <>
@@ -447,7 +448,14 @@ export function ContextDrawer() {
             <dd>{channelLabel(s.channel)}</dd>
             <dt>{t('nav.drawer.fields.status')}</dt>
             <dd>{s.readAt ? t('nav.drawer.share.statusRead', { status: shareStatusLabel(s.status), when: formatDateTime(s.readAt) }) : shareStatusLabel(s.status)}</dd>
+            <dt>{t('nav.drawer.fields.sharedUnder')}</dt>
+            <dd>{classificationSummary(config, s, t)}</dd>
+            <dt>{t('nav.drawer.fields.accessRestriction')}</dt>
+            <dd>{accessRestrictionLabel(s.accessRestriction)}</dd>
           </dl>
+          {recipientRole && !recipientView(config, s, recipientRole).showContent ? (
+            <p className={styles.note}>{t('nav.drawer.share.withheldFromRecipient', { role: roleLabel(recipientRole) })}</p>
+          ) : null}
         </Section>
         <Section title={t('nav.drawer.section.lawfulBasis')} icon={<Scale size={14} aria-hidden="true" />}>
           {basis ? (

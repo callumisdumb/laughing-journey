@@ -42,6 +42,10 @@ export const DEFAULT_CONFIG: Config = {
   // The Caldicott Guardian, the MAPPA co-ordinator and the CSWO. A practitioner cannot talk a
   // derived classification down; the whole point of deriving it is that the decision is visible.
   classificationLowerableBy: ['caldicott-guardian', 'mappa-coordinator', 'cswo'],
+  // Seeded from the roles that in this product only ever receive presence-level information: they
+  // sit outside the statutory partnership, or outside its secure channels. TODO(verify) against the
+  // partnership's information sharing agreement.
+  officialSensitiveWithheldFrom: ['independent-advocate', 'fire-safety-officer', 'housing-officer'],
   forms: [
     { id: 'asp.three-point-test', label: 'ASP three-point test', process: 'asp', version: '2022.1', effectiveFrom: '2022-07-01', source: 'ASP Code of Practice July 2022' },
     { id: 'asp.adult-concern', label: 'Adult concern record', process: 'asp', version: '2025.2', effectiveFrom: '2025-04-01', source: 'Clydeshore ASP procedures' },
