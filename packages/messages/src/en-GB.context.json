@@ -11435,6 +11435,10 @@
           "maxLength": 24,
           "where": "Drawer row label: the Annex 2 classification recorded with a lawful basis"
         },
+        "classificationSetBy": {
+          "maxLength": 20,
+          "where": "Drawer field label for who set a record's marking, when it was overridden"
+        },
         "consent": {
           "maxLength": 16,
           "screenshot": "phase-3/process-cp-light-comfortable.png",
@@ -11626,6 +11630,11 @@
           "screenshot": "phase-3/process-cp-light-comfortable.png",
           "where": "Context panel section heading for the audit trail"
         },
+        "classification": {
+          "maxLength": 20,
+          "screenshot": "classification/process-marked-light-comfortable.png",
+          "where": "Drawer section heading for a process's marking and who set it"
+        },
         "distribution": {
           "maxLength": 32,
           "where": "Context panel section heading for a selected meeting's distribution list"
@@ -11690,6 +11699,9 @@
         }
       },
       "share": {
+        "overrideNote": {
+          "where": "Drawer note describing a recorded classification override: direction, derived level, author, date and reason"
+        },
         "statusRead": {
           "where": "Context panel, share section, status row when the recipient has read the share"
         },
@@ -13589,6 +13601,24 @@
           "where": "Field hint where the signed-in role may not lower a classification"
         }
       },
+      "override": {
+        "derivedNote": {
+          "screenshot": "classification/classification-dialog-light-comfortable.png",
+          "where": "Line in the reclassification dialog when no override is recorded"
+        },
+        "lowered": {
+          "screenshot": "classification/process-marked-light-comfortable.png",
+          "where": "Line under the process marking when a person lowered it, with the derived level, the author and the date"
+        },
+        "raised": {
+          "screenshot": "classification/process-marked-light-comfortable.png",
+          "where": "Line under the process marking when a person raised it, with the derived level, the author and the date"
+        },
+        "reason": {
+          "screenshot": "classification/process-marked-light-comfortable.png",
+          "where": "The reason a person gave for an override, shown under the marking"
+        }
+      },
       "reason": {
         "hint": {
           "where": "Field hint for the classification reason"
@@ -13599,6 +13629,13 @@
         }
       },
       "refused": {
+        "belowLinkedText": {
+          "where": "Toast body when an override is refused because it would sit below a linked record's classification"
+        },
+        "belowLinkedTitle": {
+          "maxLength": 40,
+          "where": "Toast title when an override is refused for being below a linked record"
+        },
         "text": {
           "where": "Toast text when a lower is refused"
         },

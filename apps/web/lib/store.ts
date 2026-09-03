@@ -51,7 +51,8 @@ interface AppState {
   upsert: <K extends Collection>(collection: K, record: Dataset[K][number]) => void;
   remove: (collection: Collection, id: string) => void;
   setConfig: (config: Config) => void;
-  audit: (entry: Omit<AuditEntry, 'id' | 'synthetic' | 'at' | 'userId' | 'userName' | 'agency' | 'restricted'> & { restricted?: boolean }) => void;
+  /** Writes the ledger entry and the chained copy, and returns it so a caller can cite its id. */
+  audit: (entry: Omit<AuditEntry, 'id' | 'synthetic' | 'at' | 'userId' | 'userName' | 'agency' | 'restricted'> & { restricted?: boolean }) => AuditEntry | undefined;
   grantBreakGlass: (processId: string, category: string, reason: string) => void;
   setLiveClock: (v: boolean) => void;
   resetDemo: () => void;
@@ -249,7 +250,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
   audit: (entry) => {
     const u = get().currentUser();
-    if (!u) return;
+    if (!u) return undefined;
     const rec: AuditEntry = {
       id: get().newId('aud'),
       synthetic: true,
@@ -265,6 +266,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     // predecessor and is signed by the actor's device key, so an entry cannot be edited or removed
     // without the Admin verification screen finding it (lib/auditChain.ts).
     set({ chain: appendAudit(get().chain, rec, auditDetailKey()) });
+    return rec;
   },
   grantBreakGlass: (processId, category, reason) => {
     const now = get().now();

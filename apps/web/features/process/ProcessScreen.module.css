@@ -32,6 +32,14 @@
   color: var(--color-ink-2);
 }
 
+/** Under the marking: who raised or lowered it and why, so a reader knows it was not derived. */
+.overrideNote {
+  max-width: 68ch;
+  margin-top: 6px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
 .headActions {
   display: flex;
   flex-direction: column;

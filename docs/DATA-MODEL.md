@@ -179,7 +179,7 @@ Variant 1
 | `status` | "open" \| "closed" \| "transferred" | yes |
 | `classification` | object { level, sensitive, handling } | yes |
 | `accessRestriction` | "none" \| "restricted" | yes |
-| `classificationOverride` | object { level, sensitive, handling, reason, byUserId, byName, at } | no |
+| `classificationOverride` | object { level, sensitive, handling, direction, reason, byUserId, byName, at, auditEntryId } | no |
 | `openedAt` | string (date-time) | yes |
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
@@ -210,7 +210,7 @@ Variant 2
 | `status` | "open" \| "closed" \| "transferred" | yes |
 | `classification` | object { level, sensitive, handling } | yes |
 | `accessRestriction` | "none" \| "restricted" | yes |
-| `classificationOverride` | object { level, sensitive, handling, reason, byUserId, byName, at } | no |
+| `classificationOverride` | object { level, sensitive, handling, direction, reason, byUserId, byName, at, auditEntryId } | no |
 | `openedAt` | string (date-time) | yes |
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
@@ -241,7 +241,7 @@ Variant 3
 | `status` | "open" \| "closed" \| "transferred" | yes |
 | `classification` | object { level, sensitive, handling } | yes |
 | `accessRestriction` | "none" \| "restricted" | yes |
-| `classificationOverride` | object { level, sensitive, handling, reason, byUserId, byName, at } | no |
+| `classificationOverride` | object { level, sensitive, handling, direction, reason, byUserId, byName, at, auditEntryId } | no |
 | `openedAt` | string (date-time) | yes |
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
@@ -272,7 +272,7 @@ Variant 4
 | `status` | "open" \| "closed" \| "transferred" | yes |
 | `classification` | object { level, sensitive, handling } | yes |
 | `accessRestriction` | "none" \| "restricted" | yes |
-| `classificationOverride` | object { level, sensitive, handling, reason, byUserId, byName, at } | no |
+| `classificationOverride` | object { level, sensitive, handling, direction, reason, byUserId, byName, at, auditEntryId } | no |
 | `openedAt` | string (date-time) | yes |
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
@@ -303,7 +303,7 @@ Variant 5
 | `status` | "open" \| "closed" \| "transferred" | yes |
 | `classification` | object { level, sensitive, handling } | yes |
 | `accessRestriction` | "none" \| "restricted" | yes |
-| `classificationOverride` | object { level, sensitive, handling, reason, byUserId, byName, at } | no |
+| `classificationOverride` | object { level, sensitive, handling, direction, reason, byUserId, byName, at, auditEntryId } | no |
 | `openedAt` | string (date-time) | yes |
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |

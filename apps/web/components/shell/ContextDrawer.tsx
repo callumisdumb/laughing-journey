@@ -1,9 +1,9 @@
 'use client';
 
-import { accessRestrictionLabel, actionStatusLabel, agencyShort, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, recipientView, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type ClassifiedRecord, type Process } from '@mas/domain';
+import { accessRestrictionLabel, actionStatusLabel, agencyShort, classificationLabel, effectiveClassification, formatDate, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, recipientView, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type ClassifiedRecord, type Process } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { AgencyMark, IconButton, Pill, RiskBand } from '@mas/ui';
-import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, Users } from 'lucide-react';
+import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, ShieldCheck, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useAppearance } from '@/lib/appearance';
 import { useSelection } from '@/lib/selection';
@@ -195,6 +195,38 @@ function AuditTrail({ processIds, personId }: { processIds: string[]; personId?:
   );
 }
 
+/**
+ * The record's marking, and whether a person put it there. A reader needs to know that a raised
+ * marking was a decision rather than a derivation, and whose decision it was.
+ */
+function ProcessClassification({ process }: { process: Process }) {
+  const t = useT();
+  const config = useConfig();
+  const effective = effectiveClassification(config, process);
+  return (
+    <dl className={styles.kv}>
+      <dt>{t('nav.drawer.fields.classification')}</dt>
+      <dd>{marking(effective.classification) ?? t('nav.drawer.fields.noMarking')}</dd>
+      <dt>{t('nav.drawer.fields.accessRestriction')}</dt>
+      <dd>{accessRestrictionLabel(process.accessRestriction)}</dd>
+      {effective.override ? (
+        <>
+          <dt>{t('nav.drawer.fields.classificationSetBy')}</dt>
+          <dd>
+            {t('nav.drawer.share.overrideNote', {
+              direction: effective.override.direction,
+              derived: classificationLabel(effective.derived),
+              name: effective.override.byName,
+              date: formatDate(effective.override.at),
+              reason: effective.override.reason,
+            })}
+          </dd>
+        </>
+      ) : null}
+    </dl>
+  );
+}
+
 function YourAccess({ process }: { process: Process }) {
   const t = useT();
   const data = useData();
@@ -260,6 +292,9 @@ export function ContextDrawer() {
         </Section>
         <Section title={t('nav.drawer.section.whoIsInvolved')} icon={<Users size={14} aria-hidden="true" />}>
           <WhoIsInvolved processes={[process]} />
+        </Section>
+        <Section title={t('nav.drawer.section.classification')} icon={<ShieldCheck size={14} aria-hidden="true" />}>
+          <ProcessClassification process={process} />
         </Section>
         <Section title={t('nav.drawer.section.needToKnowStage')} icon={<FileCheck2 size={14} aria-hidden="true" />}>
           <NeedToKnow process={process} />

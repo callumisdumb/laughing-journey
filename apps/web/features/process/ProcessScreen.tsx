@@ -1,6 +1,6 @@
 'use client';
 
-import { STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, OFFICIAL, applyOverride, canLower, classificationFor, classificationLabel, marking, officialSensitive, relativeDays, stageLabel, type Process } from '@mas/domain';
+import { STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, OFFICIAL, canLower, classificationFor, classificationLabel, effectiveClassification, marking, officialSensitive, overrideDecision, overrideDirection, relativeDays, stageLabel, type Classification, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -67,8 +67,12 @@ export function ProcessScreen({ processId }: { processId: string }) {
   // whether the content may be shown. That is decided here, by whether the unwrap succeeded.
   const decrypted = readProcessDetail(vault, process, user, access.breakGlass === 'active');
   // Annex 2: the level is derived from the record and a recorded override is applied as stored.
-  const derived = classificationFor(config, { ...process, classificationOverride: undefined });
-  const classification = classificationFor(config, process);
+  // One function decides the marking, so no two screens can disagree about the same record.
+  const effective = effectiveClassification(config, process);
+  const derived = effective.derived;
+  const classification = effective.classification;
+  // The inheritance rule's floor: a classification is never lower than one it links to.
+  const linkedRecords = data.processes.filter((p) => process.linkedProcessIds.includes(p.id)).map((p) => ({ classification: classificationFor(config, p) }));
   const mayLower = canLower(user.roleId, config.classificationLowerableBy);
   const subjects = process.subjectIds.map((id) => personById(data, id)).filter(Boolean) as NonNullable<ReturnType<typeof personById>>[];
   const clocks = clocksForProcess(data, config, process, now);
@@ -104,6 +108,16 @@ export function ProcessScreen({ processId }: { processId: string }) {
           </Pill>
           <ClassificationTag classification={classification} />
         </div>
+        {effective.override ? (
+          <p className={styles.overrideNote}>
+            {t(effective.override.direction === 'raised' ? 'processes.classification.override.raised' : 'processes.classification.override.lowered', {
+              derived: classificationLabel(derived),
+              name: effective.override.byName,
+              date: formatDate(effective.override.at),
+            })}{' '}
+            {t('processes.classification.override.reason', { reason: effective.override.reason })}
+          </p>
+        ) : null}
         <h1 className={styles.title}>{access.level === 'none' ? t('processes.head.restrictedTitle', { process: processLabel(process.type) }) : process.title}</h1>
         {access.level !== 'none' ? (
           <div className={styles.subjects}>
@@ -350,26 +364,48 @@ export function ProcessScreen({ processId }: { processId: string }) {
               variant="primary"
               disabled={classifyReason.trim().length < 15 || (!classifySensitive && derived.sensitive && !mayLower)}
               onClick={() => {
-                const override = { level: derived.level, sensitive: classifySensitive, handling: derived.handling, reason: classifyReason.trim(), byUserId: user.id, byName: userName(user), at: now.toISOString() };
-                const result = applyOverride(derived, override, { roleId: user.roleId, lowerableBy: config.classificationLowerableBy });
-                if (result.refused) {
+                const proposed: Classification = { level: derived.level, sensitive: classifySensitive, handling: derived.handling };
+                // Both refusals are enforced here rather than in the disabled state, because the
+                // disabled state is not what runs when somebody scripts a change.
+                const decision = overrideDecision(config, process, proposed, user.roleId, linkedRecords);
+                if (decision.refusal === 'not-permitted') {
                   toast({ title: t('processes.classification.refused.title'), text: t('processes.classification.refused.text'), tone: 'error' });
                   return;
                 }
-                const lowering = !classifySensitive && derived.sensitive;
-                const raising = classifySensitive && !derived.sensitive;
-                upsert('processes', { ...process, classificationOverride: override });
-                audit({
-                  act: lowering ? 'classification-lower' : raising ? 'classification-raise' : 'classify',
+                if (decision.refusal === 'below-linked') {
+                  toast({
+                    title: t('processes.classification.refused.belowLinkedTitle'),
+                    text: t('processes.classification.refused.belowLinkedText', { floor: classificationLabel(decision.floor ?? proposed) }),
+                    tone: 'error',
+                  });
+                  return;
+                }
+                const direction = overrideDirection(derived, proposed);
+                // The audit entry is the record of the act and the override field is the current
+                // state. The entry is written first so the record can cite its id.
+                const entry = audit({
+                  act: direction === 'lowered' ? 'classification-lower' : 'classification-raise',
                   targetType: 'process',
                   targetId: process.id,
-                  targetLabel: t('processes.classification.audit', { reference: process.reference, level: classificationLabel(result.classification) }),
+                  targetLabel: t('processes.classification.audit', { reference: process.reference, level: classificationLabel(proposed) }),
                   processId: process.id,
-                  reason: override.reason,
+                  reason: classifyReason.trim(),
                   restricted: process.accessRestriction === 'restricted',
                 });
+                upsert('processes', {
+                  ...process,
+                  classificationOverride: {
+                    ...proposed,
+                    direction,
+                    reason: classifyReason.trim(),
+                    byUserId: user.id,
+                    byName: userName(user),
+                    at: now.toISOString(),
+                    auditEntryId: entry?.id ?? '',
+                  },
+                });
                 setClassifyOpen(false);
-                toast({ title: t('processes.classification.saved.title'), text: t('processes.classification.saved.text', { marking: marking(result.classification) ?? t('nav.drawer.fields.noMarking') }), tone: 'success' });
+                toast({ title: t('processes.classification.saved.title'), text: t('processes.classification.saved.text', { marking: marking(proposed) ?? t('nav.drawer.fields.noMarking') }), tone: 'success' });
               }}
             >
               {t('processes.classification.submit')}
@@ -378,6 +414,15 @@ export function ProcessScreen({ processId }: { processId: string }) {
         }
       >
         <p>{t('processes.classification.intro', { marking: marking(derived) ?? t('nav.drawer.fields.noMarking') })}</p>
+        <p>
+          {effective.override
+            ? t(effective.override.direction === 'raised' ? 'processes.classification.override.raised' : 'processes.classification.override.lowered', {
+                derived: classificationLabel(derived),
+                name: effective.override.byName,
+                date: formatDate(effective.override.at),
+              })
+            : t('processes.classification.override.derivedNote')}
+        </p>
         <SelectField
           label={t('processes.classification.level.label')}
           required

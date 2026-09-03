@@ -501,18 +501,26 @@ const processBase = {
    */
   accessRestriction: z.enum(ACCESS_RESTRICTIONS),
   /**
-   * A recorded Annex 2 override. It is applied as stored: the permission check happens when it is
-   * made, so a lower that reached the record was authorised by a role in config at that moment.
+   * A recorded Annex 2 override, and the current state of the record's classification.
+   *
+   * The audit entry is the record of the act; this is the answer to "what is it now". Both, because
+   * a ledger cannot answer the second without being replayed, and a field cannot answer the first at
+   * all. `auditEntryId` joins them, so a reader looking at a raised marking can reach the entry.
+   *
+   * Applied as stored: the permission check and the linked-record floor are enforced when it is
+   * made, so an override that reached the record was authorised at that moment.
    */
   classificationOverride: z
     .object({
       level: z.enum(CLASSIFICATION_LEVELS),
       sensitive: z.boolean(),
       handling: z.array(z.string()),
+      direction: z.enum(['raised', 'lowered']),
       reason: z.string().min(1),
       byUserId: idSchema,
       byName: z.string(),
       at: isoDateTime,
+      auditEntryId: idSchema,
     })
     .optional(),
   openedAt: isoDateTime,

@@ -3706,6 +3706,7 @@
         "cases": "Cases",
         "channel": "Channel",
         "classification": "Classification",
+        "classificationSetBy": "Marking set by",
         "consent": "Consent",
         "due": "Due",
         "evidence": "Evidence",
@@ -3760,6 +3761,7 @@
       "section": {
         "action": "Action",
         "audit": "Audit",
+        "classification": "Classification",
         "distribution": "Distribution",
         "event": "Event",
         "invitees": "Who is invited and why",
@@ -3776,6 +3778,7 @@
         "yourAccess": "Your access"
       },
       "share": {
+        "overrideNote": "{direction, select, raised {Raised} other {Lowered}} from {derived} by {name} on {date}. Reason: {reason}",
         "statusRead": "{status}, read {when}",
         "withheldFromRecipient": "Content withheld. {role} may not receive Official-Sensitive material under the local information sharing agreement, so this recipient sees the marking and the reason and nothing else."
       },
@@ -4321,11 +4324,19 @@
         "mayLower": "Your role may lower a classification as well as raise one.",
         "mayNotLower": "Your role may raise a classification but not lower one."
       },
+      "override": {
+        "derivedNote": "Derived from the record, with no override recorded.",
+        "lowered": "Lowered from {derived} by {name} on {date}",
+        "raised": "Raised from {derived} by {name} on {date}",
+        "reason": "Reason: {reason}"
+      },
       "reason": {
         "hint": "At least 15 characters. This is what an auditor reads, so say what changed rather than that it changed.",
         "label": "Why this classification"
       },
       "refused": {
+        "belowLinkedText": "This record links to one classified {floor}. A classification is never lower than one it links to, which is why the presence-only state exists. Raise or remove the link first.",
+        "belowLinkedTitle": "Refused: below a linked record",
         "text": "Lowering a classification needs one of the roles configured in Admin. Nothing has been changed.",
         "title": "Your role may not lower a classification"
       },
