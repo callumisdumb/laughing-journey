@@ -33,20 +33,23 @@ const ACRONYMS = /^(ASP|CP|MARAC|MAPPA|MAPPP|AWI|IRD|CPPM|MHO|IDAA|DAQ|DASH|NHS|
 const AMERICAN = /\b(color|colors|colour\b(?!)|organiz\w*|center\b|centers\b|favor\w*|behavior\w*|analyz\w*|catalog\b|catalogs\b|defense|gray\b|program\b(?! (code|that|which))|license\b(?= (number|plate|to)|$)|licenses\b|practise\w* not|apologize|realize|recognize|neighbor\w*|traveled|canceled|enrollment|jewelry|mom\b|math\b|fall\b(?= term))\b/i;
 for (const [key, message] of Object.entries(catalogue)) {
   if (typeof message !== 'string') continue;
+  // A label copied word for word from a published statutory template keeps that template's
+  // punctuation and capitalisation, em dashes included (D-055). Everything else obeys the brief.
+  const isVerbatim = context[key] && typeof context[key] === 'object' && context[key].verbatim === true;
   try {
     parse(message);
   } catch (e) {
     warn(`${key}: ICU syntax error: ${e.message}`);
   }
-  if (/\u2014/.test(message)) warn(`${key}: em dash`);
+  if (/\u2014/.test(message) && !isVerbatim) warn(`${key}: em dash`);
   if (/!/.test(message)) warn(`${key}: exclamation mark`);
   if (/\boops\b/i.test(message)) warn(`${key}: "Oops"`);
   const words = message.replace(/\{[^}]*\}/g, ' ').split(/\s+/).filter((w) => /[A-Za-z]/.test(w));
   const capsWords = words.filter((w) => /^[A-Z][A-Z0-9'&/-]+$/.test(w) && !ACRONYMS.test(w.replace(/[^A-Za-z]/g, '')));
-  if (words.length >= 2 && capsWords.length === words.length) warn(`${key}: all-caps label "${message}"`);
-  if (words.length === 1 && capsWords.length === 1 && words[0].length > 5) warn(`${key}: all-caps word "${words[0]}"`);
+  if (words.length >= 2 && capsWords.length === words.length && !isVerbatim) warn(`${key}: all-caps label "${message}"`);
+  if (words.length === 1 && capsWords.length === 1 && words[0].length > 5 && !isVerbatim) warn(`${key}: all-caps word "${words[0]}"`);
   const american = message.match(AMERICAN);
-  if (american) warn(`${key}: American spelling "${american[0]}"`);
+  if (american && !isVerbatim) warn(`${key}: American spelling "${american[0]}"`);
 }
 
 // Context coverage.

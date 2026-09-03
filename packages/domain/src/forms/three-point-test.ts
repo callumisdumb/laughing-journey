@@ -1,4 +1,5 @@
 import { t } from '@mas/messages';
+import { HARM_TYPES } from '../enums';
 import { z } from 'zod';
 
 /**
@@ -16,7 +17,7 @@ export const threePointTestFormSchema = z
     a: limb,
     b: limb,
     c: limb,
-    harmTypes: z.array(z.enum(['physical', 'sexual', 'psychological', 'financial', 'neglect', 'self-harm', 'self-neglect'])).min(1, { error: () => t('errors.threePointTest.harmTypes') }),
+    harmTypes: z.array(z.enum(HARM_TYPES)).min(1, { error: () => t('errors.threePointTest.harmTypes') }),
     immediateSafety: z.string().min(10, { error: () => t('errors.threePointTest.immediateSafety') }).max(600),
   })
   .transform((v) => ({ ...v, outcome: v.a.met === 'yes' && v.b.met === 'yes' && v.c.met === 'yes' ? ('met' as const) : v.a.met === 'no' || v.b.met === 'no' || v.c.met === 'no' ? ('not-met' as const) : ('unclear' as const) }));

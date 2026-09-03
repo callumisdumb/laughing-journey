@@ -3,6 +3,8 @@ import { z } from 'zod';
 import {
   AGENCIES,
   ALL_STAGES,
+  ASP_CLIENT_GROUPS,
+  ASP_INQUIRY_ACTIONS,
   CASE_PARTY_SOURCES,
   CLASSIFICATIONS,
   CONSENT_STATUSES,
@@ -11,6 +13,7 @@ import {
   HARM_TYPES,
   MAPPA_CATEGORIES,
   MAPPA_LEVELS,
+  TRAFFICKING_KINDS,
 } from '../enums';
 import { evidenceRefSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
@@ -93,6 +96,16 @@ export const aspDetailSchema = z.object({
     sourceReference: z.string().optional(),
     summary: z.string(),
     harmTypes: z.array(z.enum(HARM_TYPES)),
+    /** The one harm the National Minimum Dataset counts for this inquiry. Defaults to the first recorded. */
+    primaryHarmType: z.enum(HARM_TYPES).optional(),
+    /** Sub-detail where the primary harm is trafficking or exploitation; never a primary type of its own. */
+    traffickingKinds: z.array(z.enum(TRAFFICKING_KINDS)).optional(),
+    /** Free-text detail the glossary requires where the harm type is Other. */
+    harmTypeOther: z.string().optional(),
+    /** The NMDS primary client group: the vulnerability that would contribute to meeting the three-point criteria. */
+    primaryClientGroup: z.enum(ASP_CLIENT_GROUPS).optional(),
+    /** Free-text detail the glossary requires where the client group is Other. */
+    clientGroupOther: z.string().optional(),
     immediateSafety: z.string(),
     policeInvolved: z.boolean(),
   }),
@@ -116,6 +129,11 @@ export const aspDetailSchema = z.object({
     interAgencyDiscussionMeetingId: idSchema.optional(),
     agenciesContacted: z.array(z.enum(AGENCIES)),
     outcome: z.enum(['no-further-action', 'support-only', 'proceed-to-investigation', 'pending']),
+    /**
+     * The action taken, in the National Minimum Dataset's six categories. This is what the return
+     * counts and what closure reads; `outcome` stays as the internal routing decision.
+     */
+    action: z.enum(ASP_INQUIRY_ACTIONS).optional(),
     rationale: z.string().optional(),
     decidedAt: isoDateTime.optional(),
   }).optional(),
@@ -147,6 +165,13 @@ export const aspDetailSchema = z.object({
     agenciesInvolved: z.array(z.enum(AGENCIES)),
     careInspectorateNotified: z.boolean(),
     commissioningInvolved: z.boolean(),
+    /**
+     * The decision to proceed to an LSI is expected to be taken in a multi-agency meeting chaired
+     * by a senior officer of the council (NMDS Annex 2 glossary), so the chair is recorded and
+     * `chairIsSeniorCouncilOfficer` must be true for the record to validate.
+     */
+    chairUserId: idSchema,
+    chairIsSeniorCouncilOfficer: z.literal(true),
   }).optional(),
 });
 export type AspDetail = z.infer<typeof aspDetailSchema>;

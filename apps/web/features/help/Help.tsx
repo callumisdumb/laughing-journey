@@ -13,7 +13,7 @@ import { glossaryEntries } from './glossary';
 
 const BUILD_ID = 'mockup-0.1.0';
 
-const UNIT_KEYS: Record<ClockRule['unit'], string> = { 'calendar-days': 'calendarDays', 'working-days': 'workingDays', weeks: 'weeks', months: 'months' };
+const UNIT_KEYS: Record<ClockRule['unit'], string> = { hours: 'hours', 'calendar-days': 'calendarDays', 'working-days': 'workingDays', weeks: 'weeks', months: 'months' };
 
 const CONFIDENCE: Record<ClockRule['confidence'], { tone: PillTone; verify: boolean }> = {
   high: { tone: 'low', verify: false },

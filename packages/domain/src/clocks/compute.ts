@@ -1,5 +1,5 @@
 import { clockRuleLabel } from './rules';
-import { addDays, addMonths, addWeeks, differenceInCalendarDays, isSaturday, isSunday, parseISO, startOfDay } from 'date-fns';
+import { addDays, addHours, addMonths, addWeeks, differenceInCalendarDays, isSaturday, isSunday, parseISO, startOfDay } from 'date-fns';
 import type { RiskBand } from '../enums';
 import type { ClockRule } from '../schemas/config';
 import type { ClockTrigger } from '../schemas/process';
@@ -55,6 +55,10 @@ export function dueDateFor(rule: ClockRule, triggeredAt: string, options: ClockO
   // A 'before' rule counts back from its anchor (for a notice rule the trigger instant is the meeting date).
   const amount = rule.direction === 'before' ? -rule.amount : rule.amount;
   switch (rule.unit) {
+    case 'hours':
+      // An hours rule is still shown as a day deadline: the window is counted from the instant,
+      // then the due date is the day it lands on.
+      return startOfDay(addHours(toLocal(triggeredAt), amount));
     case 'calendar-days':
       return addDays(start, amount);
     case 'working-days':

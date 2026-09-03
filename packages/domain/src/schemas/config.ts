@@ -4,7 +4,7 @@ import { AGENCIES, ALL_STAGES, CHANNELS, CLASSIFICATIONS, DETAIL_LEVELS, EXCLUSI
 export const clockRuleSchema = z.object({
   id: z.string(),
   process: z.enum(PROCESS_TYPES),
-  unit: z.enum(['calendar-days', 'working-days', 'weeks', 'months']),
+  unit: z.enum(['hours', 'calendar-days', 'working-days', 'weeks', 'months']),
   amount: z.number().positive(),
   kind: z.enum(['deadline', 'warning', 'expiry', 'review']),
   /** 'after' counts forward from the trigger (the default); 'before' counts back from an anchor such as a meeting date, for notice rules. */

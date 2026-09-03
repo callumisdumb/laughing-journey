@@ -12,8 +12,8 @@ import styles from './Timescales.module.css';
 import { sectionLabel } from './sections';
 import { useAdminConfig } from './useAdminConfig';
 
-const UNITS = ['calendar-days', 'working-days', 'weeks', 'months'] as const;
-const UNIT_KEYS: Record<ClockRule['unit'], string> = { 'calendar-days': 'calendarDays', 'working-days': 'workingDays', weeks: 'weeks', months: 'months' };
+const UNITS = ['hours', 'calendar-days', 'working-days', 'weeks', 'months'] as const;
+const UNIT_KEYS: Record<ClockRule['unit'], string> = { hours: 'hours', 'calendar-days': 'calendarDays', 'working-days': 'workingDays', weeks: 'weeks', months: 'months' };
 const CONFIDENCE_TONE: Record<ClockRule['confidence'], PillTone> = { high: 'low', verify: 'medium', local: 'accent', advisory: 'outline' };
 
 /** The bare unit name, for the unit select. */

@@ -2,7 +2,7 @@
  * ASP biennial report figures, computed from adult concern records, inquiries, investigations,
  * case conferences and orders in the record store for the chosen biennium.
  */
-import { AGENCIES, HARM_TYPES, agencyShort, formatDateTime, harmTypeLabel, localDateOf, type AspProcess, type Dataset } from '@mas/domain';
+import { AGENCIES, ASP_CLIENT_GROUPS, ASP_GENDERS, ASP_INQUIRY_ACTIONS, HARM_TYPES, ageAt, agencyShort, aspClientGroupLabel, aspGenderLabel, aspInquiryActionLabel, formatDateTime, harmTypeLabel, localDateOf, type AspProcess, type Dataset } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
 import { agencyColourVar } from '@mas/ui';
 import { personById } from '@/lib/selectors';
@@ -56,7 +56,6 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
   };
 
   const inquiries = asp.filter((p) => p.detail.inquiry && inPeriod(p.detail.inquiry.openedAt, period));
-  const inquiryOutcome = countBy(inquiries, (p) => p.detail.inquiry?.outcome);
   const investigations = asp.filter((p) => inPeriod(investigationStartedAt(p), period));
   const allInvestigations = asp.flatMap((p) => (p.detail.investigation ? [p.detail.investigation] : []));
   const visits = allInvestigations.flatMap((i) => i.visits).filter((v) => inPeriod(v.at, period)).length;
@@ -77,7 +76,11 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
   const drafting = orders.filter((o) => o.decision === 'application-drafting').length;
 
   const lsis = referrals.filter((p) => p.detail.lsi);
-  const harm = countBy(referrals, (p) => p.detail.concern.harmTypes);
+  // The return counts one primary harm per inquiry and one primary client group.
+  const primaryHarm = (p: AspProcess) => p.detail.concern.primaryHarmType ?? p.detail.concern.harmTypes[0];
+  const harm = countBy(referrals, (p) => { const h = primaryHarm(p); return h ? [h] : []; });
+  const clientGroup = countBy(referrals, (p) => { const g = p.detail.concern.primaryClientGroup; return g ? [g] : []; });
+  const inquiryAction = countBy(inquiries, (p) => { const a = p.detail.inquiry?.action; return a ? [a] : ['pending-unknown']; });
   const location = countBy(referrals, (p) => locationOfHarm(data, p));
 
   const referralTable: TableSpec = {
@@ -94,11 +97,8 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     numeric: [1],
     rows: [
       [t('reports.asp.measures.inquiriesOpened'), inquiries.length],
-      [t('reports.asp.measures.outcomeInvestigation'), inquiryOutcome.get('proceed-to-investigation') ?? 0],
-      [t('reports.asp.measures.outcomeSupport'), inquiryOutcome.get('support-only') ?? 0],
-      [t('reports.asp.measures.outcomeNoAction'), inquiryOutcome.get('no-further-action') ?? 0],
-      [t('reports.asp.measures.outcomePending'), inquiryOutcome.get('pending') ?? 0],
-      [t('reports.asp.measures.investigationsStarted'), investigations.length],
+      ...ASP_INQUIRY_ACTIONS.map((action) => [aspInquiryActionLabel(action), inquiryAction.get(action) ?? 0] as [string, number]),
+      [t('reports.asp.measures.investigatoryPowersUsed'), investigations.length],
       [t('reports.asp.measures.visits'), visits],
       [t('reports.asp.measures.interviews'), interviews.length],
       [t('reports.asp.measures.adultsDeclined'), interviews.filter((i) => i.adultDeclined).length],
@@ -140,9 +140,58 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
 
   const harmTable: TableSpec = {
     id: 'asp-harm',
-    columns: [t('reports.asp.columns.harmType'), t('reports.asp.columns.referrals')],
+    columns: [t('reports.asp.columns.harmType'), t('reports.asp.columns.inquiries')],
     numeric: [1],
     rows: HARM_TYPES.map((h) => [harmTypeLabel(h), harm.get(h) ?? 0]),
+  };
+
+  const clientGroupTable: TableSpec = {
+    id: 'asp-client-group',
+    columns: [t('reports.asp.columns.clientGroup'), t('reports.asp.columns.inquiries')],
+    numeric: [1],
+    rows: ASP_CLIENT_GROUPS.map((g) => [aspClientGroupLabel(g), clientGroup.get(g) ?? 0]),
+  };
+
+  // Age and gender. The NMDS revised its age bandings to align with other national datasets and the
+  // glossary does not print the list, so the platform's bands stay and say so; the 16 and 17 band is
+  // kept distinct because the indicator has a category for it. Gender has four categories: the record
+  // holds sex, so trans and non-binary and prefer not to say read as not collected rather than zero.
+  const ageBands: Array<[string, (age: number) => boolean]> = [
+    [t('reports.asp.ageBands.age16to17'), (age) => age >= 16 && age <= 17],
+    [t('reports.asp.ageBands.age18to24'), (age) => age >= 18 && age <= 24],
+    [t('reports.asp.ageBands.age25to39'), (age) => age >= 25 && age <= 39],
+    [t('reports.asp.ageBands.age40to54'), (age) => age >= 40 && age <= 54],
+    [t('reports.asp.ageBands.age55to64'), (age) => age >= 55 && age <= 64],
+    [t('reports.asp.ageBands.age65to74'), (age) => age >= 65 && age <= 74],
+    [t('reports.asp.ageBands.age75to84'), (age) => age >= 75 && age <= 84],
+    [t('reports.asp.ageBands.age85plus'), (age) => age >= 85],
+  ];
+  const adultAges = referrals.flatMap((p) => p.subjectIds.map((id) => data.people.find((x) => x.id === id))).filter((person) => person?.dateOfBirth).map((person) => ageAt(person!.dateOfBirth!, now));
+  const ageTable: TableSpec = {
+    id: 'asp-age',
+    columns: [t('reports.asp.columns.ageBand'), t('reports.asp.columns.adults')],
+    numeric: [1],
+    rows: ageBands.map(([label, test]) => [label, adultAges.filter(test).length]),
+  };
+
+  const sexOf = (p: AspProcess) => data.people.find((x) => x.id === p.subjectIds[0])?.sex;
+  const genderTable: TableSpec = {
+    id: 'asp-gender',
+    columns: [t('reports.asp.columns.gender'), t('reports.asp.columns.adults')],
+    numeric: [1],
+    rows: ASP_GENDERS.map((g) => {
+      if (g === 'men') return [aspGenderLabel(g), referrals.filter((p) => sexOf(p) === 'male').length];
+      if (g === 'women') return [aspGenderLabel(g), referrals.filter((p) => sexOf(p) === 'female').length];
+      return [aspGenderLabel(g), t('reports.asp.notCollected')];
+    }),
+  };
+
+  // Ethnicity is based on census categories for comparability. The dataset holds none, by design.
+  const ethnicityTable: TableSpec = {
+    id: 'asp-ethnicity',
+    columns: [t('reports.asp.columns.ethnicity'), t('reports.asp.columns.adults')],
+    numeric: [1],
+    rows: [[t('reports.asp.ethnicityCensus'), t('reports.asp.notCollected')]],
   };
 
   const locationTable: TableSpec = {
@@ -160,6 +209,9 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     { id: 'orders', title: t('reports.asp.sections.orders'), note: t('reports.asp.sections.ordersNote', { granted: granted === 0 ? 'none' : 'some', drafting }), tables: [orderTable] },
     { id: 'lsi', title: t('reports.asp.sections.lsi'), note: t('reports.asp.sections.lsiNote'), tables: [lsiTable] },
     { id: 'harm', title: t('reports.asp.sections.harm'), note: t('reports.asp.sections.harmNote'), tables: [harmTable] },
+    { id: 'client-group', title: t('reports.asp.sections.clientGroup'), note: t('reports.asp.sections.clientGroupNote'), tables: [clientGroupTable] },
+    { id: 'age-gender', title: t('reports.asp.sections.ageGender'), note: t('reports.asp.sections.ageGenderNote'), tables: [ageTable, genderTable] },
+    { id: 'ethnicity', title: t('reports.asp.sections.ethnicity'), note: t('reports.asp.sections.ethnicityNote'), tables: [ethnicityTable] },
     { id: 'location', title: t('reports.asp.sections.location'), note: t('reports.asp.sections.locationNote'), tables: [locationTable] },
   ];
 
@@ -169,8 +221,8 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     lede: t('reports.asp.lede'),
     period,
     classification: 'official-sensitive',
-    meta: [t('reports.meta.period', { period: period.label }), t('reports.asp.meta.computed', { dateTime: formatDateTime(now), records: asp.length, referrals: referrals.length, adults: adults.size }), t('reports.meta.verify')],
-    verify: [t('reports.asp.verify.nmds'), t('reports.asp.verify.location')],
+    meta: [t('reports.meta.period', { period: period.label }), t('reports.asp.meta.computed', { dateTime: formatDateTime(now), records: asp.length, referrals: referrals.length, adults: adults.size }), t('reports.asp.meta.fieldSet')],
+    verify: [t('reports.asp.verify.ageBands'), t('reports.asp.verify.location')],
     sources: [t('reports.asp.sources.apcGuidance'), t('reports.asp.sources.nmds'), t('reports.asp.sources.statistics')],
     figures: [
       { id: 'referrals', label: t('reports.asp.figures.referrals'), value: String(referrals.length), note: t('reports.asp.figures.referralsNote', { count: adults.size }) },

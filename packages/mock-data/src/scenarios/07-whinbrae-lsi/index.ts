@@ -247,6 +247,10 @@ export function seedWhinbraeLsi(ctx: BuildContext): void {
         agenciesInvolved: ['regulator', 'social-work', 'health', 'police', 'third-sector'],
         careInspectorateNotified: true,
         commissioningInvolved: true,
+        // The decision to proceed was taken in a multi-agency meeting chaired by the Chief Social
+        // Work Officer, as the NMDS glossary expects of a senior officer of the council.
+        chairUserId: USR.andrewMuirhead,
+        chairIsSeniorCouncilOfficer: true,
       },
     },
   };

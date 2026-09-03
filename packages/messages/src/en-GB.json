@@ -592,6 +592,7 @@
       "toVerify": "to verify",
       "unit": {
         "calendarDays": "calendar days",
+        "hours": "hours",
         "months": "months",
         "weeks": "weeks",
         "workingDays": "working days"
@@ -753,7 +754,7 @@
     },
     "page": {
       "ledeFull": "Showing every entry: {role} has oversight.",
-      "ledeOwn": "Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone’s.",
+      "ledeOwn": "Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone\u2019s.",
       "ledeTail": "Every read of a restricted record, every share, every break-glass and every persona switch is here, newest first.",
       "title": "Audit"
     },
@@ -1068,6 +1069,7 @@
     },
     "clockUnit": {
       "calendarDays": "{count, plural, one {# calendar day} other {# calendar days}}",
+      "hours": "{count, plural, one {# hour} other {# hours}}",
       "months": "{count, plural, one {# month} other {# months}}",
       "weeks": "{count, plural, one {# week} other {# weeks}}",
       "workingDays": "{count, plural, one {# working day} other {# working days}}"
@@ -1564,6 +1566,32 @@
       "recommendation": "Recommendation",
       "risk": "Risk"
     },
+    "aspClientGroups": {
+      "acquiredBrainInjury": "Acquired brain injury",
+      "alcoholRelatedBrainDamage": "Alcohol related brain damage",
+      "autism": "Autism/autism spectrum",
+      "dementia": "Dementia",
+      "learningDisability": "Learning disability",
+      "mentalHealth": "Mental health (excluding dementia)",
+      "other": "Other",
+      "palliativeCare": "Palliative care",
+      "physicalDisability": "Physical disability",
+      "substanceMisuse": "Substance misuse/addiction"
+    },
+    "aspGenders": {
+      "men": "Men",
+      "preferNotToSay": "Prefer not to say",
+      "transAndNonBinary": "Trans and non-binary",
+      "women": "Women"
+    },
+    "aspInquiryActions": {
+      "criteriaNoOpportunity": "Meets three-point criteria \u2014 no opportunity for further ASP intervention",
+      "criteriaOngoing": "Meets three-point criteria \u2013 ongoing ASP work",
+      "criteriaSupport": "Meets three-point criteria \u2014 non-ASP support provided or offered",
+      "noCriteriaNoAction": "Does not meet the three-point criteria \u2013 no further action",
+      "noCriteriaSupport": "Does not meet the three-point criteria \u2013 non-ASP support offered or provided",
+      "pendingUnknown": "Pending / Unknown"
+    },
     "aspInquiryOutcomes": {
       "noFurtherAction": "No further action",
       "pending": "Pending",
@@ -1630,6 +1658,26 @@
         "description": "Clydeshore ASP procedures: 5 working days",
         "label": "Inquiry decision",
         "trigger": "Adult concern received"
+      },
+      "aspOrderAssessmentValidity": {
+        "description": "An assessment order is valid for 7 days.",
+        "label": "Assessment order validity",
+        "trigger": "Assessment order granted"
+      },
+      "aspOrderBanningMaximum": {
+        "description": "A banning or temporary banning order may last a period not exceeding 6 months.",
+        "label": "Banning order maximum duration",
+        "trigger": "Banning or temporary banning order granted"
+      },
+      "aspOrderRemovalExecuteBy": {
+        "description": "The removal must take place within 72 hours of the order being granted.",
+        "label": "Removal order to be executed by",
+        "trigger": "Removal order granted"
+      },
+      "aspOrderRemovalValidity": {
+        "description": "A removal order lasts a maximum of 7 days after the day the person is removed.",
+        "label": "Removal order validity",
+        "trigger": "Adult removed under a removal order"
       },
       "aspPlanReview": {
         "description": "The Adult Protection Plan is reviewed 3 months after it is agreed, then three monthly.",
@@ -1803,13 +1851,17 @@
       "victim": "Victim"
     },
     "harmTypes": {
-      "financial": "Financial harm",
-      "neglect": "Neglect",
+      "discriminatory": "Discriminatory harm",
+      "domesticAbuse": "Domestic abuse",
+      "financial": "Financial or material harm",
+      "neglect": "Neglect and acts of omission",
+      "other": "Other",
       "physical": "Physical harm",
-      "psychological": "Psychological harm",
-      "selfHarm": "Self-harm",
-      "selfNeglect": "Self-neglect",
-      "sexual": "Sexual harm"
+      "psychological": "Psychological/emotional harm",
+      "selfHarm": "Self harm",
+      "selfNeglect": "Self neglect",
+      "sexual": "Sexual harm",
+      "trafficking": "Human trafficking and/or exploitation"
     },
     "irdMedicalKinds": {
       "comprehensive": "Comprehensive",
@@ -2185,6 +2237,12 @@
         "transferred": "Transferred"
       }
     },
+    "traffickingKinds": {
+      "criminalExploitation": "Criminal exploitation",
+      "labourExploitation": "Labour exploitation",
+      "organHarvesting": "Organ harvesting",
+      "sexualExploitation": "Sexual exploitation"
+    },
     "viewsKinds": {
       "adultViews": "Adult's views",
       "carerViews": "Carer's views",
@@ -2227,6 +2285,7 @@
       "reason": "Say why they must not receive information"
     },
     "schemas": {
+      "aspPlanReviewDate": "An Adult Protection Plan needs a date for a review meeting, unless it has been agreed that no further action is required under the Act",
       "casePartyIdentity": "A case party needs a personId, a userId or a name"
     },
     "threePointTest": {
@@ -2682,7 +2741,7 @@
         "dataProtection": "UK GDPR, Data Protection Act 2018 (Schedule 1 Part 2 paragraph 18), Data (Use and Access) Act 2025",
         "domesticAbuseAct": "Domestic Abuse (Scotland) Act 2018",
         "equallySafe": "Equally Safe strategy",
-        "hearingsAct": "Children’s Hearings (Scotland) Act 2011",
+        "hearingsAct": "Children\u2019s Hearings (Scotland) Act 2011",
         "humanRightsAct": "Human Rights Act 1998",
         "mappaAct": "Management of Offenders etc. (Scotland) Act 2005 and MAPPA National Guidance (current edition)",
         "mentalHealthAct": "Mental Health (Care and Treatment) (Scotland) Act 2003",
@@ -3990,6 +4049,16 @@
   },
   "reports": {
     "asp": {
+      "ageBands": {
+        "age16to17": "16 to 17",
+        "age18to24": "18 to 24",
+        "age25to39": "25 to 39",
+        "age40to54": "40 to 54",
+        "age55to64": "55 to 64",
+        "age65to74": "65 to 74",
+        "age75to84": "75 to 84",
+        "age85plus": "85 and over"
+      },
       "chart": {
         "summary": "Referrals by quarter and source agency: {referrals, plural, one {# referral} other {# referrals}} over {quarters, plural, one {# quarter} other {# quarters}}{from}.",
         "summaryFrom": ", from {agencies}",
@@ -3999,13 +4068,18 @@
       },
       "columns": {
         "adults": "Adults",
+        "ageBand": "Age band",
         "agenciesInvolved": "Agencies involved",
         "appliedFor": "Applied for",
         "careInspectorateNotified": "Care Inspectorate notified",
+        "clientGroup": "Primary client group",
         "drafting": "Application in drafting",
+        "ethnicity": "Ethnicity",
+        "gender": "Gender",
         "granted": "Granted",
         "harmType": "Harm type",
         "held": "Held in period",
+        "inquiries": "Inquiries",
         "locationOfHarm": "Location of harm",
         "meeting": "Meeting",
         "notRequired": "Considered, not required",
@@ -4022,6 +4096,7 @@
         "initial": "Initial case conference",
         "review": "Review case conference"
       },
+      "ethnicityCensus": "Census categories (all)",
       "figures": {
         "conferences": "Case conferences held",
         "inquiries": "Inquiries",
@@ -4044,18 +4119,16 @@
         "capacityAssessed": "Investigations where capacity was assessed",
         "inquiriesOpened": "Inquiries opened under section 4",
         "interviews": "Interviews under section 8",
-        "investigationsStarted": "Investigations started",
+        "investigatoryPowersUsed": "Inquiries using investigatory powers",
         "medicals": "Medical examinations requested under section 9",
-        "outcomeInvestigation": "Inquiry outcome: proceed to investigation",
-        "outcomeNoAction": "Inquiry outcome: no further ASP action",
-        "outcomePending": "Inquiry outcome: pending",
-        "outcomeSupport": "Inquiry outcome: support only",
         "records": "Records requests under section 10",
         "visits": "Visits under section 7"
       },
       "meta": {
-        "computed": "Computed {dateTime} from the local record store: {records, plural, one {# ASP record} other {# ASP records}} in total, {referrals} with a concern received in the period, about {adults, plural, one {# adult} other {# adults}}."
+        "computed": "Computed {dateTime} from the local record store: {records, plural, one {# ASP record} other {# ASP records}} in total, {referrals} with a concern received in the period, about {adults, plural, one {# adult} other {# adults}}.",
+        "fieldSet": "Field set from the ASP National Minimum Dataset 2024-25 Annex 2 glossary. The dataset counts inquiries undertaken with and without the use of investigatory powers."
       },
+      "notCollected": "Not collected",
       "orders": {
         "assessmentOrderS11": "Assessment order (section 11)",
         "banningOrderS19": "Banning order (section 19)",
@@ -4066,8 +4139,14 @@
       "purpose": "The activity figures an Adult Protection Committee needs for the biennial report it must produce under the Adult Support and Protection (Scotland) Act 2007: referrals by source, inquiries, investigations, case conferences, protection orders and Large Scale Investigations, by harm type and where the harm happened.",
       "recipient": "The APC convener, for the committee, the council, the health board and Police Scotland, then Scottish Ministers.",
       "sections": {
+        "ageGender": "Age and gender",
+        "ageGenderNote": "One row per adult referred in the period. Age bands to verify against the current NMDS template: the dataset revised its bandings to align with other national datasets and the glossary does not print the list, so these are the platform's own, with 16 and 17 year olds kept distinct as the indicator requires.",
+        "clientGroup": "Primary client group",
+        "clientGroupNote": "The primary vulnerability someone has which would potentially contribute to their meeting the three-point criteria. Only the primary group is collected, and the autism category needs no formal diagnosis.",
         "conferences": "Case conferences",
         "conferencesNote": "Meetings marked held in the meeting record. Inter-agency discussions are not case conferences and are not counted here.",
+        "ethnicity": "Ethnicity",
+        "ethnicityNote": "The dataset's ethnicity categories are based on census categories for comparability. This demonstration build holds no ethnicity, by design, so the whole category reads as not collected rather than inventing bands.",
         "harm": "Harm types recorded at referral",
         "harmNote": "A referral can record more than one harm type, so the column can add up to more than the number of referrals.",
         "inquiries": "Inquiries and investigations",
@@ -4092,8 +4171,8 @@
       },
       "title": "ASP biennial report figures",
       "verify": {
-        "location": "Location of harm is derived from the address, not recorded on the concern; treat that table as indicative.",
-        "nmds": "The Scottish Government guidance for Adult Protection Committees describes what a biennial report should cover (activity, trends, inputs and outcomes) rather than a fixed table set. The tables here follow the indicators of the ASP National Minimum Dataset, of which only referrals, inquiries and Large Scale Investigations were published for 2024-25; the harm type, location and order categories are the platform's own until the current template is checked."
+        "ageBands": "Age bands to verify against the current NMDS template; every other field set on this report comes from the Annex 2 glossary.",
+        "location": "Location of harm is derived from the address, not recorded on the concern; treat that table as indicative."
       }
     },
     "awi": {
@@ -4401,6 +4480,7 @@
       "title": "MAPPA annual report counts",
       "units": {
         "calendarDays": "calendar days",
+        "hours": "hours",
         "months": "months",
         "weeks": "weeks",
         "workingDays": "working days"
@@ -4752,7 +4832,7 @@
         "label": "Clocks due this week"
       },
       "connectorInbox": {
-        "hint": "New events from your agency’s systems waiting for review.",
+        "hint": "New events from your agency\u2019s systems waiting for review.",
         "label": "Connector inbox items"
       },
       "meetingInvites": {

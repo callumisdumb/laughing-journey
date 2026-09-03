@@ -1927,6 +1927,11 @@
           "maxLength": 16,
           "where": "Unit option in the edit timescale dialog"
         },
+        "hours": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "The word for the hours clock unit"
+        },
         "months": {
           "maxLength": 16,
           "where": "Unit option in the edit timescale dialog"
@@ -3590,6 +3595,11 @@
         "screenshot": "phase-5/admin-timescales-light-comfortable.png",
         "where": "A clock timescale with its amount, calendar-day unit (Help clock rules, Admin timescales)"
       },
+      "hours": {
+        "maxLength": 20,
+        "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+        "where": "Clock interval in hours, shown in Help and Admin timescales"
+      },
       "months": {
         "where": "A clock timescale with its amount, month unit (Help clock rules, Admin timescales)"
       },
@@ -5020,6 +5030,112 @@
         "where": "Kind of an analysis note on the chronology screen, print pack and drawer"
       }
     },
+    "aspClientGroups": {
+      "acquiredBrainInjury": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Primary client group \"Acquired brain injury\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "alcoholRelatedBrainDamage": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Primary client group \"Alcohol related brain damage\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "autism": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Primary client group \"Autism/autism spectrum\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "dementia": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Primary client group \"Dementia\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "learningDisability": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Primary client group \"Learning disability\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "mentalHealth": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Primary client group \"Mental health (excluding dementia)\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "other": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Primary client group \"Other\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "palliativeCare": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Primary client group \"Palliative care\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "physicalDisability": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Primary client group \"Physical disability\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "substanceMisuse": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Primary client group \"Substance misuse/addiction\", ASP National Minimum Dataset Annex 2 glossary"
+      }
+    },
+    "aspGenders": {
+      "men": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "ASP National Minimum Dataset gender category \"Men\""
+      },
+      "preferNotToSay": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "ASP National Minimum Dataset gender category \"Prefer not to say\""
+      },
+      "transAndNonBinary": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "ASP National Minimum Dataset gender category \"Trans and non-binary\""
+      },
+      "women": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "ASP National Minimum Dataset gender category \"Women\""
+      }
+    },
+    "aspInquiryActions": {
+      "criteriaNoOpportunity": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Action taken following inquiry, category criteriaNoOpportunity, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+      },
+      "criteriaOngoing": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Action taken following inquiry, category criteriaOngoing, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+      },
+      "criteriaSupport": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Action taken following inquiry, category criteriaSupport, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+      },
+      "noCriteriaNoAction": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Action taken following inquiry, category noCriteriaNoAction, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+      },
+      "noCriteriaSupport": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Action taken following inquiry, category noCriteriaSupport, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+      },
+      "pendingUnknown": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Action taken following inquiry, category pendingUnknown, ASP National Minimum Dataset Annex 2 glossary; the glossary's own punctuation is kept"
+      }
+    },
     "aspInquiryOutcomes": {
       "noFurtherAction": {
         "maxLength": 24,
@@ -5213,6 +5329,66 @@
         },
         "trigger": {
           "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "aspOrderAssessmentValidity": {
+        "description": {
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Plain-language description of the aspOrderAssessmentValidity rule, shown in Help and Admin"
+        },
+        "label": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Name of the aspOrderAssessmentValidity clock in Admin, Timescales and on the ASP record"
+        },
+        "trigger": {
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "What starts the aspOrderAssessmentValidity clock"
+        }
+      },
+      "aspOrderBanningMaximum": {
+        "description": {
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Plain-language description of the aspOrderBanningMaximum rule, shown in Help and Admin"
+        },
+        "label": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Name of the aspOrderBanningMaximum clock in Admin, Timescales and on the ASP record"
+        },
+        "trigger": {
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "What starts the aspOrderBanningMaximum clock"
+        }
+      },
+      "aspOrderRemovalExecuteBy": {
+        "description": {
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Plain-language description of the aspOrderRemovalExecuteBy rule, shown in Help and Admin"
+        },
+        "label": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Name of the aspOrderRemovalExecuteBy clock in Admin, Timescales and on the ASP record"
+        },
+        "trigger": {
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "What starts the aspOrderRemovalExecuteBy clock"
+        }
+      },
+      "aspOrderRemovalValidity": {
+        "description": {
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Plain-language description of the aspOrderRemovalValidity rule, shown in Help and Admin"
+        },
+        "label": {
+          "maxLength": 48,
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "Name of the aspOrderRemovalValidity clock in Admin, Timescales and on the ASP record"
+        },
+        "trigger": {
+          "screenshot": "phase-5/admin-timescales-light-comfortable.png",
+          "where": "What starts the aspOrderRemovalValidity clock"
         }
       },
       "aspPlanReview": {
@@ -5691,33 +5867,60 @@
       }
     },
     "harmTypes": {
+      "discriminatory": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Type of harm \"Discriminatory harm\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "domesticAbuse": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Type of harm \"Domestic abuse\", ASP National Minimum Dataset Annex 2 glossary"
+      },
       "financial": {
-        "maxLength": 24,
-        "where": "Harm type on ASP concerns, reports and the referral forms"
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Type of harm \"Financial or material harm\", ASP National Minimum Dataset Annex 2 glossary"
       },
       "neglect": {
-        "maxLength": 24,
-        "where": "Harm type on ASP concerns, reports and the referral forms"
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Type of harm \"Neglect and acts of omission\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "other": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Type of harm \"Other\", ASP National Minimum Dataset Annex 2 glossary"
       },
       "physical": {
-        "maxLength": 24,
-        "where": "Harm type on ASP concerns, reports and the referral forms"
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Type of harm \"Physical harm\", ASP National Minimum Dataset Annex 2 glossary"
       },
       "psychological": {
-        "maxLength": 24,
-        "where": "Harm type on ASP concerns, reports and the referral forms"
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Type of harm \"Psychological/emotional harm\", ASP National Minimum Dataset Annex 2 glossary"
       },
       "selfHarm": {
-        "maxLength": 24,
-        "where": "Harm type on ASP concerns, reports and the referral forms"
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Type of harm \"Self harm\", ASP National Minimum Dataset Annex 2 glossary"
       },
       "selfNeglect": {
-        "maxLength": 24,
-        "where": "Harm type on ASP concerns, reports and the referral forms"
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Type of harm \"Self neglect\", ASP National Minimum Dataset Annex 2 glossary"
       },
       "sexual": {
-        "maxLength": 24,
-        "where": "Harm type on ASP concerns, reports and the referral forms"
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Type of harm \"Sexual harm\", ASP National Minimum Dataset Annex 2 glossary"
+      },
+      "trafficking": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Type of harm \"Human trafficking and/or exploitation\", ASP National Minimum Dataset Annex 2 glossary"
       }
     },
     "irdMedicalKinds": {
@@ -6710,6 +6913,28 @@
         }
       }
     },
+    "traffickingKinds": {
+      "criminalExploitation": {
+        "maxLength": 40,
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "Trafficking and exploitation sub-detail \"Criminal exploitation\" on an ASP concern"
+      },
+      "labourExploitation": {
+        "maxLength": 40,
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "Trafficking and exploitation sub-detail \"Labour exploitation\" on an ASP concern"
+      },
+      "organHarvesting": {
+        "maxLength": 40,
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "Trafficking and exploitation sub-detail \"Organ harvesting\" on an ASP concern"
+      },
+      "sexualExploitation": {
+        "maxLength": 40,
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "Trafficking and exploitation sub-detail \"Sexual exploitation\" on an ASP concern"
+      }
+    },
     "viewsKinds": {
       "adultViews": {
         "maxLength": 32,
@@ -6818,6 +7043,9 @@
       }
     },
     "schemas": {
+      "aspPlanReviewDate": {
+        "where": "Schema validation message when an Adult Protection Plan has no review date and no agreement that no further action is required"
+      },
       "casePartyIdentity": {
         "where": "Schema validation message when a case-party register entry has no person, user or name"
       }
@@ -12579,6 +12807,48 @@
   },
   "reports": {
     "asp": {
+      "ageBands": {
+        "age16to17": {
+          "maxLength": 16,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "ASP report age band 16 to 17"
+        },
+        "age18to24": {
+          "maxLength": 16,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "ASP report age band 18 to 24"
+        },
+        "age25to39": {
+          "maxLength": 16,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "ASP report age band 25 to 39"
+        },
+        "age40to54": {
+          "maxLength": 16,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "ASP report age band 40 to 54"
+        },
+        "age55to64": {
+          "maxLength": 16,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "ASP report age band 55 to 64"
+        },
+        "age65to74": {
+          "maxLength": 16,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "ASP report age band 65 to 74"
+        },
+        "age75to84": {
+          "maxLength": 16,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "ASP report age band 75 to 84"
+        },
+        "age85plus": {
+          "maxLength": 16,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "ASP report age band 85 and over"
+        }
+      },
       "chart": {
         "summary": {
           "where": "Accessible name of the ASP referrals chart: the totals, then the source agencies when there are any"
@@ -12604,6 +12874,11 @@
           "maxLength": 16,
           "where": "Column header in the ASP referrals by source agency table"
         },
+        "ageBand": {
+          "maxLength": 20,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Column header of the age band table"
+        },
         "agenciesInvolved": {
           "maxLength": 20,
           "where": "Column header in the ASP Large Scale Investigations table"
@@ -12616,9 +12891,24 @@
           "maxLength": 28,
           "where": "Column header in the ASP Large Scale Investigations table"
         },
+        "clientGroup": {
+          "maxLength": 28,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Column header of the primary client group table"
+        },
         "drafting": {
           "maxLength": 24,
           "where": "Column header in the ASP protection orders table"
+        },
+        "ethnicity": {
+          "maxLength": 16,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Column header of the ethnicity table"
+        },
+        "gender": {
+          "maxLength": 16,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Column header of the gender table"
         },
         "granted": {
           "maxLength": 12,
@@ -12631,6 +12921,11 @@
         "held": {
           "maxLength": 16,
           "where": "Column header in the ASP case conferences table"
+        },
+        "inquiries": {
+          "maxLength": 20,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Column header counting inquiries"
         },
         "locationOfHarm": {
           "maxLength": 20,
@@ -12686,6 +12981,11 @@
           "maxLength": 28,
           "where": "Row label in the ASP case conferences table"
         }
+      },
+      "ethnicityCensus": {
+        "maxLength": 32,
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "The single ethnicity row, standing for the whole census category set"
       },
       "figures": {
         "conferences": {
@@ -12762,27 +13062,12 @@
           "verbatim": true,
           "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
         },
-        "investigationsStarted": {
-          "verbatim": true,
-          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        "investigatoryPowersUsed": {
+          "maxLength": 48,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Measure row counting inquiries that used investigatory powers"
         },
         "medicals": {
-          "verbatim": true,
-          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
-        },
-        "outcomeInvestigation": {
-          "verbatim": true,
-          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
-        },
-        "outcomeNoAction": {
-          "verbatim": true,
-          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
-        },
-        "outcomePending": {
-          "verbatim": true,
-          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
-        },
-        "outcomeSupport": {
           "verbatim": true,
           "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
         },
@@ -12798,7 +13083,16 @@
       "meta": {
         "computed": {
           "where": "Meta line under the ASP report controls: when it was computed and from how many records"
+        },
+        "fieldSet": {
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Meta line naming the NMDS Annex 2 glossary as the source of the field set"
         }
+      },
+      "notCollected": {
+        "maxLength": 20,
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "Cell value where the demonstration build holds none of a protected characteristic"
       },
       "orders": {
         "assessmentOrderS11": {
@@ -12830,11 +13124,38 @@
         "where": "Who receives it line on the ASP card of the reports index"
       },
       "sections": {
+        "ageGender": {
+          "maxLength": 24,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Heading of the age and gender section"
+        },
+        "ageGenderNote": {
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Note under the age and gender section, saying the bands are the platform's own"
+        },
+        "clientGroup": {
+          "maxLength": 32,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Heading of the primary client group section"
+        },
+        "clientGroupNote": {
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Note under the primary client group section, from the glossary's definition"
+        },
         "conferences": {
           "where": "Section title on the ASP report"
         },
         "conferencesNote": {
           "where": "Note under the case conferences section title on the ASP report"
+        },
+        "ethnicity": {
+          "maxLength": 16,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Heading of the ethnicity section"
+        },
+        "ethnicityNote": {
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "Note under the ethnicity section explaining why nothing is collected"
         },
         "harm": {
           "where": "Section title on the ASP report"
@@ -12899,10 +13220,11 @@
         "where": "Title of the ASP report on the index card, the report screen, its print pack and the audit entry"
       },
       "verify": {
-        "location": {
-          "where": "Verification note in the field set and sources panel of the ASP report"
+        "ageBands": {
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "where": "The one field set on the ASP report still to verify"
         },
-        "nmds": {
+        "location": {
           "where": "Verification note in the field set and sources panel of the ASP report"
         }
       }
@@ -13787,6 +14109,11 @@
         "calendarDays": {
           "maxLength": 16,
           "where": "Unit of a review interval in the Table 3 note, from the clock rule"
+        },
+        "hours": {
+          "maxLength": 12,
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "The word for the hours clock unit"
         },
         "months": {
           "maxLength": 16,

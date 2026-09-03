@@ -509,19 +509,99 @@ export function roleLabel(id: RoleId): string {
 /** Role definitions by id: agency, organisation and oversight. The role's name is roleLabel(id). */
 export const ROLE_DEFINITIONS: Record<RoleId, RoleDefinition> = ROLE_DATA;
 
+/**
+ * Types of harm, in the order and with the labels of the ASP National Minimum Dataset (Annex 2
+ * glossary of the 2024-25 technical report). The return counts one primary harm per inquiry; the
+ * record may carry more than one, and `primaryHarmType` on the concern says which one is counted.
+ */
 export const HARM_TYPES = [
   'physical',
   'sexual',
   'psychological',
   'financial',
   'neglect',
+  'discriminatory',
   'self-harm',
   'self-neglect',
+  'domestic-abuse',
+  'trafficking',
+  'other',
 ] as const;
 export type HarmType = (typeof HARM_TYPES)[number];
 
 export function harmTypeLabel(type: HarmType): string {
   return tKey(`domain.harmTypes.${keySegment(type)}`);
+}
+
+/** How the NMDS glossary subdivides human trafficking and exploitation: sub-detail, never a primary type. */
+export const TRAFFICKING_KINDS = ['criminal-exploitation', 'labour-exploitation', 'sexual-exploitation', 'organ-harvesting'] as const;
+export type TraffickingKind = (typeof TRAFFICKING_KINDS)[number];
+
+export function traffickingKindLabel(kind: TraffickingKind): string {
+  return tKey(`domain.traffickingKinds.${keySegment(kind)}`);
+}
+
+/**
+ * Primary client group: the NMDS's term for the primary vulnerability someone has which would
+ * potentially contribute to their meeting the three-point criteria. Only the primary group is
+ * collected. The autism category needs no formal diagnosis.
+ */
+export const ASP_CLIENT_GROUPS = [
+  'acquired-brain-injury',
+  'alcohol-related-brain-damage',
+  'autism',
+  'dementia',
+  'mental-health',
+  'learning-disability',
+  'palliative-care',
+  'physical-disability',
+  'substance-misuse',
+  'other',
+] as const;
+export type AspClientGroup = (typeof ASP_CLIENT_GROUPS)[number];
+
+export function aspClientGroupLabel(group: AspClientGroup): string {
+  return tKey(`domain.aspClientGroups.${keySegment(group)}`);
+}
+
+/**
+ * Actions taken following inquiries: the NMDS's six categories, and the closest thing the return
+ * has to an outcome taxonomy, so they drive ASP closure as well as the report. The labels are the
+ * glossary's own, including its inconsistent dashes, and are flagged verbatim in the catalogue.
+ */
+export const ASP_INQUIRY_ACTIONS = [
+  'no-criteria-no-action',
+  'no-criteria-support',
+  'criteria-support',
+  'criteria-ongoing',
+  'criteria-no-opportunity',
+  'pending-unknown',
+] as const;
+export type AspInquiryAction = (typeof ASP_INQUIRY_ACTIONS)[number];
+
+export function aspInquiryActionLabel(action: AspInquiryAction): string {
+  return tKey(`domain.aspInquiryActions.${keySegment(action)}`);
+}
+
+/**
+ * A senior officer of the council, for the purpose of chairing the meeting that decides whether to
+ * proceed to a Large Scale Investigation (NMDS Annex 2 glossary). Seniority is read from the role,
+ * not asserted by the person recording the meeting: the Chief Social Work Officer, a team leader,
+ * an Adult Protection Committee lead officer and a service chair all qualify; a practitioner does not.
+ */
+export const LSI_CHAIR_ROLES = ['cswo', 'team-leader', 'apc-lead-officer', 'chair'] as const;
+
+export function isSeniorCouncilOfficer(roleId: RoleId): boolean {
+  const role = ROLE_DEFINITIONS[roleId];
+  return role.organisation === 'council' && (LSI_CHAIR_ROLES as readonly string[]).includes(roleId);
+}
+
+/** The NMDS gender categories. The record holds sex, so the last two read as not collected. */
+export const ASP_GENDERS = ['men', 'women', 'trans-and-non-binary', 'prefer-not-to-say'] as const;
+export type AspGender = (typeof ASP_GENDERS)[number];
+
+export function aspGenderLabel(gender: AspGender): string {
+  return tKey(`domain.aspGenders.${keySegment(gender)}`);
 }
 
 

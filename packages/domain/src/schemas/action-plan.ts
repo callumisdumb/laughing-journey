@@ -1,3 +1,4 @@
+import { t } from '@mas/messages';
 import { z } from 'zod';
 import { ACTION_STATUSES, AGENCIES, PLAN_TYPES, RISK_BANDS, RISK_TOOLS, VIEWS_KINDS } from '../enums';
 import { evidenceRefSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
@@ -44,6 +45,15 @@ export const planSchema = z.object({
   status: z.enum(['draft', 'active', 'reviewed', 'ended']),
   /** For support plans under ASP: the adult's consent is recorded. */
   consentNote: z.string().optional(),
+  /**
+   * Set only where it has been agreed that no further action is required under the Act. An ASP plan
+   * must otherwise carry a date for a review meeting (NMDS Annex 2 glossary), so the refine below
+   * makes the review date conditional on this flag rather than optional in every case.
+   */
+  noFurtherActionAgreed: z.boolean().optional(),
+}).refine((plan) => plan.type !== 'adult-protection' || Boolean(plan.reviewDate) || plan.noFurtherActionAgreed === true, {
+  error: () => t('errors.schemas.aspPlanReviewDate'),
+  path: ['reviewDate'],
 });
 export type Plan = z.infer<typeof planSchema>;
 
