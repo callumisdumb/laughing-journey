@@ -25,8 +25,11 @@ function ConnectorPull({ adapterId, subjectIds }: { adapterId: string; subjectId
   const health = useQuery({ queryKey: ['health', adapterId], queryFn: () => adapter.health(), refetchInterval: 30_000 });
   const pull = useMutation({
     mutationFn: async () => {
-      const found: ExternalEvent[] = [];
-      for (const id of subjectIds) found.push(...(await adapter.pullEvents({ personId: id }, { from: '2015-01-01', to: now.toISOString() })).map((e) => ({ ...e, source: { ...e.source, __subject: id } })));
+      // One request per subject, in parallel: the simulated latency applies once, not once per person.
+      const perSubject = await Promise.all(
+        subjectIds.map(async (id) => (await adapter.pullEvents({ personId: id }, { from: '2015-01-01', to: now.toISOString() })).map((e) => ({ ...e, source: { ...e.source, __subject: id } }))),
+      );
+      const found: ExternalEvent[] = perSubject.flat();
       return found;
     },
     onSuccess: (events) => {

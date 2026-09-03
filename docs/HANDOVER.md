@@ -77,7 +77,136 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 
 ## 5. Screenshot index
 
-PLACEHOLDER_SCREENSHOTS
+135 screenshots under `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 (full page where the screen scrolls). Light comfortable is the default; dark and compact variants are listed where captured. Phase 6 holds the dark and compact sweep of every screen.
+
+### phase-1
+
+| Screen | Variants |
+|---|---|
+| home | dark comfortable, light comfortable, light compact |
+| home-rail-collapsed | light comfortable |
+| home-state-empty | light comfortable |
+| home-state-error | light comfortable |
+| home-state-loading | light comfortable |
+| home-state-offline | light comfortable |
+| sign-in | light comfortable |
+
+### phase-2
+
+| Screen | Variants |
+|---|---|
+| chronology-add-event-validation | light comfortable |
+| chronology | dark comfortable, light comfortable, light compact |
+| chronology-event-selected | light comfortable |
+| chronology-lenses | light comfortable |
+| chronology-print-pack | light comfortable |
+| chronology-state-empty | light comfortable |
+| chronology-state-restricted | light comfortable |
+| chronology-state-stale | light comfortable |
+| inbox | light comfortable |
+| inbox-promote | light comfortable |
+| people | light comfortable |
+| person-360-chronology | light comfortable |
+| person-360 | dark comfortable, light comfortable, light compact |
+| person-360-presence-only | light comfortable |
+| person-360-processes | light comfortable |
+| person-360-sharing | light comfortable |
+| person-360-voice | light comfortable |
+| search-results | light comfortable |
+| search-typeahead | light comfortable |
+| worklist-clocks | light comfortable |
+| worklist | light comfortable |
+
+### phase-3
+
+| Screen | Variants |
+|---|---|
+| home-mho | light comfortable |
+| process-asp | light comfortable |
+| process-asp-lsi | light comfortable |
+| process-asp-support-only | light comfortable |
+| process-asp-three-point-form | light comfortable |
+| process-awi-capacity-form | light comfortable |
+| process-awi | light comfortable |
+| process-cp | dark comfortable, light comfortable |
+| process-cp-prebirth | light comfortable |
+| process-mappa | light comfortable |
+| process-mappa-restricted | light comfortable |
+| process-marac-daq-form | light comfortable |
+| process-marac | light comfortable |
+| processes | light comfortable |
+
+### phase-4
+
+| Screen | Variants |
+|---|---|
+| actions-complete | light comfortable |
+| actions | light comfortable |
+| actions-team | light compact |
+| meeting-after | light comfortable |
+| meeting-before | light comfortable |
+| meeting-chair | dark comfortable, light comfortable |
+| meeting-during | light comfortable |
+| meetings | light comfortable |
+| sharing-inbound | light comfortable |
+| sharing-outbound | light comfortable |
+| sharing-preview | light comfortable |
+
+### phase-5
+
+| Screen | Variants |
+|---|---|
+| admin-defaults | dark comfortable, light comfortable |
+| admin | light comfortable |
+| admin-need-to-know-edit | light comfortable |
+| admin-need-to-know | light comfortable, light compact |
+| admin-need-to-know-marac | light comfortable |
+| admin-timescales | light comfortable |
+| admin-users | light comfortable |
+| audit | light comfortable |
+| connectors | dark comfortable, light comfortable |
+| connectors-outage | light comfortable |
+| help-about | light comfortable |
+| help-glossary | light comfortable |
+| report-asp-current | light comfortable |
+| report-asp | light comfortable |
+| report-awi | light comfortable |
+| report-cp | dark comfortable, light comfortable |
+| report-cp-print | light comfortable |
+| report-mappa | light comfortable |
+| report-marac | light comfortable, light compact |
+| reports | light comfortable |
+| settings | light comfortable |
+
+### phase-6
+
+| Screen | Variants |
+|---|---|
+| actions | dark comfortable, light compact |
+| admin-need-to-know | dark comfortable, light compact |
+| audit | dark comfortable, light compact |
+| chronology | dark comfortable, light compact |
+| chronology-print-media | light comfortable |
+| connectors | dark comfortable, light compact |
+| help | dark comfortable, light compact |
+| home | dark comfortable, light compact |
+| inbox | dark comfortable, light compact |
+| keyboard-focus | light comfortable |
+| meeting-during | dark comfortable, light compact |
+| meetings | dark comfortable, light compact |
+| people | dark comfortable, light compact |
+| person-360 | dark comfortable, light compact |
+| process-asp | dark comfortable, light compact |
+| process-awi | dark comfortable, light compact |
+| process-cp-1024 | dark compact, light comfortable |
+| process-cp | dark comfortable, light compact |
+| process-mappa | dark comfortable, light compact |
+| process-marac | dark comfortable, light compact |
+| processes | dark comfortable, light compact |
+| reports | dark comfortable, light compact |
+| settings | dark comfortable, light compact |
+| sharing | dark comfortable, light compact |
+| worklist | dark comfortable, light compact |
 
 ## 6. Known gaps and TODO(verify)
 

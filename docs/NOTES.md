@@ -138,3 +138,10 @@ Running log of what was tried visually, what was rejected and why. Newest at the
 - axe (WCAG 2.0 A and AA, 2.1 A and AA, 2.2 AA tags) runs on every captured screen in every suite; the sweep in `e2e/phase6.spec.ts` repeats it in dark theme and compact density for every route.
 - Fixes that came out of the passes: labelled focusable table regions, `role="img"` on the DAQ ticks, dialog title ids per instance, tab panels kept in the document, switches with a full-size hit target, the drawer removed from the document when its column is closed, and the analysis labels in the lanes chart staggered so they never overlap.
 - Keyboard: the first Tab lands on a named control, dialogs open on Enter and close on Escape, the search box is a labelled combobox with arrow keys, and every row action is a real button or link.
+
+### Screenshot review (the sweep)
+
+- 111 Playwright tests across the six suites; every captured screen passes axe in light comfortable, dark comfortable and light compact. Dark reads as intended on Home, the CP dashboard, the chronology (agency colours on the lanes, heather analysis lane), the meeting workspace, the need-to-know matrix (read-only for a social worker, with the reason) and the reports. Compact tightens rows and sheets without losing the hierarchy.
+- 1024 wide: the CP dashboard holds with no horizontal overflow; the title wraps to two lines and the stepper stays on one row.
+- One regression surfaced by the full run rather than by a screenshot: the inbox pull for a connector fetched each subject one after another with the simulated latency, so a social worker with four scenarios' worth of people waited over ten seconds. The pulls now run in parallel, which is also how a real adapter would be called.
+- The full suite must run from `apps/web` (`pnpm e2e`); run from the repository root it resolves a second copy of the Playwright test runner and collects the Vitest files too.
