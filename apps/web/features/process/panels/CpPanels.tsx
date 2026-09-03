@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCY_SHORT, CP_REGISTER_CATEGORY_LABELS, formatDate, formatDateTime, type CpProcess } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { AgencyMark, KeyValue, Pill, Sheet, SheetBody, SheetHead } from '@mas/ui';
 import { differenceInCalendarDays, differenceInWeeks, parseISO, subWeeks } from 'date-fns';
 import { Baby } from 'lucide-react';
@@ -10,17 +11,11 @@ import { fullName, personById, userById, userName } from '@/lib/selectors';
 import { useData, useNow } from '@/lib/store';
 import styles from './shared.module.css';
 
-const DECISION_LABELS: Record<string, string> = {
-  significantHarm: 'Is the child at risk of significant harm?',
-  investigationNeeded: 'Is a child protection investigation needed?',
-  jii: 'Is a Joint Investigative Interview needed?',
-  medical: 'Is a medical needed?',
-  emergencyMeasures: 'Emergency measures',
-  reporterReferral: 'Referral to the Reporter',
-  parentsInformed: 'Information sharing with parents and carers',
-};
+/** The IRD decisions in the order they are shown; each has a question under cp.ird.decisions. */
+const DECISION_KEYS = ['significantHarm', 'investigationNeeded', 'jii', 'medical', 'emergencyMeasures', 'reporterReferral', 'parentsInformed'] as const;
 
 export function CpPanels({ process }: { process: CpProcess }) {
+  const t = useT();
   const data = useData();
   const now = useNow();
   const d = process.detail;
@@ -35,20 +30,20 @@ export function CpPanels({ process }: { process: CpProcess }) {
       {d.preBirth ? (
         <Sheet tone="accent">
           <SheetHead
-            title="Pre-birth"
+            title={t('cp.preBirth.title')}
             meta={(() => {
               const edd = parseISO(d.preBirth.expectedDeliveryDate);
               const weeks = 40 - differenceInWeeks(edd, now);
               const cap = subWeeks(edd, 12);
               const mother = personById(data, d.preBirth.motherPersonId);
-              return `Expected delivery ${formatDate(edd)}. About ${weeks} weeks gestation today. 28 weeks falls on ${formatDate(cap)}: the pre-birth CPPM must be held by then. Mother: ${mother ? fullName(mother) : ''}.`;
+              return t('cp.preBirth.meta', { edd: formatDate(edd), weeks, cap: formatDate(cap), mother: mother ? fullName(mother) : '' });
             })()}
           />
           <SheetBody>
             <div className={styles.info}>
               <Baby size={16} aria-hidden="true" />
               <span>
-                The subject of this process is the unborn baby. The mother is a parent here and may be the subject of her own process. {d.preBirth.motherPersonId ? <AppLink href={personPath(d.preBirth.motherPersonId)}>Open the mother&apos;s record</AppLink> : null}
+                {t('cp.preBirth.note')} {d.preBirth.motherPersonId ? <AppLink href={personPath(d.preBirth.motherPersonId)}>{t('cp.preBirth.openMother')}</AppLink> : null}
               </span>
             </div>
           </SheetBody>
@@ -56,26 +51,30 @@ export function CpPanels({ process }: { process: CpProcess }) {
       ) : null}
 
       <Sheet>
-        <SheetHead title="Child concern" meta={`Received ${formatDateTime(d.concern.receivedAt)} from ${d.concern.source} (${AGENCY_SHORT[d.concern.sourceAgency]})${d.concern.sourceReference ? `, ${d.concern.sourceReference}` : ''}`} />
+        <SheetHead title={t('cp.concern.title')} meta={t('cp.concern.meta', { when: formatDateTime(d.concern.receivedAt), source: d.concern.source, agency: AGENCY_SHORT[d.concern.sourceAgency], hasReference: d.concern.sourceReference ? 'yes' : 'no', reference: d.concern.sourceReference ?? '' })} />
         <SheetBody>
           <p>{d.concern.summary}</p>
-          {d.proceduresInitiatedAt ? <p className={styles.note} style={{ marginTop: 8 }}>Child protection procedures initiated {formatDateTime(d.proceduresInitiatedAt)}: the 28 calendar day CPPM clock runs from here.</p> : null}
+          {d.proceduresInitiatedAt ? (
+            <p className={styles.note} style={{ marginTop: 8 }}>
+              {t('cp.concern.proceduresInitiated', { when: formatDateTime(d.proceduresInitiatedAt) })}
+            </p>
+          ) : null}
         </SheetBody>
       </Sheet>
 
       {ird ? (
         <Sheet>
-          <SheetHead title="Inter-agency Referral Discussion" meta={`Held ${formatDateTime(ird.heldAt)}${ird.outOfHours ? ' (out of hours)' : ''}. ${irdMeeting ? '' : 'No meeting record linked.'}`} actions={irdMeeting ? <AppLink href={meetingPath(irdMeeting.id)}>Open meeting record</AppLink> : undefined} />
+          <SheetHead title={t('cp.ird.title')} meta={t('cp.ird.meta', { when: formatDateTime(ird.heldAt), outOfHours: ird.outOfHours ? 'yes' : 'no', hasMeeting: irdMeeting ? 'yes' : 'no' })} actions={irdMeeting ? <AppLink href={meetingPath(irdMeeting.id)}>{t('cp.ird.openMeeting')}</AppLink> : undefined} />
           <SheetBody>
-            <h3 style={{ marginBottom: 8 }}>Participants</h3>
+            <h3 style={{ marginBottom: 8 }}>{t('cp.ird.participants')}</h3>
             <div className={styles.pills} style={{ marginBottom: 14 }}>
               {ird.participants.map((p) => (
                 <Pill key={p.name} size="sm" tone="outline" icon={<AgencyMark agency={p.agency} hideLabel />}>
-                  {p.name}, {p.role}
+                  {t('cp.ird.participant', { name: p.name, role: p.role })}
                 </Pill>
               ))}
             </div>
-            <h3 style={{ marginBottom: 8 }}>Information from each agency</h3>
+            <h3 style={{ marginBottom: 8 }}>{t('cp.ird.information')}</h3>
             <ul className={styles.list} style={{ marginBottom: 14 }}>
               {ird.contributions.map((c, i) => (
                 <li key={i}>
@@ -86,24 +85,24 @@ export function CpPanels({ process }: { process: CpProcess }) {
                 </li>
               ))}
             </ul>
-            <h3 style={{ marginBottom: 8 }}>Decisions, each with rationale</h3>
+            <h3 style={{ marginBottom: 8 }}>{t('cp.ird.decisionsHeading')}</h3>
             <div className="stack" style={{ gap: 8 }}>
-              {(Object.keys(DECISION_LABELS) as Array<keyof typeof ird.decisions>).map((k) => {
+              {DECISION_KEYS.map((k) => {
                 const dec = ird.decisions[k];
                 const dissent = irdMeeting?.decisions.find((x) => x.question.toLowerCase().includes(k === 'jii' ? 'jii' : k === 'medical' ? 'medical' : k === 'emergencyMeasures' ? 'emergency' : k === 'reporterReferral' ? 'reporter' : k === 'significantHarm' ? 'significant harm' : k === 'investigationNeeded' ? 'investigation' : 'parents'))?.dissent ?? [];
                 return (
                   <div key={k} className={styles.decision} data-decided={dec.decided ? 'true' : 'false'}>
-                    <span className={styles.decisionQ}>{DECISION_LABELS[k]}</span>
+                    <span className={styles.decisionQ}>{t(`cp.ird.decisions.${k}` as const)}</span>
                     <span>{dec.decision}</span>
                     <span className={styles.decisionMeta}>
-                      Rationale: {dec.rationale} {dec.at ? `Decided ${formatDateTime(dec.at)}${dec.byName ? ` by ${dec.byName}` : ''}.` : ''}
-                      {'plannerName' in dec && dec.plannerName ? ` Planned by ${dec.plannerName}; informed by ${dec.informedBy ?? 'not recorded'}.` : ''}
-                      {'kind' in dec && dec.kind ? ` Kind: ${dec.kind}${dec.consentBy ? `, consent by ${dec.consentBy}` : ''}${dec.when ? `, ${formatDateTime(dec.when)}` : ''}.` : ''}
-                      {'withheld' in dec && dec.withheld ? ` Withheld: ${dec.withheld}.` : ''}
+                      {t('cp.ird.rationale', { rationale: dec.rationale })} {dec.at ? t('cp.ird.decided', { when: formatDateTime(dec.at), hasName: dec.byName ? 'yes' : 'no', name: dec.byName ?? '' }) : ''}
+                      {'plannerName' in dec && dec.plannerName ? ` ${t('cp.ird.planned', { planner: dec.plannerName, hasInformedBy: dec.informedBy ? 'yes' : 'no', informedBy: dec.informedBy ?? '' })}` : ''}
+                      {'kind' in dec && dec.kind ? ` ${t('cp.ird.kind', { kind: dec.kind, hasConsent: dec.consentBy ? 'yes' : 'no', consentBy: dec.consentBy ?? '', hasWhen: dec.when ? 'yes' : 'no', when: dec.when ? formatDateTime(dec.when) : '' })}` : ''}
+                      {'withheld' in dec && dec.withheld ? ` ${t('cp.ird.withheld', { withheld: dec.withheld })}` : ''}
                     </span>
                     {dissent.map((ds, i) => (
                       <span key={i} className={styles.dissent}>
-                        Dissent recorded: {ds.byName} ({AGENCY_SHORT[ds.agency]}): {ds.text}
+                        {t('cp.ird.dissent', { name: ds.byName, agency: AGENCY_SHORT[ds.agency], text: ds.text })}
                       </span>
                     ))}
                   </div>
@@ -113,9 +112,9 @@ export function CpPanels({ process }: { process: CpProcess }) {
             <KeyValue
               className={styles.note}
               items={[
-                { key: 'Siblings considered', value: ird.siblingsConsidered.length === 0 ? 'None' : ird.siblingsConsidered.map((id) => { const p = personById(data, id); return p ? fullName(p) : id; }).join(', ') },
-                { key: "Child's views", value: ird.childViewsSought },
-                { key: 'Interim safety plan', value: interim ? `${interim.title}: ${interim.outcomes.map((o) => o.text).join('; ')} (${interim.status})` : 'None recorded' },
+                { key: t('cp.ird.siblings'), value: ird.siblingsConsidered.length === 0 ? t('common.keyValue.none') : ird.siblingsConsidered.map((id) => { const p = personById(data, id); return p ? fullName(p) : id; }).join(', ') },
+                { key: t('cp.ird.childViews'), value: ird.childViewsSought },
+                { key: t('cp.ird.interimPlan'), value: interim ? t('cp.ird.interimPlanValue', { title: interim.title, outcomes: interim.outcomes.map((o) => o.text).join('; '), status: interim.status }) : t('cp.ird.interimPlanNone') },
               ]}
             />
           </SheetBody>
@@ -124,32 +123,32 @@ export function CpPanels({ process }: { process: CpProcess }) {
 
       <div className={styles.grid2}>
         <Sheet>
-          <SheetHead title="Investigation, JII and medical" />
+          <SheetHead title={t('cp.investigation.title')} />
           <SheetBody>
             {d.investigation ? (
               <KeyValue
                 items={[
-                  { key: 'Opened', value: formatDateTime(d.investigation.openedAt) },
-                  { key: 'JII', value: d.investigation.jiiHeldAt ? `Held ${formatDateTime(d.investigation.jiiHeldAt)} under ${d.investigation.jiiModel ?? 'SCIM'}` : ird?.decisions.jii.decided && /^yes/i.test(ird.decisions.jii.decision) ? 'Planned, not yet held' : 'Not needed' },
-                  { key: 'Medical', value: d.investigation.medicalHeldAt ? `Held ${formatDateTime(d.investigation.medicalHeldAt)}` : 'Not held' },
-                  { key: 'Summary', value: d.investigation.summary },
+                  { key: t('cp.investigation.opened'), value: formatDateTime(d.investigation.openedAt) },
+                  { key: t('cp.investigation.jii'), value: d.investigation.jiiHeldAt ? t('cp.investigation.jiiHeld', { when: formatDateTime(d.investigation.jiiHeldAt), model: d.investigation.jiiModel ?? t('cp.investigation.jiiModelDefault') }) : ird?.decisions.jii.decided && /^yes/i.test(ird.decisions.jii.decision) ? t('cp.investigation.jiiPlanned') : t('cp.investigation.jiiNotNeeded') },
+                  { key: t('cp.investigation.medical'), value: d.investigation.medicalHeldAt ? t('cp.investigation.medicalHeld', { when: formatDateTime(d.investigation.medicalHeldAt) }) : t('cp.investigation.medicalNotHeld') },
+                  { key: t('cp.investigation.summary'), value: d.investigation.summary },
                 ]}
               />
             ) : (
-              <p className={styles.note}>No investigation opened.</p>
+              <p className={styles.note}>{t('cp.investigation.none')}</p>
             )}
           </SheetBody>
         </Sheet>
         <Sheet tone={d.register ? 'accent' : 'default'}>
-          <SheetHead title="CPPM and register" actions={cppmMeeting ? <AppLink href={meetingPath(cppmMeeting.id)}>Open CPPM</AppLink> : undefined} />
+          <SheetHead title={t('cp.cppm.title')} actions={cppmMeeting ? <AppLink href={meetingPath(cppmMeeting.id)}>{t('cp.cppm.open')}</AppLink> : undefined} />
           <SheetBody>
             <KeyValue
               items={[
-                { key: 'CPPM', value: d.cppm ? `${d.cppm.heldAt ? `Held ${formatDateTime(d.cppm.heldAt)}. ` : ''}Decision: ${d.cppm.decision.replace('-', ' ')}. ${d.cppm.rationale ?? ''}` : 'Not yet held' },
-                { key: 'Register', value: d.register ? <span className={styles.pills}><Pill tone="critical" size="sm">Registered {formatDate(d.register.registeredAt)}</Pill>{d.register.categories.map((c) => <Pill key={c} tone="high" size="sm">{CP_REGISTER_CATEGORY_LABELS[c]}</Pill>)}</span> : 'Not on the register' },
-                ...(d.register?.deregisteredAt ? [{ key: 'De-registered', value: `${formatDate(d.register.deregisteredAt)}. ${d.register.deregistrationReason ?? ''}` }] : []),
-                ...(d.register?.transfer ? [{ key: 'Transfer', value: `${d.register.transfer.direction} ${d.register.transfer.area} on ${formatDate(d.register.transfer.at)}` }] : []),
-                { key: 'Days on register', value: d.register ? String(differenceInCalendarDays(now, parseISO(d.register.registeredAt))) : '' },
+                { key: t('cp.cppm.cppm'), value: d.cppm ? t('cp.cppm.cppmValue', { hasHeld: d.cppm.heldAt ? 'yes' : 'no', when: d.cppm.heldAt ? formatDateTime(d.cppm.heldAt) : '', decision: d.cppm.decision.replace('-', ' '), rationale: d.cppm.rationale ?? '' }) : t('cp.cppm.notHeld') },
+                { key: t('cp.cppm.register'), value: d.register ? <span className={styles.pills}><Pill tone="critical" size="sm">{t('cp.cppm.registered', { date: formatDate(d.register.registeredAt) })}</Pill>{d.register.categories.map((c) => <Pill key={c} tone="high" size="sm">{CP_REGISTER_CATEGORY_LABELS[c]}</Pill>)}</span> : t('cp.cppm.notOnRegister') },
+                ...(d.register?.deregisteredAt ? [{ key: t('cp.cppm.deregistered'), value: t('cp.cppm.deregisteredValue', { date: formatDate(d.register.deregisteredAt), reason: d.register.deregistrationReason ?? '' }) }] : []),
+                ...(d.register?.transfer ? [{ key: t('cp.cppm.transfer'), value: t('cp.cppm.transferValue', { direction: d.register.transfer.direction, area: d.register.transfer.area, date: formatDate(d.register.transfer.at) }) }] : []),
+                { key: t('cp.cppm.daysOnRegister'), value: d.register ? String(differenceInCalendarDays(now, parseISO(d.register.registeredAt))) : '' },
               ]}
             />
           </SheetBody>
@@ -158,7 +157,7 @@ export function CpPanels({ process }: { process: CpProcess }) {
 
       <div className={styles.grid2}>
         <Sheet>
-          <SheetHead title="Core group" meta={d.coreGroup?.firstMeetingAt ? `First meeting ${formatDateTime(d.coreGroup.firstMeetingAt)}` : 'Not yet set up'} />
+          <SheetHead title={t('cp.coreGroup.title')} meta={d.coreGroup?.firstMeetingAt ? t('cp.coreGroup.firstMeeting', { when: formatDateTime(d.coreGroup.firstMeetingAt) }) : t('cp.coreGroup.notSetUp')} />
           <SheetBody>
             {d.coreGroup ? (
               <ul className={styles.list}>
@@ -169,8 +168,8 @@ export function CpPanels({ process }: { process: CpProcess }) {
                       <AgencyMark agency={u.agency} hideLabel />
                       <span>
                         <strong>{userName(u)}</strong>
-                        {id === d.coreGroup?.leadProfessionalUserId ? ' (lead professional)' : ''}
-                        {id === d.coreGroup?.namedPersonUserId ? ' (named person)' : ''}
+                        {id === d.coreGroup?.leadProfessionalUserId ? ` ${t('cp.coreGroup.leadProfessional')}` : ''}
+                        {id === d.coreGroup?.namedPersonUserId ? ` ${t('cp.coreGroup.namedPerson')}` : ''}
                       </span>
                     </li>
                   ) : null;
@@ -180,7 +179,7 @@ export function CpPanels({ process }: { process: CpProcess }) {
           </SheetBody>
         </Sheet>
         <Sheet>
-          <SheetHead title="Child's plan" meta={plan ? `${plan.title}. Agreed ${formatDate(plan.agreedAt)}${plan.reviewDate ? `, review ${formatDate(plan.reviewDate)}` : ''}.` : 'No plan yet'} actions={plan ? <AppLink href={processPath(process.id)}>Actions below</AppLink> : undefined} />
+          <SheetHead title={t('cp.plan.title')} meta={plan ? t('cp.plan.meta', { title: plan.title, date: formatDate(plan.agreedAt), hasReview: plan.reviewDate ? 'yes' : 'no', review: plan.reviewDate ? formatDate(plan.reviewDate) : '' }) : t('cp.plan.none')} actions={plan ? <AppLink href={processPath(process.id)}>{t('cp.plan.actionsBelow')}</AppLink> : undefined} />
           <SheetBody>
             {plan ? (
               <ol className={styles.list}>
@@ -188,7 +187,7 @@ export function CpPanels({ process }: { process: CpProcess }) {
                   <li key={o.id}>
                     <span style={{ fontWeight: 700 }}>{i + 1}</span>
                     <span>
-                      {o.text} <span className={styles.note}>({o.actionIds.length} {o.actionIds.length === 1 ? 'action' : 'actions'})</span>
+                      {o.text} <span className={styles.note}>{t('cp.plan.actionCount', { count: o.actionIds.length })}</span>
                     </span>
                   </li>
                 ))}
