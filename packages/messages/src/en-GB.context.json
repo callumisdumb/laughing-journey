@@ -918,6 +918,9 @@
           "where": "Statutory disclosure screen: done.title"
         }
       },
+      "excludedAudit": {
+        "where": "Audit entry when an escrow request is refused because a chosen holder is an excluded party on the record"
+      },
       "formMeta": {
         "where": "Statutory disclosure screen: formMeta"
       },
@@ -974,7 +977,16 @@
       "record": {
         "where": "Statutory disclosure screen: record"
       },
+      "recovery": {
+        "withheld": {
+          "where": "Line on the disclosure screen listing the cases a recovery would not restore because the user is an excluded party on them"
+        }
+      },
       "refusals": {
+        "excludedHolder": {
+          "screenshot": "security/statutory-disclosure-light-comfortable.png",
+          "where": "Refusal line when a chosen escrow holder is an excluded party on the record being opened"
+        },
         "noLawfulBasis": {
           "where": "Statutory disclosure screen: refusals.noLawfulBasis"
         },

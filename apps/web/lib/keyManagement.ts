@@ -31,7 +31,7 @@ import {
   type Signature,
   type SigningKeyPair,
 } from '@mas/crypto';
-import type { Agency, RoleId, User } from '@mas/domain';
+import { isExcludedParty, type Agency, type Exclusion, type Process, type Relationship, type RoleId, type User } from '@mas/domain';
 
 /* ------------------------------------------------------------------ enrolment */
 
@@ -92,6 +92,15 @@ export interface EscrowHolder {
   agency: Agency;
   /** The organisation, which is what has to differ between the two who act. */
   organisation: string;
+  /**
+   * Who currently holds the share, as far as the platform knows them: a platform account, a person
+   * record, or a name. The exclusion check needs an identity to match against the register, and the
+   * register records people all three ways, so all three are carried and all three are checked. A
+   * share held by a role with nobody named against it cannot be checked at all.
+   */
+  userId?: string;
+  personId?: string;
+  name?: string;
 }
 
 /**
@@ -126,27 +135,44 @@ export interface EscrowRequest {
   at: string;
 }
 
-export type EscrowRefusal = 'threshold-not-met' | 'same-organisation' | 'no-reason' | 'no-lawful-basis';
+export type EscrowRefusal = 'threshold-not-met' | 'same-organisation' | 'no-reason' | 'no-lawful-basis' | 'excluded-holder';
 
 export interface EscrowDecision {
   ok: boolean;
   refusal?: EscrowRefusal;
   /** The holders who must be told this happened: everyone who did not act. */
   notify: EscrowHolder[];
+  /** The holder who is an excluded party on the record, when that is what refused it. */
+  excluded?: EscrowHolder;
 }
 
 /**
  * Whether an escrow request may proceed.
  *
- * Four conditions, and the second is the one that matters. Two holders from the same organisation
- * would meet the cryptographic threshold and defeat the governance control, so it is refused here
- * rather than left to a policy document nobody reads at two in the morning.
+ * Five conditions. Two matter more than the rest.
+ *
+ * Two holders from the same organisation would meet the cryptographic threshold and defeat the
+ * governance control, so that is refused here rather than left to a policy document nobody reads at
+ * two in the morning.
+ *
+ * And a holder who is themselves an excluded party on the record being opened must not be one of the
+ * two. An escrow holder who is the perpetrator's relative, or a named victim on the MAPPA case,
+ * reconstructing the key for that case is remote, and the check is cheap, and the register already
+ * records exactly that relationship. Refusing in code costs nothing and closes it; leaving it to the
+ * holders to notice about themselves closes nothing.
  */
-export function escrowDecision(request: EscrowRequest): EscrowDecision {
+export function escrowDecision(request: EscrowRequest, target?: Process, options: { exclusions?: Exclusion[]; relationships?: Relationship[] } = {}): EscrowDecision {
   const notify = ESCROW_HOLDERS.filter((holder) => !request.holders.some((acting) => acting.shareIndex === holder.shareIndex));
   if (request.holders.length < ESCROW_THRESHOLD) return { ok: false, refusal: 'threshold-not-met', notify };
   const organisations = new Set(request.holders.map((holder) => holder.organisation));
   if (organisations.size < request.holders.length) return { ok: false, refusal: 'same-organisation', notify };
+  if (target) {
+    const excluded = request.holders.find((holder) => {
+      if (!holder.userId && !holder.personId && !holder.name) return false;
+      return isExcludedParty(target, { userId: holder.userId, personId: holder.personId, name: holder.name }, options.exclusions, target.stage, options.relationships) !== null;
+    });
+    if (excluded) return { ok: false, refusal: 'excluded-holder', notify, excluded };
+  }
   if (request.reason.trim().length < 15) return { ok: false, refusal: 'no-reason', notify };
   if (request.lawfulBasis.trim().length === 0) return { ok: false, refusal: 'no-lawful-basis', notify };
   return { ok: true, notify };
@@ -176,8 +202,8 @@ export function splitEscrowKey(key: Uint8Array): Share[] {
 }
 
 /** Reconstruct from two shares. Refuses before it computes anything if the request is not permitted. */
-export function reconstructEscrowKey(shares: readonly Share[], request: EscrowRequest): Uint8Array {
-  const decision = escrowDecision(request);
+export function reconstructEscrowKey(shares: readonly Share[], request: EscrowRequest, target?: Process, options: { exclusions?: Exclusion[]; relationships?: Relationship[] } = {}): Uint8Array {
+  const decision = escrowDecision(request, target, options);
   if (!decision.ok) throw new Error(`Escrow refused: ${decision.refusal}`);
   return combine(shares, ESCROW_THRESHOLD);
 }
@@ -200,6 +226,24 @@ export interface RecoveryRequest {
  * encrypted system becomes unavailable, and unavailability in this domain is a safety incident and,
  * per the ICO, potentially a breach in its own right.
  */
+/**
+ * The cases a recovery must not restore.
+ *
+ * Recovery rewraps the user's keys from escrow, which would hand back everything they held. If they
+ * are an excluded party on one of those cases, that case is not theirs to have back: the exclusion
+ * outlived the device. The same register answers it, and the recovery flow lists what it withheld
+ * rather than restoring quietly and leaving somebody to find out later.
+ */
+export function casesWithheldFromRecovery(
+  recovery: RecoveryRequest,
+  processes: readonly Process[],
+  options: { exclusions?: Exclusion[]; relationships?: Relationship[] } = {},
+): Process[] {
+  // The id may be an account or a person record depending on how the register recorded them, so both
+  // are offered; `isExcludedParty` matches whichever it holds and ignores the other.
+  return processes.filter((process) => isExcludedParty(process, { userId: recovery.userId, personId: recovery.userId }, options.exclusions, process.stage, options.relationships) !== null);
+}
+
 export function recoveryEscrowRequest(recovery: RecoveryRequest, holders: EscrowHolder[]): EscrowRequest {
   return {
     purpose: 'recovery',

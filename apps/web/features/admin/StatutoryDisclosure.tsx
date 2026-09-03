@@ -5,8 +5,8 @@ import { useT } from '@mas/messages';
 import { Button, CheckboxField, Pill, SelectField, Sheet, SheetBody, SheetHead, TextareaField, TextField, useToast } from '@mas/ui';
 import { ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
-import { useAppStore, useData, useNow } from '@/lib/store';
-import { ESCROW_HOLDERS, escrowDecision, signEscrowUse, type EscrowHolder, type EscrowPurpose } from '@/lib/keyManagement';
+import { useAppStore, useConfig, useData, useNow } from '@/lib/store';
+import { ESCROW_HOLDERS, casesWithheldFromRecovery, escrowDecision, signEscrowUse, type EscrowHolder, type EscrowPurpose } from '@/lib/keyManagement';
 import { deviceSigningKey } from '@/lib/auditChain';
 import styles from './StatutoryDisclosure.module.css';
 import { SectionHead } from './SectionHead';
@@ -29,6 +29,7 @@ import { sectionLabel } from './sections';
 export function StatutoryDisclosure() {
   const t = useT();
   const data = useData();
+  const config = useConfig();
   const now = useNow();
   const audit = useAppStore((s) => s.audit);
   const { toast } = useToast();
@@ -41,13 +42,30 @@ export function StatutoryDisclosure() {
 
   const holders: EscrowHolder[] = ESCROW_HOLDERS.filter((holder) => selected.includes(holder.shareIndex));
   const request = { purpose, reason, lawfulBasis, targetId, holders, at: now.toISOString() };
-  const decision = escrowDecision(request);
+  // The record being opened, so the decision can refuse a holder who is an excluded party on it.
+  const target = data.processes.find((p) => p.id === targetId);
+  const decision = escrowDecision(request, target, { exclusions: config.exclusions, relationships: data.relationships });
+  // What a recovery would not give back. The exclusion outlived the device.
+  const withheld = purpose === 'recovery' && target ? casesWithheldFromRecovery({ userId: targetId, newDeviceLabel: '', fingerprint: '', identityVerifiedBy: '', at: now.toISOString() }, data.processes, { exclusions: config.exclusions, relationships: data.relationships }) : [];
 
   function toggle(shareIndex: number, on: boolean) {
     setSelected((current) => (on ? [...current, shareIndex] : current.filter((i) => i !== shareIndex)));
   }
 
   function submit() {
+    if (decision.refusal === 'excluded-holder' && target) {
+      // A refusal is a fact worth recording. The same-organisation case produces an audit entry and
+      // so does this one: an attempt that got as far as pressing the button is what oversight wants.
+      audit({
+        act: 'export',
+        targetType: 'process',
+        targetId,
+        targetLabel: t('admin.disclosure.excludedAudit', { organisation: decision.excluded?.organisation ?? '', reference: target.reference }),
+        reason,
+        restricted: true,
+      });
+      return;
+    }
     if (!decision.ok) return;
     // Both holders sign the statement, so neither can later say they were not there.
     const use = signEscrowUse(request, holders.map((holder) => deviceSigningKey(`escrow:${holder.shareIndex}`)));
@@ -119,13 +137,21 @@ export function StatutoryDisclosure() {
 
           {decision.refusal ? (
             <p className={styles.refusal} role="status">
-              {t(`admin.disclosure.refusals.${decision.refusal === 'threshold-not-met' ? 'thresholdNotMet' : decision.refusal === 'same-organisation' ? 'sameOrganisation' : decision.refusal === 'no-reason' ? 'noReason' : 'noLawfulBasis'}` as const)}
+              {decision.refusal === 'excluded-holder'
+              ? t('admin.disclosure.refusals.excludedHolder', { organisation: decision.excluded?.organisation ?? '' })
+              : t(`admin.disclosure.refusals.${decision.refusal === 'threshold-not-met' ? 'thresholdNotMet' : decision.refusal === 'same-organisation' ? 'sameOrganisation' : decision.refusal === 'no-reason' ? 'noReason' : 'noLawfulBasis'}` as const)}
             </p>
           ) : (
             <p className={styles.ready} role="status">
               {t('admin.disclosure.ready', { notified: decision.notify.length })}
             </p>
           )}
+
+          {withheld.length > 0 ? (
+            <p className={styles.refusal} role="status">
+              {t('admin.disclosure.recovery.withheld', { count: withheld.length, references: withheld.map((p) => p.reference).join('; ') })}
+            </p>
+          ) : null}
 
           <div className={styles.actions}>
             <Button variant="danger" icon={<ShieldAlert size={16} aria-hidden="true" />} disabled={!decision.ok} onClick={submit}>

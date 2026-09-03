@@ -290,6 +290,7 @@
         "text": "Signed by {signatures} holders. {notified, plural, one {# other holder has} other {# other holders have}} been notified, and the audit entry names both who acted.",
         "title": "Disclosure recorded"
       },
+      "excludedAudit": "Escrow refused: {organisation} holds a share and is an excluded party on {reference}",
       "formMeta": "Every field is on the audit entry",
       "formTitle": "Request",
       "holder": "{organisation}",
@@ -310,7 +311,11 @@
       "reason": "Why this record, and why now",
       "reasonHint": "At least 15 characters. An auditor reads this, so say what is being produced and to whom.",
       "record": "Record",
+      "recovery": {
+        "withheld": "Recovery would restore {count, plural, one {# case} other {# cases}} this person is an excluded party on. {count, plural, one {It is} other {They are}} withheld: {references}. The exclusion outlived the device."
+      },
       "refusals": {
+        "excludedHolder": "Refused. {organisation} holds a share and is themselves an excluded party on this record, so they may not be one of the two who open it. Choose a different holder.",
         "noLawfulBasis": "Record the lawful basis.",
         "noReason": "Say why, in at least 15 characters. This is what an auditor reads.",
         "sameOrganisation": "Both holders are in the same organisation. The split exists so that reaching a record needs agreement across organisational lines, not two signatures from one building.",

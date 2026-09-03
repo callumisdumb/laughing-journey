@@ -123,6 +123,8 @@ A new device generates its own key pair, and the private half never leaves the O
 
 Five holders, in five organisations with different lines of accountability: the MAPPA Coordinator, the Chief Social Work Officer, the health board Caldicott guardian, the police public protection superintendent and the Adult Protection Committee lead officer. Two must act, **and `escrowDecision` refuses two holders from the same organisation** rather than leaving it to policy, because policy is not what runs at two in the morning.
 
+A holder who is themselves an excluded party on the record being opened is refused as well, in the same place and with the same shape. An escrow holder who is the perpetrator's relative, or a named victim on a MAPPA case, reconstructing the key for that case is remote; the check is cheap; and the case-role register already records exactly that relationship. Refusing in code costs nothing and closes it, where leaving the holders to notice it about themselves closes nothing. The refusal is audited like the use, because an attempt that got as far as pressing the button is what oversight wants to see.
+
 Every use records a purpose from a fixed list, a lawful basis and a written reason, produces an audit entry signed by both holders so neither can later say they were not there, and notifies the remaining three.
 
 Break-glass used to be procedural: a dialog, a reason, a four-hour grant and a server that honoured it. Making it cryptographic means it now takes two humans in two organisations and cannot be done quietly by one administrator with database access.
@@ -133,6 +135,8 @@ Someone who has lost every device has lost their user key, and no amount of good
 
 1. **A recovery passphrase**, stretched with Argon2id, wrapping a copy of the user key. It is generated at enrolment, shown once, and the copy is stored with its salt beside the wrapped key. This is the path that does not need anybody else.
 2. **Escrow**, when the passphrase is gone too. `recoveryEscrowRequest` builds an ordinary escrow request with the recovery purpose, so it takes the same two holders in two organisations and produces the same signed, notified audit entry. Recovery is not a quieter door than disclosure.
+
+Recovery rewraps everything the person held, so it carries the same check the other way: `casesWithheldFromRecovery` lists the cases the person is an excluded party on, and those are not restored. The exclusion outlived the device, and the flow says what it withheld rather than handing everything back quietly and leaving somebody to find out later.
 
 ### Offline
 

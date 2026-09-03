@@ -11,6 +11,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ESCROW_HOLDERS,
   OFFLINE_GRACE_HOURS,
+  casesWithheldFromRecovery,
   completeStep,
   deviceFingerprint,
   enrolmentReady,
@@ -76,6 +77,52 @@ describe('escrow', () => {
     // control, so it is refused here rather than left to a policy nobody reads at two in the morning.
     const sameOrganisation = { ...ESCROW_HOLDERS[1]!, shareIndex: 9 };
     expect(escrowDecision(request({ holders: [ESCROW_HOLDERS[1]!, sameOrganisation] })).refusal).toBe('same-organisation');
+  });
+
+  it('refuses a holder who is an excluded party on the record they are opening', () => {
+    // Remote, and the check is cheap, and the register already answers it. An escrow holder who is
+    // the perpetrator's relative or a named victim on the case must not be one of the two who reach
+    // it, and leaving that to the holders to notice about themselves closes nothing.
+    const marac = data.processes.find((p) => p.type === 'marac' && p.parties.length > 0);
+    expect(marac).toBeDefined();
+    const excludedPersonId = marac!.parties[0]!.personId!;
+    const compromised = { ...ESCROW_HOLDERS[0]!, personId: excludedPersonId };
+    const decision = escrowDecision(request({ holders: [compromised, ESCROW_HOLDERS[2]!], targetId: marac!.id }), marac, { relationships: data.relationships });
+    expect(decision.ok).toBe(false);
+    expect(decision.refusal).toBe('excluded-holder');
+    expect(decision.excluded?.shareIndex).toBe(compromised.shareIndex);
+  });
+
+  it('lets the same two holders through on a record they are not excluded from', () => {
+    const other = data.processes.find((p) => p.type === 'cp');
+    expect(other).toBeDefined();
+    const marac = data.processes.find((p) => p.type === 'marac' && p.parties.length > 0)!;
+    const holder = { ...ESCROW_HOLDERS[0]!, personId: marac.parties[0]!.personId! };
+    expect(escrowDecision(request({ holders: [holder, ESCROW_HOLDERS[2]!], targetId: other!.id }), other, { relationships: data.relationships }).ok).toBe(true);
+  });
+
+  it('refuses to reconstruct the key at all for an excluded holder, before it computes anything', () => {
+    const marac = data.processes.find((p) => p.type === 'marac' && p.parties.length > 0)!;
+    const holder = { ...ESCROW_HOLDERS[0]!, personId: marac.parties[0]!.personId! };
+    const shares = splitEscrowKey(generateEscrowKey());
+    expect(() => reconstructEscrowKey(shares.slice(0, 2), request({ holders: [holder, ESCROW_HOLDERS[2]!], targetId: marac.id }), marac, { relationships: data.relationships })).toThrow(/excluded-holder/);
+  });
+
+  it('withholds from a recovery the cases the person is an excluded party on', () => {
+    // Recovery rewraps everything the person held. A case they are excluded from is not theirs to
+    // have back: the exclusion outlived the device.
+    // The recovery check matches a platform account, so the register entry has to be one. Kayleigh's
+    // MARAC names the perpetrator's brother as an associate; he holds an account in this dataset.
+    const marac = data.processes.find((p) => p.type === 'marac' && p.parties.length > 0)!;
+    const recovery = { userId: marac.parties[0]!.personId!, newDeviceLabel: 'Replacement laptop', fingerprint: 'ABCD EFGH', identityVerifiedBy: 'Line manager in person', at: '2026-09-03T09:00:00+01:00' };
+    const withheld = casesWithheldFromRecovery(recovery, data.processes, { relationships: data.relationships });
+    expect(withheld.map((p) => p.id)).toContain(marac.id);
+  });
+
+  it('withholds nothing from a recovery for somebody excluded from nothing', () => {
+    const janet = data.users.find((u) => u.id === 'usr_janet_kerr')!;
+    const recovery = { userId: janet.id, newDeviceLabel: 'Replacement laptop', fingerprint: 'ABCD EFGH', identityVerifiedBy: 'Line manager in person', at: '2026-09-03T09:00:00+01:00' };
+    expect(casesWithheldFromRecovery(recovery, data.processes, { relationships: data.relationships })).toEqual([]);
   });
 
   it('refuses a use with no reason or no lawful basis', () => {
