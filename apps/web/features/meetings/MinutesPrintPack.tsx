@@ -102,7 +102,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
 
   useEffect(() => {
     if (!meeting || !process || !allowed) return;
-    const restricted = process.classification === 'restricted';
+    const restricted = process.accessRestriction === 'restricted';
     const label = t('meetings.audit.minutesPack', { title: meeting.title });
     if (restricted) audit({ act: 'read-restricted', targetType: 'meeting', targetId: meeting.id, targetLabel: label, processId: process.id, restricted: true });
     audit({ act: 'export', targetType: 'meeting', targetId: meeting.id, targetLabel: label, processId: process.id, restricted });
@@ -127,8 +127,8 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
   }
 
   // Annex 2: the level is derived from the record, and the handling instruction is local configuration.
-  const classification = classificationFor(config, process.classification);
-  const handling = handlingNote(config, process.classification);
+  const classification = classificationFor(config, process);
+  const handling = handlingNote(config, process);
   const marking = markingFor(classification) ?? '';
   const subjects = meeting.subjectIds.map((id) => personById(data, id)).filter((p) => p !== undefined);
   const views = data.viewsRecords.filter((v) => meeting.viewsRecordIds.includes(v.id));

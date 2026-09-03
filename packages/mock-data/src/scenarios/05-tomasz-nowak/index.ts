@@ -1,3 +1,4 @@
+import { officialSensitive } from '@mas/domain';
 /**
  * Scenario 5: Tomasz Nowak, 44, Dunlarrick. Adult Support and Protection, self-neglect and
  * hoarding, fire risk raised by Scottish Fire and Rescue. He has capacity and declines
@@ -107,7 +108,8 @@ export function seedTomaszNowak(ctx: BuildContext): void {
       { stage: 'support-plan', at: at('2026-07-09', '12:00'), byUserId: chair, byName: name(chair), note: 'Adult at risk; no protection plan; support-only response with his consent' },
     ],
     status: 'open',
-    classification: 'official-sensitive',
+    classification: officialSensitive(),
+    accessRestriction: 'none',
     openedAt: at('2026-06-05', '14:20'),
     members: [
       { userId: co, caseRole: 'council officer', agency: 'social-work', since: '2026-06-05', reason: 'Allocated council officer (s52) for the inquiry and investigation' },

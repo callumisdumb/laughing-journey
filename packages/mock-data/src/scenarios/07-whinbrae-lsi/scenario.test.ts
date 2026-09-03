@@ -11,7 +11,10 @@ describe('scenario 7', () => {
     seedWhinbraeLsi(ctx);
     const result = datasetSchema.safeParse(ctx.data);
     if (!result.success) throw new Error(result.error.issues.slice(0, 10).map((i) => `${i.path.join('.')}: ${i.message}`).join('\n'));
-    expect(ctx.data.processes.find((p) => p.id === WHINBRAE.process)?.classification).toBe('official-sensitive');
+    // Official-Sensitive but not access restricted: a large scale investigation is not a MAPPA record.
+    const process = ctx.data.processes.find((p) => p.id === WHINBRAE.process);
+    expect(process?.classification.sensitive).toBe(true);
+    expect(process?.accessRestriction).toBe('none');
   });
 
   it('runs one process for six residents with a strand each', () => {

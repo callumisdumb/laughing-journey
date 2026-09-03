@@ -24,7 +24,7 @@ const STRONG: RichValues = { b: (chunks) => <strong>{chunks}</strong> };
  */
 function shareMarking(config: Config, data: Dataset, lawfulBasisId: string): string | undefined {
   const basis = data.lawfulBases.find((b) => b.id === lawfulBasisId);
-  return basis ? marking(classificationFor(config, basis.classification)) : undefined;
+  return basis ? marking(classificationFor(config, basis)) : undefined;
 }
 
 export function Sharing() {

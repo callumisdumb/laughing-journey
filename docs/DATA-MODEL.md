@@ -22,7 +22,7 @@ Outline written in Phase 0. From Phase 1 the entity tables below are regenerated
 | Address | Fictional address with move dates | id, line1, line2, town, postcode (Q, V or X prefix), from, to |
 | Household | People at an address | id, addressId, memberIds[] |
 | Relationship | Dated, typed link between people | fromPersonId, toPersonId, type, from, to, notes |
-| Process | One case of one type | id, type, reference, subjectIds[], leadAgency, stage, stageHistory[], status, classification, members[], clocks[], detail (union) |
+| Process | One case of one type | id, type, reference, subjectIds[], leadAgency, stage, stageHistory[], status, classification, accessRestriction, members[], clocks[], detail (union) |
 | AspDetail | ASP-specific | concern, threePointTest (a, b, c with met, reasoning, date, by), inquiry, investigation, harmTypes, consentAndCapacity, advocacy, powersUsed, ordersConsidered, plan, lsi |
 | CpDetail | CP-specific | concern, ird (participants, contributions, decisions, interimSafetyPlan, jii, medical, reporterReferral, parentsInformed, childViews), investigation, cppm, register, coreGroup, childsPlan, preBirth |
 | MaracDetail | MARAC-specific | referral (source, tool, items, score, judgement, repeat), researchRequests[], meetingSlot, actionPlan, idaaFeedback[], flags[], links |
@@ -53,7 +53,9 @@ Outline written in Phase 0. From Phase 1 the entity tables below are regenerated
 - `Significance`: low, moderate, high.
 - `EventType`: see brief 4.7; grouped as family, move, household, health.*, education.*, police.*, social-work.*, care.*, legal.*, process.*, voice.*, disclosure, sharing.
 - `RiskBand`: critical, high, medium, low, unknown.
-- `Classification`: official, official-sensitive, restricted.
+- `ClassificationLevel`: official, secret, top-secret. The three levels of the Government Security Classification scheme. `Classification` is `{ level, sensitive, handling }`: Official-Sensitive is a marking on a subset of Official, not a fourth level. Secret and Top Secret are in the type and unreachable in the product, and a test says so.
+- `AccessRestriction`: none, restricted. Whether a record is reachable only by the people on it. Orthogonal to classification, and not a level of it: RESTRICTED was abolished on 2 April 2014 with the rest of the Government Protective Marking Scheme.
+- `MarkingProfileId`: official, official-sensitive, access-restricted. The key of the local handling configuration, which is not a classification: the third profile describes a record that is both Official-Sensitive and access restricted.
 
 ## Generated tables
 
@@ -176,7 +178,9 @@ Variant 1
 | `stage` | enum (29 values) | yes |
 | `stageHistory` | array of object { stage, at, byUserId, byName, note } | yes |
 | `status` | "open" \| "closed" \| "transferred" | yes |
-| `classification` | "official" \| "official-sensitive" \| "restricted" | yes |
+| `classification` | object { level, sensitive, handling } | yes |
+| `accessRestriction` | "none" \| "restricted" | yes |
+| `classificationOverride` | object { level, sensitive, handling, reason, byUserId, byName, at } | no |
 | `openedAt` | string (date-time) | yes |
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
@@ -205,7 +209,9 @@ Variant 2
 | `stage` | enum (29 values) | yes |
 | `stageHistory` | array of object { stage, at, byUserId, byName, note } | yes |
 | `status` | "open" \| "closed" \| "transferred" | yes |
-| `classification` | "official" \| "official-sensitive" \| "restricted" | yes |
+| `classification` | object { level, sensitive, handling } | yes |
+| `accessRestriction` | "none" \| "restricted" | yes |
+| `classificationOverride` | object { level, sensitive, handling, reason, byUserId, byName, at } | no |
 | `openedAt` | string (date-time) | yes |
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
@@ -234,7 +240,9 @@ Variant 3
 | `stage` | enum (29 values) | yes |
 | `stageHistory` | array of object { stage, at, byUserId, byName, note } | yes |
 | `status` | "open" \| "closed" \| "transferred" | yes |
-| `classification` | "official" \| "official-sensitive" \| "restricted" | yes |
+| `classification` | object { level, sensitive, handling } | yes |
+| `accessRestriction` | "none" \| "restricted" | yes |
+| `classificationOverride` | object { level, sensitive, handling, reason, byUserId, byName, at } | no |
 | `openedAt` | string (date-time) | yes |
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
@@ -263,7 +271,9 @@ Variant 4
 | `stage` | enum (29 values) | yes |
 | `stageHistory` | array of object { stage, at, byUserId, byName, note } | yes |
 | `status` | "open" \| "closed" \| "transferred" | yes |
-| `classification` | "official" \| "official-sensitive" \| "restricted" | yes |
+| `classification` | object { level, sensitive, handling } | yes |
+| `accessRestriction` | "none" \| "restricted" | yes |
+| `classificationOverride` | object { level, sensitive, handling, reason, byUserId, byName, at } | no |
 | `openedAt` | string (date-time) | yes |
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
@@ -292,7 +302,9 @@ Variant 5
 | `stage` | enum (29 values) | yes |
 | `stageHistory` | array of object { stage, at, byUserId, byName, note } | yes |
 | `status` | "open" \| "closed" \| "transferred" | yes |
-| `classification` | "official" \| "official-sensitive" \| "restricted" | yes |
+| `classification` | object { level, sensitive, handling } | yes |
+| `accessRestriction` | "none" \| "restricted" | yes |
+| `classificationOverride` | object { level, sensitive, handling, reason, byUserId, byName, at } | no |
 | `openedAt` | string (date-time) | yes |
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
@@ -311,7 +323,7 @@ Variant 5
 
 | Field | Type | Required |
 |---|---|---|
-| `concern` | object { receivedAt, source, sourceAgency, sourceReference, summary, harmTypes, primaryHarmType, traffickingKinds, harmTypeOther, primaryClientGroup, clientGroupOther, immediateSafety, policeInvolved } | yes |
+| `concern` | object { receivedAt, source, sourceAgency, sourceReference, summary, referralSource, referralSourceOther, harmTypes, primaryHarmType, traffickingKinds, harmTypeOther, primaryClientGroup, clientGroupOther, locationOfHarm, locationOfHarmOther, immediateSafety, policeInvolved } | yes |
 | `threePointTest` | object { assessedAt, byName, byUserId, a, b, c, outcome } | yes |
 | `screening` | object { outcome, rationale, at, byName } | no |
 | `inquiry` | object { openedAt, interAgencyDiscussionMeetingId, agenciesContacted, outcome, action, rationale, decidedAt } | no |
@@ -319,7 +331,7 @@ Variant 5
 | `ordersConsidered` | array of object { order, considered, decision, rationale } | yes |
 | `planId` | string | no |
 | `closure` | object { at, reason } | no |
-| `lsi` | object { setting, provider, strands, agenciesInvolved, careInspectorateNotified, commissioningInvolved, chairUserId, chairIsSeniorCouncilOfficer } | no |
+| `lsi` | object { setting, provider, serviceType, careInspectorateCsNumber, nhsHospitalLocationCode, strands, agenciesInvolved, careInspectorateNotified, commissioningInvolved, chairUserId, chairIsSeniorCouncilOfficer } | no |
 
 ### CpDetail
 
@@ -465,6 +477,7 @@ Variant 5
 | `distribution` | array of object { id, recipientName, recipientUserId, agency, role, detailLevel, fields, sharingRecordId, reason } | yes |
 | `reviewDate` | string (date) | no |
 | `subjectAttendance` | string | no |
+| `aspAttendance` | object { adultInvited, adultAttended, advocateInvited, advocateAttended, adultNotInvitedReason } | no |
 
 ### Decision
 
@@ -568,6 +581,8 @@ Variant 5
 | `article6` | "6(1)(c) legal obligation" \| "6(1)(e) public task" \| "6(1)(d) vital interests" | yes |
 | `article9Condition` | "9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)" \| "9(2)(h) health and social care" \| "9(2)(c) vital interests" \| "not applicable" | yes |
 | `article10Criminal` | "DPA 2018 s10 and Sch 1" \| "not applicable" | yes |
+| `classification` | object { level, sensitive, handling } | yes |
+| `accessRestriction` | "none" \| "restricted" | yes |
 | `statutoryGateway` | array of string | yes |
 | `necessityAndProportionality` | string | yes |
 | `consentStatus` | "not-required" \| "sought-and-given" \| "sought-and-refused-overridden" \| "not-sought-risk" | yes |
@@ -652,7 +667,7 @@ Variant 5
 | `userId` | string | yes |
 | `userName` | string | yes |
 | `agency` | enum (11 values) | yes |
-| `act` | enum (9 values) | yes |
+| `act` | enum (12 values) | yes |
 | `targetType` | enum (9 values) | yes |
 | `targetId` | string | yes |
 | `targetLabel` | string | yes |
@@ -716,7 +731,8 @@ Variant 5
 | `clockRules` | array of object { id, process, unit, amount, kind, direction, warnDays, source, sourceRef, confidence, localNote, todoVerify, deferrable, deferralNote } | yes |
 | `needToKnow` | array of object { id, process, stage, audience, detailLevel, fields, channel, trigger, condition, conditionLabel, lawfulBasisHint } | yes |
 | `exclusions` | array of object { id, process, stage, party, label, reason, liftableBy } | yes |
-| `classificationMarkings` | array of object { id, label, handling } | yes |
+| `classificationMarkings` | array of object { id, handling, instructions } | yes |
+| `classificationLowerableBy` | array of enum (38 values) | yes |
 | `forms` | array of object { id, label, process, version, effectiveFrom, source } | yes |
 | `defaults` | object { theme, density } | yes |
 | `aspCouncilOfficerEligibility` | array of string | yes |

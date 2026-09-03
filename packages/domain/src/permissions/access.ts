@@ -61,7 +61,7 @@ export function contextFor(process: Process): ResolveContext {
  * what the role can do, and whether the user is on the case. Default is deny.
  */
 export function accessFor(user: User, process: Process, options: AccessOptions = {}): AccessResult {
-  const restricted = process.classification === 'restricted';
+  const restricted = process.accessRestriction === 'restricted';
   const base: Omit<AccessResult, 'level' | 'reason'> = {
     fields: [],
     rowIds: [],

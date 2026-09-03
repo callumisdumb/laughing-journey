@@ -18,12 +18,12 @@ export function seedAudit(ctx: BuildContext): void {
           userId: u.id,
           userName: `${u.givenName} ${u.familyName}`,
           agency: u.agency,
-          act: p.classification === 'restricted' ? 'read-restricted' : 'read',
+          act: p.accessRestriction === 'restricted' ? 'read-restricted' : 'read',
           targetType: 'process',
           targetId: p.id,
           targetLabel: `${p.reference}: ${label}`,
           processId: p.id,
-          restricted: p.classification === 'restricted',
+          restricted: p.accessRestriction === 'restricted',
         });
       }
     });

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { AGENCIES, ALL_STAGES, CHANNELS, CLASSIFICATIONS, CONSENT_STATUSES, DETAIL_LEVELS } from '../enums';
-import { idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
+import { ACCESS_RESTRICTIONS, AGENCIES, ALL_STAGES, CHANNELS, CONSENT_STATUSES, DETAIL_LEVELS } from '../enums';
+import { classificationSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
 export const lawfulBasisRecordSchema = z.object({
   id: idSchema,
@@ -17,8 +17,12 @@ export const lawfulBasisRecordSchema = z.object({
   /**
    * The Annex 2 classification of what is being shared, recorded alongside the Article 6, 9 and 10
    * basis. A share carries its marking, and the record of the decision says which marking that was.
+   * Captured at the moment of the share rather than resolved at render time, so the record says what
+   * was shared under what marking even if the source is later raised.
    */
-  classification: z.enum(CLASSIFICATIONS),
+  classification: classificationSchema,
+  /** Whether what was shared came from an access-restricted record. Separate from the marking. */
+  accessRestriction: z.enum(ACCESS_RESTRICTIONS),
   statutoryGateway: z.array(z.string()),
   necessityAndProportionality: z.string().min(1),
   consentStatus: z.enum(CONSENT_STATUSES),

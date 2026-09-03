@@ -8,7 +8,7 @@ import {
   ASP_INQUIRY_ACTIONS,
   ASP_REFERRAL_SOURCES,
   CASE_PARTY_SOURCES,
-  CLASSIFICATIONS,
+  ACCESS_RESTRICTIONS,
   CONSENT_STATUSES,
   CP_CONCERNS,
   CP_DEREGISTRATION_REASONS,
@@ -20,7 +20,7 @@ import {
   TRAFFICKING_KINDS,
 } from '../enums';
 import { CLASSIFICATION_LEVELS } from '../classification/classify';
-import { evidenceRefSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
+import { classificationSchema, evidenceRefSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
 export const stageEntrySchema = z.object({
   stage: z.enum(ALL_STAGES),
@@ -493,7 +493,13 @@ const processBase = {
   stage: z.enum(ALL_STAGES),
   stageHistory: z.array(stageEntrySchema),
   status: z.enum(['open', 'closed', 'transferred']),
-  classification: z.enum(CLASSIFICATIONS),
+  classification: classificationSchema,
+  /**
+   * Whether the record is reachable only by the people on it. Separate from the classification
+   * because it is a separate property: a MAPPA record is Official-Sensitive and restricted, an ASP
+   * case conference minute can be Official-Sensitive and not.
+   */
+  accessRestriction: z.enum(ACCESS_RESTRICTIONS),
   /**
    * A recorded Annex 2 override. It is applied as stored: the permission check happens when it is
    * made, so a lower that reached the record was authorised by a role in config at that moment.
@@ -501,6 +507,8 @@ const processBase = {
   classificationOverride: z
     .object({
       level: z.enum(CLASSIFICATION_LEVELS),
+      sensitive: z.boolean(),
+      handling: z.array(z.string()),
       reason: z.string().min(1),
       byUserId: idSchema,
       byName: z.string(),

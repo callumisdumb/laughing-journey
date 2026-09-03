@@ -1,3 +1,4 @@
+import { officialSensitive } from '@mas/domain';
 /**
  * Scenario 3: Derek Muir, 52, Auchentorran. MAPPA Category 1 (registered sex offender), Level 2,
  * released on licence six weeks ago. The restricted record is the point: pre-meeting returns,
@@ -119,7 +120,8 @@ export function seedDerekMuir(ctx: BuildContext): void {
       { stage: 'managed', at: at('2026-07-22', '09:30'), byUserId: priya, byName: name(priya), note: 'Released on licence; active multi-agency management at Level 2' },
     ],
     status: 'open',
-    classification: 'restricted',
+    classification: officialSensitive(),
+    accessRestriction: 'restricted',
     openedAt: at('2026-05-10', '14:00'),
     members,
     clocks: [

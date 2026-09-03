@@ -147,15 +147,26 @@ export function riskBandLabel(band: RiskBand): string {
 }
 
 /**
- * The classification stored on a record. It predates the Annex 2 model in `classification/` and is
- * the input to it, not a replacement: `restricted` is the MAPPA distribution-list concept, which in
- * Annex 2 terms is Official-Sensitive with a handling instruction (see `recordClassification`).
+ * Access restriction: whether a record is reachable only by the people on it. Orthogonal to
+ * classification, and the two used to be one enum, which could not say that a MAPPA record is
+ * Official-Sensitive **and** restricted while an ASP case conference minute is Official-Sensitive and
+ * not, and an aggregate report is neither.
+ *
+ * Note for anyone new: "restricted" means three different things in this codebase and they are not
+ * related. This one is access. `ChronologyEvent.visibility` has a `restricted` value meaning the
+ * event shows only to full-access members of a restricted process. `AuditEntry.restricted` is a flag
+ * saying the entry records a restricted read. The glossary spells all three out.
  */
-export const CLASSIFICATIONS = ['official', 'official-sensitive', 'restricted'] as const;
-export type RecordClassification = (typeof CLASSIFICATIONS)[number];
+export const ACCESS_RESTRICTIONS = ['none', 'restricted'] as const;
+export type AccessRestriction = (typeof ACCESS_RESTRICTIONS)[number];
 
-export function classificationLabel(level: RecordClassification): string {
-  return tKey(`domain.classifications.${keySegment(level)}`);
+export function accessRestrictionLabel(restriction: AccessRestriction): string {
+  return tKey(`domain.accessRestrictions.${keySegment(restriction)}`);
+}
+
+/** True where a record is reachable only by the people on it. */
+export function isAccessRestricted(record: { accessRestriction: AccessRestriction }): boolean {
+  return record.accessRestriction === 'restricted';
 }
 
 

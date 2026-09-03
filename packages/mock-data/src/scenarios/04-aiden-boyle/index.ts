@@ -1,3 +1,4 @@
+import { officialSensitive } from '@mas/domain';
 /**
  * Scenario 4: Aiden Boyle, 7, Craiglarrick. Child protection from a school concern through IRD,
  * JII, CPPM, registration and core group. The integrated chronology is the hero here.
@@ -182,7 +183,8 @@ export function seedAidenBoyle(ctx: BuildContext): void {
       { stage: 'childs-plan', at: at('2026-06-12', '12:15'), byUserId: chair, byName: name(chair), note: 'Registered; child\'s plan agreed; core group set up' },
     ],
     status: 'open',
-    classification: 'official-sensitive',
+    classification: officialSensitive(),
+    accessRestriction: 'none',
     openedAt: at('2026-05-20', '09:40'),
     members: [
       { userId: sw, caseRole: 'allocated social worker and lead professional', agency: 'social-work', since: '2026-05-20', reason: 'Allocated at IRD' },

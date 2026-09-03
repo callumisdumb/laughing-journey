@@ -21,16 +21,17 @@
  */
 import {
   accessFor,
+  classificationTag,
+  type Config,
   contextFor,
+  type Dataset,
   principalIds,
   principalsHeldBy,
-  readingPrincipal,
-  wrapListFor,
-  type Config,
-  type Dataset,
   type Process,
+  readingPrincipal,
   type User,
   type WrapEntry,
+  wrapListFor,
 } from '@mas/domain';
 import {
   CryptoError,
@@ -96,7 +97,7 @@ export function buildVault(data: Dataset, config: Config): Vault {
           id: process.id,
           // Coarse on purpose: "mappa-process", never the stage or the title.
           type: `${process.type}-process`,
-          classification: process.classification,
+          classification: classificationTag(process.classification, process.accessRestriction === 'restricted'),
           generation: 1,
           // Bucketed to the day, so a burst of activity does not reveal an incident's timing.
           updatedAt: bucketTimestamp(process.openedAt),

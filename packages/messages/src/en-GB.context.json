@@ -1090,6 +1090,17 @@
       }
     },
     "markings": {
+      "accessRestricted": {
+        "title": {
+          "maxLength": 48,
+          "screenshot": "classification/admin-markings-light-comfortable.png",
+          "where": "Sheet title of the third handling profile in Admin, Markings"
+        },
+        "use": {
+          "screenshot": "classification/admin-markings-light-comfortable.png",
+          "where": "Sheet meta of the third handling profile in Admin, Markings"
+        }
+      },
       "audit": {
         "where": "Audit entry label when the markings section is saved; roles is the count of roles permitted to lower a classification"
       },
@@ -1159,19 +1170,15 @@
           "where": "Meta line under the Official-Sensitive heading"
         }
       },
-      "restricted": {
-        "title": {
-          "maxLength": 48,
-          "where": "Heading of the distribution list classification sheet"
-        },
-        "use": {
-          "where": "Meta line under the distribution list heading"
-        }
+      "profileNote": {
+        "screenshot": "classification/admin-markings-light-comfortable.png",
+        "where": "Note above the three handling profile panels saying a profile is not a classification"
       },
       "rules": {
         "columnLevel": {
           "maxLength": 16,
-          "where": "Column header: the classification level a rule yields"
+          "screenshot": "classification/admin-markings-light-comfortable.png",
+          "where": "Column header of the derivation rule table"
         },
         "columnMarking": {
           "maxLength": 16,
@@ -5321,6 +5328,16 @@
         "where": "Access reason for the system administrator persona"
       }
     },
+    "accessRestrictions": {
+      "none": {
+        "maxLength": 20,
+        "where": "Label of the unrestricted access value, in the drawer and on a sharing record"
+      },
+      "restricted": {
+        "maxLength": 20,
+        "where": "Label of the restricted access value, in the drawer and on a sharing record"
+      }
+    },
     "actionStatuses": {
       "cancelled": {
         "maxLength": 16,
@@ -6055,17 +6072,32 @@
         "verbatim": true,
         "where": "The marking stamped on a print pack page and prefixed to a download name; Annex 2's own form"
       },
-      "restricted": {
-        "maxLength": 32,
-        "where": "Classification marking on the banner of sensitive and restricted records and print packs"
-      },
       "scheme": {
-        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
-        "where": "Annex 2's description of the scheme itself, on the glossary and the Admin classification screen"
+        "where": "The scheme statement, quoted from Annex 2, shown in Admin and in Help"
+      },
+      "secret": {
+        "maxLength": 16,
+        "where": "Label of the Secret classification level. Unreachable in this product"
       },
       "secretDefinition": {
-        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
-        "where": "Why the product offers neither Secret nor Top Secret, on the glossary"
+        "where": "Definition of the Secret level, shown in the Admin rule table definitions"
+      },
+      "secretMarking": {
+        "maxLength": 16,
+        "verbatim": true,
+        "where": "The marking text for Secret. Unreachable in this product"
+      },
+      "topSecret": {
+        "maxLength": 16,
+        "where": "Label of the Top Secret classification level. Unreachable in this product"
+      },
+      "topSecretDefinition": {
+        "where": "Definition of the Top Secret level, shown in the Admin rule table definitions"
+      },
+      "topSecretMarking": {
+        "maxLength": 16,
+        "verbatim": true,
+        "where": "The marking text for Top Secret. Unreachable in this product"
       }
     },
     "clockRules": {
@@ -8527,6 +8559,15 @@
     }
   },
   "glossary": {
+    "accessRestriction": {
+      "definition": {
+        "where": "Glossary definition distinguishing the three unrelated uses of the word restricted"
+      },
+      "term": {
+        "maxLength": 32,
+        "where": "Glossary term"
+      }
+    },
     "apc": {
       "definition": {
         "screenshot": "phase-5/help-glossary-light-comfortable.png",
@@ -8708,8 +8749,8 @@
         "where": "Glossary definition of the Government Security Classification scheme"
       },
       "term": {
-        "maxLength": 40,
-        "where": "Glossary term: Government Security Classification"
+        "maxLength": 32,
+        "where": "Glossary term"
       }
     },
     "hscp": {
@@ -8948,6 +8989,15 @@
         "maxLength": 12,
         "screenshot": "phase-5/help-glossary-light-comfortable.png",
         "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "restrictedTerm": {
+      "definition": {
+        "where": "Glossary definition recording that RESTRICTED was abolished in 2014 and is not a classification here"
+      },
+      "term": {
+        "maxLength": 32,
+        "where": "Glossary term"
       }
     },
     "rm2000": {

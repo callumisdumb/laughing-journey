@@ -19,6 +19,7 @@
  * this layer can be.
  */
 import { deriveKey, fromBase64Url, open, randomBytes, seal, toBase64Url, utf8, type Sealed } from '@mas/crypto';
+import { classificationTag, officialSensitive } from '@mas/domain';
 
 /** What the desktop shells expose. Absent in a browser, which is the difference that matters. */
 interface DesktopBridge {
@@ -109,7 +110,7 @@ export interface SealedBlob {
 }
 
 function context(key: string) {
-  return { recordId: key, classification: 'official-sensitive', generation: 1 };
+  return { recordId: key, classification: classificationTag(officialSensitive(), false), generation: 1 };
 }
 
 /**

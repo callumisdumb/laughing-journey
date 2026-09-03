@@ -1,3 +1,4 @@
+import { officialSensitive } from '@mas/domain';
 /**
  * Scenario 1: Marion Fraser, 79, Portlennan. Adult Support and Protection, financial harm by a
  * nephew who holds an unregistered "arrangement" over her bank card. Capacity fluctuates
@@ -125,7 +126,8 @@ export function seedMarionFraser(ctx: BuildContext): void {
       { stage: 'investigation', at: at('2026-08-27', '09:30'), byUserId: co, byName: name(co), note: 'Inquiry decision 26 Aug: proceed to investigation. Council officer and second worker allocated' },
     ],
     status: 'open',
-    classification: 'official-sensitive',
+    classification: officialSensitive(),
+    accessRestriction: 'none',
     openedAt: at('2026-08-21', '09:30'),
     members: [
       { userId: co, caseRole: 'council officer', agency: 'social-work', since: '2026-08-21', reason: 'Allocated council officer (s52) for the inquiry and investigation' },
@@ -236,7 +238,8 @@ export function seedMarionFraser(ctx: BuildContext): void {
       { stage: 'capacity-concern', at: at('2026-08-27', '14:00'), byUserId: co, byName: name(co), note: 'Raised from the ASP investigation: capacity for financial decisions in question' },
     ],
     status: 'open',
-    classification: 'official-sensitive',
+    classification: officialSensitive(),
+    accessRestriction: 'none',
     openedAt: at('2026-08-27', '14:00'),
     members: [
       { userId: co, caseRole: 'council officer (raised the concern)', agency: 'social-work', since: '2026-08-27', reason: 'ASP council officer; the two processes run together' },

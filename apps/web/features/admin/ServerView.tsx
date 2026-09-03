@@ -134,7 +134,7 @@ export function ServerView() {
                   <dt>{t('admin.serverView.titleField')}</dt>
                   <dd>{process.title}</dd>
                   <dt>{t('admin.serverView.marking')}</dt>
-                  <dd>{marking(classificationFor(config, process.classification)) ?? t('nav.drawer.fields.noMarking')}</dd>
+                  <dd>{marking(classificationFor(config, process)) ?? t('nav.drawer.fields.noMarking')}</dd>
                 </dl>
                 <pre className={styles.plaintext}>{JSON.stringify(decrypted.detail, null, 2).slice(0, 1200)}</pre>
                 <p className={styles.note}>{t('admin.serverView.practitionerNote')}</p>

@@ -1,6 +1,6 @@
 'use client';
 
-import { EVENT_TYPES, SIGNIFICANCES, mostSensitiveClassification, significanceLabel, type ChronologyAnalysis, type ChronologyEvent, type LawfulBasisRecord } from '@mas/domain';
+import { EVENT_TYPES, SIGNIFICANCES, mostRestrictedAccess, mostSensitiveClassification, significanceLabel, type ChronologyAnalysis, type ChronologyEvent, type LawfulBasisRecord } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -89,7 +89,7 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
     } else {
       let lawfulBasisId: string | undefined;
       if (values.visibility === 'integrated') {
-        const lb: LawfulBasisRecord = { id: newId('lb'), synthetic: true, purpose: values.purpose ?? '', article6: '6(1)(e) public task', article9Condition: '9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)', article10Criminal: user.agency === 'police' ? 'DPA 2018 s10 and Sch 1' : 'not applicable', classification: mostSensitiveClassification(data.processes.filter((p) => processIds.includes(p.id))), statutoryGateway: ['Recorded at event entry'], necessityAndProportionality: values.necessity ?? '', consentStatus: 'not-required', authorisedByUserId: user.id, authorisedByName: by, createdAt: now.toISOString() };
+        const lb: LawfulBasisRecord = { id: newId('lb'), synthetic: true, purpose: values.purpose ?? '', article6: '6(1)(e) public task', article9Condition: '9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)', article10Criminal: user.agency === 'police' ? 'DPA 2018 s10 and Sch 1' : 'not applicable', classification: mostSensitiveClassification(data.processes.filter((p) => processIds.includes(p.id))), accessRestriction: mostRestrictedAccess(data.processes.filter((p) => processIds.includes(p.id))), statutoryGateway: ['Recorded at event entry'], necessityAndProportionality: values.necessity ?? '', consentStatus: 'not-required', authorisedByUserId: user.id, authorisedByName: by, createdAt: now.toISOString() };
         upsert('lawfulBases', lb);
         lawfulBasisId = lb.id;
       }

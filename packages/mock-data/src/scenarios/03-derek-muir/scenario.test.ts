@@ -11,7 +11,11 @@ describe('scenario 3', () => {
     seedDerekMuir(ctx);
     const result = datasetSchema.safeParse(ctx.data);
     if (!result.success) throw new Error(result.error.issues.slice(0, 10).map((i) => `${i.path.join('.')}: ${i.message}`).join('\n'));
-    expect(ctx.data.processes.find((p) => p.id === DEREK.process)?.classification).toBe('restricted');
+    // Official-Sensitive **and** access restricted. Two properties, because RESTRICTED has not been
+    // a classification since 2014 and a MAPPA record needs both said about it.
+    const process = ctx.data.processes.find((p) => p.id === DEREK.process);
+    expect(process?.classification).toEqual({ level: 'official', sensitive: true, handling: [] });
+    expect(process?.accessRestriction).toBe('restricted');
   });
 
   it('keeps the MAPPA record restricted and away from the victim and the employer', () => {

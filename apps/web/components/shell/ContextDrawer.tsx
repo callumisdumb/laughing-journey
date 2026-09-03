@@ -1,6 +1,6 @@
 'use client';
 
-import { actionStatusLabel, agencyShort, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type Process, type RecordClassification } from '@mas/domain';
+import { actionStatusLabel, agencyShort, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type ClassifiedRecord, type Process } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { AgencyMark, IconButton, Pill, RiskBand } from '@mas/ui';
 import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, Users } from 'lucide-react';
@@ -15,8 +15,8 @@ import styles from './ContextDrawer.module.css';
  * The Annex 2 marking of a recorded lawful basis, read as text so a screen reader gets it in the row
  * rather than only as a tag. Official has no marking, so the row says so rather than sitting empty.
  */
-function classificationSummary(config: Config, stored: RecordClassification, t: Translator): string {
-  return marking(classificationFor(config, stored)) ?? t('nav.drawer.fields.noMarking');
+function classificationSummary(config: Config, record: ClassifiedRecord, t: Translator): string {
+  return marking(classificationFor(config, record)) ?? t('nav.drawer.fields.noMarking');
 }
 
 function Section({ title, icon, children }: { title: string; icon: ReactNode; children: ReactNode }) {
@@ -160,7 +160,7 @@ function LawfulBasis({ process }: { process: Process }) {
           <dt>{t('nav.drawer.fields.article9')}</dt>
           <dd>{b.article9Condition}</dd>
           <dt>{t('nav.drawer.fields.classification')}</dt>
-          <dd>{classificationSummary(config, b.classification, t)}</dd>
+          <dd>{classificationSummary(config, b, t)}</dd>
           <dt>{t('nav.drawer.fields.gateway')}</dt>
           <dd>{b.statutoryGateway.join('; ')}</dd>
           <dt>{t('nav.drawer.fields.necessity')}</dt>
@@ -461,7 +461,7 @@ export function ContextDrawer() {
               <dt>{t('nav.drawer.fields.offenceData')}</dt>
               <dd>{basis.article10Criminal}</dd>
               <dt>{t('nav.drawer.fields.classification')}</dt>
-              <dd>{classificationSummary(config, basis.classification, t)}</dd>
+              <dd>{classificationSummary(config, basis, t)}</dd>
               <dt>{t('nav.drawer.fields.gateway')}</dt>
               <dd>{basis.statutoryGateway.join('; ')}</dd>
               <dt>{t('nav.drawer.fields.necessity')}</dt>

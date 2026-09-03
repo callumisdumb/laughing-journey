@@ -1,6 +1,6 @@
 'use client';
 
-import { STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, CLASSIFICATION_LEVELS, applyOverride, canLower, classificationFor, classificationLevelLabel, marking, relativeDays, stageLabel, type ClassificationLevel, type Process } from '@mas/domain';
+import { STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, OFFICIAL, applyOverride, canLower, classificationFor, classificationLabel, marking, officialSensitive, relativeDays, stageLabel, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -37,7 +37,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const [reason, setReason] = useState('');
   const [reasonCategory, setReasonCategory] = useState('');
   const [classifyOpen, setClassifyOpen] = useState(false);
-  const [classifyLevel, setClassifyLevel] = useState<ClassificationLevel>('official-sensitive');
+  const [classifySensitive, setClassifySensitive] = useState(true);
   const [classifyReason, setClassifyReason] = useState('');
   const upsert = useAppStore((s) => s.upsert);
 
@@ -48,7 +48,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   }, [processId, select]);
 
   useEffect(() => {
-    if (process) audit({ act: process.classification === 'restricted' ? 'read-restricted' : 'read', targetType: 'process', targetId: process.id, targetLabel: `${process.reference}: ${process.title}`, processId: process.id, restricted: process.classification === 'restricted' });
+    if (process) audit({ act: process.accessRestriction === 'restricted' ? 'read-restricted' : 'read', targetType: 'process', targetId: process.id, targetLabel: `${process.reference}: ${process.title}`, processId: process.id, restricted: process.accessRestriction === 'restricted' });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [processId]);
 
@@ -67,8 +67,8 @@ export function ProcessScreen({ processId }: { processId: string }) {
   // whether the content may be shown. That is decided here, by whether the unwrap succeeded.
   const decrypted = readProcessDetail(vault, process, user, access.breakGlass === 'active');
   // Annex 2: the level is derived from the record and a recorded override is applied as stored.
-  const derived = classificationFor(config, process.classification);
-  const classification = classificationFor(config, process.classification, process.classificationOverride);
+  const derived = classificationFor(config, { ...process, classificationOverride: undefined });
+  const classification = classificationFor(config, process);
   const mayLower = canLower(user.roleId, config.classificationLowerableBy);
   const subjects = process.subjectIds.map((id) => personById(data, id)).filter(Boolean) as NonNullable<ReturnType<typeof personById>>[];
   const clocks = clocksForProcess(data, config, process, now);
@@ -95,7 +95,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
     <header className={styles.head}>
       <div>
         <div className={styles.ref}>
-          <ProcessMark type={process.type} stage={stageLabel(process.type, process.stage)} restricted={process.classification === 'restricted'} />
+          <ProcessMark type={process.type} stage={stageLabel(process.type, process.stage)} restricted={process.accessRestriction === 'restricted'} />
           <span>{process.reference}</span>
           <span>{t('processes.head.lead', { agency: agencyShort(process.leadAgency) })}</span>
           <span>{t('processes.head.opened', { date: formatDate(process.openedAt) })}</span>
@@ -128,7 +128,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
             variant="quiet"
             icon={<ShieldCheck size={16} aria-hidden="true" />}
             onClick={() => {
-              setClassifyLevel(classification.level);
+              setClassifySensitive(classification.sensitive);
               setClassifyReason(process.classificationOverride?.reason ?? '');
               setClassifyOpen(true);
             }}
@@ -348,25 +348,25 @@ export function ProcessScreen({ processId }: { processId: string }) {
             </Button>
             <Button
               variant="primary"
-              disabled={classifyReason.trim().length < 15 || (classifyLevel === 'official' && derived.level === 'official-sensitive' && !mayLower)}
+              disabled={classifyReason.trim().length < 15 || (!classifySensitive && derived.sensitive && !mayLower)}
               onClick={() => {
-                const override = { level: classifyLevel, reason: classifyReason.trim(), byUserId: user.id, byName: userName(user), at: now.toISOString() };
+                const override = { level: derived.level, sensitive: classifySensitive, handling: derived.handling, reason: classifyReason.trim(), byUserId: user.id, byName: userName(user), at: now.toISOString() };
                 const result = applyOverride(derived, override, { roleId: user.roleId, lowerableBy: config.classificationLowerableBy });
                 if (result.refused) {
                   toast({ title: t('processes.classification.refused.title'), text: t('processes.classification.refused.text'), tone: 'error' });
                   return;
                 }
-                const lowering = classifyLevel === 'official' && derived.level === 'official-sensitive';
-                const raising = classifyLevel === 'official-sensitive' && derived.level === 'official';
+                const lowering = !classifySensitive && derived.sensitive;
+                const raising = classifySensitive && !derived.sensitive;
                 upsert('processes', { ...process, classificationOverride: override });
                 audit({
                   act: lowering ? 'classification-lower' : raising ? 'classification-raise' : 'classify',
                   targetType: 'process',
                   targetId: process.id,
-                  targetLabel: t('processes.classification.audit', { reference: process.reference, level: classificationLevelLabel(classifyLevel) }),
+                  targetLabel: t('processes.classification.audit', { reference: process.reference, level: classificationLabel(result.classification) }),
                   processId: process.id,
                   reason: override.reason,
-                  restricted: process.classification === 'restricted',
+                  restricted: process.accessRestriction === 'restricted',
                 });
                 setClassifyOpen(false);
                 toast({ title: t('processes.classification.saved.title'), text: t('processes.classification.saved.text', { marking: marking(result.classification) ?? t('nav.drawer.fields.noMarking') }), tone: 'success' });
@@ -381,9 +381,12 @@ export function ProcessScreen({ processId }: { processId: string }) {
         <SelectField
           label={t('processes.classification.level.label')}
           required
-          value={classifyLevel}
-          onChange={(e) => setClassifyLevel(e.target.value as ClassificationLevel)}
-          options={CLASSIFICATION_LEVELS.map((level) => ({ value: level, label: classificationLevelLabel(level) }))}
+          value={classifySensitive ? 'sensitive' : 'routine'}
+          onChange={(e) => setClassifySensitive(e.target.value === 'sensitive')}
+          options={[
+            { value: 'routine', label: classificationLabel(OFFICIAL) },
+            { value: 'sensitive', label: classificationLabel(officialSensitive()) },
+          ]}
           hint={mayLower ? t('processes.classification.level.mayLower') : t('processes.classification.level.mayNotLower')}
         />
         <TextareaField label={t('processes.classification.reason.label')} required value={classifyReason} onChange={(e) => setClassifyReason(e.target.value)} hint={t('processes.classification.reason.hint')} />

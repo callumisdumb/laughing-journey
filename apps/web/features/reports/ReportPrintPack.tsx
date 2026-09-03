@@ -89,7 +89,7 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
   if (current.length > 0) pages.push(current);
   const totalPages = pages.length + 1;
   // Aggregate counts are Official and take no marking; a report that names no one needs none.
-  const classification = classificationFor(config, model.classification);
+  const classification = classificationFor(config, model);
   const marking = markingFor(classification) ?? '';
   const back = `/reports/${kind}${setQuery(route.query, { print: null })}`;
 

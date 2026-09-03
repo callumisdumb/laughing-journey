@@ -6,6 +6,7 @@ import { tKey } from '@mas/messages';
  * Used for first-use tooltips (the Term primitive) and the Help screen.
  */
 export const GLOSSARY_IDS = [
+  'accessRestriction',
   'apc',
   'asp',
   'awi',
@@ -45,6 +46,7 @@ export const GLOSSARY_IDS = [
   'poa',
   'ppu',
   'ra',
+  'restrictedTerm',
   'rma',
   'rmp',
   'rm2000',

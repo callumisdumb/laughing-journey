@@ -11,7 +11,9 @@
  * lifetime of the records it holds. When v2 arrives, the thing that proves v1 still opens already
  * exists rather than being written under pressure at the point of migration.
  */
+import { gcm } from '@noble/ciphers/aes.js';
 import { describe, expect, it } from 'vitest';
+import { AAD_ENCODINGS, CURRENT_AAD_ENCODING, aeadAad, open, seal } from './aead';
 import { fromBase64Url } from './bytes';
 import type { PrivateKey, PublicKey } from './keys';
 import { openRecord, unwrapRecordKey, type EncryptedRecord } from './record';
@@ -77,6 +79,29 @@ describe('a record sealed under v1', () => {
   it('still wraps to escrow, so a lawful disclosure could still reach it', () => {
     const { record } = readFixture();
     expect(record.wrappedKeys.map((wrap) => wrap.principalId)).toContain('escrow');
+  });
+
+  it('was sealed under the v1 additional authenticated data, and would not open under v2 alone', () => {
+    // The point of the encoding list. On 03 September 2026 the classification field stopped being a
+    // single value that conflated the Government Security Classification with access restriction and
+    // became two properties, so the domain separator moved. A fixture that opened under both would
+    // prove nothing, so this asserts the v2 encoding genuinely fails and the v1 one genuinely works.
+    const { reader, readerPublic, record } = readFixture();
+    const contentKey = unwrapRecordKey(record, reader, readerPublic);
+    const context = { recordId: record.metadata.id, classification: record.metadata.classification, generation: record.metadata.generation };
+
+    expect(() => gcm(contentKey, record.sealed.nonce, aeadAad(context, 'v2')).decrypt(record.sealed.ciphertext)).toThrow();
+    expect(gcm(contentKey, record.sealed.nonce, aeadAad(context, 'v1')).decrypt(record.sealed.ciphertext)).toBeInstanceOf(Uint8Array);
+  });
+
+  it('seals new records under the current encoding, and opens them without falling back', () => {
+    const key = new Uint8Array(32).fill(7);
+    const context = { recordId: 'prc_new', classification: 'official/sensitive/restricted', generation: 1 };
+    const sealed = seal(key, new Uint8Array([1, 2, 3]), context);
+    expect(CURRENT_AAD_ENCODING).toBe('v2');
+    expect(AAD_ENCODINGS[0]).toBe(CURRENT_AAD_ENCODING);
+    expect(gcm(key, sealed.nonce, aeadAad(context, 'v2')).decrypt(sealed.ciphertext)).toEqual(new Uint8Array([1, 2, 3]));
+    expect(open(key, sealed, context)).toEqual(new Uint8Array([1, 2, 3]));
   });
 
   it('still refuses a reader who was never wrapped to it', () => {

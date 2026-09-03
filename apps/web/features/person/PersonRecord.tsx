@@ -184,7 +184,7 @@ export function PersonRecord({ personId }: { personId: string }) {
             return (
               <span key={p.id} style={{ textAlign: 'right' }}>
                 <AppLink href={processPath(p.id)} style={{ textDecoration: 'none' }}>
-                  <ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.classification === 'restricted'} />
+                  <ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.accessRestriction === 'restricted'} />
                 </AppLink>
                 <div className={styles.badgeNext}>{next ? t('person.header.nextMeeting', { title: next.title.split(':')[0] ?? '', date: formatDate(next.scheduledAt) }) : access.level === 'presence' ? t('person.header.notOnCase') : t('person.header.noMeeting')}</div>
               </span>
@@ -301,7 +301,7 @@ export function PersonRecord({ personId }: { personId: string }) {
                   <SheetHead
                     title={<AppLink href={processPath(p.id)}>{p.title}</AppLink>}
                     meta={t('person.processes.meta', { reference: p.reference, role, agency: agencyShort(p.leadAgency), date: formatDate(p.openedAt), status: p.status === 'open' ? t('person.processes.statusOpen') : processStatusLabel(p.status) })}
-                    actions={<ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.classification === 'restricted'} />}
+                    actions={<ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.accessRestriction === 'restricted'} />}
                   />
                   <SheetBody>
                     <div className={styles.processRow}>

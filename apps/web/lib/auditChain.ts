@@ -31,7 +31,7 @@ import {
   type SigningKeyPair,
   type VerifyingKey,
 } from '@mas/crypto';
-import type { AuditEntry } from '@mas/domain';
+import { classificationTag, officialSensitive, type AuditEntry } from '@mas/domain';
 
 /**
  * Device signing keys, one per user, derived once per session.
@@ -75,7 +75,7 @@ function bodyOf(entry: AuditEntry): AuditEntryBody {
     action: entry.act,
     targetId: entry.targetId,
     // The classification of what was touched, so oversight can filter without opening anything.
-    classification: entry.restricted ? 'official-sensitive-restricted' : 'official-sensitive',
+    classification: classificationTag(officialSensitive(), entry.restricted),
     restricted: entry.restricted,
   };
 }

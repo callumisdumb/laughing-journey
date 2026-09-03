@@ -77,7 +77,7 @@ export function ChronologyScreen({ personId }: { personId: string }) {
 
   if (route.query.get('view') === 'print') return <PrintPack personId={personId} />;
 
-  if (!model.canSeeIntegrated && model.processes.some((p) => p.classification === 'restricted') && model.visible.length === 0) {
+  if (!model.canSeeIntegrated && model.processes.some((p) => p.accessRestriction === 'restricted') && model.visible.length === 0) {
     return (
       <div className="page">
         <RestrictedState reason={t('chronology.screen.restricted')} breakGlass="unavailable" />

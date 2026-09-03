@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { officialSensitive } from '../classification/classify';
 import type { Process } from '../schemas/process';
 import type { User } from '../schemas/user';
 import { accessFor, accessRank, contextFor } from './access';
@@ -34,7 +35,8 @@ const aspBase = {
   stage: 'inquiry' as const,
   stageHistory: [],
   status: 'open' as const,
-  classification: 'official-sensitive' as const,
+  classification: officialSensitive(),
+  accessRestriction: 'none' as const,
   openedAt: '2026-08-01T09:00:00+01:00',
   members: [{ userId: 'usr_member', caseRole: 'council officer', agency: 'social-work' as const, since: '2026-08-01', reason: 'allocated' }],
   clocks: [],
@@ -57,7 +59,8 @@ const mappa: Process = {
   type: 'mappa',
   reference: 'MAPPA-0001',
   stage: 'managed',
-  classification: 'restricted',
+  classification: officialSensitive(),
+  accessRestriction: 'restricted' as const,
   flags: {},
   members: [],
   parties: [{ userId: 'usr_victim', party: 'victim', label: 'Victim (persona)', since: '2026-07-01', source: 'manual' }],

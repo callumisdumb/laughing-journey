@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CLASSIFICATION_LEVELS } from '../classification/classify';
 
 /** ISO 8601 date-time with offset, e.g. 2026-09-02T09:00:00+01:00 or Z. */
 export const isoDateTime = z.iso.datetime({ offset: true });
@@ -25,3 +26,14 @@ export const nameSchema = z.object({
 
 export type IsoDateTime = z.infer<typeof isoDateTime>;
 export type IsoDate = z.infer<typeof isoDate>;
+
+/**
+ * A Government Security Classification as a record carries it: the level, the Official-Sensitive
+ * marking, and any handling instructions the record itself holds. Access restriction is a separate
+ * field on the record, because it is a separate property (see `ACCESS_RESTRICTIONS`).
+ */
+export const classificationSchema = z.object({
+  level: z.enum(CLASSIFICATION_LEVELS),
+  sensitive: z.boolean(),
+  handling: z.array(z.string()),
+});

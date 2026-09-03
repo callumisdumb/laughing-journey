@@ -38,7 +38,7 @@ export function useChronology(personId: string): ChronologyModel {
     const all = person ? eventsForPerson(data, person.id) : [];
     const access = user ? processes.map((p) => accessForUser(data, config, user, p, grants, now)) : [];
     const canSeeIntegrated = access.some((a) => a.level === 'full' || a.level === 'summary') || (user ? processes.length === 0 : false);
-    const restrictedOk = new Set(processes.filter((p, i) => p.classification === 'restricted' && access[i]?.level === 'full').map((p) => p.id));
+    const restrictedOk = new Set(processes.filter((p, i) => p.accessRestriction === 'restricted' && access[i]?.level === 'full').map((p) => p.id));
 
     const visible = all.filter((e) => {
       if (!user) return false;

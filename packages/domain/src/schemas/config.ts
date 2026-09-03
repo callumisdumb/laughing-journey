@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { HANDLING_INSTRUCTIONS } from '../classification/classify';
-import { AGENCIES, ALL_STAGES, CHANNELS, CLASSIFICATIONS, DETAIL_LEVELS, EXCLUSION_PARTIES, PROCESS_TYPES, ROLES } from '../enums';
+import { HANDLING_INSTRUCTIONS, MARKING_PROFILES } from '../classification/classify';
+import { AGENCIES, ALL_STAGES, CHANNELS, DETAIL_LEVELS, EXCLUSION_PARTIES, PROCESS_TYPES, ROLES } from '../enums';
 
 export const clockRuleSchema = z.object({
   id: z.string(),
@@ -63,12 +63,15 @@ export const exclusionSchema = z.object({
 export type Exclusion = z.infer<typeof exclusionSchema>;
 
 /**
- * A stored record classification and its local handling instruction. The marking itself is derived
- * from Annex 2 (see classification/classify.ts), not configured: an area may say how a marked record
- * is handled, but it cannot rename the marking or mark routine Official information.
+ * A marking profile and its local handling instruction. The marking itself is derived from Annex 2
+ * (see classification/classify.ts), not configured: an area may say how a marked record is handled,
+ * but it cannot rename the marking or mark routine Official information.
+ *
+ * The profile is not a classification. `access-restricted` describes an Official-Sensitive record
+ * that is also restricted, which is two properties rather than a third level.
  */
 export const classificationMarkingSchema = z.object({
-  id: z.enum(CLASSIFICATIONS),
+  id: z.enum(MARKING_PROFILES),
   /** The plain-language handling instruction, shown on a print pack cover and in the sharing preview. */
   handling: z.string(),
   /** Short instructions appended after the marking itself, from the Annex 2 allowance. */

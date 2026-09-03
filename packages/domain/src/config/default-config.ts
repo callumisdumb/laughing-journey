@@ -34,7 +34,7 @@ export const DEFAULT_CONFIG: Config = {
     { id: 'official', handling: 'Routine business information. No marking is required.', instructions: [] },
     { id: 'official-sensitive', handling: 'Personal and case information. Share on a need-to-know basis with a recorded lawful basis.', instructions: ['do-not-forward'] },
     {
-      id: 'restricted',
+      id: 'access-restricted',
       handling: 'MAPPA and other records on a distribution list. Every read is audited. Break-glass requires a reason.',
       instructions: ['distribution-list-only', 'chair-approval-required', 'not-for-subject-access'],
     },

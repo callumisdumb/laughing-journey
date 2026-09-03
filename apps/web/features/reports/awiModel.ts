@@ -2,7 +2,7 @@
  * AWI application timeliness: route and applicant, the MHO report against the 21 day rule in
  * section 57(4), interim orders against the statutory maximum, and days from application to order.
  */
-import { clockRuleLabel, daysBetween, dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, type AwiProcess, type ClockRule, type Config, type Dataset } from '@mas/domain';
+import { type AwiProcess, type ClockRule, clockRuleLabel, type Config, type Dataset, daysBetween, dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, OFFICIAL } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
 import { addDays, format, parseISO } from 'date-fns';
 import { countBy, median, messageSegment, scaleColour, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
@@ -178,7 +178,8 @@ export function awiModel(data: Dataset, config: Config, now: Date, period: Perio
     lede: t('reports.awi.lede'),
     period,
     // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
-    classification: 'official',
+    classification: OFFICIAL,
+    accessRestriction: 'none',
     meta: [t('reports.meta.period', { period: period.label }), t('reports.awi.meta.computed', { dateTime: formatDateTime(now), records: awis.length, applications: applications.length }), t('reports.meta.verify')],
     verify: [t('reports.awi.verify.publications')],
     sources: [t('reports.awi.sources.mwc'), t('reports.awi.sources.opg'), t('reports.awi.sources.act')],

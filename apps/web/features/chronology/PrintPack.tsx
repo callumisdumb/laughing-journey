@@ -1,6 +1,6 @@
 'use client';
 
-import { agencyShort, analysisKindLabel, marking as markingFor, classificationFor, eventFamily, eventFamilyLabel, formatDate, formatDateTime, significanceLabel } from '@mas/domain';
+import { agencyShort, analysisKindLabel, marking as markingFor, classificationFor, eventFamily, eventFamilyLabel, formatDate, formatDateTime, mostRestrictedAccess, officialSensitive, significanceLabel } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { Button, ClassificationMarking } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
@@ -41,7 +41,7 @@ export function PrintPack({ personId }: { personId: string }) {
   const processes = model.processes.filter((p) => p.status === 'open');
   // A chronology names a person and carries case detail, so it is Official-Sensitive; a restricted
   // process among the open ones adds the distribution-list handling instruction.
-  const packClassification = classificationFor(config, processes.some((p) => p.classification === 'restricted') ? 'restricted' : 'official-sensitive');
+  const packClassification = classificationFor(config, { classification: officialSensitive(), accessRestriction: mostRestrictedAccess(processes) });
   const marking = markingFor(packClassification) ?? '';
   const reference = processes.map((p) => p.reference).join(', ') || t('print.chronology.noOpenProcess');
   const bases = data.lawfulBases.filter((b) => events.some((e) => e.lawfulBasisId === b.id));

@@ -1,3 +1,4 @@
+import { officialSensitive } from '@mas/domain';
 /**
  * Scenario 7: Whinbrae House, Craiglarrick. An Adult Support and Protection Large Scale
  * Investigation: six residents, medication errors found by the Care Inspectorate, and one
@@ -153,7 +154,8 @@ export function seedWhinbraeLsi(ctx: BuildContext): void {
       { stage: 'investigation', at: at('2026-08-07', '09:00'), byUserId: moira, byName: name(moira), note: 'Investigation opened as a Large Scale Investigation after the planning meeting on 6 Aug' },
     ],
     status: 'open',
-    classification: 'official-sensitive',
+    classification: officialSensitive(),
+    accessRestriction: 'none',
     openedAt: at('2026-07-30', '11:20'),
     members,
     clocks: [

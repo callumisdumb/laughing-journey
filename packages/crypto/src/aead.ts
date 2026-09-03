@@ -28,11 +28,30 @@ export const NONCE_BYTES = 12;
 export interface AeadContext {
   /** The record this ciphertext belongs to. */
   recordId: string;
-  /** The Annex 2 classification the record carries, so a ciphertext cannot be downgraded. */
+  /**
+   * The classification the record carries, canonically encoded by the caller, so a ciphertext cannot
+   * be moved onto a record with a different marking or a different access restriction.
+   */
   classification: string;
   /** Which generation of the content key this was sealed under; rotation increments it. */
   generation: number;
 }
+
+/**
+ * AAD encodings, newest first. `open` tries each in turn; `seal` always writes the current one.
+ *
+ * v1 was sealed before the classification split of 03 September 2026, when the classification field
+ * carried a single value from an enum that conflated the Government Security Classification with
+ * access restriction. v2 carries the two separately, so the same field means something different.
+ * The field layout did not change; the meaning did, which is exactly when a domain separator has to
+ * move. Records sealed under v1 keep their own encoding in their metadata and still open, which is
+ * what this list is for.
+ */
+export const AAD_ENCODINGS = ['v2', 'v1'] as const;
+export type AadEncoding = (typeof AAD_ENCODINGS)[number];
+
+/** What `seal` writes. Never changed in place: a new encoding is added to the front of the list. */
+export const CURRENT_AAD_ENCODING: AadEncoding = 'v2';
 
 /** A sealed payload. The nonce travels with it; the key does not. */
 export interface Sealed {
@@ -46,7 +65,7 @@ export interface Sealed {
  * The additional authenticated data for a context. A single canonical encoding, so that a value
  * containing the separator cannot be made to look like a different context: lengths are prefixed.
  */
-export function aeadAad(context: AeadContext): Uint8Array {
+export function aeadAad(context: AeadContext, encoding: AadEncoding = CURRENT_AAD_ENCODING): Uint8Array {
   const parts = [context.recordId, context.classification, String(context.generation)];
   const encoded = parts.map((part) => {
     const bytes = utf8(part);
@@ -54,7 +73,7 @@ export function aeadAad(context: AeadContext): Uint8Array {
     new DataView(length.buffer).setUint32(0, bytes.length, false);
     return concat(length, bytes);
   });
-  return concat(utf8('person360/v1/aad'), ...encoded);
+  return concat(utf8(`person360/${encoding}/aad`), ...encoded);
 }
 
 export function generateContentKey(): Uint8Array {
@@ -77,9 +96,15 @@ export function seal(key: Uint8Array, plaintext: Uint8Array, context: AeadContex
 export function open(key: Uint8Array, sealed: Sealed, context: AeadContext): Uint8Array {
   if (key.length !== CONTENT_KEY_BYTES) throw new CryptoError('bad-length', `A content key is ${CONTENT_KEY_BYTES} bytes, got ${key.length}`);
   if (sealed.nonce.length !== NONCE_BYTES) throw new CryptoError('bad-length', `A nonce is ${NONCE_BYTES} bytes, got ${sealed.nonce.length}`);
-  try {
-    return gcm(key, sealed.nonce, aeadAad(context)).decrypt(sealed.ciphertext);
-  } catch {
-    throw new CryptoError('decrypt-failed', 'The ciphertext did not authenticate under this key and context');
+  // Every known encoding is tried, newest first, exactly as suite dispatch accepts an older suite
+  // identifier. A record written before an encoding change must still open: the alternative is a
+  // migration script run against live data, which is how an archive is lost.
+  for (const encoding of AAD_ENCODINGS) {
+    try {
+      return gcm(key, sealed.nonce, aeadAad(context, encoding)).decrypt(sealed.ciphertext);
+    } catch {
+      continue;
+    }
   }
+  throw new CryptoError('decrypt-failed', 'The ciphertext did not authenticate under this key and context');
 }

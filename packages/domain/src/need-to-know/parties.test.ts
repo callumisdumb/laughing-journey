@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { officialSensitive } from '../classification/classify';
 import { MAPPA_STAGES, MARAC_STAGES } from '../enums';
 import type { Relationship } from '../schemas/person';
 import { casePartySchema, processSchema, type MappaProcess, type MaracProcess, type Process } from '../schemas/process';
@@ -11,7 +12,8 @@ const base = {
   leadAgency: 'social-work' as const,
   stageHistory: [],
   status: 'open' as const,
-  classification: 'official-sensitive' as const,
+  classification: officialSensitive(),
+  accessRestriction: 'none' as const,
   openedAt: '2026-08-24T15:00:00+01:00',
   members: [],
   clocks: [],
@@ -86,7 +88,8 @@ const mappa: MappaProcess = {
   subjectIds: ['per_offender'],
   leadAgency: 'police',
   stage: 'managed',
-  classification: 'restricted',
+  classification: officialSensitive(),
+  accessRestriction: 'restricted' as const,
   detail: {
     category: 1,
     level: 2,

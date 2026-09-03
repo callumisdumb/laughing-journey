@@ -51,7 +51,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   }, [meetingId, select]);
 
   useEffect(() => {
-    if (meeting && process) audit({ act: process.classification === 'restricted' ? 'read-restricted' : 'read', targetType: 'meeting', targetId: meeting.id, targetLabel: meeting.title, processId: process.id, restricted: process.classification === 'restricted' });
+    if (meeting && process) audit({ act: process.accessRestriction === 'restricted' ? 'read-restricted' : 'read', targetType: 'meeting', targetId: meeting.id, targetLabel: meeting.title, processId: process.id, restricted: process.accessRestriction === 'restricted' });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meetingId]);
 
@@ -188,14 +188,14 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   }
 
   function distribute() {
-    const lb: LawfulBasisRecord = { id: newId('lb'), synthetic: true, purpose: t('meetings.after.distribute.purpose', { title: meeting!.title }), article6: '6(1)(e) public task', article9Condition: '9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)', article10Criminal: process!.type === 'mappa' || process!.type === 'marac' ? 'DPA 2018 s10 and Sch 1' : 'not applicable', classification: process!.classification, statutoryGateway: [process!.type === 'cp' ? 'National Guidance for Child Protection in Scotland 2021' : process!.type === 'asp' ? 'ASP (Scotland) Act 2007 s5' : process!.type === 'mappa' ? 'Management of Offenders etc. (Scotland) Act 2005 s10' : process!.type === 'marac' ? 'MARAC Operating Protocol' : 'AWI (Scotland) Act 2000'], necessityAndProportionality: t('meetings.after.distribute.necessity'), consentStatus: 'not-required', authorisedByUserId: user!.id, authorisedByName: userName(user!), createdAt: now.toISOString() };
+    const lb: LawfulBasisRecord = { id: newId('lb'), synthetic: true, purpose: t('meetings.after.distribute.purpose', { title: meeting!.title }), article6: '6(1)(e) public task', article9Condition: '9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)', article10Criminal: process!.type === 'mappa' || process!.type === 'marac' ? 'DPA 2018 s10 and Sch 1' : 'not applicable', classification: process!.classification, accessRestriction: process!.accessRestriction, statutoryGateway: [process!.type === 'cp' ? 'National Guidance for Child Protection in Scotland 2021' : process!.type === 'asp' ? 'ASP (Scotland) Act 2007 s5' : process!.type === 'mappa' ? 'Management of Offenders etc. (Scotland) Act 2005 s10' : process!.type === 'marac' ? 'MARAC Operating Protocol' : 'AWI (Scotland) Act 2000'], necessityAndProportionality: t('meetings.after.distribute.necessity'), consentStatus: 'not-required', authorisedByUserId: user!.id, authorisedByName: userName(user!), createdAt: now.toISOString() };
     upsert('lawfulBases', lb);
     const shares: SharingRecord[] = meeting!.distribution.map((d) => ({ id: newId('shr'), synthetic: true, processId: process!.id, subjectId: meeting!.subjectIds[0] ?? '', stage: process!.stage, recipient: { userId: d.recipientUserId, name: d.recipientName, agency: d.agency, role: d.role }, detailLevel: d.detailLevel, fields: d.fields, lawfulBasisId: lb.id, channel: 'in-app' as const, status: 'sent' as const, createdAt: now.toISOString(), sentAt: now.toISOString(), reason: d.reason, createdByUserId: user!.id, createdByName: userName(user!), summary: t('meetings.after.distribute.shareSummary', { title: meeting!.title, level: detailLevelLabel(d.detailLevel) }) }));
     for (const s of shares) upsert('sharingRecords', s);
     update({ minute: { ...meeting!.minute, status: 'distributed', distributedAt: now.toISOString() }, distribution: meeting!.distribution.map((d, i) => ({ ...d, sharingRecordId: shares[i]?.id })) });
     const recordClocks = process!.clocks.map((c) => (c.ruleId === 'cp.cppm.record.distribute' && !c.completedAt ? { ...c, completedAt: now.toISOString(), note: t('meetings.after.distribute.clockNote') } : c));
     if (recordClocks.some((c, i) => c !== process!.clocks[i])) upsert('processes', { ...process!, clocks: recordClocks });
-    audit({ act: 'share', targetType: 'meeting', targetId: meeting!.id, targetLabel: t('meetings.after.distribute.distributed', { count: shares.length }), processId: process!.id, restricted: process!.classification === 'restricted' });
+    audit({ act: 'share', targetType: 'meeting', targetId: meeting!.id, targetLabel: t('meetings.after.distribute.distributed', { count: shares.length }), processId: process!.id, restricted: process!.accessRestriction === 'restricted' });
     toast({ title: t('meetings.after.distribute.distributed', { count: shares.length }), text: t('meetings.after.distribute.toastText'), tone: 'success' });
   }
 
@@ -214,7 +214,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       <header className={styles.head}>
         <div className={styles.headTop}>
           <div className="cluster">
-            <ProcessMark type={process.type} restricted={process.classification === 'restricted'} />
+            <ProcessMark type={process.type} restricted={process.accessRestriction === 'restricted'} />
             <AppLink href={processPath(process.id)}>{process.reference}</AppLink>
             <Pill size="sm" tone={meeting.status === 'held' ? 'low' : meeting.status === 'scheduled' ? 'accent' : 'outline'}>
               {meetingStatusLabel(meeting.status)}

@@ -91,8 +91,8 @@ export function MeetingList() {
                       </AppLink>
                       <span style={{ display: 'block', fontSize: 'var(--text-xs)', color: 'var(--color-ink-3)' }}>{meetingTypeLabel(m.type)}</span>
                     </td>
-                    <td>{process ? <ProcessMark type={process.type} restricted={process.classification === 'restricted'} /> : ''}</td>
-                    <td>{process?.classification === 'restricted' ? processShort(process.type) : subject ? fullName(subject) : ''}</td>
+                    <td>{process ? <ProcessMark type={process.type} restricted={process.accessRestriction === 'restricted'} /> : ''}</td>
+                    <td>{process?.accessRestriction === 'restricted' ? processShort(process.type) : subject ? fullName(subject) : ''}</td>
                     <td>{m.chairName}</td>
                     <td>
                       <Pill size="sm" tone={m.status === 'scheduled' ? 'accent' : m.status === 'held' ? 'low' : 'outline'}>

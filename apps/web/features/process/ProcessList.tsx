@@ -81,7 +81,7 @@ export function ProcessList() {
                     </AppLink>
                   </td>
                   <td>
-                    <ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.classification === 'restricted'} />
+                    <ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.accessRestriction === 'restricted'} />
                   </td>
                   <td>
                     {access.level === 'none' ? (

@@ -2,7 +2,7 @@
  * MARAC SafeLives return fields, computed from MARAC referrals and meetings. SafeLives collects
  * meeting-level counts, so nothing here identifies a victim.
  */
-import { AGENCIES, agencyShort, formatDateTime, localDateOf, type Dataset, type MaracProcess } from '@mas/domain';
+import { AGENCIES, agencyShort, type Dataset, formatDateTime, localDateOf, type MaracProcess, OFFICIAL } from '@mas/domain';
 import { formatNumber, t } from '@mas/messages';
 import { agencyColourVar } from '@mas/ui';
 import { personById } from '@/lib/selectors';
@@ -140,7 +140,8 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
     lede: t('reports.marac.lede'),
     period,
     // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
-    classification: 'official',
+    classification: OFFICIAL,
+    accessRestriction: 'none',
     meta: [t('reports.meta.period', { period: period.label }), t('reports.marac.meta.computed', { dateTime: formatDateTime(now), records: maracs.length, referrals: referrals.length }), t('reports.marac.meta.population', { population: populationLabel }), t('reports.meta.verify')],
     verify: [t('reports.marac.verify.template'), t('reports.marac.verify.olderThreshold')],
     sources: [t('reports.marac.sources.guidance'), t('reports.marac.sources.keyFindings'), t('reports.marac.sources.spotlight')],

@@ -19,13 +19,23 @@
  * four examples Annex 2 gives. A human may then raise it with a recorded reason, and may lower it
  * only in a named role, both audited exactly as break-glass is.
  *
- * Secret and Top Secret are deliberately absent. Nothing in this product's scope reaches defence,
- * diplomacy or national security, so the type does not offer levels the product can never justify;
- * the glossary says so.
+ * Third, RESTRICTED is not a classification and this module does not offer one. It was abolished on
+ * 2 April 2014 when the six-tier Government Protective Marking Scheme gave way to the three-level
+ * Government Security Classification scheme, and Official absorbed everything up to and including
+ * it with no direct mapping between the two. Access restriction is a separate, orthogonal property
+ * (`AccessRestriction` in enums.ts): a MAPPA record is Official-Sensitive and access-restricted, an
+ * ASP case conference minute can be Official-Sensitive and not restricted, and an aggregate report
+ * is Official and not restricted. One scale could not say any of that.
+ *
+ * Secret and Top Secret are in the type and unreachable in the product. Nothing in public protection
+ * casework reaches defence, diplomacy or national security, so `classify` never returns them and a
+ * test says so. They are present rather than omitted because a reviewer needs to see that the scheme
+ * is the real three-level one and not a two-level invention, and the glossary says the same.
  */
 import { t, tKey } from '@mas/messages';
 
-export const CLASSIFICATION_LEVELS = ['official', 'official-sensitive'] as const;
+/** The three levels of the Government Security Classification scheme. Annex 2, and nothing else. */
+export const CLASSIFICATION_LEVELS = ['official', 'secret', 'top-secret'] as const;
 export type ClassificationLevel = (typeof CLASSIFICATION_LEVELS)[number];
 
 /** A short string appended after the marking. Local configuration: practice varies by organisation. */
@@ -43,12 +53,38 @@ export function handlingInstructionLabel(id: HandlingInstructionId): string {
   return tKey(`domain.handling.${id.replace(/-([a-z])/g, (_m, c: string) => c.toUpperCase())}`);
 }
 
-export type Classification = { level: 'official' } | { level: 'official-sensitive'; handling: HandlingInstruction[] };
+/**
+ * A classification: a level, whether the Official-Sensitive marking applies, and any handling
+ * instructions. Official-Sensitive is a marking on a subset of Official rather than a fourth level,
+ * which is why it is a flag here and not a value of `level`.
+ */
+export interface Classification {
+  level: ClassificationLevel;
+  /** The Official-Sensitive marking. Meaningful only at Official; Secret and above are always marked. */
+  sensitive: boolean;
+  /** Appended after the marking. Only meaningful when `sensitive`, or at Secret and above. */
+  handling: HandlingInstruction[];
+}
 
-export const OFFICIAL: Classification = { level: 'official' };
+export const OFFICIAL: Classification = { level: 'official', sensitive: false, handling: [] };
 
 export function officialSensitive(handling: HandlingInstruction[] = []): Classification {
-  return { level: 'official-sensitive', handling };
+  return { level: 'official', sensitive: true, handling };
+}
+
+/** Equality, so a caller can compare two classifications without reaching into the shape. */
+export function sameClassification(a: Classification, b: Classification): boolean {
+  return a.level === b.level && a.sensitive === b.sensitive && a.handling.length === b.handling.length && a.handling.every((h, i) => h === b.handling[i]);
+}
+
+/**
+ * Order, for "no weaker than" comparisons. Only the first two ranks are reachable in this product;
+ * the rest are here so the comparison stays correct if they ever are.
+ */
+export function classificationRank(c: Classification): number {
+  if (c.level === 'top-secret') return 4;
+  if (c.level === 'secret') return 3;
+  return c.sensitive ? 2 : 1;
 }
 
 /**
@@ -119,18 +155,18 @@ export type ClassificationReason =
  * read the same list the function does. A rule table that drifts from the function is worse than
  * none, because it tells people the product does something it does not.
  */
-export const CLASSIFICATION_RULES: readonly { reason: ClassificationReason; level: ClassificationLevel }[] = [
-  { reason: 'mappa-record', level: 'official-sensitive' },
-  { reason: 'marac-record', level: 'official-sensitive' },
-  { reason: 'names-perpetrator', level: 'official-sensitive' },
-  { reason: 'cp-record', level: 'official-sensitive' },
-  { reason: 'special-category-data', level: 'official-sensitive' },
-  { reason: 'criminal-offence-data', level: 'official-sensitive' },
-  { reason: 'asp-order-or-lsi', level: 'official-sensitive' },
-  { reason: 'security-information', level: 'official-sensitive' },
-  { reason: 'open-restricted-process', level: 'official-sensitive' },
-  { reason: 'linked-record', level: 'official-sensitive' },
-  { reason: 'routine-official', level: 'official' },
+export const CLASSIFICATION_RULES: readonly { reason: ClassificationReason; level: ClassificationLevel; sensitive: boolean }[] = [
+  { reason: 'mappa-record', level: 'official', sensitive: true },
+  { reason: 'marac-record', level: 'official', sensitive: true },
+  { reason: 'names-perpetrator', level: 'official', sensitive: true },
+  { reason: 'cp-record', level: 'official', sensitive: true },
+  { reason: 'special-category-data', level: 'official', sensitive: true },
+  { reason: 'criminal-offence-data', level: 'official', sensitive: true },
+  { reason: 'asp-order-or-lsi', level: 'official', sensitive: true },
+  { reason: 'security-information', level: 'official', sensitive: true },
+  { reason: 'open-restricted-process', level: 'official', sensitive: true },
+  { reason: 'linked-record', level: 'official', sensitive: true },
+  { reason: 'routine-official', level: 'official', sensitive: false },
 ];
 
 export interface ClassificationResult {
@@ -157,31 +193,49 @@ export function classify(subject: ClassificationSubject): ClassificationResult {
   if (process === 'asp' && artefact !== undefined && ASP_ARTEFACTS.has(artefact)) reasons.push('asp-order-or-lsi');
   if (artefact !== undefined && SECURITY_ARTEFACTS.has(artefact)) reasons.push('security-information');
   if (subject.hasOpenRestrictedProcess) reasons.push('open-restricted-process');
-  if (subject.linked?.some((c) => c.level === 'official-sensitive')) reasons.push('linked-record');
+  if (subject.linked?.some((c) => c.sensitive)) reasons.push('linked-record');
 
   if (reasons.length === 0) return { classification: OFFICIAL, reasons: ['routine-official'] };
-  const handling = subject.linked?.flatMap((c) => (c.level === 'official-sensitive' ? c.handling : [])) ?? [];
+  const handling = subject.linked?.flatMap((c) => (c.sensitive ? c.handling : [])) ?? [];
   return { classification: officialSensitive([...new Set(handling)]), reasons };
 }
 
-/** The marking for an artefact, or undefined where none is required. Annex 2 paragraph 5. */
+/**
+ * The marking for an artefact, or undefined where none is required. Annex 2 paragraph 5: routine
+ * Official carries no marking at all, which is the whole of D-058 in one line.
+ */
 export function marking(classification: Classification): string | undefined {
-  if (classification.level === 'official') return undefined;
+  if (classification.level === 'secret') return t('domain.classifications.secretMarking');
+  if (classification.level === 'top-secret') return t('domain.classifications.topSecretMarking');
+  if (!classification.sensitive) return undefined;
   const base = t('domain.classifications.officialSensitiveMarking');
   return classification.handling.length === 0 ? base : `${base} ${classification.handling.join(' ')}`;
 }
 
 /** A file name prefix so a document leaving the product carries its marking in the name. */
 export function markingFilePrefix(classification: Classification): string {
-  return classification.level === 'official' ? '' : `${t('domain.classifications.officialSensitiveMarking').replace(/\s+/g, '-')}-`;
+  const text = marking({ ...classification, handling: [] });
+  return text === undefined ? '' : `${text.replace(/\s+/g, '-')}-`;
 }
 
+/** The level on its own: Official, Secret, Top Secret. Not the marking, which adds Sensitive. */
 export function classificationLevelLabel(level: ClassificationLevel): string {
-  return tKey(`domain.classifications.${level === 'official' ? 'official' : 'officialSensitive'}`);
+  return tKey(`domain.classifications.${level === 'official' ? 'official' : level === 'secret' ? 'secret' : 'topSecret'}`);
+}
+
+/** What a person calls this classification: "Official" or "Official-Sensitive". */
+export function classificationLabel(classification: Classification): string {
+  if (classification.level !== 'official') return classificationLevelLabel(classification.level);
+  return tKey(classification.sensitive ? 'domain.classifications.officialSensitive' : 'domain.classifications.official');
 }
 
 export function classificationDefinition(level: ClassificationLevel): string {
-  return tKey(`domain.classifications.${level === 'official' ? 'officialDefinition' : 'officialSensitiveDefinition'}`);
+  return tKey(`domain.classifications.${level === 'official' ? 'officialDefinition' : level === 'secret' ? 'secretDefinition' : 'topSecretDefinition'}`);
+}
+
+/** The definition of the Official-Sensitive marking, which is not a level and so not in the above. */
+export function officialSensitiveDefinition(): string {
+  return tKey('domain.classifications.officialSensitiveDefinition');
 }
 
 export function classificationReasonLabel(reason: ClassificationReason): string {
@@ -190,7 +244,7 @@ export function classificationReasonLabel(reason: ClassificationReason): string 
 
 /** True where the classification must be shown, on screen and in print. */
 export function isMarked(classification: Classification): boolean {
-  return classification.level === 'official-sensitive';
+  return classification.level !== 'official' || classification.sensitive;
 }
 
 /**
@@ -199,6 +253,8 @@ export function isMarked(classification: Classification): boolean {
  */
 export interface ClassificationOverride {
   level: ClassificationLevel;
+  sensitive: boolean;
+  handling: HandlingInstruction[];
   reason: string;
   byUserId: string;
   at: string;
@@ -215,25 +271,43 @@ export function applyOverride(
   options: { roleId?: string; lowerableBy?: readonly string[] } = {},
 ): { classification: Classification; refused?: 'not-permitted' } {
   if (!override) return { classification: derived };
-  const raising = override.level === 'official-sensitive' && derived.level === 'official';
-  if (raising) return { classification: officialSensitive(derived.level === 'official' ? [] : []) };
-  const lowering = override.level === 'official' && derived.level === 'official-sensitive';
-  if (!lowering) return { classification: derived };
+  const wanted: Classification = { level: override.level, sensitive: override.sensitive, handling: override.handling };
+  const lowering = classificationRank(wanted) < classificationRank(derived);
+  if (!lowering) return { classification: wanted };
   if (!options.roleId || !canLower(options.roleId, options.lowerableBy ?? [])) return { classification: derived, refused: 'not-permitted' };
-  return { classification: OFFICIAL };
+  return { classification: wanted };
 }
 
 /**
- * The Annex 2 classification of a stored record classification. `restricted` is the MAPPA
- * distribution-list concept, which in Annex 2 terms is Official-Sensitive with a handling
- * instruction: chapter 11 says the Minute and Risk Management Plan are always Official and may be
- * Official-Sensitive, and that an agency cannot share them widely with its personnel unless the
- * chair of the MAPPA meeting has agreed.
+ * Which set of local handling instructions applies to a record.
+ *
+ * This is what the old three-value classification enum was really being used for. An area cannot
+ * rename a marking or mark routine Official information, but it can say how a marked record is
+ * handled, and it needs to say something different about a record that is also access-restricted.
+ * So the configuration is keyed on the profile, and the third profile is named for what it is.
  */
-export function recordClassification(stored: 'official' | 'official-sensitive' | 'restricted', handling: HandlingInstruction[] = []): Classification {
-  if (stored === 'official') return OFFICIAL;
-  // The distribution list is what makes a restricted record restricted, so it holds whatever an area
-  // has configured. De-duplicated, because the area may have configured it explicitly as well.
-  if (stored === 'restricted') return officialSensitive([...new Set([t('domain.handling.distributionListOnly'), ...handling])]);
-  return officialSensitive([...new Set(handling)]);
+export const MARKING_PROFILES = ['official', 'official-sensitive', 'access-restricted'] as const;
+export type MarkingProfileId = (typeof MARKING_PROFILES)[number];
+
+export function markingProfileFor(classification: Classification, restricted: boolean): MarkingProfileId {
+  if (restricted) return 'access-restricted';
+  return isMarked(classification) ? 'official-sensitive' : 'official';
+}
+
+/**
+ * The classification a marking profile describes, for the Admin preview. The profile is not itself a
+ * classification: `access-restricted` describes an Official-Sensitive record that is also restricted,
+ * which is two properties and not a third level.
+ */
+export function profileClassification(profile: MarkingProfileId, handling: HandlingInstruction[] = []): Classification {
+  return profile === 'official' ? OFFICIAL : officialSensitive([...new Set(handling)]);
+}
+
+/**
+ * The canonical encoding of a classification for cryptographic binding, so a ciphertext cannot be
+ * moved onto a record with a different marking or a different access restriction. Three fields, in a
+ * fixed order, joined by a character none of them can contain.
+ */
+export function classificationTag(classification: Classification, restricted: boolean): string {
+  return `${classification.level}/${classification.sensitive ? 'sensitive' : 'routine'}/${restricted ? 'restricted' : 'open'}`;
 }

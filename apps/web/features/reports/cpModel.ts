@@ -2,7 +2,7 @@
  * Child Protection Register statistics, computed from the register block of every child protection
  * process. Children are counted, not cases: a sibling group registered at one CPPM counts once per child.
  */
-import { CP_CONCERNS, CP_DEREGISTRATION_REASONS, cpConcernLabel, cpDeregistrationReasonLabel, daysBetween, formatDate, formatDateTime, localDateOf, type CpConcern, type CpDeregistrationReason, type CpProcess, type Dataset, type Person } from '@mas/domain';
+import { CP_CONCERNS, CP_DEREGISTRATION_REASONS, type CpConcern, cpConcernLabel, type CpDeregistrationReason, cpDeregistrationReasonLabel, type CpProcess, type Dataset, daysBetween, formatDate, formatDateTime, localDateOf, OFFICIAL, type Person } from '@mas/domain';
 import { formatNumber, t, tKey } from '@mas/messages';
 import { personById } from '@/lib/selectors';
 import { ageOn } from './helpers';
@@ -320,7 +320,8 @@ export function cpModel(data: Dataset, now: Date, period: Period, childPopulatio
     lede: t('reports.cp.lede'),
     period,
     // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
-    classification: 'official',
+    classification: OFFICIAL,
+    accessRestriction: 'none',
     meta: [t('reports.cp.meta.period', { period: period.label, date: endLabel }), t('reports.cp.meta.computed', { dateTime: formatDateTime(now), records: cps.length, entries: entries.length }), t('reports.cp.meta.fieldSet')],
     verify: [t('reports.cp.verify.concerns'), t('reports.cp.verify.population')],
     sources: [t('reports.cp.sources.statistics2025'), t('reports.cp.sources.statistics2024')],

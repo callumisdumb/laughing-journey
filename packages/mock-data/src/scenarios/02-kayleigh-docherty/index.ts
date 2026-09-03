@@ -6,7 +6,7 @@
  * conviction. He is never a recipient of anything: the MARAC exclusion rule (marac.all.perpetrator)
  * explains why in the drawer, and the CP IRD recorded what is withheld from him and why.
  */
-import { partiesFromRoles, type Agency, type Process, type RiskAssessment } from '@mas/domain';
+import { type Agency, officialSensitive, partiesFromRoles, type Process, type RiskAssessment } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
 import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
@@ -279,7 +279,8 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
       { stage: 'research', at: at('2026-08-28', '09:00'), byUserId: coord, byName: name(coord), note: 'Listed for 9 Sep. Research requests sent to eight agencies, due 2 Sep.' },
     ],
     status: 'open',
-    classification: 'official-sensitive',
+    classification: officialSensitive(),
+    accessRestriction: 'none',
     openedAt: at('2026-08-24', '15:00'),
     members: [
       { userId: coord, caseRole: 'MARAC Coordinator', agency: 'social-work', since: '2026-08-24', reason: 'Receives the referral; runs research and the meeting' },
@@ -371,7 +372,8 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
       { stage: 'investigation', at: at('2026-08-24', '13:00'), byUserId: sw, byName: name(sw), note: 'Joint investigation opened; JII for Lily planned' },
     ],
     status: 'open',
-    classification: 'official-sensitive',
+    classification: officialSensitive(),
+    accessRestriction: 'none',
     openedAt: at('2026-08-23', '01:30'),
     members: [
       { userId: sw, caseRole: 'allocated social worker and lead professional', agency: 'social-work', since: '2026-08-24', reason: 'Allocated at IRD' },

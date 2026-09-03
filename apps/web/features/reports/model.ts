@@ -2,7 +2,7 @@
  * Shared shapes for the five inspection-ready reports. Every figure is computed from the
  * record store; the model is plain data so the screen and the print pack render the same numbers.
  */
-import type { Agency, RecordClassification } from '@mas/domain';
+import type { AccessRestriction, Agency, Classification } from '@mas/domain';
 import { t } from '@mas/messages';
 import { REPORT_KINDS } from '@/lib/routes';
 import type { Period } from './period';
@@ -74,7 +74,9 @@ export interface ReportModel {
   title: string;
   lede: string;
   period: Period;
-  classification: RecordClassification;
+  /** Aggregate counts that name nobody are routine Official and carry no marking (D-058). */
+  classification: Classification;
+  accessRestriction: AccessRestriction;
   /** One-line context shown under the controls, ending with the verification note. */
   meta: string[];
   /** What could not be verified against the current template, in plain words. */

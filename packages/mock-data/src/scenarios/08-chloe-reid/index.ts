@@ -6,7 +6,7 @@
  * the mother in the pre-birth process at the same time. The pre-birth CPPM is clocked to 28 weeks
  * gestation (4 Sep), earlier than the 28 calendar day rule would give.
  */
-import { partiesFromRoles, type Agency, type Process, type RiskAssessment } from '@mas/domain';
+import { type Agency, officialSensitive, partiesFromRoles, type Process, type RiskAssessment } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
 import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
@@ -246,7 +246,8 @@ export function seedChloeReid(ctx: BuildContext): void {
       { stage: 'closed', at: at('2020-11-04', '12:00'), byName: 'Former allocated worker', note: 'Transferred to the looked after children team' },
     ],
     status: 'closed',
-    classification: 'official-sensitive',
+    classification: officialSensitive(),
+    accessRestriction: 'none',
     openedAt: at('2019-02-15', '20:45'),
     closedAt: at('2020-11-04', '12:00'),
     closureReason: "De-registered 4 Nov 2020: Chloe living with her aunt under a compulsory supervision order; the risk from her mother's substance use is managed by the placement. Case transferred to the looked after children team.",
@@ -315,7 +316,8 @@ export function seedChloeReid(ctx: BuildContext): void {
       { stage: 'investigation', at: at('2026-08-20', '12:00'), byUserId: sw, byName: name(sw), note: 'Pre-birth assessment opened; CPPM to be held before 28 weeks' },
     ],
     status: 'open',
-    classification: 'official-sensitive',
+    classification: officialSensitive(),
+    accessRestriction: 'none',
     openedAt: at('2026-08-18', '16:00'),
     members: [
       { userId: sw, caseRole: 'allocated social worker and lead professional', agency: 'social-work', since: '2026-08-20', reason: 'Allocated at the IRD' },
@@ -402,7 +404,8 @@ export function seedChloeReid(ctx: BuildContext): void {
       { stage: 'referral', at: at('2026-08-26', '11:00'), byUserId: coord, byName: name(coord), note: 'Referral from midwifery after DASH 15 of 24. To be listed for 23 Sep; research requests to follow.' },
     ],
     status: 'open',
-    classification: 'official-sensitive',
+    classification: officialSensitive(),
+    accessRestriction: 'none',
     openedAt: at('2026-08-26', '11:00'),
     members: [
       { userId: coord, caseRole: 'MARAC Coordinator', agency: 'social-work', since: '2026-08-26', reason: 'Receives the referral; will send research requests' },

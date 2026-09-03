@@ -22,6 +22,7 @@ import type {
   ViewsRecord,
   Visibility,
 } from '@mas/domain';
+import { officialSensitive } from '@mas/domain';
 import type { BuildContext } from './context';
 
 export type Partialish<T, K extends keyof T> = Omit<T, K | 'synthetic'> & Partial<Pick<T, K>>;
@@ -184,7 +185,10 @@ export function makeViews(ctx: BuildContext, v: Partialish<ViewsRecord, 'id'>): 
   return vr;
 }
 
-export function makeLawfulBasis(ctx: BuildContext, lb: Partialish<LawfulBasisRecord, 'id' | 'createdAt' | 'article10Criminal' | 'consentStatus' | 'classification'>): LawfulBasisRecord {
+export function makeLawfulBasis(
+  ctx: BuildContext,
+  lb: Partialish<LawfulBasisRecord, 'id' | 'createdAt' | 'article10Criminal' | 'consentStatus' | 'classification' | 'accessRestriction'>,
+): LawfulBasisRecord {
   const rec: LawfulBasisRecord = {
     ...lb,
     id: lb.id ?? ctx.ids.next('lb'),
@@ -192,7 +196,8 @@ export function makeLawfulBasis(ctx: BuildContext, lb: Partialish<LawfulBasisRec
     createdAt: lb.createdAt ?? ctx.nowIso,
     article10Criminal: lb.article10Criminal ?? 'not applicable',
     // Every lawful basis in this product concerns case content, so Official-Sensitive is the floor.
-    classification: lb.classification ?? 'official-sensitive',
+    classification: lb.classification ?? officialSensitive(),
+    accessRestriction: lb.accessRestriction ?? 'none',
     consentStatus: lb.consentStatus ?? 'not-required',
   };
   ctx.data.lawfulBases.push(rec);

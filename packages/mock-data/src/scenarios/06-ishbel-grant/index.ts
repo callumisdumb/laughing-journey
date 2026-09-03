@@ -1,3 +1,4 @@
+import { officialSensitive } from '@mas/domain';
 /**
  * Scenario 6: Ishbel Grant, 84, an inpatient at Clydeshore Royal Infirmary. Delayed discharge;
  * lacks capacity for the decision about residential care; no attorney; family divided. The
@@ -121,7 +122,8 @@ export function seedIshbelGrant(ctx: BuildContext): void {
       { stage: 'application', at: at('2026-08-24', '10:00'), byUserId: sw, byName: name(sw), note: 'MHO notified under s57(3); 21-day report clock started' },
     ],
     status: 'open',
-    classification: 'official-sensitive',
+    classification: officialSensitive(),
+    accessRestriction: 'none',
     openedAt: at('2026-07-28', '11:00'),
     members: [
       { userId: sw, caseRole: 'allocated social worker', agency: 'social-work', since: '2026-07-28', reason: 'Allocated worker; prepares the application for the council as applicant' },

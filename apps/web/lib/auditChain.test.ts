@@ -74,7 +74,7 @@ describe('the audit chain', () => {
     // Who, what, when and at what classification stay in the clear.
     expect(dump).toContain('read-restricted');
     expect(dump).toContain('prc_mappa_derek');
-    expect(dump).toContain('official-sensitive-restricted');
+    expect(dump).toContain('official/sensitive/restricted');
     // The practitioner's own words do not.
     expect(dump).not.toContain('Derek Muir');
   });

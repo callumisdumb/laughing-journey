@@ -5,7 +5,7 @@
  * lives in the catalogue under reports.mappaAnnex3 (see mappaAnnex3.ts); every figure here is
  * keyed on a row id, never on the label.
  */
-import { ageAt, dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, type ClockRule, type Config, type Dataset, type MappaProcess } from '@mas/domain';
+import { ageAt, type ClockRule, type Config, type Dataset, dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, type MappaProcess, OFFICIAL } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
 import { ETHNICITY_NOT_HELD_ROW, MAPPA_ANNEX3_TABLES, annexColumns, annexRowLabel, annexTitle, dataNotHeld, type AnnexTable } from './mappaAnnex3';
 import { messageSegment, scaleColour, sum, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
@@ -279,7 +279,8 @@ export function mappaModel(data: Dataset, config: Config, now: Date, period: Per
     lede: t('reports.mappa.lede'),
     period,
     // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
-    classification: 'official',
+    classification: OFFICIAL,
+    accessRestriction: 'none',
     meta: [t('reports.meta.period', { period: period.label }), t('reports.mappa.meta.reportingPeriod'), t('reports.mappa.meta.computed', { dateTime: formatDateTime(now), records: mappas.length, managed: during.length }), t('reports.mappa.meta.fieldSet'), t('reports.mappa.meta.noNames')],
     verify: [t('reports.mappa.verify.interval')],
     sources: [t('reports.mappa.sources.guidance'), t('reports.mappa.sources.sogReports'), t('reports.mappa.sources.overview')],

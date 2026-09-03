@@ -2,7 +2,7 @@
  * ASP biennial report figures, computed from adult concern records, inquiries, investigations,
  * case conferences and orders in the record store for the chosen biennium.
  */
-import { AGENCIES, ASP_AGE_BANDS, ASP_CLIENT_GROUPS, ASP_ETHNICITIES, ASP_GENDERS, ASP_HARM_LOCATIONS, ASP_INQUIRY_ACTIONS, ASP_REFERRAL_SOURCES, HARM_TYPES, ageAt, agencyShort, aspAgeBandLabel, aspAgeBandOf, aspClientGroupLabel, aspEthnicityLabel, aspGenderLabel, aspHarmLocationLabel, aspInquiryActionLabel, aspReferralSourceLabel, formatDateTime, harmTypeLabel, localDateOf, type AspProcess, type Dataset } from '@mas/domain';
+import { ageAt, AGENCIES, agencyShort, ASP_AGE_BANDS, ASP_CLIENT_GROUPS, ASP_ETHNICITIES, ASP_GENDERS, ASP_HARM_LOCATIONS, ASP_INQUIRY_ACTIONS, ASP_REFERRAL_SOURCES, aspAgeBandLabel, aspAgeBandOf, aspClientGroupLabel, aspEthnicityLabel, aspGenderLabel, aspHarmLocationLabel, aspInquiryActionLabel, type AspProcess, aspReferralSourceLabel, type Dataset, formatDateTime, HARM_TYPES, harmTypeLabel, localDateOf, OFFICIAL } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
 import { agencyColourVar } from '@mas/ui';
 import { countBy, messageSegment, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
@@ -232,7 +232,8 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     lede: t('reports.asp.lede'),
     period,
     // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
-    classification: 'official',
+    classification: OFFICIAL,
+    accessRestriction: 'none',
     meta: [t('reports.meta.period', { period: period.label }), t('reports.asp.meta.computed', { dateTime: formatDateTime(now), records: asp.length, referrals: referrals.length, adults: adults.size }), t('reports.asp.meta.fieldSet')],
     verify: [t('reports.asp.verify.deadlines')],
     sources: [t('reports.asp.sources.apcGuidance'), t('reports.asp.sources.nmds'), t('reports.asp.sources.statistics')],

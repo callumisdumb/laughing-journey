@@ -1,25 +1,29 @@
 'use client';
 
 import {
-  CLASSIFICATIONS,
+  CLASSIFICATION_LEVELS,
   CLASSIFICATION_RULES,
   HANDLING_INSTRUCTIONS,
+  MARKING_PROFILES,
   ROLES,
   classificationDefinition,
+  classificationLabel,
   classificationLevelLabel,
   classificationReasonLabel,
   handlingInstructionLabel,
   marking,
-  recordClassification,
+  officialSensitive,
+  officialSensitiveDefinition,
+  profileClassification,
   roleLabel,
   type HandlingInstructionId,
-  type RecordClassification,
+  type MarkingProfileId,
   type RoleId,
 } from '@mas/domain';
 import { tKey, useT, type Translator } from '@mas/messages';
 import { Button, CheckboxField, Sheet, SheetBody, SheetHead, Table, TableWrap, TextareaField } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import styles from './Markings.module.css';
@@ -27,9 +31,9 @@ import { SectionHead } from './SectionHead';
 import { sectionLabel } from './sections';
 import { useAdminConfig } from './useAdminConfig';
 
-const MARKING_KEYS: Record<RecordClassification, string> = { official: 'official', 'official-sensitive': 'officialSensitive', restricted: 'restricted' };
-const markingTitle = (id: RecordClassification) => tKey(`admin.markings.${MARKING_KEYS[id]}.title`);
-const markingUse = (id: RecordClassification) => tKey(`admin.markings.${MARKING_KEYS[id]}.use`);
+const MARKING_KEYS: Record<MarkingProfileId, string> = { official: 'official', 'official-sensitive': 'officialSensitive', 'access-restricted': 'accessRestricted' };
+const markingTitle = (id: MarkingProfileId) => tKey(`admin.markings.${MARKING_KEYS[id]}.title`);
+const markingUse = (id: MarkingProfileId) => tKey(`admin.markings.${MARKING_KEYS[id]}.use`);
 
 /** Roles are listed alphabetically by name: the list is long, and a reader is looking one up, not browsing. */
 const SORTED_ROLES = [...ROLES].sort((a, b) => roleLabel(a).localeCompare(roleLabel(b), 'en-GB'));
@@ -38,7 +42,7 @@ function markingsSchema(t: Translator) {
   return z.object({
     markings: z.array(
       z.object({
-        id: z.enum(CLASSIFICATIONS),
+        id: z.enum(MARKING_PROFILES),
         handling: z.string().trim().min(5, t('admin.markings.errors.handlingMin')).max(400),
         instructions: z.array(z.enum(HANDLING_INSTRUCTIONS)),
       }),
@@ -118,11 +122,12 @@ export function Markings() {
                 </thead>
                 <tbody>
                   {CLASSIFICATION_RULES.map((rule) => {
-                    const text = marking(rule.level === 'official' ? { level: 'official' } : { level: 'official-sensitive', handling: [] });
+                    const derived = { level: rule.level, sensitive: rule.sensitive, handling: [] };
+                    const text = marking(derived);
                     return (
                       <tr key={rule.reason}>
                         <th scope="row">{classificationReasonLabel(rule.reason)}</th>
-                        <td>{classificationLevelLabel(rule.level)}</td>
+                        <td>{classificationLabel(derived)}</td>
                         <td>{text ?? t('admin.markings.rules.noMarking')}</td>
                       </tr>
                     );
@@ -131,17 +136,23 @@ export function Markings() {
               </Table>
             </TableWrap>
             <dl className={styles.definitions}>
-              <dt>{classificationLevelLabel('official')}</dt>
-              <dd>{classificationDefinition('official')}</dd>
-              <dt>{classificationLevelLabel('official-sensitive')}</dt>
-              <dd>{classificationDefinition('official-sensitive')}</dd>
+              {CLASSIFICATION_LEVELS.map((level) => (
+                <Fragment key={level}>
+                  <dt>{classificationLevelLabel(level)}</dt>
+                  <dd>{classificationDefinition(level)}</dd>
+                </Fragment>
+              ))}
+              <dt>{classificationLabel(officialSensitive())}</dt>
+              <dd>{officialSensitiveDefinition()}</dd>
             </dl>
           </SheetBody>
         </Sheet>
 
+        <p className={styles.note}>{t('admin.markings.profileNote')}</p>
+
         {config.classificationMarkings.map((m, i) => {
           const instructions = markings[i]?.instructions ?? [];
-          const text = marking(recordClassification(m.id, instructions.map(handlingInstructionLabel)));
+          const text = marking(profileClassification(m.id, instructions.map(handlingInstructionLabel)));
           return (
             <Sheet key={m.id}>
               <SheetHead title={markingTitle(m.id)} meta={markingUse(m.id)} headingLevel={2} />
@@ -171,7 +182,7 @@ export function Markings() {
                         key={id}
                         label={handlingInstructionLabel(id)}
                         checked={instructions.includes(id)}
-                        disabled={!canEdit || m.id === 'official' || (m.id === 'restricted' && id === 'distribution-list-only')}
+                        disabled={!canEdit || m.id === 'official' || (m.id === 'access-restricted' && id === 'distribution-list-only')}
                         onChange={(e) => toggleInstruction(i, id, e.target.checked)}
                       />
                     ))}

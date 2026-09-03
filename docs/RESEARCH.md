@@ -380,6 +380,13 @@ Accessed 2026-09-03 (the demo clock reads 02 Sep 2026; this is the real date the
 - Submission deadlines: the guidance does not print them. Its worked example names "August 12th, the Scottish Government submission date for returns" for Q1, and says the current deadlines live on the ASP data collection web page. The four 2026-27 dates were supplied by the product owner and are seeded as `asp.nmds.q1` to `asp.nmds.q4` with `confidence: 'verify'` and a note to confirm them against that page.
 - Confidence: High for every field set, sheet name, row number and formula cell, all read from the supplied file. Verify the submission deadlines annually.
 
+### 5.15 RESTRICTED is not a classification, and has not been one since 2014
+- Source: read by the product owner on 03 September 2026 and quoted in the review that produced this change; corroborated by Annex 2 of the MAPPA National Guidance (2022) already recorded in 5.13, which names three levels and no fourth.
+- Accessed: 2026-09-03 (supplied by the product owner)
+- Finding: RESTRICTED was abolished on 2 April 2014, when the six-tier Government Protective Marking Scheme (UNCLASSIFIED, PROTECT, RESTRICTED, CONFIDENTIAL, SECRET, TOP SECRET) was replaced by the three-level Government Security Classification scheme. OFFICIAL absorbed everything up to and including what had been RESTRICTED, and there is no direct mapping between the old scheme and the new one. Annex 2 names exactly three levels, Official, Secret and Top Secret, with Official-Sensitive as a marking applied to a subset of Official rather than as a fourth level.
+- Consequence for the product: the stored classification enum carried `restricted` as a third value, which was both a retired marking and a conflation of two orthogonal properties. It is split into a `Classification` (`level`, `sensitive`, `handling`) and an `AccessRestriction` (`none`, `restricted`); see D-073 and D-074. The glossary carries an entry recording the abolition, and another distinguishing the three unrelated senses in which the word restricted appears in this codebase.
+- Confidence: High.
+
 ## 6. Round 2 (03 Sep 2026): council officers, holidays, place names, new clocks
 
 The proxy blocked www.legislation.gov.uk, www.gov.uk, www.gov.scot and www.mygov.scot directly; findings below are from search extracts and should be re-read from the primary source on a machine with access.

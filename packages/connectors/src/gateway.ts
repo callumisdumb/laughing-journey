@@ -21,7 +21,7 @@
  * no network between the two halves.
  */
 import { encryptRecord, type EncryptedRecord, type PublicKey } from '@mas/crypto';
-import type { Agency, ConnectorId } from '@mas/domain';
+import { classificationTag, officialSensitive, type Agency, type ConnectorId } from '@mas/domain';
 import type { ExternalEvent } from './adapter';
 
 /** Where a piece of code runs, which is the whole point of this module. */
@@ -73,7 +73,7 @@ export function encryptAtGateway(gateway: Gateway, connector: ConnectorId, event
         id: event.externalRef,
         // Coarse: "connector-event", never the clinical code or the incident type.
         type: 'connector-event',
-        classification: 'official-sensitive',
+        classification: classificationTag(officialSensitive(), false),
         generation: 1,
         updatedAt: receivedAt.slice(0, 10),
         linkedIds: [],

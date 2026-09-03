@@ -1,6 +1,6 @@
 'use client';
 
-import { SIGNIFICANCES, agencyLabel, formatDate, formatDateTime, mostSensitiveClassification, significanceLabel, type ChronologyEvent, type ConnectorEvent, type LawfulBasisRecord } from '@mas/domain';
+import { SIGNIFICANCES, agencyLabel, formatDate, formatDateTime, mostRestrictedAccess, mostSensitiveClassification, significanceLabel, type ChronologyEvent, type ConnectorEvent, type LawfulBasisRecord } from '@mas/domain';
 import { MOCK_ADAPTERS, type ExternalEvent } from '@mas/connectors';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, Dialog, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, useToast } from '@mas/ui';
@@ -113,7 +113,7 @@ export function Inbox() {
     const processes = processesForPerson(data, c.subjectId).filter((p) => p.status === 'open');
     let lawfulBasisId: string | undefined;
     if (promote.integrated) {
-      const lb: LawfulBasisRecord = { id: newId('lb'), synthetic: true, purpose, article6: '6(1)(e) public task', article9Condition: '9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)', article10Criminal: c.agency === 'police' ? 'DPA 2018 s10 and Sch 1' : 'not applicable', classification: mostSensitiveClassification(processes), statutoryGateway: processes.map((p) => (p.type === 'cp' ? 'National Guidance for Child Protection in Scotland 2021' : p.type === 'asp' ? 'ASP (Scotland) Act 2007 s5' : p.type === 'mappa' ? 'Management of Offenders etc. (Scotland) Act 2005 s10' : p.type === 'marac' ? 'MARAC Operating Protocol' : 'AWI (Scotland) Act 2000')), necessityAndProportionality: necessity, consentStatus: 'not-required', authorisedByUserId: user.id, authorisedByName: `${user.givenName} ${user.familyName}`, createdAt: now.toISOString() };
+      const lb: LawfulBasisRecord = { id: newId('lb'), synthetic: true, purpose, article6: '6(1)(e) public task', article9Condition: '9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)', article10Criminal: c.agency === 'police' ? 'DPA 2018 s10 and Sch 1' : 'not applicable', classification: mostSensitiveClassification(processes), accessRestriction: mostRestrictedAccess(processes), statutoryGateway: processes.map((p) => (p.type === 'cp' ? 'National Guidance for Child Protection in Scotland 2021' : p.type === 'asp' ? 'ASP (Scotland) Act 2007 s5' : p.type === 'mappa' ? 'Management of Offenders etc. (Scotland) Act 2005 s10' : p.type === 'marac' ? 'MARAC Operating Protocol' : 'AWI (Scotland) Act 2000')), necessityAndProportionality: necessity, consentStatus: 'not-required', authorisedByUserId: user.id, authorisedByName: `${user.givenName} ${user.familyName}`, createdAt: now.toISOString() };
       upsert('lawfulBases', lb);
       lawfulBasisId = lb.id;
     }
