@@ -1,5 +1,6 @@
+import { t } from '@mas/messages';
 import type { Agency, DetailLevel } from '../enums';
-import { ROLE_DEFINITIONS } from '../enums';
+import { ROLE_DEFINITIONS, roleLabel } from '../enums';
 import type { Process } from '../schemas/process';
 import type { User } from '../schemas/user';
 import { EXCLUSIONS } from '../need-to-know/exclusions';
@@ -72,30 +73,30 @@ export function accessFor(user: User, process: Process, options: AccessOptions =
   };
 
   if (isExcludedParty(process, { userId: user.id }, options.exclusions ?? EXCLUSIONS)) {
-    return { ...base, level: 'none', reason: 'You must not receive information about this process.', breakGlass: 'unavailable' };
+    return { ...base, level: 'none', reason: t('domain.access.excluded'), breakGlass: 'unavailable' };
   }
 
   const membership = process.members.find((m) => m.userId === user.id);
   if (membership) {
-    return { ...base, level: 'full', reason: `You are on this case as ${membership.caseRole}.`, member: true };
+    return { ...base, level: 'full', reason: t('domain.access.member', { role: membership.caseRole }), member: true };
   }
 
   const role = ROLE_DEFINITIONS[user.roleId];
   if (role.oversight === 'redacted') {
-    return { ...base, level: 'full', reason: 'Inspector view: the record is shown with names redacted.', redacted: true };
+    return { ...base, level: 'full', reason: t('domain.access.inspector'), redacted: true };
   }
   if (role.oversight === 'sign-off' || role.oversight === 'read-only') {
-    return { ...base, level: 'summary', reason: `${role.label}: oversight summary across cases.` };
+    return { ...base, level: 'summary', reason: t('domain.access.oversight', { role: roleLabel(user.roleId) }) };
   }
   if (role.oversight === 'audit') {
-    return { ...base, level: 'none', reason: 'Caldicott guardian: audit view only, no case content.', breakGlass: 'unavailable' };
+    return { ...base, level: 'none', reason: t('domain.access.caldicott'), breakGlass: 'unavailable' };
   }
   if (role.oversight === 'admin') {
-    return { ...base, level: 'none', reason: 'System administrator: configuration only, no case content.', breakGlass: 'unavailable' };
+    return { ...base, level: 'none', reason: t('domain.access.systemAdministrator'), breakGlass: 'unavailable' };
   }
 
   if (options.activeBreakGlass?.includes(process.id)) {
-    return { ...base, level: 'full', reason: 'Break-glass access is active. Every read is audited.', breakGlass: 'active' };
+    return { ...base, level: 'full', reason: t('domain.access.breakGlassActive'), breakGlass: 'active' };
   }
 
   const match = matchAudience(user.agency, user.roleId, contextFor(process), options.rows);
@@ -115,12 +116,12 @@ export function accessFor(user: User, process: Process, options: AccessOptions =
     return {
       ...base,
       level: 'none',
-      reason: 'This is a restricted record and you are not on the distribution list.',
+      reason: t('domain.access.restricted'),
       breakGlass: canBreak ? 'available' : 'unavailable',
     };
   }
 
-  return { ...base, level: 'presence', reason: 'You are not on this case. You can see that a process exists and ask to be involved.' };
+  return { ...base, level: 'presence', reason: t('domain.access.notOnCase') };
 }
 
 export function canSee(level: AccessLevel, needed: DetailLevel): boolean {

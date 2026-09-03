@@ -2,7 +2,7 @@
  * Child Protection Register statistics, computed from the register block of every child protection
  * process. Children are counted, not cases: a sibling group registered at one CPPM counts once per child.
  */
-import { CP_REGISTER_CATEGORIES, CP_REGISTER_CATEGORY_LABELS, daysBetween, formatDate, formatDateTime, localDateOf, type CpProcess, type CpRegisterCategory, type Dataset, type Person } from '@mas/domain';
+import { CP_REGISTER_CATEGORIES, cpRegisterCategoryLabel, daysBetween, formatDate, formatDateTime, localDateOf, type CpProcess, type CpRegisterCategory, type Dataset, type Person } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
 import { personById } from '@/lib/selectors';
 import { ageOn } from './helpers';
@@ -126,7 +126,7 @@ export function cpModel(data: Dataset, now: Date, period: Period): ReportModel {
     numeric: [1],
     rows: CP_REGISTER_CATEGORIES.map((c, i) => ({ c, i, n: concernCounts.get(c) ?? 0 }))
       .sort((a, b) => b.n - a.n || a.i - b.i)
-      .map(({ c, n }) => [CP_REGISTER_CATEGORY_LABELS[c], n]),
+      .map(({ c, n }) => [cpRegisterCategoryLabel(c), n]),
   };
 
   const historyTable: TableSpec = {

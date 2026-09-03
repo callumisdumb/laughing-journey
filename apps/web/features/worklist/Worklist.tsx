@@ -1,6 +1,6 @@
 'use client';
 
-import { MEETING_TYPE_LABELS, PROCESS_SHORT, formatDate, relativeDays, type Process, type User } from '@mas/domain';
+import { formatDate, meetingTypeLabel, processShort, relativeDays, type Process, type User } from '@mas/domain';
 import { useT, type MessageKey, type Translator } from '@mas/messages';
 import { Button, CheckboxField, ClockNumeral, ProcessMark, Table, TableWrap, useToast } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -44,19 +44,19 @@ function itemsFor(t: Translator, data: ReturnType<typeof useData>, user: User, n
   }
   for (const { meeting, request } of preMeetingRequestsForUser(data, user)) {
     const process = data.processes.find((p) => p.id === meeting.processId);
-    out.push({ key: request.id, kind: 'report', href: meetingPath(meeting.id), icon: <FileText size={16} aria-hidden="true" />, title: t('worklist.items.reportFor', { meeting: meeting.title }), meta: t('worklist.items.reportMeta', { type: MEETING_TYPE_LABELS[meeting.type], date: formatDate(meeting.scheduledAt) }), due: request.dueAt, days: differenceInCalendarDays(parseISO(request.dueAt), now), owner, process, selection: process ? { kind: 'process', id: process.id } : undefined });
+    out.push({ key: request.id, kind: 'report', href: meetingPath(meeting.id), icon: <FileText size={16} aria-hidden="true" />, title: t('worklist.items.reportFor', { meeting: meeting.title }), meta: t('worklist.items.reportMeta', { type: meetingTypeLabel(meeting.type), date: formatDate(meeting.scheduledAt) }), due: request.dueAt, days: differenceInCalendarDays(parseISO(request.dueAt), now), owner, process, selection: process ? { kind: 'process', id: process.id } : undefined });
   }
   for (const a of actionsForUser(data, user)) {
     const process = data.processes.find((p) => p.id === a.processId);
     const subject = process ? personById(data, process.subjectIds[0]) : undefined;
-    const context = process ? (subject ? t('worklist.items.processSubject', { process: PROCESS_SHORT[process.type], subject: fullName(subject) }) : PROCESS_SHORT[process.type]) : '';
+    const context = process ? (subject ? t('worklist.items.processSubject', { process: processShort(process.type), subject: fullName(subject) }) : processShort(process.type)) : '';
     out.push({ key: a.id, kind: 'action', href: `/actions?action=${a.id}`, icon: <ListChecks size={16} aria-hidden="true" />, title: a.title, meta: t('worklist.items.actionMeta', { context }), due: a.due, days: differenceInCalendarDays(parseISO(a.due), now), owner: a.ownerName, process, selection: process ? { kind: 'process', id: process.id } : undefined });
   }
   for (const m of meetingsForUser(data, user)) {
     const days = differenceInCalendarDays(parseISO(m.scheduledAt), now);
     if (m.status !== 'scheduled' || days < 0 || days > 14) continue;
     const process = data.processes.find((p) => p.id === m.processId);
-    out.push({ key: m.id, kind: 'meeting', href: meetingPath(m.id), icon: <CalendarDays size={16} aria-hidden="true" />, title: t('worklist.items.prepareFor', { meeting: m.title }), meta: t('worklist.items.meetingMeta', { type: MEETING_TYPE_LABELS[m.type], location: m.location }), due: m.scheduledAt.slice(0, 10), days, owner, process, selection: process ? { kind: 'process', id: process.id } : undefined });
+    out.push({ key: m.id, kind: 'meeting', href: meetingPath(m.id), icon: <CalendarDays size={16} aria-hidden="true" />, title: t('worklist.items.prepareFor', { meeting: m.title }), meta: t('worklist.items.meetingMeta', { type: meetingTypeLabel(m.type), location: m.location }), due: m.scheduledAt.slice(0, 10), days, owner, process, selection: process ? { kind: 'process', id: process.id } : undefined });
   }
   return out.sort((a, b) => (a.days ?? 999) - (b.days ?? 999));
 }

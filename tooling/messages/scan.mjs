@@ -11,8 +11,24 @@ const ts = require('typescript');
 export const SCAN_ROOTS = ['apps/web', 'packages/ui/src', 'packages/domain/src', 'packages/connectors/src', 'packages/mock-data/src', 'packages/messages/src', 'apps/desktop-electron/src', 'apps/desktop-tauri/src-tauri/src'];
 const SKIP_DIRS = new Set(['node_modules', 'out', '.next', 'dist', 'release', 'target', 'test-results', 'playwright-report', 'staging', 'e2e', 'scripts']);
 const SKIP_FILES = /(\.test\.tsx?|\.spec\.tsx?|\.d\.ts|keys\.generated\.ts|test-setup\.ts|\.config\.(ts|js|mjs))$/;
+/**
+ * Modules that build records or configuration rather than render anything. Their text is seed data
+ * and default configuration, edited in Admin (the need-to-know matrix, classification markings,
+ * forms and their versions) or written into a record at the time of an event (a clock note, a
+ * case-role register entry, a connector fixture). docs/MESSAGES.md says why these are not copy.
+ */
+const DATA_MODULES = [
+  'packages/domain/src/config/default-config.ts',
+  'packages/domain/src/need-to-know/',
+  'packages/domain/src/clocks/transitions.ts',
+  'packages/connectors/src/mock/adapters.ts',
+];
 
-export function sourceFiles(roots = SCAN_ROOTS) {
+/**
+ * Source files to scan. `includeData` keeps the data modules in: the reference check needs them,
+ * because a fixture may still look a label up in the catalogue, while the extract does not.
+ */
+export function sourceFiles(roots = SCAN_ROOTS, { includeData = false } = {}) {
   const out = [];
   const walk = (dir) => {
     for (const entry of readdirSync(dir)) {
@@ -20,7 +36,7 @@ export function sourceFiles(roots = SCAN_ROOTS) {
       const st = statSync(path);
       if (st.isDirectory()) {
         if (!SKIP_DIRS.has(entry)) walk(path);
-      } else if (/\.(tsx?|rs)$/.test(entry) && !SKIP_FILES.test(entry)) out.push(path);
+      } else if (/\.(tsx?|rs)$/.test(entry) && !SKIP_FILES.test(entry) && (includeData || !DATA_MODULES.some((d) => path.includes(d)))) out.push(path);
     }
   };
   for (const r of roots) walk(join(ROOT, r));
@@ -30,7 +46,7 @@ export function sourceFiles(roots = SCAN_ROOTS) {
 /** Props whose string value a person sees or hears. */
 export const COPY_PROPS = new Set(['aria-label', 'aria-description', 'aria-roledescription', 'aria-placeholder', 'aria-valuetext', 'alt', 'title', 'placeholder', 'label', 'hint', 'legend', 'summary', 'description', 'text', 'caption', 'lede', 'heading', 'message', 'emptyText', 'loadingText', 'errorText', 'tooltip', 'confirmText', 'cancelText', 'submitText', 'srLabel', 'name', 'content']);
 /** Props whose string value is never copy even when it looks like a sentence. */
-export const NON_COPY_PROPS = new Set(['className', 'id', 'href', 'src', 'to', 'type', 'name', 'key', 'variant', 'size', 'tone', 'kind', 'role', 'htmlFor', 'value', 'defaultValue', 'autoComplete', 'inputMode', 'rel', 'target', 'data-state', 'style', 'width', 'height', 'viewBox', 'd', 'fill', 'stroke', 'path', 'testid', 'data-testid', 'lang', 'dir', 'scope', 'accelerator', 'phase', 'screen', 'idPrefix', 'process', 'agency', 'family', 'stage', 'accent']);
+export const NON_COPY_PROPS = new Set(['className', 'id', 'href', 'src', 'to', 'type', 'name', 'key', 'accept', 'pattern', 'inputMode', 'autoCapitalize', 'enterKeyHint', 'variant', 'size', 'tone', 'kind', 'role', 'htmlFor', 'value', 'defaultValue', 'autoComplete', 'inputMode', 'rel', 'target', 'data-state', 'style', 'width', 'height', 'viewBox', 'd', 'fill', 'stroke', 'path', 'testid', 'data-testid', 'lang', 'dir', 'scope', 'accelerator', 'phase', 'screen', 'idPrefix', 'process', 'agency', 'family', 'stage', 'accent']);
 
 const WORDS = /[A-Za-z]{2,}/;
 const PUNCT_ONLY = /^[\s\p{P}\p{S}\d]*$/u;

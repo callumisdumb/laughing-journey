@@ -1,16 +1,22 @@
+import { tKey } from '@mas/messages';
+import { keySegment } from '../enums';
 import type { ClockRule } from '../schemas/config';
 
 /**
- * Statutory and local clock rules. Values come from docs/RESEARCH.md.
+ * Statutory and local clock rules. Values come from docs/RESEARCH.md. The name, trigger and
+ * plain-language description of each rule live in the message catalogue under `domain.clockRules`
+ * and are read by id; `source`, `sourceRef`, `confidence`, `localNote` and `todoVerify` stay here as
+ * citations and configuration.
  * Rules marked `todoVerify` were seeded from search extracts or local procedures
  * rather than read in the primary source; Admin shows their confidence.
  */
-export const CLOCK_RULES: ClockRule[] = [
+/** A rule without the catalogue-backed text. */
+export type ClockRuleData = Omit<ClockRule, 'label' | 'trigger'>;
+
+const RULES: ClockRuleData[] = [
   {
     id: 'cp.cppm.initial',
     process: 'cp',
-    label: 'Initial Child Protection Planning Meeting',
-    trigger: 'Child protection investigation begun (IRD decision)',
     unit: 'calendar-days',
     amount: 28,
     kind: 'deadline',
@@ -22,8 +28,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'cp.coregroup.first',
     process: 'cp',
-    label: 'First core group meeting',
-    trigger: 'Initial CPPM held',
     unit: 'working-days',
     amount: 15,
     kind: 'deadline',
@@ -35,8 +39,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'cp.cppm.review.first',
     process: 'cp',
-    label: 'First review CPPM',
-    trigger: 'Initial CPPM held',
     unit: 'months',
     amount: 6,
     kind: 'review',
@@ -48,8 +50,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'cp.cppm.review.subsequent',
     process: 'cp',
-    label: 'Subsequent review CPPM',
-    trigger: 'Review CPPM held',
     unit: 'months',
     amount: 6,
     kind: 'review',
@@ -61,8 +61,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'cp.cppm.notice',
     process: 'cp',
-    label: 'Notice of the CPPM to family and invitees',
-    trigger: 'CPPM date set (the clock counts back from the meeting date)',
     unit: 'calendar-days',
     amount: 5,
     direction: 'before',
@@ -75,8 +73,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'cp.coregroup.escalate',
     process: 'cp',
-    label: 'Core group concern escalated to the chair',
-    trigger: 'Significant change or concern within the plan identified',
     unit: 'calendar-days',
     amount: 3,
     kind: 'deadline',
@@ -88,8 +84,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'cp.prebirth.review',
     process: 'cp',
-    label: 'Review of the pre-birth plan',
-    trigger: 'Pre-birth CPPM held',
     unit: 'months',
     amount: 3,
     kind: 'review',
@@ -103,8 +97,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'cp.cppm.inquorate.reconvene',
     process: 'cp',
-    label: 'Inquorate CPPM reconvened',
-    trigger: 'CPPM inquorate',
     unit: 'working-days',
     amount: 10,
     kind: 'deadline',
@@ -116,8 +108,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'cp.cppm.record.distribute',
     process: 'cp',
-    label: 'CPPM record distributed',
-    trigger: 'CPPM held',
     unit: 'working-days',
     amount: 10,
     kind: 'deadline',
@@ -129,8 +119,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'cp.prebirth.cppm',
     process: 'cp',
-    label: 'Pre-birth CPPM',
-    trigger: 'Pre-birth concern raised',
     unit: 'calendar-days',
     amount: 28,
     kind: 'deadline',
@@ -142,8 +130,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'asp.inquiry.decision',
     process: 'asp',
-    label: 'Inquiry decision',
-    trigger: 'Adult concern received',
     unit: 'working-days',
     amount: 5,
     kind: 'deadline',
@@ -157,8 +143,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'asp.caseconference.initial',
     process: 'asp',
-    label: 'Initial ASP case conference',
-    trigger: 'Adult concern received',
     unit: 'calendar-days',
     amount: 21,
     kind: 'deadline',
@@ -172,8 +156,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'asp.plan.review',
     process: 'asp',
-    label: 'Adult Protection Plan review',
-    trigger: 'Protection plan agreed',
     unit: 'months',
     amount: 3,
     kind: 'review',
@@ -186,8 +168,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'marac.research.return',
     process: 'marac',
-    label: 'MARAC research return',
-    trigger: 'Research request sent',
     unit: 'working-days',
     amount: 5,
     kind: 'deadline',
@@ -201,8 +181,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'marac.flag.expiry',
     process: 'marac',
-    label: 'MARAC flag expiry',
-    trigger: 'Case heard at MARAC',
     unit: 'months',
     amount: 12,
     kind: 'expiry',
@@ -214,8 +192,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'marac.repeat.window',
     process: 'marac',
-    label: 'MARAC repeat window',
-    trigger: 'Case heard at MARAC',
     unit: 'months',
     amount: 12,
     kind: 'expiry',
@@ -227,8 +203,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'mappa.level2.review',
     process: 'mappa',
-    label: 'MAPPA Level 2 review',
-    trigger: 'Level 2 meeting held',
     unit: 'weeks',
     amount: 12,
     kind: 'review',
@@ -240,8 +214,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'mappa.level3.review',
     process: 'mappa',
-    label: 'MAPPA Level 3 review',
-    trigger: 'Level 3 (MAPPP) meeting held',
     unit: 'weeks',
     amount: 6,
     kind: 'review',
@@ -253,8 +225,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'awi.mho.report',
     process: 'awi',
-    label: 'MHO report',
-    trigger: 'MHO notified of guardianship application',
     unit: 'calendar-days',
     amount: 21,
     kind: 'deadline',
@@ -266,8 +236,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'awi.interim.warning',
     process: 'awi',
-    label: 'Interim guardianship order duration',
-    trigger: 'Interim order granted',
     unit: 'months',
     amount: 3,
     kind: 'warning',
@@ -279,8 +247,6 @@ export const CLOCK_RULES: ClockRule[] = [
   {
     id: 'awi.interim.maximum',
     process: 'awi',
-    label: 'Interim order statutory maximum',
-    trigger: 'Interim order granted',
     unit: 'months',
     amount: 6,
     kind: 'expiry',
@@ -290,6 +256,23 @@ export const CLOCK_RULES: ClockRule[] = [
     confidence: 'high',
   },
 ];
+
+/** Clock name, read from the catalogue at call time. */
+export function clockRuleLabel(id: string): string {
+  return tKey(`domain.clockRules.${keySegment(id)}.label`);
+}
+
+/** What starts the clock, read from the catalogue at call time. */
+export function clockRuleTrigger(id: string): string {
+  return tKey(`domain.clockRules.${keySegment(id)}.trigger`);
+}
+
+/** Plain-language description of the rule for Help and Admin, read from the catalogue at call time. */
+export function clockRuleDescription(id: string): string {
+  return tKey(`domain.clockRules.${keySegment(id)}.description`);
+}
+
+export const CLOCK_RULES: ClockRule[] = RULES;
 
 export function findClockRule(rules: ClockRule[], id: string): ClockRule | undefined {
   return rules.find((r) => r.id === id);

@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, computeClock, findClockRule, formatDate, formatDateTime, type AwiProcess } from '@mas/domain';
+import { agencyShort, awiOrderKindLabel, capacityOutcomeLabel, computeClock, findClockRule, formatDate, formatDateTime, medicalReportKindLabel, mhoReportStatusLabel, poaKindLabel, requestStatusLabel, type AwiProcess } from '@mas/domain';
 import { hasMessage, tKey, useT } from '@mas/messages';
 import { Button, ClockNumeral, KeyValue, Pill, Sheet, SheetBody, SheetHead, Table, TableWrap } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -35,7 +35,7 @@ export function AwiPanels({ process }: { process: AwiProcess }) {
   return (
     <>
       <Sheet>
-        <SheetHead title={t('awi.concern.title')} meta={t('awi.concern.meta', { when: formatDateTime(d.concern.raisedAt), source: d.concern.source, agency: AGENCY_SHORT[d.concern.sourceAgency] })} />
+        <SheetHead title={t('awi.concern.title')} meta={t('awi.concern.meta', { when: formatDateTime(d.concern.raisedAt), source: d.concern.source, agency: agencyShort(d.concern.sourceAgency) })} />
         <SheetBody>
           <KeyValue items={[{ key: t('awi.concern.decision'), value: d.concern.decisionInQuestion }, { key: t('awi.concern.summary'), value: d.concern.summary }]} />
         </SheetBody>
@@ -68,7 +68,7 @@ export function AwiPanels({ process }: { process: AwiProcess }) {
                     <td>{t('awi.assessments.assessor', { name: c.assessorName, role: c.assessorRole })}</td>
                     <td>
                       <Pill size="sm" tone={c.outcome === 'lacks-capacity' ? 'critical' : c.outcome === 'has-capacity' ? 'low' : c.outcome === 'fluctuating' ? 'medium' : 'outline'}>
-                        {c.outcome.replace('-', ' ')}
+                        {capacityOutcomeLabel(c.outcome)}
                       </Pill>
                     </td>
                     <td>
@@ -104,7 +104,7 @@ export function AwiPanels({ process }: { process: AwiProcess }) {
             {d.opgResult ? (
               <KeyValue
                 items={[
-                  { key: t('awi.opg.poa'), value: d.opgResult.powerOfAttorney.exists ? t('awi.opg.poaValue', { kind: d.opgResult.powerOfAttorney.kind ?? '', name: d.opgResult.powerOfAttorney.attorneyName ?? '', hasRegistered: d.opgResult.powerOfAttorney.registeredAt ? 'yes' : 'no', date: d.opgResult.powerOfAttorney.registeredAt ? formatDate(d.opgResult.powerOfAttorney.registeredAt) : '' }) : t('awi.opg.poaNone') },
+                  { key: t('awi.opg.poa'), value: d.opgResult.powerOfAttorney.exists ? t('awi.opg.poaValue', { kind: d.opgResult.powerOfAttorney.kind ? poaKindLabel(d.opgResult.powerOfAttorney.kind) : '', name: d.opgResult.powerOfAttorney.attorneyName ?? '', hasRegistered: d.opgResult.powerOfAttorney.registeredAt ? 'yes' : 'no', date: d.opgResult.powerOfAttorney.registeredAt ? formatDate(d.opgResult.powerOfAttorney.registeredAt) : '' }) : t('awi.opg.poaNone') },
                   { key: t('awi.opg.guardianship'), value: d.opgResult.guardianship.exists ? t('awi.opg.guardianshipValue', { name: d.opgResult.guardianship.guardianName ?? '', powers: (d.opgResult.guardianship.powers ?? []).join('; '), hasExpiry: d.opgResult.guardianship.expiresAt ? 'yes' : 'no', date: d.opgResult.guardianship.expiresAt ? formatDate(d.opgResult.guardianship.expiresAt) : '' }) : t('common.keyValue.none') },
                 ]}
               />
@@ -134,12 +134,12 @@ export function AwiPanels({ process }: { process: AwiProcess }) {
           <SheetBody>
             <div className={styles.grid2}>
               <div className="stack">
-                {mhoClock ? <ClockNumeral daysRemaining={mhoClock.daysRemaining} band={mhoClock.band} status={mhoClock.status} label={t('awi.application.mhoClock')} sub={t('awi.application.mhoSub', { when: formatDateTime(app.mhoNotifiedAt), due: formatDate(mhoClock.dueAt), hasMho: mho ? 'yes' : 'no', mho: mho ? userName(mho) : '', status: app.mhoReport.status.replace('-', ' ') })} size="sm" /> : null}
+                {mhoClock ? <ClockNumeral daysRemaining={mhoClock.daysRemaining} band={mhoClock.band} status={mhoClock.status} label={t('awi.application.mhoClock')} sub={t('awi.application.mhoSub', { when: formatDateTime(app.mhoNotifiedAt), due: formatDate(mhoClock.dueAt), hasMho: mho ? 'yes' : 'no', mho: mho ? userName(mho) : '', status: mhoReportStatusLabel(app.mhoReport.status) })} size="sm" /> : null}
                 <KeyValue
                   items={[
                     { key: t('awi.application.powersSought'), value: <ul>{app.powersSought.map((p) => <li key={p}>{p}</li>)}</ul> },
-                    { key: t('awi.application.medicalReports'), value: <ul>{app.medicalReports.map((m, i) => <li key={i}>{t('awi.application.medicalReport', { practitioner: m.practitioner, kind: m.kind.replace(/-/g, ' '), status: m.status, hasReceived: m.receivedAt ? 'yes' : 'no', date: m.receivedAt ? formatDate(m.receivedAt) : '' })}</li>)}</ul> },
-                    { key: t('awi.application.suitability'), value: app.suitabilityReport.required ? (app.suitabilityReport.status ?? t('awi.application.suitabilityDefault')) : t('awi.application.suitabilityNotRequired') },
+                    { key: t('awi.application.medicalReports'), value: <ul>{app.medicalReports.map((m, i) => <li key={i}>{t('awi.application.medicalReport', { practitioner: m.practitioner, kind: medicalReportKindLabel(m.kind), status: requestStatusLabel(m.status), hasReceived: m.receivedAt ? 'yes' : 'no', date: m.receivedAt ? formatDate(m.receivedAt) : '' })}</li>)}</ul> },
+                    { key: t('awi.application.suitability'), value: app.suitabilityReport.required ? (app.suitabilityReport.status ? requestStatusLabel(app.suitabilityReport.status) : t('awi.application.suitabilityDefault')) : t('awi.application.suitabilityNotRequired') },
                   ]}
                 />
               </div>
@@ -171,7 +171,7 @@ export function AwiPanels({ process }: { process: AwiProcess }) {
               {d.orders.map((o) => (
                 <li key={o.id}>
                   <Pill size="sm" tone="accent">
-                    {o.kind.replace(/-/g, ' ')}
+                    {awiOrderKindLabel(o.kind)}
                   </Pill>
                   <span>
                     <strong>{o.guardianName}</strong>. {t('awi.orders.item', { granted: formatDate(o.grantedAt), hasExpiry: o.expiresAt ? 'yes' : 'no', expires: o.expiresAt ? formatDate(o.expiresAt) : '', powers: o.powers.join('; ') })}

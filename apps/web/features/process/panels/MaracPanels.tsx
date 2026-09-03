@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, daqQuestionText, formatDate, formatDateTime, type MaracProcess } from '@mas/domain';
+import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, agencyShort, daqQuestionText, formatDate, formatDateTime, meetingStatusLabel, researchStatusLabel, riskBandLabel, type MaracProcess } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, KeyValue, Pill, RiskBand, Sheet, SheetBody, SheetHead, Table, TableWrap } from '@mas/ui';
 import { Ban, Check, Flag, Repeat } from 'lucide-react';
@@ -28,7 +28,7 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
       <Sheet>
         <SheetHead
           title={t('marac.referral.title')}
-          meta={t('marac.referral.meta', { when: formatDateTime(d.referral.receivedAt), name: d.referral.referrerName, agency: AGENCY_SHORT[d.referral.referringAgency] })}
+          meta={t('marac.referral.meta', { when: formatDateTime(d.referral.receivedAt), name: d.referral.referrerName, agency: agencyShort(d.referral.referringAgency) })}
           actions={
             <span className={styles.pills}>
               {d.referral.repeat ? (
@@ -56,14 +56,14 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
       </Sheet>
 
       <Sheet>
-        <SheetHead title={ra ? t('marac.checklist.title', { tool: ra.tool }) : t('marac.checklist.titleNone')} meta={ra ? t('marac.checklist.meta', { when: formatDateTime(ra.assessedAt), name: ra.assessorName, agency: AGENCY_SHORT[ra.assessorAgency] }) : t('marac.checklist.notRecorded')} actions={<Button size="sm" variant="secondary" onClick={() => setDaqOpen(true)}>{t('marac.checklist.record')}</Button>} />
+        <SheetHead title={ra ? t('marac.checklist.title', { tool: ra.tool }) : t('marac.checklist.titleNone')} meta={ra ? t('marac.checklist.meta', { when: formatDateTime(ra.assessedAt), name: ra.assessorName, agency: agencyShort(ra.assessorAgency) }) : t('marac.checklist.notRecorded')} actions={<Button size="sm" variant="secondary" onClick={() => setDaqOpen(true)}>{t('marac.checklist.record')}</Button>} />
         <SheetBody>
           {ra ? (
             <>
               <div className={styles.score}>
                 <span className={styles.scoreNumeral}>{ra.score}</span>
                 <span className={styles.scoreLabel}>{t('marac.checklist.scoreLabel', { max: ra.maxScore ?? '', threshold: HIGH_RISK_THRESHOLD })}</span>
-                <RiskBand band={ra.judgementOverride?.band ?? ra.band} label={ra.judgementOverride ? t('marac.checklist.overridden', { band: ra.bandLabel, override: ra.judgementOverride.band }) : ra.bandLabel} size="lg" />
+                <RiskBand band={ra.judgementOverride?.band ?? ra.band} label={ra.judgementOverride ? t('marac.checklist.overridden', { band: ra.bandLabel, override: riskBandLabel(ra.judgementOverride.band) }) : ra.bandLabel} size="lg" />
               </div>
               {ra.judgementOverride ? <p className={styles.warn}>{t('marac.checklist.override', { name: ra.judgementOverride.byName, reason: ra.judgementOverride.reason })}</p> : null}
               <div className={styles.items}>
@@ -112,7 +112,7 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
                     <td>{formatDate(r.dueAt)}</td>
                     <td>
                       <Pill size="sm" tone={r.status === 'returned' ? 'low' : r.status === 'nothing-known' ? 'outline' : r.status === 'overdue' ? 'critical' : 'medium'}>
-                        {r.status.replace('-', ' ')}
+                        {researchStatusLabel(r.status)}
                       </Pill>
                     </td>
                     <td>{r.returnSummary ?? ''}</td>
@@ -126,7 +126,7 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
 
       <div className={styles.grid2}>
         <Sheet>
-          <SheetHead title={t('marac.meeting.title')} meta={meeting ? t('marac.meeting.meta', { title: meeting.title, when: formatDateTime(meeting.scheduledAt), status: meeting.status }) : t('marac.meeting.notListed')} actions={meeting ? <AppLink href={meetingPath(meeting.id)}>{t('marac.meeting.open')}</AppLink> : undefined} />
+          <SheetHead title={t('marac.meeting.title')} meta={meeting ? t('marac.meeting.meta', { title: meeting.title, when: formatDateTime(meeting.scheduledAt), status: meetingStatusLabel(meeting.status) }) : t('marac.meeting.notListed')} actions={meeting ? <AppLink href={meetingPath(meeting.id)}>{t('marac.meeting.open')}</AppLink> : undefined} />
           <SheetBody>
             <p className={styles.note}>{t('marac.meeting.note')}</p>
           </SheetBody>
@@ -139,7 +139,7 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
                 <li key={i}>
                   <Flag size={14} aria-hidden="true" />
                   <span>
-                    <strong>{AGENCY_SHORT[f.agency]}</strong> {t('marac.flags.item', { system: f.system, placed: formatDate(f.placedAt), expires: formatDate(f.expiresAt), receipt: f.receiptRef })}
+                    <strong>{agencyShort(f.agency)}</strong> {t('marac.flags.item', { system: f.system, placed: formatDate(f.placedAt), expires: formatDate(f.expiresAt), receipt: f.receiptRef })}
                   </span>
                 </li>
               ))}

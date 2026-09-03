@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCIES, AGENCY_SHORT, PROCESS_LABELS, PROCESS_TYPES, ageLabel, formatDate, stageLabel, type Agency, type Person } from '@mas/domain';
+import { AGENCIES, PROCESS_TYPES, ageLabel, agencyShort, formatDate, processLabel, stageLabel, type Agency, type Person } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Pill, ProcessMark, SelectField, Table, TableWrap, TextField, tableStyles } from '@mas/ui';
 import { Lock, UserX } from 'lucide-react';
@@ -98,8 +98,8 @@ export function PeopleList() {
         <div className={styles.filterSearch}>
           <TextField label={t('person.list.filters.search')} type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('person.list.filters.searchPlaceholder')} />
         </div>
-        <SelectField label={t('person.list.filters.process')} value={processFilter} onChange={(e) => setFilter('process', e.target.value)} placeholder={t('person.list.filters.anyProcess')} options={PROCESS_TYPES.map((pt) => ({ value: pt, label: PROCESS_LABELS[pt] }))} />
-        <SelectField label={t('person.list.filters.agency')} value={agencyFilter} onChange={(e) => setFilter('agency', e.target.value)} placeholder={t('person.list.filters.anyAgency')} options={AGENCIES.map((a) => ({ value: a, label: AGENCY_SHORT[a] }))} />
+        <SelectField label={t('person.list.filters.process')} value={processFilter} onChange={(e) => setFilter('process', e.target.value)} placeholder={t('person.list.filters.anyProcess')} options={PROCESS_TYPES.map((pt) => ({ value: pt, label: processLabel(pt) }))} />
+        <SelectField label={t('person.list.filters.agency')} value={agencyFilter} onChange={(e) => setFilter('agency', e.target.value)} placeholder={t('person.list.filters.anyAgency')} options={AGENCIES.map((a) => ({ value: a, label: agencyShort(a) }))} />
         <SelectField label={t('person.list.filters.locality')} value={townFilter} onChange={(e) => setFilter('town', e.target.value)} placeholder={t('person.list.filters.anyTown')} options={TOWNS.map((town) => ({ value: town.name, label: town.name }))} />
         <SelectField label={t('person.list.filters.ageBand')} value={ageFilter} onChange={(e) => setFilter('age', e.target.value)} placeholder={t('person.list.filters.anyAge')} options={ageBands} />
       </div>

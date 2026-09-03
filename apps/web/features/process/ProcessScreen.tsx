@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, PROCESS_LABELS, PROCESS_SHORT, STAGES_BY_PROCESS, formatDate, formatDateTime, formatTime, relativeDays, stageLabel, type Process } from '@mas/domain';
+import { STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, relativeDays, stageLabel, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, ClassificationBanner, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -83,13 +83,13 @@ export function ProcessScreen({ processId }: { processId: string }) {
         <div className={styles.ref}>
           <ProcessMark type={process.type} stage={stageLabel(process.type, process.stage)} restricted={process.classification === 'restricted'} />
           <span>{process.reference}</span>
-          <span>{t('processes.head.lead', { agency: AGENCY_SHORT[process.leadAgency] })}</span>
+          <span>{t('processes.head.lead', { agency: agencyShort(process.leadAgency) })}</span>
           <span>{t('processes.head.opened', { date: formatDate(process.openedAt) })}</span>
           <Pill size="sm" tone={process.status === 'open' ? 'low' : 'outline'}>
-            {process.status}
+            {processStatusLabel(process.status)}
           </Pill>
         </div>
-        <h1 className={styles.title}>{access.level === 'none' ? t('processes.head.restrictedTitle', { process: PROCESS_LABELS[process.type] }) : process.title}</h1>
+        <h1 className={styles.title}>{access.level === 'none' ? t('processes.head.restrictedTitle', { process: processLabel(process.type) }) : process.title}</h1>
         {access.level !== 'none' ? (
           <div className={styles.subjects}>
             {subjects.map((s) => (
@@ -122,7 +122,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
       >
         {access.level === 'presence' ? (
           <div className={styles.summaryOnly}>
-            <p>{t('processes.presence.summary', { process: PROCESS_LABELS[process.type], stage: stageLabel(process.type, process.stage), agency: AGENCY_SHORT[process.leadAgency], reason: access.reason })}</p>
+            <p>{t('processes.presence.summary', { process: processLabel(process.type), stage: stageLabel(process.type, process.stage), agency: agencyShort(process.leadAgency), reason: access.reason })}</p>
           </div>
         ) : (
           <>
@@ -142,7 +142,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                           ))}
                         </ul>
                       ) : (
-                        <p>{t('processes.access.summaryText', { stage: stageLabel(process.type, process.stage), agency: AGENCY_SHORT[process.leadAgency], hasNext: nextMeeting ? 'yes' : 'no', date: nextMeeting ? formatDate(nextMeeting.scheduledAt) : '' })}</p>
+                        <p>{t('processes.access.summaryText', { stage: stageLabel(process.type, process.stage), agency: agencyShort(process.leadAgency), hasNext: nextMeeting ? 'yes' : 'no', date: nextMeeting ? formatDate(nextMeeting.scheduledAt) : '' })}</p>
                       )}
                     </SheetBody>
                   </Sheet>
@@ -199,7 +199,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                           <span className={styles.meetingDate}>{formatDate(m.scheduledAt).slice(0, 6)}</span>
                           <span className={styles.meetingTitle}>{m.title}</span>
                           <span className={styles.meetingMeta}>
-                            {m.status === 'held' ? t('processes.meetings.held', { time: formatTime(m.scheduledAt), status: m.minute.status.replace('-', ' ') }) : m.status === 'scheduled' ? t('processes.meetings.scheduled', { when: formatDateTime(m.scheduledAt), location: m.location }) : m.status}
+                            {m.status === 'held' ? t('processes.meetings.held', { time: formatTime(m.scheduledAt), status: minuteStatusLabel(m.minute.status) }) : m.status === 'scheduled' ? t('processes.meetings.scheduled', { when: formatDateTime(m.scheduledAt), location: m.location }) : meetingStatusLabel(m.status)}
                           </span>
                         </AppLink>
                       ))}
@@ -215,7 +215,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                           <span className={styles.memberName}>{s.recipient.name}</span>
                           <span>
                             <Pill size="sm" tone="outline">
-                              {s.detailLevel}
+                              {detailLevelLabel(s.detailLevel)}
                             </Pill>
                           </span>
                           <span className={styles.memberMeta}>{t('processes.sharing.item', { reason: s.reason, date: formatDate(s.createdAt) })}</span>
@@ -227,7 +227,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
               </div>
               <div className={styles.wide}>
                 <Sheet>
-                  <SheetHead title={t('processes.plans.title')} meta={plans.length === 0 ? t('processes.plans.none') : plans.map((p) => t('processes.plans.plan', { title: p.title, status: p.status })).join('; ')} />
+                  <SheetHead title={t('processes.plans.title')} meta={plans.length === 0 ? t('processes.plans.none') : plans.map((p) => t('processes.plans.plan', { title: p.title, status: planStatusLabel(p.status) })).join('; ')} />
                   <SheetBody flush>
                     <TableWrap style={{ border: 0, borderRadius: 0 }} className={styles.actionsTable}>
                       <Table>
@@ -253,12 +253,12 @@ export function ProcessScreen({ processId }: { processId: string }) {
                               <tr key={a.id}>
                                 <td>{a.title}</td>
                                 <td>
-                                  {a.ownerName} <span style={{ color: 'var(--color-ink-3)' }}>({AGENCY_SHORT[a.ownerAgency]})</span>
+                                  {a.ownerName} <span style={{ color: 'var(--color-ink-3)' }}>({agencyShort(a.ownerAgency)})</span>
                                 </td>
                                 <td className={overdue ? styles.overdue : undefined}>{a.status !== 'complete' ? t('processes.plans.dueRelative', { date: formatDate(a.due), relative: relativeDays(days) }) : formatDate(a.due)}</td>
                                 <td>
                                   <Pill size="sm" tone={a.status === 'complete' ? 'low' : overdue ? 'critical' : a.status === 'in-progress' ? 'accent' : 'neutral'}>
-                                    {overdue ? t('processes.plans.overdue') : a.status.replace('-', ' ')}
+                                    {overdue ? t('processes.plans.overdue') : actionStatusLabel(a.status)}
                                   </Pill>
                                 </td>
                                 <td>{a.evidence ?? ''}</td>
@@ -324,5 +324,3 @@ function TypePanels({ process }: { process: Process }): ReactNode {
       return <AwiPanels process={process} />;
   }
 }
-
-export { PROCESS_SHORT };

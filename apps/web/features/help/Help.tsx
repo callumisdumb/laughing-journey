@@ -1,6 +1,6 @@
 'use client';
 
-import { PROCESS_SHORT, type ClockRule } from '@mas/domain';
+import { clockRuleLabel, clockRuleTrigger, processShort, type ClockRule } from '@mas/domain';
 import { tKey, useT, type MessageKey, type Translator } from '@mas/messages';
 import { EmptyState, KeyValue, Pill, Sheet, SheetBody, SheetHead, TabPanel, Table, TableWrap, Tabs, Term, TextField, type PillTone } from '@mas/ui';
 import { useEffect, useState } from 'react';
@@ -231,13 +231,13 @@ export function Help() {
                       return (
                         <tr key={r.id} data-confidence={r.confidence}>
                           <td>
-                            {r.label}
+                            {clockRuleLabel(r.id)}
                             <span className={styles.ruleId}>{r.id}</span>
                           </td>
                           <td>
-                            <Term term={PROCESS_SHORT[r.process]} />
+                            <Term term={processShort(r.process)} />
                           </td>
-                          <td>{r.trigger}</td>
+                          <td>{clockRuleTrigger(r.id)}</td>
                           <td className={styles.nowrap}>{dueLabel(t, r)}</td>
                           <td className={styles.source}>
                             {r.source}

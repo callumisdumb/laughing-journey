@@ -78,7 +78,7 @@ Electron is the demo build (D-032). Tauri stays fully configured as the target s
 | Shell | Verified here | Result | What is left |
 |---|---|---|---|
 | Tauri 2 (primary) | `cargo check` in `apps/desktop-tauri/src-tauri` | Dependency resolution and `Cargo.lock` succeed; compilation stops at the missing `gdk-3.0` system library because the Linux container has no GTK or WebKitGTK. | Build on macOS or Windows with the commands in section 7. The Rust code, `tauri.conf.json`, capabilities and icons are complete; expect the first build to take a few minutes while crates compile. |
-| Electron 44 (fallback) | `tsc`, `electron-builder --dir --linux` | The main and preload scripts compile, the Electron binary downloads through the proxy, and `electron-builder` produces `apps/desktop-electron/release/linux-unpacked` (about 300 MB) with the web export under `resources/web/out`. | Run the macOS and Windows targets on those platforms; the config already lists dmg, nsis and msi. |
+| Electron 44 (fallback) | `tsc`, `electron-builder --dir --linux` | The main and preload scripts compile, the Electron binary downloads through the proxy, and `electron-builder` produces `apps/desktop-electron/release/linux-unpacked` (about 300 MB) with the web export under `resources/web/out` and the message catalogue as `resources/en-GB.json`; the packaged main process was smoke-tested resolving its menu and About text from that file. | Run the macOS and Windows targets on those platforms; the config already lists dmg, nsis and msi. |
 
 Brief section 2 requires no runtime network. Both shells satisfy it: the web app never fetches, fonts are bundled, and the Tauri capability file grants no network permission.
 
@@ -236,7 +236,7 @@ Everything marked here is either configuration seeded from research rather than 
 - No backend, no real integrations, no authentication. Personas are a switcher; every switch is audited.
 - Connector outage, slow response and speed toggles live in module state and reset on reload (the screen says so; kept by decision).
 - No global keyboard shortcuts beyond the ones the controls themselves provide (search box, tab lists, rows, dialogs); Help says so rather than listing keys that do not exist.
-- Tauri binary not built in this environment (no GTK or WebKitGTK); Electron is the demo build (D-032) and Tauri stays configured; see section 4.
+- Tauri binary not built in this environment (no GTK or WebKitGTK); Electron is the demo build (D-032) and Tauri stays configured; see section 4. The Tauri shell's catalogue-driven menu in `src-tauri/src/lib.rs` (embedded with `include_str!`, overrides from the store plugin) could not be compiled here for the same reason, so the first macOS or Windows build should check it; the Electron shell's equivalent was packaged and smoke-tested with the bundled `resources/en-GB.json`.
 - The MAPPA report is counts only, by design, and the unit test asserts that no name reaches its model.
 - Exclusions are keyed on the case-role register (D-035). A person who should be excluded but is not linked to the perpetrator by a relationship record, and not named in the referral, must be added to the register by hand; nothing infers it from free text.
 

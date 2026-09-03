@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_LABELS, DEMO_NOW_ISO, ROLE_DEFINITIONS, formatDateTime } from '@mas/domain';
+import { DEMO_NOW_ISO, agencyLabel, formatDateTime, roleLabel } from '@mas/domain';
 import { formatRich, useT, type MessageKey, type Translator } from '@mas/messages';
 import { AgencyMark, Button, Dialog, KeyValue, RadioGroup, Sheet, SheetBody, SheetHead, Switch, useToast } from '@mas/ui';
 import { useEffect, useState, type ReactNode } from 'react';
@@ -168,8 +168,8 @@ export function Settings() {
             <KeyValue
               items={[
                 { key: t('settings.signedIn.name'), value: `${user.givenName} ${user.familyName}` },
-                { key: t('settings.signedIn.role'), value: ROLE_DEFINITIONS[user.roleId].label },
-                { key: t('settings.signedIn.agency'), value: <AgencyMark agency={user.agency} label={AGENCY_LABELS[user.agency]} /> },
+                { key: t('settings.signedIn.role'), value: roleLabel(user.roleId) },
+                { key: t('settings.signedIn.agency'), value: <AgencyMark agency={user.agency} label={agencyLabel(user.agency)} /> },
                 { key: t('settings.signedIn.organisation'), value: organisation ? organisation.name : user.organisationId },
                 { key: t('settings.signedIn.team'), value: team ? team.name : t('settings.signedIn.noTeam') },
                 { key: t('settings.signedIn.base'), value: user.base },

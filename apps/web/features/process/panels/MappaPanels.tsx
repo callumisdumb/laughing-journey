@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, MAPPA_CATEGORY_LABELS, MAPPA_LEVEL_LABELS, RISK_TOOL_LABELS, formatDate, formatDateTime, type MappaProcess } from '@mas/domain';
+import { agencyShort, disclosureStatusLabel, eraStatusLabel, formatDate, formatDateTime, licenceConditionStatusLabel, mappaCategoryLabel, mappaExitKindLabel, mappaLevelLabel, researchStatusLabel, riskToolLabel, type MappaProcess } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, KeyValue, Pill, RiskBand, Sheet, SheetBody, SheetHead, Table, TableWrap, useToast } from '@mas/ui';
 import { ShieldAlert } from 'lucide-react';
@@ -27,7 +27,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
     if (!user) return;
     const next = { ...d, disclosures: d.disclosures.map((x) => (x.id === id ? { ...x, status, decidedByName: `${user.givenName} ${user.familyName}`, decidedAt: now.toISOString() } : x)) };
     upsert('processes', { ...process, detail: next });
-    audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `Disclosure ${status}: ${d.disclosures.find((x) => x.id === id)?.recipient ?? id}`, processId: process.id, restricted: true });
+    audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `Disclosure ${disclosureStatusLabel(status)}: ${d.disclosures.find((x) => x.id === id)?.recipient ?? id}`, processId: process.id, restricted: true });
     toast({ title: t('mappa.disclosures.decided.title', { status }), text: t('mappa.disclosures.decided.text', { status }), tone: 'success' });
   }
 
@@ -40,11 +40,11 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
 
       <div className={styles.stack}>
         <Sheet>
-          <SheetHead title={t('mappa.level.title')} meta={MAPPA_CATEGORY_LABELS[d.category]} actions={<Button size="sm" variant="secondary" onClick={() => setReferralOpen(true)}>{t('mappa.level.refer')}</Button>} />
+          <SheetHead title={t('mappa.level.title')} meta={mappaCategoryLabel(d.category)} actions={<Button size="sm" variant="secondary" onClick={() => setReferralOpen(true)}>{t('mappa.level.refer')}</Button>} />
           <SheetBody>
             <div className={styles.bigLevel}>
               <span className={styles.bigLevelNumeral}>{d.level}</span>
-              <span className={styles.bigLevelLabel}>{MAPPA_LEVEL_LABELS[d.level]}</span>
+              <span className={styles.bigLevelLabel}>{mappaLevelLabel(d.level)}</span>
             </div>
             <div className={styles.levelHistory} style={{ marginTop: 12 }}>
               {d.levelHistory.map((h, i) => (
@@ -58,7 +58,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
           <SheetBody>
             <KeyValue
               items={[
-                { key: t('mappa.identifiers.leadRa'), value: AGENCY_SHORT[d.leadResponsibleAuthority] },
+                { key: t('mappa.identifiers.leadRa'), value: agencyShort(d.leadResponsibleAuthority) },
                 { key: t('mappa.identifiers.visor'), value: <span>{d.visorReference} <span className={styles.note}>{t('mappa.identifiers.visorNote')}</span></span> },
                 { key: t('mappa.identifiers.notification'), value: t('mappa.identifiers.notificationValue', { when: formatDateTime(d.notification.at), source: d.notification.source, name: d.notification.byName }) },
                 { key: t('mappa.identifiers.referral'), value: d.referral ? t('mappa.identifiers.referralValue', { when: formatDateTime(d.referral.at), name: d.referral.byName, reason: d.referral.reason }) : t('mappa.identifiers.noReferral') },
@@ -91,7 +91,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
               {d.licenceConditions.map((c) => (
                 <li key={c.id}>
                   <Pill size="sm" tone={c.status === 'active' ? 'accent' : c.status === 'breached' ? 'critical' : 'outline'}>
-                    {c.status}
+                    {licenceConditionStatusLabel(c.status)}
                   </Pill>
                   <span>{c.text}</span>
                 </li>
@@ -117,9 +117,9 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
               <tbody>
                 {risks.map((r) => (
                   <tr key={r.id}>
-                    <td>{RISK_TOOL_LABELS[r.tool]}</td>
+                    <td>{riskToolLabel(r.tool)}</td>
                     <td>{formatDate(r.assessedAt)}</td>
-                    <td>{t('mappa.risk.assessor', { name: r.assessorName, agency: AGENCY_SHORT[r.assessorAgency] })}</td>
+                    <td>{t('mappa.risk.assessor', { name: r.assessorName, agency: agencyShort(r.assessorAgency) })}</td>
                     <td>
                       <RiskBand band={r.band} label={r.bandLabel} />
                     </td>
@@ -145,7 +145,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
 
       <div className={styles.grid2}>
         <Sheet tone={era?.status === 'in-progress' ? 'accent' : 'default'}>
-          <SheetHead title={t('mappa.era.title')} meta={era ? t('mappa.era.meta', { status: era.status.replace('-', ' '), date: formatDate(era.startedAt), name: era.assessorName }) : t('mappa.era.notStarted')} />
+          <SheetHead title={t('mappa.era.title')} meta={era ? t('mappa.era.meta', { status: eraStatusLabel(era.status), date: formatDate(era.startedAt), name: era.assessorName }) : t('mappa.era.notStarted')} />
           <SheetBody>
             {era ? (
               <KeyValue
@@ -166,7 +166,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
                 <li key={i}>
                   <AgencyMark agency={r.agency} hideLabel />
                   <span>
-                    <strong>{AGENCY_SHORT[r.agency]}</strong> ({r.contact}): <Pill size="sm" tone={r.status === 'returned' ? 'low' : r.status === 'nothing-known' ? 'outline' : 'medium'}>{r.status.replace('-', ' ')}</Pill>
+                    <strong>{agencyShort(r.agency)}</strong> ({r.contact}): <Pill size="sm" tone={r.status === 'returned' ? 'low' : r.status === 'nothing-known' ? 'outline' : 'medium'}>{researchStatusLabel(r.status)}</Pill>
                     {r.summary ? <span className={styles.listMeta} style={{ display: 'block' }}>{r.summary}</span> : null}
                   </span>
                 </li>
@@ -205,7 +205,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
                     <td>{x.rationale}</td>
                     <td>
                       <Pill size="sm" tone={x.status === 'pending' ? 'medium' : x.status === 'declined' ? 'outline' : 'accent'}>
-                        {x.status}
+                        {disclosureStatusLabel(x.status)}
                       </Pill>
                       {x.decidedByName ? <span className={styles.listMeta} style={{ display: 'block' }}>{t('mappa.disclosures.decidedBy', { name: x.decidedByName, date: x.decidedAt ? formatDate(x.decidedAt) : '' })}</span> : null}
                     </td>
@@ -231,7 +231,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
 
       {d.exit ? (
         <Sheet tone="well">
-          <SheetHead title={t('mappa.exit.title')} meta={t('mappa.exit.meta', { kind: d.exit.kind.replace('-', ' '), date: formatDate(d.exit.at) })} />
+          <SheetHead title={t('mappa.exit.title')} meta={t('mappa.exit.meta', { kind: mappaExitKindLabel(d.exit.kind), date: formatDate(d.exit.at) })} />
           <SheetBody>{d.exit.note}</SheetBody>
         </Sheet>
       ) : null}

@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, HARM_TYPE_LABELS, formatDate, formatDateTime, type AspProcess } from '@mas/domain';
+import { agencyShort, aspInquiryOutcomeLabel, aspOrderDecisionLabel, aspOrderLabel, aspScreeningOutcomeLabel, consentStatusLabel, formatDate, formatDateTime, harmTypeLabel, lsiStrandStatusLabel, requestStatusLabel, type AspProcess } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, KeyValue, Pill, Sheet, SheetBody, SheetHead, Table, TableWrap } from '@mas/ui';
 import { CheckCircle2, CircleDashed, XCircle } from 'lucide-react';
@@ -37,7 +37,7 @@ export function AspPanels({ process }: { process: AspProcess }) {
             <div className={styles.pills} style={{ marginBottom: 10 }}>
               {d.lsi.agenciesInvolved.map((a) => (
                 <Pill key={a} size="sm" tone="outline">
-                  {AGENCY_SHORT[a]}
+                  {agencyShort(a)}
                 </Pill>
               ))}
             </div>
@@ -49,7 +49,7 @@ export function AspPanels({ process }: { process: AspProcess }) {
                   <div key={s.subjectId} className={styles.strand}>
                     <span>{p ? <AppLink href={personPath(p.id)}>{fullName(p)}</AppLink> : s.subjectId}</span>
                     <Pill size="sm" tone={s.status === 'open' ? 'accent' : s.status === 'reviewed' ? 'medium' : 'low'}>
-                      {s.status}
+                      {lsiStrandStatusLabel(s.status)}
                     </Pill>
                     <span className={styles.strandMeta}>
                       {s.concern}
@@ -64,12 +64,12 @@ export function AspPanels({ process }: { process: AspProcess }) {
       ) : null}
 
       <Sheet>
-        <SheetHead title={t('asp.concern.title')} meta={t('asp.concern.meta', { when: formatDateTime(d.concern.receivedAt), source: d.concern.source, agency: AGENCY_SHORT[d.concern.sourceAgency], hasReference: d.concern.sourceReference ? 'yes' : 'no', reference: d.concern.sourceReference ?? '' })} />
+        <SheetHead title={t('asp.concern.title')} meta={t('asp.concern.meta', { when: formatDateTime(d.concern.receivedAt), source: d.concern.source, agency: agencyShort(d.concern.sourceAgency), hasReference: d.concern.sourceReference ? 'yes' : 'no', reference: d.concern.sourceReference ?? '' })} />
         <SheetBody>
           <p style={{ marginBottom: 10 }}>{d.concern.summary}</p>
           <KeyValue
             items={[
-              { key: t('asp.concern.harmTypes'), value: <span className={styles.pills}>{d.concern.harmTypes.map((h) => <Pill key={h} size="sm" tone="high">{HARM_TYPE_LABELS[h]}</Pill>)}</span> },
+              { key: t('asp.concern.harmTypes'), value: <span className={styles.pills}>{d.concern.harmTypes.map((h) => <Pill key={h} size="sm" tone="high">{harmTypeLabel(h)}</Pill>)}</span> },
               { key: t('asp.concern.immediateSafety'), value: d.concern.immediateSafety },
               { key: t('asp.concern.policeInvolved'), value: d.concern.policeInvolved ? t('common.answers.yes') : t('common.answers.no') },
             ]}
@@ -101,10 +101,10 @@ export function AspPanels({ process }: { process: AspProcess }) {
           <SheetBody>
             <KeyValue
               items={[
-                { key: t('asp.screening.screening'), value: d.screening ? t('asp.screening.screeningValue', { outcome: d.screening.outcome.replace(/-/g, ' '), date: formatDate(d.screening.at), name: d.screening.byName, rationale: d.screening.rationale }) : t('asp.screening.notRecorded') },
+                { key: t('asp.screening.screening'), value: d.screening ? t('asp.screening.screeningValue', { outcome: aspScreeningOutcomeLabel(d.screening.outcome), date: formatDate(d.screening.at), name: d.screening.byName, rationale: d.screening.rationale }) : t('asp.screening.notRecorded') },
                 { key: t('asp.screening.inquiryOpened'), value: d.inquiry ? formatDate(d.inquiry.openedAt) : t('asp.screening.notOpened') },
-                { key: t('asp.screening.agenciesContacted'), value: d.inquiry ? d.inquiry.agenciesContacted.map((a) => AGENCY_SHORT[a]).join(', ') : '' },
-                { key: t('asp.screening.inquiryOutcome'), value: d.inquiry ? t('asp.screening.inquiryOutcomeValue', { outcome: d.inquiry.outcome.replace(/-/g, ' '), hasDate: d.inquiry.decidedAt ? 'yes' : 'no', date: d.inquiry.decidedAt ? formatDate(d.inquiry.decidedAt) : '', rationale: d.inquiry.rationale ?? '' }) : '' },
+                { key: t('asp.screening.agenciesContacted'), value: d.inquiry ? d.inquiry.agenciesContacted.map((a) => agencyShort(a)).join(', ') : '' },
+                { key: t('asp.screening.inquiryOutcome'), value: d.inquiry ? t('asp.screening.inquiryOutcomeValue', { outcome: aspInquiryOutcomeLabel(d.inquiry.outcome), hasDate: d.inquiry.decidedAt ? 'yes' : 'no', date: d.inquiry.decidedAt ? formatDate(d.inquiry.decidedAt) : '', rationale: d.inquiry.rationale ?? '' }) : '' },
               ]}
             />
           </SheetBody>
@@ -115,7 +115,7 @@ export function AspPanels({ process }: { process: AspProcess }) {
             {inv ? (
               <KeyValue
                 items={[
-                  { key: t('asp.consent.consent'), value: t('asp.consent.consentValue', { status: inv.consent.status.replace(/-/g, ' '), note: inv.consent.note }) },
+                  { key: t('asp.consent.consent'), value: t('asp.consent.consentValue', { status: consentStatusLabel(inv.consent.status), note: inv.consent.note }) },
                   { key: t('asp.consent.capacity'), value: t('asp.consent.capacityValue', { assessed: inv.capacity.assessed ? 'yes' : 'no', fluctuates: inv.capacity.fluctuates ? 'yes' : 'no', summary: inv.capacity.summary }) },
                   ...(inv.capacity.linkedAwiProcessId ? [{ key: t('asp.consent.awiProcess'), value: <AppLink href={`/processes/${inv.capacity.linkedAwiProcessId}`}>{t('asp.consent.awiLink')}</AppLink> }] : []),
                   { key: t('asp.consent.unduePressure'), value: inv.unduePressure.considered ? t('asp.consent.unduePressureValue', { found: inv.unduePressure.found ? 'yes' : 'no', reasoning: inv.unduePressure.reasoning ?? '' }) : t('asp.consent.unduePressureNone') },
@@ -175,8 +175,8 @@ export function AspPanels({ process }: { process: AspProcess }) {
                     <tr key={`r${i}`}>
                       <td>{t('asp.investigation.records')}</td>
                       <td>{formatDateTime(r.requestedAt)}</td>
-                      <td>{t('asp.investigation.recordsDetail', { holder: r.holder, agency: AGENCY_SHORT[r.holderAgency], note: r.note ?? '' })}</td>
-                      <td>{r.status}</td>
+                      <td>{t('asp.investigation.recordsDetail', { holder: r.holder, agency: agencyShort(r.holderAgency), note: r.note ?? '' })}</td>
+                      <td>{requestStatusLabel(r.status)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -194,9 +194,9 @@ export function AspPanels({ process }: { process: AspProcess }) {
             {d.ordersConsidered.map((o) => (
               <li key={o.order}>
                 <Pill size="sm" tone={o.decision === 'not-required' ? 'outline' : o.decision === 'granted' ? 'low' : 'accent'}>
-                  {o.decision.replace(/-/g, ' ')}
+                  {aspOrderDecisionLabel(o.decision)}
                 </Pill>
-                <span style={{ fontWeight: 700 }}>{o.order.replace(/-/g, ' ')}</span>
+                <span style={{ fontWeight: 700 }}>{aspOrderLabel(o.order)}</span>
                 <span className={styles.listMeta}>{o.rationale}</span>
               </li>
             ))}

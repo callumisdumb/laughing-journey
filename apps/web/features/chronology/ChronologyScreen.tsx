@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, EVENT_FAMILIES, EVENT_FAMILY_LABELS, LENS_IDS, LENS_LABELS, PROCESS_SHORT, formatDate, formatDateTime, type Agency, type EventFamily, type LensId, type Significance } from '@mas/domain';
+import { EVENT_FAMILIES, LENS_IDS, agencyShort, analysisKindLabel, eventFamilyLabel, formatDate, formatDateTime, lensLabel, processShort, significanceLabel, type Agency, type EventFamily, type LensId, type Significance } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, EmptyState, RestrictedState } from '@mas/ui';
 import { subDays, subMonths, subYears } from 'date-fns';
@@ -108,7 +108,7 @@ export function ChronologyScreen({ personId }: { personId: string }) {
           <AppLink href={personPath(personId)} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 'var(--text-sm)' }}>
             <ArrowLeft size={14} aria-hidden="true" /> {name}
           </AppLink>
-          <h1>{t('chronology.screen.heading', { name, view: store.view, agency: AGENCY_SHORT[user.agency] })}</h1>
+          <h1>{t('chronology.screen.heading', { name, view: store.view, agency: agencyShort(user.agency) })}</h1>
           <p className="page-lede">{t('chronology.screen.lede', { shown: model.events.length, total: model.visible.length, window: windowLabel })}</p>
         </div>
       </div>
@@ -149,13 +149,13 @@ export function ChronologyScreen({ personId }: { personId: string }) {
         <span className={styles.filterLabel}>{t('chronology.filters.agency')}</span>
         {model.agencies.map((a) => (
           <button key={a} type="button" className={styles.chip} aria-pressed={store.filters.agencies.includes(a)} onClick={() => store.setFilters({ agencies: toggle<Agency>(store.filters.agencies, a) })}>
-            {AGENCY_SHORT[a]}
+            {agencyShort(a)}
           </button>
         ))}
         <span className={styles.filterLabel}>{t('chronology.filters.significance')}</span>
         {(['high', 'moderate', 'low'] as Significance[]).map((s) => (
           <button key={s} type="button" className={styles.chip} aria-pressed={store.filters.significance.includes(s)} onClick={() => store.setFilters({ significance: toggle<Significance>(store.filters.significance, s) })}>
-            {s}
+            {significanceLabel(s)}
           </button>
         ))}
         <label className={styles.filterLabel} htmlFor="chron-family">
@@ -165,7 +165,7 @@ export function ChronologyScreen({ personId }: { personId: string }) {
           <option value="">{t('chronology.filters.type.any')}</option>
           {EVENT_FAMILIES.map((f) => (
             <option key={f} value={f}>
-              {EVENT_FAMILY_LABELS[f]}
+              {eventFamilyLabel(f)}
             </option>
           ))}
         </select>
@@ -176,7 +176,7 @@ export function ChronologyScreen({ personId }: { personId: string }) {
           <option value="">{t('chronology.filters.process.any')}</option>
           {model.processes.map((p) => (
             <option key={p.id} value={p.id}>
-              {PROCESS_SHORT[p.type]} {p.reference}
+              {processShort(p.type)} {p.reference}
             </option>
           ))}
         </select>
@@ -203,7 +203,7 @@ export function ChronologyScreen({ personId }: { personId: string }) {
         <span className={styles.filterLabel}>{t('chronology.lenses.label')}</span>
         {LENS_IDS.map((id: LensId) => (
           <button key={id} type="button" className={styles.chip} aria-pressed={store.lenses.includes(id)} onClick={() => store.toggleLens(id)}>
-            {LENS_LABELS[id].label}
+            {lensLabel(id)}
           </button>
         ))}
       </div>
@@ -220,7 +220,7 @@ export function ChronologyScreen({ personId }: { personId: string }) {
         </div>
       ) : null}
 
-      <ScreenState state={state} empty={{ title: t('chronology.screen.empty.title'), text: store.view === 'single' ? t('chronology.screen.empty.single', { agency: AGENCY_SHORT[user.agency], name }) : t('chronology.screen.empty.integrated', { name }) }}>
+      <ScreenState state={state} empty={{ title: t('chronology.screen.empty.title'), text: store.view === 'single' ? t('chronology.screen.empty.single', { agency: agencyShort(user.agency), name }) : t('chronology.screen.empty.integrated', { name }) }}>
         <LanesChart
           events={model.events}
           analyses={model.analyses}
@@ -247,7 +247,7 @@ export function ChronologyScreen({ personId }: { personId: string }) {
               <div key={a.id} className={styles.analysisNote} data-selected={store.selectedAnalysisId === a.id ? 'true' : undefined} role="button" tabIndex={0} onClick={() => store.selectAnalysis(a.id)} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && store.selectAnalysis(a.id)}>
                 <strong>{a.title}</strong>
                 <span>{a.text}</span>
-                <span className={styles.analysisMeta}>{t('chronology.analysis.meta', { kind: a.kind, author: a.authorName, agency: AGENCY_SHORT[a.agency], when: formatDateTime(a.recordedAt), count: a.eventIds.length })}</span>
+                <span className={styles.analysisMeta}>{t('chronology.analysis.meta', { kind: analysisKindLabel(a.kind), author: a.authorName, agency: agencyShort(a.agency), when: formatDateTime(a.recordedAt), count: a.eventIds.length })}</span>
               </div>
             ))}
           </div>

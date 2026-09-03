@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, DETAIL_LEVEL_LABELS, EXCLUSION_PARTY_LABELS, PROCESS_SHORT, ROLE_DEFINITIONS, formatDate, formatDateTime, isExcludedParty, resolveNeedToKnow, contextFor, stageLabel, type InformationRequest, type Process, type User } from '@mas/domain';
+import { agencyShort, contextFor, detailLevelLabel, exclusionPartyLabel, formatDate, formatDateTime, isExcludedParty, processShort, resolveNeedToKnow, roleLabel, shareStatusLabel, stageLabel, type InformationRequest, type Process, type User } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, CheckboxField, Dialog, EmptyState, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Table, TableWrap, Tabs, TextareaField, useToast } from '@mas/ui';
 import { Eye, Lock } from 'lucide-react';
@@ -62,7 +62,7 @@ export function Sharing() {
     const s = data.sharingRecords.find((x) => x.id === id);
     if (!s) return;
     upsert('sharingRecords', { ...s, status: 'sent', sentAt: now.toISOString() });
-    audit({ act: 'share', targetType: 'sharing', targetId: s.id, targetLabel: t('sharing.audit.sent', { level: s.detailLevel, name: s.recipient.name }), processId: s.processId });
+    audit({ act: 'share', targetType: 'sharing', targetId: s.id, targetLabel: t('sharing.audit.sent', { level: detailLevelLabel(s.detailLevel), name: s.recipient.name }), processId: s.processId });
     toast({ title: t('sharing.outbound.sentToastTitle'), text: t('sharing.outbound.sentToastText', { name: s.recipient.name }), tone: 'success' });
   }
 
@@ -127,7 +127,7 @@ export function Sharing() {
                       </td>
                       <td>{p ? <AppLink href={processPath(p.id)}><ProcessMark type={p.type} /></AppLink> : ''}</td>
                       <td>
-                        {DETAIL_LEVEL_LABELS[s.detailLevel]}
+                        {detailLevelLabel(s.detailLevel)}
                         {s.fields ? <span className={styles.rowReason}>{s.fields.join('; ')}</span> : null}
                       </td>
                       <td>
@@ -136,7 +136,7 @@ export function Sharing() {
                       </td>
                       <td>
                         <Pill size="sm" tone={s.status === 'read' ? 'low' : s.status === 'sent' ? 'accent' : s.status === 'withheld' ? 'restricted' : 'medium'}>
-                          {s.status}
+                          {shareStatusLabel(s.status)}
                         </Pill>
                       </td>
                       <td>{s.status === 'queued' ? <Button size="sm" variant="secondary" onClick={() => markSent(s.id)}>{t('sharing.outbound.send')}</Button> : null}</td>
@@ -168,7 +168,7 @@ export function Sharing() {
                             <span className={styles.rowReason}>{t('sharing.inbound.notifications.whyYou', { reason: s.reason })}</span>
                           </td>
                           <td>{p ? <AppLink href={processPath(p.id)}>{p.reference}</AppLink> : ''}</td>
-                          <td>{DETAIL_LEVEL_LABELS[s.detailLevel]}</td>
+                          <td>{detailLevelLabel(s.detailLevel)}</td>
                           <td>{s.status !== 'read' ? <Button size="sm" variant="quiet" onClick={() => markRead(s.id)}>{t('sharing.inbound.notifications.markRead')}</Button> : <Pill size="sm" tone="low">{t('sharing.inbound.notifications.read')}</Pill>}</td>
                         </tr>
                       );
@@ -189,8 +189,8 @@ export function Sharing() {
                   return (
                     <Sheet key={r.id} tone="paper">
                       <SheetHead
-                        title={t('sharing.inbound.requests.asksAbout', { name: r.fromName, agency: AGENCY_SHORT[r.fromAgency], subject: subject ? fullName(subject) : r.subjectId })}
-                        meta={t('sharing.inbound.requests.received', { hasProcess: p ? 'yes' : 'no', process: p ? PROCESS_SHORT[p.type] : '', reference: p?.reference ?? '', received: formatDateTime(r.createdAt), hasDue: r.dueAt ? 'yes' : 'no', due: r.dueAt ? formatDate(r.dueAt) : '' })}
+                        title={t('sharing.inbound.requests.asksAbout', { name: r.fromName, agency: agencyShort(r.fromAgency), subject: subject ? fullName(subject) : r.subjectId })}
+                        meta={t('sharing.inbound.requests.received', { hasProcess: p ? 'yes' : 'no', process: p ? processShort(p.type) : '', reference: p?.reference ?? '', received: formatDateTime(r.createdAt), hasDue: r.dueAt ? 'yes' : 'no', due: r.dueAt ? formatDate(r.dueAt) : '' })}
                         actions={r.status === 'open' ? <Button size="sm" variant="primary" onClick={() => setResponding(r)}>{t('sharing.inbound.requests.respond')}</Button> : <Pill size="sm" tone={r.status === 'responded' ? 'low' : 'outline'}>{r.status}</Pill>}
                       />
                       <SheetBody>
@@ -213,7 +213,7 @@ export function Sharing() {
         <div className={styles.preview}>
           <div className="stack">
             <SelectField label={t('sharing.preview.process')} value={previewProcess} onChange={(e) => setPreviewProcess(e.target.value)} placeholder={t('sharing.preview.processPlaceholder')} options={visibleProcesses.map((p) => ({ value: p.id, label: `${p.reference}: ${p.title}` }))} />
-            <SelectField label={t('sharing.preview.seenAs')} value={previewUser} onChange={(e) => setPreviewUser(e.target.value)} placeholder={t('sharing.preview.seenAsPlaceholder')} options={data.users.map((u) => ({ value: u.id, label: `${userName(u)}, ${ROLE_DEFINITIONS[u.roleId].label} (${AGENCY_SHORT[u.agency]})` }))} />
+            <SelectField label={t('sharing.preview.seenAs')} value={previewUser} onChange={(e) => setPreviewUser(e.target.value)} placeholder={t('sharing.preview.seenAsPlaceholder')} options={data.users.map((u) => ({ value: u.id, label: `${userName(u)}, ${roleLabel(u.roleId)} (${agencyShort(u.agency)})` }))} />
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-ink-3)' }}>{t('sharing.preview.note')}</p>
           </div>
           {pProcess && pUser ? <Preview process={pProcess} viewer={pUser} /> : <EmptyState title={t('sharing.preview.empty.title')} text={t('sharing.preview.empty.text')} />}
@@ -268,17 +268,17 @@ function Preview({ process, viewer }: { process: Process; viewer: User }) {
     <div className={styles.previewCard} aria-live="polite">
       <div className={styles.previewLevel}>
         {access.level === 'none' ? <Lock size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
-        {t('sharing.preview.wouldSee', { name: userName(viewer), level: access.level === 'none' ? t('sharing.preview.nothing') : DETAIL_LEVEL_LABELS[access.level], redacted: access.redacted ? 'yes' : 'no' })}
+        {t('sharing.preview.wouldSee', { name: userName(viewer), level: access.level === 'none' ? t('sharing.preview.nothing') : detailLevelLabel(access.level), redacted: access.redacted ? 'yes' : 'no' })}
       </div>
       <p style={{ fontSize: 'var(--text-sm)', marginBottom: 10 }}>{access.reason}</p>
       <dl>
         <div className={styles.previewRow}>
           <dt>{t('sharing.preview.rows.processExists')}</dt>
-          <dd>{access.level === 'none' ? hidden : `${PROCESS_SHORT[process.type]} ${process.reference}`}</dd>
+          <dd>{access.level === 'none' ? hidden : `${processShort(process.type)} ${process.reference}`}</dd>
         </div>
         <div className={styles.previewRow}>
           <dt>{t('sharing.preview.rows.stageLead')}</dt>
-          <dd>{access.level === 'none' ? hidden : `${stageLabel(process.type, process.stage)}, ${AGENCY_SHORT[process.leadAgency]}`}</dd>
+          <dd>{access.level === 'none' ? hidden : `${stageLabel(process.type, process.stage)}, ${agencyShort(process.leadAgency)}`}</dd>
         </div>
         <div className={styles.previewRow}>
           <dt>{t('sharing.preview.rows.subject')}</dt>
@@ -294,12 +294,12 @@ function Preview({ process, viewer }: { process: Process; viewer: User }) {
         </div>
         <div className={styles.previewRow}>
           <dt>{t('sharing.preview.rows.rules')}</dt>
-          <dd>{rows.length === 0 ? (access.member ? t('sharing.preview.caseMembership') : t('sharing.preview.defaultDeny')) : rows.map((r) => `${r.rowId} (${r.detailLevel})`).join('; ')}</dd>
+          <dd>{rows.length === 0 ? (access.member ? t('sharing.preview.caseMembership') : t('sharing.preview.defaultDeny')) : rows.map((r) => `${r.rowId} (${detailLevelLabel(r.detailLevel)})`).join('; ')}</dd>
         </div>
         {excluded ? (
           <div className={styles.previewRow}>
             <dt>{t('sharing.preview.rows.excludedParty')}</dt>
-            <dd>{t('sharing.preview.excludedText', { name: userName(viewer), role: excluded.party.label.toLowerCase(), party: EXCLUSION_PARTY_LABELS[excluded.party.party].toLowerCase(), reason: excluded.party.reason ?? excluded.exclusion.reason })}</dd>
+            <dd>{t('sharing.preview.excludedText', { name: userName(viewer), role: excluded.party.label.toLowerCase(), party: exclusionPartyLabel(excluded.party.party).toLowerCase(), reason: excluded.party.reason ?? excluded.exclusion.reason })}</dd>
           </div>
         ) : null}
         <div className={styles.previewRow}>

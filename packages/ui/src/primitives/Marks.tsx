@@ -1,4 +1,4 @@
-import { AGENCY_SHORT, CLASSIFICATION_LABELS, PROCESS_SHORT, type Agency, type Classification, type ProcessType, type RiskBand as Band } from '@mas/domain';
+import { agencyShort, classificationLabel, processShort, riskBandLabel, type Agency, type Classification, type ProcessType, type RiskBand as Band } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AlertOctagon, AlertTriangle, CheckCircle2, CircleDashed, Flag } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
@@ -25,7 +25,7 @@ export function agencyColourVar(agency: Agency): string {
 
 export function AgencyMark({ agency, label, size = 'sm', glyphSize, variant = 'outline', coloured = false, hideLabel = false, className }: AgencyMarkProps) {
   const GlyphComponent = AGENCY_GLYPHS[agency];
-  const text = label ?? AGENCY_SHORT[agency];
+  const text = label ?? agencyShort(agency);
   const style = { '--agency-colour': agencyColourVar(agency) } as CSSProperties;
   return (
     <span className={cn(styles.agency, className)} data-size={size} style={style}>
@@ -54,7 +54,7 @@ export function ProcessMark({ type, stage, restricted = false, className, glyphS
   return (
     <span className={cn(styles.process, className)} data-restricted={restricted ? 'true' : undefined}>
       <GlyphComponent size={glyphSize} variant="filled" />
-      <span>{PROCESS_SHORT[type]}</span>
+      <span>{processShort(type)}</span>
       {stage ? <span className={styles.processStage}>{stage}</span> : null}
     </span>
   );
@@ -66,14 +66,6 @@ const RISK_ICONS: Record<Band, ReactNode> = {
   medium: <Flag size={14} aria-hidden="true" />,
   low: <CheckCircle2 size={14} aria-hidden="true" />,
   unknown: <CircleDashed size={14} aria-hidden="true" />,
-};
-
-export const RISK_WORDS: Record<Band, string> = {
-  critical: 'Critical',
-  high: 'High',
-  medium: 'Medium',
-  low: 'Low',
-  unknown: 'Not assessed',
 };
 
 export interface RiskBandProps {
@@ -88,7 +80,7 @@ export function RiskBand({ band, label, size = 'sm', className }: RiskBandProps)
   return (
     <span className={cn(styles.risk, className)} data-band={band} data-size={size}>
       {RISK_ICONS[band]}
-      <span>{label ?? RISK_WORDS[band]}</span>
+      <span>{label ?? riskBandLabel(band)}</span>
     </span>
   );
 }
@@ -96,8 +88,8 @@ export function RiskBand({ band, label, size = 'sm', className }: RiskBandProps)
 export function ClassificationBanner({ level, className }: { level: Classification; className?: string }) {
   const t = useT();
   return (
-    <div className={cn(styles.classification, className)} data-level={level} role="note" aria-label={t('common.marks.classification', { level: CLASSIFICATION_LABELS[level] })}>
-      {CLASSIFICATION_LABELS[level]}
+    <div className={cn(styles.classification, className)} data-level={level} role="note" aria-label={t('common.marks.classification', { level: classificationLabel(level) })}>
+      {classificationLabel(level)}
     </div>
   );
 }

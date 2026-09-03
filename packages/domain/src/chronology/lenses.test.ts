@@ -1,3 +1,4 @@
+import { t } from '@mas/messages';
 import { describe, expect, it } from 'vitest';
 import type { ChronologyEvent } from '../schemas/chronology';
 import { LENS_IDS, applyLens } from './lenses';
@@ -9,7 +10,7 @@ const now = new Date('2026-09-02T09:00:00+01:00');
 
 describe('lenses', () => {
   it('every lens returns a prompt framing', () => {
-    for (const id of LENS_IDS) expect(applyLens(id, [], now).finding).toContain('prompt for professional analysis');
+    for (const id of LENS_IDS) expect(applyLens(id, [], now).finding).toContain(t('domain.lenses.prompt'));
   });
   it('escalation needs three rising police reports', () => {
     const rising = [ev('a', '2020-11-21', 'police.concern-report', 'moderate'), ev('b', '2023-09-02', 'police.concern-report', 'high'), ev('c', '2025-03-08', 'police.incident', 'high')];
@@ -36,7 +37,7 @@ describe('lenses', () => {
   it('gaps of 180 days and a tail gap', () => {
     const r = applyLens('gaps', [ev('a', '2024-01-01', 'social-work.visit'), ev('b', '2025-01-01', 'social-work.visit'), ev('c', '2025-02-01', 'social-work.visit')], now);
     expect(r.spans.length).toBe(2);
-    expect(r.spans[1]?.label).toContain('since the last recorded contact');
+    expect(r.spans[1]?.label).toBe(t('domain.lenses.gaps.spanTail', { months: 19 }));
     expect(applyLens('gaps', [ev('a', '2026-08-01', 'social-work.visit'), ev('b', '2026-08-20', 'social-work.visit')], now).active).toBe(false);
     expect(applyLens('gaps', [], now).active).toBe(false);
   });

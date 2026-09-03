@@ -2,7 +2,7 @@
  * MARAC SafeLives return fields, computed from MARAC referrals and meetings. SafeLives collects
  * meeting-level counts, so nothing here identifies a victim.
  */
-import { AGENCIES, AGENCY_SHORT, formatDateTime, localDateOf, type Dataset, type MaracProcess } from '@mas/domain';
+import { AGENCIES, agencyShort, formatDateTime, localDateOf, type Dataset, type MaracProcess } from '@mas/domain';
 import { formatNumber, t } from '@mas/messages';
 import { agencyColourVar } from '@mas/ui';
 import { personById } from '@/lib/selectors';
@@ -49,10 +49,10 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
     id: 'marac-by-agency',
     kind: 'bar',
     title: t('reports.marac.chart.title'),
-    summary: t('reports.marac.chart.summary', { referrals: referrals.length, breakdown: agencies.length > 0 ? t('reports.marac.chart.summaryBreakdown', { list: agencies.map((a) => t('reports.marac.chart.summaryItem', { count: byAgency.get(a) ?? 0, agency: AGENCY_SHORT[a] })).join(', ') }) : '' }),
-    categories: agencies.map((a) => AGENCY_SHORT[a]),
+    summary: t('reports.marac.chart.summary', { referrals: referrals.length, breakdown: agencies.length > 0 ? t('reports.marac.chart.summaryBreakdown', { list: agencies.map((a) => t('reports.marac.chart.summaryItem', { count: byAgency.get(a) ?? 0, agency: agencyShort(a) })).join(', ') }) : '' }),
+    categories: agencies.map((a) => agencyShort(a)),
     categoryColours: agencies.map((a) => agencyColourVar(a)),
-    categoryLegend: agencies.map((a) => ({ key: a, label: AGENCY_SHORT[a], colour: agencyColourVar(a), agency: a })),
+    categoryLegend: agencies.map((a) => ({ key: a, label: agencyShort(a), colour: agencyColourVar(a), agency: a })),
     series: [{ key: 'referrals', label: t('reports.marac.chart.series'), colour: scaleColour(0) }],
     values: [agencies.map((a) => byAgency.get(a) ?? 0)],
     xLabel: t('reports.marac.chart.xLabel'),
@@ -63,7 +63,7 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
     id: 'marac-agency-table',
     columns: [t('reports.marac.columns.referringAgency'), t('reports.marac.columns.referrals'), t('reports.marac.columns.share')],
     numeric: [1, 2],
-    rows: agencies.map((a) => [AGENCY_SHORT[a], byAgency.get(a) ?? 0, pct(byAgency.get(a) ?? 0, referrals.length)]),
+    rows: agencies.map((a) => [agencyShort(a), byAgency.get(a) ?? 0, pct(byAgency.get(a) ?? 0, referrals.length)]),
     empty: t('reports.marac.tables.agencyEmpty'),
   };
 

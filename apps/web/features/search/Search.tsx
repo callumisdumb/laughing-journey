@@ -1,6 +1,6 @@
 'use client';
 
-import { PROCESS_SHORT, ageLabel, formatDate, stageLabel } from '@mas/domain';
+import { ageLabel, formatDate, processShort, stageLabel } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { EmptyState, Pill, ProcessMark, Sheet, SheetBody, SheetHead } from '@mas/ui';
 import { Lock, UserX } from 'lucide-react';
@@ -51,7 +51,7 @@ export function Search() {
               <Sheet key={h.process.id} onMouseEnter={() => select({ kind: 'process', id: h.process.id })}>
                 <SheetHead
                   title={<AppLink href={processPath(h.process.id)}>{h.process.reference}</AppLink>}
-                  meta={t('search.result.processMeta', { process: PROCESS_SHORT[h.process.type], subject: subjectText, matched: h.matched })}
+                  meta={t('search.result.processMeta', { process: processShort(h.process.type), subject: subjectText, matched: h.matched })}
                   actions={access.level === 'none' ? <Pill tone="restricted" icon={<Lock size={12} aria-hidden="true" />}>{t('common.labels.restricted')}</Pill> : <ProcessMark type={h.process.type} stage={stageLabel(h.process.type, h.process.stage)} />}
                 />
               </Sheet>

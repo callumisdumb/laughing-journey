@@ -1,6 +1,6 @@
 import { t } from '@mas/messages';
 import { z } from 'zod';
-import { EXCLUSION_PARTIES, EXCLUSION_PARTY_LABELS, type ExclusionParty } from '../enums';
+import { EXCLUSION_PARTIES, exclusionPartyLabel, type ExclusionParty } from '../enums';
 import { normalisePartyName } from '../need-to-know/parties';
 import type { CaseParty } from '../schemas/process';
 
@@ -55,7 +55,7 @@ export function mustNotReceiveListSchema<const T extends readonly [ExclusionPart
  * form in the label, e.g. "the DAQ" or "the MAPPA referral".
  */
 export function casePartyFromMustNotReceive(entry: MustNotReceiveEntry, since: string, via: string): CaseParty {
-  const partyLabel = EXCLUSION_PARTY_LABELS[entry.party];
+  const partyLabel = exclusionPartyLabel(entry.party);
   const relationship = entry.relationship?.trim();
   return {
     name: entry.name.trim(),

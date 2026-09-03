@@ -4837,6 +4837,1916 @@
       }
     }
   },
+  "domain": {
+    "access": {
+      "breakGlassActive": {
+        "screenshot": "phase-3/process-mappa-restricted-light-comfortable.png",
+        "where": "Access reason in the drawer while a break-glass grant is active"
+      },
+      "caldicott": {
+        "screenshot": "phase-3/process-mappa-restricted-light-comfortable.png",
+        "where": "Access reason for the Caldicott guardian persona"
+      },
+      "excluded": {
+        "screenshot": "phase-3/process-mappa-restricted-light-comfortable.png",
+        "where": "Access reason when the person is on the exclusion register for the process"
+      },
+      "inspector": {
+        "screenshot": "phase-3/process-mappa-restricted-light-comfortable.png",
+        "where": "Access reason for the inspector persona (redacted view)"
+      },
+      "member": {
+        "screenshot": "phase-3/process-mappa-restricted-light-comfortable.png",
+        "where": "Access reason for a case member, with their case role as argument"
+      },
+      "notOnCase": {
+        "screenshot": "phase-3/process-mappa-restricted-light-comfortable.png",
+        "where": "Access reason for a practitioner who is not on the case (presence only)"
+      },
+      "oversight": {
+        "screenshot": "phase-3/process-mappa-restricted-light-comfortable.png",
+        "where": "Access reason for an oversight role, with the role name as argument"
+      },
+      "restricted": {
+        "screenshot": "phase-3/process-mappa-restricted-light-comfortable.png",
+        "where": "Access reason on a restricted record for someone off the distribution list"
+      },
+      "systemAdministrator": {
+        "screenshot": "phase-3/process-mappa-restricted-light-comfortable.png",
+        "where": "Access reason for the system administrator persona"
+      }
+    },
+    "actionStatuses": {
+      "cancelled": {
+        "maxLength": 16,
+        "where": "Action status on action lists in the Actions screen, process screens and the drawer"
+      },
+      "complete": {
+        "maxLength": 16,
+        "where": "Action status on action lists in the Actions screen, process screens and the drawer"
+      },
+      "inProgress": {
+        "maxLength": 16,
+        "where": "Action status on action lists in the Actions screen, process screens and the drawer"
+      },
+      "open": {
+        "maxLength": 16,
+        "where": "Action status on action lists in the Actions screen, process screens and the drawer"
+      }
+    },
+    "agencies": {
+      "court": {
+        "label": {
+          "maxLength": 32,
+          "where": "Agency name wherever an agency is shown in full: the Audit filters, Admin agencies, reports and the sharing preview"
+        },
+        "short": {
+          "maxLength": 16,
+          "where": "Short agency name on agency marks, in table cells, toasts and the context drawer"
+        }
+      },
+      "education": {
+        "label": {
+          "maxLength": 32,
+          "where": "Agency name wherever an agency is shown in full: the Audit filters, Admin agencies, reports and the sharing preview"
+        },
+        "short": {
+          "maxLength": 16,
+          "where": "Short agency name on agency marks, in table cells, toasts and the context drawer"
+        }
+      },
+      "fireRescue": {
+        "label": {
+          "maxLength": 32,
+          "where": "Agency name wherever an agency is shown in full: the Audit filters, Admin agencies, reports and the sharing preview"
+        },
+        "short": {
+          "maxLength": 16,
+          "where": "Short agency name on agency marks, in table cells, toasts and the context drawer"
+        }
+      },
+      "health": {
+        "label": {
+          "maxLength": 32,
+          "where": "Agency name wherever an agency is shown in full: the Audit filters, Admin agencies, reports and the sharing preview"
+        },
+        "short": {
+          "maxLength": 16,
+          "where": "Short agency name on agency marks, in table cells, toasts and the context drawer"
+        }
+      },
+      "housing": {
+        "label": {
+          "maxLength": 32,
+          "where": "Agency name wherever an agency is shown in full: the Audit filters, Admin agencies, reports and the sharing preview"
+        },
+        "short": {
+          "maxLength": 16,
+          "where": "Short agency name on agency marks, in table cells, toasts and the context drawer"
+        }
+      },
+      "police": {
+        "label": {
+          "maxLength": 32,
+          "where": "Agency name wherever an agency is shown in full: the Audit filters, Admin agencies, reports and the sharing preview"
+        },
+        "short": {
+          "maxLength": 16,
+          "where": "Short agency name on agency marks, in table cells, toasts and the context drawer"
+        }
+      },
+      "regulator": {
+        "label": {
+          "maxLength": 32,
+          "where": "Agency name wherever an agency is shown in full: the Audit filters, Admin agencies, reports and the sharing preview"
+        },
+        "short": {
+          "maxLength": 16,
+          "where": "Short agency name on agency marks, in table cells, toasts and the context drawer"
+        }
+      },
+      "scra": {
+        "label": {
+          "maxLength": 32,
+          "where": "Agency name wherever an agency is shown in full: the Audit filters, Admin agencies, reports and the sharing preview"
+        },
+        "short": {
+          "maxLength": 16,
+          "where": "Short agency name on agency marks, in table cells, toasts and the context drawer"
+        }
+      },
+      "socialWork": {
+        "label": {
+          "maxLength": 32,
+          "where": "Agency name wherever an agency is shown in full: the Audit filters, Admin agencies, reports and the sharing preview"
+        },
+        "short": {
+          "maxLength": 16,
+          "where": "Short agency name on agency marks, in table cells, toasts and the context drawer"
+        }
+      },
+      "sps": {
+        "label": {
+          "maxLength": 32,
+          "where": "Agency name wherever an agency is shown in full: the Audit filters, Admin agencies, reports and the sharing preview"
+        },
+        "short": {
+          "maxLength": 16,
+          "where": "Short agency name on agency marks, in table cells, toasts and the context drawer"
+        }
+      },
+      "thirdSector": {
+        "label": {
+          "maxLength": 32,
+          "where": "Agency name wherever an agency is shown in full: the Audit filters, Admin agencies, reports and the sharing preview"
+        },
+        "short": {
+          "maxLength": 16,
+          "where": "Short agency name on agency marks, in table cells, toasts and the context drawer"
+        }
+      }
+    },
+    "analysisKinds": {
+      "pattern": {
+        "maxLength": 16,
+        "where": "Kind of an analysis note on the chronology screen, print pack and drawer"
+      },
+      "recommendation": {
+        "maxLength": 16,
+        "where": "Kind of an analysis note on the chronology screen, print pack and drawer"
+      },
+      "risk": {
+        "maxLength": 16,
+        "where": "Kind of an analysis note on the chronology screen, print pack and drawer"
+      }
+    },
+    "aspInquiryOutcomes": {
+      "noFurtherAction": {
+        "maxLength": 24,
+        "where": "Inquiry outcome in the ASP screening panel"
+      },
+      "pending": {
+        "maxLength": 24,
+        "where": "Inquiry outcome in the ASP screening panel"
+      },
+      "proceedToInvestigation": {
+        "maxLength": 24,
+        "where": "Inquiry outcome in the ASP screening panel"
+      },
+      "supportOnly": {
+        "maxLength": 24,
+        "where": "Inquiry outcome in the ASP screening panel"
+      }
+    },
+    "aspOrderDecisions": {
+      "applicationDrafting": {
+        "maxLength": 24,
+        "where": "Decision on a protection order in the ASP orders panel"
+      },
+      "applied": {
+        "maxLength": 24,
+        "where": "Decision on a protection order in the ASP orders panel"
+      },
+      "granted": {
+        "maxLength": 24,
+        "where": "Decision on a protection order in the ASP orders panel"
+      },
+      "notRequired": {
+        "maxLength": 24,
+        "where": "Decision on a protection order in the ASP orders panel"
+      },
+      "refused": {
+        "maxLength": 24,
+        "where": "Decision on a protection order in the ASP orders panel"
+      }
+    },
+    "aspOrders": {
+      "assessmentOrderS11": {
+        "maxLength": 24,
+        "where": "Protection order considered, in the ASP orders panel"
+      },
+      "banningOrderS19": {
+        "maxLength": 24,
+        "where": "Protection order considered, in the ASP orders panel"
+      },
+      "removalOrderS14": {
+        "maxLength": 24,
+        "where": "Protection order considered, in the ASP orders panel"
+      },
+      "warrantForEntry": {
+        "maxLength": 24,
+        "where": "Protection order considered, in the ASP orders panel"
+      }
+    },
+    "aspScreeningOutcomes": {
+      "emergencyAction": {
+        "maxLength": 24,
+        "where": "Screening outcome in the ASP screening panel"
+      },
+      "noFurtherAspAction": {
+        "maxLength": 24,
+        "where": "Screening outcome in the ASP screening panel"
+      },
+      "proceedToInquiry": {
+        "maxLength": 24,
+        "where": "Screening outcome in the ASP screening panel"
+      }
+    },
+    "attendances": {
+      "absent": {
+        "maxLength": 12,
+        "where": "Attendance of an invitee in the meeting workspace, drawer and minutes"
+      },
+      "accepted": {
+        "maxLength": 12,
+        "where": "Attendance of an invitee in the meeting workspace, drawer and minutes"
+      },
+      "apologies": {
+        "maxLength": 12,
+        "where": "Attendance of an invitee in the meeting workspace, drawer and minutes"
+      },
+      "declined": {
+        "maxLength": 12,
+        "where": "Attendance of an invitee in the meeting workspace, drawer and minutes"
+      },
+      "invited": {
+        "maxLength": 12,
+        "where": "Attendance of an invitee in the meeting workspace, drawer and minutes"
+      },
+      "present": {
+        "maxLength": 12,
+        "where": "Attendance of an invitee in the meeting workspace, drawer and minutes"
+      },
+      "remote": {
+        "maxLength": 12,
+        "where": "Attendance of an invitee in the meeting workspace, drawer and minutes"
+      }
+    },
+    "awiOrderKinds": {
+      "combinedGuardianship": {
+        "maxLength": 24,
+        "where": "Kind of AWI order in the AWI orders panel"
+      },
+      "financialGuardianship": {
+        "maxLength": 24,
+        "where": "Kind of AWI order in the AWI orders panel"
+      },
+      "interimOrder": {
+        "maxLength": 24,
+        "where": "Kind of AWI order in the AWI orders panel"
+      },
+      "interventionOrder": {
+        "maxLength": 24,
+        "where": "Kind of AWI order in the AWI orders panel"
+      },
+      "welfareGuardianship": {
+        "maxLength": 24,
+        "where": "Kind of AWI order in the AWI orders panel"
+      }
+    },
+    "capacityOutcomes": {
+      "fluctuating": {
+        "maxLength": 16,
+        "where": "Capacity assessment outcome in the AWI panels, the capacity assessment dialog and reports"
+      },
+      "hasCapacity": {
+        "maxLength": 16,
+        "where": "Capacity assessment outcome in the AWI panels, the capacity assessment dialog and reports"
+      },
+      "lacksCapacity": {
+        "maxLength": 16,
+        "where": "Capacity assessment outcome in the AWI panels, the capacity assessment dialog and reports"
+      },
+      "pending": {
+        "maxLength": 16,
+        "where": "Capacity assessment outcome in the AWI panels, the capacity assessment dialog and reports"
+      }
+    },
+    "channels": {
+      "connectorPush": {
+        "maxLength": 24,
+        "where": "Channel of a share in the drawer and sharing records"
+      },
+      "inApp": {
+        "maxLength": 24,
+        "where": "Channel of a share in the drawer and sharing records"
+      },
+      "secureEmailDigest": {
+        "maxLength": 24,
+        "where": "Channel of a share in the drawer and sharing records"
+      }
+    },
+    "classifications": {
+      "official": {
+        "maxLength": 32,
+        "where": "Classification marking on the banner of sensitive and restricted records and print packs"
+      },
+      "officialSensitive": {
+        "maxLength": 32,
+        "where": "Classification marking on the banner of sensitive and restricted records and print packs"
+      },
+      "restricted": {
+        "maxLength": 32,
+        "where": "Classification marking on the banner of sensitive and restricted records and print packs"
+      }
+    },
+    "clockRules": {
+      "aspCaseconferenceInitial": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "aspInquiryDecision": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "aspPlanReview": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "awiInterimMaximum": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "awiInterimWarning": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "awiMhoReport": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "cpCoregroupEscalate": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "cpCoregroupFirst": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "cpCppmInitial": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "cpCppmInquorateReconvene": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "cpCppmNotice": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "cpCppmRecordDistribute": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "cpCppmReviewFirst": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "cpCppmReviewSubsequent": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "cpPrebirthCppm": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "cpPrebirthReview": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "mappaLevel2Review": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "mappaLevel3Review": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "maracFlagExpiry": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "maracRepeatWindow": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "maracResearchReturn": {
+        "description": {
+          "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Clock name on clock numerals, the worklist, Home, process screens, Admin timescales and Help"
+        },
+        "trigger": {
+          "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      }
+    },
+    "consentStatuses": {
+      "notRequired": {
+        "maxLength": 64,
+        "where": "Consent status in the ASP investigation panel and the lawful basis section of the drawer"
+      },
+      "notSoughtRisk": {
+        "maxLength": 64,
+        "where": "Consent status in the ASP investigation panel and the lawful basis section of the drawer"
+      },
+      "soughtAndGiven": {
+        "maxLength": 64,
+        "where": "Consent status in the ASP investigation panel and the lawful basis section of the drawer"
+      },
+      "soughtAndRefusedOverridden": {
+        "maxLength": 64,
+        "where": "Consent status in the ASP investigation panel and the lawful basis section of the drawer"
+      }
+    },
+    "cppmDecisions": {
+      "notRegister": {
+        "maxLength": 16,
+        "where": "CPPM decision in the CP panels"
+      },
+      "pending": {
+        "maxLength": 16,
+        "where": "CPPM decision in the CP panels"
+      },
+      "register": {
+        "maxLength": 16,
+        "where": "CPPM decision in the CP panels"
+      }
+    },
+    "cpRegisterCategories": {
+      "childPlacingSelfAtRisk": {
+        "maxLength": 40,
+        "where": "Child protection register category in the CP panels, register lists and reports"
+      },
+      "domesticAbuse": {
+        "maxLength": 40,
+        "where": "Child protection register category in the CP panels, register lists and reports"
+      },
+      "emotionalAbuse": {
+        "maxLength": 40,
+        "where": "Child protection register category in the CP panels, register lists and reports"
+      },
+      "neglect": {
+        "maxLength": 40,
+        "where": "Child protection register category in the CP panels, register lists and reports"
+      },
+      "nonEngagingFamily": {
+        "maxLength": 40,
+        "where": "Child protection register category in the CP panels, register lists and reports"
+      },
+      "other": {
+        "maxLength": 40,
+        "where": "Child protection register category in the CP panels, register lists and reports"
+      },
+      "parentalMentalHealth": {
+        "maxLength": 40,
+        "where": "Child protection register category in the CP panels, register lists and reports"
+      },
+      "parentalSubstanceUse": {
+        "maxLength": 40,
+        "where": "Child protection register category in the CP panels, register lists and reports"
+      },
+      "physicalAbuse": {
+        "maxLength": 40,
+        "where": "Child protection register category in the CP panels, register lists and reports"
+      },
+      "sexualAbuse": {
+        "maxLength": 40,
+        "where": "Child protection register category in the CP panels, register lists and reports"
+      }
+    },
+    "detailLevels": {
+      "fields": {
+        "maxLength": 20,
+        "where": "Detail level in the need-to-know drawer, sharing records, meeting distribution and the Admin need-to-know table"
+      },
+      "full": {
+        "maxLength": 20,
+        "where": "Detail level in the need-to-know drawer, sharing records, meeting distribution and the Admin need-to-know table"
+      },
+      "presence": {
+        "maxLength": 20,
+        "where": "Detail level in the need-to-know drawer, sharing records, meeting distribution and the Admin need-to-know table"
+      },
+      "summary": {
+        "maxLength": 20,
+        "where": "Detail level in the need-to-know drawer, sharing records, meeting distribution and the Admin need-to-know table"
+      }
+    },
+    "disclosureStatuses": {
+      "approved": {
+        "maxLength": 12,
+        "where": "Disclosure status in the MAPPA disclosures panel"
+      },
+      "declined": {
+        "maxLength": 12,
+        "where": "Disclosure status in the MAPPA disclosures panel"
+      },
+      "made": {
+        "maxLength": 12,
+        "where": "Disclosure status in the MAPPA disclosures panel"
+      },
+      "pending": {
+        "maxLength": 12,
+        "where": "Disclosure status in the MAPPA disclosures panel"
+      }
+    },
+    "eraStatuses": {
+      "complete": {
+        "maxLength": 16,
+        "where": "Environmental risk assessment status in the MAPPA panel"
+      },
+      "inProgress": {
+        "maxLength": 16,
+        "where": "Environmental risk assessment status in the MAPPA panel"
+      },
+      "notStarted": {
+        "maxLength": 16,
+        "where": "Environmental risk assessment status in the MAPPA panel"
+      }
+    },
+    "eventFamilies": {
+      "care": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "disclosure": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "education": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "family": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "health": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "household": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "legal": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "move": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "other": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "police": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "process": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "sharing": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "socialWork": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      },
+      "voice": {
+        "maxLength": 24,
+        "where": "Chronology event family in the chronology filters, lanes chart and event list"
+      }
+    },
+    "evidenceKinds": {
+      "connector": {
+        "maxLength": 12,
+        "where": "Kind of an evidence reference in the person record documents list"
+      },
+      "document": {
+        "maxLength": 12,
+        "where": "Kind of an evidence reference in the person record documents list"
+      },
+      "event": {
+        "maxLength": 12,
+        "where": "Kind of an evidence reference in the person record documents list"
+      },
+      "external": {
+        "maxLength": 12,
+        "where": "Kind of an evidence reference in the person record documents list"
+      },
+      "meeting": {
+        "maxLength": 12,
+        "where": "Kind of an evidence reference in the person record documents list"
+      },
+      "photo": {
+        "maxLength": 12,
+        "where": "Kind of an evidence reference in the person record documents list"
+      },
+      "record": {
+        "maxLength": 12,
+        "where": "Kind of an evidence reference in the person record documents list"
+      }
+    },
+    "exclusionParties": {
+      "allegedPerpetrator": {
+        "maxLength": 48,
+        "where": "Who an exclusion names: the must-not-receive list in the drawer, the sharing preview, meeting invites and Admin exclusions"
+      },
+      "employer": {
+        "maxLength": 48,
+        "where": "Who an exclusion names: the must-not-receive list in the drawer, the sharing preview, meeting invites and Admin exclusions"
+      },
+      "notOnDistribution": {
+        "maxLength": 48,
+        "where": "Who an exclusion names: the must-not-receive list in the drawer, the sharing preview, meeting invites and Admin exclusions"
+      },
+      "parentsIfRisk": {
+        "maxLength": 48,
+        "where": "Who an exclusion names: the must-not-receive list in the drawer, the sharing preview, meeting invites and Admin exclusions"
+      },
+      "perpetrator": {
+        "maxLength": 48,
+        "where": "Who an exclusion names: the must-not-receive list in the drawer, the sharing preview, meeting invites and Admin exclusions"
+      },
+      "perpetratorAssociates": {
+        "maxLength": 48,
+        "where": "Who an exclusion names: the must-not-receive list in the drawer, the sharing preview, meeting invites and Admin exclusions"
+      },
+      "public": {
+        "maxLength": 48,
+        "where": "Who an exclusion names: the must-not-receive list in the drawer, the sharing preview, meeting invites and Admin exclusions"
+      },
+      "victim": {
+        "maxLength": 48,
+        "where": "Who an exclusion names: the must-not-receive list in the drawer, the sharing preview, meeting invites and Admin exclusions"
+      }
+    },
+    "harmTypes": {
+      "financial": {
+        "maxLength": 24,
+        "where": "Harm type on ASP concerns, reports and the referral forms"
+      },
+      "neglect": {
+        "maxLength": 24,
+        "where": "Harm type on ASP concerns, reports and the referral forms"
+      },
+      "physical": {
+        "maxLength": 24,
+        "where": "Harm type on ASP concerns, reports and the referral forms"
+      },
+      "psychological": {
+        "maxLength": 24,
+        "where": "Harm type on ASP concerns, reports and the referral forms"
+      },
+      "selfHarm": {
+        "maxLength": 24,
+        "where": "Harm type on ASP concerns, reports and the referral forms"
+      },
+      "selfNeglect": {
+        "maxLength": 24,
+        "where": "Harm type on ASP concerns, reports and the referral forms"
+      },
+      "sexual": {
+        "maxLength": 24,
+        "where": "Harm type on ASP concerns, reports and the referral forms"
+      }
+    },
+    "irdMedicalKinds": {
+      "comprehensive": {
+        "maxLength": 16,
+        "where": "Kind of medical examination decided at the IRD, in the CP panels"
+      },
+      "jpfe": {
+        "maxLength": 16,
+        "where": "Kind of medical examination decided at the IRD, in the CP panels"
+      },
+      "none": {
+        "maxLength": 16,
+        "where": "Kind of medical examination decided at the IRD, in the CP panels"
+      }
+    },
+    "lenses": {
+      "escalation": {
+        "findingFew": {
+          "where": "Finding on the escalation of police incidents lens result card on the chronology screen"
+        },
+        "findingMixed": {
+          "where": "Finding on the escalation of police incidents lens result card on the chronology screen"
+        },
+        "findingRising": {
+          "where": "Finding on the escalation of police incidents lens result card on the chronology screen"
+        },
+        "label": {
+          "maxLength": 40,
+          "where": "Pattern lens name in the chronology lens toggles and on its result card"
+        },
+        "looksFor": {
+          "where": "What the lens looks for, under the lens name on its result card"
+        },
+        "spanRising": {
+          "maxLength": 48,
+          "where": "Label of a highlighted span on the lanes chart for the escalation of police incidents lens"
+        }
+      },
+      "gaps": {
+        "findingGaps": {
+          "where": "Finding on the gaps in agency contact lens result card on the chronology screen"
+        },
+        "findingNone": {
+          "where": "Finding on the gaps in agency contact lens result card on the chronology screen"
+        },
+        "label": {
+          "maxLength": 40,
+          "where": "Pattern lens name in the chronology lens toggles and on its result card"
+        },
+        "looksFor": {
+          "where": "What the lens looks for, under the lens name on its result card"
+        },
+        "spanBetween": {
+          "maxLength": 48,
+          "where": "Label of a highlighted span on the lanes chart for the gaps in agency contact lens"
+        },
+        "spanTail": {
+          "maxLength": 48,
+          "where": "Label of a highlighted span on the lanes chart for the gaps in agency contact lens"
+        }
+      },
+      "household": {
+        "findingChanges": {
+          "where": "Finding on the changes in household composition lens result card on the chronology screen"
+        },
+        "findingNone": {
+          "where": "Finding on the changes in household composition lens result card on the chronology screen"
+        },
+        "label": {
+          "maxLength": 40,
+          "where": "Pattern lens name in the chronology lens toggles and on its result card"
+        },
+        "looksFor": {
+          "where": "What the lens looks for, under the lens name on its result card"
+        }
+      },
+      "missedContacts": {
+        "findingClusters": {
+          "where": "Finding on the clusters of missed contacts lens result card on the chronology screen"
+        },
+        "findingNone": {
+          "where": "Finding on the clusters of missed contacts lens result card on the chronology screen"
+        },
+        "label": {
+          "maxLength": 40,
+          "where": "Pattern lens name in the chronology lens toggles and on its result card"
+        },
+        "looksFor": {
+          "where": "What the lens looks for, under the lens name on its result card"
+        },
+        "span": {
+          "maxLength": 48,
+          "where": "Label of a highlighted span on the lanes chart for the clusters of missed contacts lens"
+        }
+      },
+      "moves": {
+        "findingNone": {
+          "where": "Finding on the repeated moves lens result card on the chronology screen"
+        },
+        "findingRepeated": {
+          "where": "Finding on the repeated moves lens result card on the chronology screen"
+        },
+        "label": {
+          "maxLength": 40,
+          "where": "Pattern lens name in the chronology lens toggles and on its result card"
+        },
+        "looksFor": {
+          "where": "What the lens looks for, under the lens name on its result card"
+        }
+      },
+      "prompt": {
+        "where": "Sentence appended to every lens finding on the chronology screen"
+      },
+      "releaseAlignment": {
+        "findingAligned": {
+          "where": "Finding on the alignment with release or bail dates lens result card on the chronology screen"
+        },
+        "findingNone": {
+          "where": "Finding on the alignment with release or bail dates lens result card on the chronology screen"
+        },
+        "label": {
+          "maxLength": 40,
+          "where": "Pattern lens name in the chronology lens toggles and on its result card"
+        },
+        "looksFor": {
+          "where": "What the lens looks for, under the lens name on its result card"
+        },
+        "span": {
+          "maxLength": 64,
+          "where": "Label of a highlighted span on the lanes chart for the alignment with release or bail dates lens"
+        }
+      }
+    },
+    "licenceConditionStatuses": {
+      "active": {
+        "maxLength": 12,
+        "where": "Licence condition status in the MAPPA panel"
+      },
+      "breached": {
+        "maxLength": 12,
+        "where": "Licence condition status in the MAPPA panel"
+      },
+      "ended": {
+        "maxLength": 12,
+        "where": "Licence condition status in the MAPPA panel"
+      }
+    },
+    "lsiStrandStatuses": {
+      "closed": {
+        "maxLength": 12,
+        "where": "Status of a Large Scale Investigation strand in the ASP panels"
+      },
+      "open": {
+        "maxLength": 12,
+        "where": "Status of a Large Scale Investigation strand in the ASP panels"
+      },
+      "reviewed": {
+        "maxLength": 12,
+        "where": "Status of a Large Scale Investigation strand in the ASP panels"
+      }
+    },
+    "mappa": {
+      "categories": {
+        "category1": {
+          "maxLength": 56,
+          "where": "MAPPA category in the MAPPA panel, referral form, reports and the drawer"
+        },
+        "category2": {
+          "maxLength": 56,
+          "where": "MAPPA category in the MAPPA panel, referral form, reports and the drawer"
+        },
+        "category3": {
+          "maxLength": 56,
+          "where": "MAPPA category in the MAPPA panel, referral form, reports and the drawer"
+        }
+      },
+      "levels": {
+        "level1": {
+          "maxLength": 48,
+          "where": "MAPPA level in the MAPPA panel, referral form, reports and the drawer"
+        },
+        "level2": {
+          "maxLength": 48,
+          "where": "MAPPA level in the MAPPA panel, referral form, reports and the drawer"
+        },
+        "level3": {
+          "maxLength": 48,
+          "where": "MAPPA level in the MAPPA panel, referral form, reports and the drawer"
+        }
+      }
+    },
+    "mappaExitKinds": {
+      "deregistration": {
+        "maxLength": 16,
+        "where": "Kind of MAPPA exit in the MAPPA panel"
+      },
+      "levelDown": {
+        "maxLength": 16,
+        "where": "Kind of MAPPA exit in the MAPPA panel"
+      },
+      "transfer": {
+        "maxLength": 16,
+        "where": "Kind of MAPPA exit in the MAPPA panel"
+      }
+    },
+    "medicalReportKinds": {
+      "approvedMedicalPractitioner": {
+        "maxLength": 32,
+        "where": "Kind of medical report in the AWI application panel"
+      },
+      "medicalPractitioner": {
+        "maxLength": 32,
+        "where": "Kind of medical report in the AWI application panel"
+      }
+    },
+    "meetingStatuses": {
+      "cancelled": {
+        "maxLength": 16,
+        "where": "Meeting status in the meeting workspace header, process screens and the MARAC panel"
+      },
+      "held": {
+        "maxLength": 16,
+        "where": "Meeting status in the meeting workspace header, process screens and the MARAC panel"
+      },
+      "inProgress": {
+        "maxLength": 16,
+        "where": "Meeting status in the meeting workspace header, process screens and the MARAC panel"
+      },
+      "scheduled": {
+        "maxLength": 16,
+        "where": "Meeting status in the meeting workspace header, process screens and the MARAC panel"
+      }
+    },
+    "meetingTypes": {
+      "aspCaseConference": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "aspInterAgencyDiscussion": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "aspReviewConference": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "awiMdt": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "coreGroup": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "cppm": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "cppmReview": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "ird": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "lsiPlanning": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "mappaLevel2": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "mappaLevel3": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "marac": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      },
+      "preBirthCppm": {
+        "maxLength": 48,
+        "where": "Meeting type in the meeting list, meeting workspace and process screens"
+      }
+    },
+    "mhoReportStatuses": {
+      "inProgress": {
+        "maxLength": 16,
+        "where": "MHO report status under the MHO clock in the AWI application panel"
+      },
+      "notStarted": {
+        "maxLength": 16,
+        "where": "MHO report status under the MHO clock in the AWI application panel"
+      },
+      "submitted": {
+        "maxLength": 16,
+        "where": "MHO report status under the MHO clock in the AWI application panel"
+      }
+    },
+    "minuteStatuses": {
+      "chairApproved": {
+        "maxLength": 16,
+        "where": "Minute status in the meeting list, meeting workspace and process screens"
+      },
+      "distributed": {
+        "maxLength": 16,
+        "where": "Minute status in the meeting list, meeting workspace and process screens"
+      },
+      "draft": {
+        "maxLength": 16,
+        "where": "Minute status in the meeting list, meeting workspace and process screens"
+      },
+      "notStarted": {
+        "maxLength": 16,
+        "where": "Minute status in the meeting list, meeting workspace and process screens"
+      }
+    },
+    "packItemKinds": {
+      "chronology": {
+        "maxLength": 20,
+        "where": "Kind of a meeting pack item in the meeting workspace"
+      },
+      "plan": {
+        "maxLength": 20,
+        "where": "Kind of a meeting pack item in the meeting workspace"
+      },
+      "report": {
+        "maxLength": 20,
+        "where": "Kind of a meeting pack item in the meeting workspace"
+      },
+      "researchReturn": {
+        "maxLength": 20,
+        "where": "Kind of a meeting pack item in the meeting workspace"
+      },
+      "riskAssessment": {
+        "maxLength": 20,
+        "where": "Kind of a meeting pack item in the meeting workspace"
+      },
+      "views": {
+        "maxLength": 20,
+        "where": "Kind of a meeting pack item in the meeting workspace"
+      }
+    },
+    "planStatuses": {
+      "active": {
+        "maxLength": 16,
+        "where": "Plan status on plans in process screens and the CP panels"
+      },
+      "draft": {
+        "maxLength": 16,
+        "where": "Plan status on plans in process screens and the CP panels"
+      },
+      "ended": {
+        "maxLength": 16,
+        "where": "Plan status on plans in process screens and the CP panels"
+      },
+      "reviewed": {
+        "maxLength": 16,
+        "where": "Plan status on plans in process screens and the CP panels"
+      }
+    },
+    "planTypes": {
+      "adultProtection": {
+        "maxLength": 24,
+        "where": "Plan type on plans in process screens, the drawer and print packs"
+      },
+      "adultSupport": {
+        "maxLength": 24,
+        "where": "Plan type on plans in process screens, the drawer and print packs"
+      },
+      "childsPlan": {
+        "maxLength": 24,
+        "where": "Plan type on plans in process screens, the drawer and print packs"
+      },
+      "interimSafety": {
+        "maxLength": 24,
+        "where": "Plan type on plans in process screens, the drawer and print packs"
+      },
+      "mappaRmp": {
+        "maxLength": 24,
+        "where": "Plan type on plans in process screens, the drawer and print packs"
+      },
+      "maracAction": {
+        "maxLength": 24,
+        "where": "Plan type on plans in process screens, the drawer and print packs"
+      }
+    },
+    "poaKinds": {
+      "combined": {
+        "maxLength": 12,
+        "where": "Kind of power of attorney in the AWI OPG result panel"
+      },
+      "financial": {
+        "maxLength": 12,
+        "where": "Kind of power of attorney in the AWI OPG result panel"
+      },
+      "welfare": {
+        "maxLength": 12,
+        "where": "Kind of power of attorney in the AWI OPG result panel"
+      }
+    },
+    "processes": {
+      "asp": {
+        "label": {
+          "maxLength": 32,
+          "where": "Full process name in process headers, print pack covers, reports and Help"
+        },
+        "short": {
+          "maxLength": 6,
+          "where": "Process code on process marks, tabs, search results and tables"
+        }
+      },
+      "awi": {
+        "label": {
+          "maxLength": 32,
+          "where": "Full process name in process headers, print pack covers, reports and Help"
+        },
+        "short": {
+          "maxLength": 6,
+          "where": "Process code on process marks, tabs, search results and tables"
+        }
+      },
+      "cp": {
+        "label": {
+          "maxLength": 32,
+          "where": "Full process name in process headers, print pack covers, reports and Help"
+        },
+        "short": {
+          "maxLength": 6,
+          "where": "Process code on process marks, tabs, search results and tables"
+        }
+      },
+      "mappa": {
+        "label": {
+          "maxLength": 32,
+          "where": "Full process name in process headers, print pack covers, reports and Help"
+        },
+        "short": {
+          "maxLength": 6,
+          "where": "Process code on process marks, tabs, search results and tables"
+        }
+      },
+      "marac": {
+        "label": {
+          "maxLength": 32,
+          "where": "Full process name in process headers, print pack covers, reports and Help"
+        },
+        "short": {
+          "maxLength": 6,
+          "where": "Process code on process marks, tabs, search results and tables"
+        }
+      }
+    },
+    "processStatuses": {
+      "closed": {
+        "maxLength": 16,
+        "where": "Process status in the process header"
+      },
+      "open": {
+        "maxLength": 16,
+        "where": "Process status in the process header"
+      },
+      "transferred": {
+        "maxLength": 16,
+        "where": "Process status in the process header"
+      }
+    },
+    "requestStatuses": {
+      "declined": {
+        "maxLength": 16,
+        "where": "Status of a records request or report in the ASP investigation and AWI application panels"
+      },
+      "notRequired": {
+        "maxLength": 16,
+        "where": "Status of a records request or report in the ASP investigation and AWI application panels"
+      },
+      "received": {
+        "maxLength": 16,
+        "where": "Status of a records request or report in the ASP investigation and AWI application panels"
+      },
+      "requested": {
+        "maxLength": 16,
+        "where": "Status of a records request or report in the ASP investigation and AWI application panels"
+      }
+    },
+    "researchStatuses": {
+      "nothingKnown": {
+        "maxLength": 16,
+        "where": "Status of a research request or pre-meeting return in the MARAC and MAPPA panels and the meeting workspace"
+      },
+      "overdue": {
+        "maxLength": 16,
+        "where": "Status of a research request or pre-meeting return in the MARAC and MAPPA panels and the meeting workspace"
+      },
+      "requested": {
+        "maxLength": 16,
+        "where": "Status of a research request or pre-meeting return in the MARAC and MAPPA panels and the meeting workspace"
+      },
+      "returned": {
+        "maxLength": 16,
+        "where": "Status of a research request or pre-meeting return in the MARAC and MAPPA panels and the meeting workspace"
+      },
+      "sent": {
+        "maxLength": 16,
+        "where": "Status of a research request or pre-meeting return in the MARAC and MAPPA panels and the meeting workspace"
+      }
+    },
+    "riskBands": {
+      "critical": {
+        "maxLength": 16,
+        "where": "Risk band word shown beside the icon and colour on risk marks, clocks and worklist rows"
+      },
+      "high": {
+        "maxLength": 16,
+        "where": "Risk band word shown beside the icon and colour on risk marks, clocks and worklist rows"
+      },
+      "low": {
+        "maxLength": 16,
+        "where": "Risk band word shown beside the icon and colour on risk marks, clocks and worklist rows"
+      },
+      "medium": {
+        "maxLength": 16,
+        "where": "Risk band word shown beside the icon and colour on risk marks, clocks and worklist rows"
+      },
+      "unknown": {
+        "maxLength": 16,
+        "where": "Risk band word shown beside the icon and colour on risk marks, clocks and worklist rows"
+      }
+    },
+    "riskTools": {
+      "capacity": {
+        "maxLength": 48,
+        "where": "Risk tool name on risk assessments in process panels, the referral forms and the drawer"
+      },
+      "daq": {
+        "maxLength": 48,
+        "where": "Risk tool name on risk assessments in process panels, the referral forms and the drawer"
+      },
+      "dash": {
+        "maxLength": 48,
+        "where": "Risk tool name on risk assessments in process panels, the referral forms and the drawer"
+      },
+      "lscmi": {
+        "maxLength": 48,
+        "where": "Risk tool name on risk assessments in process panels, the referral forms and the drawer"
+      },
+      "mappaLevel": {
+        "maxLength": 48,
+        "where": "Risk tool name on risk assessments in process panels, the referral forms and the drawer"
+      },
+      "other": {
+        "maxLength": 48,
+        "where": "Risk tool name on risk assessments in process panels, the referral forms and the drawer"
+      },
+      "rm2000": {
+        "maxLength": 48,
+        "where": "Risk tool name on risk assessments in process panels, the referral forms and the drawer"
+      },
+      "sa07": {
+        "maxLength": 48,
+        "where": "Risk tool name on risk assessments in process panels, the referral forms and the drawer"
+      },
+      "threePointTest": {
+        "maxLength": 48,
+        "where": "Risk tool name on risk assessments in process panels, the referral forms and the drawer"
+      }
+    },
+    "roles": {
+      "apcLeadOfficer": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "caldicottGuardian": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "careInspectorateOfficer": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "chair": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "cmhn": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "concernHubOfficer": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "councilOfficerAsp": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "cpcLeadOfficer": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "cpNurseAdviser": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "cswo": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "detectiveSergeantPpu": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "dischargeCoordinator": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "domesticAbuseOfficer": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "educationCpLead": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "fireSafetyOfficer": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "gp": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "healthVisitor": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "housingOfficer": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "idaa": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "independentAdvocate": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "inspector": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "justiceSocialWorker": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "mappaCoordinator": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "maracCoordinator": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "mho": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "midwife": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "minuteTaker": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "mwcOfficer": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "offenderManagement": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "opgOfficer": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "prisonSocialWorker": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "procuratorFiscal": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "reporter": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "socialWorkerAdults": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "socialWorkerChildren": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "systemAdministrator": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "teamLeader": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      },
+      "womensAidWorker": {
+        "label": {
+          "maxLength": 48,
+          "where": "Role name wherever a persona or user is shown: sign in, rail, persona switcher, drawer, meetings, Admin users"
+        }
+      }
+    },
+    "shareStatuses": {
+      "queued": {
+        "maxLength": 12,
+        "where": "Status of a share on the Sharing screen, the person record and the drawer"
+      },
+      "read": {
+        "maxLength": 12,
+        "where": "Status of a share on the Sharing screen, the person record and the drawer"
+      },
+      "sent": {
+        "maxLength": 12,
+        "where": "Status of a share on the Sharing screen, the person record and the drawer"
+      },
+      "withheld": {
+        "maxLength": 12,
+        "where": "Status of a share on the Sharing screen, the person record and the drawer"
+      }
+    },
+    "significances": {
+      "high": {
+        "maxLength": 12,
+        "where": "Significance of a chronology event in the event list, print pack, drawer and add-event dialog"
+      },
+      "low": {
+        "maxLength": 12,
+        "where": "Significance of a chronology event in the event list, print pack, drawer and add-event dialog"
+      },
+      "moderate": {
+        "maxLength": 12,
+        "where": "Significance of a chronology event in the event list, print pack, drawer and add-event dialog"
+      }
+    },
+    "stages": {
+      "asp": {
+        "caseConference": {
+          "maxLength": 24,
+          "where": "Stage name for ASP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "closed": {
+          "maxLength": 24,
+          "where": "Stage name for ASP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "concern": {
+          "maxLength": 24,
+          "where": "Stage name for ASP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "inquiry": {
+          "maxLength": 24,
+          "where": "Stage name for ASP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "investigation": {
+          "maxLength": 24,
+          "where": "Stage name for ASP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "protectionPlan": {
+          "maxLength": 24,
+          "where": "Stage name for ASP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "review": {
+          "maxLength": 24,
+          "where": "Stage name for ASP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "screening": {
+          "maxLength": 24,
+          "where": "Stage name for ASP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "supportPlan": {
+          "maxLength": 24,
+          "where": "Stage name for ASP on process marks, the stage stepper, tables and the need-to-know drawer"
+        }
+      },
+      "awi": {
+        "application": {
+          "maxLength": 24,
+          "where": "Stage name for AWI on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "capacityConcern": {
+          "maxLength": 24,
+          "where": "Stage name for AWI on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "closed": {
+          "maxLength": 24,
+          "where": "Stage name for AWI on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "existingPowers": {
+          "maxLength": 24,
+          "where": "Stage name for AWI on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "order": {
+          "maxLength": 24,
+          "where": "Stage name for AWI on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "routeDecision": {
+          "maxLength": 24,
+          "where": "Stage name for AWI on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "supervision": {
+          "maxLength": 24,
+          "where": "Stage name for AWI on process marks, the stage stepper, tables and the need-to-know drawer"
+        }
+      },
+      "cp": {
+        "childsPlan": {
+          "maxLength": 24,
+          "where": "Stage name for CP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "closed": {
+          "maxLength": 24,
+          "where": "Stage name for CP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "concern": {
+          "maxLength": 24,
+          "where": "Stage name for CP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "cppm": {
+          "maxLength": 24,
+          "where": "Stage name for CP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "deregistered": {
+          "maxLength": 24,
+          "where": "Stage name for CP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "investigation": {
+          "maxLength": 24,
+          "where": "Stage name for CP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "ird": {
+          "maxLength": 24,
+          "where": "Stage name for CP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "review": {
+          "maxLength": 24,
+          "where": "Stage name for CP on process marks, the stage stepper, tables and the need-to-know drawer"
+        }
+      },
+      "mappa": {
+        "exit": {
+          "maxLength": 24,
+          "where": "Stage name for MAPPA on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "managed": {
+          "maxLength": 24,
+          "where": "Stage name for MAPPA on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "meeting": {
+          "maxLength": 24,
+          "where": "Stage name for MAPPA on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "notification": {
+          "maxLength": 24,
+          "where": "Stage name for MAPPA on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "preMeeting": {
+          "maxLength": 24,
+          "where": "Stage name for MAPPA on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "referral": {
+          "maxLength": 24,
+          "where": "Stage name for MAPPA on process marks, the stage stepper, tables and the need-to-know drawer"
+        }
+      },
+      "marac": {
+        "actionPlan": {
+          "maxLength": 24,
+          "where": "Stage name for MARAC on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "closed": {
+          "maxLength": 24,
+          "where": "Stage name for MARAC on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "feedback": {
+          "maxLength": 24,
+          "where": "Stage name for MARAC on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "meeting": {
+          "maxLength": 24,
+          "where": "Stage name for MARAC on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "referral": {
+          "maxLength": 24,
+          "where": "Stage name for MARAC on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "research": {
+          "maxLength": 24,
+          "where": "Stage name for MARAC on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "transferred": {
+          "maxLength": 24,
+          "where": "Stage name for MARAC on process marks, the stage stepper, tables and the need-to-know drawer"
+        }
+      }
+    },
+    "viewsKinds": {
+      "adultViews": {
+        "maxLength": 32,
+        "where": "Whose views a views record holds: voice blocks, the record views dialog and print packs"
+      },
+      "carerViews": {
+        "maxLength": 32,
+        "where": "Whose views a views record holds: voice blocks, the record views dialog and print packs"
+      },
+      "childVoice": {
+        "maxLength": 32,
+        "where": "Whose views a views record holds: voice blocks, the record views dialog and print packs"
+      },
+      "familyViews": {
+        "maxLength": 32,
+        "where": "Whose views a views record holds: voice blocks, the record views dialog and print packs"
+      },
+      "victimWishes": {
+        "maxLength": 32,
+        "where": "Whose views a views record holds: voice blocks, the record views dialog and print packs"
+      }
+    },
+    "visibilities": {
+      "agencyOnly": {
+        "maxLength": 16,
+        "where": "Visibility of a chronology event in the event list and the drawer"
+      },
+      "integrated": {
+        "maxLength": 16,
+        "where": "Visibility of a chronology event in the event list and the drawer"
+      },
+      "restricted": {
+        "maxLength": 16,
+        "where": "Visibility of a chronology event in the event list and the drawer"
+      }
+    }
+  },
   "errors": {
     "capacity": {
       "decision": {
@@ -4905,6 +6815,11 @@
       },
       "reason": {
         "where": "Validation message under the reason for a person who must not receive information"
+      }
+    },
+    "schemas": {
+      "casePartyIdentity": {
+        "where": "Schema validation message when a case-party register entry has no person, user or name"
       }
     },
     "threePointTest": {

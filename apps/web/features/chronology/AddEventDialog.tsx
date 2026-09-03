@@ -1,6 +1,6 @@
 'use client';
 
-import { EVENT_TYPES, SIGNIFICANCES, type ChronologyAnalysis, type ChronologyEvent, type LawfulBasisRecord } from '@mas/domain';
+import { EVENT_TYPES, SIGNIFICANCES, significanceLabel, type ChronologyAnalysis, type ChronologyEvent, type LawfulBasisRecord } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -152,7 +152,7 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
             <TextareaField label={t('chronology.addEvent.fields.detail')} required maxLength={600} {...form.register('detail')} error={'detail' in errors ? errors.detail?.message : undefined} hint={t('chronology.addEvent.fields.detailHint')} />
             <TextareaField label={t('chronology.addEvent.fields.response')} maxLength={400} {...form.register('response')} />
             <TextareaField label={t('chronology.addEvent.fields.outcome')} maxLength={400} {...form.register('outcome')} />
-            <SelectField label={t('chronology.addEvent.fields.significance')} required {...form.register('significance')} options={SIGNIFICANCES.map((s) => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))} />
+            <SelectField label={t('chronology.addEvent.fields.significance')} required {...form.register('significance')} options={SIGNIFICANCES.map((s) => ({ value: s, label: significanceLabel(s) }))} />
             {significance === 'high' ? <TextField label={t('chronology.addEvent.fields.significanceReason')} required {...form.register('significanceReason')} error={'significanceReason' in errors ? errors.significanceReason?.message : undefined} /> : null}
             <Controller
               control={form.control}

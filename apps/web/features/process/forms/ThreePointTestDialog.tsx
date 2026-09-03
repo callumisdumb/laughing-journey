@@ -1,6 +1,6 @@
 'use client';
 
-import { HARM_TYPES, HARM_TYPE_LABELS, THREE_POINT_LIMBS, threePointTestFormSchema, type AspProcess, type ThreePointTestForm } from '@mas/domain';
+import { HARM_TYPES, THREE_POINT_LIMBS, harmTypeLabel, threePointTestFormSchema, type AspProcess, type ThreePointTestForm } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -73,7 +73,7 @@ export function ThreePointTestDialog({ open, onClose, process }: { open: boolean
               {errors.harmTypes ? <div role="alert" style={{ color: 'var(--color-risk-critical)', fontSize: 'var(--text-sm)' }}>{errors.harmTypes.message}</div> : null}
               <div className="cluster">
                 {HARM_TYPES.map((h) => (
-                  <CheckboxField key={h} label={HARM_TYPE_LABELS[h]} checked={field.value.includes(h)} onChange={(e) => field.onChange(e.target.checked ? [...field.value, h] : field.value.filter((x) => x !== h))} />
+                  <CheckboxField key={h} label={harmTypeLabel(h)} checked={field.value.includes(h)} onChange={(e) => field.onChange(e.target.checked ? [...field.value, h] : field.value.filter((x) => x !== h))} />
                 ))}
               </div>
             </fieldset>

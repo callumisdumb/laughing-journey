@@ -753,7 +753,7 @@
     },
     "page": {
       "ledeFull": "Showing every entry: {role} has oversight.",
-      "ledeOwn": "Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone\u2019s.",
+      "ledeOwn": "Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone’s.",
       "ledeTail": "Every read of a restricted record, every share, every break-glass and every persona switch is here, newest first.",
       "title": "Audit"
     },
@@ -1495,6 +1495,709 @@
       "zoomOut": "Zoom out"
     }
   },
+  "domain": {
+    "access": {
+      "breakGlassActive": "Break-glass access is active. Every read is audited.",
+      "caldicott": "Caldicott guardian: audit view only, no case content.",
+      "excluded": "You must not receive information about this process.",
+      "inspector": "Inspector view: the record is shown with names redacted.",
+      "member": "You are on this case as {role}.",
+      "notOnCase": "You are not on this case. You can see that a process exists and ask to be involved.",
+      "oversight": "{role}: oversight summary across cases.",
+      "restricted": "This is a restricted record and you are not on the distribution list.",
+      "systemAdministrator": "System administrator: configuration only, no case content."
+    },
+    "actionStatuses": {
+      "cancelled": "Cancelled",
+      "complete": "Complete",
+      "inProgress": "In progress",
+      "open": "Open"
+    },
+    "agencies": {
+      "court": {
+        "label": "Court",
+        "short": "Court"
+      },
+      "education": {
+        "label": "Education",
+        "short": "Education"
+      },
+      "fireRescue": {
+        "label": "Fire and rescue",
+        "short": "Fire and rescue"
+      },
+      "health": {
+        "label": "Health",
+        "short": "Health"
+      },
+      "housing": {
+        "label": "Housing",
+        "short": "Housing"
+      },
+      "police": {
+        "label": "Police Scotland",
+        "short": "Police"
+      },
+      "regulator": {
+        "label": "Regulator",
+        "short": "Regulator"
+      },
+      "scra": {
+        "label": "SCRA",
+        "short": "SCRA"
+      },
+      "socialWork": {
+        "label": "Social work",
+        "short": "Social work"
+      },
+      "sps": {
+        "label": "Scottish Prison Service",
+        "short": "SPS"
+      },
+      "thirdSector": {
+        "label": "Third sector",
+        "short": "Third sector"
+      }
+    },
+    "analysisKinds": {
+      "pattern": "Pattern",
+      "recommendation": "Recommendation",
+      "risk": "Risk"
+    },
+    "aspInquiryOutcomes": {
+      "noFurtherAction": "No further action",
+      "pending": "Pending",
+      "proceedToInvestigation": "Proceed to investigation",
+      "supportOnly": "Support only"
+    },
+    "aspOrderDecisions": {
+      "applicationDrafting": "Application drafting",
+      "applied": "Applied",
+      "granted": "Granted",
+      "notRequired": "Not required",
+      "refused": "Refused"
+    },
+    "aspOrders": {
+      "assessmentOrderS11": "Assessment order (s11)",
+      "banningOrderS19": "Banning order (s19)",
+      "removalOrderS14": "Removal order (s14)",
+      "warrantForEntry": "Warrant for entry"
+    },
+    "aspScreeningOutcomes": {
+      "emergencyAction": "Emergency action",
+      "noFurtherAspAction": "No further ASP action",
+      "proceedToInquiry": "Proceed to inquiry"
+    },
+    "attendances": {
+      "absent": "Absent",
+      "accepted": "Accepted",
+      "apologies": "Apologies",
+      "declined": "Declined",
+      "invited": "Invited",
+      "present": "Present",
+      "remote": "Remote"
+    },
+    "awiOrderKinds": {
+      "combinedGuardianship": "Combined guardianship",
+      "financialGuardianship": "Financial guardianship",
+      "interimOrder": "Interim order",
+      "interventionOrder": "Intervention order",
+      "welfareGuardianship": "Welfare guardianship"
+    },
+    "capacityOutcomes": {
+      "fluctuating": "Fluctuating",
+      "hasCapacity": "Has capacity",
+      "lacksCapacity": "Lacks capacity",
+      "pending": "Pending"
+    },
+    "channels": {
+      "connectorPush": "Connector push",
+      "inApp": "In app",
+      "secureEmailDigest": "Secure email digest"
+    },
+    "classifications": {
+      "official": "OFFICIAL",
+      "officialSensitive": "OFFICIAL-SENSITIVE",
+      "restricted": "OFFICIAL-SENSITIVE: RESTRICTED"
+    },
+    "clockRules": {
+      "aspCaseconferenceInitial": {
+        "description": "Clydeshore ASP procedures: 21 calendar days",
+        "label": "Initial ASP case conference",
+        "trigger": "Adult concern received"
+      },
+      "aspInquiryDecision": {
+        "description": "Clydeshore ASP procedures: 5 working days",
+        "label": "Inquiry decision",
+        "trigger": "Adult concern received"
+      },
+      "aspPlanReview": {
+        "description": "The Adult Protection Plan is reviewed 3 months after it is agreed, then three monthly.",
+        "label": "Adult Protection Plan review",
+        "trigger": "Protection plan agreed"
+      },
+      "awiInterimMaximum": {
+        "description": "The total interim period cannot exceed 6 months.",
+        "label": "Interim order statutory maximum",
+        "trigger": "Interim order granted"
+      },
+      "awiInterimWarning": {
+        "description": "An interim guardianship order runs for 3 months by default.",
+        "label": "Interim guardianship order duration",
+        "trigger": "Interim order granted"
+      },
+      "awiMhoReport": {
+        "description": "The MHO report is submitted within 21 days of the date of notice of the application.",
+        "label": "MHO report",
+        "trigger": "MHO notified of guardianship application"
+      },
+      "cpCoregroupEscalate": {
+        "description": "A significant change or concern within the plan is escalated to the lead professional and the CPPM chair within 3 calendar days.",
+        "label": "Core group concern escalated to the chair",
+        "trigger": "Significant change or concern within the plan identified"
+      },
+      "cpCoregroupFirst": {
+        "description": "Held within 15 working days of the initial CPPM.",
+        "label": "First core group meeting",
+        "trigger": "Initial CPPM held"
+      },
+      "cpCppmInitial": {
+        "description": "Held within 28 calendar days of the child protection investigation beginning.",
+        "label": "Initial Child Protection Planning Meeting",
+        "trigger": "Child protection investigation begun (IRD decision)"
+      },
+      "cpCppmInquorateReconvene": {
+        "description": "An inquorate CPPM is reconvened within 10 working days.",
+        "label": "Inquorate CPPM reconvened",
+        "trigger": "CPPM inquorate"
+      },
+      "cpCppmNotice": {
+        "description": "Invitations, reports and notice to the family are sent no later than 5 calendar days before the CPPM.",
+        "label": "Notice of the CPPM to family and invitees",
+        "trigger": "CPPM date set (the clock counts back from the meeting date)"
+      },
+      "cpCppmRecordDistribute": {
+        "description": "The record of the CPPM is distributed within 10 working days of the meeting.",
+        "label": "CPPM record distributed",
+        "trigger": "CPPM held"
+      },
+      "cpCppmReviewFirst": {
+        "description": "Held within 6 months of the initial CPPM; a review may be brought forward on significant change.",
+        "label": "First review CPPM",
+        "trigger": "Initial CPPM held"
+      },
+      "cpCppmReviewSubsequent": {
+        "description": "Held at least every 6 months after the previous review CPPM, or earlier on significant change.",
+        "label": "Subsequent review CPPM",
+        "trigger": "Review CPPM held"
+      },
+      "cpPrebirthCppm": {
+        "description": "Held within 28 calendar days of the pre-birth concern and no later than 28 weeks gestation.",
+        "label": "Pre-birth CPPM",
+        "trigger": "Pre-birth concern raised"
+      },
+      "cpPrebirthReview": {
+        "description": "The pre-birth plan is reviewed within 3 months of the pre-birth CPPM; after the birth the review may be deferred on professional judgement, with the reason recorded.",
+        "label": "Review of the pre-birth plan",
+        "trigger": "Pre-birth CPPM held"
+      },
+      "mappaLevel2Review": {
+        "description": "Level 2 cases are reviewed no less than once every 12 weeks.",
+        "label": "MAPPA Level 2 review",
+        "trigger": "Level 2 meeting held"
+      },
+      "mappaLevel3Review": {
+        "description": "Level 3 cases are reviewed no less than once every 6 weeks.",
+        "label": "MAPPA Level 3 review",
+        "trigger": "Level 3 (MAPPP) meeting held"
+      },
+      "maracFlagExpiry": {
+        "description": "The MARAC flag stays on agency records for 12 months from the last referral.",
+        "label": "MARAC flag expiry",
+        "trigger": "Case heard at MARAC"
+      },
+      "maracRepeatWindow": {
+        "description": "A further referral within 12 months of the last referral counts as a repeat.",
+        "label": "MARAC repeat window",
+        "trigger": "Case heard at MARAC"
+      },
+      "maracResearchReturn": {
+        "description": "Clydeshore MARAC Operating Protocol: returns 5 working days before the meeting",
+        "label": "MARAC research return",
+        "trigger": "Research request sent"
+      }
+    },
+    "consentStatuses": {
+      "notRequired": "Consent not required",
+      "notSoughtRisk": "Consent not sought because it would increase risk",
+      "soughtAndGiven": "Consent sought and given",
+      "soughtAndRefusedOverridden": "Consent sought and refused, overridden with reason"
+    },
+    "cppmDecisions": {
+      "notRegister": "Do not register",
+      "pending": "Pending",
+      "register": "Register"
+    },
+    "cpRegisterCategories": {
+      "childPlacingSelfAtRisk": "Child placing themselves at risk",
+      "domesticAbuse": "Domestic abuse",
+      "emotionalAbuse": "Emotional abuse",
+      "neglect": "Neglect",
+      "nonEngagingFamily": "Non-engaging family",
+      "other": "Other concern",
+      "parentalMentalHealth": "Parental mental health",
+      "parentalSubstanceUse": "Parental substance use",
+      "physicalAbuse": "Physical abuse",
+      "sexualAbuse": "Sexual abuse"
+    },
+    "detailLevels": {
+      "fields": "Named fields only",
+      "full": "Full record",
+      "presence": "Presence only",
+      "summary": "Summary"
+    },
+    "disclosureStatuses": {
+      "approved": "Approved",
+      "declined": "Declined",
+      "made": "Made",
+      "pending": "Pending"
+    },
+    "eraStatuses": {
+      "complete": "Complete",
+      "inProgress": "In progress",
+      "notStarted": "Not started"
+    },
+    "eventFamilies": {
+      "care": "Care and support",
+      "disclosure": "Disclosure",
+      "education": "Education",
+      "family": "Birth and family",
+      "health": "Health",
+      "household": "Household change",
+      "legal": "Legal",
+      "move": "Address move",
+      "other": "Other",
+      "police": "Police",
+      "process": "Protection process",
+      "sharing": "Information shared",
+      "socialWork": "Social work",
+      "voice": "Views and voice"
+    },
+    "evidenceKinds": {
+      "connector": "Connector",
+      "document": "Document",
+      "event": "Event",
+      "external": "External",
+      "meeting": "Meeting",
+      "photo": "Photo",
+      "record": "Record"
+    },
+    "exclusionParties": {
+      "allegedPerpetrator": "Alleged perpetrator",
+      "employer": "Employer",
+      "notOnDistribution": "Not on the distribution list",
+      "parentsIfRisk": "Parents and carers where sharing increases risk",
+      "perpetrator": "Perpetrator",
+      "perpetratorAssociates": "Perpetrator's family or associates",
+      "public": "Public",
+      "victim": "Victim"
+    },
+    "harmTypes": {
+      "financial": "Financial harm",
+      "neglect": "Neglect",
+      "physical": "Physical harm",
+      "psychological": "Psychological harm",
+      "selfHarm": "Self-harm",
+      "selfNeglect": "Self-neglect",
+      "sexual": "Sexual harm"
+    },
+    "irdMedicalKinds": {
+      "comprehensive": "Comprehensive",
+      "jpfe": "JPFE",
+      "none": "None"
+    },
+    "lenses": {
+      "escalation": {
+        "findingFew": "Fewer than three police concern reports or incidents ({count} found), so no pattern is shown.",
+        "findingMixed": "{count} police reports between {from} and {to}, with significance rising and falling rather than climbing.",
+        "findingRising": "{count} police reports between {from} and {to}; each is as significant as, or more significant than, the one before.",
+        "label": "Escalation of police incidents",
+        "looksFor": "Three or more police concern reports or incidents where significance rises or holds over time.",
+        "spanRising": "Police reports rising in significance"
+      },
+      "gaps": {
+        "findingGaps": "{count, plural, one {# gap} other {# gaps}} of six months or more. A gap can mean stability or that nobody was looking.",
+        "findingNone": "No period of 180 days or more without an event from any agency.",
+        "label": "Gaps in agency contact",
+        "looksFor": "Periods of 180 days or more with no event from any agency.",
+        "spanBetween": "{months} months with no recorded contact",
+        "spanTail": "{months} months since the last recorded contact"
+      },
+      "household": {
+        "findingChanges": "{count, plural, one {# change} other {# changes}} in who lives in the home. Compare against the missed contacts and police lenses.",
+        "findingNone": "No household changes recorded.",
+        "label": "Changes in household composition",
+        "looksFor": "People joining or leaving the household, births and partner changes."
+      },
+      "missedContacts": {
+        "findingClusters": "{count} missed or low contacts fall into {clusters, plural, one {# cluster} other {# clusters}}. Check what else was happening at home in those weeks.",
+        "findingNone": "No cluster of missed health or education contacts within 120 days.",
+        "label": "Clusters of missed contacts",
+        "looksFor": "Two or more missed health or education contacts, low attendance or wellbeing concerns within 120 days.",
+        "span": "{count} missed or low contacts"
+      },
+      "moves": {
+        "findingNone": "{count, plural, one {# move} other {# moves}} recorded, none within 36 months of another.",
+        "findingRepeated": "{count} moves within 36 months of each other. Consider the effect on school, health visiting and support networks.",
+        "label": "Repeated moves",
+        "looksFor": "Two or more address moves within 36 months."
+      },
+      "prompt": "This is a prompt for professional analysis, not a conclusion. Record any judgement as an analysis note linked to the events.",
+      "releaseAlignment": {
+        "findingAligned": "{count, plural, one {# release, bail or licence event} other {# release, bail or licence events}}; {others} other events fall in the 30 days after.",
+        "findingNone": "No release, bail or licence events to align against.",
+        "label": "Alignment with release or bail dates",
+        "looksFor": "Events in the 30 days after a release from custody, a bail condition or a licence change.",
+        "span": "30 days after {title}"
+      }
+    },
+    "licenceConditionStatuses": {
+      "active": "Active",
+      "breached": "Breached",
+      "ended": "Ended"
+    },
+    "lsiStrandStatuses": {
+      "closed": "Closed",
+      "open": "Open",
+      "reviewed": "Reviewed"
+    },
+    "mappa": {
+      "categories": {
+        "category1": "Category 1: registered sex offender",
+        "category2": "Category 2: restricted patient",
+        "category3": "Category 3: other risk of serious harm offender"
+      },
+      "levels": {
+        "level1": "Level 1: routine single-agency management",
+        "level2": "Level 2: active multi-agency management",
+        "level3": "Level 3: MAPPP, the critical few"
+      }
+    },
+    "mappaExitKinds": {
+      "deregistration": "Deregistration",
+      "levelDown": "Level down",
+      "transfer": "Transfer"
+    },
+    "medicalReportKinds": {
+      "approvedMedicalPractitioner": "Approved medical practitioner",
+      "medicalPractitioner": "Medical practitioner"
+    },
+    "meetingStatuses": {
+      "cancelled": "Cancelled",
+      "held": "Held",
+      "inProgress": "In progress",
+      "scheduled": "Scheduled"
+    },
+    "meetingTypes": {
+      "aspCaseConference": "ASP case conference",
+      "aspInterAgencyDiscussion": "ASP inter-agency discussion",
+      "aspReviewConference": "ASP review case conference",
+      "awiMdt": "AWI multi-disciplinary discussion",
+      "coreGroup": "Core group",
+      "cppm": "Child Protection Planning Meeting",
+      "cppmReview": "Review Child Protection Planning Meeting",
+      "ird": "Inter-agency Referral Discussion",
+      "lsiPlanning": "Large Scale Investigation planning meeting",
+      "mappaLevel2": "MAPPA Level 2 meeting",
+      "mappaLevel3": "MAPPP (Level 3)",
+      "marac": "MARAC",
+      "preBirthCppm": "Pre-birth Child Protection Planning Meeting"
+    },
+    "mhoReportStatuses": {
+      "inProgress": "In progress",
+      "notStarted": "Not started",
+      "submitted": "Submitted"
+    },
+    "minuteStatuses": {
+      "chairApproved": "Chair approved",
+      "distributed": "Distributed",
+      "draft": "Draft",
+      "notStarted": "Not started"
+    },
+    "packItemKinds": {
+      "chronology": "Chronology",
+      "plan": "Plan",
+      "report": "Report",
+      "researchReturn": "Research return",
+      "riskAssessment": "Risk assessment",
+      "views": "Views"
+    },
+    "planStatuses": {
+      "active": "Active",
+      "draft": "Draft",
+      "ended": "Ended",
+      "reviewed": "Reviewed"
+    },
+    "planTypes": {
+      "adultProtection": "Adult Protection Plan",
+      "adultSupport": "Support plan",
+      "childsPlan": "Child's plan",
+      "interimSafety": "Interim safety plan",
+      "mappaRmp": "Risk Management Plan",
+      "maracAction": "MARAC action plan"
+    },
+    "poaKinds": {
+      "combined": "Combined",
+      "financial": "Financial",
+      "welfare": "Welfare"
+    },
+    "processes": {
+      "asp": {
+        "label": "Adult Support and Protection",
+        "short": "ASP"
+      },
+      "awi": {
+        "label": "Adults with Incapacity",
+        "short": "AWI"
+      },
+      "cp": {
+        "label": "Child protection",
+        "short": "CP"
+      },
+      "mappa": {
+        "label": "MAPPA",
+        "short": "MAPPA"
+      },
+      "marac": {
+        "label": "MARAC",
+        "short": "MARAC"
+      }
+    },
+    "processStatuses": {
+      "closed": "Closed",
+      "open": "Open",
+      "transferred": "Transferred"
+    },
+    "requestStatuses": {
+      "declined": "Declined",
+      "notRequired": "Not required",
+      "received": "Received",
+      "requested": "Requested"
+    },
+    "researchStatuses": {
+      "nothingKnown": "Nothing known",
+      "overdue": "Overdue",
+      "requested": "Requested",
+      "returned": "Returned",
+      "sent": "Sent"
+    },
+    "riskBands": {
+      "critical": "Critical",
+      "high": "High",
+      "low": "Low",
+      "medium": "Medium",
+      "unknown": "Not assessed"
+    },
+    "riskTools": {
+      "capacity": "Capacity assessment",
+      "daq": "Police Scotland Domestic Abuse Questions (DAQ)",
+      "dash": "SafeLives DASH risk checklist",
+      "lscmi": "LS/CMI",
+      "mappaLevel": "MAPPA level decision",
+      "other": "Other tool",
+      "rm2000": "Risk Matrix 2000",
+      "sa07": "Stable and Acute 2007",
+      "threePointTest": "ASP three-point test"
+    },
+    "roles": {
+      "apcLeadOfficer": {
+        "label": "Adult Protection Committee lead officer"
+      },
+      "caldicottGuardian": {
+        "label": "Caldicott guardian"
+      },
+      "careInspectorateOfficer": {
+        "label": "Care Inspectorate officer"
+      },
+      "chair": {
+        "label": "Independent reviewing chair"
+      },
+      "cmhn": {
+        "label": "Community mental health nurse"
+      },
+      "concernHubOfficer": {
+        "label": "Concern hub officer"
+      },
+      "councilOfficerAsp": {
+        "label": "Council officer (ASP)"
+      },
+      "cpcLeadOfficer": {
+        "label": "Child Protection Committee lead officer"
+      },
+      "cpNurseAdviser": {
+        "label": "Child protection nurse adviser"
+      },
+      "cswo": {
+        "label": "Chief Social Work Officer"
+      },
+      "detectiveSergeantPpu": {
+        "label": "Detective sergeant, Public Protection Unit"
+      },
+      "dischargeCoordinator": {
+        "label": "Hospital discharge coordinator"
+      },
+      "domesticAbuseOfficer": {
+        "label": "Domestic abuse unit officer"
+      },
+      "educationCpLead": {
+        "label": "Head teacher (child protection lead)"
+      },
+      "fireSafetyOfficer": {
+        "label": "Community fire safety officer"
+      },
+      "gp": {
+        "label": "GP"
+      },
+      "healthVisitor": {
+        "label": "Health visitor"
+      },
+      "housingOfficer": {
+        "label": "Housing officer"
+      },
+      "idaa": {
+        "label": "Independent Domestic Abuse Advocate"
+      },
+      "independentAdvocate": {
+        "label": "Independent advocate"
+      },
+      "inspector": {
+        "label": "Inspector"
+      },
+      "justiceSocialWorker": {
+        "label": "Justice social worker"
+      },
+      "mappaCoordinator": {
+        "label": "MAPPA Coordinator"
+      },
+      "maracCoordinator": {
+        "label": "MARAC Coordinator"
+      },
+      "mho": {
+        "label": "Mental Health Officer"
+      },
+      "midwife": {
+        "label": "Midwife"
+      },
+      "minuteTaker": {
+        "label": "Minute taker"
+      },
+      "mwcOfficer": {
+        "label": "Mental Welfare Commission officer"
+      },
+      "offenderManagement": {
+        "label": "Offender management (sex offender liaison)"
+      },
+      "opgOfficer": {
+        "label": "Office of the Public Guardian officer"
+      },
+      "prisonSocialWorker": {
+        "label": "Prison-based social worker"
+      },
+      "procuratorFiscal": {
+        "label": "Procurator fiscal"
+      },
+      "reporter": {
+        "label": "Children's Reporter"
+      },
+      "socialWorkerAdults": {
+        "label": "Social worker (adults)"
+      },
+      "socialWorkerChildren": {
+        "label": "Social worker (children and families)"
+      },
+      "systemAdministrator": {
+        "label": "System administrator"
+      },
+      "teamLeader": {
+        "label": "Team leader"
+      },
+      "womensAidWorker": {
+        "label": "Women's Aid worker"
+      }
+    },
+    "shareStatuses": {
+      "queued": "Queued",
+      "read": "Read",
+      "sent": "Sent",
+      "withheld": "Withheld"
+    },
+    "significances": {
+      "high": "High",
+      "low": "Low",
+      "moderate": "Moderate"
+    },
+    "stages": {
+      "asp": {
+        "caseConference": "Case conference",
+        "closed": "Closed",
+        "concern": "Adult concern",
+        "inquiry": "Inquiry (s4)",
+        "investigation": "Investigation",
+        "protectionPlan": "Protection plan",
+        "review": "Review",
+        "screening": "Screening",
+        "supportPlan": "Support plan"
+      },
+      "awi": {
+        "application": "Application",
+        "capacityConcern": "Capacity concern",
+        "closed": "Closed",
+        "existingPowers": "Existing powers",
+        "order": "Order",
+        "routeDecision": "Route decision",
+        "supervision": "Supervision"
+      },
+      "cp": {
+        "childsPlan": "Child's plan",
+        "closed": "Closed",
+        "concern": "Child concern",
+        "cppm": "CPPM",
+        "deregistered": "De-registered",
+        "investigation": "Investigation",
+        "ird": "IRD",
+        "review": "Review"
+      },
+      "mappa": {
+        "exit": "Exit",
+        "managed": "Managed",
+        "meeting": "Meeting",
+        "notification": "Notification",
+        "preMeeting": "Pre-meeting sharing",
+        "referral": "Referral"
+      },
+      "marac": {
+        "actionPlan": "Action plan",
+        "closed": "Closed",
+        "feedback": "Feedback",
+        "meeting": "Meeting",
+        "referral": "Referral",
+        "research": "Research",
+        "transferred": "Transferred"
+      }
+    },
+    "viewsKinds": {
+      "adultViews": "Adult's views",
+      "carerViews": "Carer's views",
+      "childVoice": "Child's voice",
+      "familyViews": "Family's views",
+      "victimWishes": "Victim's wishes (via IDAA)"
+    },
+    "visibilities": {
+      "agencyOnly": "Agency only",
+      "integrated": "Integrated",
+      "restricted": "Restricted"
+    }
+  },
   "errors": {
     "capacity": {
       "decision": "Name the specific decision (capacity is decision-specific)",
@@ -1522,6 +2225,9 @@
     "mustNotReceive": {
       "name": "Enter their name",
       "reason": "Say why they must not receive information"
+    },
+    "schemas": {
+      "casePartyIdentity": "A case party needs a personId, a userId or a name"
     },
     "threePointTest": {
       "harmTypes": "Record at least one type of harm",
@@ -1976,7 +2682,7 @@
         "dataProtection": "UK GDPR, Data Protection Act 2018 (Schedule 1 Part 2 paragraph 18), Data (Use and Access) Act 2025",
         "domesticAbuseAct": "Domestic Abuse (Scotland) Act 2018",
         "equallySafe": "Equally Safe strategy",
-        "hearingsAct": "Children\u2019s Hearings (Scotland) Act 2011",
+        "hearingsAct": "Children’s Hearings (Scotland) Act 2011",
         "humanRightsAct": "Human Rights Act 1998",
         "mappaAct": "Management of Offenders etc. (Scotland) Act 2005 and MAPPA National Guidance (current edition)",
         "mentalHealthAct": "Mental Health (Care and Treatment) (Scotland) Act 2003",
@@ -3988,7 +4694,7 @@
         "label": "Clocks due this week"
       },
       "connectorInbox": {
-        "hint": "New events from your agency\u2019s systems waiting for review.",
+        "hint": "New events from your agency’s systems waiting for review.",
         "label": "Connector inbox items"
       },
       "meetingInvites": {

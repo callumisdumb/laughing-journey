@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCIES, AGENCY_LABELS, AGENCY_SHORT, CLASSIFICATION_LABELS, DETAIL_LEVEL_LABELS, MEETING_TYPE_LABELS, PROCESS_LABELS, VIEWS_KIND_LABELS, formatDate, formatDateTime, formatTime, type Action, type Dataset, type LawfulBasisRecord, type Meeting, dueDateFor, findClockRule, localDateOf } from '@mas/domain';
+import { AGENCIES, agencyLabel, agencyShort, classificationLabel, detailLevelLabel, dueDateFor, findClockRule, formatDate, formatDateTime, formatTime, localDateOf, meetingTypeLabel, processLabel, stageLabel, viewsKindLabel, type Action, type Dataset, type LawfulBasisRecord, type Meeting } from '@mas/domain';
 import { useT, type MessageKey, type RichValues, type Translator } from '@mas/messages';
 import { Button, ClassificationBanner, RestrictedState } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
@@ -121,12 +121,12 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
   if (!allowed) {
     return (
       <div className="page">
-        <RestrictedState title={t('meetings.restricted.title', { type: MEETING_TYPE_LABELS[meeting.type] })} reason={access?.level === 'none' ? access.reason : t('print.minutes.restricted.reason')} breakGlass="unavailable" />
+        <RestrictedState title={t('meetings.restricted.title', { type: meetingTypeLabel(meeting.type) })} reason={access?.level === 'none' ? access.reason : t('print.minutes.restricted.reason')} breakGlass="unavailable" />
       </div>
     );
   }
 
-  const marking = config.classificationMarkings.find((m) => m.id === process.classification) ?? { id: process.classification, label: CLASSIFICATION_LABELS[process.classification], handling: '' };
+  const marking = config.classificationMarkings.find((m) => m.id === process.classification) ?? { id: process.classification, label: classificationLabel(process.classification), handling: '' };
   const subjects = meeting.subjectIds.map((id) => personById(data, id)).filter((p) => p !== undefined);
   const views = data.viewsRecords.filter((v) => meeting.viewsRecordIds.includes(v.id));
   const actions = data.actions.filter((a) => a.meetingId === meeting.id || meeting.actionIds.includes(a.id));
@@ -181,7 +181,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
                 meeting.invitees.map((i, idx) => (
                   <tr key={`${i.name}-${idx}`}>
                     <td>{i.name}</td>
-                    <td>{AGENCY_LABELS[i.agency]}</td>
+                    <td>{agencyLabel(i.agency)}</td>
                     <td>{t('print.minutes.attendance.role', { required: i.required ? 'yes' : 'no', role: i.role })}</td>
                     <td>{t(ATTENDANCE_KEYS[i.attendance])}</td>
                   </tr>
@@ -199,7 +199,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
       node: (
         <>
           <h2>{t('print.minutes.purpose.title')}</h2>
-          <p className={styles.text}>{t('print.minutes.purpose.summary', { type: MEETING_TYPE_LABELS[meeting.type], subjects: subjectNames, reference: process.reference, process: PROCESS_LABELS[process.type], chair: meeting.chairName })}</p>
+          <p className={styles.text}>{t('print.minutes.purpose.summary', { type: meetingTypeLabel(meeting.type), subjects: subjectNames, reference: process.reference, process: processLabel(process.type), chair: meeting.chairName })}</p>
           <p className={styles.text}>{t('print.minutes.purpose.confidential')}</p>
           {lawfulBasis ? (
             <p className={styles.text}>
@@ -234,7 +234,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
             const p = personById(data, v.personId);
             return (
               <figure key={v.id} className={styles.voice}>
-                <figcaption className={styles.voiceKind}>{VIEWS_KIND_LABELS[v.kind]}</figcaption>
+                <figcaption className={styles.voiceKind}>{viewsKindLabel(v.kind)}</figcaption>
                 <blockquote className={styles.voiceQuote}>{v.content}</blockquote>
                 <p className={styles.voiceMeta}>
                   {t.rich('print.minutes.views.meta', {
@@ -242,7 +242,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
                     name: p ? fullName(p) : t('common.person.family'),
                     date: formatDate(v.recordedAt),
                     recorder: v.recordedByName,
-                    agency: AGENCY_SHORT[v.recordedByAgency],
+                    agency: agencyShort(v.recordedByAgency),
                     method: v.method,
                     hasPreference: v.sharingPreference ? 'yes' : 'no',
                     preference: v.sharingPreference ?? '',
@@ -263,7 +263,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
           {shared.length === 0 ? <p className={styles.text}>{t('print.minutes.shared.empty')}</p> : null}
           {sharedAgencies.map((a) => (
             <div key={a} className={styles.group}>
-              <h3>{AGENCY_LABELS[a]}</h3>
+              <h3>{agencyLabel(a)}</h3>
               {shared
                 .filter((s) => s.agency === a)
                 .map((s) => (
@@ -296,7 +296,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
                 ) : (
                   d.dissent.map((x, i) => (
                     <p key={i} className={styles.dissent}>
-                      {t('print.minutes.decisions.dissent', { name: x.byName, agency: AGENCY_LABELS[x.agency], text: x.text })}
+                      {t('print.minutes.decisions.dissent', { name: x.byName, agency: agencyLabel(x.agency), text: x.text })}
                     </p>
                   ))
                 )}
@@ -331,7 +331,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
                   <tr key={a.id}>
                     <td>{a.title}</td>
                     <td>
-                      {a.ownerName} ({AGENCY_SHORT[a.ownerAgency]})
+                      {a.ownerName} ({agencyShort(a.ownerAgency)})
                     </td>
                     <td className={styles.nowrap}>{formatDate(a.due)}</td>
                     <td className={styles.nowrap}>{t('print.minutes.actions.status', { status: t(ACTION_STATUS_KEYS[a.status]), hasCompleted: a.status === 'complete' && a.completedAt ? 'yes' : 'no', date: a.completedAt ? formatDate(a.completedAt) : '' })}</td>
@@ -368,9 +368,9 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
                 meeting.distribution.map((d) => (
                   <tr key={d.id}>
                     <td>{d.recipientName}</td>
-                    <td>{AGENCY_LABELS[d.agency]}</td>
+                    <td>{agencyLabel(d.agency)}</td>
                     <td>{d.role}</td>
-                    <td>{t('print.minutes.distribution.level', { level: DETAIL_LEVEL_LABELS[d.detailLevel], hasFields: d.fields && d.fields.length > 0 ? 'yes' : 'no', fields: d.fields?.join('; ') ?? '' })}</td>
+                    <td>{t('print.minutes.distribution.level', { level: detailLevelLabel(d.detailLevel), hasFields: d.fields && d.fields.length > 0 ? 'yes' : 'no', fields: d.fields?.join('; ') ?? '' })}</td>
                     <td>{d.reason}</td>
                   </tr>
                 ))
@@ -450,7 +450,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
               <dl className={styles.meta}>
                 <div className={styles.metaRow}>
                   <dt>{t('print.minutes.cover.type')}</dt>
-                  <dd>{MEETING_TYPE_LABELS[meeting.type]}</dd>
+                  <dd>{meetingTypeLabel(meeting.type)}</dd>
                 </div>
                 <div className={styles.metaRow}>
                   <dt>{t('print.minutes.cover.dateTime')}</dt>
@@ -482,7 +482,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
                 </div>
                 <div className={styles.metaRow}>
                   <dt>{t('print.minutes.cover.process')}</dt>
-                  <dd>{t('print.minutes.cover.processLine', { reference: process.reference, title: process.title, process: PROCESS_LABELS[process.type], stage: process.stage })}</dd>
+                  <dd>{t('print.minutes.cover.processLine', { reference: process.reference, title: process.title, process: processLabel(process.type), stage: stageLabel(process.type, process.stage) })}</dd>
                 </div>
                 <div className={styles.metaRow}>
                   <dt>{t('print.minutes.cover.minuteStatus')}</dt>

@@ -1,4 +1,4 @@
-import { VIEWS_KIND_LABELS, formatDate, type ViewsRecord } from '@mas/domain';
+import { formatDate, viewsKindLabel, type ViewsRecord } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { cn } from '../cn';
 import styles from './VoiceBlock.module.css';
@@ -15,7 +15,7 @@ export function VoiceBlock({ record, personName, size = 'md', className }: Voice
   const t = useT();
   return (
     <figure className={cn(styles.voice, className)} data-size={size}>
-      <figcaption className={styles.kind}>{VIEWS_KIND_LABELS[record.kind]}</figcaption>
+      <figcaption className={styles.kind}>{viewsKindLabel(record.kind)}</figcaption>
       <blockquote className={styles.quote}>{record.content}</blockquote>
       <div className={styles.attribution}>
         <strong>{personName}</strong>, {formatDate(record.recordedAt)}. {t('common.voice.recordedBy', { name: record.recordedByName, method: record.method })}

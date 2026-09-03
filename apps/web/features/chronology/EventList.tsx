@@ -1,6 +1,6 @@
 'use client';
 
-import { EVENT_FAMILY_LABELS, eventFamily, formatDate, formatDateTime, type ChronologyEvent } from '@mas/domain';
+import { eventFamily, eventFamilyLabel, formatDate, formatDateTime, significanceLabel, visibilityLabel, type ChronologyEvent } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark } from '@mas/ui';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -92,7 +92,7 @@ export function EventList({ events, selectedEventId, highlighted, onSelect, heig
                   <AgencyMark agency={e.agency} />
                 </div>
                 <div role="cell" className={styles.cell}>
-                  {EVENT_FAMILY_LABELS[eventFamily(e.eventType)]}
+                  {eventFamilyLabel(eventFamily(e.eventType))}
                 </div>
                 <div role="cell" className={`${styles.cell} ${styles.title}`} title={e.detail}>
                   {e.title}
@@ -105,14 +105,14 @@ export function EventList({ events, selectedEventId, highlighted, onSelect, heig
                 </div>
                 <div role="cell" className={styles.cell}>
                   <span className={styles.sig} data-sig={e.significance}>
-                    {SIG_ICON[e.significance]} {e.significance}
+                    {SIG_ICON[e.significance]} {significanceLabel(e.significance)}
                   </span>
                 </div>
                 <div role="cell" className={`${styles.cell} ${styles.muted}`}>
                   {e.sourceSystem === 'manual' ? t('chronology.eventList.sourceManual') : e.sourceSystem}
                 </div>
                 <div role="cell" className={`${styles.cell} ${styles.muted}`}>
-                  {e.visibility.replace('-', ' ')}
+                  {visibilityLabel(e.visibility)}
                 </div>
               </div>
             );

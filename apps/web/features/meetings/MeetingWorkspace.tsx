@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCIES, AGENCY_SHORT, DETAIL_LEVELS, DETAIL_LEVEL_LABELS, MEETING_TYPE_LABELS, PROCESS_SHORT, ROLE_DEFINITIONS, applyMeetingTransition, contextFor, formatDate, formatDateTime, formatTime, isExcludedParty, resolveNeedToKnow, type Action, type Agency, type DetailLevel, type LawfulBasisRecord, type Meeting, type SharingRecord } from '@mas/domain';
+import { AGENCIES, DETAIL_LEVELS, agencyShort, applyMeetingTransition, attendanceLabel, contextFor, detailLevelLabel, formatDate, formatDateTime, formatTime, isExcludedParty, meetingStatusLabel, meetingTypeLabel, minuteStatusLabel, packItemKindLabel, processShort, researchStatusLabel, resolveNeedToKnow, roleLabel, stageLabel, type Action, type Agency, type DetailLevel, type LawfulBasisRecord, type Meeting, type SharingRecord } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, CheckboxField, ClockNumeral, DateField, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
 import { CheckCircle2, Maximize2, Minimize2, Play, Printer, Send, UserPlus } from 'lucide-react';
@@ -69,7 +69,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   if (access.level === 'none' || (!invited && access.level !== 'full')) {
     return (
       <div className="page">
-        <RestrictedState title={t('meetings.restricted.title', { type: MEETING_TYPE_LABELS[meeting.type] })} reason={access.level === 'none' ? access.reason : t('meetings.restricted.workspaceReason')} breakGlass="unavailable" />
+        <RestrictedState title={t('meetings.restricted.title', { type: meetingTypeLabel(meeting.type) })} reason={access.level === 'none' ? access.reason : t('meetings.restricted.workspaceReason')} breakGlass="unavailable" />
       </div>
     );
   }
@@ -100,7 +100,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       });
       for (const u of eligible.slice(0, r.role === 'any' ? 1 : 2)) {
         if (meeting!.invitees.some((i) => i.userId === u.id) || additions.some((i) => i.userId === u.id)) continue;
-        additions.push({ userId: u.id, name: userName(u), agency: u.agency, role: ROLE_DEFINITIONS[u.roleId].label, required: true, attendance: 'invited', reason: `${r.label}: ${r.reason}`, needToKnowRowId: r.rowId });
+        additions.push({ userId: u.id, name: userName(u), agency: u.agency, role: roleLabel(u.roleId), required: true, attendance: 'invited', reason: `${r.label}: ${r.reason}`, needToKnowRowId: r.rowId });
       }
     }
     update({ invitees: [...meeting!.invitees, ...additions] });
@@ -114,14 +114,14 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   function sendRequest() {
     if (!requestForm.due) return;
     const to = data.users.find((u) => u.id === requestForm.to);
-    update({ preMeetingRequests: [...meeting!.preMeetingRequests, { id: newId('pmr'), agency: requestForm.agency, toName: to ? userName(to) : AGENCY_SHORT[requestForm.agency], toUserId: to?.id, sentAt: now.toISOString(), dueAt: requestForm.due, status: 'sent' }] });
+    update({ preMeetingRequests: [...meeting!.preMeetingRequests, { id: newId('pmr'), agency: requestForm.agency, toName: to ? userName(to) : agencyShort(requestForm.agency), toUserId: to?.id, sentAt: now.toISOString(), dueAt: requestForm.due, status: 'sent' }] });
     setRequestForm({ agency: 'health', to: '', due: '' });
-    toast({ title: t('meetings.before.requests.toastTitle'), text: t('meetings.before.requests.toastText', { name: to ? userName(to) : AGENCY_SHORT[requestForm.agency] }), tone: 'success' });
+    toast({ title: t('meetings.before.requests.toastTitle'), text: t('meetings.before.requests.toastText', { name: to ? userName(to) : agencyShort(requestForm.agency) }), tone: 'success' });
   }
 
   function recordReturn() {
     if (!returning) return;
-    update({ preMeetingRequests: meeting!.preMeetingRequests.map((r) => (r.id === returning.id ? { ...r, status: 'returned', returnSummary: returning.summary, returnedAt: now.toISOString() } : r)), pack: [...meeting!.pack, { id: newId('pk'), kind: 'report', label: t('meetings.before.requests.packLabel', { agency: AGENCY_SHORT[meeting!.preMeetingRequests.find((r) => r.id === returning.id)?.agency ?? 'health'] }), ref: returning.id, included: true }] });
+    update({ preMeetingRequests: meeting!.preMeetingRequests.map((r) => (r.id === returning.id ? { ...r, status: 'returned', returnSummary: returning.summary, returnedAt: now.toISOString() } : r)), pack: [...meeting!.pack, { id: newId('pk'), kind: 'report', label: t('meetings.before.requests.packLabel', { agency: agencyShort(meeting!.preMeetingRequests.find((r) => r.id === returning.id)?.agency ?? 'health') }), ref: returning.id, included: true }] });
     setReturning(null);
     toast({ title: t('meetings.before.requests.returnedToast'), tone: 'success' });
   }
@@ -177,12 +177,12 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       if (r.detailLevel === 'full') continue;
       const u = data.users.filter((x) => x.agency === r.agency && (r.role === 'any' ? true : x.roleId === r.role)).find((x) => !excluded(x.id));
       if (!u || entries.some((e) => e.recipientUserId === u.id) || meeting!.distribution.some((e) => e.recipientUserId === u.id)) continue;
-      entries.push({ id: newId('dist'), recipientName: userName(u), recipientUserId: u.id, agency: u.agency, role: ROLE_DEFINITIONS[u.roleId].label, detailLevel: r.detailLevel, fields: r.fields, reason: `${r.label}: ${r.reason}` });
+      entries.push({ id: newId('dist'), recipientName: userName(u), recipientUserId: u.id, agency: u.agency, role: roleLabel(u.roleId), detailLevel: r.detailLevel, fields: r.fields, reason: `${r.label}: ${r.reason}` });
     }
     update({ distribution: [...meeting!.distribution, ...entries] });
     toast({
       title: t('meetings.after.distribution.toastTitle', { count: entries.length }),
-      text: t('meetings.after.distribution.toastText', { process: PROCESS_SHORT[process!.type], stage: process!.stage, exclusions: res.exclusions.map((e) => e.label).join('; ') || t('common.values.none'), leftOff: excludedByRole.size }),
+      text: t('meetings.after.distribution.toastText', { process: processShort(process!.type), stage: stageLabel(process!.type, process!.stage), exclusions: res.exclusions.map((e) => e.label).join('; ') || t('common.values.none'), leftOff: excludedByRole.size }),
       tone: 'success',
     });
   }
@@ -190,7 +190,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   function distribute() {
     const lb: LawfulBasisRecord = { id: newId('lb'), synthetic: true, purpose: t('meetings.after.distribute.purpose', { title: meeting!.title }), article6: '6(1)(e) public task', article9Condition: '9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)', article10Criminal: process!.type === 'mappa' || process!.type === 'marac' ? 'DPA 2018 s10 and Sch 1' : 'not applicable', statutoryGateway: [process!.type === 'cp' ? 'National Guidance for Child Protection in Scotland 2021' : process!.type === 'asp' ? 'ASP (Scotland) Act 2007 s5' : process!.type === 'mappa' ? 'Management of Offenders etc. (Scotland) Act 2005 s10' : process!.type === 'marac' ? 'MARAC Operating Protocol' : 'AWI (Scotland) Act 2000'], necessityAndProportionality: t('meetings.after.distribute.necessity'), consentStatus: 'not-required', authorisedByUserId: user!.id, authorisedByName: userName(user!), createdAt: now.toISOString() };
     upsert('lawfulBases', lb);
-    const shares: SharingRecord[] = meeting!.distribution.map((d) => ({ id: newId('shr'), synthetic: true, processId: process!.id, subjectId: meeting!.subjectIds[0] ?? '', stage: process!.stage, recipient: { userId: d.recipientUserId, name: d.recipientName, agency: d.agency, role: d.role }, detailLevel: d.detailLevel, fields: d.fields, lawfulBasisId: lb.id, channel: 'in-app' as const, status: 'sent' as const, createdAt: now.toISOString(), sentAt: now.toISOString(), reason: d.reason, createdByUserId: user!.id, createdByName: userName(user!), summary: t('meetings.after.distribute.shareSummary', { title: meeting!.title, level: DETAIL_LEVEL_LABELS[d.detailLevel] }) }));
+    const shares: SharingRecord[] = meeting!.distribution.map((d) => ({ id: newId('shr'), synthetic: true, processId: process!.id, subjectId: meeting!.subjectIds[0] ?? '', stage: process!.stage, recipient: { userId: d.recipientUserId, name: d.recipientName, agency: d.agency, role: d.role }, detailLevel: d.detailLevel, fields: d.fields, lawfulBasisId: lb.id, channel: 'in-app' as const, status: 'sent' as const, createdAt: now.toISOString(), sentAt: now.toISOString(), reason: d.reason, createdByUserId: user!.id, createdByName: userName(user!), summary: t('meetings.after.distribute.shareSummary', { title: meeting!.title, level: detailLevelLabel(d.detailLevel) }) }));
     for (const s of shares) upsert('sharingRecords', s);
     update({ minute: { ...meeting!.minute, status: 'distributed', distributedAt: now.toISOString() }, distribution: meeting!.distribution.map((d, i) => ({ ...d, sharingRecordId: shares[i]?.id })) });
     const recordClocks = process!.clocks.map((c) => (c.ruleId === 'cp.cppm.record.distribute' && !c.completedAt ? { ...c, completedAt: now.toISOString(), note: t('meetings.after.distribute.clockNote') } : c));
@@ -217,10 +217,10 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
             <ProcessMark type={process.type} restricted={process.classification === 'restricted'} />
             <AppLink href={processPath(process.id)}>{process.reference}</AppLink>
             <Pill size="sm" tone={meeting.status === 'held' ? 'low' : meeting.status === 'scheduled' ? 'accent' : 'outline'}>
-              {meeting.status}
+              {meetingStatusLabel(meeting.status)}
             </Pill>
             <Pill size="sm" tone="outline">
-              {t('meetings.head.minutePill', { status: meeting.minute.status.replace(/-/g, ' ') })}
+              {t('meetings.head.minutePill', { status: minuteStatusLabel(meeting.minute.status) })}
             </Pill>
           </div>
           <div className={styles.headActions}>
@@ -239,7 +239,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
         <div>
           <h1>{meeting.title}</h1>
           <div className={styles.meta}>
-            <span>{MEETING_TYPE_LABELS[meeting.type]}</span>
+            <span>{meetingTypeLabel(meeting.type)}</span>
             <span>{t('meetings.head.when', { date: formatDate(meeting.scheduledAt), start: formatTime(meeting.scheduledAt), hasEnd: meeting.endsAt ? 'yes' : 'no', end: meeting.endsAt ? formatTime(meeting.endsAt) : '' })}</span>
             <span>{meeting.location}</span>
             <span>{t('meetings.head.chair', { name: meeting.chairName })}</span>
@@ -274,7 +274,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                         <AgencyMark agency={i.agency} hideLabel /> {t('meetings.before.invites.person', { required: i.required ? 'yes' : 'no', name: i.name, role: i.role })}
                       </span>
                       <Pill size="sm" tone={i.attendance === 'accepted' || i.attendance === 'present' ? 'low' : i.attendance === 'declined' || i.attendance === 'apologies' ? 'medium' : 'outline'}>
-                        {i.attendance}
+                        {attendanceLabel(i.attendance)}
                       </Pill>
                       <span className={styles.inviteeMeta}>{t('meetings.before.invites.reason', { reason: i.reason, hasRule: i.needToKnowRowId ? 'yes' : 'no', rowId: i.needToKnowRowId ?? '' })}</span>
                     </div>
@@ -293,7 +293,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                       </span>
                       <span className="cluster">
                         <Pill size="sm" tone={r.status === 'returned' ? 'low' : r.status === 'nothing-known' ? 'outline' : r.dueAt < now.toISOString().slice(0, 10) ? 'critical' : 'medium'}>
-                          {r.status === 'sent' && r.dueAt < now.toISOString().slice(0, 10) ? t('meetings.before.requests.overdue') : r.status.replace('-', ' ')}
+                          {r.status === 'sent' && r.dueAt < now.toISOString().slice(0, 10) ? t('meetings.before.requests.overdue') : researchStatusLabel(r.status)}
                         </Pill>
                         {r.status === 'sent' || r.status === 'overdue' ? (
                           <Button size="sm" variant="quiet" onClick={() => setReturning({ id: r.id, summary: '' })}>
@@ -308,8 +308,8 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                 <div className={styles.form} style={{ marginTop: 12 }}>
                   <strong>{t('meetings.before.requests.sendTitle')}</strong>
                   <div className="cluster" style={{ alignItems: 'flex-end' }}>
-                    <SelectField label={t('meetings.before.requests.agency')} value={requestForm.agency} onChange={(e) => setRequestForm({ ...requestForm, agency: e.target.value as Agency, to: '' })} options={AGENCIES.map((a) => ({ value: a, label: AGENCY_SHORT[a] }))} />
-                    <SelectField label={t('meetings.before.requests.to')} value={requestForm.to} onChange={(e) => setRequestForm({ ...requestForm, to: e.target.value })} placeholder={t('meetings.before.requests.toPlaceholder')} options={personas.filter((u) => u.agency === requestForm.agency).map((u) => ({ value: u.id, label: `${userName(u)}, ${ROLE_DEFINITIONS[u.roleId].label}` }))} />
+                    <SelectField label={t('meetings.before.requests.agency')} value={requestForm.agency} onChange={(e) => setRequestForm({ ...requestForm, agency: e.target.value as Agency, to: '' })} options={AGENCIES.map((a) => ({ value: a, label: agencyShort(a) }))} />
+                    <SelectField label={t('meetings.before.requests.to')} value={requestForm.to} onChange={(e) => setRequestForm({ ...requestForm, to: e.target.value })} placeholder={t('meetings.before.requests.toPlaceholder')} options={personas.filter((u) => u.agency === requestForm.agency).map((u) => ({ value: u.id, label: `${userName(u)}, ${roleLabel(u.roleId)}` }))} />
                     <DateField label={t('meetings.before.requests.due')} hint={null} value={requestForm.due} onChange={(due) => setRequestForm({ ...requestForm, due })} />
                     <Button variant="secondary" icon={<Send size={14} aria-hidden="true" />} onClick={sendRequest} disabled={!requestForm.due}>
                       {t('meetings.before.requests.send')}
@@ -326,7 +326,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   <div key={pk.id} className={styles.packItem}>
                     <CheckboxField label={pk.label} checked={pk.included} onChange={(e) => update({ pack: meeting.pack.map((x) => (x.id === pk.id ? { ...x, included: e.target.checked } : x)) })} />
                     <span className={styles.packMeta}>
-                      {t('meetings.before.pack.itemMeta', { kind: pk.kind, hasWindow: pk.windowFrom ? 'yes' : 'no', from: pk.windowFrom ? formatDate(pk.windowFrom) : '', to: pk.windowTo ? formatDate(pk.windowTo) : t('meetings.before.pack.today'), hasRef: pk.ref ? 'yes' : 'no', ref: pk.ref ?? '' })}
+                      {t('meetings.before.pack.itemMeta', { kind: packItemKindLabel(pk.kind), hasWindow: pk.windowFrom ? 'yes' : 'no', from: pk.windowFrom ? formatDate(pk.windowFrom) : '', to: pk.windowTo ? formatDate(pk.windowTo) : t('meetings.before.pack.today'), hasRef: pk.ref ? 'yes' : 'no', ref: pk.ref ?? '' })}
                     </span>
                   </div>
                 ))}
@@ -387,7 +387,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                         <select className={styles.attendanceSelect} value={i.attendance} onChange={(e) => update({ invitees: meeting.invitees.map((x, j) => (j === idx ? { ...x, attendance: e.target.value as Meeting['invitees'][number]['attendance'] } : x)) })}>
                           {ATTENDANCE.map((a) => (
                             <option key={a} value={a}>
-                              {a}
+                              {attendanceLabel(a)}
                             </option>
                           ))}
                         </select>
@@ -413,7 +413,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   ))}
                 </div>
                 <div className={styles.form} style={{ marginTop: 12 }}>
-                  <strong>{t('meetings.during.shared.addTitle', { agency: AGENCY_SHORT[user.agency] })}</strong>
+                  <strong>{t('meetings.during.shared.addTitle', { agency: agencyShort(user.agency) })}</strong>
                   <TextareaField label={t('meetings.during.shared.summary')} value={shareForm.summary} onChange={(e) => setShareForm({ ...shareForm, summary: e.target.value })} />
                   <TextField label={t('meetings.during.shared.relevanceField')} value={shareForm.relevance} onChange={(e) => setShareForm({ ...shareForm, relevance: e.target.value })} />
                   <Button variant="secondary" onClick={addShared} disabled={shareForm.summary.trim().length < 5}>
@@ -433,7 +433,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                       <span className={styles.sharedMeta}>{t('meetings.during.decisions.rationale', { rationale: d.rationale, name: d.decidedByName, when: formatDateTime(d.decidedAt) })}</span>
                       {d.dissent.map((x, i) => (
                         <span key={i} className={styles.dissent}>
-                          {t('meetings.during.decisions.dissent', { name: x.byName, agency: AGENCY_SHORT[x.agency], text: x.text })}
+                          {t('meetings.during.decisions.dissent', { name: x.byName, agency: agencyShort(x.agency), text: x.text })}
                         </span>
                       ))}
                     </div>
@@ -445,7 +445,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   <TextField label={t('meetings.during.decisions.decision')} value={decisionForm.decision} onChange={(e) => setDecisionForm({ ...decisionForm, decision: e.target.value })} />
                   <TextareaField label={t('meetings.during.decisions.rationaleField')} value={decisionForm.rationale} onChange={(e) => setDecisionForm({ ...decisionForm, rationale: e.target.value })} />
                   <div className="cluster" style={{ alignItems: 'flex-end' }}>
-                    <SelectField label={t('meetings.during.decisions.dissentBy')} value={decisionForm.dissentBy} onChange={(e) => setDecisionForm({ ...decisionForm, dissentBy: e.target.value })} placeholder={t('meetings.during.decisions.noDissent')} options={meeting.invitees.filter((i) => i.userId).map((i) => ({ value: i.userId!, label: `${i.name} (${AGENCY_SHORT[i.agency]})` }))} />
+                    <SelectField label={t('meetings.during.decisions.dissentBy')} value={decisionForm.dissentBy} onChange={(e) => setDecisionForm({ ...decisionForm, dissentBy: e.target.value })} placeholder={t('meetings.during.decisions.noDissent')} options={meeting.invitees.filter((i) => i.userId).map((i) => ({ value: i.userId!, label: `${i.name} (${agencyShort(i.agency)})` }))} />
                     <TextField label={t('meetings.during.decisions.dissentText')} value={decisionForm.dissentText} onChange={(e) => setDecisionForm({ ...decisionForm, dissentText: e.target.value })} />
                   </div>
                   <Button variant="secondary" onClick={addDecision} disabled={decisionForm.question.trim().length < 5 || decisionForm.decision.trim().length < 2}>
@@ -462,7 +462,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                     <div key={a.id} className={styles.liveAction}>
                       <span>{a.title}</span>
                       <span>
-                        {a.ownerName} ({AGENCY_SHORT[a.ownerAgency]})
+                        {a.ownerName} ({agencyShort(a.ownerAgency)})
                       </span>
                       <Pill size="sm" tone={a.status === 'complete' ? 'low' : a.due < now.toISOString().slice(0, 10) ? 'critical' : 'outline'}>
                         {a.status === 'complete' ? t('meetings.during.actions.complete') : t('meetings.during.actions.due', { date: formatDate(a.due) })}
@@ -475,7 +475,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                     <div style={{ flex: '1 1 320px' }}>
                       <TextField label={t('meetings.during.actions.action')} value={actionForm.title} onChange={(e) => setActionForm({ ...actionForm, title: e.target.value })} placeholder={t('meetings.during.actions.actionPlaceholder')} />
                     </div>
-                    <SelectField label={t('meetings.during.actions.owner')} value={actionForm.owner} onChange={(e) => setActionForm({ ...actionForm, owner: e.target.value })} placeholder={t('meetings.during.actions.ownerPlaceholder')} options={meeting.invitees.filter((i) => i.userId).map((i) => ({ value: i.userId!, label: `${i.name} (${AGENCY_SHORT[i.agency]})` }))} />
+                    <SelectField label={t('meetings.during.actions.owner')} value={actionForm.owner} onChange={(e) => setActionForm({ ...actionForm, owner: e.target.value })} placeholder={t('meetings.during.actions.ownerPlaceholder')} options={meeting.invitees.filter((i) => i.userId).map((i) => ({ value: i.userId!, label: `${i.name} (${agencyShort(i.agency)})` }))} />
                     <DateField label={t('meetings.during.actions.dueField')} hint={null} value={actionForm.due} onChange={(due) => setActionForm({ ...actionForm, due })} />
                     <Button variant="primary" onClick={addAction} disabled={!actionForm.owner || !actionForm.due || actionForm.title.trim().length < 5}>
                       {t('meetings.during.actions.capture')}
@@ -490,7 +490,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
         {phase === 'after' ? (
           <div className={styles.grid}>
             <Sheet className={styles.col6}>
-              <SheetHead title={t('meetings.after.minute.title')} meta={t('meetings.after.minute.meta', { status: meeting.minute.status.replace(/-/g, ' '), hasApproved: meeting.minute.approvedAt ? 'yes' : 'no', approved: meeting.minute.approvedAt ? formatDateTime(meeting.minute.approvedAt) : '', hasDistributed: meeting.minute.distributedAt ? 'yes' : 'no', distributed: meeting.minute.distributedAt ? formatDateTime(meeting.minute.distributedAt) : '' })} />
+              <SheetHead title={t('meetings.after.minute.title')} meta={t('meetings.after.minute.meta', { status: minuteStatusLabel(meeting.minute.status), hasApproved: meeting.minute.approvedAt ? 'yes' : 'no', approved: meeting.minute.approvedAt ? formatDateTime(meeting.minute.approvedAt) : '', hasDistributed: meeting.minute.distributedAt ? 'yes' : 'no', distributed: meeting.minute.distributedAt ? formatDateTime(meeting.minute.distributedAt) : '' })} />
               <SheetBody>
                 <div className={styles.minuteSteps}>
                   <Button variant="secondary" disabled={meeting.minute.status !== 'not-started'} onClick={() => update({ minute: { ...meeting.minute, status: 'draft', draftedAt: now.toISOString() } })}>
@@ -546,7 +546,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                         <select className={styles.attendanceSelect} value={d.detailLevel} disabled={meeting.minute.status === 'distributed'} onChange={(e) => update({ distribution: meeting.distribution.map((x) => (x.id === d.id ? { ...x, detailLevel: e.target.value as DetailLevel } : x)) })}>
                           {DETAIL_LEVELS.map((l) => (
                             <option key={l} value={l}>
-                              {DETAIL_LEVEL_LABELS[l]}
+                              {detailLevelLabel(l)}
                             </option>
                           ))}
                         </select>

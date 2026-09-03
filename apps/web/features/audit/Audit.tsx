@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCIES, AGENCY_LABELS, AUDIT_ACTS, ROLE_DEFINITIONS, formatDate, formatDateTime, formatTime, localDateOf, type AuditAct, type AuditEntry, type Dataset } from '@mas/domain';
+import { AGENCIES, AUDIT_ACTS, ROLE_DEFINITIONS, agencyLabel, formatDate, formatDateTime, formatTime, localDateOf, roleLabel, type Agency, type AuditAct, type AuditEntry, type Dataset } from '@mas/domain';
 import { tKey, useT } from '@mas/messages';
 import { AgencyMark, Button, DateField, Pill, SelectField, Switch, Table, TableWrap, TextField, useToast, type PillTone } from '@mas/ui';
 import { Download, Lock, ShieldAlert } from 'lucide-react';
@@ -134,7 +134,7 @@ export function Audit() {
     const parts: string[] = [full ? t('audit.scope.all') : t('audit.scope.own')];
     if (q) parts.push(t('audit.scope.text', { text: text.trim() }));
     if (userFilter) parts.push(t('audit.scope.user', { name: userOptions.find((u) => u.value === userFilter)?.label ?? userFilter }));
-    if (agencyFilter) parts.push(t('audit.scope.agency', { agency: agencyFilter }));
+    if (agencyFilter) parts.push(t('audit.scope.agency', { agency: AGENCIES.includes(agencyFilter as Agency) ? agencyLabel(agencyFilter as Agency) : agencyFilter }));
     if (actFilter) parts.push(t('audit.scope.act', { act: actFilter }));
     if (from) parts.push(t('audit.scope.from', { date: formatDate(from) }));
     if (to) parts.push(t('audit.scope.to', { date: formatDate(to) }));
@@ -168,7 +168,7 @@ export function Audit() {
         <div className="page-head-text">
           <h1>{t('audit.page.title')}</h1>
           <p className="page-lede">
-            {full ? t('audit.page.ledeFull', { role: role.label }) : t('audit.page.ledeOwn')} {t('audit.page.ledeTail')}
+            {full ? t('audit.page.ledeFull', { role: roleLabel(user.roleId) }) : t('audit.page.ledeOwn')} {t('audit.page.ledeTail')}
           </p>
         </div>
         <Button variant="secondary" icon={<Download size={16} aria-hidden="true" />} onClick={exportCsv} disabled={rows.length === 0}>
@@ -181,7 +181,7 @@ export function Audit() {
           <TextField label={t('audit.filters.text')} value={text} onChange={(e) => setText(e.target.value)} placeholder={t('audit.filters.textPlaceholder')} />
         </div>
         <SelectField label={t('audit.filters.user')} value={userFilter} onChange={(e) => set('user', e.target.value || null)} placeholder={t('audit.filters.anyone')} options={userOptions} />
-        <SelectField label={t('audit.filters.agency')} value={agencyFilter} onChange={(e) => set('agency', e.target.value || null)} placeholder={t('audit.filters.allAgencies')} options={AGENCIES.map((a) => ({ value: a, label: AGENCY_LABELS[a] }))} />
+        <SelectField label={t('audit.filters.agency')} value={agencyFilter} onChange={(e) => set('agency', e.target.value || null)} placeholder={t('audit.filters.allAgencies')} options={AGENCIES.map((a) => ({ value: a, label: agencyLabel(a) }))} />
         <SelectField label={t('audit.filters.act')} value={actFilter} onChange={(e) => set('act', e.target.value || null)} placeholder={t('audit.filters.allActs')} options={AUDIT_ACTS.map((a) => ({ value: a, label: actLabel(a) }))} />
         <DateField label={t('audit.filters.from')} hint={null} value={from} onChange={(v) => set('from', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />
         <DateField label={t('audit.filters.to')} hint={null} value={to} onChange={(v) => set('to', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />

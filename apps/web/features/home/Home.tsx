@@ -1,6 +1,6 @@
 'use client';
 
-import { MEETING_TYPE_LABELS, PROCESS_SHORT, ROLE_DEFINITIONS, formatDate, formatTime, localDateOf, relativeDays } from '@mas/domain';
+import { formatDate, formatTime, localDateOf, meetingTypeLabel, processShort, relativeDays, roleLabel } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { ClockNumeral } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -69,14 +69,14 @@ export function Home() {
     if (days > 14) continue;
     const process = data.processes.find((p) => p.id === a.processId);
     const subject = process ? personById(data, process.subjectIds[0]) : undefined;
-    const context = process ? (subject ? t('home.items.processSubject', { process: PROCESS_SHORT[process.type], subject: fullName(subject) }) : PROCESS_SHORT[process.type]) : '';
+    const context = process ? (subject ? t('home.items.processSubject', { process: processShort(process.type), subject: fullName(subject) }) : processShort(process.type)) : '';
     items.push({ key: a.id, href: `/actions?action=${a.id}`, icon: <ListChecks size={18} aria-hidden="true" />, title: a.title, meta: t('home.items.actionMeta', { context, date: formatDate(a.due) }), when: relativeDays(days), tone: days < 0 ? 'critical' : undefined, sort: days < 0 ? 0 : 4 });
   }
   const upcoming = meetingsForUser(data, user).filter((m) => m.status === 'scheduled' && differenceInCalendarDays(parseISO(m.scheduledAt), now) >= 0);
   for (const m of upcoming) {
     const days = differenceInCalendarDays(parseISO(m.scheduledAt), now);
     if (days > 7 || days === 0) continue;
-    items.push({ key: m.id, href: meetingPath(m.id), icon: <CalendarDays size={18} aria-hidden="true" />, title: t('home.items.prepareFor', { meeting: m.title }), meta: t('home.items.meetingMeta', { type: MEETING_TYPE_LABELS[m.type], date: formatDate(m.scheduledAt), time: formatTime(m.scheduledAt), location: m.location }), when: relativeDays(days), sort: 5 });
+    items.push({ key: m.id, href: meetingPath(m.id), icon: <CalendarDays size={18} aria-hidden="true" />, title: t('home.items.prepareFor', { meeting: m.title }), meta: t('home.items.meetingMeta', { type: meetingTypeLabel(m.type), date: formatDate(m.scheduledAt), time: formatTime(m.scheduledAt), location: m.location }), when: relativeDays(days), sort: 5 });
   }
   items.sort((a, b) => a.sort - b.sort);
 
@@ -91,7 +91,7 @@ export function Home() {
       <div className={styles.layout}>
         <div className={styles.greeting}>
           <h1>{greetingFor(t, now, user.givenName)}</h1>
-          <span className={styles.greetingRole}>{t('home.greeting.role', { role: ROLE_DEFINITIONS[user.roleId].label, date: formatDate(now) })}</span>
+          <span className={styles.greetingRole}>{t('home.greeting.role', { role: roleLabel(user.roleId), date: formatDate(now) })}</span>
         </div>
         <ScreenState state={state} empty={{ title: t('home.empty.title'), text: t('home.empty.text') }}>
           <section className={styles.region} aria-labelledby="home-clocks">
@@ -102,7 +102,7 @@ export function Home() {
               {clocks.length === 0 ? <p className={styles.quiet}>{t('home.clocks.empty')}</p> : null}
               {clocks.map((c) => (
                 <AppLink key={c.triggerId} href={processPath(c.process.id)} className={styles.clockItem}>
-                  <ClockNumeral daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={<span><span className={styles.clockSubject}>{c.subjectName}</span>: {c.label}</span>} sub={t('home.clocks.due', { date: formatDate(c.dueAt), detail: c.overridden ? (c.overrideReason ?? '') : t('home.clocks.trigger', { process: c.ruleId.split('.')[0]?.toUpperCase() ?? '', date: formatDate(c.triggeredAt) }) })} />
+                  <ClockNumeral daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={<span><span className={styles.clockSubject}>{c.subjectName}</span>: {c.label}</span>} sub={t('home.clocks.due', { date: formatDate(c.dueAt), detail: c.overridden ? (c.overrideReason ?? '') : t('home.clocks.trigger', { process: processShort(c.process.type), date: formatDate(c.triggeredAt) }) })} />
                 </AppLink>
               ))}
             </div>

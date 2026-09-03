@@ -1,6 +1,6 @@
 'use client';
 
-import { ROLE_DEFINITIONS } from '@mas/domain';
+import { roleLabel } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AGENCY_GLYPHS, Dialog } from '@mas/ui';
 import { useNavigate } from '@/lib/router';
@@ -46,7 +46,7 @@ export function PersonaSwitcher({ open, onClose }: { open: boolean; onClose: () 
                         {u.givenName} {u.familyName}
                       </span>
                       <br />
-                      <span className={styles.personaRole}>{ROLE_DEFINITIONS[u.roleId].label}</span>
+                      <span className={styles.personaRole}>{roleLabel(u.roleId)}</span>
                     </span>
                   </button>
                 );

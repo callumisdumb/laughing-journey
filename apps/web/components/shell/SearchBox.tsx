@@ -1,6 +1,6 @@
 'use client';
 
-import { PROCESS_SHORT, ageLabel, formatDate, stageLabel } from '@mas/domain';
+import { ageLabel, formatDate, processShort, stageLabel } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Pill, ProcessMark } from '@mas/ui';
 import { Lock, Search } from 'lucide-react';
@@ -102,7 +102,7 @@ export function SearchBox() {
                 <li key={h.process.id} id={`${id}-opt-${i}`} role="option" aria-selected={i === active} className={styles.option} onMouseDown={() => go(h)} onMouseEnter={() => setActive(i)}>
                   <span className={styles.optionName}>{h.process.reference}</span>
                   <span className={styles.optionMarks}>{access.level === 'none' ? <Pill tone="restricted" size="sm" icon={<Lock size={12} aria-hidden="true" />}>{t('common.labels.restricted')}</Pill> : <ProcessMark type={h.process.type} stage={stageLabel(h.process.type, h.process.stage)} />}</span>
-                  <span className={styles.optionMeta}>{t('nav.search.processMeta', { process: PROCESS_SHORT[h.process.type], matched: h.matched })}</span>
+                  <span className={styles.optionMeta}>{t('nav.search.processMeta', { process: processShort(h.process.type), matched: h.matched })}</span>
                 </li>
               );
             }

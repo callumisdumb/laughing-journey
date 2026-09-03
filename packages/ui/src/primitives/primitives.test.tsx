@@ -1,3 +1,4 @@
+import { t } from '@mas/messages';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
@@ -23,12 +24,12 @@ describe('primitives', () => {
   });
   it('pairs risk colour with a word and an icon', () => {
     const { container } = render(<RiskBand band="high" />);
-    expect(screen.getByText('High')).toBeInTheDocument();
+    expect(screen.getByText(t('domain.riskBands.high'))).toBeInTheDocument();
     expect(container.querySelector('svg')).not.toBeNull();
   });
   it('renders an agency mark with glyph and label', () => {
     const { container } = render(<AgencyMark agency="police" />);
-    expect(screen.getByText('Police')).toBeInTheDocument();
+    expect(screen.getByText(t('domain.agencies.police.short'))).toBeInTheDocument();
     expect(container.querySelector('svg')).not.toBeNull();
   });
   it('explains break-glass availability', () => {

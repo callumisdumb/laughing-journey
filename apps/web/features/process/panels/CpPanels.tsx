@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, CP_REGISTER_CATEGORY_LABELS, formatDate, formatDateTime, type CpProcess } from '@mas/domain';
+import { agencyShort, cpRegisterCategoryLabel, cppmDecisionLabel, formatDate, formatDateTime, irdMedicalKindLabel, planStatusLabel, type CpProcess } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, KeyValue, Pill, Sheet, SheetBody, SheetHead } from '@mas/ui';
 import { differenceInCalendarDays, differenceInWeeks, parseISO, subWeeks } from 'date-fns';
@@ -51,7 +51,7 @@ export function CpPanels({ process }: { process: CpProcess }) {
       ) : null}
 
       <Sheet>
-        <SheetHead title={t('cp.concern.title')} meta={t('cp.concern.meta', { when: formatDateTime(d.concern.receivedAt), source: d.concern.source, agency: AGENCY_SHORT[d.concern.sourceAgency], hasReference: d.concern.sourceReference ? 'yes' : 'no', reference: d.concern.sourceReference ?? '' })} />
+        <SheetHead title={t('cp.concern.title')} meta={t('cp.concern.meta', { when: formatDateTime(d.concern.receivedAt), source: d.concern.source, agency: agencyShort(d.concern.sourceAgency), hasReference: d.concern.sourceReference ? 'yes' : 'no', reference: d.concern.sourceReference ?? '' })} />
         <SheetBody>
           <p>{d.concern.summary}</p>
           {d.proceduresInitiatedAt ? (
@@ -97,12 +97,12 @@ export function CpPanels({ process }: { process: CpProcess }) {
                     <span className={styles.decisionMeta}>
                       {t('cp.ird.rationale', { rationale: dec.rationale })} {dec.at ? t('cp.ird.decided', { when: formatDateTime(dec.at), hasName: dec.byName ? 'yes' : 'no', name: dec.byName ?? '' }) : ''}
                       {'plannerName' in dec && dec.plannerName ? ` ${t('cp.ird.planned', { planner: dec.plannerName, hasInformedBy: dec.informedBy ? 'yes' : 'no', informedBy: dec.informedBy ?? '' })}` : ''}
-                      {'kind' in dec && dec.kind ? ` ${t('cp.ird.kind', { kind: dec.kind, hasConsent: dec.consentBy ? 'yes' : 'no', consentBy: dec.consentBy ?? '', hasWhen: dec.when ? 'yes' : 'no', when: dec.when ? formatDateTime(dec.when) : '' })}` : ''}
+                      {'kind' in dec && dec.kind ? ` ${t('cp.ird.kind', { kind: irdMedicalKindLabel(dec.kind), hasConsent: dec.consentBy ? 'yes' : 'no', consentBy: dec.consentBy ?? '', hasWhen: dec.when ? 'yes' : 'no', when: dec.when ? formatDateTime(dec.when) : '' })}` : ''}
                       {'withheld' in dec && dec.withheld ? ` ${t('cp.ird.withheld', { withheld: dec.withheld })}` : ''}
                     </span>
                     {dissent.map((ds, i) => (
                       <span key={i} className={styles.dissent}>
-                        {t('cp.ird.dissent', { name: ds.byName, agency: AGENCY_SHORT[ds.agency], text: ds.text })}
+                        {t('cp.ird.dissent', { name: ds.byName, agency: agencyShort(ds.agency), text: ds.text })}
                       </span>
                     ))}
                   </div>
@@ -114,7 +114,7 @@ export function CpPanels({ process }: { process: CpProcess }) {
               items={[
                 { key: t('cp.ird.siblings'), value: ird.siblingsConsidered.length === 0 ? t('common.keyValue.none') : ird.siblingsConsidered.map((id) => { const p = personById(data, id); return p ? fullName(p) : id; }).join(', ') },
                 { key: t('cp.ird.childViews'), value: ird.childViewsSought },
-                { key: t('cp.ird.interimPlan'), value: interim ? t('cp.ird.interimPlanValue', { title: interim.title, outcomes: interim.outcomes.map((o) => o.text).join('; '), status: interim.status }) : t('cp.ird.interimPlanNone') },
+                { key: t('cp.ird.interimPlan'), value: interim ? t('cp.ird.interimPlanValue', { title: interim.title, outcomes: interim.outcomes.map((o) => o.text).join('; '), status: planStatusLabel(interim.status) }) : t('cp.ird.interimPlanNone') },
               ]}
             />
           </SheetBody>
@@ -144,8 +144,8 @@ export function CpPanels({ process }: { process: CpProcess }) {
           <SheetBody>
             <KeyValue
               items={[
-                { key: t('cp.cppm.cppm'), value: d.cppm ? t('cp.cppm.cppmValue', { hasHeld: d.cppm.heldAt ? 'yes' : 'no', when: d.cppm.heldAt ? formatDateTime(d.cppm.heldAt) : '', decision: d.cppm.decision.replace('-', ' '), rationale: d.cppm.rationale ?? '' }) : t('cp.cppm.notHeld') },
-                { key: t('cp.cppm.register'), value: d.register ? <span className={styles.pills}><Pill tone="critical" size="sm">{t('cp.cppm.registered', { date: formatDate(d.register.registeredAt) })}</Pill>{d.register.categories.map((c) => <Pill key={c} tone="high" size="sm">{CP_REGISTER_CATEGORY_LABELS[c]}</Pill>)}</span> : t('cp.cppm.notOnRegister') },
+                { key: t('cp.cppm.cppm'), value: d.cppm ? t('cp.cppm.cppmValue', { hasHeld: d.cppm.heldAt ? 'yes' : 'no', when: d.cppm.heldAt ? formatDateTime(d.cppm.heldAt) : '', decision: cppmDecisionLabel(d.cppm.decision), rationale: d.cppm.rationale ?? '' }) : t('cp.cppm.notHeld') },
+                { key: t('cp.cppm.register'), value: d.register ? <span className={styles.pills}><Pill tone="critical" size="sm">{t('cp.cppm.registered', { date: formatDate(d.register.registeredAt) })}</Pill>{d.register.categories.map((c) => <Pill key={c} tone="high" size="sm">{cpRegisterCategoryLabel(c)}</Pill>)}</span> : t('cp.cppm.notOnRegister') },
                 ...(d.register?.deregisteredAt ? [{ key: t('cp.cppm.deregistered'), value: t('cp.cppm.deregisteredValue', { date: formatDate(d.register.deregisteredAt), reason: d.register.deregistrationReason ?? '' }) }] : []),
                 ...(d.register?.transfer ? [{ key: t('cp.cppm.transfer'), value: t('cp.cppm.transferValue', { direction: d.register.transfer.direction, area: d.register.transfer.area, date: formatDate(d.register.transfer.at) }) }] : []),
                 { key: t('cp.cppm.daysOnRegister'), value: d.register ? String(differenceInCalendarDays(now, parseISO(d.register.registeredAt))) : '' },

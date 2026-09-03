@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { exclusionPartyLabel } from '../enums';
 import { casePartySchema, type CaseParty } from '../schemas/process';
 import { capacityAssessmentFormSchema } from './capacity-assessment';
 import { DAQ_QUESTIONS, DASH_QUESTIONS, daqFormSchema } from './daq';
@@ -95,9 +96,9 @@ describe('must not receive', () => {
   it('becomes a manual register entry keyed by the typed name', () => {
     const parsed = mustNotReceiveEntrySchema.parse(entry);
     const party = casePartyFromMustNotReceive(parsed, '2026-09-03', 'the DAQ');
-    expect(party).toEqual({ name: 'Iain Docherty', party: 'perpetrator-associates', label: "Perpetrator's family or associates: perpetrator's brother (named on the DAQ)", since: '2026-09-03', source: 'manual', reason: 'Works in the housing office and would tell the perpetrator.' });
+    expect(party).toEqual({ name: 'Iain Docherty', party: 'perpetrator-associates', label: `${exclusionPartyLabel('perpetrator-associates')}: perpetrator's brother (named on the DAQ)`, since: '2026-09-03', source: 'manual', reason: 'Works in the housing office and would tell the perpetrator.' });
     expect(casePartySchema.safeParse(party).success).toBe(true);
-    expect(casePartyFromMustNotReceive({ ...parsed, relationship: '' }, '2026-09-03', 'the MAPPA referral').label).toBe("Perpetrator's family or associates (named on the MAPPA referral)");
+    expect(casePartyFromMustNotReceive({ ...parsed, relationship: '' }, '2026-09-03', 'the MAPPA referral').label).toBe(`${exclusionPartyLabel('perpetrator-associates')} (named on the MAPPA referral)`);
   });
   it('merges into the register and replaces a name already recorded for the same party', () => {
     const parsed = mustNotReceiveEntrySchema.parse(entry);

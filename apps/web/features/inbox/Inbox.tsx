@@ -1,6 +1,6 @@
 'use client';
 
-import { SIGNIFICANCES, formatDate, formatDateTime, type ChronologyEvent, type ConnectorEvent, type LawfulBasisRecord } from '@mas/domain';
+import { SIGNIFICANCES, agencyLabel, formatDate, formatDateTime, significanceLabel, type ChronologyEvent, type ConnectorEvent, type LawfulBasisRecord } from '@mas/domain';
 import { MOCK_ADAPTERS, type ExternalEvent } from '@mas/connectors';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, Dialog, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, useToast } from '@mas/ui';
@@ -176,7 +176,7 @@ export function Inbox() {
           ))}
         </div>
       ) : null}
-      <ScreenState state={state} empty={{ title: t('inbox.empty.title'), text: t('inbox.empty.text', { agency: user.agency.replace('-', ' ') }) }}>
+      <ScreenState state={state} empty={{ title: t('inbox.empty.title'), text: t('inbox.empty.text', { agency: agencyLabel(user.agency) }) }}>
         <div className="stack">
           {items.map((c) => {
             const subject = personById(data, c.subjectId);
@@ -210,7 +210,7 @@ export function Inbox() {
                     <div className={styles.proposed}>
                       <div className={styles.proposedTitle}>{t('inbox.item.proposed')}</div>
                       <TextField label={t('inbox.item.titleField')} value={e.title} maxLength={120} onChange={(ev) => setEdits({ ...edits, [c.id]: { ...e, title: ev.target.value } })} hint={t('inbox.item.titleHint', { when: c.mapped.hasTime ? formatDateTime(c.mapped.occurredAt) : formatDate(c.mapped.occurredAt), type: c.mapped.eventType })} />
-                      <SelectField label={t('inbox.item.significance')} value={e.significance} onChange={(ev) => setEdits({ ...edits, [c.id]: { ...e, significance: ev.target.value as ChronologyEvent['significance'] } })} options={SIGNIFICANCES.map((s) => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))} />
+                      <SelectField label={t('inbox.item.significance')} value={e.significance} onChange={(ev) => setEdits({ ...edits, [c.id]: { ...e, significance: ev.target.value as ChronologyEvent['significance'] } })} options={SIGNIFICANCES.map((s) => ({ value: s, label: significanceLabel(s) }))} />
                       <p className={styles.mappingNote}>{c.mapped.detail}</p>
                       <div className={styles.actions}>
                         <Button variant="secondary" onClick={() => setPromote({ event: c, integrated: false })}>

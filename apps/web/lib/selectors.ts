@@ -2,8 +2,8 @@
  * Pure selectors over the dataset. No React here.
  */
 import {
-  AGENCY_SHORT,
   accessFor,
+  agencyShort,
   computeClock,
   findClockRule,
   sortByUrgency,
@@ -123,7 +123,7 @@ export function membersByAgency(data: Dataset, process: Process): Array<{ agency
     list.push({ membership: m, user: userById(data, m.userId) });
     groups.set(m.agency, list);
   }
-  return [...groups.entries()].map(([agency, members]) => ({ agency, label: AGENCY_SHORT[agency], members }));
+  return [...groups.entries()].map(([agency, members]) => ({ agency, label: agencyShort(agency), members }));
 }
 
 export function currentAddress(data: Dataset, person: Person): { line: string; moves: number } {

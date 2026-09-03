@@ -1,3 +1,4 @@
+import { t } from '@mas/messages';
 import { z } from 'zod';
 import {
   AGENCIES,
@@ -65,7 +66,7 @@ export const casePartySchema = z
     source: z.enum(CASE_PARTY_SOURCES),
     reason: z.string().optional(),
   })
-  .refine((party) => Boolean(party.personId || party.userId || party.name), { message: 'A case party needs a personId, a userId or a name' });
+  .refine((party) => Boolean(party.personId || party.userId || party.name), { error: () => t('errors.schemas.casePartyIdentity') });
 export type CaseParty = z.infer<typeof casePartySchema>;
 
 const decisionRecordSchema = z.object({

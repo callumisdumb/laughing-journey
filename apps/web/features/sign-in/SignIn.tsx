@@ -1,6 +1,6 @@
 'use client';
 
-import { ROLE_DEFINITIONS, type Organisation } from '@mas/domain';
+import { roleLabel, type Organisation } from '@mas/domain';
 import { useT, type MessageKey } from '@mas/messages';
 import { AGENCY_GLYPHS, Pill, WordmarkGlyph } from '@mas/ui';
 import { Info, Lock, ShieldCheck, Sparkles } from 'lucide-react';
@@ -110,7 +110,7 @@ export function SignIn() {
                   <span className={styles.personaName}>
                     {u.givenName} {u.familyName}
                   </span>
-                  <span className={styles.personaRole}>{ROLE_DEFINITIONS[u.roleId].label}</span>
+                  <span className={styles.personaRole}>{roleLabel(u.roleId)}</span>
                   <span className={styles.personaBlurb}>{u.blurb}</span>
                 </button>
               ))}

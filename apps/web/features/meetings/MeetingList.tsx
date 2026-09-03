@@ -1,6 +1,6 @@
 'use client';
 
-import { MEETING_TYPES, MEETING_TYPE_LABELS, PROCESS_SHORT, formatDate, formatTime } from '@mas/domain';
+import { MEETING_TYPES, formatDate, formatTime, meetingStatusLabel, meetingTypeLabel, minuteStatusLabel, processShort } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Pill, ProcessMark, SelectField, Switch, Table, TableWrap } from '@mas/ui';
 import { useEffect } from 'react';
@@ -59,7 +59,7 @@ export function MeetingList() {
         </div>
       </div>
       <div className="cluster" style={{ marginBottom: 'var(--density-gap)', alignItems: 'flex-end', gap: 16 }}>
-        <SelectField label={t('meetings.list.filters.type')} value={typeFilter} onChange={(e) => set('type', e.target.value || null)} placeholder={t('meetings.list.filters.allTypes')} options={MEETING_TYPES.map((type) => ({ value: type, label: MEETING_TYPE_LABELS[type] }))} />
+        <SelectField label={t('meetings.list.filters.type')} value={typeFilter} onChange={(e) => set('type', e.target.value || null)} placeholder={t('meetings.list.filters.allTypes')} options={MEETING_TYPES.map((type) => ({ value: type, label: meetingTypeLabel(type) }))} />
         <Switch label={t('meetings.list.filters.mine')} checked={mine} onChange={(e) => set('mine', e.target.checked ? null : '0')} />
         <Switch label={t('meetings.list.filters.past')} checked={past} onChange={(e) => set('past', e.target.checked ? '1' : null)} />
       </div>
@@ -89,17 +89,17 @@ export function MeetingList() {
                       <AppLink href={meetingPath(m.id)} onClick={(e) => e.stopPropagation()} style={{ fontWeight: 700 }}>
                         {m.title}
                       </AppLink>
-                      <span style={{ display: 'block', fontSize: 'var(--text-xs)', color: 'var(--color-ink-3)' }}>{MEETING_TYPE_LABELS[m.type]}</span>
+                      <span style={{ display: 'block', fontSize: 'var(--text-xs)', color: 'var(--color-ink-3)' }}>{meetingTypeLabel(m.type)}</span>
                     </td>
                     <td>{process ? <ProcessMark type={process.type} restricted={process.classification === 'restricted'} /> : ''}</td>
-                    <td>{process?.classification === 'restricted' ? PROCESS_SHORT[process.type] : subject ? fullName(subject) : ''}</td>
+                    <td>{process?.classification === 'restricted' ? processShort(process.type) : subject ? fullName(subject) : ''}</td>
                     <td>{m.chairName}</td>
                     <td>
                       <Pill size="sm" tone={m.status === 'scheduled' ? 'accent' : m.status === 'held' ? 'low' : 'outline'}>
-                        {m.status}
+                        {meetingStatusLabel(m.status)}
                       </Pill>
                     </td>
-                    <td>{m.minute.status.replace(/-/g, ' ')}</td>
+                    <td>{minuteStatusLabel(m.minute.status)}</td>
                   </tr>
                 );
               })}

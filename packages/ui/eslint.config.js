@@ -1,27 +1,12 @@
 import react from '@mas/eslint-config/react';
 import { copyRule } from '@mas/eslint-config/copy';
 
-/** Every component in the package renders its copy from the catalogue; the rule keeps it that way. */
+/**
+ * Every component in the package renders its copy from the catalogue; the rule keeps it that way.
+ * Unit tests are exempt: they assert on rendered text, which has to be written out to be checked.
+ */
 export default [
   ...react,
-  copyRule([
-    'src/glyphs/Glyph.tsx',
-    'src/glyphs/agencies.tsx',
-    'src/glyphs/processes.tsx',
-    'src/primitives/Button.tsx',
-    'src/primitives/ClockNumeral.tsx',
-    'src/primitives/DateField.tsx',
-    'src/primitives/Dialog.tsx',
-    'src/primitives/Field.tsx',
-    'src/primitives/Marks.tsx',
-    'src/primitives/Pill.tsx',
-    'src/primitives/Sheet.tsx',
-    'src/primitives/States.tsx',
-    'src/primitives/Stepper.tsx',
-    'src/primitives/Table.tsx',
-    'src/primitives/Tabs.tsx',
-    'src/primitives/Term.tsx',
-    'src/primitives/Toast.tsx',
-    'src/primitives/VoiceBlock.tsx',
-  ]),
+  copyRule(['src/**/*.{ts,tsx}']),
+  { files: ['src/**/*.test.{ts,tsx}'], rules: { 'mas/no-hardcoded-copy': 'off' } },
 ];

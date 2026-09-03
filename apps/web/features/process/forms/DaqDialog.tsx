@@ -1,6 +1,6 @@
 'use client';
 
-import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, MARAC_MUST_NOT_RECEIVE_PARTIES, daqFormSchema, daqQuestionText, registerUpdateLabel, withMustNotReceive, type DaqForm, type MaracProcess, type RiskAssessment } from '@mas/domain';
+import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, MARAC_MUST_NOT_RECEIVE_PARTIES, daqFormSchema, daqQuestionText, registerUpdateLabel, riskToolLabel, withMustNotReceive, type DaqForm, type MaracProcess, type RiskAssessment } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -49,8 +49,8 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
     const register = withMustNotReceive(process.parties, r.mustNotReceive, now.toISOString().slice(0, 10), 'the DAQ');
     upsert('riskAssessments', ra);
     upsert('processes', { ...process, riskAssessmentIds: [...process.riskAssessmentIds, ra.id], parties: register.parties, detail: { ...process.detail, referral: { ...process.detail.referral, riskAssessmentId: ra.id, professionalJudgementReferral: !r.highRisk && r.refer } } });
-    audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `${r.tool.toUpperCase()} recorded: ${r.score} of ${r.maxScore}`, processId: process.id });
-    toast({ title: t('forms.daq.recorded.title', { tool: r.tool.toUpperCase(), count: r.score }), text: t('forms.daq.recorded.text', { outcome: r.highRisk ? 'high' : r.refer ? 'referred' : 'none' }), tone: 'success' });
+    audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `${riskToolLabel(r.tool)} recorded: ${r.score} of ${r.maxScore}`, processId: process.id });
+    toast({ title: t('forms.daq.recorded.title', { tool: riskToolLabel(r.tool), count: r.score }), text: t('forms.daq.recorded.text', { outcome: r.highRisk ? 'high' : r.refer ? 'referred' : 'none' }), tone: 'success' });
     const recorded = register.added + register.updated;
     if (recorded > 0) {
       audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: registerUpdateLabel(register, 'the DAQ'), processId: process.id });

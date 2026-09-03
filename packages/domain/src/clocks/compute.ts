@@ -1,3 +1,4 @@
+import { clockRuleLabel } from './rules';
 import { addDays, addMonths, addWeeks, differenceInCalendarDays, isSaturday, isSunday, parseISO, startOfDay } from 'date-fns';
 import type { RiskBand } from '../enums';
 import type { ClockRule } from '../schemas/config';
@@ -92,7 +93,7 @@ export function computeClock(
   return {
     triggerId: trigger.id,
     ruleId: rule.id,
-    label: rule.label,
+    label: clockRuleLabel(rule.id),
     triggeredAt: trigger.triggeredAt,
     dueAt: localDateOf(due),
     daysRemaining,

@@ -1,6 +1,6 @@
 'use client';
 
-import { MAPPA_MUST_NOT_RECEIVE_PARTIES, formatDate, mappaReferralFormSchema, registerUpdateLabel, withMustNotReceive, type MappaProcess, type MappaReferralForm } from '@mas/domain';
+import { MAPPA_MUST_NOT_RECEIVE_PARTIES, formatDate, mappaReferralFormSchema, registerUpdateLabel, riskToolLabel, withMustNotReceive, type MappaProcess, type MappaReferralForm } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, CheckboxField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -81,7 +81,7 @@ export function MappaReferralDialog({ open, onClose, process }: { open: boolean;
                 <legend style={{ fontWeight: 700, fontSize: 'var(--text-sm)', marginBottom: 6 }}>{t('forms.mappaReferral.riskAssessments.legend')}</legend>
                 {errors.riskAssessmentIds ? <div role="alert" style={{ color: 'var(--color-risk-critical)', fontSize: 'var(--text-sm)' }}>{errors.riskAssessmentIds.message}</div> : null}
                 {risks.map((r) => (
-                  <CheckboxField key={r.id} label={t('forms.mappaReferral.riskAssessments.option', { tool: r.tool.toUpperCase(), band: r.bandLabel, date: formatDate(r.assessedAt) })} checked={field.value.includes(r.id)} onChange={(e) => field.onChange(e.target.checked ? [...field.value, r.id] : field.value.filter((x) => x !== r.id))} />
+                  <CheckboxField key={r.id} label={t('forms.mappaReferral.riskAssessments.option', { tool: riskToolLabel(r.tool), band: r.bandLabel, date: formatDate(r.assessedAt) })} checked={field.value.includes(r.id)} onChange={(e) => field.onChange(e.target.checked ? [...field.value, r.id] : field.value.filter((x) => x !== r.id))} />
                 ))}
               </fieldset>
             )}

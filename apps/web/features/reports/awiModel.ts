@@ -2,7 +2,7 @@
  * AWI application timeliness: route and applicant, the MHO report against the 21 day rule in
  * section 57(4), interim orders against the statutory maximum, and days from application to order.
  */
-import { daysBetween, dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, type AwiProcess, type ClockRule, type Config, type Dataset } from '@mas/domain';
+import { clockRuleLabel, daysBetween, dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, type AwiProcess, type ClockRule, type Config, type Dataset } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
 import { addDays, format, parseISO } from 'date-fns';
 import { countBy, median, messageSegment, scaleColour, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
@@ -162,7 +162,7 @@ export function awiModel(data: Dataset, config: Config, now: Date, period: Perio
     ],
   };
 
-  const mhoNote = mhoRule ? t('reports.awi.sections.mhoRule', { label: mhoRule.label, reference: mhoRule.sourceRef ?? mhoRule.source, source: mhoRule.source }) : t('reports.awi.sections.mhoNoRule');
+  const mhoNote = mhoRule ? t('reports.awi.sections.mhoRule', { label: clockRuleLabel(mhoRule.id), reference: mhoRule.sourceRef ?? mhoRule.source, source: mhoRule.source }) : t('reports.awi.sections.mhoNoRule');
 
   const sections: ReportSection[] = [
     { id: 'routes', title: t('reports.awi.sections.routes'), note: t('reports.awi.sections.routesNote'), chart, tables: [] },

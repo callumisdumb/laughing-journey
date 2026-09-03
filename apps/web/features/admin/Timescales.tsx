@@ -1,6 +1,6 @@
 'use client';
 
-import { DEFAULT_CONFIG, PROCESS_LABELS, PROCESS_TYPES, type ClockRule } from '@mas/domain';
+import { DEFAULT_CONFIG, PROCESS_TYPES, clockRuleLabel, clockRuleTrigger, processLabel, type ClockRule } from '@mas/domain';
 import { tKey, useT, type Translator } from '@mas/messages';
 import { Button, Dialog, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, Table, TableWrap, TextField, TextareaField, type PillTone } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -68,7 +68,7 @@ function RuleDialog({ rule, canEdit, onClose, onSave }: { rule: ClockRule; canEd
     <Dialog
       open
       onClose={onClose}
-      title={t('admin.timescales.dialog.title', { label: rule.label })}
+      title={t('admin.timescales.dialog.title', { label: clockRuleLabel(rule.id) })}
       size="lg"
       actions={
         <>
@@ -84,7 +84,7 @@ function RuleDialog({ rule, canEdit, onClose, onSave }: { rule: ClockRule; canEd
       <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
         <dl className={styles.ruleFacts}>
           <dt>{t('admin.timescales.dialog.trigger')}</dt>
-          <dd>{rule.trigger}</dd>
+          <dd>{clockRuleTrigger(rule.id)}</dd>
           <dt>{t('admin.timescales.dialog.source')}</dt>
           <dd>
             {rule.source}
@@ -125,7 +125,7 @@ export function Timescales() {
   const toVerify = config.clockRules.filter(needsVerify).length;
 
   function saveRule(next: ClockRule): string[] {
-    const result = save({ ...config, clockRules: config.clockRules.map((r) => (r.id === next.id ? next : r)) }, 'timescales', t('admin.timescales.audit', { label: next.label, timescale: timescale(next.unit, next.amount), days: next.warnDays }));
+    const result = save({ ...config, clockRules: config.clockRules.map((r) => (r.id === next.id ? next : r)) }, 'timescales', t('admin.timescales.audit', { label: clockRuleLabel(next.id), timescale: timescale(next.unit, next.amount), days: next.warnDays }));
     return result.errors;
   }
 
@@ -135,9 +135,9 @@ export function Timescales() {
       <div className="stack">
         {groups.map((g) => (
           <Sheet key={g.process}>
-            <SheetHead title={<ProcessMark type={g.process} stage={PROCESS_LABELS[g.process]} />} meta={t('admin.timescales.groupMeta', { count: g.rules.length, toVerify: g.rules.filter(needsVerify).length })} divided />
+            <SheetHead title={<ProcessMark type={g.process} stage={processLabel(g.process)} />} meta={t('admin.timescales.groupMeta', { count: g.rules.length, toVerify: g.rules.filter(needsVerify).length })} divided />
             <SheetBody flush>
-              <TableWrap label={t('admin.timescales.tableLabel', { process: PROCESS_LABELS[g.process] })} className={styles.wrap}>
+              <TableWrap label={t('admin.timescales.tableLabel', { process: processLabel(g.process) })} className={styles.wrap}>
                 <Table>
                   <thead>
                     <tr>
@@ -155,10 +155,10 @@ export function Timescales() {
                     {g.rules.map((r) => (
                       <tr key={r.id} data-state={needsVerify(r) ? 'verify' : undefined}>
                         <td>
-                          <span className={styles.label}>{r.label}</span>
+                          <span className={styles.label}>{clockRuleLabel(r.id)}</span>
                           <span className={styles.meta}>{t('admin.timescales.kindAndId', { kind: kindLabel(r.kind), id: r.id })}</span>
                         </td>
-                        <td className={styles.trigger}>{r.trigger}</td>
+                        <td className={styles.trigger}>{clockRuleTrigger(r.id)}</td>
                         <td className={styles.timescale}>
                           <span className={styles.amount}>{timescale(r.unit, r.amount)}</span>
                           <span className={styles.meta}>{t('admin.timescales.warnAt', { days: r.warnDays })}</span>

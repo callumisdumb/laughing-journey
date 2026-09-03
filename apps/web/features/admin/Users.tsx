@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCIES, ROLE_DEFINITIONS } from '@mas/domain';
+import { AGENCIES, ROLE_DEFINITIONS, roleLabel } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, Pill, Table, TableWrap, TextField } from '@mas/ui';
 import { LogIn } from 'lucide-react';
@@ -24,7 +24,7 @@ export function Users() {
   const rows = [...data.users]
     .sort((a, b) => AGENCIES.indexOf(a.agency) - AGENCIES.indexOf(b.agency) || a.familyName.localeCompare(b.familyName))
     .map((u) => ({ user: u, role: ROLE_DEFINITIONS[u.roleId], team: data.teams.find((t) => t.id === u.teamId), org: data.organisations.find((o) => o.id === u.organisationId) }))
-    .filter((r) => !needle || [userName(r.user), r.user.jobTitle, r.role.label, r.user.agency, r.team?.name ?? '', r.org?.name ?? '', r.user.base].join(' ').toLowerCase().includes(needle));
+    .filter((r) => !needle || [userName(r.user), r.user.jobTitle, roleLabel(r.user.roleId), r.user.agency, r.team?.name ?? '', r.org?.name ?? '', r.user.base].join(' ').toLowerCase().includes(needle));
 
   function signInAs(id: string) {
     signIn(id, true);
@@ -67,7 +67,7 @@ export function Users() {
                     <span className={styles.meta}>{u.jobTitle}</span>
                   </td>
                   <td>
-                    {role.label}
+                    {roleLabel(u.roleId)}
                     {role.oversight ? <span className={styles.meta}>{t('admin.users.oversight', { oversight: role.oversight })}</span> : null}
                   </td>
                   <td>

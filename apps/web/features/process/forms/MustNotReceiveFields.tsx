@@ -1,6 +1,6 @@
 'use client';
 
-import { EXCLUSION_PARTY_LABELS, type ExclusionParty, type MustNotReceiveEntryInput } from '@mas/domain';
+import { exclusionPartyLabel, type ExclusionParty, type MustNotReceiveEntryInput } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, SelectField, TextField, TextareaField } from '@mas/ui';
 import { Plus, X } from 'lucide-react';
@@ -23,7 +23,7 @@ export function MustNotReceiveFields({ parties, relationshipHint }: { parties: r
   const { fields, append, remove } = useFieldArray({ control, name: 'mustNotReceive' });
   const hintId = useId();
   const addId = useId();
-  const options = parties.map((p) => ({ value: p, label: EXCLUSION_PARTY_LABELS[p] }));
+  const options = parties.map((p) => ({ value: p, label: exclusionPartyLabel(p) }));
 
   function add() {
     append({ name: '', relationship: '', party: parties[0], reason: '' }, { shouldFocus: true });

@@ -1,6 +1,6 @@
 'use client';
 
-import { CLASSIFICATION_LABELS, formatDateTime } from '@mas/domain';
+import { classificationLabel, formatDateTime } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, ClassificationBanner } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
@@ -88,7 +88,7 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
   }
   if (current.length > 0) pages.push(current);
   const totalPages = pages.length + 1;
-  const marking = CLASSIFICATION_LABELS[model.classification];
+  const marking = classificationLabel(model.classification);
   const back = `/reports/${kind}${setQuery(route.query, { print: null })}`;
 
   const head = (page: number) => (

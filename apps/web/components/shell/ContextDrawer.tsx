@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, DETAIL_LEVEL_LABELS, EXCLUSION_PARTY_LABELS, ROLE_DEFINITIONS, contextFor, formatDateTime, partyRegister, resolveNeedToKnow, stageLabel, type CaseParty, type Process } from '@mas/domain';
+import { actionStatusLabel, agencyShort, analysisKindLabel, attendanceLabel, channelLabel, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, visibilityLabel, type CaseParty, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, IconButton, Pill, RiskBand } from '@mas/ui';
 import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, Users } from 'lucide-react';
@@ -36,7 +36,7 @@ function WhoIsInvolved({ processes }: { processes: Process[] }) {
         if (seen.has(key)) continue;
         seen.add(key);
         const list = groups.get(g.agency) ?? [];
-        list.push({ agency: g.agency, name: m.user ? userName(m.user) : m.membership.userId, role: m.user ? ROLE_DEFINITIONS[m.user.roleId].label : '', caseRole: m.membership.caseRole, contact: m.user ? m.user.phone : '' });
+        list.push({ agency: g.agency, name: m.user ? userName(m.user) : m.membership.userId, role: m.user ? roleLabel(m.user.roleId) : '', caseRole: m.membership.caseRole, contact: m.user ? m.user.phone : '' });
         groups.set(g.agency, list);
       }
     }
@@ -82,10 +82,10 @@ function NeedToKnow({ process }: { process: Process }) {
       {res.recipients.map((r) => (
         <div key={r.rowId} className={styles.row}>
           <span className={styles.rowLabel}>
-            {r.label} ({AGENCY_SHORT[r.agency]})
+            {r.label} ({agencyShort(r.agency)})
           </span>
           <Pill size="sm" tone={r.detailLevel === 'full' ? 'accent' : 'outline'}>
-            {DETAIL_LEVEL_LABELS[r.detailLevel]}
+            {detailLevelLabel(r.detailLevel)}
           </Pill>
           <span className={styles.rowReason}>
             {r.reason} {r.fields ? t('nav.drawer.needToKnow.fields', { fields: r.fields.join('; ') }) : ''}
@@ -118,7 +118,7 @@ function NeedToKnow({ process }: { process: Process }) {
             <div key={`${e.id}:${p.personId ?? p.userId ?? p.name ?? p.label}`} className={styles.exclusion}>
               <Ban size={14} aria-hidden="true" />
               <span>
-                <strong>{t('nav.drawer.needToKnow.mustNotReceiveParty', { who: who ?? p.label, party: EXCLUSION_PARTY_LABELS[p.party] })}</strong> {t('nav.drawer.needToKnow.source', { notes, source: p.source })}
+                <strong>{t('nav.drawer.needToKnow.mustNotReceiveParty', { who: who ?? p.label, party: exclusionPartyLabel(p.party) })}</strong> {t('nav.drawer.needToKnow.source', { notes, source: p.source })}
                 {liftable ? (
                   <>
                     {' '}
@@ -155,7 +155,7 @@ function LawfulBasis({ process }: { process: Process }) {
           <dt>{t('nav.drawer.fields.necessity')}</dt>
           <dd>{b.necessityAndProportionality}</dd>
           <dt>{t('nav.drawer.fields.consent')}</dt>
-          <dd>{b.consentStatus.replace(/-/g, ' ')}</dd>
+          <dd>{consentStatusLabel(b.consentStatus)}</dd>
           <dt>{t('nav.drawer.fields.authorisedBy')}</dt>
           <dd>{b.authorisedByName}</dd>
         </dl>
@@ -172,7 +172,7 @@ function AuditTrail({ processIds, personId }: { processIds: string[]; personId?:
   return (
     <div>
       {entries.map((a) => {
-        const args = { user: a.userName, agency: AGENCY_SHORT[a.agency], act: a.act.replace(/-/g, ' ') };
+        const args = { user: a.userName, agency: agencyShort(a.agency), act: a.act.replace(/-/g, ' ') };
         return (
           <div key={a.id} className={styles.auditItem}>
             <span className={styles.auditTime}>{formatDateTime(a.at)}</span>
@@ -193,7 +193,7 @@ function YourAccess({ process }: { process: Process }) {
   const now = useNow();
   if (!user) return null;
   const access = accessForUser(data, config, user, process, grants, now);
-  const level = access.level === 'none' ? t('nav.drawer.access.none') : DETAIL_LEVEL_LABELS[access.level];
+  const level = access.level === 'none' ? t('nav.drawer.access.none') : detailLevelLabel(access.level);
   return (
     <div className={styles.access}>
       <span className={styles.accessLevel}>
@@ -280,10 +280,10 @@ export function ContextDrawer() {
             <dd>{ev.sourceSystem === 'manual' ? t('nav.drawer.event.recordedBy', { name: ev.recordedByName }) : t('nav.drawer.event.connector', { system: ev.sourceSystem })}</dd>
             <dt>{t('nav.drawer.fields.significance')}</dt>
             <dd>
-              <RiskBand band={ev.significance === 'high' ? 'high' : ev.significance === 'moderate' ? 'medium' : 'low'} label={ev.significance} />
+              <RiskBand band={ev.significance === 'high' ? 'high' : ev.significance === 'moderate' ? 'medium' : 'low'} label={significanceLabel(ev.significance)} />
             </dd>
             <dt>{t('nav.drawer.fields.visibility')}</dt>
-            <dd>{ev.visibility.replace(/-/g, ' ')}</dd>
+            <dd>{visibilityLabel(ev.visibility)}</dd>
             {ev.response ? (
               <>
                 <dt>{t('nav.drawer.fields.response')}</dt>
@@ -333,7 +333,7 @@ export function ContextDrawer() {
           {m.invitees.map((i, idx) => (
             <div key={`${i.name}-${idx}`} className={styles.member} style={{ paddingLeft: 0 }}>
               <span className={styles.memberName}>
-                <AgencyMark agency={i.agency} hideLabel /> {i.name}, {i.role} ({i.attendance})
+                <AgencyMark agency={i.agency} hideLabel /> {i.name}, {i.role} ({attendanceLabel(i.attendance)})
               </span>
               <span className={styles.memberMeta}>{i.reason}</span>
             </div>
@@ -345,7 +345,7 @@ export function ContextDrawer() {
             <div key={d.id} className={styles.row}>
               <span className={styles.rowLabel}>{d.recipientName}</span>
               <Pill size="sm" tone={d.detailLevel === 'full' ? 'accent' : 'outline'}>
-                {DETAIL_LEVEL_LABELS[d.detailLevel]}
+                {detailLevelLabel(d.detailLevel)}
               </Pill>
               <span className={styles.rowReason}>{d.reason}</span>
             </div>
@@ -369,7 +369,7 @@ export function ContextDrawer() {
           <dt>{t('nav.drawer.fields.due')}</dt>
           <dd>{formatDateTime(a.due + 'T09:00:00+01:00').slice(0, 11)}</dd>
           <dt>{t('nav.drawer.fields.status')}</dt>
-          <dd>{a.status}</dd>
+          <dd>{actionStatusLabel(a.status)}</dd>
           <dt>{t('nav.drawer.fields.process')}</dt>
           <dd>{p ? `${p.reference}: ${p.title}` : ''}</dd>
           {a.evidence ? (
@@ -391,7 +391,7 @@ export function ContextDrawer() {
             <dt>{t('nav.drawer.fields.title')}</dt>
             <dd>{an.title}</dd>
             <dt>{t('nav.drawer.fields.kind')}</dt>
-            <dd>{an.kind}</dd>
+            <dd>{analysisKindLabel(an.kind)}</dd>
             <dt>{t('nav.drawer.fields.author')}</dt>
             <dd>
               {an.authorName} (<AgencyMark agency={an.agency} />)
@@ -428,13 +428,13 @@ export function ContextDrawer() {
               {s.recipient.name}, {s.recipient.role} (<AgencyMark agency={s.recipient.agency} />)
             </dd>
             <dt>{t('nav.drawer.fields.level')}</dt>
-            <dd>{DETAIL_LEVEL_LABELS[s.detailLevel]}{s.fields ? `: ${s.fields.join('; ')}` : ''}</dd>
+            <dd>{detailLevelLabel(s.detailLevel)}{s.fields ? `: ${s.fields.join('; ')}` : ''}</dd>
             <dt>{t('nav.drawer.fields.why')}</dt>
             <dd>{s.reason}</dd>
             <dt>{t('nav.drawer.fields.channel')}</dt>
-            <dd>{s.channel.replace(/-/g, ' ')}</dd>
+            <dd>{channelLabel(s.channel)}</dd>
             <dt>{t('nav.drawer.fields.status')}</dt>
-            <dd>{s.readAt ? t('nav.drawer.share.statusRead', { status: s.status, when: formatDateTime(s.readAt) }) : s.status}</dd>
+            <dd>{s.readAt ? t('nav.drawer.share.statusRead', { status: shareStatusLabel(s.status), when: formatDateTime(s.readAt) }) : shareStatusLabel(s.status)}</dd>
           </dl>
         </Section>
         <Section title={t('nav.drawer.section.lawfulBasis')} icon={<Scale size={14} aria-hidden="true" />}>
@@ -453,7 +453,7 @@ export function ContextDrawer() {
               <dt>{t('nav.drawer.fields.necessity')}</dt>
               <dd>{basis.necessityAndProportionality}</dd>
               <dt>{t('nav.drawer.fields.consent')}</dt>
-              <dd>{basis.consentStatus.replace(/-/g, ' ')}{basis.consentNote ? `. ${basis.consentNote}` : ''}</dd>
+              <dd>{consentStatusLabel(basis.consentStatus)}{basis.consentNote ? `. ${basis.consentNote}` : ''}</dd>
               <dt>{t('nav.drawer.fields.authorisedBy')}</dt>
               <dd>{basis.authorisedByName}</dd>
               {basis.informationSharingAgreementRef ? (
@@ -479,7 +479,7 @@ export function ContextDrawer() {
             {user.givenName} {user.familyName}
           </dd>
           <dt>{t('nav.drawer.fields.role')}</dt>
-          <dd>{ROLE_DEFINITIONS[user.roleId].label}</dd>
+          <dd>{roleLabel(user.roleId)}</dd>
           <dt>{t('nav.drawer.fields.agency')}</dt>
           <dd>
             <AgencyMark agency={user.agency} />

@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, formatDateTime, type ConnectorEvent, type ConnectorHealth } from '@mas/domain';
+import { agencyShort, formatDateTime, type ConnectorEvent, type ConnectorHealth } from '@mas/domain';
 import { MOCK_ADAPTERS, setDegraded, setLatencyScale, setOutage, simulation, type ConnectorCapability, type ConnectorNarrative, type MockAdapter } from '@mas/connectors';
 import { tKey, useT, type Translator } from '@mas/messages';
 import { AgencyMark, Button, EmptyState, KeyValue, Pill, SelectField, Sheet, SheetBody, SheetHead, Switch, TabPanel, Table, TableWrap, Tabs, useToast, type PillTone } from '@mas/ui';
@@ -215,7 +215,7 @@ function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded,
       <SheetHead
         id="connector-detail-title"
         title={adapter.displayName}
-        meta={t('connectors.detail.meta', { system: adapter.systemName, agency: AGENCY_SHORT[adapter.agency], direction: directionLabel(adapter.narrative.direction) })}
+        meta={t('connectors.detail.meta', { system: adapter.systemName, agency: agencyShort(adapter.agency), direction: directionLabel(adapter.narrative.direction) })}
         actions={
           <Button variant="primary" icon={<RefreshCw size={16} aria-hidden="true" />} loading={sync.isPending} disabled={!pullable} title={pullable ? undefined : t('connectors.detail.noPull')} onClick={() => sync.mutate()}>
             {t('connectors.detail.sync')}

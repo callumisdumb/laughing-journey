@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, CLASSIFICATION_LABELS, EVENT_FAMILY_LABELS, eventFamily, formatDate, formatDateTime } from '@mas/domain';
+import { agencyShort, analysisKindLabel, classificationLabel, eventFamily, eventFamilyLabel, formatDate, formatDateTime, significanceLabel } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { Button, ClassificationBanner } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
@@ -46,7 +46,7 @@ export function PrintPack({ personId }: { personId: string }) {
 
   const head = (page: number) => (
     <div className={styles.head}>
-      <span>{t('print.common.runningHead', { classification: CLASSIFICATION_LABELS[classification], reference })}</span>
+      <span>{t('print.common.runningHead', { classification: classificationLabel(classification), reference })}</span>
       <span>{t('print.common.subjectHead', { name: fullName(person), date: dateOfBirth })}</span>
       <span>{t('print.common.page', { page, total: totalPages })}</span>
     </div>
@@ -54,7 +54,7 @@ export function PrintPack({ personId }: { personId: string }) {
   const foot = (
     <div className={styles.foot}>
       <span>{t('print.common.printedFooter', { when: formatDateTime(now) })}</span>
-      <span>{CLASSIFICATION_LABELS[classification]}</span>
+      <span>{classificationLabel(classification)}</span>
     </div>
   );
 
@@ -109,8 +109,8 @@ export function PrintPack({ personId }: { personId: string }) {
                     {e.hasTime ? formatDateTime(e.occurredAt) : formatDate(e.occurredAt)}
                     {e.approximate ? ` ${t('print.chronology.approximate')}` : ''}
                   </td>
-                  <td>{AGENCY_SHORT[e.agency]}</td>
-                  <td>{EVENT_FAMILY_LABELS[eventFamily(e.eventType)]}</td>
+                  <td>{agencyShort(e.agency)}</td>
+                  <td>{eventFamilyLabel(eventFamily(e.eventType))}</td>
                   <td>
                     <strong>{e.title}</strong>
                     <br />
@@ -121,7 +121,7 @@ export function PrintPack({ personId }: { personId: string }) {
                     {e.outcome ? ` ${t('print.chronology.outcome', { outcome: e.outcome })}` : ''}
                   </td>
                   <td>
-                    {e.significance}
+                    {significanceLabel(e.significance)}
                     {e.significanceReason ? `: ${e.significanceReason}` : ''}
                   </td>
                 </tr>
@@ -133,7 +133,7 @@ export function PrintPack({ personId }: { personId: string }) {
               <h3>{t('print.chronology.analysis.title')}</h3>
               {model.analyses.map((a) => (
                 <p key={a.id} style={{ fontSize: 'var(--text-sm)', maxWidth: 'none', marginBottom: 6 }}>
-                  {t.rich('print.chronology.analysis.entry', rich({ title: <strong>{a.title}</strong>, kind: a.kind, author: a.authorName, agency: AGENCY_SHORT[a.agency], date: formatDate(a.recordedAt), text: a.text }))}
+                  {t.rich('print.chronology.analysis.entry', rich({ title: <strong>{a.title}</strong>, kind: analysisKindLabel(a.kind), author: a.authorName, agency: agencyShort(a.agency), date: formatDate(a.recordedAt), text: a.text }))}
                 </p>
               ))}
             </div>

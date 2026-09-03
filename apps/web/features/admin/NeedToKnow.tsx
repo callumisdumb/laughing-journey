@@ -2,20 +2,21 @@
 
 import {
   AGENCIES,
-  AGENCY_SHORT,
   CHANNELS,
   DETAIL_LEVELS,
-  DETAIL_LEVEL_LABELS,
-  PROCESS_LABELS,
-  PROCESS_SHORT,
   PROCESS_TYPES,
   ROLES,
   ROLE_DEFINITIONS,
   STAGES_BY_PROCESS,
+  agencyShort,
+  detailLevelLabel,
   exclusionSchema,
   matchAudience,
   needToKnowRowSchema,
+  processLabel,
+  processShort,
   resolveNeedToKnow,
+  roleLabel,
   stageLabel,
   type Agency,
   type Channel,
@@ -72,7 +73,7 @@ function isHardExclusion(e: Exclusion): boolean {
 }
 
 function columnLabel(t: Translator, a: AudienceAgency): string {
-  return a === 'referrer' ? t('admin.needToKnow.matrix.referrerColumn') : AGENCY_SHORT[a];
+  return a === 'referrer' ? t('admin.needToKnow.matrix.referrerColumn') : agencyShort(a);
 }
 
 function issueList(t: Translator, issues: Array<{ path: PropertyKey[]; message: string }>): string[] {
@@ -135,7 +136,7 @@ function AudienceDialog({ process, target, canEdit, onClose, onSave, onRemove }:
   const roleOptions =
     target.agency === 'referrer'
       ? [{ value: 'any', label: t('admin.needToKnow.audience.anyRoleReferrer') }]
-      : [{ value: 'any', label: t('admin.needToKnow.audience.anyRoleAt', { agency: AGENCY_SHORT[target.agency] }) }, ...ROLES.filter((r) => ROLE_DEFINITIONS[r].agency === target.agency).map((r) => ({ value: r, label: ROLE_DEFINITIONS[r].label }))];
+      : [{ value: 'any', label: t('admin.needToKnow.audience.anyRoleAt', { agency: agencyShort(target.agency) }) }, ...ROLES.filter((r) => ROLE_DEFINITIONS[r].agency === target.agency).map((r) => ({ value: r, label: roleLabel(r) }))];
 
   function submit(values: AudienceValues) {
     const fields = values.fields.split(',').map((s) => s.trim()).filter(Boolean);
@@ -196,9 +197,9 @@ function AudienceDialog({ process, target, canEdit, onClose, onSave, onRemove }:
       <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
         <dl className={styles.facts}>
           <dt>{t('admin.needToKnow.audience.processStage')}</dt>
-          <dd>{t('admin.needToKnow.audience.processStageValue', { process: PROCESS_LABELS[process], stage: stageLabel(process, target.stage) })}</dd>
+          <dd>{t('admin.needToKnow.audience.processStageValue', { process: processLabel(process), stage: stageLabel(process, target.stage) })}</dd>
           <dt>{t('admin.needToKnow.audience.agency')}</dt>
-          <dd>{target.agency === 'referrer' ? t('admin.needToKnow.audience.referrerAgency') : AGENCY_SHORT[target.agency]}</dd>
+          <dd>{target.agency === 'referrer' ? t('admin.needToKnow.audience.referrerAgency') : agencyShort(target.agency)}</dd>
           {row ? (
             <>
               <dt>{t('admin.needToKnow.audience.rowId')}</dt>
@@ -209,7 +210,7 @@ function AudienceDialog({ process, target, canEdit, onClose, onSave, onRemove }:
         <TextField label={t('admin.needToKnow.audience.label')} required disabled={!canEdit} maxLength={80} {...form.register('label')} error={errors.label?.message} hint={t('admin.needToKnow.audience.labelHint')} />
         <div className={styles.dialogGrid}>
           <SelectField label={t('admin.needToKnow.audience.role')} required disabled={!canEdit} {...form.register('role')} options={roleOptions} error={errors.role?.message} />
-          <SelectField label={t('admin.needToKnow.audience.detailLevel')} required disabled={!canEdit} {...form.register('detailLevel')} options={DETAIL_LEVELS.map((d) => ({ value: d, label: DETAIL_LEVEL_LABELS[d] }))} error={errors.detailLevel?.message} />
+          <SelectField label={t('admin.needToKnow.audience.detailLevel')} required disabled={!canEdit} {...form.register('detailLevel')} options={DETAIL_LEVELS.map((d) => ({ value: d, label: detailLevelLabel(d) }))} error={errors.detailLevel?.message} />
         </div>
         <TextField label={t('admin.needToKnow.audience.fields')} required={detailLevel === 'fields'} disabled={!canEdit} maxLength={400} {...form.register('fields')} error={errors.fields?.message} hint={detailLevel === 'fields' ? t('admin.needToKnow.audience.fieldsHintOnly') : t('admin.needToKnow.audience.fieldsHintOptional')} />
         <div className={styles.dialogGrid}>
@@ -277,7 +278,7 @@ function ExclusionDialog({ process, exclusion, existingIds, canEdit, onClose, on
     <Dialog
       open
       onClose={onClose}
-      title={exclusion ? t('admin.needToKnow.exclusion.editTitle', { label: exclusion.label }) : t('admin.needToKnow.exclusion.addTitle', { process: PROCESS_SHORT[process] })}
+      title={exclusion ? t('admin.needToKnow.exclusion.editTitle', { label: exclusion.label }) : t('admin.needToKnow.exclusion.addTitle', { process: processShort(process) })}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>
@@ -339,8 +340,8 @@ function Preview({ process, rows, exclusions }: { process: ProcessType; rows: Ne
     <div className={styles.preview}>
       <div className={styles.previewControls}>
         <SelectField label={t('admin.needToKnow.preview.stage')} value={stage} onChange={(e) => setStage(e.target.value as Stage)} options={stages.map((s) => ({ value: s, label: stageLabel(process, s) }))} />
-        <SelectField label={t('admin.needToKnow.preview.agency')} value={agency} onChange={(e) => changeAgency(e.target.value as Agency)} options={AGENCIES.map((a) => ({ value: a, label: AGENCY_SHORT[a] }))} />
-        <SelectField label={t('admin.needToKnow.preview.role')} value={role} onChange={(e) => setRole(e.target.value as RoleId)} options={roles.map((r) => ({ value: r, label: ROLE_DEFINITIONS[r].label }))} />
+        <SelectField label={t('admin.needToKnow.preview.agency')} value={agency} onChange={(e) => changeAgency(e.target.value as Agency)} options={AGENCIES.map((a) => ({ value: a, label: agencyShort(a) }))} />
+        <SelectField label={t('admin.needToKnow.preview.role')} value={role} onChange={(e) => setRole(e.target.value as RoleId)} options={roles.map((r) => ({ value: r, label: roleLabel(r) }))} />
         <CheckboxField label={t('admin.needToKnow.preview.referral')} checked={isReferrer} onChange={(e) => setIsReferrer(e.target.checked)} hint={t('admin.needToKnow.preview.referralHint')} />
         {conditions.length > 0 ? (
           <fieldset className={styles.conditions}>
@@ -354,7 +355,7 @@ function Preview({ process, rows, exclusions }: { process: ProcessType; rows: Ne
       <div className={styles.previewResult} aria-live="polite">
         <div className={styles.previewLevel}>
           {match ? <Eye size={16} aria-hidden="true" /> : <Lock size={16} aria-hidden="true" />}
-          {t('admin.needToKnow.preview.level', { role: ROLE_DEFINITIONS[role].label, agency: AGENCY_SHORT[agency], stage: stageLabel(process, stage), level: match ? DETAIL_LEVEL_LABELS[match.detailLevel] : t('admin.needToKnow.preview.nothing') })}
+          {t('admin.needToKnow.preview.level', { role: roleLabel(role), agency: agencyShort(agency), stage: stageLabel(process, stage), level: match ? detailLevelLabel(match.detailLevel) : t('admin.needToKnow.preview.nothing') })}
         </div>
         <dl>
           <div className={styles.previewRow}>
@@ -433,7 +434,7 @@ export function NeedToKnow() {
     touch();
   }
   function commit() {
-    const result = save({ ...config, needToKnow: draft.rows, exclusions: draft.exclusions }, 'need-to-know', t('admin.needToKnow.audit', { process: PROCESS_SHORT[process], count: changes }));
+    const result = save({ ...config, needToKnow: draft.rows, exclusions: draft.exclusions }, 'need-to-know', t('admin.needToKnow.audit', { process: processShort(process), count: changes }));
     setSaveErrors(result.errors);
     if (result.ok) {
       setDirty(false);
@@ -454,7 +455,7 @@ export function NeedToKnow() {
     <>
       <SectionHead title={sectionLabel('need-to-know')} lede={t('admin.needToKnow.lede')} />
       <div className={styles.tabs}>
-        <Tabs items={PROCESS_TYPES.map((p) => ({ id: p, label: PROCESS_SHORT[p], count: draft.rows.filter((r) => r.process === p).length }))} value={process} onChange={setProcess} label={t('admin.needToKnow.tabsLabel')} idPrefix="ntk" />
+        <Tabs items={PROCESS_TYPES.map((p) => ({ id: p, label: processShort(p), count: draft.rows.filter((r) => r.process === p).length }))} value={process} onChange={setProcess} label={t('admin.needToKnow.tabsLabel')} idPrefix="ntk" />
       </div>
       <TabPanel id={process} active idPrefix="ntk">
         <div className={styles.saveBar} data-state={dirty ? 'dirty' : 'clean'}>
@@ -479,9 +480,9 @@ export function NeedToKnow() {
         ) : null}
         <div className="stack">
           <Sheet>
-            <SheetHead title={t('admin.needToKnow.matrix.title', { process: PROCESS_LABELS[process] })} meta={t('admin.needToKnow.matrix.meta')} divided />
+            <SheetHead title={t('admin.needToKnow.matrix.title', { process: processLabel(process) })} meta={t('admin.needToKnow.matrix.meta')} divided />
             <SheetBody flush>
-              <TableWrap label={t('admin.needToKnow.matrix.tableLabel', { process: PROCESS_SHORT[process] })} className={styles.wrap}>
+              <TableWrap label={t('admin.needToKnow.matrix.tableLabel', { process: processShort(process) })} className={styles.wrap}>
                 <table className={styles.matrix}>
                   <thead>
                     <tr>
@@ -502,7 +503,7 @@ export function NeedToKnow() {
                             <span className={styles.agencyGlyph} style={{ color: `var(--color-agency-${a})` }}>
                               <Glyph size={16} variant="outline" />
                             </span>
-                            <span className={styles.agencyName}>{AGENCY_SHORT[a]}</span>
+                            <span className={styles.agencyName}>{agencyShort(a)}</span>
                           </th>
                         );
                       })}
@@ -544,7 +545,7 @@ export function NeedToKnow() {
                 {DETAIL_LEVELS.map((d) => (
                   <span key={d} className={styles.chip} data-level={d} data-static="true">
                     {detailWord(d)}
-                    <span className={styles.legendLabel}>{t('admin.needToKnow.matrix.legendItem', { label: DETAIL_LEVEL_LABELS[d].toLowerCase() })}</span>
+                    <span className={styles.legendLabel}>{t('admin.needToKnow.matrix.legendItem', { label: detailLevelLabel(d).toLowerCase() })}</span>
                   </span>
                 ))}
                 <span>{t('admin.needToKnow.matrix.legendNote')}</span>
@@ -554,7 +555,7 @@ export function NeedToKnow() {
 
           <Sheet>
             <SheetHead
-              title={t('admin.needToKnow.exclusions.title', { process: PROCESS_LABELS[process] })}
+              title={t('admin.needToKnow.exclusions.title', { process: processLabel(process) })}
               meta={t('admin.needToKnow.exclusions.meta')}
               actions={
                 canEdit ? (
@@ -571,7 +572,7 @@ export function NeedToKnow() {
                   <EmptyState title={t('admin.needToKnow.exclusions.emptyTitle')} text={t('admin.needToKnow.exclusions.emptyText')} />
                 </div>
               ) : (
-                <TableWrap label={t('admin.needToKnow.exclusions.tableLabel', { process: PROCESS_SHORT[process] })} className={styles.wrap}>
+                <TableWrap label={t('admin.needToKnow.exclusions.tableLabel', { process: processShort(process) })} className={styles.wrap}>
                   <Table>
                     <thead>
                       <tr>

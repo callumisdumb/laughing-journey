@@ -1,6 +1,6 @@
 'use client';
 
-import { ROLE_DEFINITIONS } from '@mas/domain';
+import { agencyLabel, roleLabel } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AGENCY_GLYPHS, Badge, IconButton, WordmarkGlyph } from '@mas/ui';
 import { BarChart3, CalendarDays, ClipboardList, Home, ListChecks, PanelLeftClose, PanelLeftOpen, Plug, Send, Settings2, Users } from 'lucide-react';
@@ -60,15 +60,15 @@ export function Rail() {
       </div>
       <div className={styles.foot}>
         {user && AgencyGlyph ? (
-          <div className={styles.persona} title={collapsed ? t('nav.rail.personaTitle', { name: userName(user), role: ROLE_DEFINITIONS[user.roleId].label }) : undefined}>
+          <div className={styles.persona} title={collapsed ? t('nav.rail.personaTitle', { name: userName(user), role: roleLabel(user.roleId) }) : undefined}>
             <span className={styles.icon} style={{ color: `var(--color-agency-${user.agency})` }}>
-              <AgencyGlyph size={24} variant="filled" title={collapsed ? user.agency : undefined} />
+              <AgencyGlyph size={24} variant="filled" title={collapsed ? agencyLabel(user.agency) : undefined} />
             </span>
             <span className={styles.personaText}>
               <span className={styles.personaName}>
                 {user.givenName} {user.familyName}
               </span>
-              <span className={styles.personaRole}>{ROLE_DEFINITIONS[user.roleId].label}</span>
+              <span className={styles.personaRole}>{roleLabel(user.roleId)}</span>
             </span>
           </div>
         ) : null}

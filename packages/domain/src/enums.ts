@@ -3,6 +3,16 @@
  * schemas and TypeScript types derive from the same list.
  */
 
+import { tKey } from '@mas/messages';
+
+/**
+ * Catalogue key segment for an enum value or id: hyphens and dots become camelCase joins
+ * (`case-conference` to `caseConference`, `cp.cppm.initial` to `cpCppmInitial`).
+ */
+export function keySegment(value: string | number): string {
+  return String(value).replace(/[.-]+([a-z0-9])/gi, (_, c: string) => c.toUpperCase());
+}
+
 export const AGENCIES = [
   'police',
   'social-work',
@@ -18,52 +28,28 @@ export const AGENCIES = [
 ] as const;
 export type Agency = (typeof AGENCIES)[number];
 
-export const AGENCY_LABELS: Record<Agency, string> = {
-  police: 'Police Scotland',
-  'social-work': 'Social work',
-  health: 'Health',
-  education: 'Education',
-  housing: 'Housing',
-  'third-sector': 'Third sector',
-  sps: 'Scottish Prison Service',
-  scra: 'SCRA',
-  court: 'Court',
-  regulator: 'Regulator',
-  'fire-rescue': 'Fire and rescue',
-};
+export function agencyLabel(agency: Agency): string {
+  return tKey(`domain.agencies.${keySegment(agency)}.label`);
+}
 
-export const AGENCY_SHORT: Record<Agency, string> = {
-  police: 'Police',
-  'social-work': 'Social work',
-  health: 'Health',
-  education: 'Education',
-  housing: 'Housing',
-  'third-sector': 'Third sector',
-  sps: 'SPS',
-  scra: 'SCRA',
-  court: 'Court',
-  regulator: 'Regulator',
-  'fire-rescue': 'Fire and rescue',
-};
+
+export function agencyShort(agency: Agency): string {
+  return tKey(`domain.agencies.${keySegment(agency)}.short`);
+}
+
 
 export const PROCESS_TYPES = ['asp', 'cp', 'marac', 'mappa', 'awi'] as const;
 export type ProcessType = (typeof PROCESS_TYPES)[number];
 
-export const PROCESS_LABELS: Record<ProcessType, string> = {
-  asp: 'Adult Support and Protection',
-  cp: 'Child protection',
-  marac: 'MARAC',
-  mappa: 'MAPPA',
-  awi: 'Adults with Incapacity',
-};
+export function processLabel(process: ProcessType): string {
+  return tKey(`domain.processes.${keySegment(process)}.label`);
+}
 
-export const PROCESS_SHORT: Record<ProcessType, string> = {
-  asp: 'ASP',
-  cp: 'CP',
-  marac: 'MARAC',
-  mappa: 'MAPPA',
-  awi: 'AWI',
-};
+
+export function processShort(process: ProcessType): string {
+  return tKey(`domain.processes.${keySegment(process)}.short`);
+}
+
 
 export const ASP_STAGES = [
   'concern',
@@ -133,36 +119,50 @@ export type Stage = (typeof ALL_STAGES)[number];
 export const DETAIL_LEVELS = ['presence', 'summary', 'full', 'fields'] as const;
 export type DetailLevel = (typeof DETAIL_LEVELS)[number];
 
-export const DETAIL_LEVEL_LABELS: Record<DetailLevel, string> = {
-  presence: 'Presence only',
-  summary: 'Summary',
-  full: 'Full record',
-  fields: 'Named fields only',
-};
+export function detailLevelLabel(level: DetailLevel): string {
+  return tKey(`domain.detailLevels.${keySegment(level)}`);
+}
+
 
 export const VISIBILITIES = ['agency-only', 'integrated', 'restricted'] as const;
 export type Visibility = (typeof VISIBILITIES)[number];
 
+export function visibilityLabel(visibility: Visibility): string {
+  return tKey(`domain.visibilities.${keySegment(visibility)}`);
+}
+
 export const SIGNIFICANCES = ['low', 'moderate', 'high'] as const;
 export type Significance = (typeof SIGNIFICANCES)[number];
+
+export function significanceLabel(significance: Significance): string {
+  return tKey(`domain.significances.${keySegment(significance)}`);
+}
 
 export const RISK_BANDS = ['critical', 'high', 'medium', 'low', 'unknown'] as const;
 export type RiskBand = (typeof RISK_BANDS)[number];
 
+/** The word shown beside the icon and colour of a risk band; risk is never colour alone. */
+export function riskBandLabel(band: RiskBand): string {
+  return tKey(`domain.riskBands.${keySegment(band)}`);
+}
+
 export const CLASSIFICATIONS = ['official', 'official-sensitive', 'restricted'] as const;
 export type Classification = (typeof CLASSIFICATIONS)[number];
 
-export const CLASSIFICATION_LABELS: Record<Classification, string> = {
-  official: 'OFFICIAL',
-  'official-sensitive': 'OFFICIAL-SENSITIVE',
-  restricted: 'OFFICIAL-SENSITIVE: RESTRICTED',
-};
+export function classificationLabel(level: Classification): string {
+  return tKey(`domain.classifications.${keySegment(level)}`);
+}
+
 
 export const LIFE_STAGES = ['unborn', 'child', 'adult'] as const;
 export type LifeStage = (typeof LIFE_STAGES)[number];
 
 export const CHANNELS = ['in-app', 'secure-email-digest', 'connector-push'] as const;
 export type Channel = (typeof CHANNELS)[number];
+
+export function channelLabel(channel: Channel): string {
+  return tKey(`domain.channels.${keySegment(channel)}`);
+}
 
 export const CONNECTOR_IDS = [
   'emis-web',
@@ -259,22 +259,10 @@ export const EVENT_FAMILIES = [
 ] as const;
 export type EventFamily = (typeof EVENT_FAMILIES)[number];
 
-export const EVENT_FAMILY_LABELS: Record<EventFamily, string> = {
-  family: 'Birth and family',
-  move: 'Address move',
-  household: 'Household change',
-  health: 'Health',
-  education: 'Education',
-  police: 'Police',
-  'social-work': 'Social work',
-  care: 'Care and support',
-  legal: 'Legal',
-  process: 'Protection process',
-  voice: 'Views and voice',
-  disclosure: 'Disclosure',
-  sharing: 'Information shared',
-  other: 'Other',
-};
+export function eventFamilyLabel(family: EventFamily): string {
+  return tKey(`domain.eventFamilies.${keySegment(family)}`);
+}
+
 
 export function eventFamily(type: EventType): EventFamily {
   const head = type.split('.')[0] as EventFamily;
@@ -298,24 +286,17 @@ export const MEETING_TYPES = [
 ] as const;
 export type MeetingType = (typeof MEETING_TYPES)[number];
 
-export const MEETING_TYPE_LABELS: Record<MeetingType, string> = {
-  ird: 'Inter-agency Referral Discussion',
-  cppm: 'Child Protection Planning Meeting',
-  'cppm-review': 'Review Child Protection Planning Meeting',
-  'pre-birth-cppm': 'Pre-birth Child Protection Planning Meeting',
-  'core-group': 'Core group',
-  'asp-inter-agency-discussion': 'ASP inter-agency discussion',
-  'asp-case-conference': 'ASP case conference',
-  'asp-review-conference': 'ASP review case conference',
-  'lsi-planning': 'Large Scale Investigation planning meeting',
-  marac: 'MARAC',
-  'mappa-level2': 'MAPPA Level 2 meeting',
-  'mappa-level3': 'MAPPP (Level 3)',
-  'awi-mdt': 'AWI multi-disciplinary discussion',
-};
+export function meetingTypeLabel(type: MeetingType): string {
+  return tKey(`domain.meetingTypes.${keySegment(type)}`);
+}
+
 
 export const ACTION_STATUSES = ['open', 'in-progress', 'complete', 'cancelled'] as const;
 export type ActionStatus = (typeof ACTION_STATUSES)[number];
+
+export function actionStatusLabel(status: ActionStatus): string {
+  return tKey(`domain.actionStatuses.${keySegment(status)}`);
+}
 
 export const PLAN_TYPES = [
   'interim-safety',
@@ -327,14 +308,10 @@ export const PLAN_TYPES = [
 ] as const;
 export type PlanType = (typeof PLAN_TYPES)[number];
 
-export const PLAN_TYPE_LABELS: Record<PlanType, string> = {
-  'interim-safety': 'Interim safety plan',
-  'childs-plan': "Child's plan",
-  'adult-protection': 'Adult Protection Plan',
-  'adult-support': 'Support plan',
-  'marac-action': 'MARAC action plan',
-  'mappa-rmp': 'Risk Management Plan',
-};
+export function planTypeLabel(type: PlanType): string {
+  return tKey(`domain.planTypes.${keySegment(type)}`);
+}
+
 
 export const RISK_TOOLS = [
   'dash',
@@ -349,17 +326,10 @@ export const RISK_TOOLS = [
 ] as const;
 export type RiskTool = (typeof RISK_TOOLS)[number];
 
-export const RISK_TOOL_LABELS: Record<RiskTool, string> = {
-  dash: 'SafeLives DASH risk checklist',
-  daq: 'Police Scotland Domestic Abuse Questions (DAQ)',
-  'three-point-test': 'ASP three-point test',
-  rm2000: 'Risk Matrix 2000',
-  sa07: 'Stable and Acute 2007',
-  lscmi: 'LS/CMI',
-  capacity: 'Capacity assessment',
-  'mappa-level': 'MAPPA level decision',
-  other: 'Other tool',
-};
+export function riskToolLabel(tool: RiskTool): string {
+  return tKey(`domain.riskTools.${keySegment(tool)}`);
+}
+
 
 export const VIEWS_KINDS = [
   'adult-views',
@@ -370,13 +340,10 @@ export const VIEWS_KINDS = [
 ] as const;
 export type ViewsKind = (typeof VIEWS_KINDS)[number];
 
-export const VIEWS_KIND_LABELS: Record<ViewsKind, string> = {
-  'adult-views': "Adult's views",
-  'child-voice': "Child's voice",
-  'victim-wishes': "Victim's wishes (via IDAA)",
-  'family-views': "Family's views",
-  'carer-views': "Carer's views",
-};
+export function viewsKindLabel(kind: ViewsKind): string {
+  return tKey(`domain.viewsKinds.${keySegment(kind)}`);
+}
+
 
 export const CONSENT_STATUSES = [
   'not-required',
@@ -386,12 +353,10 @@ export const CONSENT_STATUSES = [
 ] as const;
 export type ConsentStatus = (typeof CONSENT_STATUSES)[number];
 
-export const CONSENT_STATUS_LABELS: Record<ConsentStatus, string> = {
-  'not-required': 'Consent not required',
-  'sought-and-given': 'Consent sought and given',
-  'sought-and-refused-overridden': 'Consent sought and refused, overridden with reason',
-  'not-sought-risk': 'Consent not sought because it would increase risk',
-};
+export function consentStatusLabel(status: ConsentStatus): string {
+  return tKey(`domain.consentStatuses.${keySegment(status)}`);
+}
+
 
 export const AUDIT_ACTS = [
   'read',
@@ -475,7 +440,6 @@ export type RoleId = (typeof ROLES)[number];
 
 export interface RoleDefinition {
   id: RoleId;
-  label: string;
   agency: Agency;
   /** Organisation kind the role belongs to. */
   organisation: OrganisationKind;
@@ -497,46 +461,53 @@ export const ORGANISATION_KINDS = [
 ] as const;
 export type OrganisationKind = (typeof ORGANISATION_KINDS)[number];
 
-export const ROLE_DEFINITIONS: Record<RoleId, RoleDefinition> = {
-  'social-worker-adults': { id: 'social-worker-adults', label: 'Social worker (adults)', agency: 'social-work', organisation: 'hscp' },
-  'social-worker-children': { id: 'social-worker-children', label: 'Social worker (children and families)', agency: 'social-work', organisation: 'council' },
-  'team-leader': { id: 'team-leader', label: 'Team leader', agency: 'social-work', organisation: 'council' },
-  'council-officer-asp': { id: 'council-officer-asp', label: 'Council officer (ASP)', agency: 'social-work', organisation: 'hscp' },
-  mho: { id: 'mho', label: 'Mental Health Officer', agency: 'social-work', organisation: 'hscp' },
-  'justice-social-worker': { id: 'justice-social-worker', label: 'Justice social worker', agency: 'social-work', organisation: 'council' },
-  'mappa-coordinator': { id: 'mappa-coordinator', label: 'MAPPA Coordinator', agency: 'social-work', organisation: 'council' },
-  'marac-coordinator': { id: 'marac-coordinator', label: 'MARAC Coordinator', agency: 'social-work', organisation: 'council' },
-  chair: { id: 'chair', label: 'Independent reviewing chair', agency: 'social-work', organisation: 'council' },
-  'minute-taker': { id: 'minute-taker', label: 'Minute taker', agency: 'social-work', organisation: 'council' },
-  'housing-officer': { id: 'housing-officer', label: 'Housing officer', agency: 'housing', organisation: 'council' },
-  'education-cp-lead': { id: 'education-cp-lead', label: 'Head teacher (child protection lead)', agency: 'education', organisation: 'council' },
-  cswo: { id: 'cswo', label: 'Chief Social Work Officer', agency: 'social-work', organisation: 'council', oversight: 'sign-off' },
-  'detective-sergeant-ppu': { id: 'detective-sergeant-ppu', label: 'Detective sergeant, Public Protection Unit', agency: 'police', organisation: 'police' },
-  'domestic-abuse-officer': { id: 'domestic-abuse-officer', label: 'Domestic abuse unit officer', agency: 'police', organisation: 'police' },
-  'offender-management': { id: 'offender-management', label: 'Offender management (sex offender liaison)', agency: 'police', organisation: 'police' },
-  'concern-hub-officer': { id: 'concern-hub-officer', label: 'Concern hub officer', agency: 'police', organisation: 'police' },
-  'cp-nurse-adviser': { id: 'cp-nurse-adviser', label: 'Child protection nurse adviser', agency: 'health', organisation: 'health-board' },
-  gp: { id: 'gp', label: 'GP', agency: 'health', organisation: 'health-board' },
-  'health-visitor': { id: 'health-visitor', label: 'Health visitor', agency: 'health', organisation: 'health-board' },
-  midwife: { id: 'midwife', label: 'Midwife', agency: 'health', organisation: 'health-board' },
-  cmhn: { id: 'cmhn', label: 'Community mental health nurse', agency: 'health', organisation: 'health-board' },
-  'discharge-coordinator': { id: 'discharge-coordinator', label: 'Hospital discharge coordinator', agency: 'health', organisation: 'health-board' },
-  'caldicott-guardian': { id: 'caldicott-guardian', label: 'Caldicott guardian', agency: 'health', organisation: 'health-board', oversight: 'audit' },
-  idaa: { id: 'idaa', label: 'Independent Domestic Abuse Advocate', agency: 'third-sector', organisation: 'third-sector' },
-  'womens-aid-worker': { id: 'womens-aid-worker', label: "Women's Aid worker", agency: 'third-sector', organisation: 'third-sector' },
-  'independent-advocate': { id: 'independent-advocate', label: 'Independent advocate', agency: 'third-sector', organisation: 'third-sector' },
-  'prison-social-worker': { id: 'prison-social-worker', label: 'Prison-based social worker', agency: 'sps', organisation: 'sps' },
-  'apc-lead-officer': { id: 'apc-lead-officer', label: 'Adult Protection Committee lead officer', agency: 'social-work', organisation: 'council', oversight: 'read-only' },
-  'cpc-lead-officer': { id: 'cpc-lead-officer', label: 'Child Protection Committee lead officer', agency: 'social-work', organisation: 'council', oversight: 'read-only' },
-  inspector: { id: 'inspector', label: 'Inspector', agency: 'regulator', organisation: 'regulator', oversight: 'redacted' },
-  'system-administrator': { id: 'system-administrator', label: 'System administrator', agency: 'social-work', organisation: 'council', oversight: 'admin' },
-  'care-inspectorate-officer': { id: 'care-inspectorate-officer', label: 'Care Inspectorate officer', agency: 'regulator', organisation: 'regulator' },
-  'opg-officer': { id: 'opg-officer', label: 'Office of the Public Guardian officer', agency: 'regulator', organisation: 'regulator' },
-  'mwc-officer': { id: 'mwc-officer', label: 'Mental Welfare Commission officer', agency: 'regulator', organisation: 'regulator' },
-  reporter: { id: 'reporter', label: "Children's Reporter", agency: 'scra', organisation: 'scra' },
-  'fire-safety-officer': { id: 'fire-safety-officer', label: 'Community fire safety officer', agency: 'fire-rescue', organisation: 'fire-rescue' },
-  'procurator-fiscal': { id: 'procurator-fiscal', label: 'Procurator fiscal', agency: 'court', organisation: 'court' },
+const ROLE_DATA: Record<RoleId, RoleDefinition> = {
+  'social-worker-adults': { id: 'social-worker-adults', agency: 'social-work', organisation: 'hscp' },
+  'social-worker-children': { id: 'social-worker-children', agency: 'social-work', organisation: 'council' },
+  'team-leader': { id: 'team-leader', agency: 'social-work', organisation: 'council' },
+  'council-officer-asp': { id: 'council-officer-asp', agency: 'social-work', organisation: 'hscp' },
+  mho: { id: 'mho', agency: 'social-work', organisation: 'hscp' },
+  'justice-social-worker': { id: 'justice-social-worker', agency: 'social-work', organisation: 'council' },
+  'mappa-coordinator': { id: 'mappa-coordinator', agency: 'social-work', organisation: 'council' },
+  'marac-coordinator': { id: 'marac-coordinator', agency: 'social-work', organisation: 'council' },
+  chair: { id: 'chair', agency: 'social-work', organisation: 'council' },
+  'minute-taker': { id: 'minute-taker', agency: 'social-work', organisation: 'council' },
+  'housing-officer': { id: 'housing-officer', agency: 'housing', organisation: 'council' },
+  'education-cp-lead': { id: 'education-cp-lead', agency: 'education', organisation: 'council' },
+  cswo: { id: 'cswo', agency: 'social-work', organisation: 'council', oversight: 'sign-off' },
+  'detective-sergeant-ppu': { id: 'detective-sergeant-ppu', agency: 'police', organisation: 'police' },
+  'domestic-abuse-officer': { id: 'domestic-abuse-officer', agency: 'police', organisation: 'police' },
+  'offender-management': { id: 'offender-management', agency: 'police', organisation: 'police' },
+  'concern-hub-officer': { id: 'concern-hub-officer', agency: 'police', organisation: 'police' },
+  'cp-nurse-adviser': { id: 'cp-nurse-adviser', agency: 'health', organisation: 'health-board' },
+  gp: { id: 'gp', agency: 'health', organisation: 'health-board' },
+  'health-visitor': { id: 'health-visitor', agency: 'health', organisation: 'health-board' },
+  midwife: { id: 'midwife', agency: 'health', organisation: 'health-board' },
+  cmhn: { id: 'cmhn', agency: 'health', organisation: 'health-board' },
+  'discharge-coordinator': { id: 'discharge-coordinator', agency: 'health', organisation: 'health-board' },
+  'caldicott-guardian': { id: 'caldicott-guardian', agency: 'health', organisation: 'health-board', oversight: 'audit' },
+  idaa: { id: 'idaa', agency: 'third-sector', organisation: 'third-sector' },
+  'womens-aid-worker': { id: 'womens-aid-worker', agency: 'third-sector', organisation: 'third-sector' },
+  'independent-advocate': { id: 'independent-advocate', agency: 'third-sector', organisation: 'third-sector' },
+  'prison-social-worker': { id: 'prison-social-worker', agency: 'sps', organisation: 'sps' },
+  'apc-lead-officer': { id: 'apc-lead-officer', agency: 'social-work', organisation: 'council', oversight: 'read-only' },
+  'cpc-lead-officer': { id: 'cpc-lead-officer', agency: 'social-work', organisation: 'council', oversight: 'read-only' },
+  inspector: { id: 'inspector', agency: 'regulator', organisation: 'regulator', oversight: 'redacted' },
+  'system-administrator': { id: 'system-administrator', agency: 'social-work', organisation: 'council', oversight: 'admin' },
+  'care-inspectorate-officer': { id: 'care-inspectorate-officer', agency: 'regulator', organisation: 'regulator' },
+  'opg-officer': { id: 'opg-officer', agency: 'regulator', organisation: 'regulator' },
+  'mwc-officer': { id: 'mwc-officer', agency: 'regulator', organisation: 'regulator' },
+  reporter: { id: 'reporter', agency: 'scra', organisation: 'scra' },
+  'fire-safety-officer': { id: 'fire-safety-officer', agency: 'fire-rescue', organisation: 'fire-rescue' },
+  'procurator-fiscal': { id: 'procurator-fiscal', agency: 'court', organisation: 'court' },
 };
+
+export function roleLabel(id: RoleId): string {
+  return tKey(`domain.roles.${keySegment(id)}.label`);
+}
+
+/** Role definitions by id: agency, organisation and oversight. The role's name is roleLabel(id). */
+export const ROLE_DEFINITIONS: Record<RoleId, RoleDefinition> = ROLE_DATA;
 
 export const HARM_TYPES = [
   'physical',
@@ -549,15 +520,10 @@ export const HARM_TYPES = [
 ] as const;
 export type HarmType = (typeof HARM_TYPES)[number];
 
-export const HARM_TYPE_LABELS: Record<HarmType, string> = {
-  physical: 'Physical harm',
-  sexual: 'Sexual harm',
-  psychological: 'Psychological harm',
-  financial: 'Financial harm',
-  neglect: 'Neglect',
-  'self-harm': 'Self-harm',
-  'self-neglect': 'Self-neglect',
-};
+export function harmTypeLabel(type: HarmType): string {
+  return tKey(`domain.harmTypes.${keySegment(type)}`);
+}
+
 
 export const CP_REGISTER_CATEGORIES = [
   'physical-abuse',
@@ -573,31 +539,26 @@ export const CP_REGISTER_CATEGORIES = [
 ] as const;
 export type CpRegisterCategory = (typeof CP_REGISTER_CATEGORIES)[number];
 
-export const CP_REGISTER_CATEGORY_LABELS: Record<CpRegisterCategory, string> = {
-  'physical-abuse': 'Physical abuse',
-  'emotional-abuse': 'Emotional abuse',
-  'sexual-abuse': 'Sexual abuse',
-  neglect: 'Neglect',
-  'domestic-abuse': 'Domestic abuse',
-  'parental-substance-use': 'Parental substance use',
-  'parental-mental-health': 'Parental mental health',
-  'non-engaging-family': 'Non-engaging family',
-  'child-placing-self-at-risk': 'Child placing themselves at risk',
-  other: 'Other concern',
-};
+export function cpRegisterCategoryLabel(category: CpRegisterCategory): string {
+  return tKey(`domain.cpRegisterCategories.${keySegment(category)}`);
+}
+
 
 export const MAPPA_CATEGORIES = [1, 2, 3] as const;
 export const MAPPA_LEVELS = [1, 2, 3] as const;
-export const MAPPA_CATEGORY_LABELS: Record<1 | 2 | 3, string> = {
-  1: 'Category 1: registered sex offender',
-  2: 'Category 2: restricted patient',
-  3: 'Category 3: other risk of serious harm offender',
-};
-export const MAPPA_LEVEL_LABELS: Record<1 | 2 | 3, string> = {
-  1: 'Level 1: routine single-agency management',
-  2: 'Level 2: active multi-agency management',
-  3: 'Level 3: MAPPP, the critical few',
-};
+export type MappaCategory = (typeof MAPPA_CATEGORIES)[number];
+export type MappaLevel = (typeof MAPPA_LEVELS)[number];
+
+export function mappaCategoryLabel(category: MappaCategory): string {
+  const segment = `category${category}`;
+  return tKey(`domain.mappa.categories.${segment}`);
+}
+
+export function mappaLevelLabel(level: MappaLevel): string {
+  const segment = `level${level}`;
+  return tKey(`domain.mappa.levels.${segment}`);
+}
+
 
 /** Who an exclusion names. Party keys are resolved against the case-role register on each process. */
 export const EXCLUSION_PARTIES = [
@@ -611,16 +572,10 @@ export const EXCLUSION_PARTIES = [
   'not-on-distribution',
 ] as const;
 export type ExclusionParty = (typeof EXCLUSION_PARTIES)[number];
-export const EXCLUSION_PARTY_LABELS: Record<ExclusionParty, string> = {
-  perpetrator: 'Perpetrator',
-  'perpetrator-associates': "Perpetrator's family or associates",
-  'alleged-perpetrator': 'Alleged perpetrator',
-  victim: 'Victim',
-  employer: 'Employer',
-  public: 'Public',
-  'parents-if-risk': 'Parents and carers where sharing increases risk',
-  'not-on-distribution': 'Not on the distribution list',
-};
+export function exclusionPartyLabel(party: ExclusionParty): string {
+  return tKey(`domain.exclusionParties.${keySegment(party)}`);
+}
+
 
 /** Where a case-role register entry came from. */
 export const CASE_PARTY_SOURCES = ['referral', 'relationship', 'manual'] as const;

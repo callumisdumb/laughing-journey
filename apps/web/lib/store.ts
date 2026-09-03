@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, ROLE_DEFINITIONS, demoNow, type AuditEntry, type Config, type Dataset, type User } from '@mas/domain';
+import { DEFAULT_CONFIG, demoNow, roleLabel, type AuditEntry, type Config, type Dataset, type User } from '@mas/domain';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
 import { create } from 'zustand';
@@ -179,7 +179,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       act: viaSwitch ? 'persona-switch' : 'sign-in',
       targetType: 'session',
       targetId: next.id,
-      targetLabel: viaSwitch && previous ? `Switched from ${previous.givenName} ${previous.familyName} (demo)` : `${ROLE_DEFINITIONS[next.roleId].label} signed in (mock SSO)`,
+      targetLabel: viaSwitch && previous ? `Switched from ${previous.givenName} ${previous.familyName} (demo)` : `${roleLabel(next.roleId)} signed in (mock SSO)`,
       restricted: false,
     };
     get().upsert('audit', entry);

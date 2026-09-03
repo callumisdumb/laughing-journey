@@ -1,6 +1,6 @@
 'use client';
 
-import { capacityAssessmentFormSchema, type AwiProcess, type CapacityAssessmentForm } from '@mas/domain';
+import { capacityAssessmentFormSchema, capacityOutcomeLabel, type AwiProcess, type CapacityAssessmentForm } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, DateField, Dialog, RadioGroup, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -46,8 +46,8 @@ export function CapacityAssessmentDialog({ open, onClose, process }: { open: boo
         ],
       },
     });
-    audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `Capacity assessment recorded: ${v.outcome}`, processId: process.id });
-    toast({ title: t('forms.capacity.recorded.title'), text: t('forms.capacity.recorded.text', { decision: v.decision, outcome: v.outcome.replace('-', ' ') }), tone: 'success' });
+    audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `Capacity assessment recorded: ${capacityOutcomeLabel(v.outcome)}`, processId: process.id });
+    toast({ title: t('forms.capacity.recorded.title'), text: t('forms.capacity.recorded.text', { decision: v.decision, outcome: capacityOutcomeLabel(v.outcome) }), tone: 'success' });
     onClose();
   }
 

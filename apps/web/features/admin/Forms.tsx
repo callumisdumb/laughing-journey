@@ -1,6 +1,6 @@
 'use client';
 
-import { PROCESS_LABELS, formatDate, type Config } from '@mas/domain';
+import { formatDate, processLabel, type Config } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { Button, DateField, Dialog, ProcessMark, Table, TableWrap, TextField } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -111,7 +111,7 @@ export function Forms() {
                 </td>
                 <td>
                   <ProcessMark type={f.process} />
-                  <span className="visually-hidden">{PROCESS_LABELS[f.process]}</span>
+                  <span className="visually-hidden">{processLabel(f.process)}</span>
                 </td>
                 <td className={styles.version}>{f.version}</td>
                 <td className={styles.date}>{formatDate(f.effectiveFrom)}</td>

@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, type Agency, type ChronologyAnalysis, type ChronologyEvent, type LensResult } from '@mas/domain';
+import { agencyShort, significanceLabel, type Agency, type ChronologyAnalysis, type ChronologyEvent, type LensResult } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AGENCY_GLYPHS, AgencyMark } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -232,7 +232,7 @@ export function LanesChart({ events, analyses, agencies, domain, lensResults, hi
             const Glyph = AGENCY_GLYPHS[p.event.agency];
             const r = RADIUS[p.event.significance];
             const style = { '--agency': `var(--color-agency-${p.event.agency})` } as CSSProperties;
-            const label = t('chronology.lanes.pointLabel', { title: p.event.title, date: p.event.occurredAt.slice(0, 10), agency: AGENCY_SHORT[p.event.agency], significance: p.event.significance });
+            const label = t('chronology.lanes.pointLabel', { title: p.event.title, date: p.event.occurredAt.slice(0, 10), agency: agencyShort(p.event.agency), significance: significanceLabel(p.event.significance) });
             const glyphTransform = `translate(${p.cx - 5}, ${p.cy - 5})`;
             return (
               <g

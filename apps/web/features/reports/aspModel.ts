@@ -2,7 +2,7 @@
  * ASP biennial report figures, computed from adult concern records, inquiries, investigations,
  * case conferences and orders in the record store for the chosen biennium.
  */
-import { AGENCIES, AGENCY_SHORT, HARM_TYPES, HARM_TYPE_LABELS, formatDateTime, localDateOf, type AspProcess, type Dataset } from '@mas/domain';
+import { AGENCIES, HARM_TYPES, agencyShort, formatDateTime, harmTypeLabel, localDateOf, type AspProcess, type Dataset } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
 import { agencyColourVar } from '@mas/ui';
 import { personById } from '@/lib/selectors';
@@ -46,10 +46,10 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     id: 'asp-referrals-chart',
     kind: 'stacked',
     title: t('reports.asp.chart.title'),
-    summary: t('reports.asp.chart.summary', { referrals: referrals.length, quarters: quarters.length, from: agencies.length > 0 ? t('reports.asp.chart.summaryFrom', { agencies: agencies.map((a) => AGENCY_SHORT[a]).join(', ') }) : '' }),
+    summary: t('reports.asp.chart.summary', { referrals: referrals.length, quarters: quarters.length, from: agencies.length > 0 ? t('reports.asp.chart.summaryFrom', { agencies: agencies.map((a) => agencyShort(a)).join(', ') }) : '' }),
     categories: quarters.map((q) => q.short),
     categoryLabels: quarters.map((q) => q.long),
-    series: agencies.map((a) => ({ key: a, label: AGENCY_SHORT[a], colour: agencyColourVar(a), agency: a })),
+    series: agencies.map((a) => ({ key: a, label: agencyShort(a), colour: agencyColourVar(a), agency: a })),
     values: agencies.map((a) => quarters.map((q) => referrals.filter((p) => p.detail.concern.sourceAgency === a && quarterKeyOf(p.detail.concern.receivedAt) === q.key).length)),
     xLabel: t('reports.asp.chart.xLabel'),
     yLabel: t('reports.asp.chart.yLabel'),
@@ -84,7 +84,7 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     id: 'asp-referrals-by-agency',
     columns: [t('reports.asp.columns.sourceAgency'), t('reports.asp.columns.referrals'), t('reports.asp.columns.adults')],
     numeric: [1, 2],
-    rows: agencies.map((a) => [AGENCY_SHORT[a], byAgency.get(a) ?? 0, new Set(referrals.filter((p) => p.detail.concern.sourceAgency === a).flatMap((p) => p.subjectIds)).size]),
+    rows: agencies.map((a) => [agencyShort(a), byAgency.get(a) ?? 0, new Set(referrals.filter((p) => p.detail.concern.sourceAgency === a).flatMap((p) => p.subjectIds)).size]),
     empty: t('reports.asp.tables.referralsEmpty'),
   };
 
@@ -133,7 +133,7 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     rows: lsis.flatMap((p) => {
       const l = p.detail.lsi;
       if (!l) return [];
-      return [[l.setting, l.provider, p.subjectIds.length, l.strands.filter((s) => s.status === 'open').length, l.agenciesInvolved.map((a) => AGENCY_SHORT[a]).join(', '), l.careInspectorateNotified ? t('common.answers.yes') : t('common.answers.no')]];
+      return [[l.setting, l.provider, p.subjectIds.length, l.strands.filter((s) => s.status === 'open').length, l.agenciesInvolved.map((a) => agencyShort(a)).join(', '), l.careInspectorateNotified ? t('common.answers.yes') : t('common.answers.no')]];
     }),
     empty: t('reports.asp.tables.lsiEmpty'),
   };
@@ -142,7 +142,7 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     id: 'asp-harm',
     columns: [t('reports.asp.columns.harmType'), t('reports.asp.columns.referrals')],
     numeric: [1],
-    rows: HARM_TYPES.map((h) => [HARM_TYPE_LABELS[h], harm.get(h) ?? 0]),
+    rows: HARM_TYPES.map((h) => [harmTypeLabel(h), harm.get(h) ?? 0]),
   };
 
   const locationTable: TableSpec = {

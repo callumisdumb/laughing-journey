@@ -666,8 +666,6 @@ Variant 5
 |---|---|---|
 | `id` | string | yes |
 | `process` | "asp" \| "cp" \| "marac" \| "mappa" \| "awi" | yes |
-| `label` | string | yes |
-| `trigger` | string | yes |
 | `unit` | "calendar-days" \| "working-days" \| "weeks" \| "months" | yes |
 | `amount` | number | yes |
 | `kind` | "deadline" \| "warning" \| "expiry" \| "review" | yes |
@@ -714,7 +712,7 @@ Variant 5
 | Field | Type | Required |
 |---|---|---|
 | `area` | object { councilName, hscpName, healthBoardName, policeDivision, ppuBase, maracArea, sheriffCourt } | yes |
-| `clockRules` | array of object { id, process, label, trigger, unit, amount, kind, direction, warnDays, source, sourceRef, confidence, localNote, todoVerify, deferrable, deferralNote } | yes |
+| `clockRules` | array of object { id, process, unit, amount, kind, direction, warnDays, source, sourceRef, confidence, localNote, todoVerify, deferrable, deferralNote } | yes |
 | `needToKnow` | array of object { id, process, stage, audience, detailLevel, fields, channel, trigger, condition, conditionLabel, lawfulBasisHint } | yes |
 | `exclusions` | array of object { id, process, stage, party, label, reason, liftableBy } | yes |
 | `classificationMarkings` | array of object { id, label, handling } | yes |

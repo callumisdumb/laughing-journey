@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, PLAN_TYPE_LABELS, PROCESS_SHORT, ROLE_DEFINITIONS, VIEWS_KINDS, VIEWS_KIND_LABELS, ageLabel, formatDate, formatDateTime, stageLabel, type Person, type Process, type ViewsRecord } from '@mas/domain';
+import { VIEWS_KINDS, ageLabel, agencyShort, detailLevelLabel, evidenceKindLabel, formatDate, formatDateTime, packItemKindLabel, planTypeLabel, processShort, processStatusLabel, roleLabel, shareStatusLabel, stageLabel, viewsKindLabel, type Person, type Process, type ViewsRecord } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Tabs, Table, TableWrap, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
 import { AlertTriangle, ArrowUpRight, Flag, Languages, Lock, Plus, ShieldAlert } from 'lucide-react';
@@ -117,7 +117,7 @@ export function Person360({ personId }: { personId: string }) {
   function recordViews() {
     const rec: ViewsRecord = { id: newId('vw'), synthetic: true, personId: person!.id, processId: open[0]?.id, kind: voice.kind, recordedAt: now.toISOString(), recordedByUserId: user!.id, recordedByName: userName(user!), recordedByAgency: user!.agency, method: voice.method, content: voice.content };
     upsert('viewsRecords', rec);
-    audit({ act: 'edit', targetType: 'person', targetId: person!.id, targetLabel: `Views recorded: ${VIEWS_KIND_LABELS[voice.kind]}`, processId: open[0]?.id });
+    audit({ act: 'edit', targetType: 'person', targetId: person!.id, targetLabel: `Views recorded: ${viewsKindLabel(voice.kind)}`, processId: open[0]?.id });
     setRecording(false);
     setVoice({ kind: 'child-voice', method: t('person.recordViews.methodDefault'), content: '' });
     toast({ title: t('person.recordViews.toast.title'), text: t('person.recordViews.toast.text'), tone: 'success' });
@@ -237,7 +237,7 @@ export function Person360({ personId }: { personId: string }) {
                       <div key={`${p.id}-${m.membership.userId}`} className={styles.contact}>
                         <AgencyMark agency={g.agency} />
                         <span className={styles.contactName}>{m.user ? userName(m.user) : m.membership.userId}</span>
-                        <span className={styles.contactMeta}>{t('person.overview.contacts.role', { caseRole: m.membership.caseRole, process: PROCESS_SHORT[p.type], role: m.user ? ROLE_DEFINITIONS[m.user.roleId].label : '' })}</span>
+                        <span className={styles.contactMeta}>{t('person.overview.contacts.role', { caseRole: m.membership.caseRole, process: processShort(p.type), role: m.user ? roleLabel(m.user.roleId) : '' })}</span>
                         <span className={styles.contactMeta}>{t('person.overview.contacts.lastContact', { phone: m.user?.phone ?? '', date: last ? formatDate(last.at) : t('common.values.notRecorded') })}</span>
                       </div>
                     );
@@ -261,7 +261,7 @@ export function Person360({ personId }: { personId: string }) {
                           {t('person.overview.plans.progress', { done, total: actions.length, overdue })}
                         </Pill>
                         <span className={styles.planMeta}>
-                          {t('person.overview.plans.meta', { type: PLAN_TYPE_LABELS[pl.type], coordinator: pl.coordinatorName, agreed: formatDate(pl.agreedAt), hasReview: pl.reviewDate ? 'yes' : 'no', review: pl.reviewDate ? formatDate(pl.reviewDate) : '', outcomes: pl.outcomes.length })}
+                          {t('person.overview.plans.meta', { type: planTypeLabel(pl.type), coordinator: pl.coordinatorName, agreed: formatDate(pl.agreedAt), hasReview: pl.reviewDate ? 'yes' : 'no', review: pl.reviewDate ? formatDate(pl.reviewDate) : '', outcomes: pl.outcomes.length })}
                         </span>
                       </AppLink>
                     );
@@ -291,7 +291,7 @@ export function Person360({ personId }: { personId: string }) {
               const access = accessOf(p);
               if (access.level === 'none')
                 return (
-                  <RestrictedState key={p.id} title={t('person.processes.restrictedTitle', { process: PROCESS_SHORT[p.type], reference: p.reference })} reason={access.reason} breakGlass={access.breakGlass} breakGlassAction={<Button variant="primary" onClick={() => setBreakGlassFor(p)}>{t('person.processes.openWithReason')}</Button>} />
+                  <RestrictedState key={p.id} title={t('person.processes.restrictedTitle', { process: processShort(p.type), reference: p.reference })} reason={access.reason} breakGlass={access.breakGlass} breakGlassAction={<Button variant="primary" onClick={() => setBreakGlassFor(p)}>{t('person.processes.openWithReason')}</Button>} />
                 );
               const next = nextMeetingFor(p);
               const role = p.subjectIds.includes(person.id) ? t('person.processes.role.subject') : p.type === 'marac' && p.detail.referral.perpetratorPersonId === person.id ? t('person.processes.role.perpetrator') : p.type === 'marac' ? t('person.processes.role.child') : t('person.processes.role.parent');
@@ -299,7 +299,7 @@ export function Person360({ personId }: { personId: string }) {
                 <Sheet key={p.id} onMouseEnter={() => select({ kind: 'process', id: p.id })} onFocus={() => select({ kind: 'process', id: p.id })}>
                   <SheetHead
                     title={<AppLink href={processPath(p.id)}>{p.title}</AppLink>}
-                    meta={t('person.processes.meta', { reference: p.reference, role, agency: AGENCY_SHORT[p.leadAgency], date: formatDate(p.openedAt), status: p.status === 'open' ? t('person.processes.statusOpen') : p.status })}
+                    meta={t('person.processes.meta', { reference: p.reference, role, agency: agencyShort(p.leadAgency), date: formatDate(p.openedAt), status: p.status === 'open' ? t('person.processes.statusOpen') : processStatusLabel(p.status) })}
                     actions={<ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.classification === 'restricted'} />}
                   />
                   <SheetBody>
@@ -334,8 +334,8 @@ export function Person360({ personId }: { personId: string }) {
         <TabPanel id="documents" active={tab === 'documents'} idPrefix="p360">
           {(() => {
             const docs = [
-              ...model.visible.flatMap((e) => e.evidenceRefs.map((r) => ({ id: `${e.id}-${r.ref}`, label: r.label ?? r.ref, kind: r.kind, source: t('person.documents.source', { agency: AGENCY_SHORT[e.agency], title: e.title }), date: e.occurredAt }))),
-              ...data.meetings.filter((m) => seeable.some((p) => p.id === m.processId)).flatMap((m) => m.pack.filter((pk) => pk.included).map((pk) => ({ id: `${m.id}-${pk.id}`, label: pk.label, kind: pk.kind, source: m.title, date: m.scheduledAt }))),
+              ...model.visible.flatMap((e) => e.evidenceRefs.map((r) => ({ id: `${e.id}-${r.ref}`, label: r.label ?? r.ref, kind: evidenceKindLabel(r.kind), source: t('person.documents.source', { agency: agencyShort(e.agency), title: e.title }), date: e.occurredAt }))),
+              ...data.meetings.filter((m) => seeable.some((p) => p.id === m.processId)).flatMap((m) => m.pack.filter((pk) => pk.included).map((pk) => ({ id: `${m.id}-${pk.id}`, label: pk.label, kind: packItemKindLabel(pk.kind), source: m.title, date: m.scheduledAt }))),
             ];
             if (docs.length === 0) return <EmptyState title={t('person.documents.empty.title')} text={t('person.documents.empty.text')} />;
             return (
@@ -390,11 +390,11 @@ export function Person360({ personId }: { personId: string }) {
                             <tr key={s.id} onMouseEnter={() => select({ kind: 'share', id: s.id })}>
                               <td>{formatDate(s.createdAt)}</td>
                               <td>
-                                {s.recipient.name} <span className={styles.contactMeta}>({s.recipient.role}, {AGENCY_SHORT[s.recipient.agency]})</span>
+                                {s.recipient.name} <span className={styles.contactMeta}>({s.recipient.role}, {agencyShort(s.recipient.agency)})</span>
                               </td>
-                              <td>{s.detailLevel}{s.fields ? `: ${s.fields.join('; ')}` : ''}</td>
+                              <td>{detailLevelLabel(s.detailLevel)}{s.fields ? `: ${s.fields.join('; ')}` : ''}</td>
                               <td>{s.reason}</td>
-                              <td>{s.status}</td>
+                              <td>{shareStatusLabel(s.status)}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -420,7 +420,7 @@ export function Person360({ personId }: { personId: string }) {
                             <tr key={a.id}>
                               <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)' }}>{formatDateTime(a.at)}</td>
                               <td>
-                                {a.userName} <span className={styles.contactMeta}>({AGENCY_SHORT[a.agency]})</span>
+                                {a.userName} <span className={styles.contactMeta}>({agencyShort(a.agency)})</span>
                               </td>
                               <td>
                                 {a.act.replace(/-/g, ' ')}
@@ -485,7 +485,7 @@ export function Person360({ personId }: { personId: string }) {
         }
       >
         <div className="stack">
-          <SelectField label={t('person.recordViews.whose')} value={voice.kind} onChange={(e) => setVoice({ ...voice, kind: e.target.value as ViewsRecord['kind'] })} options={VIEWS_KINDS.map((k) => ({ value: k, label: VIEWS_KIND_LABELS[k] }))} />
+          <SelectField label={t('person.recordViews.whose')} value={voice.kind} onChange={(e) => setVoice({ ...voice, kind: e.target.value as ViewsRecord['kind'] })} options={VIEWS_KINDS.map((k) => ({ value: k, label: viewsKindLabel(k) }))} />
           <TextField label={t('person.recordViews.method')} value={voice.method} onChange={(e) => setVoice({ ...voice, method: e.target.value })} hint={t('person.recordViews.methodHint')} />
           <TextareaField label={t('person.recordViews.content')} required value={voice.content} onChange={(e) => setVoice({ ...voice, content: e.target.value })} />
         </div>

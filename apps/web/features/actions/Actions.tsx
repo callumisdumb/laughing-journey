@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, PROCESS_SHORT, formatDate, formatDateTime, relativeDays, type Action } from '@mas/domain';
+import { actionStatusLabel, agencyShort, formatDate, formatDateTime, processShort, relativeDays, type Action } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, Dialog, Pill, ProcessMark, SelectField, Table, TableWrap, TextField, TextareaField, useToast } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -72,7 +72,7 @@ export function Actions() {
     })
     .sort((a, b) => (a.action.due < b.action.due ? -1 : 1));
 
-  const groups = groupBy === 'none' ? [['all', rows] as const] : groupBy === 'process' ? [...new Map(rows.map((r) => [r.process!.id, r.process!])).entries()].map(([id, p]) => [`${p.reference}: ${p.title}`, rows.filter((r) => r.process!.id === id)] as const) : [...new Set(rows.map((r) => r.action.ownerAgency))].map((ag) => [AGENCY_SHORT[ag], rows.filter((r) => r.action.ownerAgency === ag)] as const);
+  const groups = groupBy === 'none' ? [['all', rows] as const] : groupBy === 'process' ? [...new Map(rows.map((r) => [r.process!.id, r.process!])).entries()].map(([id, p]) => [`${p.reference}: ${p.title}`, rows.filter((r) => r.process!.id === id)] as const) : [...new Set(rows.map((r) => r.action.ownerAgency))].map((ag) => [agencyShort(ag), rows.filter((r) => r.action.ownerAgency === ag)] as const);
 
   function set(key: string, value: string | null) {
     navigate(`/actions${setQuery(route.query, { [key]: value })}`, { replace: true });
@@ -165,7 +165,7 @@ export function Actions() {
                         </td>
                         <td>
                           <Pill size="sm" tone={a.status === 'complete' ? 'low' : overdue ? 'critical' : a.status === 'in-progress' ? 'accent' : 'neutral'}>
-                            {overdue ? t('actions.list.overdue') : a.status.replace('-', ' ')}
+                            {overdue ? t('actions.list.overdue') : actionStatusLabel(a.status)}
                           </Pill>
                         </td>
                         <td>{a.evidence ?? ''}</td>
@@ -227,7 +227,7 @@ export function Actions() {
         }
       >
         <p style={{ marginBottom: 10 }}>{escalating?.title}</p>
-        <TextField label={t('actions.escalateDialog.to')} required value={escalateTo} onChange={(e) => setEscalateTo(e.target.value)} placeholder={t('actions.escalateDialog.toPlaceholder')} hint={escalating ? t('actions.escalateDialog.toHint', { process: PROCESS_SHORT[data.processes.find((p) => p.id === escalating.processId)?.type ?? 'cp'], owner: escalating.ownerName }) : undefined} />
+        <TextField label={t('actions.escalateDialog.to')} required value={escalateTo} onChange={(e) => setEscalateTo(e.target.value)} placeholder={t('actions.escalateDialog.toPlaceholder')} hint={escalating ? t('actions.escalateDialog.toHint', { process: processShort(data.processes.find((p) => p.id === escalating.processId)?.type ?? 'cp'), owner: escalating.ownerName }) : undefined} />
       </Dialog>
     </div>
   );

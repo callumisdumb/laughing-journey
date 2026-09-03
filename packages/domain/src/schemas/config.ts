@@ -4,8 +4,6 @@ import { AGENCIES, ALL_STAGES, CHANNELS, CLASSIFICATIONS, DETAIL_LEVELS, EXCLUSI
 export const clockRuleSchema = z.object({
   id: z.string(),
   process: z.enum(PROCESS_TYPES),
-  label: z.string(),
-  trigger: z.string(),
   unit: z.enum(['calendar-days', 'working-days', 'weeks', 'months']),
   amount: z.number().positive(),
   kind: z.enum(['deadline', 'warning', 'expiry', 'review']),
