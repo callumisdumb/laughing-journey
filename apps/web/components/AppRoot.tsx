@@ -6,6 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { AppShell } from '@/components/shell/AppShell';
 import { Screen } from '@/components/Screen';
 import { useAppearance } from '@/lib/appearance';
+import { useDesktop } from '@/lib/desktop';
 import { useRoute, useRouterStore } from '@/lib/router';
 import { useAppStore } from '@/lib/store';
 import { SignIn } from '@/features/sign-in/SignIn';
@@ -19,6 +20,7 @@ export function AppRoot() {
   const sync = useRouterStore((s) => s.sync);
   const route = useRoute();
   const queryClient = useMemo(() => new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 30_000 } } }), []);
+  useDesktop();
 
   useEffect(() => {
     hydrate();

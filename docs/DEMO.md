@@ -1,0 +1,29 @@
+# Demo script: ten minutes for the Chief Officers Group
+
+Audience: chief officers (council, health board, police), the CSWO, the Child and Adult Protection Committee chairs. Purpose: show what one shared picture of a person does for decisions, and that need-to-know is built in, not bolted on.
+
+Set-up (before the room fills): open the app, sign in as Janet Kerr, set the theme to light and density to comfortable in Settings, and check the top bar shows "2 clocks due this week". Everything below is synthetic; the fixed demo clock is 02 Sep 2026, 09:00.
+
+| Minute | Screen | Say | Do |
+|---|---|---|---|
+| 0 to 1 | Sign-in | "Every person you will see is fictional. The platform is a mockup: no live systems are connected, and it never will connect to anything without a lawful basis record." | Point at the synthetic data notice. Sign in as Janet Kerr (children and families social worker). |
+| 1 to 2 | Home | "This is what a practitioner sees at nine on a Tuesday: her clocks, her actions, her inbox from other systems, and the people she is responsible for. The numbers are statutory timescales, not targets: 28 days to a Child Protection Planning Meeting, 21 days for a Mental Health Officer's report." | Hover the clocks chip. Click the "Pre-birth CPPM: 2 days" clock. |
+| 2 to 4 | Scenario 4, Aiden Boyle | "Aiden is seven. His teacher saw bruising in May. Here is the whole process on one page: the stages with who moved them and when, the clocks, who is involved, and Aiden's own words at the top of the right column." Then open the chronology: "Six agencies, one timeline. Facts are facts. Analysis lives in its own lane and can never be mistaken for a fact. The lenses are prompts for a practitioner, not conclusions: this one shows an escalation pattern in the police incidents." | Search "Aiden", open CP-2026-0412. Scroll the stepper and the clocks. Click "Chronology". Turn on the "Escalation" lens. Open the print pack and show the classification banner and page footer, then close it. |
+| 4 to 6 | Scenario 2, Kayleigh Docherty | "Kayleigh is a repeat MARAC referral and there is a linked child protection process for her children. The perpetrator is named here once and excluded everywhere: he cannot be on an invite list, a distribution list or a research request, and the product will not let anyone add him." Switch persona to Karen Findlay: "The MARAC coordinator sees the research returns, the DAQ breakdown, and which agencies have not yet returned." | Open MARAC-2026-0093. Point at the exclusion statement and the DAQ count (17 of 27). Switch persona to Karen Findlay from the top bar. Show the research requests table. Open the MARAC meeting (09 Sep) and press "Generate from need-to-know" on the invite list: read out one reason. |
+| 6 to 8 | Scenario 6, Ishbel Grant | "Ishbel is 84 and medically fit for discharge; the question is where she lives. Capacity is decision-specific and time-specific, so the assessments are listed by decision. The MHO's report has a 21-day statutory clock and it is twelve days from due." Then the meeting workspace: "The multi-disciplinary discussion recorded her views, who dissented and why, and the actions with owners." | Switch persona to Graeme Dunlop (MHO). Open AWI-2026-0102. Show the capacity assessments table and the MHO clock. Open the 20 Aug meeting, After phase: show the decisions with dissent and the distribution list with the detail level per recipient. |
+| 8 to 9 | Sharing, "What would X see" | "This answers the question every information governance lead asks: why can that person see this? Pick a process and a role and the product shows the rule that applies, the exclusions at this stage and the lawful basis. Default is deny." | Open Sharing, the "What would X see" tab. Choose CP-2026-0412 and Claire Cowan (head teacher), then choose the same process and a housing officer: presence only. |
+| 9 to 10 | MAPPA restricted state, then Audit | "Restricted records show only that they exist. A Responsible Authority officer can open one with a reason; that reason, their name and every read go to the audit log and to the coordinator. Nobody else can." | Switch persona to Gavin Brodie (police, not on the case). Open MAPPA-2026-0034, press "Open with a reason", type a reason, open it. Then open Audit and show the break-glass entry at the top. |
+
+## If there is time
+
+- Connectors: the health cards, a simulated outage, and the mapping preview that shows how an EMIS Web safeguarding code becomes a chronology candidate in the inbox, never straight into the record.
+- Reports: the CP register statistics with a chart and the table beneath it, then the print pack.
+- Dark theme and compact density from Settings, to show it is the same product at a different setting.
+
+## Questions you will be asked, and the honest answers
+
+- "Is this connected to anything?" No. Every adapter is a mock with fictional fixtures. The Connectors screen carries the "how this would connect for real" copy for each system.
+- "Are the timescales right?" The statutory ones (28 days to CPPM, 21 days for the MHO report, 12 months MARAC repeat window) are from national guidance and the Act. Local ones (ASP inquiry decision, ASP case conference, MARAC research return, MAPPA review intervals) are configuration, marked "to verify" in the product and in `docs/RESEARCH.md`.
+- "Who decided the need-to-know rules?" They are seeded from the brief's matrices and the national guidance, default deny, editable in Admin, and every change is audited. Where the guidance was silent, the more restrictive reading was chosen (see `docs/DECISIONS.md`, D-042).
+- "Can a perpetrator ever see anything?" No. MARAC perpetrators and their associates, and MAPPA victims, are hard exclusions that the UI cannot lift (D-043).
+- "What happens to the child's views?" They are recorded with who took them and how, shown first on the dashboard and read into the meeting record by the chair.
