@@ -181,9 +181,10 @@ Everything this design does not defend against, in one place, so nobody has to r
 3. **Metadata is visible to the operator** (section 3): record identifiers, key holder identifiers, coarse types, classification, bucketed timestamps, and the existence of links.
 4. **A blind index reveals equality**, and a low-entropy indexed field is open to a frequency attack (section 4). Mitigated by bucketing and by excluding names.
 5. **A device stolen while unlocked retains cached access for the remainder of the offline grace period** (1.6), seeded at 72 hours.
-6. **Removing someone from a case cannot unread what they already saw.** Rotation stops future access only, and the interface says so in those words at the point of removal, because the alternative is a chair believing that removal retracts.
-7. **The controller can reach any record** (section 2). By design, and the reason the product is lawful to deploy.
-8. **Hardware security module backing for escrow shares is not implemented** in the mockup (section 2).
+6. **The exclusion register is explicit, and the similarity check is a prompt rather than a guarantee.** A party who is not named in the referral, not derivable from a relationship record and not hand-recorded is excluded by nothing. Where a name is hand-recorded, matching it is exact: "Ryan Kerr" on the register does not match "Ryan James Kerr". A similarity check now blocks a near match behind an audited confirmation naming the entry it resembles, in both directions, but it is a warning layer and not the mechanism. The match was deliberately not made fuzzy: a fuzzy match that silently excludes the wrong person is its own failure, in a product whose whole point is that the register is a list somebody wrote down.
+7. **Removing someone from a case cannot unread what they already saw.** Rotation stops future access only, and the interface says so in those words at the point of removal, because the alternative is a chair believing that removal retracts.
+8. **The controller can reach any record** (section 2). By design, and the reason the product is lawful to deploy.
+9. **Hardware security module backing for escrow shares is not implemented** in the mockup (section 2).
 
 ## Provenance
 

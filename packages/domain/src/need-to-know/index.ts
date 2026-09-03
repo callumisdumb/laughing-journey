@@ -6,3 +6,4 @@ export * from './awi';
 export * from './exclusions';
 export * from './parties';
 export * from './resolve';
+export * from './similarity';

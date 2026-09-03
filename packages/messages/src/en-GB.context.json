@@ -10830,6 +10830,9 @@
     },
     "before": {
       "invites": {
+        "confirmedReason": {
+          "where": "The reason recorded against an invitee added after a near-match confirmation"
+        },
         "generate": {
           "maxLength": 32,
           "screenshot": "phase-4/meeting-before-light-comfortable.png",
@@ -17271,6 +17274,53 @@
     "lede": {
       "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
       "where": "Lede under the sharing page title"
+    },
+    "nearMatch": {
+      "audit": {
+        "confirmed": {
+          "where": "Audit entry when somebody confirms a near-match recipient is a different person and adds them"
+        },
+        "declined": {
+          "where": "Audit entry when somebody declines to add a near-match recipient"
+        },
+        "reverse": {
+          "where": "Audit entry when a register entry is recorded and people with similar names were already on a list"
+        }
+      },
+      "confirm": {
+        "maxLength": 40,
+        "where": "Primary button of the near-match confirmation dialog"
+      },
+      "decline": {
+        "maxLength": 24,
+        "where": "Quiet button of the near-match confirmation dialog"
+      },
+      "entry": {
+        "where": "The register entry a name resembles: the name as written, the date recorded, the party role and the reason"
+      },
+      "kind": {
+        "where": "One line saying how the two names resemble each other"
+      },
+      "listName": {
+        "where": "Names the list a recipient is being added to, for the dialog and the audit entry"
+      },
+      "reverseText": {
+        "where": "Body of the dialog shown when a register entry is recorded and similar names are already on a list"
+      },
+      "reverseTitle": {
+        "maxLength": 48,
+        "where": "Title of the reverse near-match dialog"
+      },
+      "text": {
+        "where": "Body of the near-match confirmation dialog"
+      },
+      "title": {
+        "maxLength": 48,
+        "where": "Title of the near-match confirmation dialog"
+      },
+      "typed": {
+        "where": "Line in the near-match dialog quoting the name being added"
+      }
     },
     "outbound": {
       "columns": {

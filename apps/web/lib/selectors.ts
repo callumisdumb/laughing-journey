@@ -163,3 +163,25 @@ export function researchRequestsForUser(data: Dataset, user: User) {
   }
   return out;
 }
+
+/**
+ * Every name already on a list for a process: invitees, distribution entries, pre-meeting request
+ * recipients, share recipients and research request targets.
+ *
+ * Used by the reverse near-match check when a must-not-receive entry is recorded, because an
+ * exclusion often arrives after the sharing has started and nothing else would notice.
+ */
+export function listedNames(data: Dataset, processId: string): string[] {
+  const names = new Set<string>();
+  for (const meeting of data.meetings) {
+    if (meeting.processId !== processId) continue;
+    for (const i of meeting.invitees) names.add(i.name);
+    for (const d of meeting.distribution) names.add(d.recipientName);
+    for (const r of meeting.preMeetingRequests) names.add(r.toName);
+  }
+  for (const share of data.sharingRecords) if (share.processId === processId) names.add(share.recipient.name);
+  for (const request of data.informationRequests) if (request.processId === processId) names.add(request.toName);
+  // A MARAC research request names an agency rather than a person, so there is no name to check.
+  names.delete('');
+  return [...names];
+}

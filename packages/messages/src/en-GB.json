@@ -3530,6 +3530,7 @@
     },
     "before": {
       "invites": {
+        "confirmedReason": "Added after confirming they are not the person on the must-not-receive register",
         "generate": "Generate from need-to-know",
         "meta": "Generated from need-to-know for this stage. Every invitee carries the reason.",
         "person": "{required, select, yes {{name}, {role}} other {{name}, {role} (optional)}}",
@@ -5466,6 +5467,23 @@
       }
     },
     "lede": "Every share carries a purpose, a lawful basis, a proportionality note and an author. Nothing leaves without a reason the recipient can read.",
+    "nearMatch": {
+      "audit": {
+        "confirmed": "Added {name} to {list} after confirming they are not {entry}, who is on the must-not-receive register for this case",
+        "declined": "Did not add {name} to {list}: too similar to {entry} on the must-not-receive register for this case",
+        "reverse": "Recorded {entry} on the must-not-receive register while {count, plural, one {# person} other {# people}} with a similar name were already on a list for this case"
+      },
+      "confirm": "They are a different person. Add them.",
+      "decline": "Do not add them",
+      "entry": "Register entry: {entry}, recorded {date} as {party}. Reason: {reason}",
+      "kind": "{kind, select, sameAfterNormalising {The same name written differently} extraNames {The same name with extra forenames} initials {The same name with an initial} other {A very similar spelling}}.",
+      "listName": "{list, select, invitees {the invite list} distribution {the distribution list} request {a pre-meeting request} research {a research request} other {this list}}",
+      "reverseText": "{count, plural, one {# person} other {# people}} already on a list for this case {count, plural, one {has} other {have}} a similar name to the entry you have just recorded: {names}. Check whether any of them is the same person, and remove them from the list if so.",
+      "reverseTitle": "Somebody already on a list has a similar name",
+      "text": "The name you are adding is similar to an entry on the must-not-receive register for this case. Confirm they are a different person, or add them to the register.",
+      "title": "Similar to a must-not-receive entry",
+      "typed": "Adding: {name}"
+    },
     "outbound": {
       "columns": {
         "classification": "Classification",

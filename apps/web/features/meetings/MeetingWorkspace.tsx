@@ -1,11 +1,12 @@
 'use client';
 
-import { AGENCIES, DETAIL_LEVELS, agencyShort, classificationOfShare, applyMeetingTransition, attendanceLabel, contextFor, detailLevelLabel, formatDate, formatDateTime, formatTime, isExcludedParty, meetingStatusLabel, meetingTypeLabel, minuteStatusLabel, packItemKindLabel, processShort, researchStatusLabel, resolveNeedToKnow, roleLabel, stageLabel, type Action, type Agency, type DetailLevel, type LawfulBasisRecord, type Meeting, type SharingRecord } from '@mas/domain';
+import { AGENCIES, DETAIL_LEVELS, agencyShort, classificationOfShare, nearMatchesOnRegister, applyMeetingTransition, attendanceLabel, contextFor, detailLevelLabel, formatDate, formatDateTime, formatTime, isExcludedParty, meetingStatusLabel, meetingTypeLabel, minuteStatusLabel, packItemKindLabel, processShort, researchStatusLabel, resolveNeedToKnow, roleLabel, stageLabel, type Action, type Agency, type DetailLevel, type LawfulBasisRecord, type Meeting, type SharingRecord, type User } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, CheckboxField, ClockNumeral, DateField, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
 import { CheckCircle2, Maximize2, Minimize2, Play, Printer, Send, UserPlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
+import { NearMatchDialog, type NearMatchList, type PendingNearMatch } from '@/components/NearMatchDialog';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { chronologyPath, personPath, processPath } from '@/lib/routes';
@@ -44,6 +45,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   const [actionForm, setActionForm] = useState({ title: '', owner: '', due: '' });
   const [requestForm, setRequestForm] = useState({ agency: 'health' as Agency, to: '', due: '' });
   const [returning, setReturning] = useState<{ id: string; summary: string } | null>(null);
+  const [pendingMatch, setPendingMatch] = useState<PendingNearMatch | null>(null);
   const [reviewDate, setReviewDate] = useState(meeting?.reviewDate ?? '');
 
   useEffect(() => {
@@ -85,11 +87,47 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   const clocks = clocksForProcess(data, config, process, now);
   const personas = data.users.filter((u) => u.roleId !== 'system-administrator');
 
+  /**
+   * The near-match gate. Every path that puts a name on a list for this case runs through it: a name
+   * close to a must-not-receive entry blocks behind a confirmation, and both answers are audited with
+   * the entry that matched, so a wrong call is traceable.
+   */
+  function guardAdd(name: string, list: NearMatchList, add: () => void) {
+    if (!process) return;
+    const matches = nearMatchesOnRegister(process, name, { exclusions: config.exclusions, stage: process.stage, relationships: data.relationships });
+    if (matches.length === 0) {
+      add();
+      return;
+    }
+    setPendingMatch({ name, list, matches, onConfirm: add });
+  }
+
+  function resolveNearMatch(confirmed: boolean) {
+    const pending = pendingMatch;
+    setPendingMatch(null);
+    if (!pending || !process) return;
+    const first = pending.matches[0]!;
+    audit({
+      act: 'edit',
+      targetType: 'process',
+      targetId: process.id,
+      targetLabel: t(confirmed ? 'sharing.nearMatch.audit.confirmed' : 'sharing.nearMatch.audit.declined', {
+        name: pending.name,
+        list: t('sharing.nearMatch.listName', { list: pending.list }),
+        entry: first.entryName,
+      }),
+      processId: process.id,
+      reason: first.party.reason ?? first.exclusion.reason,
+    });
+  }
+
   function generateInvites() {
     const res = resolveNeedToKnow(contextFor(process!), config.needToKnow, config.exclusions);
     const additions: Meeting['invitees'] = [];
     // Anyone holding an excluded party role on the case-role register is skipped, whatever their agency row says.
     const excludedByRole = new Set<string>();
+    // Anyone whose name only resembles a hand-recorded entry is held back for a confirmation instead.
+    const heldBack: User[] = [];
     for (const r of res.recipients) {
       if (r.detailLevel !== 'full') continue;
       const candidates = data.users.filter((u) => u.agency === r.agency && (r.role === 'any' ? true : u.roleId === r.role) && (u.caseMemberships.includes(process!.id) || r.role !== 'any'));
@@ -100,10 +138,22 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       });
       for (const u of eligible.slice(0, r.role === 'any' ? 1 : 2)) {
         if (meeting!.invitees.some((i) => i.userId === u.id) || additions.some((i) => i.userId === u.id)) continue;
+        // A register entry recorded by hand carries a name and no account, so the id check above
+        // cannot see it. Anyone whose name resembles one is held back for a confirmation.
+        if (nearMatchesOnRegister(process!, userName(u), { exclusions: config.exclusions, stage: process!.stage, relationships: data.relationships }).length > 0) {
+          heldBack.push(u);
+          continue;
+        }
         additions.push({ userId: u.id, name: userName(u), agency: u.agency, role: roleLabel(u.roleId), required: true, attendance: 'invited', reason: `${r.label}: ${r.reason}`, needToKnowRowId: r.rowId });
       }
     }
     update({ invitees: [...meeting!.invitees, ...additions] });
+    const first = heldBack[0];
+    if (first) {
+      guardAdd(userName(first), 'invitees', () => {
+        update({ invitees: [...meeting!.invitees, ...additions, { userId: first.id, name: userName(first), agency: first.agency, role: roleLabel(first.roleId), required: true, attendance: 'invited', reason: t('meetings.before.invites.confirmedReason') }] });
+      });
+    }
     toast({
       title: additions.length === 0 ? t('meetings.before.invites.toastComplete') : t('meetings.before.invites.toastAdded', { count: additions.length }),
       text: t('meetings.before.invites.toastText', { rule: res.exclusions.length > 0 ? 'excluded' : 'none', labels: res.exclusions.map((e) => e.label).join('; '), leftOff: excludedByRole.size }),
@@ -114,9 +164,12 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   function sendRequest() {
     if (!requestForm.due) return;
     const to = data.users.find((u) => u.id === requestForm.to);
-    update({ preMeetingRequests: [...meeting!.preMeetingRequests, { id: newId('pmr'), agency: requestForm.agency, toName: to ? userName(to) : agencyShort(requestForm.agency), toUserId: to?.id, sentAt: now.toISOString(), dueAt: requestForm.due, status: 'sent' }] });
-    setRequestForm({ agency: 'health', to: '', due: '' });
-    toast({ title: t('meetings.before.requests.toastTitle'), text: t('meetings.before.requests.toastText', { name: to ? userName(to) : agencyShort(requestForm.agency) }), tone: 'success' });
+    const toName = to ? userName(to) : agencyShort(requestForm.agency);
+    guardAdd(toName, 'request', () => {
+      update({ preMeetingRequests: [...meeting!.preMeetingRequests, { id: newId('pmr'), agency: requestForm.agency, toName, toUserId: to?.id, sentAt: now.toISOString(), dueAt: requestForm.due, status: 'sent' }] });
+      setRequestForm({ agency: 'health', to: '', due: '' });
+      toast({ title: t('meetings.before.requests.toastTitle'), text: t('meetings.before.requests.toastText', { name: toName }), tone: 'success' });
+    });
   }
 
   function recordReturn() {
@@ -163,6 +216,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
     const entries: Meeting['distribution'] = [];
     // Anyone holding an excluded party role on the case-role register never reaches the distribution list.
     const excludedByRole = new Set<string>();
+    const distributionHeldBack: string[] = [];
     const excluded = (userId: string): boolean => {
       const hit = isExcludedParty(process!, { userId }, config.exclusions, process!.stage, data.relationships);
       if (hit) excludedByRole.add(userId);
@@ -171,6 +225,10 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
     for (const i of meeting!.invitees) {
       if (!i.userId || entries.some((e) => e.recipientUserId === i.userId) || meeting!.distribution.some((e) => e.recipientUserId === i.userId)) continue;
       if (excluded(i.userId)) continue;
+      if (nearMatchesOnRegister(process!, i.name, { exclusions: config.exclusions, stage: process!.stage, relationships: data.relationships }).length > 0) {
+        distributionHeldBack.push(i.name);
+        continue;
+      }
       entries.push({ id: newId('dist'), recipientName: i.name, recipientUserId: i.userId, agency: i.agency, role: i.role, detailLevel: 'full', reason: t('meetings.after.distribution.attendeeReason') });
     }
     for (const r of res.recipients) {
@@ -180,6 +238,15 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       entries.push({ id: newId('dist'), recipientName: userName(u), recipientUserId: u.id, agency: u.agency, role: roleLabel(u.roleId), detailLevel: r.detailLevel, fields: r.fields, reason: `${r.label}: ${r.reason}` });
     }
     update({ distribution: [...meeting!.distribution, ...entries] });
+    const heldName = distributionHeldBack[0];
+    if (heldName) {
+      const invitee = meeting!.invitees.find((i) => i.name === heldName);
+      if (invitee?.userId) {
+        guardAdd(heldName, 'distribution', () => {
+          update({ distribution: [...meeting!.distribution, ...entries, { id: newId('dist'), recipientName: heldName, recipientUserId: invitee.userId, agency: invitee.agency, role: invitee.role, detailLevel: 'full', reason: t('meetings.after.distribution.attendeeReason') }] });
+        });
+      }
+    }
     toast({
       title: t('meetings.after.distribution.toastTitle', { count: entries.length }),
       text: t('meetings.after.distribution.toastText', { process: processShort(process!.type), stage: stageLabel(process!.type, process!.stage), exclusions: res.exclusions.map((e) => e.label).join('; ') || t('common.values.none'), leftOff: excludedByRole.size }),
@@ -578,6 +645,8 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       >
         <TextareaField label={t('meetings.returnDialog.summary')} required value={returning?.summary ?? ''} onChange={(e) => setReturning(returning ? { ...returning, summary: e.target.value } : null)} />
       </Dialog>
+
+      <NearMatchDialog pending={pendingMatch} onClose={resolveNearMatch} />
     </div>
   );
 }

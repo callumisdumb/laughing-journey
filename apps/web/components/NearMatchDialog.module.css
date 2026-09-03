@@ -1,0 +1,25 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: var(--text-base);
+  color: var(--color-ink-1);
+}
+
+.typed {
+  font-weight: 600;
+}
+
+/** The register entry the name resembles, quoted so the reader has something to decide with. */
+.entry {
+  padding: 10px 12px;
+  background: var(--color-paper-2);
+  border-left: 3px solid var(--color-risk-high);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.kind {
+  margin-top: 4px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}

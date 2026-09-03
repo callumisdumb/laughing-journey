@@ -1,11 +1,12 @@
 'use client';
 
-import { MAPPA_MUST_NOT_RECEIVE_PARTIES, formatDate, mappaReferralFormSchema, registerUpdateLabel, riskToolLabel, withMustNotReceive, type MappaProcess, type MappaReferralForm } from '@mas/domain';
+import { MAPPA_MUST_NOT_RECEIVE_PARTIES, formatDate, mappaReferralFormSchema, nearMatchesOnList, registerUpdateLabel, riskToolLabel, withMustNotReceive, type MappaProcess, type MappaReferralForm } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, CheckboxField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { listedNames } from '@/lib/selectors';
 import { MustNotReceiveFields } from './MustNotReceiveFields';
 
 export function MappaReferralDialog({ open, onClose, process }: { open: boolean; onClose: () => void; process: MappaProcess }) {
@@ -46,6 +47,27 @@ export function MappaReferralDialog({ open, onClose, process }: { open: boolean;
     if (recorded > 0) {
       audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: registerUpdateLabel(register, 'the MAPPA referral'), processId: process.id, restricted: true });
       toast({ title: t('forms.mustNotReceive.registerUpdated.title'), text: t('forms.mustNotReceive.registerUpdated.text', { count: recorded }), tone: 'success' });
+      // The check in reverse. An exclusion often arrives after the sharing has started, and nothing
+      // else in the product would notice that somebody with a similar name is already on a list.
+      const onLists = listedNames(data, process.id);
+      for (const entry of register.parties.filter((party) => party.source === 'manual' && party.name)) {
+        const similar = nearMatchesOnList(entry.name!, onLists);
+        if (similar.length === 0) continue;
+        audit({
+          act: 'edit',
+          targetType: 'process',
+          targetId: process.id,
+          targetLabel: t('sharing.nearMatch.audit.reverse', { entry: entry.name!, count: similar.length }),
+          processId: process.id,
+          reason: entry.reason ?? '',
+          restricted: true,
+        });
+        toast({
+          title: t('sharing.nearMatch.reverseTitle'),
+          text: t('sharing.nearMatch.reverseText', { count: similar.length, names: similar.map((m) => m.name).join('; ') }),
+          tone: 'error',
+        });
+      }
     }
     onClose();
   }

@@ -1,16 +1,18 @@
 'use client';
 
-import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, MARAC_MUST_NOT_RECEIVE_PARTIES, daqFormSchema, daqQuestionText, registerUpdateLabel, riskToolLabel, withMustNotReceive, type DaqForm, type MaracProcess, type RiskAssessment } from '@mas/domain';
+import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, MARAC_MUST_NOT_RECEIVE_PARTIES, daqFormSchema, daqQuestionText, nearMatchesOnList, registerUpdateLabel, riskToolLabel, withMustNotReceive, type DaqForm, type MaracProcess, type RiskAssessment } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
+import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { listedNames } from '@/lib/selectors';
 import { MustNotReceiveFields } from './MustNotReceiveFields';
 
 export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: () => void; process: MaracProcess }) {
   const t = useT();
   const user = useCurrentUser();
+  const data = useData();
   const now = useNow();
   const upsert = useAppStore((s) => s.upsert);
   const audit = useAppStore((s) => s.audit);
@@ -55,6 +57,26 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
     if (recorded > 0) {
       audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: registerUpdateLabel(register, 'the DAQ'), processId: process.id });
       toast({ title: t('forms.mustNotReceive.registerUpdated.title'), text: t('forms.mustNotReceive.registerUpdated.text', { count: recorded }), tone: 'success' });
+      // The check in reverse. An exclusion often arrives after the sharing has started, and nothing
+      // else in the product would notice that somebody with a similar name is already on a list.
+      const onLists = listedNames(data, process.id);
+      for (const entry of register.parties.filter((party) => party.source === 'manual' && party.name)) {
+        const similar = nearMatchesOnList(entry.name!, onLists);
+        if (similar.length === 0) continue;
+        audit({
+          act: 'edit',
+          targetType: 'process',
+          targetId: process.id,
+          targetLabel: t('sharing.nearMatch.audit.reverse', { entry: entry.name!, count: similar.length }),
+          processId: process.id,
+          reason: entry.reason ?? '',
+        });
+        toast({
+          title: t('sharing.nearMatch.reverseTitle'),
+          text: t('sharing.nearMatch.reverseText', { count: similar.length, names: similar.map((m) => m.name).join('; ') }),
+          tone: 'error',
+        });
+      }
     }
     form.reset();
     onClose();
