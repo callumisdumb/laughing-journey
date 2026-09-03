@@ -92,7 +92,7 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 
 ## 5. Screenshot index
 
-159 screenshots under `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 (full page where the screen scrolls). Light comfortable is the default; dark and compact variants are listed where captured. Phase 6 holds the dark and compact sweep of every screen. The `classification`, `nmds` and `security` folders are the three rounds added on 03 September 2026 and are captured by their own specs. `docs/CONTACT-SHEET.md` shows all of them on one page and is committed, because it references the files rather than embedding them. `pnpm contact-sheet` regenerates it and also writes `docs/CONTACT-SHEET.html`, a single self-contained file whose captures open at full size in a viewer; that one is gitignored, because embedding 159 screenshots twice comes to about 13 MB.
+160 screenshots under `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 (full page where the screen scrolls). Light comfortable is the default; dark and compact variants are listed where captured. Phase 6 holds the dark and compact sweep of every screen. The `classification`, `nmds` and `security` folders are the three rounds added on 03 September 2026 and are captured by their own specs. `docs/CONTACT-SHEET.md` shows all of them on one page and is committed, because it references the files rather than embedding them. `pnpm contact-sheet` regenerates it and also writes `docs/CONTACT-SHEET.html`, a single self-contained file whose captures open at full size in a viewer; that one is gitignored, because embedding 159 screenshots twice comes to about 13 MB.
 
 ### phase-1
 

@@ -76,11 +76,27 @@ test.describe('scenario dashboards', () => {
     await capture(page, { phase: PHASE, screen: 'process-marac-daq-form' });
   });
 
+  // Both themes: this is the sixty seconds of the demo that sells the need-to-know model, and the
+  // restricted state has to hold in dark as well as light for a room that has the lights down.
+  for (const theme of ['light', 'dark'] as const) {
+    test(`${theme} theme: MAPPA presence-only for someone not on the record`, async ({ page }) => {
+      await signInAs(page, 'usr_gavin_brodie');
+      await page.addInitScript((t) => {
+        window.localStorage.setItem('mas.appearance', JSON.stringify({ theme: t, density: 'comfortable' }));
+      }, theme);
+      await openByReference(page, 'MAPPA-2026-0034');
+      await expect(page.getByText(/restricted record/i).first()).toBeVisible();
+      // Access restriction, not a classification: the record is Official-Sensitive and restricted,
+      // and the two are now separate properties saying separate things.
+      await expectNoAxeViolations(page);
+      await capture(page, { phase: PHASE, screen: 'process-mappa-restricted', theme });
+    });
+  }
+
   test('MAPPA is restricted to the distribution list with break-glass', async ({ page }) => {
     await signInAs(page, 'usr_gavin_brodie');
     await openByReference(page, 'MAPPA-2026-0034');
     await expect(page.getByText(/restricted record/i).first()).toBeVisible();
-    await capture(page, { phase: PHASE, screen: 'process-mappa-restricted' });
     await page.getByRole('button', { name: 'Open with a reason' }).click();
     await page.getByLabel(/^Why you need it/).selectOption('Immediate risk to a child');
     await page.getByLabel(/^Reason/).fill('Immediate safety concern for a child seen with the subject at 09:40 today');
