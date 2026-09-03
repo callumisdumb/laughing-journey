@@ -647,7 +647,7 @@
       "capacityValue": "{assessed, select, yes {Assessed} other {Not yet assessed}}{fluctuates, select, yes {, fluctuates} other {}}. {summary}",
       "consent": "Consent",
       "consentValue": "{status}. {note}",
-      "pending": "Recorded once an investigation opens.",
+      "pending": "Recorded once investigatory powers are used.",
       "title": "Consent, capacity and advocacy",
       "unduePressure": "Undue pressure",
       "unduePressureNone": "Not yet considered",
@@ -669,7 +669,7 @@
       "records": "s10 records",
       "recordsDetail": "{holder} ({agency}). {note}",
       "requested": "Requested",
-      "title": "Investigation powers used",
+      "title": "Investigatory powers used",
       "visit": "s7 visit",
       "visitDetail": "{names}. {note}"
     },
@@ -754,7 +754,7 @@
     },
     "page": {
       "ledeFull": "Showing every entry: {role} has oversight.",
-      "ledeOwn": "Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone’s.",
+      "ledeOwn": "Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone\u2019s.",
       "ledeTail": "Every read of a restricted record, every share, every break-glass and every persona switch is here, newest first.",
       "title": "Audit"
     },
@@ -1586,11 +1586,11 @@
       "women": "Women"
     },
     "aspInquiryActions": {
-      "criteriaNoOpportunity": "Meets three-point criteria — no opportunity for further ASP intervention",
-      "criteriaOngoing": "Meets three-point criteria – ongoing ASP work",
-      "criteriaSupport": "Meets three-point criteria — non-ASP support provided or offered",
-      "noCriteriaNoAction": "Does not meet the three-point criteria – no further action",
-      "noCriteriaSupport": "Does not meet the three-point criteria – non-ASP support offered or provided",
+      "criteriaNoOpportunity": "Meets three-point criteria \u2014 no opportunity for further ASP intervention",
+      "criteriaOngoing": "Meets three-point criteria \u2013 ongoing ASP work",
+      "criteriaSupport": "Meets three-point criteria \u2014 non-ASP support provided or offered",
+      "noCriteriaNoAction": "Does not meet the three-point criteria \u2013 no further action",
+      "noCriteriaSupport": "Does not meet the three-point criteria \u2013 non-ASP support offered or provided",
       "pendingUnknown": "Pending / Unknown"
     },
     "aspInquiryOutcomes": {
@@ -2206,7 +2206,7 @@
         "closed": "Closed",
         "concern": "Adult concern",
         "inquiry": "Inquiry (s4)",
-        "investigation": "Investigation",
+        "investigation": "Inquiry using investigatory powers",
         "protectionPlan": "Protection plan",
         "review": "Review",
         "screening": "Screening",
@@ -2753,7 +2753,7 @@
         "dataProtection": "UK GDPR, Data Protection Act 2018 (Schedule 1 Part 2 paragraph 18), Data (Use and Access) Act 2025",
         "domesticAbuseAct": "Domestic Abuse (Scotland) Act 2018",
         "equallySafe": "Equally Safe strategy",
-        "hearingsAct": "Children’s Hearings (Scotland) Act 2011",
+        "hearingsAct": "Children\u2019s Hearings (Scotland) Act 2011",
         "humanRightsAct": "Human Rights Act 1998",
         "mappaAct": "Management of Offenders etc. (Scotland) Act 2005 and MAPPA National Guidance (current edition)",
         "mentalHealthAct": "Mental Health (Care and Treatment) (Scotland) Act 2003",
@@ -4112,14 +4112,14 @@
       "figures": {
         "conferences": "Case conferences held",
         "inquiries": "Inquiries",
-        "investigations": "Investigations",
+        "investigations": "Inquiries using investigatory powers",
         "lsi": "Large Scale Investigations",
         "orders": "Protection orders granted",
         "referrals": "Referrals",
         "referralsNote": "{count, plural, one {# adult} other {# adults}} at risk"
       },
       "hint": "{count, plural, one {# referral} other {# referrals}}",
-      "lede": "The activity figures an Adult Protection Committee needs for its biennial report, computed from the adult concern records, inquiries, investigations, case conferences and orders in the record store.",
+      "lede": "The activity figures an Adult Protection Committee needs for its biennial report, computed from the adult concern records, inquiries undertaken with and without the use of investigatory powers, case conferences and orders in the record store.",
       "location": {
         "careHome": "Care home or other regulated setting",
         "hospital": "Hospital",
@@ -4127,8 +4127,8 @@
       },
       "measures": {
         "adultsDeclined": "Adults who declined to be interviewed",
-        "advocacyOffered": "Investigations where independent advocacy was offered",
-        "capacityAssessed": "Investigations where capacity was assessed",
+        "advocacyOffered": "Inquiries where independent advocacy was offered",
+        "capacityAssessed": "Inquiries where capacity was assessed",
         "inquiriesOpened": "Inquiries opened under section 4",
         "interviews": "Interviews under section 8",
         "investigatoryPowersUsed": "Inquiries using investigatory powers",
@@ -4161,8 +4161,8 @@
         "ethnicityNote": "The dataset's ethnicity categories are based on census categories for comparability. This demonstration build holds no ethnicity, by design, so the whole category reads as not collected rather than inventing bands.",
         "harm": "Harm types recorded at referral",
         "harmNote": "A referral can record more than one harm type, so the column can add up to more than the number of referrals.",
-        "inquiries": "Inquiries and investigations",
-        "inquiriesNote": "Inquiries are dated from the section 4 inquiry record; investigations from the stage change. Powers are counted by the date each was used.",
+        "inquiries": "Inquiries and the use of investigatory powers",
+        "inquiriesNote": "The National Minimum Dataset counts inquiries undertaken with and without the use of investigatory powers, which is why there is no separate investigation count. Inquiries are dated from the section 4 inquiry record; the use of powers from the stage change. Powers are counted by the date each was used.",
         "location": "Location of harm (derived)",
         "locationNote": "Derived from the adult's recorded address on the day the concern was received: care home, hospital or own home. The concern record has no location field yet.",
         "lsi": "Large Scale Investigations",
@@ -4896,7 +4896,7 @@
         "label": "Clocks due this week"
       },
       "connectorInbox": {
-        "hint": "New events from your agency’s systems waiting for review.",
+        "hint": "New events from your agency\u2019s systems waiting for review.",
         "label": "Connector inbox items"
       },
       "meetingInvites": {
