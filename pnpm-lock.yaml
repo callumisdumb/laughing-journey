@@ -180,6 +180,9 @@ importers:
 
   packages/connectors:
     dependencies:
+      '@mas/crypto':
+        specifier: workspace:*
+        version: link:../crypto
       '@mas/domain':
         specifier: workspace:*
         version: link:../domain

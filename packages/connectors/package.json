@@ -12,6 +12,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@mas/crypto": "workspace:*",
     "@mas/domain": "workspace:*",
     "@mas/messages": "workspace:*",
     "@mas/mock-data": "workspace:*",

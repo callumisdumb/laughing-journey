@@ -8,6 +8,7 @@ import { DEFAULT_CONFIG, demoNow, roleLabel, type AuditEntry, type Config, type 
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
 import { isSealedBlob, openLocal, sealLocal } from '@/lib/localStore';
+import { appendAudit, auditDetailKey, emptyChain, type AuditChain } from '@/lib/auditChain';
 import { buildVault, type Vault } from '@/lib/vault';
 import { create } from 'zustand';
 
@@ -39,6 +40,8 @@ interface AppState {
    * need-to-know matrix entitles. Built beside the dataset so it is never rebuilt on a render.
    */
   vault: Vault;
+  /** The signed, append-only audit chain, one entry per ledger entry. */
+  chain: AuditChain;
   session: Session;
   init: () => void;
   now: () => Date;
@@ -164,6 +167,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   data: EMPTY,
   config: DEFAULT_CONFIG,
   vault: buildVault(EMPTY, DEFAULT_CONFIG),
+  chain: emptyChain(),
   session: { userId: null, breakGlass: [], liveClock: false },
   init: () => {
     if (get().ready) return;
@@ -257,6 +261,10 @@ export const useAppStore = create<AppState>((set, get) => ({
       ...entry,
     };
     get().upsert('audit', rec);
+    // The signed, append-only chain runs beside the ledger: every entry carries the hash of its
+    // predecessor and is signed by the actor's device key, so an entry cannot be edited or removed
+    // without the Admin verification screen finding it (lib/auditChain.ts).
+    set({ chain: appendAudit(get().chain, rec, auditDetailKey()) });
   },
   grantBreakGlass: (processId, category, reason) => {
     const now = get().now();
