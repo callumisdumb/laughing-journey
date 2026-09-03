@@ -7,6 +7,6 @@ export { DEREK } from './scenarios/03-derek-muir';
 export { AIDEN } from './scenarios/04-aiden-boyle';
 export { TOMASZ } from './scenarios/05-tomasz-nowak';
 export { ISHBEL } from './scenarios/06-ishbel-grant';
-export { ROWANBANK } from './scenarios/07-rowanbank-lsi';
+export { WHINBRAE } from './scenarios/07-whinbrae-lsi';
 export { CHLOE } from './scenarios/08-chloe-reid';
 export { TOWNS, HOSPITAL, CARE_HOME } from './generator/geography';

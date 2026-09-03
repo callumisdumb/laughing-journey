@@ -1,5 +1,5 @@
 /**
- * Scenario 4: Aiden Boyle, 7, Braeside. Child protection from a school concern through IRD,
+ * Scenario 4: Aiden Boyle, 7, Craiglarrick. Child protection from a school concern through IRD,
  * JII, CPPM, registration and core group. The integrated chronology is the hero here.
  */
 import type { Agency, Process } from '@mas/domain';
@@ -31,16 +31,16 @@ export function seedAidenBoyle(ctx: BuildContext): void {
 
   // Addresses: three moves.
   const ardvale = makeAddress(ctx, { id: 'adr_aiden_1', line1: '4 Cross Wynd', town: 'Ardvale', postcode: 'QX1 4JD' });
-  const kilbrannan = makeAddress(ctx, { id: 'adr_aiden_2', line1: '27 Weavers Gait', line2: 'Flat 2/1', town: 'Kilbrannan', postcode: 'QX2 7LN' });
-  const braeside = makeAddress(ctx, { id: 'adr_aiden_3', line1: '12 Brae Wynd', town: 'Braeside', postcode: 'QX5 3RT' });
-  const agnesHome = makeAddress(ctx, { id: 'adr_agnes', line1: '9 Schoolhouse Loan', town: 'Braeside', postcode: 'QX5 1AB' });
-  const kevinHome = makeAddress(ctx, { id: 'adr_kevin', line1: '61 Station Brae', town: 'Kilbrannan', postcode: 'QX2 9PL' });
+  const auchentorran = makeAddress(ctx, { id: 'adr_aiden_2', line1: '27 Weavers Gait', line2: 'Flat 2/1', town: 'Auchentorran', postcode: 'QX2 7LN' });
+  const craiglarrick = makeAddress(ctx, { id: 'adr_aiden_3', line1: '12 Brae Wynd', town: 'Craiglarrick', postcode: 'QX5 3RT' });
+  const agnesHome = makeAddress(ctx, { id: 'adr_agnes', line1: '9 Schoolhouse Loan', town: 'Craiglarrick', postcode: 'QX5 1AB' });
+  const kevinHome = makeAddress(ctx, { id: 'adr_kevin', line1: '61 Station Brae', town: 'Auchentorran', postcode: 'QX2 9PL' });
 
   const hh = 'hh_boyle';
   const history = [
     { addressId: ardvale.id, from: '2019-03-14', to: '2022-02-10' },
-    { addressId: kilbrannan.id, from: '2022-02-10', to: '2024-01-19' },
-    { addressId: braeside.id, from: '2024-01-19' },
+    { addressId: auchentorran.id, from: '2022-02-10', to: '2024-01-19' },
+    { addressId: craiglarrick.id, from: '2024-01-19' },
   ];
 
   const aiden = makePerson(ctx, {
@@ -54,7 +54,7 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     chi: syntheticChi(ctx, '2019-03-14', 'male'),
     addressHistory: history,
     householdId: hh,
-    gpPractice: 'Braeside Health Centre',
+    gpPractice: 'Craiglarrick Health Centre',
     school: 'Ardvale Primary',
     ethnicity: 'scottish',
     alerts: [{ id: 'alt_aiden_cp', kind: 'cp-register', text: 'On the Child Protection Register since 12 Jun 2026 (emotional abuse, physical abuse)', from: '2026-06-12' }],
@@ -69,7 +69,7 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     chi: syntheticChi(ctx, '1997-06-02', 'female'),
     addressHistory: history,
     householdId: hh,
-    gpPractice: 'Braeside Health Centre',
+    gpPractice: 'Craiglarrick Health Centre',
     ethnicity: 'scottish',
     contact: { phone: '07700 900111' },
     createdAt: at('2019-03-15', '10:00'),
@@ -81,7 +81,7 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     sex: 'male',
     dateOfBirth: '1995-01-22',
     chi: syntheticChi(ctx, '1995-01-22', 'male'),
-    addressHistory: [{ addressId: braeside.id, from: '2024-06-01', to: '2026-05-21', note: 'Left the household under the interim safety plan' }],
+    addressHistory: [{ addressId: craiglarrick.id, from: '2024-06-01', to: '2026-05-21', note: 'Left the household under the interim safety plan' }],
     ethnicity: 'scottish',
     alerts: [{ id: 'alt_craig_bail', kind: 'other', text: 'Bail condition: not to approach 12 Brae Wynd or Aiden Boyle (23 May 2026)', from: '2026-05-23' }],
     createdAt: at('2023-09-02', '10:00'),
@@ -119,12 +119,12 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     chi: syntheticChi(ctx, '2023-04-18', 'female'),
     addressHistory: history.slice(1).map((h) => ({ ...h, from: h.from < '2023-04-18' ? '2023-04-18' : h.from })),
     householdId: hh,
-    gpPractice: 'Braeside Health Centre',
+    gpPractice: 'Craiglarrick Health Centre',
     ethnicity: 'scottish',
     createdAt: at('2023-04-19', '10:00'),
   });
 
-  ctx.data.households.push({ id: hh, synthetic: true, addressId: braeside.id, memberIds: [stacey.id, aiden.id, maisie.id], label: 'Boyle household, Braeside' });
+  ctx.data.households.push({ id: hh, synthetic: true, addressId: craiglarrick.id, memberIds: [stacey.id, aiden.id, maisie.id], label: 'Boyle household, Craiglarrick' });
   relate(ctx, stacey.id, aiden.id, 'mother-of');
   relate(ctx, kevin.id, aiden.id, 'father-of', { notes: 'Separated from Stacey in 2022; sees Aiden most weekends' });
   relate(ctx, stacey.id, maisie.id, 'mother-of');
@@ -197,7 +197,9 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     clocks: [
       { id: 'clk_aiden_cppm', ruleId: 'cp.cppm.initial', triggeredAt: at('2026-05-20', '11:30'), completedAt: at('2026-06-12', '10:00'), note: 'CPPM held on day 23' },
       { id: 'clk_aiden_cg', ruleId: 'cp.coregroup.first', triggeredAt: at('2026-06-12', '10:00'), completedAt: at('2026-07-01', '14:00'), note: 'First core group on 1 Jul' },
-      { id: 'clk_aiden_review', ruleId: 'cp.cppm.review.first', triggeredAt: at('2026-06-12', '10:00'), dueOverride: '2026-09-14', overrideReason: 'Clydeshore local practice: first review at 3 months. National guidance allows up to 6 months.' },
+      { id: 'clk_aiden_review', ruleId: 'cp.cppm.review.first', triggeredAt: at('2026-06-12', '10:00'), note: 'Statutory maximum 6 months. The review was brought forward to 14 Sep by the CPPM decision because the plan depends on separation being maintained' },
+      { id: 'clk_aiden_notice', ruleId: 'cp.cppm.notice', triggeredAt: at('2026-09-14', '10:00'), note: 'Notice of the review CPPM to the family and invitees: counts back from the meeting date' },
+      { id: 'clk_aiden_escalate', ruleId: 'cp.coregroup.escalate', triggeredAt: at('2026-08-05', '14:00'), completedAt: at('2026-08-07', '11:00'), note: 'Core group 2 could not agree on contact; escalated to the chair on 7 Aug' },
     ],
     linkedProcessIds: [],
     viewsRecordIds: ['vw_aiden_1', 'vw_aiden_2', 'vw_aiden_3', 'vw_aiden_parents'],
@@ -407,7 +409,7 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     decisions: [
       { id: 'dec_cppm_1', question: "Should Aiden's name be placed on the Child Protection Register?", decision: 'Yes: emotional abuse and physical abuse', rationale: 'Ongoing risk while the relationship with Craig Torrance continues; cumulative emotional harm from shouting and instability; mother\'s protective capacity is improving but untested', dissent: [], decidedByName: name(chair), decidedByUserId: chair, decidedAt: at('2026-06-12', '11:40') },
       { id: 'dec_cppm_2', question: 'Referral to the Reporter?', decision: 'No. Review at the first review CPPM', rationale: 'Family engaging on a voluntary basis; compulsory measures not currently needed', dissent: [{ byName: name(head), byUserId: head, agency: 'education', text: 'Education would have referred now given the attendance history.' }], decidedByName: name(chair), decidedByUserId: chair, decidedAt: at('2026-06-12', '11:50') },
-      { id: 'dec_cppm_3', question: 'Core group and review date', decision: 'Core group: social work (lead), school, health visitor, police. First core group by 3 July. Review CPPM 14 September (local 3-month practice)', rationale: 'Early review because the plan depends on separation being maintained', dissent: [], decidedByName: name(chair), decidedByUserId: chair, decidedAt: at('2026-06-12', '12:05') },
+      { id: 'dec_cppm_3', question: 'Core group and review date', decision: 'Core group: social work (lead), school, health visitor, police. First core group by 3 July. Review CPPM 14 September, brought forward from the 6 month statutory maximum', rationale: 'Early review because the plan depends on separation being maintained', dissent: [], decidedByName: name(chair), decidedByUserId: chair, decidedAt: at('2026-06-12', '12:05') },
     ],
     actionIds: actions.map((a) => a.id),
     viewsRecordIds: ['vw_aiden_2', 'vw_aiden_parents'],
@@ -526,12 +528,12 @@ export function seedAidenBoyle(ctx: BuildContext): void {
   E({ occurredAt: at('2021-02-08', '00:00'), hasTime: false, agency: 'health', sourceSystem: 'morse', recordedByName: 'Morse connector', eventType: 'health.missed-appointment', title: '27 to 30 month review not attended', detail: 'Two appointments offered and missed.', response: 'Opportunistic review at clinic in April.', significance: 'moderate' });
   E({ occurredAt: at('2021-06-09', '00:00'), hasTime: false, agency: 'social-work', sourceSystem: 'eclipse', recordedByName: 'ECLIPSE connector', eventType: 'social-work.referral', title: 'Referral from health visitor: home conditions and mother\'s mood', detail: 'Health visitor concerned about clutter, no cot mattress, and mother\'s low mood. Kevin visiting intermittently, arguments reported.', response: 'Duty assessment started.', significance: 'high', significanceReason: 'First multi-agency concern about care and home environment' });
   E({ occurredAt: at('2021-07-14', '00:00'), hasTime: false, agency: 'social-work', sourceSystem: 'eclipse', recordedByName: 'ECLIPSE connector', eventType: 'social-work.assessment', title: 'Assessment completed: support plan, no child protection concern', detail: 'Home conditions improved during assessment. Agnes Rennie providing regular support. Mother engaging with GP.', outcome: 'Family support worker for 12 weeks. Case closed 30 Sep 2021.', significance: 'moderate' });
-  E({ occurredAt: at('2022-02-10', '00:00'), hasTime: false, agency: 'housing', recordedByName: 'Mark Hepburn', recordedByUserId: USR.markHepburn, eventType: 'move.address', title: 'Moved to 27 Weavers Gait, Kilbrannan', detail: 'Council tenancy transfer after rent arrears at Cross Wynd cleared with a discretionary payment.', significance: 'low', linkedPersonIds: [stacey.id] });
-  E({ occurredAt: at('2022-08-17', '00:00'), hasTime: false, agency: 'education', sourceSystem: 'seemis', recordedByName: 'SEEMIS connector', eventType: 'education.enrolment', title: 'Started nursery at Kilbrannan Early Years Centre', detail: 'Five mornings a week.', significance: 'low' });
+  E({ occurredAt: at('2022-02-10', '00:00'), hasTime: false, agency: 'housing', recordedByName: 'Mark Hepburn', recordedByUserId: USR.markHepburn, eventType: 'move.address', title: 'Moved to 27 Weavers Gait, Auchentorran', detail: 'Council tenancy transfer after rent arrears at Cross Wynd cleared with a discretionary payment.', significance: 'low', linkedPersonIds: [stacey.id] });
+  E({ occurredAt: at('2022-08-17', '00:00'), hasTime: false, agency: 'education', sourceSystem: 'seemis', recordedByName: 'SEEMIS connector', eventType: 'education.enrolment', title: 'Started nursery at Auchentorran Early Years Centre', detail: 'Five mornings a week.', significance: 'low' });
   E({ occurredAt: at('2023-01-15', '00:00'), hasTime: false, approximate: true, agency: 'social-work', recordedByName: name(sw), recordedByUserId: sw, eventType: 'household.change', title: 'Craig Torrance became mother\'s partner', detail: 'Date approximate, from mother\'s account at the 2025 assessment.', significance: 'moderate', linkedPersonIds: [craig.id, stacey.id] });
   E({ occurredAt: at('2023-04-18', '11:05'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'family.birth', title: 'Sister Maisie born', detail: 'Maisie Boyle born at Clydeshore Royal Infirmary. Father recorded as Craig Torrance.', significance: 'moderate', subjectIds: [aiden.id, maisie.id], linkedPersonIds: [maisie.id, craig.id] });
   E({ occurredAt: at('2023-09-02', '23:15'), agency: 'police', sourceSystem: 'ivpd', recordedByName: 'iVPD connector', eventType: 'police.concern-report', title: 'Child concern report: partner intoxicated, children present', detail: 'Call from Stacey Boyle. Craig Torrance heavily intoxicated, shouting, refused to leave. Both children awake and upset. Craig left with a friend. No crime recorded.', response: 'Shared with social work duty and health visitor.', outcome: 'Duty contact by phone; mother declined a visit.', significance: 'high', significanceReason: 'Children present and distressed; first report naming Craig Torrance', subjectIds: [aiden.id, maisie.id], linkedPersonIds: [craig.id, stacey.id] });
-  E({ occurredAt: at('2024-01-19', '00:00'), hasTime: false, agency: 'housing', recordedByName: 'Mark Hepburn', recordedByUserId: USR.markHepburn, eventType: 'move.address', title: 'Moved to 12 Brae Wynd, Braeside', detail: 'Mutual exchange to a three-bedroom house.', significance: 'low', subjectIds: [aiden.id, maisie.id], linkedPersonIds: [stacey.id] });
+  E({ occurredAt: at('2024-01-19', '00:00'), hasTime: false, agency: 'housing', recordedByName: 'Mark Hepburn', recordedByUserId: USR.markHepburn, eventType: 'move.address', title: 'Moved to 12 Brae Wynd, Craiglarrick', detail: 'Mutual exchange to a three-bedroom house.', significance: 'low', subjectIds: [aiden.id, maisie.id], linkedPersonIds: [stacey.id] });
   E({ occurredAt: at('2024-06-01', '00:00'), hasTime: false, approximate: true, agency: 'social-work', recordedByName: name(sw), recordedByUserId: sw, eventType: 'household.change', title: 'Craig Torrance moved into the household', detail: 'Date approximate, from mother\'s account.', significance: 'moderate', linkedPersonIds: [craig.id] });
   E({ occurredAt: at('2024-08-15', '00:00'), hasTime: false, agency: 'education', sourceSystem: 'seemis', recordedByName: 'SEEMIS connector', eventType: 'education.enrolment', title: 'Started P1 at Ardvale Primary', detail: 'Enrolled. Named person: head teacher.', significance: 'low' });
   E({ occurredAt: at('2024-12-20', '00:00'), hasTime: false, agency: 'education', sourceSystem: 'seemis', recordedByName: 'SEEMIS connector', eventType: 'education.attendance', title: 'Attendance 88 percent, term 1 and 2', detail: 'Twelve absences, mostly Mondays, unexplained. Two late arrivals a week.', response: 'Letter home; named person phone call.', significance: 'moderate' });
@@ -568,8 +570,8 @@ export function seedAidenBoyle(ctx: BuildContext): void {
 
   // Connector inbox: events awaiting review.
   makeConnectorEvent(ctx, { id: 'cev_aiden_1', connectorId: 'seemis', agency: 'education', subjectId: aiden.id, receivedAt: at('2026-09-01', '17:05'), externalRef: 'SEEMIS-ATT-2026-08', sourcePayload: { pupil: 'BOYLE, Aiden', stage: 'P3', period: 'Aug 2026', possible: '20', attended: '17', unauthorised: '3', pattern: 'Mon, Mon, Fri' }, mapped: { eventType: 'education.attendance', title: 'Attendance 85 percent in August (3 unauthorised absences)', detail: 'Three unauthorised absences on Mondays and a Friday in the first weeks of P3.', occurredAt: at('2026-08-31', '00:00'), hasTime: false, significance: 'moderate', mappingRule: 'seemis.attendance.monthly' } });
-  makeConnectorEvent(ctx, { id: 'cev_aiden_2', connectorId: 'ivpd', agency: 'police', subjectId: aiden.id, receivedAt: at('2026-08-30', '01:10'), externalRef: 'IVPD-CCR-2026-08-2291', sourcePayload: { type: 'Child Concern Report', child: 'BOYLE, Aiden', adults: 'BOYLE, Stacey; BOYLE, Kevin', location: '12 Brae Wynd, Braeside', summary: 'Verbal argument at handover; father intoxicated; child present', crime: 'None' }, mapped: { eventType: 'police.concern-report', title: 'Child concern report: argument between parents at Sunday handover, father intoxicated', detail: 'Officers attended after a call from Stacey Boyle. Kevin Boyle intoxicated when returning Aiden. Argument on the doorstep. No injuries.', occurredAt: at('2026-08-29', '19:40'), hasTime: true, significance: 'high', mappingRule: 'ivpd.ccr.child-present' } });
-  makeConnectorEvent(ctx, { id: 'cev_aiden_3', connectorId: 'emis-web', agency: 'health', subjectId: aiden.id, receivedAt: at('2026-08-28', '12:30'), externalRef: 'EMIS-CONS-88213', sourcePayload: { patient: 'BOYLE, Aiden', practice: 'Braeside Health Centre', clinician: 'Dr Farouk', code: 'Consultation: sleep difficulty', note: 'Mother reports Aiden waking with nightmares; advice given' }, mapped: { eventType: 'health.consultation', title: 'GP consultation: nightmares and sleep difficulty', detail: 'Mother reports Aiden waking most nights since May. Sleep advice given; review in six weeks.', occurredAt: at('2026-08-27', '15:20'), hasTime: true, significance: 'moderate', mappingRule: 'emis.consultation.safeguarding-context' } });
+  makeConnectorEvent(ctx, { id: 'cev_aiden_2', connectorId: 'ivpd', agency: 'police', subjectId: aiden.id, receivedAt: at('2026-08-30', '01:10'), externalRef: 'IVPD-CCR-2026-08-2291', sourcePayload: { type: 'Child Concern Report', child: 'BOYLE, Aiden', adults: 'BOYLE, Stacey; BOYLE, Kevin', location: '12 Brae Wynd, Craiglarrick', summary: 'Verbal argument at handover; father intoxicated; child present', crime: 'None' }, mapped: { eventType: 'police.concern-report', title: 'Child concern report: argument between parents at Sunday handover, father intoxicated', detail: 'Officers attended after a call from Stacey Boyle. Kevin Boyle intoxicated when returning Aiden. Argument on the doorstep. No injuries.', occurredAt: at('2026-08-29', '19:40'), hasTime: true, significance: 'high', mappingRule: 'ivpd.ccr.child-present' } });
+  makeConnectorEvent(ctx, { id: 'cev_aiden_3', connectorId: 'emis-web', agency: 'health', subjectId: aiden.id, receivedAt: at('2026-08-28', '12:30'), externalRef: 'EMIS-CONS-88213', sourcePayload: { patient: 'BOYLE, Aiden', practice: 'Craiglarrick Health Centre', clinician: 'Dr Farouk', code: 'Consultation: sleep difficulty', note: 'Mother reports Aiden waking with nightmares; advice given' }, mapped: { eventType: 'health.consultation', title: 'GP consultation: nightmares and sleep difficulty', detail: 'Mother reports Aiden waking most nights since May. Sleep advice given; review in six weeks.', occurredAt: at('2026-08-27', '15:20'), hasTime: true, significance: 'moderate', mappingRule: 'emis.consultation.safeguarding-context' } });
 
   void nowIso;
 }

@@ -1,8 +1,8 @@
-# Scenario 4: Aiden Boyle, 7, Braeside
+# Scenario 4: Aiden Boyle, 7, Craiglarrick
 
 ## The story
 
-Aiden lives at 12 Brae Wynd, Braeside with his mother Stacey (29) and his sister Maisie (3). His father Kevin lives in Kilbrannan and has him on Sundays. His maternal grandmother Agnes Rennie lives nearby and has always been the steady adult in his life. Stacey's partner Craig Torrance (Maisie's father) moved in during 2024.
+Aiden lives at 12 Brae Wynd, Craiglarrick with his mother Stacey (29) and his sister Maisie (3). His father Kevin lives in Auchentorran and has him on Sundays. His maternal grandmother Agnes Rennie lives nearby and has always been the steady adult in his life. Stacey's partner Craig Torrance (Maisie's father) moved in during 2024.
 
 The chronology shows seven years of small signals seen by different agencies and never joined up: missed health visitor contacts whenever the household changed, three police concern reports that escalate from an argument to drug paraphernalia with children in the house, attendance dipping every time home became chaotic, two social work referrals closed with support, and an emergency department attendance in January 2026.
 

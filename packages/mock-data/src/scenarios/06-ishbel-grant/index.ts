@@ -20,10 +20,10 @@ export const ISHBEL = {
 export function seedIshbelGrant(ctx: BuildContext): void {
   const name = (id: string) => userName(ctx, id);
 
-  const larchBrae = makeAddress(ctx, { id: 'adr_ishbel_home', line1: '22 Larch Brae', town: 'Glenmoray', postcode: 'QX4 1DT' });
+  const larchBrae = makeAddress(ctx, { id: 'adr_ishbel_home', line1: '22 Larch Brae', town: 'Dunlarrick', postcode: 'QX4 1DT' });
   const ward7 = makeAddress(ctx, { id: 'adr_cri_ward7', line1: 'Clydeshore Royal Infirmary', line2: 'Ward 7', town: 'Ardvale', postcode: 'QX1 9HS' });
-  const moragHome = makeAddress(ctx, { id: 'adr_morag_home', line1: '5 Rowan Gait', town: 'Braeside', postcode: 'QX5 6TD' });
-  const douglasHome = makeAddress(ctx, { id: 'adr_douglas_home', line1: '40 Moray Loan', town: 'Glenmoray', postcode: 'QX4 3PW' });
+  const moragHome = makeAddress(ctx, { id: 'adr_morag_home', line1: '5 Rowan Gait', town: 'Craiglarrick', postcode: 'QX5 6TD' });
+  const douglasHome = makeAddress(ctx, { id: 'adr_douglas_home', line1: '40 Moray Loan', town: 'Dunlarrick', postcode: 'QX4 3PW' });
 
   const hh = 'hh_grant';
   const ishbel = makePerson(ctx, {
@@ -41,7 +41,7 @@ export function seedIshbelGrant(ctx: BuildContext): void {
     communicationNeeds: { needs: ['Hearing aid (both ears); check they are in and working', 'Short sentences, one question at a time', 'Best mid-morning; tires and becomes more confused after lunch'], note: 'Alzheimer\'s type dementia. Likes to be called Ishbel, not Mrs Grant.' },
     alerts: [{ id: 'alt_ishbel_inpatient', kind: 'other', text: 'Inpatient, Clydeshore Royal Infirmary ward 7 (since 15 Jul 2026); delayed discharge', from: '2026-07-15' }],
     contact: { phone: '01000 618402' },
-    gpPractice: 'Portnellan Medical Practice',
+    gpPractice: 'Portlennan Medical Practice',
     ethnicity: 'scottish',
     createdAt: at('2023-02-14', '10:00'),
   });
@@ -70,7 +70,7 @@ export function seedIshbelGrant(ctx: BuildContext): void {
     createdAt: at('2024-09-10', '10:00'),
   });
 
-  ctx.data.households.push({ id: hh, synthetic: true, addressId: larchBrae.id, memberIds: [ishbel.id], label: 'Grant household, Glenmoray' });
+  ctx.data.households.push({ id: hh, synthetic: true, addressId: larchBrae.id, memberIds: [ishbel.id], label: 'Grant household, Dunlarrick' });
   relate(ctx, morag.id, ishbel.id, 'child-of', { notes: 'Daughter and nearest relative. Visits most days. Supports a move to residential care' });
   relate(ctx, douglas.id, ishbel.id, 'child-of', { notes: 'Son. Lives ten minutes away. Objects to residential care; offers to move in and provide overnight care' });
   relate(ctx, ishbel.id, morag.id, 'parent-of');
@@ -163,7 +163,7 @@ export function seedIshbelGrant(ctx: BuildContext): void {
           decision: 'Managing her money and property (pension, savings and the house)',
           assessedAt: at('2026-08-06', '11:00'),
           assessorName: `Dr ${name(gp)}`,
-          assessorRole: 'GP, Portnellan Medical Practice',
+          assessorRole: 'GP, Portlennan Medical Practice',
           outcome: 'lacks-capacity',
           evidence: 'Cannot say what income she has, does not recognise the name of her bank, and believes her late husband still pays the bills. Consistent with the ward assessment. Financial powers are not sought in this application; the family have been asked to consider a Part 3 access to funds application for day-to-day expenses.',
           communicationSupport: 'Hearing aids in; mid-morning; daughter present.',
@@ -258,7 +258,7 @@ export function seedIshbelGrant(ctx: BuildContext): void {
     { id: 'act_ishbel_1', title: 'MHO report under s57(3) for the welfare guardianship application', detail: 'Statutory deadline 14 Sep 2026 (21 days from notice on 24 Aug, s57(4))', owner: mho, agency: 'social-work', due: '2026-09-14', status: 'in-progress', evidence: 'Mrs Grant interviewed 27 Aug and 1 Sep; both children seen; draft started 1 Sep' },
     { id: 'act_ishbel_2', title: 'Serve intimation of the application on Mrs Grant, Morag Kilgour and Douglas Grant; notify the MWC and OPG', owner: sw, agency: 'social-work', due: '2026-09-01', status: 'complete', completedAt: at('2026-09-01', '16:00'), evidence: 'Intimation served on the ward 1 Sep with the advocate present; letters to both children 28 Aug; MWC and OPG notified 28 Aug' },
     { id: 'act_ishbel_3', title: 'Offer independent advocacy to Mrs Grant for the hearing', owner: sw, agency: 'social-work', due: '2026-08-28', status: 'complete', completedAt: at('2026-08-26', '11:00'), evidence: 'Referred to Clydeshore Advocacy 21 Aug; Tam Guthrie met her on the ward 26 Aug and will attend the hearing' },
-    { id: 'act_ishbel_4', title: 'Identify two residential placements the family can visit, and cost a home package with overnight cover for comparison', owner: discharge, agency: 'health', due: '2026-09-11', status: 'in-progress', evidence: 'Rowanbank Care Home and Glen View visited by Morag 29 Aug; home package costing requested from Adult Services' },
+    { id: 'act_ishbel_4', title: 'Identify two residential placements the family can visit, and cost a home package with overnight cover for comparison', owner: discharge, agency: 'health', due: '2026-09-11', status: 'in-progress', evidence: 'Whinbrae House and Glen View visited by Morag 29 Aug; home package costing requested from Adult Services' },
     { id: 'act_ishbel_5', title: 'Meet Douglas Grant with the council solicitor to explain the hearing, his right to be heard, and what a safe home package would need', owner: sw, agency: 'social-work', due: '2026-09-08', status: 'open' },
     { id: 'act_ishbel_6', title: 'Weekly update from ward 7 to the allocated worker on wellbeing, falls and attempts to leave, until discharge', owner: discharge, agency: 'health', due: '2026-09-25', status: 'in-progress', evidence: 'Updates 26 Aug and 1 Sep' },
   ];
@@ -358,7 +358,7 @@ export function seedIshbelGrant(ctx: BuildContext): void {
   E({ occurredAt: at('2026-06-30', '10:40'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP: weight loss, forgetting to eat; daughter asks about a care home', detail: 'Weight down 4 kg since January. Daughter raised residential care; Mrs Grant said "I am going nowhere". Dietitian referral. No power of attorney in place.', significance: 'moderate', linkedPersonIds: [morag.id] });
   E({ occurredAt: at('2026-07-15', '06:40'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.admission', title: 'Admitted to Clydeshore Royal Infirmary after a fall at home: fractured left wrist, dehydration', detail: 'Found at the foot of the stairs by the morning carer. Fractured left wrist, dehydrated, confused. Admitted to ward 7 (care of the elderly).', significance: 'high', significanceReason: 'Third fall; admission that led to the delayed discharge' });
   E({ occurredAt: at('2026-07-24', '00:00'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.assessment', title: 'Medically fit for discharge; delayed discharge recorded', detail: 'Wrist in a cast, mobilising with a frame. Ward team and consultant consider she cannot return home safely. Discharge coordinator allocated. Family meeting requested.', significance: 'high', significanceReason: 'Start of the delayed discharge' });
-  E({ occurredAt: at('2026-07-28', '11:00'), agency: 'health', recordedByName: name(discharge), recordedByUserId: discharge, eventType: 'social-work.referral', title: 'AWI capacity concern raised by the discharge coordinator', detail: 'Capacity for the residence decision in doubt. Daughter supports residential care; son objects. No power of attorney known. Referred to Adult Services, Portnellan; allocated to Stuart Blair.', significance: 'high', significanceReason: 'AWI process started' });
+  E({ occurredAt: at('2026-07-28', '11:00'), agency: 'health', recordedByName: name(discharge), recordedByUserId: discharge, eventType: 'social-work.referral', title: 'AWI capacity concern raised by the discharge coordinator', detail: 'Capacity for the residence decision in doubt. Daughter supports residential care; son objects. No power of attorney known. Referred to Adult Services, Portlennan; allocated to Stuart Blair.', significance: 'high', significanceReason: 'AWI process started' });
   E({ occurredAt: at('2026-07-30', '10:00'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.assessment', title: 'Ward cognitive testing: MMSE 14/30', detail: 'Down from 22/30 in 2023. Orientated to person only. Hearing aids in for the test.', significance: 'moderate' });
   E({ occurredAt: at('2026-08-04', '14:00'), agency: 'health', recordedByName: `${geriatrician}, consultant geriatrician`, eventType: 'health.assessment', title: 'Capacity assessment (residence decision): lacks capacity', detail: 'Assessed twice, morning and afternoon. Understands she is in hospital and wants to go home; cannot retain information about the falls or the stairs, and cannot weigh the risks against her wish. Approved medical practitioner report to follow.', significance: 'high', significanceReason: 'Incapacity for the decision in question' });
   E({ occurredAt: at('2026-08-05', '09:30'), agency: 'regulator', sourceSystem: 'opg', recordedByName: 'OPG register connector', recordedByUserId: opg, eventType: 'other', title: 'OPG register check: no power of attorney, no guardianship', detail: 'Reference OPG-REG-2026-40922. No registered power of attorney, guardianship or intervention order for Ishbel Grant.', significance: 'high', significanceReason: 'No existing powers; a route decision is needed' });

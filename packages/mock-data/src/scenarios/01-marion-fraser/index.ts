@@ -1,5 +1,5 @@
 /**
- * Scenario 1: Marion Fraser, 79, Portnellan. Adult Support and Protection, financial harm by a
+ * Scenario 1: Marion Fraser, 79, Portlennan. Adult Support and Protection, financial harm by a
  * nephew who holds an unregistered "arrangement" over her bank card. Capacity fluctuates
  * (vascular dementia). The ASP investigation is under way, the case conference is in nine days,
  * and a linked AWI process is waiting on a capacity assessment. OPG check shows no power of attorney.
@@ -24,8 +24,8 @@ export function seedMarionFraser(ctx: BuildContext): void {
   const name = (id: string) => userName(ctx, id);
 
   // Addresses.
-  const shoreLoan = makeAddress(ctx, { id: 'adr_marion_home', line1: '14 Shore Loan', town: 'Portnellan', postcode: 'QX3 2LR' });
-  const callumFlat = makeAddress(ctx, { id: 'adr_callum_flat', line1: '8 Burnside Vennel', line2: 'Flat 1/2', town: 'Kilbrannan', postcode: 'QX2 4EH' });
+  const shoreLoan = makeAddress(ctx, { id: 'adr_marion_home', line1: '14 Shore Loan', town: 'Portlennan', postcode: 'QX3 2LR' });
+  const callumFlat = makeAddress(ctx, { id: 'adr_callum_flat', line1: '8 Burnside Vennel', line2: 'Flat 1/2', town: 'Auchentorran', postcode: 'QX2 4EH' });
 
   const hh = 'hh_fraser';
   const marion = makePerson(ctx, {
@@ -39,7 +39,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
     householdId: hh,
     communicationNeeds: { needs: ['Hearing aid (left ear); check it is in before any conversation', 'Clearer in the mornings; arrange visits before midday'], note: 'Vascular dementia; capacity fluctuates through the day' },
     contact: { phone: '01000 342118' },
-    gpPractice: 'Portnellan Medical Practice',
+    gpPractice: 'Portlennan Medical Practice',
     ethnicity: 'scottish',
     createdAt: at('2024-02-13', '10:00'),
   });
@@ -52,12 +52,12 @@ export function seedMarionFraser(ctx: BuildContext): void {
     chi: syntheticChi(ctx, '1988-05-14', 'male'),
     addressHistory: [{ addressId: callumFlat.id, from: '2021-10-01', note: 'Council tenancy; stays some nights at 14 Shore Loan since about June 2026' }],
     contact: { phone: '07700 900274' },
-    gpPractice: 'Braeside Health Centre',
+    gpPractice: 'Craiglarrick Health Centre',
     ethnicity: 'scottish',
     createdAt: at('2025-03-18', '10:00'),
   });
 
-  ctx.data.households.push({ id: hh, synthetic: true, addressId: shoreLoan.id, memberIds: [marion.id], label: 'Fraser household, Portnellan' });
+  ctx.data.households.push({ id: hh, synthetic: true, addressId: shoreLoan.id, memberIds: [marion.id], label: 'Fraser household, Portlennan' });
   relate(ctx, callum.id, marion.id, 'nephew-or-niece-of', { notes: 'Son of her late brother. Visits several times a week; does her shopping; holds her bank card under an unregistered "arrangement"' });
   relate(ctx, marion.id, callum.id, 'aunt-or-uncle-of');
 
@@ -149,10 +149,10 @@ export function seedMarionFraser(ctx: BuildContext): void {
     detail: {
       concern: {
         receivedAt: at('2026-08-21', '09:30'),
-        source: 'Police Scotland Adult Concern Report (iVPD) following a vulnerable customer referral from Clydeshore Savings Bank, Portnellan branch',
+        source: 'Police Scotland Adult Concern Report (iVPD) following a vulnerable customer referral from Clydeshore Savings Bank, Portlennan branch',
         sourceAgency: 'police',
         sourceReference: 'IVPD-ACR-2026-08-1187',
-        summary: 'The bank reported 31 cash machine withdrawals totalling £2,410 between 8 Jun and 17 Aug 2026, most at Kilbrannan and several late in the evening. Marion attended the branch on 18 Aug unsure why her balance was low and said her nephew Callum "keeps my card for me". She has a diagnosis of vascular dementia.',
+        summary: 'The bank reported 31 cash machine withdrawals totalling £2,410 between 8 Jun and 17 Aug 2026, most at Auchentorran and several late in the evening. Marion attended the branch on 18 Aug unsure why her balance was low and said her nephew Callum "keeps my card for me". She has a diagnosis of vascular dementia.',
         harmTypes: ['financial', 'psychological'],
         immediateSafety: 'No immediate physical risk. Marion is at home with care at home visits twice a day. The bank has placed a temporary limit of £100 a day on cash withdrawals pending contact with the council.',
         policeInvolved: true,
@@ -190,7 +190,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
           { at: at('2026-08-28', '11:00'), power: 's8', withPersonId: marion.id, note: 'Interviewed alone with her advocate present. Marion was clear that Callum "does my messages" and keeps her card "so I do not lose it". She did not know the balance, could not say how often he withdraws cash, and became upset when told the amount. She wants her money back and her card in her own purse, and does not want Callum "in trouble".', adultDeclined: false },
         ],
         recordsRequests: [
-          { requestedAt: at('2026-08-27', '16:00'), power: 's10', holder: 'Portnellan Medical Practice (Dr Amira Farouk)', holderAgency: 'health', status: 'received', note: 'Summary of consultations 2024 to 2026 and the memory clinic letter received 1 Sep. Records inspected by Dr Farouk on the council\'s behalf; only the summary was shared.' },
+          { requestedAt: at('2026-08-27', '16:00'), power: 's10', holder: 'Portlennan Medical Practice (Dr Amira Farouk)', holderAgency: 'health', status: 'received', note: 'Summary of consultations 2024 to 2026 and the memory clinic letter received 1 Sep. Records inspected by Dr Farouk on the council\'s behalf; only the summary was shared.' },
         ],
         consent: {
           status: 'sought-and-given',
@@ -260,7 +260,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
           decision: 'Managing her finances and the arrangement with her nephew',
           assessedAt: at('2026-09-04', '10:00'),
           assessorName: `Dr ${name(gp)}`,
-          assessorRole: 'GP, Portnellan Medical Practice',
+          assessorRole: 'GP, Portlennan Medical Practice',
           outcome: 'pending',
           evidence: 'Assessment booked for 4 Sep at 10:00 at home, with her advocate present. Dr Farouk noted on 28 Aug that Marion is clearer in the mornings, so the assessment is timed for then. Outcome to be recorded before the case conference on 11 Sep.',
           communicationSupport: 'Morning appointment; hearing aid checked; advocate present; nephew not present.',
@@ -308,7 +308,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
   // ----- Actions -----
   const actions: Array<{ id: string; title: string; owner: string; agency: Agency; due: string; status: 'open' | 'in-progress' | 'complete'; completedAt?: string; evidence?: string; detail?: string }> = [
     { id: 'act_marion_1', title: 'Obtain bank statements and cash machine footage for 1 Jun to 20 Aug; interview Callum Fraser under caution', owner: ds, agency: 'police', due: '2026-09-04', status: 'in-progress', evidence: 'Statements received 1 Sep; footage requested from two machines; interview arranged for 3 Sep' },
-    { id: 'act_marion_2', title: 's10 records request to Portnellan Medical Practice for consultations 2024 to 2026 and the memory clinic letter', owner: co, agency: 'social-work', due: '2026-09-01', status: 'complete', completedAt: at('2026-09-01', '10:00'), evidence: 'Summary received from Dr Farouk 1 Sep; filed to the investigation record' },
+    { id: 'act_marion_2', title: 's10 records request to Portlennan Medical Practice for consultations 2024 to 2026 and the memory clinic letter', owner: co, agency: 'social-work', due: '2026-09-01', status: 'complete', completedAt: at('2026-09-01', '10:00'), evidence: 'Summary received from Dr Farouk 1 Sep; filed to the investigation record' },
     { id: 'act_marion_3', title: 'Capacity assessment for financial decisions, at home, morning, advocate present', owner: gp, agency: 'health', due: '2026-09-04', status: 'open', detail: 'Feeds the linked AWI process and the case conference' },
     { id: 'act_marion_4', title: 'Council officer\'s report with integrated chronology for the case conference', owner: co, agency: 'social-work', due: '2026-09-08', status: 'in-progress', evidence: 'Chronology pack built; report drafted to section 4' },
     { id: 'act_marion_5', title: 'With Marion\'s agreement, ask the bank to move her pension to a new account with a card issued only to her', owner: sw, agency: 'social-work', due: '2026-08-31', status: 'open', detail: 'Bank vulnerable customer lead (Fiona Watt) needs Marion to attend the branch; morning appointment to be booked' },
@@ -328,7 +328,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
     title: 'ASP inter-agency discussion: Marion Fraser',
     scheduledAt: at('2026-08-27', '10:00'),
     endsAt: at('2026-08-27', '11:00'),
-    location: 'Teams call (Portnellan Resource Centre host)',
+    location: 'Teams call (Portlennan Resource Centre host)',
     status: 'held',
     chairUserId: co,
     chairName: name(co),
@@ -347,7 +347,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
       { id: 'ag_marion_iad_5', order: 5, title: 'Case conference date', status: 'done' },
     ],
     informationShared: [
-      { id: 'is_marion_iad_1', agency: 'police', byName: `DS ${name(ds)}`, byUserId: ds, at: at('2026-08-27', '10:05'), summary: 'Bank report: 31 withdrawals, £2,410, 8 Jun to 17 Aug, 19 from the Kilbrannan machine near Callum Fraser\'s flat. Branch statement taken. No crime recorded yet.', relevance: 'Pattern and scale of the financial harm', linkedEventIds: [MARION.concernEvent] },
+      { id: 'is_marion_iad_1', agency: 'police', byName: `DS ${name(ds)}`, byUserId: ds, at: at('2026-08-27', '10:05'), summary: 'Bank report: 31 withdrawals, £2,410, 8 Jun to 17 Aug, 19 from the Auchentorran machine near Callum Fraser\'s flat. Branch statement taken. No crime recorded yet.', relevance: 'Pattern and scale of the financial harm', linkedEventIds: [MARION.concernEvent] },
       { id: 'is_marion_iad_2', agency: 'health', byName: `Dr ${name(gp)}`, byUserId: gp, at: at('2026-08-27', '10:15'), summary: 'Vascular dementia diagnosed November 2025; capacity fluctuates, clearer in the mornings. Power of attorney recommended in March and November 2025; not taken up. Low mood in July, "worried about money".', relevance: 'Vulnerability and capacity', linkedEventIds: [] },
       { id: 'is_marion_iad_3', agency: 'regulator', byName: name(opg), byUserId: opg, at: at('2026-08-27', '10:25'), summary: 'Register check requested; result expected 28 Aug. If no power of attorney, the OPG can advise the bank on a Part 3 access to funds application or a third-party mandate limited to shopping.', relevance: 'Existing powers and banking safeguards', linkedEventIds: [] },
       { id: 'is_marion_iad_4', agency: 'social-work', byName: name(sw), byUserId: sw, at: at('2026-08-27', '10:35'), summary: 'Care at home since April: two visits a day. Carers record Callum present at most morning visits since June, Marion without cash for the milkman in June, fridge nearly empty twice in August.', relevance: 'Corroboration from the care at home log', linkedEventIds: [] },
@@ -378,7 +378,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
     title: 'ASP case conference: Marion Fraser',
     scheduledAt: at('2026-09-11', '10:00'),
     endsAt: at('2026-09-11', '12:00'),
-    location: 'Portnellan Resource Centre, room 1',
+    location: 'Portlennan Resource Centre, room 1',
     status: 'scheduled',
     chairUserId: chair,
     chairName: name(chair),
@@ -443,14 +443,14 @@ export function seedMarionFraser(ctx: BuildContext): void {
   E({ occurredAt: at('2025-11-12', '14:30'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.diagnosis', title: 'Vascular dementia diagnosed at the memory clinic; disclosed to Marion and her nephew', detail: 'Repeat cognitive testing and scan consistent with vascular dementia. Marion told with Callum present at her request. Capacity noted as fluctuating and better in the mornings. Power of attorney recommended again; letter copied to the GP.', significance: 'high', significanceReason: 'Diagnosis that makes her more vulnerable to harm (three-point test limb c)', linkedPersonIds: [callum.id] });
   E({ occurredAt: at('2026-01-20', '15:10'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP home visit: chest infection', detail: 'Antibiotics prescribed. Nephew present.', significance: 'low', visibility: 'agency-only', lawfulBasisId: undefined });
   E({ occurredAt: at('2026-03-09', '02:15'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.admission', title: 'Admitted to Clydeshore Royal Infirmary after a fall at home', detail: 'Found on the kitchen floor by her nephew at about 01:30. Bruising to hip and shoulder, no fracture. Confused on admission; delirium settled by day 3. Five nights on ward 4.', significance: 'high', significanceReason: 'First admission; led to care at home', linkedPersonIds: [callum.id] });
-  E({ occurredAt: at('2026-03-14', '00:00'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.discharge', title: 'Discharged home; care at home recommended', detail: 'Occupational therapy assessment: needs prompting with meals and medication, unsafe with the cooker unsupervised. Referred to Adult Services, Portnellan.', significance: 'moderate' });
+  E({ occurredAt: at('2026-03-14', '00:00'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.discharge', title: 'Discharged home; care at home recommended', detail: 'Occupational therapy assessment: needs prompting with meals and medication, unsafe with the cooker unsupervised. Referred to Adult Services, Portlennan.', significance: 'moderate' });
   E({ occurredAt: at('2026-03-20', '00:00'), agency: 'social-work', sourceSystem: 'carefirst', recordedByName: 'CareFirst connector', eventType: 'social-work.assessment', title: 'Community care assessment: care at home twice a day', detail: 'Assessment by Stuart Blair. Marion wants to stay at home. Nephew described as main support. Care at home for morning and teatime visits; key safe fitted.', significance: 'moderate' });
   E({ occurredAt: at('2026-04-06', '00:00'), agency: 'social-work', sourceSystem: 'carefirst', recordedByName: 'CareFirst connector', eventType: 'care.service-start', title: 'Care at home started: morning and teatime visits', detail: 'Clydeshore Care at Home. Medication prompts, meals, welfare check. Carers to record who is in the house.', significance: 'low' });
-  E({ occurredAt: at('2026-06-01', '00:00'), approximate: true, agency: 'social-work', recordedByName: name(sw), recordedByUserId: sw, eventType: 'household.change', title: 'Nephew Callum Fraser began staying overnight in the spare room', detail: 'Date approximate, from the care at home log and Marion\'s account. Callum keeps his tenancy in Kilbrannan and stays "three or four nights" a week. Carers record him present at most morning visits from June.', significance: 'moderate', significanceReason: 'Household change coinciding with the start of the withdrawals', linkedPersonIds: [callum.id] });
+  E({ occurredAt: at('2026-06-01', '00:00'), approximate: true, agency: 'social-work', recordedByName: name(sw), recordedByUserId: sw, eventType: 'household.change', title: 'Nephew Callum Fraser began staying overnight in the spare room', detail: 'Date approximate, from the care at home log and Marion\'s account. Callum keeps his tenancy in Auchentorran and stays "three or four nights" a week. Carers record him present at most morning visits from June.', significance: 'moderate', significanceReason: 'Household change coinciding with the start of the withdrawals', linkedPersonIds: [callum.id] });
   E({ occurredAt: at('2026-06-24', '08:20'), agency: 'social-work', sourceSystem: 'carefirst', recordedByName: 'CareFirst connector', eventType: 'care.provider-concern', title: 'Care at home: Marion had no cash for the milkman and said "Callum has my card"', detail: 'Carer note. Marion asked the carer to lend her £5. Said her nephew keeps her bank card "so I do not lose it". Coordinator informed.', significance: 'moderate', significanceReason: 'First record of the card being held by the nephew' });
   E({ occurredAt: at('2026-07-15', '10:30'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP: low in mood, "worried about money"', detail: 'Attended with her nephew. Tearful, not sleeping, said she was "worried about money" but could not say why. Nephew said "she gets confused about the bank". Mood review in four weeks.', significance: 'moderate', linkedPersonIds: [callum.id] });
   E({ occurredAt: at('2026-08-06', '17:15'), agency: 'social-work', sourceSystem: 'carefirst', recordedByName: 'CareFirst connector', eventType: 'care.provider-concern', title: 'Care at home: fridge nearly empty on two visits this week', detail: 'Carer note. Bread, margarine and one tin. Marion said Callum "would bring the messages". Carer bought milk and eggs from petty cash. Coordinator to raise with the family.', significance: 'moderate' });
-  E({ id: MARION.concernEvent, occurredAt: at('2026-08-20', '15:45'), agency: 'police', sourceSystem: 'ivpd', recordedByName: 'iVPD connector', eventType: 'police.concern-report', title: 'Adult Concern Report: bank raised concern about cash withdrawals', detail: 'Clydeshore Savings Bank reported 31 cash machine withdrawals totalling £2,410 between 8 Jun and 17 Aug, 19 at Kilbrannan, several after 22:00. Marion attended the branch on 18 Aug unsure why her balance was low and said her nephew keeps her card.', response: 'Concern report shared with the council adult protection team. Bank placed a £100 daily withdrawal limit.', significance: 'high', significanceReason: 'Pattern of financial harm to an adult with dementia', evidenceRefs: [{ kind: 'connector', ref: 'cev_marion_acr', label: 'iVPD Adult Concern Report' }] });
+  E({ id: MARION.concernEvent, occurredAt: at('2026-08-20', '15:45'), agency: 'police', sourceSystem: 'ivpd', recordedByName: 'iVPD connector', eventType: 'police.concern-report', title: 'Adult Concern Report: bank raised concern about cash withdrawals', detail: 'Clydeshore Savings Bank reported 31 cash machine withdrawals totalling £2,410 between 8 Jun and 17 Aug, 19 at Auchentorran, several after 22:00. Marion attended the branch on 18 Aug unsure why her balance was low and said her nephew keeps her card.', response: 'Concern report shared with the council adult protection team. Bank placed a £100 daily withdrawal limit.', significance: 'high', significanceReason: 'Pattern of financial harm to an adult with dementia', evidenceRefs: [{ kind: 'connector', ref: 'cev_marion_acr', label: 'iVPD Adult Concern Report' }] });
   E({ occurredAt: at('2026-08-21', '09:30'), agency: 'social-work', recordedByName: name(co), recordedByUserId: co, eventType: 'process.referral', title: 'Adult concern received; three-point test met; inquiry opened', detail: 'Council officer allocated. Screening decision by the team leader: proceed to inquiry. Police, GP and OPG contacted the same day.', significance: 'high', significanceReason: 'ASP process started' });
   E({ occurredAt: at('2026-08-22', '11:00'), agency: 'police', recordedByName: `DS ${name(ds)}`, recordedByUserId: ds, eventType: 'police.incident', title: 'PPU enquiry: branch statement taken; nephew checked on police systems', detail: 'Statement from the branch manager. Callum Fraser: no previous convictions; one 2023 intelligence entry for a dispute over a debt. Bank asked for statements and machine footage under s5.', significance: 'moderate', visibility: 'agency-only', lawfulBasisId: undefined, linkedPersonIds: [callum.id] });
   E({ occurredAt: at('2026-08-25', '14:00'), agency: 'social-work', recordedByName: name(co), recordedByUserId: co, eventType: 'social-work.contact', title: 'Council officer spoke with the care at home coordinator', detail: 'Log of who was in the house at each visit since April obtained. Callum present at 41 of 58 morning visits since 1 Jun. Carers asked to record cash in the house and any distress.', significance: 'moderate', visibility: 'agency-only', lawfulBasisId: undefined });
@@ -461,7 +461,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
   E({ occurredAt: at('2026-08-28', '11:00'), agency: 'third-sector', recordedByName: name(adv), recordedByUserId: adv, eventType: 'voice.adult', title: 's8 interview: Marion interviewed alone; her views recorded by her advocate', detail: 'Wants to stay at home; fond of Callum and does not want him "in trouble"; wants her money back and her own card in her purse. Consent to the investigation confirmed in the morning.', significance: 'high', significanceReason: 'The adult\'s own account and wishes' });
   E({ occurredAt: at('2026-08-28', '15:30'), agency: 'regulator', sourceSystem: 'opg', recordedByName: 'OPG register connector', recordedByUserId: opg, eventType: 'other', title: 'OPG register check: no power of attorney, no guardianship', detail: 'Reference OPG-REG-2026-41877. No registered power of attorney, guardianship or intervention order for Marion Fraser. Nephew holds no formal authority over her funds.', significance: 'high', significanceReason: 'The "arrangement" has no legal basis', linkedProcessIds: [asp.id, awi.id] });
   E({ occurredAt: at('2026-09-01', '10:00'), agency: 'health', recordedByName: `Dr ${name(gp)}`, recordedByUserId: gp, eventType: 'sharing', title: 's10 records summary provided to the council officer', detail: 'Summary of consultations 2024 to 2026 and the memory clinic letters. Inspected by Dr Farouk; only the summary shared. Capacity assessment booked for 4 Sep.', significance: 'moderate' });
-  E({ occurredAt: at('2026-09-01', '16:20'), agency: 'police', recordedByName: `DS ${name(ds)}`, recordedByUserId: ds, eventType: 'police.incident', title: 'Bank statements received; Callum Fraser invited for interview under caution on 3 Sep', detail: 'Statements 1 Jun to 20 Aug confirm the withdrawal pattern. Footage requested from Kilbrannan Station Brae and Portnellan Quay Wynd machines.', significance: 'moderate', visibility: 'agency-only', lawfulBasisId: undefined, linkedPersonIds: [callum.id] });
+  E({ occurredAt: at('2026-09-01', '16:20'), agency: 'police', recordedByName: `DS ${name(ds)}`, recordedByUserId: ds, eventType: 'police.incident', title: 'Bank statements received; Callum Fraser invited for interview under caution on 3 Sep', detail: 'Statements 1 Jun to 20 Aug confirm the withdrawal pattern. Footage requested from Auchentorran Station Brae and Portlennan Quay Wynd machines.', significance: 'moderate', visibility: 'agency-only', lawfulBasisId: undefined, linkedPersonIds: [callum.id] });
 
   // Analysis note, kept apart from the facts.
   const patternIds = ctx.data.events.filter((e) => e.subjectIds.includes(marion.id) && (e.eventType === 'household.change' || e.eventType === 'care.provider-concern' || e.id === MARION.concernEvent || (e.eventType === 'health.consultation' && e.occurredAt.startsWith('2026-07')))).map((e) => e.id);
@@ -476,7 +476,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
     recordedAt: at('2026-09-01', '17:30'),
     kind: 'pattern',
     title: 'Withdrawals align with the nephew\'s visits and overnight stays',
-    text: 'The bank\'s list of 31 withdrawals between 8 June and 17 August falls on days when the care at home log records Callum in the house, and 19 of them are from the Kilbrannan machine near his flat rather than Portnellan. The pattern begins within a fortnight of him starting to stay overnight. Marion\'s low mood in July and the empty fridge in August follow the same weeks. This is a pattern for the case conference to weigh alongside the police interview; it is not a finding that Callum took the money.',
+    text: 'The bank\'s list of 31 withdrawals between 8 June and 17 August falls on days when the care at home log records Callum in the house, and 19 of them are from the Auchentorran machine near his flat rather than Portlennan. The pattern begins within a fortnight of him starting to stay overnight. Marion\'s low mood in July and the empty fridge in August follow the same weeks. This is a pattern for the case conference to weigh alongside the police interview; it is not a finding that Callum took the money.',
   });
 
   // Connector inbox: the promoted Adult Concern Report and one pending GP record.
@@ -487,7 +487,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
     subjectId: marion.id,
     receivedAt: at('2026-08-20', '16:05'),
     externalRef: 'IVPD-ACR-2026-08-1187',
-    sourcePayload: { type: 'Adult Concern Report', adult: 'FRASER, Marion', dob: '19/02/1947', address: '14 Shore Loan, Portnellan', reporter: 'Clydeshore Savings Bank, Portnellan branch', summary: '31 ATM withdrawals £2,410 8 Jun to 17 Aug; adult unsure of balance; nephew holds card', concernHub: `PC ${name(hub)}` },
+    sourcePayload: { type: 'Adult Concern Report', adult: 'FRASER, Marion', dob: '19/02/1947', address: '14 Shore Loan, Portlennan', reporter: 'Clydeshore Savings Bank, Portlennan branch', summary: '31 ATM withdrawals £2,410 8 Jun to 17 Aug; adult unsure of balance; nephew holds card', concernHub: `PC ${name(hub)}` },
     mapped: { eventType: 'police.concern-report', title: 'Adult Concern Report: bank raised concern about cash withdrawals', detail: 'Clydeshore Savings Bank reported 31 cash machine withdrawals totalling £2,410 between 8 Jun and 17 Aug. Marion attended the branch unsure why her balance was low and said her nephew keeps her card.', occurredAt: at('2026-08-20', '15:45'), hasTime: true, significance: 'high', mappingRule: 'ivpd.acr.financial-harm' },
     status: 'promoted',
     reviewedByUserId: co,
@@ -501,7 +501,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
     subjectId: marion.id,
     receivedAt: at('2026-08-30', '21:40'),
     externalRef: 'EMIS-OOH-2026-08-30-4471',
-    sourcePayload: { patient: 'FRASER, Marion', practice: 'Portnellan Medical Practice', source: 'Out-of-hours encounter report filed to the practice record', clinician: 'OOH GP (telephone)', code: 'Telephone consultation: anxiety', note: 'Phoned NHS 24 at 18:50 distressed; says nephew took her card "for safe keeping" and she has no money for the weekend; no physical complaint; advice given; practice to follow up Monday' },
+    sourcePayload: { patient: 'FRASER, Marion', practice: 'Portlennan Medical Practice', source: 'Out-of-hours encounter report filed to the practice record', clinician: 'OOH GP (telephone)', code: 'Telephone consultation: anxiety', note: 'Phoned NHS 24 at 18:50 distressed; says nephew took her card "for safe keeping" and she has no money for the weekend; no physical complaint; advice given; practice to follow up Monday' },
     mapped: { eventType: 'health.consultation', title: 'Out-of-hours GP telephone consultation: distressed, "no money for the weekend"', detail: 'Marion phoned NHS 24 at 18:50, distressed, saying her nephew had taken her card "for safe keeping" and she had no money for the weekend. No physical complaint. Advice given; practice asked to follow up on Monday.', occurredAt: at('2026-08-30', '19:05'), hasTime: true, significance: 'high', mappingRule: 'emis.consultation.safeguarding-context' },
   });
 }

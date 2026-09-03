@@ -355,7 +355,7 @@ The proxy blocked www.legislation.gov.uk, www.gov.uk, www.gov.scot and www.mygov
 ### 6.3 Place names (renames)
 - Method: web search for each candidate on 2026-09-03; a candidate was rejected if any real place, business or property carried the name.
 - Rejected: Auchenvale (a farm at Colmonell, Ayrshire, in the 1882 county directory); Cairnbrae (a natural burial ground near Dundee and a camp at Crieff).
-- Adopted, no search footprint found: Auchentorran (replaces Kilbrannan), Portlennan (replaces Portnellan), Dunlarrick (replaces Glenmoray), Craiglarrick (replaces Braeside). Whinbrae House replaces Rowanbank Care Home; "Whinbrae" appears only as a holiday cottage in Bridlington and a house name in Ilkley, neither a care home.
+- Adopted, no search footprint found: Auchentorran (replaces Auchentorran), Portlennan (replaces Portlennan), Dunlarrick (replaces Dunlarrick), Craiglarrick (replaces Craiglarrick). Whinbrae House replaces Whinbrae House; "Whinbrae" appears only as a holiday cottage in Bridlington and a house name in Ilkley, neither a care home.
 - Kept: Ardvale, Clydeshore.
 
 ### 6.4 New CP clocks (product owner values)

@@ -2,7 +2,7 @@
 
 ## The story
 
-Kayleigh lives at 8 Harbour Brae, Ardvale with Lily (P3 at Ardvale Primary, named person Claire Cowan) and Mason (health visitor Sunita Rao). Mason's father, Ryan Kerr (34), is Kayleigh's ex-partner. He lived with the family from early 2022 until his arrest in March 2025 for an assault that involved strangulation. He was convicted in November 2025 under section 1 of the Domestic Abuse (Scotland) Act 2018 and is on a community payback order supervised by justice social worker Helen Rae. He now lives at 15 Cannon Loan, Kilbrannan.
+Kayleigh lives at 8 Harbour Brae, Ardvale with Lily (P3 at Ardvale Primary, named person Claire Cowan) and Mason (health visitor Sunita Rao). Mason's father, Ryan Kerr (34), is Kayleigh's ex-partner. He lived with the family from early 2022 until his arrest in March 2025 for an assault that involved strangulation. He was convicted in November 2025 under section 1 of the Domestic Abuse (Scotland) Act 2018 and is on a community payback order supervised by justice social worker Helen Rae. He now lives at 15 Cannon Loan, Auchentorran.
 
 The police lane shows six incidents since March 2024, each as serious or more serious than the last. Three of them came within weeks of Ryan regaining contact: staying over "for Mason" after the conviction, being let in to see Mason in April, and contact about the wee one over the summer. Kayleigh was first heard at Clydeshore MARAC on 8 January 2026 after a December incident with a DAQ of 15. Flags went on her GP and housing records the next day. The school was never flagged and learned of the January incident from Lily herself. A night of 34 calls and messages in June fell inside the 12 month repeat window but was dealt with as a single-agency warning.
 

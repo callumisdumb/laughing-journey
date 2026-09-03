@@ -1,5 +1,5 @@
 /**
- * Scenario 5: Tomasz Nowak, 44, Glenmoray. Adult Support and Protection, self-neglect and
+ * Scenario 5: Tomasz Nowak, 44, Dunlarrick. Adult Support and Protection, self-neglect and
  * hoarding, fire risk raised by Scottish Fire and Rescue. He has capacity and declines
  * intervention; undue pressure considered and not found; a support-only response was agreed at
  * the case conference with his consent. Polish interpreter required throughout.
@@ -24,7 +24,7 @@ const INTERPRETER = 'Ewa Zielińska (Polish interpreter)';
 export function seedTomaszNowak(ctx: BuildContext): void {
   const name = (id: string) => userName(ctx, id);
 
-  const vennel = makeAddress(ctx, { id: 'adr_tomasz_home', line1: '3 Distillery Vennel', town: 'Glenmoray', postcode: 'QX4 5HN' });
+  const vennel = makeAddress(ctx, { id: 'adr_tomasz_home', line1: '3 Distillery Vennel', town: 'Dunlarrick', postcode: 'QX4 5HN' });
   const hh = 'hh_nowak';
   const tomasz = makePerson(ctx, {
     id: TOMASZ.tomasz,
@@ -37,11 +37,11 @@ export function seedTomaszNowak(ctx: BuildContext): void {
     householdId: hh,
     communicationNeeds: { interpreterLanguage: 'Polish', needs: ['Polish interpreter for meetings and visits'], note: 'Reads English well; prefers to speak Polish for anything that matters. Written material to be provided in Polish.' },
     contact: { phone: '07700 900318' },
-    gpPractice: 'Portnellan Medical Practice',
+    gpPractice: 'Portlennan Medical Practice',
     ethnicity: 'polish',
     createdAt: at('2016-09-12', '10:00'),
   });
-  ctx.data.households.push({ id: hh, synthetic: true, addressId: vennel.id, memberIds: [tomasz.id], label: 'Nowak household, Glenmoray' });
+  ctx.data.households.push({ id: hh, synthetic: true, addressId: vennel.id, memberIds: [tomasz.id], label: 'Nowak household, Dunlarrick' });
 
   const co = USR.moiraGilmour;
   const sw = USR.stuartBlair;
@@ -132,7 +132,7 @@ export function seedTomaszNowak(ctx: BuildContext): void {
     detail: {
       concern: {
         receivedAt: at('2026-06-05', '14:20'),
-        source: 'Scottish Fire and Rescue Service, Community Safety, Glenmoray (Gordon Nairn) after a home fire safety visit',
+        source: 'Scottish Fire and Rescue Service, Community Safety, Dunlarrick (Gordon Nairn) after a home fire safety visit',
         sourceAgency: 'fire-rescue',
         sourceReference: 'SFRS-HFSV-2026-0611',
         summary: 'Home fire safety visit requested by housing after a neighbour reported the smoke alarm sounding. Newspapers and magazines stacked floor to ceiling in the living room and hall; rear door blocked; one working alarm; paper within half a metre of the cooker. Mr Nowak was polite, accepted alarms and declined help to clear.',
@@ -274,7 +274,7 @@ export function seedTomaszNowak(ctx: BuildContext): void {
     title: 'ASP inter-agency discussion: Tomasz Nowak',
     scheduledAt: at('2026-06-16', '14:00'),
     endsAt: at('2026-06-16', '15:00'),
-    location: 'Teams call (Portnellan Resource Centre host)',
+    location: 'Teams call (Portlennan Resource Centre host)',
     status: 'held',
     chairUserId: co,
     chairName: name(co),
@@ -320,7 +320,7 @@ export function seedTomaszNowak(ctx: BuildContext): void {
     title: 'ASP case conference: Tomasz Nowak',
     scheduledAt: at('2026-07-09', '10:00'),
     endsAt: at('2026-07-09', '12:00'),
-    location: 'Glenmoray Community Hub, meeting room A',
+    location: 'Dunlarrick Community Hub, meeting room A',
     status: 'held',
     chairUserId: chair,
     chairName: name(chair),
@@ -387,7 +387,7 @@ export function seedTomaszNowak(ctx: BuildContext): void {
     title: 'ASP review conference: Tomasz Nowak',
     scheduledAt: at('2026-10-08', '10:00'),
     endsAt: at('2026-10-08', '11:30'),
-    location: 'Glenmoray Community Hub, meeting room A',
+    location: 'Dunlarrick Community Hub, meeting room A',
     status: 'scheduled',
     chairUserId: chair,
     chairName: name(chair),
@@ -434,7 +434,7 @@ export function seedTomaszNowak(ctx: BuildContext): void {
   const E = (e: Omit<Parameters<typeof makeEvent>[1], 'subjectIds'> & { subjectIds?: string[] }) =>
     makeEvent(ctx, { subjectIds: [tomasz.id], linkedProcessIds: [process.id], visibility: 'integrated', lawfulBasisId: lb.id, ...e });
 
-  E({ occurredAt: at('2016-09-12', '00:00'), agency: 'housing', recordedByName: name(housing), recordedByUserId: housing, eventType: 'move.address', title: 'Tenancy started at 3 Distillery Vennel, Glenmoray', detail: 'Council tenancy, one-bedroom ground floor flat. Moved from private rented accommodation in Kilbrannan. Rent paid by standing order since.', significance: 'low' });
+  E({ occurredAt: at('2016-09-12', '00:00'), agency: 'housing', recordedByName: name(housing), recordedByUserId: housing, eventType: 'move.address', title: 'Tenancy started at 3 Distillery Vennel, Dunlarrick', detail: 'Council tenancy, one-bedroom ground floor flat. Moved from private rented accommodation in Auchentorran. Rent paid by standing order since.', significance: 'low' });
   E({ occurredAt: at('2019-04-03', '11:20'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.diagnosis', title: 'GP: depression diagnosed; sertraline started', detail: 'Low mood for six months after redundancy from the distillery bottling line. Sleep poor, appetite reduced. Sertraline started; review in four weeks. Interpreter used by telephone.', significance: 'moderate', significanceReason: 'Mental disorder relevant to the three-point test (limb c)' });
   E({ occurredAt: at('2020-11-16', '00:00'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.missed-appointment', title: 'Medication review not attended', detail: 'Repeat prescription continued for three months; letter sent.', significance: 'low', visibility: 'agency-only', lawfulBasisId: undefined });
   E({ occurredAt: at('2022-06-08', '14:10'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP telephone review: mood stable, "keeps busy with his papers"', detail: 'Reports reading Polish newspapers most of the day and little contact with anyone. No risk to self. Sertraline continued.', significance: 'low', visibility: 'agency-only', lawfulBasisId: undefined });

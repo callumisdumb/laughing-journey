@@ -96,9 +96,9 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
 
   // ----- Addresses and people -----
   const home = makeAddress(ctx, { id: 'adr_docherty_home', line1: '8 Harbour Brae', town: 'Ardvale', postcode: 'QX1 2PW' });
-  const gran = makeAddress(ctx, { id: 'adr_docherty_gran', line1: '14 Shore Loan', line2: 'Flat 1/2', town: 'Portnellan', postcode: 'QX3 6HN' });
-  const ryanHome = makeAddress(ctx, { id: 'adr_ryan_kerr', line1: '15 Cannon Loan', town: 'Kilbrannan', postcode: 'QX2 4RE' });
-  const craigHome = makeAddress(ctx, { id: 'adr_craig_kerr', line1: '3 Weavers Court', town: 'Kilbrannan', postcode: 'QX2 5LT' });
+  const gran = makeAddress(ctx, { id: 'adr_docherty_gran', line1: '14 Shore Loan', line2: 'Flat 1/2', town: 'Portlennan', postcode: 'QX3 6HN' });
+  const ryanHome = makeAddress(ctx, { id: 'adr_ryan_kerr', line1: '15 Cannon Loan', town: 'Auchentorran', postcode: 'QX2 4RE' });
+  const craigHome = makeAddress(ctx, { id: 'adr_craig_kerr', line1: '3 Weavers Court', town: 'Auchentorran', postcode: 'QX2 5LT' });
 
   const hh = 'hh_docherty';
 
@@ -114,7 +114,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
       { addressId: home.id, from: '2021-03-08', note: 'Scottish Secure Tenancy in her sole name. Away in a refuge outwith Clydeshore 15 Mar to 28 Apr 2025.' },
     ],
     householdId: hh,
-    gpPractice: 'Portnellan Medical Practice',
+    gpPractice: 'Portlennan Medical Practice',
     ethnicity: 'scottish',
     contact: { phone: '07700 900231' },
     alerts: [{ id: 'alt_kayleigh_marac', kind: 'marac-flag', text: 'MARAC flag', from: '2026-01-09', to: '2027-01-08' }],
@@ -133,7 +133,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
       { addressId: home.id, from: '2021-03-08' },
     ],
     householdId: hh,
-    gpPractice: 'Portnellan Medical Practice',
+    gpPractice: 'Portlennan Medical Practice',
     school: 'Ardvale Primary',
     ethnicity: 'scottish',
     createdAt: at('2019-06-03', '10:00'),
@@ -148,7 +148,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
     chi: syntheticChi(ctx, '2023-01-20', 'male'),
     addressHistory: [{ addressId: home.id, from: '2023-01-20' }],
     householdId: hh,
-    gpPractice: 'Portnellan Medical Practice',
+    gpPractice: 'Portlennan Medical Practice',
     ethnicity: 'scottish',
     createdAt: at('2023-01-21', '10:00'),
   });
@@ -163,7 +163,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
       { addressId: home.id, from: '2022-02-01', to: '2025-03-14', note: 'Lived with Kayleigh Docherty; left on arrest 14 Mar 2025. Start date approximate.' },
       { addressId: ryanHome.id, from: '2025-06-02', note: 'Council tenancy in his own name' },
     ],
-    gpPractice: 'Braeside Health Centre',
+    gpPractice: 'Craiglarrick Health Centre',
     ethnicity: 'scottish',
     contact: { phone: '07700 900418' },
     alerts: [
@@ -337,7 +337,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
         { at: at('2026-08-26', '11:00'), byName: name(idaa), summary: 'Kayleigh wants the children kept safe above everything. She does not want Ryan to know she has spoken to anyone. She wants the locks changed and a door chain. She would like a personal alarm.', victimResponse: 'Relieved that the school and nursery have been told who may collect the children. Anxious about the court date.' },
       ],
       flags: [
-        { agency: 'health', system: 'EMIS Web, Portnellan Medical Practice', placedAt: '2026-01-09', expiresAt: '2027-01-08', receiptRef: 'EMIS-FLAG-2026-0112' },
+        { agency: 'health', system: 'EMIS Web, Portlennan Medical Practice', placedAt: '2026-01-09', expiresAt: '2027-01-08', receiptRef: 'EMIS-FLAG-2026-0112' },
         { agency: 'housing', system: 'Clydeshore Council housing management system', placedAt: '2026-01-09', expiresAt: '2027-01-08', receiptRef: 'HSG-FLAG-2026-0044' },
       ],
       links: {
@@ -385,6 +385,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
     ],
     clocks: [
       { id: 'clk_docherty_cppm', ruleId: 'cp.cppm.initial', triggeredAt: at('2026-08-24', '11:00'), note: 'CPPM scheduled 21 Sep, day 28' },
+      { id: 'clk_docherty_notice', ruleId: 'cp.cppm.notice', triggeredAt: at('2026-09-21', '10:00'), note: 'Invitations and reports due 5 days before the CPPM' },
     ],
     linkedProcessIds: [KAYLEIGH.marac],
     viewsRecordIds: ['vw_docherty_adult', 'vw_docherty_lily'],
@@ -674,7 +675,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
     makeEvent(ctx, { subjectIds: [lily.id], linkedProcessIds: [cp.id], visibility: 'integrated', lawfulBasisId: lbCp.id, ...e });
 
   // Kayleigh, with Ryan as co-subject on the police incidents he was accused in.
-  K({ occurredAt: at('2019-06-02', '03:15'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'family.birth', title: 'Lily born at Clydeshore Royal Infirmary', detail: 'Born at 40 weeks, 3.4 kg. Discharged home to Shore Loan, Portnellan with mother on day 1. Father not named.', significance: 'low', subjectIds: [kayleigh.id, lily.id], linkedProcessIds: [] });
+  K({ occurredAt: at('2019-06-02', '03:15'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'family.birth', title: 'Lily born at Clydeshore Royal Infirmary', detail: 'Born at 40 weeks, 3.4 kg. Discharged home to Shore Loan, Portlennan with mother on day 1. Father not named.', significance: 'low', subjectIds: [kayleigh.id, lily.id], linkedProcessIds: [] });
   K({ occurredAt: at('2021-03-08', '00:00'), hasTime: false, agency: 'housing', recordedByName: name(housing), recordedByUserId: housing, eventType: 'move.address', title: 'Scottish Secure Tenancy at 8 Harbour Brae, Ardvale started', detail: 'Two-bedroom house allocated to Kayleigh Docherty with Lily. Tenancy in her sole name.', significance: 'low', subjectIds: [kayleigh.id, lily.id] });
   K({ occurredAt: at('2021-09-01', '00:00'), hasTime: false, approximate: true, agency: 'social-work', recordedByName: name(sw), recordedByUserId: sw, eventType: 'household.change', title: 'Relationship with Ryan Kerr began', detail: 'Date approximate, from Kayleigh\'s account at the August 2026 assessment.', significance: 'moderate', linkedPersonIds: [ryan.id] });
   K({ occurredAt: at('2022-02-01', '00:00'), hasTime: false, approximate: true, agency: 'social-work', recordedByName: name(sw), recordedByUserId: sw, eventType: 'household.change', title: 'Ryan Kerr moved into 8 Harbour Brae', detail: 'Date approximate, from Kayleigh\'s account. Not added to the tenancy.', significance: 'moderate', subjectIds: [kayleigh.id, ryan.id], linkedPersonIds: [lily.id] });
@@ -689,7 +690,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
   K({ occurredAt: at('2025-03-16', '11:00'), agency: 'police', sourceSystem: 'ivpd', recordedByName: 'iVPD connector', eventType: 'police.bail-condition', title: 'Bail: not to approach Kayleigh Docherty or 8 Harbour Brae', detail: 'Ardvale Sheriff Court. Special conditions until the case concludes.', significance: 'high', subjectIds: [ryan.id, kayleigh.id] });
   K({ occurredAt: at('2025-03-15', '00:00'), hasTime: false, agency: 'social-work', recordedByName: name(sw), recordedByUserId: sw, eventType: 'move.address', title: 'Kayleigh and the children went to a refuge outwith Clydeshore', detail: 'Six weeks in a refuge arranged through the national domestic abuse helpline. Recorded from Kayleigh\'s account in August 2026; the refuge address is not held.', significance: 'high', subjectIds: [kayleigh.id, lily.id, mason.id] });
   K({ occurredAt: at('2025-04-28', '00:00'), hasTime: false, agency: 'housing', recordedByName: name(housing), recordedByUserId: housing, eventType: 'other', title: 'Locks changed at 8 Harbour Brae; Kayleigh returned with the children', detail: 'Lock change under the domestic abuse policy. Ryan Kerr removed from the household record.', significance: 'moderate', subjectIds: [kayleigh.id, lily.id, mason.id] });
-  K({ occurredAt: at('2025-06-02', '00:00'), hasTime: false, agency: 'housing', recordedByName: name(housing), recordedByUserId: housing, eventType: 'move.address', title: 'Ryan Kerr: council tenancy at 15 Cannon Loan, Kilbrannan started', detail: 'One-bedroom flat.', significance: 'low', subjectIds: [ryan.id] });
+  K({ occurredAt: at('2025-06-02', '00:00'), hasTime: false, agency: 'housing', recordedByName: name(housing), recordedByUserId: housing, eventType: 'move.address', title: 'Ryan Kerr: council tenancy at 15 Cannon Loan, Auchentorran started', detail: 'One-bedroom flat.', significance: 'low', subjectIds: [ryan.id] });
   K({ occurredAt: at('2025-11-18', '14:30'), agency: 'police', recordedByName: 'Police Scotland (criminal history)', eventType: 'police.conviction', title: 'Ryan Kerr convicted: Domestic Abuse (Scotland) Act 2018 s1; community payback order', detail: 'Ardvale Sheriff Court. Community payback order: 18 months supervision, 150 hours unpaid work, domestic abuse programme requirement. A non-harassment order was considered and not made; Kayleigh told the court she did not want one.', significance: 'high', significanceReason: 'Conviction for a course of domestic abuse', subjectIds: [ryan.id, kayleigh.id] });
   K({ occurredAt: at('2025-11-25', '10:00'), agency: 'social-work', recordedByName: name(jsw), recordedByUserId: jsw, eventType: 'social-work.allocation', title: 'Community payback order supervision started; allocated to Helen Rae', detail: 'Induction completed. Unpaid work placement from 8 Dec. Domestic abuse programme assessment booked for January.', significance: 'moderate', subjectIds: [ryan.id] });
   K({ occurredAt: at('2025-12-27', '00:00'), hasTime: false, approximate: true, agency: 'third-sector', recordedByName: name(idaa), recordedByUserId: idaa, eventType: 'household.change', title: 'Contact with Ryan Kerr resumed after the conviction', detail: 'Ryan staying over some nights "for Mason". Date approximate, from Kayleigh\'s account to the IDAA in January 2026.', significance: 'moderate', linkedPersonIds: [ryan.id] });
@@ -711,7 +712,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
   K({ occurredAt: at('2026-08-28', '09:00'), agency: 'social-work', recordedByName: name(coord), recordedByUserId: coord, eventType: 'sharing', title: 'MARAC research requests sent to eight agencies (due 2 Sep)', detail: 'Names and dates of birth only. Police, GP, health visiting, housing, education, justice social work, children\'s social work, Women\'s Aid.', significance: 'low' });
   K({ occurredAt: at('2026-01-13', '10:30'), agency: 'social-work', recordedByName: name(jsw), recordedByUserId: jsw, eventType: 'social-work.contact', title: 'Supervision: Ryan Kerr denies the December incident; reminded of the order conditions', detail: 'Programme start delayed to March at his request. MARAC not disclosed to him.', significance: 'moderate', subjectIds: [ryan.id], visibility: 'agency-only', lawfulBasisId: undefined });
   K({ occurredAt: at('2026-04-07', '00:00'), hasTime: false, agency: 'social-work', recordedByName: name(jsw), recordedByUserId: jsw, eventType: 'social-work.contact', title: 'Unpaid work: 60 of 150 hours completed; two missed placements', detail: 'Warning letter issued. Programme assessment completed; group start deferred to September.', significance: 'low', subjectIds: [ryan.id], visibility: 'agency-only', lawfulBasisId: undefined });
-  K({ occurredAt: at('2019-07-20', '00:00'), hasTime: false, agency: 'police', recordedByName: 'Police Scotland (criminal history)', eventType: 'police.conviction', title: 'Ryan Kerr convicted: breach of the peace (2019), fined', detail: 'Disturbance outside a pub in Kilbrannan. Fine of 300 pounds.', significance: 'low', subjectIds: [ryan.id] });
+  K({ occurredAt: at('2019-07-20', '00:00'), hasTime: false, agency: 'police', recordedByName: 'Police Scotland (criminal history)', eventType: 'police.conviction', title: 'Ryan Kerr convicted: breach of the peace (2019), fined', detail: 'Disturbance outside a pub in Auchentorran. Fine of 300 pounds.', significance: 'low', subjectIds: [ryan.id] });
 
   // Lily and Mason.
   C({ occurredAt: at('2019-06-13', '00:00'), hasTime: false, agency: 'health', sourceSystem: 'morse', recordedByName: 'Morse connector', eventType: 'health.assessment', title: 'Health visitor first visit', detail: 'Mother aged 24, single, living with her own mother. Feeding established. Warm and attentive.', significance: 'low' });

@@ -1,8 +1,8 @@
-# Scenario 7: Rowanbank Care Home, Large Scale Investigation
+# Scenario 7: Whinbrae House, Large Scale Investigation
 
 ## The story
 
-Rowanbank Care Home at 1 Rowan Gait, Braeside is run by Rowanbank Care (Scotland) Ltd. Six of its residents, aged 78 to 92, are the subjects of one Adult Support and Protection process: Wilma Sneddon (92), Jean Kilgour (88, Alzheimer's dementia, with a welfare and financial attorney), Malcolm Rankin (86, type 1 diabetes), Zofia Wisniewska (84, Polish, needs an interpreter), Margaret Cairns (80, Parkinson's disease) and Archie Drummond (78, vascular dementia).
+Whinbrae House at 1 Rowan Gait, Craiglarrick is run by Whinbrae House Care (Scotland) Ltd. Six of its residents, aged 78 to 92, are the subjects of one Adult Support and Protection process: Wilma Sneddon (92), Jean Kilgour (88, Alzheimer's dementia, with a welfare and financial attorney), Malcolm Rankin (86, type 1 diabetes), Zofia Wisniewska (84, Polish, needs an interpreter), Margaret Cairns (80, Parkinson's disease) and Archie Drummond (78, vascular dementia).
 
 On 28 and 29 July 2026 the Care Inspectorate carried out an unannounced inspection and found seventeen medication administration errors on the July MAR charts: omitted doses, warfarin given twice in a day, time-critical Parkinson's medication given hours late. Fourteen of the errors were on the 20:00 round, and one agency nurse was the only registered nurse on duty for most of them. Three residents had already come to harm: an emergency department attendance with an INR of 5.8, a GP call-out for high blood glucose with ketones, and a fall. The Care Inspectorate sent an adult concern to the council on 30 July. Moira Gilmour applied the three-point test at setting level the same day and opened an inquiry on 31 July.
 

@@ -55,10 +55,10 @@ test.describe('scenario dashboards', () => {
     await capture(page, { phase: PHASE, screen: 'process-asp-support-only', fullPage: true });
   });
 
-  test('LSI workspace for Rowanbank', async ({ page }) => {
+  test('LSI workspace for Whinbrae House', async ({ page }) => {
     await signInAs(page, 'usr_moira_gilmour');
     await openByReference(page, 'ASP-2026-0203');
-    await expect(page.getByText(/Large Scale Investigation: Rowanbank/).first()).toBeVisible();
+    await expect(page.getByText(/Large Scale Investigation: Whinbrae House/).first()).toBeVisible();
     await expectNoAxeViolations(page);
     await capture(page, { phase: PHASE, screen: 'process-asp-lsi', fullPage: true });
   });

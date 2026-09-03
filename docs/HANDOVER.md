@@ -225,12 +225,16 @@ Everything marked here is either configuration seeded from research rather than 
 
 ### Product limits by design
 - No backend, no real integrations, no authentication. Personas are a switcher; every switch is audited.
-- Connector outage, slow response and speed toggles live in module state and reset on reload (the screen says so).
-- Admin can save the default theme and density (`config.defaults`) but the appearance store does not read them yet; the Defaults screen says they apply to new sign-ins. Small follow-up: read `config.defaults` in `useAppearance.hydrate` when no local preference exists.
+- Connector outage, slow response and speed toggles live in module state and reset on reload (the screen says so; kept by decision).
 - No global keyboard shortcuts beyond the ones the controls themselves provide (search box, tab lists, rows, dialogs); Help says so rather than listing keys that do not exist.
-- Tauri binary not built in this environment (no GTK or WebKitGTK); see section 4. Electron packaging verified on Linux only.
-- Print packs exist for the chronology and for every report; meeting minutes and case conference packs print through the browser's print of the screen, without a dedicated pack.
+- Tauri binary not built in this environment (no GTK or WebKitGTK); Electron is the demo build (D-032) and Tauri stays configured; see section 4.
 - The MAPPA report is counts only, by design, and the unit test asserts that no name reaches its model.
+- Exclusions are keyed on the case-role register (D-035). A person who should be excluded but is not linked to the perpetrator by a relationship record, and not named in the referral, must be added to the register by hand; nothing infers it from free text.
+
+### Waiting on the product owner
+- Ayrshire values for the five local clocks (ASP inquiry decision, ASP initial case conference, ASP plan review, MARAC research return, core group escalation): seeded values stay until then and are marked to verify.
+- Official report templates in `docs/templates/` (see the README there); the five returns are reconciled against them when they arrive.
+- Confirmation of the three new CP clock values (notice, escalation, post-birth review) against the national guidance and local procedures.
 
 ### Grep points
 - `TODO(verify)` in code marks the two configuration points above; every clock rule with `todoVerify: true` is listed in section 3.

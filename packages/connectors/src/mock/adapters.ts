@@ -18,9 +18,9 @@ const specs: MockAdapterSpec[] = [
     ],
     narrative: { authModel: 'NHS Scotland national identity with a practice-level data sharing agreement; the platform holds a service account per health board.', direction: 'both', cadence: 'Nightly pull for people with an open process; on-demand pull for an s10 records request; flags pushed on the day they are placed.', notes: 'Health records are only inspected by a health professional. The adapter returns coded events, never free-text consultation notes.' },
     events: [
-      { personId: AIDEN.aiden, externalRef: 'EMIS-CONS-88213', occurredAt: '2026-08-27T15:20:00+01:00', hasTime: true, source: { 'Patient': 'BOYLE, Aiden', 'Practice': 'Braeside Health Centre', 'Clinician': 'Dr Farouk', 'Consultation.Code': 'Sleep difficulty; safeguarding context (9998001)' }, ruleId: 'emis.consultation.safeguarding-context', title: 'GP consultation: nightmares and sleep difficulty', detail: 'Mother reports Aiden waking most nights since May. Sleep advice given; review in six weeks.' },
+      { personId: AIDEN.aiden, externalRef: 'EMIS-CONS-88213', occurredAt: '2026-08-27T15:20:00+01:00', hasTime: true, source: { 'Patient': 'BOYLE, Aiden', 'Practice': 'Craiglarrick Health Centre', 'Clinician': 'Dr Farouk', 'Consultation.Code': 'Sleep difficulty; safeguarding context (9998001)' }, ruleId: 'emis.consultation.safeguarding-context', title: 'GP consultation: nightmares and sleep difficulty', detail: 'Mother reports Aiden waking most nights since May. Sleep advice given; review in six weeks.' },
     ],
-    matches: [{ ...aiden, externalId: 'EMIS-P-40021', address: '12 Brae Wynd, Braeside QX5 3RT', confidence: 'exact', source: { 'CHI': '1403190012', 'Practice': 'Braeside Health Centre' } }],
+    matches: [{ ...aiden, externalId: 'EMIS-P-40021', address: '12 Brae Wynd, Craiglarrick QX5 3RT', confidence: 'exact', source: { 'CHI': '1403190012', 'Practice': 'Craiglarrick Health Centre' } }],
     registers: () => ({ register: 'GP record flags', checkedAt: new Date().toISOString(), found: true, entries: [{ label: 'Child protection flag', value: 'Present since 17 Jun 2026' }] }),
   },
   {
@@ -37,7 +37,7 @@ const specs: MockAdapterSpec[] = [
     ],
     narrative: { authModel: 'Council single sign-on (Entra ID) with ECLIPSE API keys held by the council; the platform reads via the ECLIPSE integration layer.', direction: 'both', cadence: 'Near real time for referrals and allocations; outcomes (registration, case conference decisions) pushed back on approval of the minute.', notes: 'ECLIPSE remains the council case record. The platform holds the multi-agency picture and writes back decisions, not case notes.' },
     events: [],
-    matches: [{ ...aiden, externalId: 'ECL-119203', address: '12 Brae Wynd, Braeside QX5 3RT', confidence: 'exact', source: { 'Client ref': 'ECL-119203', 'Team': 'Children and Families, Ardvale' } }],
+    matches: [{ ...aiden, externalId: 'ECL-119203', address: '12 Brae Wynd, Craiglarrick QX5 3RT', confidence: 'exact', source: { 'Client ref': 'ECL-119203', 'Team': 'Children and Families, Ardvale' } }],
     registers: () => ({ register: 'Child Protection Register (Clydeshore)', checkedAt: new Date().toISOString(), found: true, entries: [{ label: 'Status', value: 'Registered 12 Jun 2026' }, { label: 'Categories', value: 'Emotional abuse; physical abuse' }, { label: 'Lead professional', value: 'Janet Kerr, 01000 456789' }] }),
   },
   {
@@ -70,7 +70,7 @@ const specs: MockAdapterSpec[] = [
     ],
     narrative: { authModel: 'Police Scotland secure gateway with a signed data sharing agreement per Chief Officers Group; the platform is a receiving system only.', direction: 'inbound', cadence: 'Concern reports arrive within an hour of submission and land in the concern hub inbox.', notes: 'The platform never writes to police systems. Charges and bail conditions are offence data and are shared onward only under a recorded lawful basis.' },
     events: [
-      { personId: AIDEN.aiden, externalRef: 'IVPD-CCR-2026-08-2291', occurredAt: '2026-08-29T19:40:00+01:00', hasTime: true, source: { 'Report.Type': 'Child Concern Report', 'Child': 'BOYLE, Aiden', 'Adults': 'BOYLE, Stacey; BOYLE, Kevin', 'Location': '12 Brae Wynd, Braeside', 'Marker': 'Child present', 'Crime': 'None' }, ruleId: 'ivpd.ccr.child-present', title: 'Child concern report: argument between parents at Sunday handover, father intoxicated', detail: 'Officers attended after a call from Stacey Boyle. Kevin Boyle intoxicated when returning Aiden. Argument on the doorstep. No injuries.' },
+      { personId: AIDEN.aiden, externalRef: 'IVPD-CCR-2026-08-2291', occurredAt: '2026-08-29T19:40:00+01:00', hasTime: true, source: { 'Report.Type': 'Child Concern Report', 'Child': 'BOYLE, Aiden', 'Adults': 'BOYLE, Stacey; BOYLE, Kevin', 'Location': '12 Brae Wynd, Craiglarrick', 'Marker': 'Child present', 'Crime': 'None' }, ruleId: 'ivpd.ccr.child-present', title: 'Child concern report: argument between parents at Sunday handover, father intoxicated', detail: 'Officers attended after a call from Stacey Boyle. Kevin Boyle intoxicated when returning Aiden. Argument on the doorstep. No injuries.' },
     ],
     matches: [{ ...aiden, externalId: 'VPD-2026-118842', confidence: 'exact', source: { 'Nominal': 'VPD-2026-118842', 'Reports': '4' } }],
   },
@@ -120,7 +120,7 @@ const specs: MockAdapterSpec[] = [
     ],
     narrative: { authModel: 'As TrakCare, via the health board integration engine.', direction: 'inbound', cadence: 'Daily.', notes: 'Community contacts for children under five are the richest early-years signal in the chronology.' },
     events: [],
-    matches: [{ ...aiden, externalId: 'MORSE-CL-77120', confidence: 'exact', source: { 'Client': 'MORSE-CL-77120', 'Service': 'Health visiting, Braeside' } }],
+    matches: [{ ...aiden, externalId: 'MORSE-CL-77120', confidence: 'exact', source: { 'Client': 'MORSE-CL-77120', 'Service': 'Health visiting, Craiglarrick' } }],
   },
   {
     id: 'opg',

@@ -84,7 +84,7 @@ Every one has a `.module.css` and `data-state` attributes. No component depends 
 ```
 +----------------------------------------------------------------------+ drawer
 | Aiden Boyle                                  [CP: registered] [next] | Who is
-| Also Aidy   7 years, born 14 Mar 2019   12 Brae Wynd, Braeside (3 moves)   involved
+| Also Aidy   7 years, born 14 Mar 2019   12 Brae Wynd, Craiglarrick (3 moves)   involved
 | Needs: none recorded    Alerts: [!] Lone visits not advised            |
 | ---------------------------------------------------------------------- | Social
 | Overview | Chronology | Processes | Views and voice | Documents | Sharing| work: ..

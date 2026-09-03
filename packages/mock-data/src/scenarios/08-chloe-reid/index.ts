@@ -77,11 +77,11 @@ export function seedChloeReid(ctx: BuildContext): void {
 
   // ----- Addresses -----
   const meadow = makeAddress(ctx, { id: 'adr_reid_home', line1: '31 Meadow Loan', town: 'Ardvale', postcode: 'QX1 8QT' });
-  const donnaHome = makeAddress(ctx, { id: 'adr_reid_donna', line1: '9 Salt Vennel', town: 'Portnellan', postcode: 'QX3 2JH' });
-  const sheenaHome = makeAddress(ctx, { id: 'adr_reid_sheena', line1: '22 Quay Wynd', line2: 'Flat 0/1', town: 'Portnellan', postcode: 'QX3 4LB' });
-  const fosterHome = makeAddress(ctx, { id: 'adr_reid_foster', line1: '6 Rowan Gait', town: 'Braeside', postcode: 'QX5 2NB' });
+  const donnaHome = makeAddress(ctx, { id: 'adr_reid_donna', line1: '9 Salt Vennel', town: 'Portlennan', postcode: 'QX3 2JH' });
+  const sheenaHome = makeAddress(ctx, { id: 'adr_reid_sheena', line1: '22 Quay Wynd', line2: 'Flat 0/1', town: 'Portlennan', postcode: 'QX3 4LB' });
+  const fosterHome = makeAddress(ctx, { id: 'adr_reid_foster', line1: '6 Rowan Gait', town: 'Craiglarrick', postcode: 'QX5 2NB' });
   const supported = makeAddress(ctx, { id: 'adr_reid_supported', line1: '40 Mill Gait', line2: 'Flat 3', town: 'Ardvale', postcode: 'QX1 5DW' });
-  const jordanOld = makeAddress(ctx, { id: 'adr_blake_old', line1: '18 Abbey Wynd', line2: 'Flat 3/2', town: 'Kilbrannan', postcode: 'QX2 3TQ' });
+  const jordanOld = makeAddress(ctx, { id: 'adr_blake_old', line1: '18 Abbey Wynd', line2: 'Flat 3/2', town: 'Auchentorran', postcode: 'QX2 3TQ' });
 
   const hh = 'hh_reid';
 
@@ -101,7 +101,7 @@ export function seedChloeReid(ctx: BuildContext): void {
       { addressId: meadow.id, from: '2024-02-19', note: 'Scottish Secure Tenancy in her sole name, care leaver priority' },
     ],
     householdId: hh,
-    gpPractice: 'Portnellan Medical Practice',
+    gpPractice: 'Portlennan Medical Practice',
     ethnicity: 'scottish',
     contact: { phone: '07700 900314' },
     alerts: [{ id: 'alt_chloe_care', kind: 'other', text: 'Care experienced: aftercare entitlement to age 26 (Children and Young People (Scotland) Act 2014 s29)', from: '2023-06-20' }],
@@ -116,7 +116,7 @@ export function seedChloeReid(ctx: BuildContext): void {
     expectedDeliveryDate: '2026-11-27',
     addressHistory: [{ addressId: meadow.id, from: '2026-08-18', note: "Mother's address" }],
     householdId: hh,
-    gpPractice: 'Portnellan Medical Practice',
+    gpPractice: 'Portlennan Medical Practice',
     createdAt: at('2026-08-18', '16:00'),
   });
   const jordan = makePerson(ctx, {
@@ -131,7 +131,7 @@ export function seedChloeReid(ctx: BuildContext): void {
       { addressId: meadow.id, from: '2026-05-10', note: "Moved into Chloe's tenancy; not on the tenancy. Date approximate." },
     ],
     householdId: hh,
-    gpPractice: 'Braeside Health Centre',
+    gpPractice: 'Craiglarrick Health Centre',
     ethnicity: 'scottish',
     contact: { phone: '07700 900522' },
     alerts: [{ id: 'alt_blake_nho', kind: 'other', text: 'Non-harassment order in favour of a previous partner until 11 Sep 2026 (Ardvale Sheriff Court, 12 Mar 2025)', from: '2025-03-12', to: '2026-09-11' }],
@@ -145,7 +145,7 @@ export function seedChloeReid(ctx: BuildContext): void {
     dateOfBirth: '1971-09-03',
     chi: syntheticChi(ctx, '1971-09-03', 'female'),
     addressHistory: [{ addressId: sheenaHome.id, from: '2012-04-01' }],
-    gpPractice: 'Portnellan Medical Practice',
+    gpPractice: 'Portlennan Medical Practice',
     ethnicity: 'scottish',
     contact: { phone: '07700 900377' },
     createdAt: at('2019-02-20', '12:00'),
@@ -158,7 +158,7 @@ export function seedChloeReid(ctx: BuildContext): void {
     dateOfBirth: '1984-05-17',
     chi: syntheticChi(ctx, '1984-05-17', 'female'),
     addressHistory: [{ addressId: donnaHome.id, from: '2005-11-01' }],
-    gpPractice: 'Portnellan Medical Practice',
+    gpPractice: 'Portlennan Medical Practice',
     ethnicity: 'scottish',
     createdAt: at('2019-02-15', '20:45'),
   });
@@ -330,6 +330,7 @@ export function seedChloeReid(ctx: BuildContext): void {
     ],
     clocks: [
       { id: 'clk_reid_prebirth', ruleId: 'cp.prebirth.cppm', triggeredAt: at('2026-08-20', '10:00'), dueOverride: '2026-09-04', overrideReason: 'By 28 weeks gestation (national guidance), earlier than the 28 calendar day rule', note: '28 weeks falls on 4 Sep 2026 (EDD 27 Nov 2026)' },
+      { id: 'clk_reid_notice', ruleId: 'cp.cppm.notice', triggeredAt: at('2026-09-04', '10:00'), completedAt: at('2026-08-28', '16:00'), note: 'Invitations and the social work report sent 28 Aug, a week before the pre-birth CPPM' },
     ],
     linkedProcessIds: [CHLOE.marac, CHLOE.cp2019],
     viewsRecordIds: ['vw_reid_mother'],
@@ -610,16 +611,16 @@ export function seedChloeReid(ctx: BuildContext): void {
     makeEvent(ctx, { subjectIds: [jordan.id], linkedProcessIds: [marac.id], visibility: 'integrated', lawfulBasisId: lbMarac.id, ...e });
 
   // Chloe's own childhood: the closed process.
-  C({ occurredAt: at('2007-01-25', '10:40'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'family.birth', title: 'Born at Clydeshore Royal Infirmary', detail: 'Born at 38 weeks, 2.9 kg, to Donna Reid (22). Discharged home to Salt Vennel, Portnellan.', significance: 'low', linkedPersonIds: [donna.id], linkedProcessIds: [] });
+  C({ occurredAt: at('2007-01-25', '10:40'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'family.birth', title: 'Born at Clydeshore Royal Infirmary', detail: 'Born at 38 weeks, 2.9 kg, to Donna Reid (22). Discharged home to Salt Vennel, Portlennan.', significance: 'low', linkedPersonIds: [donna.id], linkedProcessIds: [] });
   C({ occurredAt: at('2018-11-14', '00:00'), hasTime: false, agency: 'education', sourceSystem: 'seemis', recordedByName: 'SEEMIS connector', eventType: 'education.concern', title: 'P7 wellbeing concern: hungry, unwashed, late most days; mother not responding', detail: 'Pastoral note from the class teacher. Breakfast club place given. Letters and calls to the mother unanswered.', significance: 'moderate', linkedProcessIds: [cp2019.id] });
   C({ id: 'evt_chloe_ccr_2019', occurredAt: at('2019-02-15', '20:30'), agency: 'police', sourceSystem: 'ivpd', recordedByName: 'iVPD connector', eventType: 'police.concern-report', title: 'Child concern report: mother intoxicated, no food in the house, Chloe (12) alone', detail: 'Officers attended after a neighbour reported the mother shouting in the street. Donna Reid asleep on the floor, intoxicated. Chloe had made toast; no other food; no heating.', response: 'Shared with social work duty as high priority.', outcome: 'IRD 20 Feb 2019.', significance: 'high', significanceReason: 'Neglect with a child left to care for herself', linkedPersonIds: [donna.id], linkedProcessIds: [cp2019.id] });
   C({ occurredAt: at('2019-02-20', '10:00'), agency: 'social-work', recordedByName: name(tl), recordedByUserId: tl, eventType: 'process.ird', title: 'IRD held: investigation; Chloe to stay with her aunt meantime', detail: 'Social work, police, health and education. Comprehensive medical arranged. Referral to the Reporter agreed.', significance: 'high', linkedProcessIds: [cp2019.id] });
-  C({ id: 'evt_chloe_kinship', occurredAt: at('2019-03-05', '00:00'), hasTime: false, agency: 'social-work', sourceSystem: 'eclipse', recordedByName: 'ECLIPSE connector', eventType: 'care.placement', title: 'Placed with her aunt Sheena Reid in Portnellan (kinship, section 25)', detail: 'Mother agreed. Chloe kept her place at Ardvale Primary.', significance: 'high', linkedPersonIds: [sheena.id], linkedProcessIds: [cp2019.id] });
+  C({ id: 'evt_chloe_kinship', occurredAt: at('2019-03-05', '00:00'), hasTime: false, agency: 'social-work', sourceSystem: 'eclipse', recordedByName: 'ECLIPSE connector', eventType: 'care.placement', title: 'Placed with her aunt Sheena Reid in Portlennan (kinship, section 25)', detail: 'Mother agreed. Chloe kept her place at Ardvale Primary.', significance: 'high', linkedPersonIds: [sheena.id], linkedProcessIds: [cp2019.id] });
   C({ occurredAt: at('2019-03-19', '10:00'), agency: 'social-work', recordedByName: 'CP chair (2019)', eventType: 'process.registration', title: 'Placed on the Child Protection Register: neglect, parental substance use', detail: 'Core group set up. Plan to secure the kinship placement through a children\'s hearing.', significance: 'high', linkedProcessIds: [cp2019.id] });
   C({ occurredAt: at('2019-06-18', '00:00'), hasTime: false, agency: 'scra', sourceSystem: 'scra', recordedByName: 'SCRA connector', eventType: 'legal.hearing', title: "Children's hearing: compulsory supervision order, to live with Sheena Reid", detail: 'Grounds accepted by the mother. Contact with the mother supervised, weekly.', significance: 'high', linkedProcessIds: [cp2019.id] });
-  C({ occurredAt: at('2019-08-20', '00:00'), hasTime: false, agency: 'education', sourceSystem: 'seemis', recordedByName: 'SEEMIS connector', eventType: 'education.enrolment', title: 'Started S1 at Kilbrannan Academy', detail: 'Travelling from Portnellan. Guidance teacher aware of the supervision order.', significance: 'low', linkedProcessIds: [] });
+  C({ occurredAt: at('2019-08-20', '00:00'), hasTime: false, agency: 'education', sourceSystem: 'seemis', recordedByName: 'SEEMIS connector', eventType: 'education.enrolment', title: 'Started S1 at Auchentorran Academy', detail: 'Travelling from Portlennan. Guidance teacher aware of the supervision order.', significance: 'low', linkedProcessIds: [] });
   C({ occurredAt: at('2020-11-04', '11:00'), agency: 'social-work', recordedByName: 'CP chair (2020)', eventType: 'process.deregistration', title: 'Removed from the Child Protection Register; case closed to child protection', detail: 'Living with her aunt under a compulsory supervision order. Mother not engaging with the alcohol service. Transferred to the looked after children team.', significance: 'moderate', linkedProcessIds: [cp2019.id] });
-  C({ id: 'evt_chloe_foster', occurredAt: at('2021-06-14', '00:00'), hasTime: false, agency: 'social-work', sourceSystem: 'eclipse', recordedByName: 'ECLIPSE connector', eventType: 'care.placement', title: "Kinship placement ended (aunt's ill health); foster placement with the Wallace family, Braeside", detail: 'Emergency move after Sheena Reid was admitted to hospital. Chloe (14) upset at leaving Portnellan. Hearing on 6 Jul varied the order.', significance: 'high', significanceReason: 'Second placement move', linkedPersonIds: [sheena.id], linkedProcessIds: [] });
+  C({ id: 'evt_chloe_foster', occurredAt: at('2021-06-14', '00:00'), hasTime: false, agency: 'social-work', sourceSystem: 'eclipse', recordedByName: 'ECLIPSE connector', eventType: 'care.placement', title: "Kinship placement ended (aunt's ill health); foster placement with the Wallace family, Craiglarrick", detail: 'Emergency move after Sheena Reid was admitted to hospital. Chloe (14) upset at leaving Portlennan. Hearing on 6 Jul varied the order.', significance: 'high', significanceReason: 'Second placement move', linkedPersonIds: [sheena.id], linkedProcessIds: [] });
   C({ occurredAt: at('2022-03-11', '00:00'), hasTime: false, agency: 'education', sourceSystem: 'seemis', recordedByName: 'SEEMIS connector', eventType: 'education.attendance', title: 'Attendance 71 percent in S3; anxiety; pupil support plan', detail: 'Refusing school on some mornings. Pupil support and a reduced timetable agreed with the foster carers.', significance: 'moderate', linkedProcessIds: [] });
   C({ id: 'evt_chloe_gp_2022', occurredAt: at('2022-09-02', '15:10'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP: low mood and self-harm; referred to CAMHS', detail: 'Brought by her foster carer. Superficial cuts to the forearm. No suicidal intent. Referred to CAMHS; seen within six weeks.', significance: 'moderate', linkedProcessIds: [] });
   C({ occurredAt: at('2023-06-20', '00:00'), hasTime: false, agency: 'scra', sourceSystem: 'scra', recordedByName: 'SCRA connector', eventType: 'legal.hearing', title: "Compulsory supervision order terminated at Chloe's request (16); throughcare agreed", detail: 'Chloe declined continuing care with the foster carers. Throughcare and aftercare support agreed with the local authority.', significance: 'moderate', linkedProcessIds: [] });
@@ -628,7 +629,7 @@ export function seedChloeReid(ctx: BuildContext): void {
   C({ occurredAt: at('2024-10-08', '11:30'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP: anxiety; sertraline started; adult mental health referral not attended', detail: 'Living alone; college course stopped. Sertraline started. Referred to the adult service after CAMHS discharge at 18; did not attend.', significance: 'moderate', linkedProcessIds: [] });
   C({ id: 'evt_chloe_throughcare_end', occurredAt: at('2025-04-14', '00:00'), hasTime: false, agency: 'social-work', sourceSystem: 'eclipse', recordedByName: 'ECLIPSE connector', eventType: 'care.service-end', title: "Throughcare support ended at Chloe's request; aftercare available to 26", detail: 'Chloe said she "did not need a worker any more". Contact details for aftercare left. No further contact until August 2026.', significance: 'moderate', significanceReason: 'Support network reduced to nobody', linkedProcessIds: [] });
   C({ id: 'evt_chloe_rel', occurredAt: at('2025-11-15', '00:00'), hasTime: false, approximate: true, agency: 'health', recordedByName: name(midwife), recordedByUserId: midwife, eventType: 'household.change', title: 'Relationship with Jordan Blake began', detail: 'Date approximate, from Chloe\'s account at the 18 Aug 2026 appointment.', significance: 'moderate', linkedPersonIds: [jordan.id] });
-  C({ id: 'evt_chloe_movein', occurredAt: at('2026-05-10', '00:00'), hasTime: false, approximate: true, agency: 'health', recordedByName: name(midwife), recordedByUserId: midwife, eventType: 'household.change', title: 'Jordan Blake moved into 31 Meadow Loan', detail: 'Gave up his Kilbrannan tenancy. Not on Chloe\'s tenancy. Date approximate.', significance: 'moderate', subjectIds: [chloe.id, jordan.id] });
+  C({ id: 'evt_chloe_movein', occurredAt: at('2026-05-10', '00:00'), hasTime: false, approximate: true, agency: 'health', recordedByName: name(midwife), recordedByUserId: midwife, eventType: 'household.change', title: 'Jordan Blake moved into 31 Meadow Loan', detail: 'Gave up his Auchentorran tenancy. Not on Chloe\'s tenancy. Date approximate.', significance: 'moderate', subjectIds: [chloe.id, jordan.id] });
   C({ occurredAt: at('2026-06-08', '10:00'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.attendance', title: 'Maternity booking at 15 weeks (late booking); routine domestic abuse enquiry answered no', detail: 'Booked with the community midwife. Partner present for most of the appointment. Bloods and dating scan arranged. Smoking: no. Alcohol: no.', significance: 'moderate', significanceReason: 'Late booking; partner present at the routine enquiry', subjectIds: [chloe.id, unborn.id] });
   C({ occurredAt: at('2026-06-12', '09:30'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.assessment', title: 'Dating scan: single pregnancy, EDD 27 Nov 2026', detail: 'Measurements consistent with 16 weeks. No concerns.', significance: 'low', subjectIds: [chloe.id, unborn.id] });
   C({ occurredAt: at('2026-07-13', '11:15'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.assessment', title: 'Anomaly scan: no concerns', detail: 'Normal anatomy. Placenta anterior, clear of the os.', significance: 'low', subjectIds: [chloe.id, unborn.id] });
@@ -643,7 +644,7 @@ export function seedChloeReid(ctx: BuildContext): void {
   C({ occurredAt: at('2026-08-31', '15:30'), agency: 'police', recordedByName: `DC ${name(dc)}`, recordedByUserId: dc, eventType: 'police.notification', title: 'DSDAS: Power to Tell disclosure made to Chloe about Jordan Blake', detail: 'Outline of the March 2025 conviction and the non-harassment order given to Chloe in person with her IDAA present. She had not known about the order.', significance: 'high', linkedProcessIds: [marac.id], visibility: 'agency-only', lawfulBasisId: undefined, linkedPersonIds: [jordan.id] });
 
   // Jordan Blake.
-  J({ occurredAt: at('2023-06-15', '00:00'), hasTime: false, agency: 'housing', recordedByName: name(housing), recordedByUserId: housing, eventType: 'move.address', title: 'Council tenancy at 18 Abbey Wynd, Kilbrannan started', detail: 'One-bedroom flat. Tenancy ended May 2026.', significance: 'low', linkedProcessIds: [] });
+  J({ occurredAt: at('2023-06-15', '00:00'), hasTime: false, agency: 'housing', recordedByName: name(housing), recordedByUserId: housing, eventType: 'move.address', title: 'Council tenancy at 18 Abbey Wynd, Auchentorran started', detail: 'One-bedroom flat. Tenancy ended May 2026.', significance: 'low', linkedProcessIds: [] });
   J({ occurredAt: at('2024-02-11', '23:20'), agency: 'police', sourceSystem: 'ivpd', recordedByName: 'iVPD connector', eventType: 'police.concern-report', title: 'Domestic incident with a previous partner: shouting, her phone broken; no crime recorded', detail: 'Called by the previous partner. Jordan Blake had thrown her phone against a wall. He left for the night.', response: 'Domestic incident recorded; DAQ 7 yes.', significance: 'moderate' });
   J({ occurredAt: at('2024-11-30', '23:05'), agency: 'police', sourceSystem: 'ivpd', recordedByName: 'iVPD connector', eventType: 'police.incident', title: 'Assault on a previous partner (domestic aggravation); arrested and charged', detail: 'Slapped and pushed his partner during an argument after drinking. Bruising to her face. Arrested at the address.', response: 'Charged with assault, domestic abuse aggravation. Bail with conditions.', outcome: 'Convicted 12 Mar 2025.', significance: 'high' });
   J({ occurredAt: at('2025-03-12', '00:00'), hasTime: false, agency: 'police', recordedByName: 'Police Scotland (criminal history)', eventType: 'police.conviction', title: 'Convicted at Ardvale Sheriff Court: assault, domestic aggravation; fine and 18 month non-harassment order', detail: 'Non-harassment order in favour of the previous partner until 11 Sep 2026.', significance: 'high', significanceReason: 'Domestic abuse conviction' });
