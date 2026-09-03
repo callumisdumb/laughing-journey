@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@mas/messages';
 import { EmptyState, ProcessMark, Sheet, SheetBody, SheetHead } from '@mas/ui';
 import { useEffect } from 'react';
 import { AppLink } from '@/components/AppLink';
@@ -7,7 +8,7 @@ import { ScreenState, useDevState } from '@/components/ScreenState';
 import { useRoute } from '@/lib/router';
 import { useSelection } from '@/lib/selection';
 import { useNow } from '@/lib/store';
-import { REPORT_CATALOGUE, isReportKind } from './model';
+import { isReportKind, reportCatalogue } from './model';
 import { resolvePeriod } from './period';
 import { ReportAsp } from './ReportAsp';
 import { ReportAwi } from './ReportAwi';
@@ -18,19 +19,20 @@ import { ReportPrintPack } from './ReportPrintPack';
 import styles from './Reports.module.css';
 
 function ReportsIndex() {
+  const t = useT();
   const now = useNow();
   const dev = useDevState();
   return (
     <div className="page">
       <div className="page-head">
         <div className="page-head-text">
-          <h1>Reports</h1>
-          <p className="page-lede">Inspection-ready figures computed from the record store as it stands: one report per protection process, each with a print pack. Nothing here is typed in, so every number traces back to a record.</p>
+          <h1>{t('reports.index.title')}</h1>
+          <p className="page-lede">{t('reports.index.lede')}</p>
         </div>
       </div>
-      <ScreenState state={dev ?? 'ready'} empty={{ title: 'No reports available', text: 'Reports are generated from the record store. Reset the demo data from Settings if the store is empty.' }}>
+      <ScreenState state={dev ?? 'ready'} empty={{ title: t('reports.index.emptyTitle'), text: t('reports.index.emptyText') }}>
         <ul className={styles.cards}>
-          {REPORT_CATALOGUE.map((r) => {
+          {reportCatalogue().map((r) => {
             const period = resolvePeriod(r.kind, now, null);
             return (
               <li key={r.kind} className={styles.cardItem}>
@@ -45,15 +47,13 @@ function ReportsIndex() {
                   <SheetBody className={styles.cardBody}>
                     <p className={styles.purpose}>{r.purpose}</p>
                     <dl className={styles.cardMeta}>
-                      <dt>Who receives it</dt>
+                      <dt>{t('reports.index.recipient')}</dt>
                       <dd>{r.recipient}</dd>
-                      <dt>Period</dt>
-                      <dd>
-                        {r.periodLabel}. Opens on {period.label}.
-                      </dd>
+                      <dt>{t('reports.index.period')}</dt>
+                      <dd>{t('reports.index.opens', { periodLabel: r.periodLabel, period: period.label })}</dd>
                     </dl>
                     <AppLink href={`/reports/${r.kind}`} className={styles.cardLink}>
-                      Open {r.title}
+                      {t('reports.index.open', { title: r.title })}
                     </AppLink>
                   </SheetBody>
                 </Sheet>
@@ -62,21 +62,22 @@ function ReportsIndex() {
           })}
         </ul>
       </ScreenState>
-      <p className={styles.footnote}>The dataset behind this demonstration holds eight worked scenarios and a background population, so every count is small. Counts are never padded and a period with nothing in it shows zeros.</p>
+      <p className={styles.footnote}>{t('reports.index.footnote')}</p>
     </div>
   );
 }
 
 function ReportNotFound({ kind }: { kind: string }) {
+  const t = useT();
   return (
     <div className="page">
       <div className="page-head">
         <div className="page-head-text">
-          <h1>Report not found</h1>
-          <p className="page-lede">There is no report called {kind}.</p>
+          <h1>{t('reports.notFound.title')}</h1>
+          <p className="page-lede">{t('reports.notFound.lede', { kind })}</p>
         </div>
       </div>
-      <EmptyState title="Choose a report from the list" text="The five reports are ASP biennial figures, Child Protection Register statistics, the MARAC SafeLives return, MAPPA annual report counts and AWI application timeliness." actions={<AppLink href="/reports">All reports</AppLink>} />
+      <EmptyState title={t('reports.notFound.emptyTitle')} text={t('reports.notFound.emptyText')} actions={<AppLink href="/reports">{t('reports.frame.allReports')}</AppLink>} />
     </div>
   );
 }

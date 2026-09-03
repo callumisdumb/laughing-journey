@@ -3,22 +3,20 @@
  * case conferences and orders in the record store for the chosen biennium.
  */
 import { AGENCIES, AGENCY_SHORT, HARM_TYPES, HARM_TYPE_LABELS, formatDateTime, localDateOf, type AspProcess, type Dataset } from '@mas/domain';
+import { t, tKey } from '@mas/messages';
 import { agencyColourVar } from '@mas/ui';
 import { personById } from '@/lib/selectors';
 import { addressLineAt } from './helpers';
-import { countBy, plural, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
+import { countBy, messageSegment, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
 import { inPeriod, quarterKeyOf, quartersIn, type Period } from './period';
 
 const ORDER_TYPES = ['assessment-order-s11', 'removal-order-s14', 'banning-order-s19', 'warrant-for-entry'] as const;
 type OrderType = (typeof ORDER_TYPES)[number];
 type OrderDecision = AspProcess['detail']['ordersConsidered'][number]['decision'];
+type Location = 'care-home' | 'hospital' | 'own-home';
 
-const ORDER_LABELS: Record<OrderType, string> = {
-  'assessment-order-s11': 'Assessment order (section 11)',
-  'removal-order-s14': 'Removal order (section 14)',
-  'banning-order-s19': 'Banning order (section 19)',
-  'warrant-for-entry': 'Warrant for entry',
-};
+const orderLabel = (type: OrderType) => tKey(`reports.asp.orders.${messageSegment(type)}`);
+const locationLabel = (location: Location) => tKey(`reports.asp.location.${messageSegment(location)}`);
 
 function investigationStartedAt(p: AspProcess): string | undefined {
   if (!p.detail.investigation) return undefined;
@@ -26,13 +24,13 @@ function investigationStartedAt(p: AspProcess): string | undefined {
 }
 
 /** The concern record has no location field yet, so the location is read from the adult's address on the day. */
-function locationOfHarm(data: Dataset, p: AspProcess): string {
-  if (p.detail.lsi) return 'Care home or other regulated setting';
+function locationOfHarm(data: Dataset, p: AspProcess): Location {
+  if (p.detail.lsi) return 'care-home';
   const subject = personById(data, p.subjectIds[0]);
   const line = subject ? (addressLineAt(data, subject, p.detail.concern.receivedAt) ?? '') : '';
-  if (/care home/i.test(line)) return 'Care home or other regulated setting';
-  if (/infirmary|hospital|ward/i.test(line)) return 'Hospital';
-  return 'Own home';
+  if (/care home/i.test(line)) return 'care-home';
+  if (/infirmary|hospital|ward/i.test(line)) return 'hospital';
+  return 'own-home';
 }
 
 export function aspModel(data: Dataset, now: Date, period: Period): ReportModel {
@@ -47,14 +45,14 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
   const chart: ChartSpec = {
     id: 'asp-referrals-chart',
     kind: 'stacked',
-    title: 'Referrals by quarter and source agency',
-    summary: `Referrals by quarter and source agency: ${plural(referrals.length, 'referral')} over ${plural(quarters.length, 'quarter')}${agencies.length > 0 ? `, from ${agencies.map((a) => AGENCY_SHORT[a]).join(', ')}` : ''}.`,
+    title: t('reports.asp.chart.title'),
+    summary: t('reports.asp.chart.summary', { referrals: referrals.length, quarters: quarters.length, from: agencies.length > 0 ? t('reports.asp.chart.summaryFrom', { agencies: agencies.map((a) => AGENCY_SHORT[a]).join(', ') }) : '' }),
     categories: quarters.map((q) => q.short),
     categoryLabels: quarters.map((q) => q.long),
     series: agencies.map((a) => ({ key: a, label: AGENCY_SHORT[a], colour: agencyColourVar(a), agency: a })),
     values: agencies.map((a) => quarters.map((q) => referrals.filter((p) => p.detail.concern.sourceAgency === a && quarterKeyOf(p.detail.concern.receivedAt) === q.key).length)),
-    xLabel: 'Quarter',
-    yLabel: 'Referrals',
+    xLabel: t('reports.asp.chart.xLabel'),
+    yLabel: t('reports.asp.chart.yLabel'),
   };
 
   const inquiries = asp.filter((p) => p.detail.inquiry && inPeriod(p.detail.inquiry.openedAt, period));
@@ -84,114 +82,103 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
 
   const referralTable: TableSpec = {
     id: 'asp-referrals-by-agency',
-    columns: ['Source agency', 'Referrals', 'Adults'],
+    columns: [t('reports.asp.columns.sourceAgency'), t('reports.asp.columns.referrals'), t('reports.asp.columns.adults')],
     numeric: [1, 2],
     rows: agencies.map((a) => [AGENCY_SHORT[a], byAgency.get(a) ?? 0, new Set(referrals.filter((p) => p.detail.concern.sourceAgency === a).flatMap((p) => p.subjectIds)).size]),
-    empty: 'No referrals in period',
+    empty: t('reports.asp.tables.referralsEmpty'),
   };
 
   const inquiryTable: TableSpec = {
     id: 'asp-inquiries',
-    columns: ['Measure', 'Count'],
+    columns: [t('reports.columns.measure'), t('reports.columns.count')],
     numeric: [1],
     rows: [
-      ['Inquiries opened under section 4', inquiries.length],
-      ['Inquiry outcome: proceed to investigation', inquiryOutcome.get('proceed-to-investigation') ?? 0],
-      ['Inquiry outcome: support only', inquiryOutcome.get('support-only') ?? 0],
-      ['Inquiry outcome: no further ASP action', inquiryOutcome.get('no-further-action') ?? 0],
-      ['Inquiry outcome: pending', inquiryOutcome.get('pending') ?? 0],
-      ['Investigations started', investigations.length],
-      ['Visits under section 7', visits],
-      ['Interviews under section 8', interviews.length],
-      ['Adults who declined to be interviewed', interviews.filter((i) => i.adultDeclined).length],
-      ['Medical examinations requested under section 9', medicals],
-      ['Records requests under section 10', records],
-      ['Investigations where independent advocacy was offered', advocacyOffered],
-      ['Investigations where capacity was assessed', capacityAssessed],
+      [t('reports.asp.measures.inquiriesOpened'), inquiries.length],
+      [t('reports.asp.measures.outcomeInvestigation'), inquiryOutcome.get('proceed-to-investigation') ?? 0],
+      [t('reports.asp.measures.outcomeSupport'), inquiryOutcome.get('support-only') ?? 0],
+      [t('reports.asp.measures.outcomeNoAction'), inquiryOutcome.get('no-further-action') ?? 0],
+      [t('reports.asp.measures.outcomePending'), inquiryOutcome.get('pending') ?? 0],
+      [t('reports.asp.measures.investigationsStarted'), investigations.length],
+      [t('reports.asp.measures.visits'), visits],
+      [t('reports.asp.measures.interviews'), interviews.length],
+      [t('reports.asp.measures.adultsDeclined'), interviews.filter((i) => i.adultDeclined).length],
+      [t('reports.asp.measures.medicals'), medicals],
+      [t('reports.asp.measures.records'), records],
+      [t('reports.asp.measures.advocacyOffered'), advocacyOffered],
+      [t('reports.asp.measures.capacityAssessed'), capacityAssessed],
     ],
   };
 
   const conferenceTable: TableSpec = {
     id: 'asp-conferences',
-    columns: ['Meeting', 'Held in period', 'Scheduled, not yet held'],
+    columns: [t('reports.asp.columns.meeting'), t('reports.asp.columns.held'), t('reports.asp.columns.scheduled')],
     numeric: [1, 2],
     rows: [
-      ['Initial case conference', held('asp-case-conference'), pending('asp-case-conference')],
-      ['Review case conference', held('asp-review-conference'), pending('asp-review-conference')],
+      [t('reports.asp.conferences.initial'), held('asp-case-conference'), pending('asp-case-conference')],
+      [t('reports.asp.conferences.review'), held('asp-review-conference'), pending('asp-review-conference')],
     ],
   };
 
   const orderTable: TableSpec = {
     id: 'asp-orders',
-    columns: ['Order', 'Granted', 'Applied for', 'Refused', 'Application in drafting', 'Considered, not required'],
+    columns: [t('reports.asp.columns.order'), t('reports.asp.columns.granted'), t('reports.asp.columns.appliedFor'), t('reports.asp.columns.refused'), t('reports.asp.columns.drafting'), t('reports.asp.columns.notRequired')],
     numeric: [1, 2, 3, 4, 5],
-    rows: ORDER_TYPES.map((t) => [ORDER_LABELS[t], orderCount(t, 'granted'), orderCount(t, 'applied'), orderCount(t, 'refused'), orderCount(t, 'application-drafting'), orderCount(t, 'not-required')]),
+    rows: ORDER_TYPES.map((type) => [orderLabel(type), orderCount(type, 'granted'), orderCount(type, 'applied'), orderCount(type, 'refused'), orderCount(type, 'application-drafting'), orderCount(type, 'not-required')]),
   };
 
   const lsiTable: TableSpec = {
     id: 'asp-lsi',
-    columns: ['Setting', 'Provider', 'Adults', 'Strands open', 'Agencies involved', 'Care Inspectorate notified'],
+    columns: [t('reports.asp.columns.setting'), t('reports.asp.columns.provider'), t('reports.asp.columns.adults'), t('reports.asp.columns.strandsOpen'), t('reports.asp.columns.agenciesInvolved'), t('reports.asp.columns.careInspectorateNotified')],
     numeric: [2, 3],
     rows: lsis.flatMap((p) => {
       const l = p.detail.lsi;
       if (!l) return [];
-      return [[l.setting, l.provider, p.subjectIds.length, l.strands.filter((s) => s.status === 'open').length, l.agenciesInvolved.map((a) => AGENCY_SHORT[a]).join(', '), l.careInspectorateNotified ? 'Yes' : 'No']];
+      return [[l.setting, l.provider, p.subjectIds.length, l.strands.filter((s) => s.status === 'open').length, l.agenciesInvolved.map((a) => AGENCY_SHORT[a]).join(', '), l.careInspectorateNotified ? t('common.answers.yes') : t('common.answers.no')]];
     }),
-    empty: 'No Large Scale Investigations in period',
+    empty: t('reports.asp.tables.lsiEmpty'),
   };
 
   const harmTable: TableSpec = {
     id: 'asp-harm',
-    columns: ['Harm type', 'Referrals'],
+    columns: [t('reports.asp.columns.harmType'), t('reports.asp.columns.referrals')],
     numeric: [1],
     rows: HARM_TYPES.map((h) => [HARM_TYPE_LABELS[h], harm.get(h) ?? 0]),
   };
 
   const locationTable: TableSpec = {
     id: 'asp-location',
-    columns: ['Location of harm', 'Referrals'],
+    columns: [t('reports.asp.columns.locationOfHarm'), t('reports.asp.columns.referrals')],
     numeric: [1],
-    rows: [...location.entries()].sort((a, b) => b[1] - a[1]).map(([k, v]) => [k, v]),
-    empty: 'No referrals in period',
+    rows: [...location.entries()].sort((a, b) => b[1] - a[1]).map(([k, v]) => [locationLabel(k), v]),
+    empty: t('reports.asp.tables.referralsEmpty'),
   };
 
   const sections: ReportSection[] = [
-    { id: 'referrals', title: 'Referrals by quarter and source agency', note: 'A referral is an adult concern record. A Large Scale Investigation counts once; the adults column shows how many people it covers.', chart, tables: [referralTable] },
-    { id: 'inquiries', title: 'Inquiries and investigations', note: 'Inquiries are dated from the section 4 inquiry record; investigations from the stage change. Powers are counted by the date each was used.', tables: [inquiryTable] },
-    { id: 'conferences', title: 'Case conferences', note: 'Meetings marked held in the meeting record. Inter-agency discussions are not case conferences and are not counted here.', tables: [conferenceTable] },
-    { id: 'orders', title: 'Protection orders', note: `${granted === 0 ? 'No protection orders were granted in the period: none in period. ' : ''}${drafting > 0 ? `${plural(drafting, 'application is', 'applications are')} in drafting. ` : ''}Orders are attributed to the period of the referral they belong to; the record store does not yet date each decision.`, tables: [orderTable] },
-    { id: 'lsi', title: 'Large Scale Investigations', note: 'One row per LSI opened in the period, with the number of adults covered by its strands.', tables: [lsiTable] },
-    { id: 'harm', title: 'Harm types recorded at referral', note: 'A referral can record more than one harm type, so the column can add up to more than the number of referrals.', tables: [harmTable] },
-    { id: 'location', title: 'Location of harm (derived)', note: "Derived from the adult's recorded address on the day the concern was received: care home, hospital or own home. The concern record has no location field yet.", tables: [locationTable] },
+    { id: 'referrals', title: t('reports.asp.sections.referrals'), note: t('reports.asp.sections.referralsNote'), chart, tables: [referralTable] },
+    { id: 'inquiries', title: t('reports.asp.sections.inquiries'), note: t('reports.asp.sections.inquiriesNote'), tables: [inquiryTable] },
+    { id: 'conferences', title: t('reports.asp.sections.conferences'), note: t('reports.asp.sections.conferencesNote'), tables: [conferenceTable] },
+    { id: 'orders', title: t('reports.asp.sections.orders'), note: t('reports.asp.sections.ordersNote', { granted: granted === 0 ? 'none' : 'some', drafting }), tables: [orderTable] },
+    { id: 'lsi', title: t('reports.asp.sections.lsi'), note: t('reports.asp.sections.lsiNote'), tables: [lsiTable] },
+    { id: 'harm', title: t('reports.asp.sections.harm'), note: t('reports.asp.sections.harmNote'), tables: [harmTable] },
+    { id: 'location', title: t('reports.asp.sections.location'), note: t('reports.asp.sections.locationNote'), tables: [locationTable] },
   ];
 
   return {
     kind: 'asp',
-    title: 'ASP biennial report figures',
-    lede: 'The activity figures an Adult Protection Committee needs for its biennial report, computed from the adult concern records, inquiries, investigations, case conferences and orders in the record store.',
+    title: t('reports.asp.title'),
+    lede: t('reports.asp.lede'),
     period,
     classification: 'official-sensitive',
-    meta: [
-      `Period ${period.label}.`,
-      `Computed ${formatDateTime(now)} from the local record store: ${plural(asp.length, 'ASP record')} in total, ${referrals.length} with a concern received in the period, about ${plural(adults.size, 'adult')}.`,
-      'Field set to verify against the current template.',
-    ],
-    verify: [
-      'The Scottish Government guidance for Adult Protection Committees describes what a biennial report should cover (activity, trends, inputs and outcomes) rather than a fixed table set. The tables here follow the indicators of the ASP National Minimum Dataset, of which only referrals, inquiries and Large Scale Investigations were published for 2024-25; the harm type, location and order categories are the platform\'s own until the current template is checked.',
-      'Location of harm is derived from the address, not recorded on the concern; treat that table as indicative.',
-    ],
-    sources: [
-      'Adult Support and Protection (Scotland) Act 2007: guidance for Adult Protection Committees, Biennial Report (gov.scot).',
-      'Adult Support and Protection National Minimum Dataset 2024-25 and its technical report (gov.scot).',
-      'Adult Support and Protection Scotland, April 2019 to March 2022 (gov.scot), the last release with case conference and protection order pages.',
-    ],
+    meta: [t('reports.meta.period', { period: period.label }), t('reports.asp.meta.computed', { dateTime: formatDateTime(now), records: asp.length, referrals: referrals.length, adults: adults.size }), t('reports.meta.verify')],
+    verify: [t('reports.asp.verify.nmds'), t('reports.asp.verify.location')],
+    sources: [t('reports.asp.sources.apcGuidance'), t('reports.asp.sources.nmds'), t('reports.asp.sources.statistics')],
     figures: [
-      { id: 'referrals', label: 'Referrals', value: String(referrals.length), note: `${plural(adults.size, 'adult')} at risk` },
-      { id: 'inquiries', label: 'Inquiries', value: String(inquiries.length) },
-      { id: 'investigations', label: 'Investigations', value: String(investigations.length) },
-      { id: 'conferences', label: 'Case conferences held', value: String(conferencesHeld) },
-      { id: 'orders', label: 'Protection orders granted', value: String(granted), note: granted === 0 ? 'none in period' : undefined },
-      { id: 'lsi', label: 'Large Scale Investigations', value: String(lsis.length) },
+      { id: 'referrals', label: t('reports.asp.figures.referrals'), value: String(referrals.length), note: t('reports.asp.figures.referralsNote', { count: adults.size }) },
+      { id: 'inquiries', label: t('reports.asp.figures.inquiries'), value: String(inquiries.length) },
+      { id: 'investigations', label: t('reports.asp.figures.investigations'), value: String(investigations.length) },
+      { id: 'conferences', label: t('reports.asp.figures.conferences'), value: String(conferencesHeld) },
+      { id: 'orders', label: t('reports.asp.figures.orders'), value: String(granted), note: granted === 0 ? t('reports.figures.noneInPeriod') : undefined },
+      { id: 'lsi', label: t('reports.asp.figures.lsi'), value: String(lsis.length) },
     ],
     sections,
     activity: referrals.length,

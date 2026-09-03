@@ -1,5 +1,6 @@
 'use client';
 
+import { t } from '@mas/messages';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { useNow } from '@/lib/store';
 import type { ReportKind, ReportModel } from './model';
@@ -24,5 +25,5 @@ export function withHint(model: ReportModel, periods: Period[], build: (p: Perio
   if (model.activity > 0 || !current || current.id === model.period.id) return model;
   const alt = build(current);
   if (alt.activity === 0) return model;
-  return { ...model, hint: { text: `Nothing in the record store falls in this period (${model.period.label}). The period in progress holds ${describe(alt.activity)}.`, periodId: current.id } };
+  return { ...model, hint: { text: t('reports.hint.text', { period: model.period.label, activity: describe(alt.activity) }), periodId: current.id } };
 }

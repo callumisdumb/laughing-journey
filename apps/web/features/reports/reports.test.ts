@@ -1,12 +1,16 @@
 import { DEFAULT_CONFIG, demoNow } from '@mas/domain';
+import { t } from '@mas/messages';
 import { buildDataset } from '@mas/mock-data';
 import { describe, expect, it } from 'vitest';
 import { buildModel } from './buildModel';
+import { MAPPA_ANNEX3_TABLES, annexTitle } from './mappaAnnex3';
 import type { ReportKind } from './model';
 import { periodsFor, resolvePeriod } from './period';
 
 const data = buildDataset({});
 const now = demoNow();
+const notHeld = t('reports.mappaAnnex3.dataNotHeld');
+const notApplicable = t('reports.values.notApplicable');
 
 function figures(kind: ReportKind, periodId: string | null) {
   const period = resolvePeriod(kind, now, periodId);
@@ -38,7 +42,7 @@ describe('report figures are computed from the seed, never typed in', () => {
     expect(y2026.map['re-registrations']).toBe('0');
     expect(figures('cp', 'y2019').map['registrations']).toBe('1');
     expect(figures('cp', 'y2021').map['deregistrations']).toBe('1');
-    const age = y2026.model.sections.find((s) => s.id === 'age')?.tables[0]?.rows.find((r) => r[0] === '5 to 10');
+    const age = y2026.model.sections.find((s) => s.id === 'age')?.tables[0]?.rows.find((r) => r[0] === t('reports.cp.ageBands.fiveToTen'));
     expect(age?.[1]).toBe(1);
   });
 
@@ -67,25 +71,25 @@ describe('report figures are computed from the seed, never typed in', () => {
     expect(y2027.map['l2']).toBe('1');
     expect(y2027.map['late']).toBe('0');
     expect(y2027.map['orders']).toBe('1');
-    expect(y2027.model.meta.join(' ')).toContain('Field set High: Annex 3 Tables 1 to 9');
-    expect(y2027.model.meta.join(' ')).not.toContain('Field set to verify');
+    expect(y2027.model.meta.join(' ')).toContain(t('reports.mappa.meta.fieldSet'));
+    expect(y2027.model.meta.join(' ')).not.toContain(t('reports.meta.verify'));
 
-    // Nine sections, one per table, in the annex order, and the only chart sits on Table 3.
+    // Nine sections, one per table, in the annex order with the catalogue's table titles, and the only chart sits on Table 3.
     expect(y2027.model.sections.map((s) => s.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `table-${n}`));
-    expect(y2027.model.sections.map((s) => s.title.startsWith('Table '))).not.toContain(false);
+    expect(y2027.model.sections.map((s) => s.title)).toEqual(MAPPA_ANNEX3_TABLES.map((table) => t('reports.mappa.sections.tableTitle', { number: table.number, title: annexTitle(table) })));
     expect(y2027.model.sections.filter((s) => s.chart).map((s) => s.id)).toEqual(['table-3']);
 
     // Figures are keyed on row ids, so the checks read the cells by position rather than by label.
     const values = (model: typeof y2027.model, id: string) => model.sections.find((s) => s.id === id)?.tables[0]?.rows.map((r) => r.slice(1));
-    expect(values(y2027.model, 'table-1')).toEqual([[1], ['Data not held'], [0], ['Data not held'], [0]]);
-    expect(values(y2027.model, 'table-2')).toEqual([[0], [0], [0], [0], [1], [1], [0], [0], ['Data not held']]);
+    expect(values(y2027.model, 'table-1')).toEqual([[1], [notHeld], [0], [notHeld], [0]]);
+    expect(values(y2027.model, 'table-2')).toEqual([[0], [0], [0], [0], [1], [1], [0], [0], [notHeld]]);
     expect(values(y2026.model, 'table-2')?.[4]).toEqual([0]);
     expect(values(y2027.model, 'table-3')).toEqual([[0, 1, 0, 1]]);
     expect(values(y2027.model, 'table-4')).toEqual([[0], [0], [0], [0]]);
     expect(values(y2027.model, 'table-5')).toEqual([[0], [0], [0], [0]]);
     expect(values(y2027.model, 'table-6')).toEqual([[1], [0], [0], [1]]);
     expect(values(y2027.model, 'table-7')).toEqual([[1], [0], [1]]);
-    expect(values(y2027.model, 'table-8')?.flat()).toEqual(['Data not held', 'Data not held', 'Data not held']);
+    expect(values(y2027.model, 'table-8')?.flat()).toEqual([notHeld, notHeld, notHeld]);
     expect(values(y2027.model, 'table-9')).toEqual([[0], [1], [0], [0]]);
 
     const json = JSON.stringify(y2027.model);
@@ -96,7 +100,7 @@ describe('report figures are computed from the seed, never typed in', () => {
     const ytd = figures('awi', null);
     expect(ytd.map['applications']).toBe('1');
     expect(ytd.map['interim']).toBe('1');
-    expect(ytd.map['median']).toBe('n/a');
-    expect(ytd.model.sections.find((s) => s.id === 'mho')?.tables[0]?.rows[0]?.[3]).toMatch(/In progress, 12 days left/);
+    expect(ytd.map['median']).toBe(notApplicable);
+    expect(ytd.model.sections.find((s) => s.id === 'mho')?.tables[0]?.rows[0]?.[3]).toBe(t('reports.awi.mho.running', { days: 12 }));
   });
 });

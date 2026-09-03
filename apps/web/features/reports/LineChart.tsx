@@ -16,6 +16,7 @@ export function LineChart({ spec }: { spec: ChartSpec }) {
   const plotH = height - top - bottom;
   const x = (ci: number) => (n > 1 ? left + (ci * plotW) / (n - 1) : left + plotW / 2);
   const y = (v: number) => top + plotH - (v / scaleMax) * plotH;
+  const yTitleTransform = `translate(16 ${top + plotH / 2}) rotate(-90)`;
   const showValues = n <= 14;
 
   return (
@@ -60,7 +61,7 @@ export function LineChart({ spec }: { spec: ChartSpec }) {
         <text className={styles.axisTitle} x={left + plotW / 2} y={height - 10} textAnchor="middle">
           {spec.xLabel}
         </text>
-        <text className={styles.axisTitle} transform={`translate(16 ${top + plotH / 2}) rotate(-90)`} textAnchor="middle">
+        <text className={styles.axisTitle} transform={yTitleTransform} textAnchor="middle">
           {spec.yLabel}
         </text>
       </svg>

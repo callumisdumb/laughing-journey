@@ -1,11 +1,13 @@
 'use client';
 
+import { useT } from '@mas/messages';
 import { Table, TableWrap } from '@mas/ui';
 import type { TableSpec } from './model';
 import styles from './SectionTable.module.css';
 
 /** A report table: column headers, right-aligned numbers, and an honest empty row. */
 export function SectionTable({ table, fallbackLabel }: { table: TableSpec; fallbackLabel: string }) {
+  const t = useT();
   const numeric = new Set(table.numeric ?? []);
   return (
     <div className={styles.block}>
@@ -26,7 +28,7 @@ export function SectionTable({ table, fallbackLabel }: { table: TableSpec; fallb
             {table.rows.length === 0 ? (
               <tr>
                 <td colSpan={table.columns.length} data-muted="true">
-                  {table.empty ?? 'None in period'}
+                  {table.empty ?? t('reports.table.empty')}
                 </td>
               </tr>
             ) : (

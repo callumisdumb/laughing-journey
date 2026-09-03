@@ -7400,6 +7400,37 @@
           "where": "Section heading of the views section on the minutes print pack"
         }
       }
+    },
+    "reports": {
+      "auditLabel": {
+        "where": "Target label of the export audit entry written when a report print pack opens"
+      },
+      "back": {
+        "maxLength": 24,
+        "where": "Secondary button above the report print pack that returns to the report screen"
+      },
+      "columns": {
+        "measure": {
+          "maxLength": 12,
+          "where": "Column header of the headline figures table on the first page of a report print pack"
+        },
+        "note": {
+          "maxLength": 12,
+          "where": "Column header of the headline figures table on the first page of a report print pack"
+        },
+        "value": {
+          "maxLength": 12,
+          "where": "Column header of the headline figures table on the first page of a report print pack"
+        }
+      },
+      "headline": {
+        "maxLength": 24,
+        "screenshot": "phase-5/report-cp-print-light-comfortable.png",
+        "where": "Heading of the headline figures table on the first page of a report print pack"
+      },
+      "periodLine": {
+        "where": "Line under the title on the first page of a report print pack: the reporting period as a sentence"
+      }
     }
   },
   "processes": {
@@ -7770,6 +7801,1907 @@
         "maxLength": 24,
         "screenshot": "phase-3/process-cp-light-comfortable.png",
         "where": "Sheet title of the views and voice card on the process screen"
+      }
+    }
+  },
+  "reports": {
+    "asp": {
+      "chart": {
+        "summary": {
+          "where": "Accessible name of the ASP referrals chart: the totals, then the source agencies when there are any"
+        },
+        "summaryFrom": {
+          "where": "Tail of the ASP referrals chart summary listing the source agencies, when there are any"
+        },
+        "title": {
+          "screenshot": "phase-5/report-asp-current-light-comfortable.png",
+          "where": "Caption of the ASP referrals by quarter chart"
+        },
+        "xLabel": {
+          "maxLength": 16,
+          "where": "Horizontal axis title of the ASP referrals chart and first column of its data table"
+        },
+        "yLabel": {
+          "maxLength": 16,
+          "where": "Vertical axis title of the ASP referrals chart"
+        }
+      },
+      "columns": {
+        "adults": {
+          "maxLength": 16,
+          "where": "Column header in the ASP referrals by source agency table"
+        },
+        "agenciesInvolved": {
+          "maxLength": 20,
+          "where": "Column header in the ASP Large Scale Investigations table"
+        },
+        "appliedFor": {
+          "maxLength": 16,
+          "where": "Column header in the ASP protection orders table"
+        },
+        "careInspectorateNotified": {
+          "maxLength": 28,
+          "where": "Column header in the ASP Large Scale Investigations table"
+        },
+        "drafting": {
+          "maxLength": 24,
+          "where": "Column header in the ASP protection orders table"
+        },
+        "granted": {
+          "maxLength": 12,
+          "where": "Column header in the ASP protection orders table"
+        },
+        "harmType": {
+          "maxLength": 16,
+          "where": "Column header in the ASP harm types table"
+        },
+        "held": {
+          "maxLength": 16,
+          "where": "Column header in the ASP case conferences table"
+        },
+        "locationOfHarm": {
+          "maxLength": 20,
+          "where": "Column header in the ASP location of harm table"
+        },
+        "meeting": {
+          "maxLength": 12,
+          "where": "Column header in the ASP case conferences table"
+        },
+        "notRequired": {
+          "maxLength": 28,
+          "where": "Column header in the ASP protection orders table"
+        },
+        "order": {
+          "maxLength": 12,
+          "where": "Column header in the ASP protection orders table"
+        },
+        "provider": {
+          "maxLength": 12,
+          "where": "Column header in the ASP Large Scale Investigations table"
+        },
+        "referrals": {
+          "maxLength": 12,
+          "where": "Column header in the ASP referrals, harm type and location tables"
+        },
+        "refused": {
+          "maxLength": 12,
+          "where": "Column header in the ASP protection orders table"
+        },
+        "scheduled": {
+          "maxLength": 24,
+          "where": "Column header in the ASP case conferences table"
+        },
+        "setting": {
+          "maxLength": 12,
+          "where": "Column header in the ASP Large Scale Investigations table"
+        },
+        "sourceAgency": {
+          "maxLength": 16,
+          "where": "Column header in the ASP referrals by source agency table"
+        },
+        "strandsOpen": {
+          "maxLength": 16,
+          "where": "Column header in the ASP Large Scale Investigations table"
+        }
+      },
+      "conferences": {
+        "initial": {
+          "maxLength": 28,
+          "where": "Row label in the ASP case conferences table"
+        },
+        "review": {
+          "maxLength": 28,
+          "where": "Row label in the ASP case conferences table"
+        }
+      },
+      "figures": {
+        "conferences": {
+          "maxLength": 28,
+          "where": "Headline figure label on the ASP report"
+        },
+        "inquiries": {
+          "maxLength": 20,
+          "verbatim": true,
+          "where": "Headline figure label on the ASP report; an ASP National Minimum Dataset indicator"
+        },
+        "investigations": {
+          "maxLength": 20,
+          "where": "Headline figure label on the ASP report"
+        },
+        "lsi": {
+          "maxLength": 28,
+          "verbatim": true,
+          "where": "Headline figure label on the ASP report; an ASP National Minimum Dataset indicator"
+        },
+        "orders": {
+          "maxLength": 28,
+          "where": "Headline figure label on the ASP report"
+        },
+        "referrals": {
+          "maxLength": 20,
+          "screenshot": "phase-5/report-asp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Headline figure label on the ASP report; an ASP National Minimum Dataset indicator"
+        },
+        "referralsNote": {
+          "where": "Note under the referrals headline figure on the ASP report: adults at risk"
+        }
+      },
+      "hint": {
+        "where": "Activity phrase in the empty period hint on the ASP report"
+      },
+      "lede": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "Lede under the ASP report title"
+      },
+      "location": {
+        "careHome": {
+          "maxLength": 40,
+          "where": "Row label in the ASP location of harm table, derived from the address"
+        },
+        "hospital": {
+          "maxLength": 16,
+          "where": "Row label in the ASP location of harm table, derived from the address"
+        },
+        "ownHome": {
+          "maxLength": 16,
+          "where": "Row label in the ASP location of harm table, derived from the address"
+        }
+      },
+      "measures": {
+        "adultsDeclined": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "advocacyOffered": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "capacityAssessed": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "inquiriesOpened": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "interviews": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "investigationsStarted": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "medicals": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "outcomeInvestigation": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "outcomeNoAction": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "outcomePending": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "outcomeSupport": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "records": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        },
+        "visits": {
+          "verbatim": true,
+          "where": "Row label in the ASP inquiries and investigations table; an ASP National Minimum Dataset indicator"
+        }
+      },
+      "meta": {
+        "computed": {
+          "where": "Meta line under the ASP report controls: when it was computed and from how many records"
+        }
+      },
+      "orders": {
+        "assessmentOrderS11": {
+          "maxLength": 32,
+          "where": "Row label in the ASP protection orders table"
+        },
+        "banningOrderS19": {
+          "maxLength": 32,
+          "where": "Row label in the ASP protection orders table"
+        },
+        "removalOrderS14": {
+          "maxLength": 32,
+          "where": "Row label in the ASP protection orders table"
+        },
+        "warrantForEntry": {
+          "maxLength": 32,
+          "where": "Row label in the ASP protection orders table"
+        }
+      },
+      "periodLabel": {
+        "maxLength": 32,
+        "where": "Period line on the ASP card of the reports index"
+      },
+      "purpose": {
+        "screenshot": "phase-5/reports-light-comfortable.png",
+        "where": "Purpose paragraph on the ASP card of the reports index"
+      },
+      "recipient": {
+        "where": "Who receives it line on the ASP card of the reports index"
+      },
+      "sections": {
+        "conferences": {
+          "where": "Section title on the ASP report"
+        },
+        "conferencesNote": {
+          "where": "Note under the case conferences section title on the ASP report"
+        },
+        "harm": {
+          "where": "Section title on the ASP report"
+        },
+        "harmNote": {
+          "where": "Note under the harm types section title on the ASP report"
+        },
+        "inquiries": {
+          "where": "Section title on the ASP report"
+        },
+        "inquiriesNote": {
+          "where": "Note under the inquiries and investigations section title on the ASP report"
+        },
+        "location": {
+          "where": "Section title on the ASP report"
+        },
+        "locationNote": {
+          "where": "Note under the location of harm section title on the ASP report"
+        },
+        "lsi": {
+          "where": "Section title on the ASP report"
+        },
+        "lsiNote": {
+          "where": "Note under the Large Scale Investigations section title on the ASP report"
+        },
+        "orders": {
+          "where": "Section title on the ASP report"
+        },
+        "ordersNote": {
+          "where": "Note under the protection orders section title on the ASP report; granted is none when no order was granted, and drafting counts applications in drafting"
+        },
+        "referrals": {
+          "screenshot": "phase-5/report-asp-current-light-comfortable.png",
+          "where": "Section title on the ASP report"
+        },
+        "referralsNote": {
+          "where": "Note under the referrals section title on the ASP report"
+        }
+      },
+      "sources": {
+        "apcGuidance": {
+          "where": "Source listed in the field set and sources panel of the ASP report"
+        },
+        "nmds": {
+          "where": "Source listed in the field set and sources panel of the ASP report"
+        },
+        "statistics": {
+          "where": "Source listed in the field set and sources panel of the ASP report"
+        }
+      },
+      "tables": {
+        "lsiEmpty": {
+          "where": "Empty row of the ASP Large Scale Investigations table"
+        },
+        "referralsEmpty": {
+          "where": "Empty row of the ASP referrals by source agency and location of harm tables"
+        }
+      },
+      "title": {
+        "maxLength": 36,
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "Title of the ASP report on the index card, the report screen, its print pack and the audit entry"
+      },
+      "verify": {
+        "location": {
+          "where": "Verification note in the field set and sources panel of the ASP report"
+        },
+        "nmds": {
+          "where": "Verification note in the field set and sources panel of the ASP report"
+        }
+      }
+    },
+    "awi": {
+      "applicants": {
+        "council": {
+          "maxLength": 36,
+          "where": "Series label in the AWI applications chart and its data table"
+        },
+        "private": {
+          "maxLength": 20,
+          "where": "Series label in the AWI applications chart and its data table"
+        }
+      },
+      "chart": {
+        "summary": {
+          "where": "Accessible name of the AWI applications chart with the totals by applicant"
+        },
+        "title": {
+          "screenshot": "phase-5/report-awi-light-comfortable.png",
+          "where": "Caption of the AWI applications by route chart"
+        },
+        "xLabel": {
+          "maxLength": 16,
+          "where": "Horizontal axis title of the AWI applications chart and first column of its data table"
+        },
+        "yLabel": {
+          "maxLength": 16,
+          "where": "Vertical axis title of the AWI applications chart"
+        }
+      },
+      "columns": {
+        "age": {
+          "maxLength": 24,
+          "where": "Column header in the AWI interim orders table"
+        },
+        "application": {
+          "maxLength": 16,
+          "where": "Column header in the AWI MHO report, interim order and orders granted tables"
+        },
+        "daysFromApplication": {
+          "maxLength": 24,
+          "where": "Column header in the AWI orders granted table"
+        },
+        "granted": {
+          "maxLength": 12,
+          "where": "Column header in the AWI interim orders and orders granted tables"
+        },
+        "mhoNotified": {
+          "maxLength": 16,
+          "where": "Column header in the AWI MHO reports table"
+        },
+        "order": {
+          "maxLength": 12,
+          "where": "Column header in the AWI orders granted table"
+        },
+        "reportDue": {
+          "maxLength": 16,
+          "where": "Column header in the AWI MHO reports table"
+        },
+        "sought": {
+          "maxLength": 12,
+          "where": "Column header in the AWI interim orders table"
+        },
+        "status": {
+          "maxLength": 12,
+          "where": "Column header in the AWI MHO reports table"
+        }
+      },
+      "figures": {
+        "applications": {
+          "maxLength": 24,
+          "where": "Headline figure label on the AWI report"
+        },
+        "applicationsNote": {
+          "where": "Note under the applications started figure on the AWI report: how many the council made"
+        },
+        "concerns": {
+          "maxLength": 28,
+          "screenshot": "phase-5/report-awi-light-comfortable.png",
+          "where": "Headline figure label on the AWI report"
+        },
+        "interim": {
+          "maxLength": 24,
+          "where": "Headline figure label on the AWI report"
+        },
+        "interimNote": {
+          "where": "Note under the interim orders figure on the AWI report: how many were granted"
+        },
+        "median": {
+          "maxLength": 36,
+          "where": "Headline figure label on the AWI report"
+        },
+        "medianNote": {
+          "maxLength": 32,
+          "where": "Note under the median days figure on the AWI report when no order was granted"
+        },
+        "mho": {
+          "maxLength": 24,
+          "where": "Headline figure label on the AWI report"
+        },
+        "mhoLate": {
+          "where": "Note under the MHO reports figure on the AWI report when some are late or overdue"
+        },
+        "mhoNoneDue": {
+          "maxLength": 16,
+          "where": "Note under the MHO reports figure on the AWI report when no report is due"
+        },
+        "mhoRunning": {
+          "where": "Note under the MHO reports figure on the AWI report when reports are running and none is late"
+        },
+        "mhoValue": {
+          "where": "Value of the MHO reports figure on the AWI report: reports on time out of reports due"
+        },
+        "orders": {
+          "maxLength": 20,
+          "where": "Headline figure label on the AWI report"
+        }
+      },
+      "hint": {
+        "where": "Activity phrase in the empty period hint on the AWI report"
+      },
+      "interim": {
+        "granted": {
+          "where": "Age cell in the AWI interim orders table for a granted order: its age, statutory maximum, warning and renewals"
+        },
+        "notGranted": {
+          "where": "Age cell in the AWI interim orders table for an order not yet granted, with the hearing date or not yet listed"
+        },
+        "notListed": {
+          "maxLength": 16,
+          "where": "Stands in for the hearing date in the AWI interim orders table when no hearing is listed"
+        },
+        "notYetGranted": {
+          "maxLength": 20,
+          "where": "Granted cell in the AWI interim orders table when the order has not been granted"
+        }
+      },
+      "lede": {
+        "screenshot": "phase-5/report-awi-light-comfortable.png",
+        "where": "Lede under the AWI report title"
+      },
+      "measures": {
+        "assessments": {
+          "where": "Row label in the AWI capacity concerns and route decisions table"
+        },
+        "concerns": {
+          "where": "Row label in the AWI capacity concerns and route decisions table"
+        },
+        "fluctuating": {
+          "where": "Row label in the AWI capacity concerns and route decisions table"
+        },
+        "hasCapacity": {
+          "where": "Row label in the AWI capacity concerns and route decisions table"
+        },
+        "lacksCapacity": {
+          "where": "Row label in the AWI capacity concerns and route decisions table"
+        },
+        "opgChecks": {
+          "where": "Row label in the AWI capacity concerns and route decisions table"
+        },
+        "routeDecided": {
+          "where": "Row label in the AWI capacity concerns and route decisions table, one per route"
+        },
+        "s13Applied": {
+          "where": "Row label in the AWI capacity concerns and route decisions table"
+        },
+        "s13Considered": {
+          "where": "Row label in the AWI capacity concerns and route decisions table"
+        }
+      },
+      "meta": {
+        "computed": {
+          "where": "Meta line under the AWI report controls: when it was computed and from how many records"
+        }
+      },
+      "mho": {
+        "late": {
+          "where": "Status cell in the AWI MHO reports table for a report submitted after the due date"
+        },
+        "onTime": {
+          "where": "Status cell in the AWI MHO reports table for a report submitted on time"
+        },
+        "overdue": {
+          "where": "Status cell in the AWI MHO reports table for a report not submitted after the due date"
+        },
+        "running": {
+          "where": "Status cell in the AWI MHO reports table for a report still within its 21 days"
+        }
+      },
+      "orderKinds": {
+        "combinedGuardianship": {
+          "maxLength": 32,
+          "where": "Order cell in the AWI orders granted table"
+        },
+        "financialGuardianship": {
+          "maxLength": 32,
+          "where": "Order cell in the AWI orders granted table"
+        },
+        "interimOrder": {
+          "maxLength": 32,
+          "where": "Order cell in the AWI orders granted table"
+        },
+        "interventionOrder": {
+          "maxLength": 32,
+          "where": "Order cell in the AWI orders granted table"
+        },
+        "welfareGuardianship": {
+          "maxLength": 32,
+          "where": "Order cell in the AWI orders granted table"
+        }
+      },
+      "periodLabel": {
+        "maxLength": 40,
+        "where": "Period line on the AWI card of the reports index"
+      },
+      "purpose": {
+        "where": "Purpose paragraph on the AWI card of the reports index"
+      },
+      "recipient": {
+        "where": "Who receives it line on the AWI card of the reports index"
+      },
+      "routes": {
+        "guardianshipCombined": {
+          "maxLength": 40,
+          "where": "Route label in the AWI applications chart and the route decided rows"
+        },
+        "guardianshipFinancial": {
+          "maxLength": 40,
+          "where": "Route label in the AWI applications chart and the route decided rows"
+        },
+        "guardianshipWelfare": {
+          "maxLength": 40,
+          "where": "Route label in the AWI applications chart and the route decided rows"
+        },
+        "informalSupport": {
+          "maxLength": 48,
+          "where": "Route label in the AWI route decided rows"
+        },
+        "interventionOrder": {
+          "maxLength": 40,
+          "where": "Route label in the AWI applications chart and the route decided rows"
+        },
+        "part5Certificate": {
+          "maxLength": 40,
+          "where": "Route label in the AWI route decided rows"
+        },
+        "poaCovers": {
+          "maxLength": 48,
+          "where": "Route label in the AWI route decided rows"
+        },
+        "s13za": {
+          "maxLength": 40,
+          "where": "Route label in the AWI route decided rows"
+        }
+      },
+      "sections": {
+        "decisions": {
+          "where": "Section title on the AWI report"
+        },
+        "interim": {
+          "where": "Section title on the AWI report"
+        },
+        "interimNote": {
+          "where": "Note under the interim orders section title on the AWI report, with the date the age is measured to"
+        },
+        "mho": {
+          "where": "Section title on the AWI report"
+        },
+        "mhoNoRule": {
+          "where": "First part of the MHO section note on the AWI report when no clock rule is configured"
+        },
+        "mhoNote": {
+          "where": "Note under the MHO reports section title on the AWI report; rule is the configured clock rule sentence"
+        },
+        "mhoRule": {
+          "where": "First part of the MHO section note on the AWI report: the configured clock rule, its reference and source"
+        },
+        "orders": {
+          "where": "Section title on the AWI report"
+        },
+        "ordersMedian": {
+          "where": "Note under the orders granted section title on the AWI report when orders were granted"
+        },
+        "ordersNone": {
+          "where": "Note under the orders granted section title on the AWI report when no order was granted"
+        },
+        "routes": {
+          "screenshot": "phase-5/report-awi-light-comfortable.png",
+          "where": "Section title on the AWI report"
+        },
+        "routesNote": {
+          "where": "Note under the applications by route section title on the AWI report"
+        }
+      },
+      "sources": {
+        "act": {
+          "where": "Source listed in the field set and sources panel of the AWI report"
+        },
+        "mwc": {
+          "where": "Source listed in the field set and sources panel of the AWI report"
+        },
+        "opg": {
+          "where": "Source listed in the field set and sources panel of the AWI report"
+        }
+      },
+      "tables": {
+        "interimEmpty": {
+          "where": "Empty row of the AWI interim orders table"
+        },
+        "mhoEmpty": {
+          "where": "Empty row of the AWI MHO reports table"
+        },
+        "ordersEmpty": {
+          "where": "Empty row of the AWI orders granted table"
+        }
+      },
+      "title": {
+        "maxLength": 36,
+        "screenshot": "phase-5/report-awi-light-comfortable.png",
+        "where": "Title of the AWI report on the index card, the report screen, its print pack and the audit entry"
+      },
+      "verify": {
+        "publications": {
+          "where": "Verification note in the field set and sources panel of the AWI report"
+        }
+      }
+    },
+    "chart": {
+      "data": {
+        "where": "Accessible name of the data table under every report chart, with the chart title"
+      },
+      "legend": {
+        "where": "Accessible name of the legend above a report chart, with the chart title"
+      },
+      "total": {
+        "maxLength": 12,
+        "where": "Last column header of a chart data table with more than one series"
+      }
+    },
+    "columns": {
+      "count": {
+        "maxLength": 12,
+        "where": "Column header for the count in the ASP inquiries, AWI decisions and MARAC cases tables"
+      },
+      "measure": {
+        "maxLength": 12,
+        "where": "Column header for the measure in the ASP inquiries, AWI decisions and MARAC cases tables"
+      }
+    },
+    "cp": {
+      "ageBands": {
+        "elevenToFifteen": {
+          "maxLength": 16,
+          "where": "Age band row in the CP register by age table"
+        },
+        "fiveToTen": {
+          "maxLength": 16,
+          "where": "Age band row in the CP register by age table"
+        },
+        "notRecorded": {
+          "maxLength": 16,
+          "where": "Age band row in the CP register by age table when the child record is missing"
+        },
+        "oneToFour": {
+          "maxLength": 16,
+          "where": "Age band row in the CP register by age table"
+        },
+        "sixteenAndOver": {
+          "maxLength": 16,
+          "where": "Age band row in the CP register by age table"
+        },
+        "unborn": {
+          "maxLength": 16,
+          "where": "Age band row in the CP register by age table"
+        },
+        "underOne": {
+          "maxLength": 16,
+          "where": "Age band row in the CP register by age table"
+        }
+      },
+      "charts": {
+        "byMonthSummary": {
+          "where": "Accessible name of the CP registrations by month chart with the totals"
+        },
+        "byMonthTitle": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Caption of the CP registrations and de-registrations by month chart"
+        },
+        "children": {
+          "maxLength": 16,
+          "where": "Vertical axis title of both CP charts"
+        },
+        "deregistrations": {
+          "maxLength": 20,
+          "where": "Series label in the CP registrations by month chart"
+        },
+        "month": {
+          "maxLength": 16,
+          "where": "Horizontal axis title of the CP registrations by month chart and first column of its data table"
+        },
+        "monthEnd": {
+          "maxLength": 16,
+          "where": "Horizontal axis title of the CP register over time chart and first column of its data table"
+        },
+        "onRegister": {
+          "maxLength": 28,
+          "where": "Series label in the CP register over time chart"
+        },
+        "overTimeCategory": {
+          "where": "Row label in the data table of the CP register over time chart: the month and the date it was read"
+        },
+        "overTimeSummary": {
+          "where": "Accessible name of the CP register over time chart with the count at the period end"
+        },
+        "overTimeTitle": {
+          "where": "Caption of the CP register over time chart"
+        },
+        "registrations": {
+          "maxLength": 20,
+          "where": "Series label in the CP registrations by month chart"
+        }
+      },
+      "columns": {
+        "ageAtEnd": {
+          "maxLength": 20,
+          "where": "Column header in the CP register by age table"
+        },
+        "children": {
+          "maxLength": 12,
+          "where": "Column header in the CP age, history and length tables"
+        },
+        "childrenRegistered": {
+          "maxLength": 20,
+          "where": "Column header in the CP concerns table"
+        },
+        "concern": {
+          "maxLength": 36,
+          "where": "Column header in the CP concerns table"
+        },
+        "held": {
+          "maxLength": 16,
+          "where": "Column header in the CP meetings table"
+        },
+        "history": {
+          "maxLength": 24,
+          "where": "Column header in the CP previous registrations table"
+        },
+        "lengthOfRegistration": {
+          "maxLength": 24,
+          "where": "Column header in the CP de-registered by length table"
+        },
+        "meeting": {
+          "maxLength": 12,
+          "where": "Column header in the CP meetings table"
+        },
+        "scheduled": {
+          "maxLength": 24,
+          "where": "Column header in the CP meetings table"
+        },
+        "timeOnRegister": {
+          "maxLength": 24,
+          "where": "Column header in the CP time on the register table"
+        }
+      },
+      "figures": {
+        "atEnd": {
+          "maxLength": 36,
+          "where": "Headline figure label on the CP report, with the reference date"
+        },
+        "cppms": {
+          "maxLength": 16,
+          "where": "Headline figure label on the CP report"
+        },
+        "deregistrations": {
+          "maxLength": 20,
+          "where": "Headline figure label on the CP report"
+        },
+        "preBirth": {
+          "maxLength": 24,
+          "where": "Headline figure label on the CP report"
+        },
+        "registrations": {
+          "maxLength": 20,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Headline figure label on the CP report"
+        },
+        "registrationsNote": {
+          "where": "Note under the registrations figure on the CP report: first registrations"
+        },
+        "reRegistrations": {
+          "maxLength": 32,
+          "where": "Headline figure label on the CP report"
+        }
+      },
+      "hint": {
+        "where": "Activity phrase in the empty period hint on the CP report"
+      },
+      "history": {
+        "after": {
+          "where": "Row label in the CP previous registrations table"
+        },
+        "first": {
+          "where": "Row label in the CP previous registrations table"
+        },
+        "within": {
+          "where": "Row label in the CP previous registrations table"
+        }
+      },
+      "lede": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "where": "Lede under the CP report title"
+      },
+      "lengthBands": {
+        "oneToTwoYears": {
+          "maxLength": 28,
+          "where": "Length band row in the CP length of registration tables"
+        },
+        "sixMonthsToOneYear": {
+          "maxLength": 28,
+          "where": "Length band row in the CP length of registration tables"
+        },
+        "twoYearsOrMore": {
+          "maxLength": 28,
+          "where": "Length band row in the CP length of registration tables"
+        },
+        "underSixMonths": {
+          "maxLength": 28,
+          "where": "Length band row in the CP length of registration tables"
+        }
+      },
+      "meetings": {
+        "coreGroup": {
+          "maxLength": 32,
+          "where": "Row label in the CP meetings table"
+        },
+        "cppm": {
+          "maxLength": 32,
+          "where": "Row label in the CP meetings table"
+        },
+        "ird": {
+          "maxLength": 36,
+          "where": "Row label in the CP meetings table"
+        },
+        "preBirth": {
+          "maxLength": 32,
+          "where": "Row label in the CP meetings table"
+        },
+        "review": {
+          "maxLength": 32,
+          "where": "Row label in the CP meetings table"
+        }
+      },
+      "meta": {
+        "computed": {
+          "where": "Meta line under the CP report controls: when it was computed and from how many records"
+        },
+        "period": {
+          "where": "First meta line under the CP report controls: the period and its reference date"
+        }
+      },
+      "periodLabel": {
+        "maxLength": 32,
+        "where": "Period line on the CP card of the reports index"
+      },
+      "purpose": {
+        "where": "Purpose paragraph on the CP card of the reports index"
+      },
+      "recipient": {
+        "where": "Who receives it line on the CP card of the reports index"
+      },
+      "sections": {
+        "age": {
+          "where": "Section title on the CP report, with the reference date"
+        },
+        "ageNote": {
+          "where": "Note under the register by age section title on the CP report"
+        },
+        "byMonth": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Section title on the CP report"
+        },
+        "byMonthNote": {
+          "where": "Note under the registrations by month section title on the CP report"
+        },
+        "concerns": {
+          "where": "Section title on the CP report"
+        },
+        "concernsNote": {
+          "where": "Note under the concerns section title on the CP report"
+        },
+        "history": {
+          "where": "Section title on the CP report"
+        },
+        "historyNote": {
+          "where": "Note under the previous registrations section title on the CP report"
+        },
+        "length": {
+          "where": "Section title on the CP report"
+        },
+        "meetings": {
+          "where": "Section title on the CP report"
+        },
+        "meetingsNote": {
+          "where": "Note under the meetings section title on the CP report"
+        },
+        "overTime": {
+          "where": "Section title on the CP report"
+        },
+        "overTimeNote": {
+          "where": "Note under the register over time section title on the CP report"
+        }
+      },
+      "sources": {
+        "statistics2024": {
+          "where": "Source listed in the field set and sources panel of the CP report"
+        },
+        "statistics2025": {
+          "where": "Source listed in the field set and sources panel of the CP report"
+        }
+      },
+      "tables": {
+        "lengthCurrentTitle": {
+          "where": "Title of the second table in the CP length of time section, with the reference date"
+        },
+        "lengthDeregTitle": {
+          "where": "Title of the first table in the CP length of time section"
+        }
+      },
+      "title": {
+        "maxLength": 40,
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "where": "Title of the CP report on the index card, the report screen, its print pack and the audit entry"
+      },
+      "verify": {
+        "publication": {
+          "where": "Verification note in the field set and sources panel of the CP report"
+        }
+      }
+    },
+    "figures": {
+      "noneInPeriod": {
+        "maxLength": 20,
+        "where": "Note under a headline figure on the ASP, MAPPA and AWI reports when its count is zero"
+      }
+    },
+    "frame": {
+      "allReports": {
+        "maxLength": 16,
+        "where": "Link back to the reports index from a report screen and the report not found state"
+      },
+      "emptyText": {
+        "where": "Empty state text on a report screen when the period holds nothing"
+      },
+      "emptyTitle": {
+        "maxLength": 32,
+        "where": "Empty state title on a report screen when the period holds nothing"
+      },
+      "periodLabel": {
+        "maxLength": 20,
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "Label of the reporting period select on every report screen"
+      },
+      "print": {
+        "maxLength": 16,
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "Primary button on every report screen that opens the print pack"
+      },
+      "sourcesMeta": {
+        "where": "Meta line under the field set and sources panel title on every report screen"
+      },
+      "sourcesTitle": {
+        "maxLength": 28,
+        "where": "Title of the field set and sources panel on every report screen and heading on the first print pack page"
+      },
+      "switchPeriod": {
+        "maxLength": 36,
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "Link in the empty period hint that switches to the period in progress"
+      }
+    },
+    "hint": {
+      "text": {
+        "screenshot": "phase-5/report-asp-light-comfortable.png",
+        "where": "Status hint on a report screen when the chosen period holds nothing but the period in progress does; activity is the report's own count phrase"
+      }
+    },
+    "index": {
+      "emptyText": {
+        "where": "Empty state text on the reports index"
+      },
+      "emptyTitle": {
+        "maxLength": 28,
+        "where": "Empty state title on the reports index"
+      },
+      "footnote": {
+        "where": "Footnote under the report cards on the reports index"
+      },
+      "lede": {
+        "screenshot": "phase-5/reports-light-comfortable.png",
+        "where": "Lede under the Reports page title"
+      },
+      "open": {
+        "where": "Link at the foot of each report card that opens the report, with its title"
+      },
+      "opens": {
+        "where": "Period line on each report card: the period shape and the period the report opens on"
+      },
+      "period": {
+        "maxLength": 12,
+        "where": "Term for the period on each report card"
+      },
+      "recipient": {
+        "maxLength": 20,
+        "where": "Term for the recipient on each report card"
+      },
+      "title": {
+        "maxLength": 12,
+        "screenshot": "phase-5/reports-light-comfortable.png",
+        "where": "Reports page title"
+      }
+    },
+    "mappa": {
+      "chart": {
+        "category": {
+          "where": "Series label in the MAPPA offenders by level chart, one per category"
+        },
+        "level": {
+          "maxLength": 12,
+          "where": "Category label on the horizontal axis of the MAPPA offenders by level chart"
+        },
+        "summary": {
+          "where": "Accessible name of the MAPPA offenders by level chart with the totals per level"
+        },
+        "summaryLevel": {
+          "where": "One item in the MAPPA chart summary: the count at a level"
+        },
+        "title": {
+          "screenshot": "phase-5/report-mappa-annex3-light-comfortable.png",
+          "where": "Caption of the MAPPA offenders by level and category chart, with the date"
+        },
+        "xLabel": {
+          "maxLength": 20,
+          "where": "Horizontal axis title of the MAPPA chart and first column of its data table"
+        },
+        "yLabel": {
+          "maxLength": 16,
+          "where": "Vertical axis title of the MAPPA chart"
+        }
+      },
+      "figures": {
+        "atEnd": {
+          "maxLength": 36,
+          "screenshot": "phase-5/report-mappa-light-comfortable.png",
+          "where": "Headline figure label on the MAPPA report, with the period end date"
+        },
+        "l2": {
+          "maxLength": 24,
+          "where": "Headline figure label on the MAPPA report"
+        },
+        "l3": {
+          "maxLength": 32,
+          "where": "Headline figure label on the MAPPA report"
+        },
+        "late": {
+          "maxLength": 16,
+          "where": "Headline figure label on the MAPPA report"
+        },
+        "orders": {
+          "maxLength": 36,
+          "where": "Headline figure label on the MAPPA report, with the period end date"
+        },
+        "ordersNote": {
+          "maxLength": 24,
+          "where": "Note under the civil orders figure on the MAPPA report when none is in force"
+        },
+        "sonr": {
+          "maxLength": 36,
+          "where": "Headline figure label on the MAPPA report"
+        }
+      },
+      "hint": {
+        "where": "Activity phrase in the empty period hint on the MAPPA report"
+      },
+      "interval": {
+        "none": {
+          "maxLength": 20,
+          "where": "Stands in for a review interval in the Table 3 note when no clock rule is configured"
+        },
+        "text": {
+          "where": "A review interval in the Table 3 note: the amount and the unit from the clock rule"
+        }
+      },
+      "lede": {
+        "screenshot": "phase-5/report-mappa-light-comfortable.png",
+        "where": "Lede under the MAPPA report title"
+      },
+      "meta": {
+        "computed": {
+          "where": "Meta line under the MAPPA report controls: when it was computed and from how many records"
+        },
+        "fieldSet": {
+          "where": "Last meta line under the MAPPA report controls: the confirmed field set"
+        }
+      },
+      "notes": {
+        "table1": {
+          "where": "Note under the Table 1 section title on the MAPPA report, with the period end date"
+        },
+        "table2": {
+          "where": "Note under the Table 2 section title on the MAPPA report"
+        },
+        "table3": {
+          "where": "Note under the Table 3 section title on the MAPPA report, with the period end date and the configured review intervals"
+        },
+        "table4": {
+          "where": "Note under the Table 4 section title on the MAPPA report, with the period end date"
+        },
+        "table5": {
+          "where": "Note under the Table 5 section title on the MAPPA report, with the period end date"
+        },
+        "table6": {
+          "where": "Note under the Table 6 section title on the MAPPA report"
+        },
+        "table7": {
+          "where": "Note under the Table 7 section title on the MAPPA report, with the period end date"
+        },
+        "table8": {
+          "where": "Note under the Table 8 section title on the MAPPA report"
+        },
+        "table9": {
+          "where": "Note under the Table 9 section title on the MAPPA report"
+        }
+      },
+      "periodLabel": {
+        "maxLength": 32,
+        "where": "Period line on the MAPPA card of the reports index"
+      },
+      "purpose": {
+        "where": "Purpose paragraph on the MAPPA card of the reports index"
+      },
+      "recipient": {
+        "where": "Who receives it line on the MAPPA card of the reports index"
+      },
+      "sections": {
+        "tableTitle": {
+          "screenshot": "phase-5/report-mappa-annex3-light-comfortable.png",
+          "where": "Section title for each Annex 3 table on the MAPPA report: the table number and its title"
+        }
+      },
+      "sources": {
+        "guidance": {
+          "where": "Source listed in the field set and sources panel of the MAPPA report"
+        },
+        "overview": {
+          "where": "Source listed in the field set and sources panel of the MAPPA report"
+        },
+        "sogReports": {
+          "where": "Source listed in the field set and sources panel of the MAPPA report"
+        }
+      },
+      "title": {
+        "maxLength": 36,
+        "screenshot": "phase-5/report-mappa-light-comfortable.png",
+        "where": "Title of the MAPPA report on the index card, the report screen, its print pack and the audit entry"
+      },
+      "units": {
+        "calendarDays": {
+          "maxLength": 16,
+          "where": "Unit of a review interval in the Table 3 note, from the clock rule"
+        },
+        "months": {
+          "maxLength": 16,
+          "where": "Unit of a review interval in the Table 3 note, from the clock rule"
+        },
+        "weeks": {
+          "maxLength": 16,
+          "where": "Unit of a review interval in the Table 3 note, from the clock rule"
+        },
+        "workingDays": {
+          "maxLength": 16,
+          "where": "Unit of a review interval in the Table 3 note, from the clock rule"
+        }
+      },
+      "verify": {
+        "interval": {
+          "where": "Verification note in the field set and sources panel of the MAPPA report"
+        },
+        "wording": {
+          "where": "Verification note in the field set and sources panel of the MAPPA report, listing which tables were read from extracts and which were reconstructed"
+        }
+      }
+    },
+    "mappaAnnex3": {
+      "dataNotHeld": {
+        "maxLength": 16,
+        "screenshot": "phase-5/report-mappa-annex3-light-comfortable.png",
+        "verbatim": true,
+        "where": "Cell value in the MAPPA Annex 3 tables where the record store holds no figure"
+      },
+      "table1": {
+        "column1": {
+          "verbatim": true,
+          "where": "First column header of MAPPA Annex 3 Table 1; placeholder for the published template text"
+        },
+        "column2": {
+          "verbatim": true,
+          "where": "Second column header of MAPPA Annex 3 Table 1; placeholder for the published template text"
+        },
+        "rowBreach": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 1; placeholder for the published template text"
+        },
+        "rowCommunity": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 1; placeholder for the published template text"
+        },
+        "rowMissing": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 1; placeholder for the published template text"
+        },
+        "rowPer100k": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 1; placeholder for the published template text"
+        },
+        "rowWanted": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 1; placeholder for the published template text"
+        },
+        "title": {
+          "screenshot": "phase-5/report-mappa-annex3-light-comfortable.png",
+          "verbatim": true,
+          "where": "Title of MAPPA Annex 3 Table 1; placeholder for the published template text"
+        }
+      },
+      "table2": {
+        "column1": {
+          "verbatim": true,
+          "where": "First column header of MAPPA Annex 3 Table 2; placeholder for the published template text"
+        },
+        "column2": {
+          "verbatim": true,
+          "where": "Second column header of MAPPA Annex 3 Table 2; placeholder for the published template text"
+        },
+        "rowBreachConvictions": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+        },
+        "rowRshoInForce": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+        },
+        "rowRshoMade": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+        },
+        "rowShpoInForce": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+        },
+        "rowShpoMade": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+        },
+        "rowSopoInForce": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+        },
+        "rowSopoMade": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+        },
+        "rowSroInForce": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+        },
+        "rowSroMade": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 2; placeholder for the published template text"
+        },
+        "title": {
+          "verbatim": true,
+          "where": "Title of MAPPA Annex 3 Table 2; placeholder for the published template text"
+        }
+      },
+      "table3": {
+        "column1": {
+          "verbatim": true,
+          "where": "First column header of MAPPA Annex 3 Table 3; placeholder for the published template text"
+        },
+        "column2": {
+          "verbatim": true,
+          "where": "Second column header of MAPPA Annex 3 Table 3; placeholder for the published template text"
+        },
+        "column3": {
+          "verbatim": true,
+          "where": "Third column header of MAPPA Annex 3 Table 3; placeholder for the published template text"
+        },
+        "column4": {
+          "verbatim": true,
+          "where": "Fourth column header of MAPPA Annex 3 Table 3; placeholder for the published template text"
+        },
+        "column5": {
+          "verbatim": true,
+          "where": "Fifth column header of MAPPA Annex 3 Table 3; placeholder for the published template text"
+        },
+        "rowRso": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 3; placeholder for the published template text"
+        },
+        "title": {
+          "verbatim": true,
+          "where": "Title of MAPPA Annex 3 Table 3; placeholder for the published template text"
+        }
+      },
+      "table4": {
+        "column1": {
+          "verbatim": true,
+          "where": "First column header of MAPPA Annex 3 Table 4; placeholder for the published template text"
+        },
+        "column2": {
+          "verbatim": true,
+          "where": "Second column header of MAPPA Annex 3 Table 4; placeholder for the published template text"
+        },
+        "rowLevel1": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 4; placeholder for the published template text"
+        },
+        "rowLevel2": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 4; placeholder for the published template text"
+        },
+        "rowLevel3": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 4; placeholder for the published template text"
+        },
+        "rowTotal": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 4; placeholder for the published template text"
+        },
+        "title": {
+          "verbatim": true,
+          "where": "Title of MAPPA Annex 3 Table 4; placeholder for the published template text"
+        }
+      },
+      "table5": {
+        "column1": {
+          "verbatim": true,
+          "where": "First column header of MAPPA Annex 3 Table 5; placeholder for the published template text"
+        },
+        "column2": {
+          "verbatim": true,
+          "where": "Second column header of MAPPA Annex 3 Table 5; placeholder for the published template text"
+        },
+        "rowLevel2": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 5; placeholder for the published template text"
+        },
+        "rowLevel3": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 5; placeholder for the published template text"
+        },
+        "rowReferred": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 5; placeholder for the published template text"
+        },
+        "rowTotal": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 5; placeholder for the published template text"
+        },
+        "title": {
+          "verbatim": true,
+          "where": "Title of MAPPA Annex 3 Table 5; placeholder for the published template text"
+        }
+      },
+      "table6": {
+        "column1": {
+          "verbatim": true,
+          "where": "First column header of MAPPA Annex 3 Table 6; placeholder for the published template text"
+        },
+        "column2": {
+          "verbatim": true,
+          "where": "Second column header of MAPPA Annex 3 Table 6; placeholder for the published template text"
+        },
+        "rowFemale": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 6; placeholder for the published template text"
+        },
+        "rowMale": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 6; placeholder for the published template text"
+        },
+        "rowNotRecorded": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 6; placeholder for the published template text"
+        },
+        "rowTotal": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 6; placeholder for the published template text"
+        },
+        "title": {
+          "verbatim": true,
+          "where": "Title of MAPPA Annex 3 Table 6; placeholder for the published template text"
+        }
+      },
+      "table7": {
+        "column1": {
+          "verbatim": true,
+          "where": "First column header of MAPPA Annex 3 Table 7; placeholder for the published template text"
+        },
+        "column2": {
+          "verbatim": true,
+          "where": "Second column header of MAPPA Annex 3 Table 7; placeholder for the published template text"
+        },
+        "rowSonrOnly": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 7; placeholder for the published template text"
+        },
+        "rowSupervision": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 7; placeholder for the published template text"
+        },
+        "rowTotal": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 7; placeholder for the published template text"
+        },
+        "title": {
+          "verbatim": true,
+          "where": "Title of MAPPA Annex 3 Table 7; placeholder for the published template text"
+        }
+      },
+      "table8": {
+        "column1": {
+          "verbatim": true,
+          "where": "First column header of MAPPA Annex 3 Table 8; placeholder for the published template text"
+        },
+        "column2": {
+          "verbatim": true,
+          "where": "Second column header of MAPPA Annex 3 Table 8; placeholder for the published template text"
+        },
+        "rowCategory1": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 8; placeholder for the published template text"
+        },
+        "rowCategory2": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 8; placeholder for the published template text"
+        },
+        "rowCategory3": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 8; placeholder for the published template text"
+        },
+        "title": {
+          "verbatim": true,
+          "where": "Title of MAPPA Annex 3 Table 8; placeholder for the published template text"
+        }
+      },
+      "table9": {
+        "column1": {
+          "verbatim": true,
+          "where": "First column header of MAPPA Annex 3 Table 9; placeholder for the published template text"
+        },
+        "column2": {
+          "verbatim": true,
+          "where": "Second column header of MAPPA Annex 3 Table 9; placeholder for the published template text"
+        },
+        "rowInCustody": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 9; placeholder for the published template text"
+        },
+        "rowLicenceBreaches": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 9; placeholder for the published template text"
+        },
+        "rowReleased": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 9; placeholder for the published template text"
+        },
+        "rowReturned": {
+          "verbatim": true,
+          "where": "Row label in MAPPA Annex 3 Table 9; placeholder for the published template text"
+        },
+        "title": {
+          "verbatim": true,
+          "where": "Title of MAPPA Annex 3 Table 9; placeholder for the published template text"
+        }
+      }
+    },
+    "marac": {
+      "chart": {
+        "series": {
+          "maxLength": 16,
+          "where": "Series label of the MARAC referrals by agency chart in its data table"
+        },
+        "summary": {
+          "where": "Accessible name of the MARAC referrals by agency chart: the total, then the breakdown when there is one"
+        },
+        "summaryBreakdown": {
+          "where": "Tail of the MARAC chart summary carrying the per-agency list"
+        },
+        "summaryItem": {
+          "where": "One item in the MARAC chart summary breakdown: the count from an agency"
+        },
+        "title": {
+          "screenshot": "phase-5/report-marac-light-comfortable.png",
+          "where": "Caption of the MARAC referrals by agency chart"
+        },
+        "xLabel": {
+          "maxLength": 20,
+          "where": "Horizontal axis title of the MARAC chart and first column of its data table"
+        },
+        "yLabel": {
+          "maxLength": 16,
+          "where": "Vertical axis title of the MARAC chart"
+        }
+      },
+      "columns": {
+        "cases": {
+          "maxLength": 12,
+          "where": "Column header in the MARAC victim characteristics and links tables"
+        },
+        "characteristic": {
+          "maxLength": 16,
+          "where": "Column header in the MARAC victim characteristics table"
+        },
+        "derived": {
+          "maxLength": 20,
+          "where": "Column header in the MARAC victim characteristics table"
+        },
+        "linkOrOutcome": {
+          "maxLength": 20,
+          "where": "Column header in the MARAC links table"
+        },
+        "referrals": {
+          "maxLength": 12,
+          "where": "Column header in the MARAC referrals by agency table"
+        },
+        "referringAgency": {
+          "maxLength": 20,
+          "where": "Column header in the MARAC referrals by agency table"
+        },
+        "riskIdentification": {
+          "maxLength": 24,
+          "where": "Column header in the MARAC risk identification table"
+        },
+        "share": {
+          "maxLength": 20,
+          "where": "Column header in the MARAC referrals by agency table"
+        },
+        "shareOrRate": {
+          "maxLength": 16,
+          "where": "Column header in the MARAC cases table"
+        }
+      },
+      "fields": {
+        "awaiting": {
+          "verbatim": true,
+          "where": "Row label in the MARAC cases table; a SafeLives return field"
+        },
+        "casesDiscussed": {
+          "verbatim": true,
+          "where": "Row label in the MARAC cases table; a SafeLives return field"
+        },
+        "children": {
+          "verbatim": true,
+          "where": "Row label in the MARAC cases table; a SafeLives return field"
+        },
+        "judgement": {
+          "verbatim": true,
+          "where": "Row label in the MARAC cases table; a SafeLives return field"
+        },
+        "meetingsHeld": {
+          "verbatim": true,
+          "where": "Row label in the MARAC cases table; a SafeLives return field"
+        },
+        "perTenThousand": {
+          "verbatim": true,
+          "where": "Row label in the MARAC cases table with the fictional population; a SafeLives return field"
+        },
+        "police": {
+          "verbatim": true,
+          "where": "Row label in the MARAC cases table; a SafeLives return field"
+        },
+        "referralsPerTenThousand": {
+          "verbatim": true,
+          "where": "Row label in the MARAC cases table; a SafeLives return field"
+        },
+        "referralsReceived": {
+          "verbatim": true,
+          "where": "Row label in the MARAC cases table; a SafeLives return field"
+        },
+        "repeats": {
+          "verbatim": true,
+          "where": "Row label in the MARAC cases table; a SafeLives return field"
+        },
+        "withChildren": {
+          "verbatim": true,
+          "where": "Row label in the MARAC cases table; a SafeLives return field"
+        }
+      },
+      "figures": {
+        "children": {
+          "maxLength": 24,
+          "where": "Headline figure label on the MARAC report"
+        },
+        "discussed": {
+          "maxLength": 20,
+          "where": "Headline figure label on the MARAC report"
+        },
+        "discussedNote": {
+          "where": "Note under the cases discussed figure on the MARAC report: meetings held"
+        },
+        "police": {
+          "maxLength": 20,
+          "where": "Headline figure label on the MARAC report"
+        },
+        "policeNote": {
+          "where": "Note under the police referrals figure on the MARAC report: police referrals out of all referrals"
+        },
+        "rate": {
+          "maxLength": 32,
+          "where": "Headline figure label on the MARAC report"
+        },
+        "rateNote": {
+          "maxLength": 24,
+          "where": "Note under the rate figure on the MARAC report"
+        },
+        "referrals": {
+          "maxLength": 20,
+          "screenshot": "phase-5/report-marac-light-comfortable.png",
+          "where": "Headline figure label on the MARAC report"
+        },
+        "repeat": {
+          "maxLength": 16,
+          "where": "Headline figure label on the MARAC report"
+        },
+        "repeatNote": {
+          "where": "Note under the repeat rate figure on the MARAC report: repeat referrals"
+        }
+      },
+      "hint": {
+        "where": "Activity phrase in the empty period hint on the MARAC report"
+      },
+      "lede": {
+        "screenshot": "phase-5/report-marac-light-comfortable.png",
+        "where": "Lede under the MARAC report title"
+      },
+      "links": {
+        "asp": {
+          "where": "Row label in the MARAC links, flags and outcomes table"
+        },
+        "cp": {
+          "where": "Row label in the MARAC links, flags and outcomes table"
+        },
+        "dsdas": {
+          "where": "Row label in the MARAC links, flags and outcomes table"
+        },
+        "flags": {
+          "where": "Row label in the MARAC links, flags and outcomes table"
+        },
+        "mappa": {
+          "where": "Row label in the MARAC links, flags and outcomes table"
+        },
+        "matac": {
+          "where": "Row label in the MARAC links, flags and outcomes table"
+        },
+        "transfers": {
+          "where": "Row label in the MARAC links, flags and outcomes table"
+        }
+      },
+      "meta": {
+        "computed": {
+          "where": "Meta line under the MARAC report controls: when it was computed and from how many records"
+        },
+        "population": {
+          "where": "Meta line under the MARAC report controls: the fictional population behind the rate"
+        }
+      },
+      "periodLabel": {
+        "maxLength": 32,
+        "where": "Period line on the MARAC card of the reports index"
+      },
+      "populationHint": {
+        "where": "Hint under the population field on the MARAC report"
+      },
+      "populationLabel": {
+        "maxLength": 36,
+        "screenshot": "phase-5/report-marac-light-comfortable.png",
+        "where": "Label of the population field beside the period select on the MARAC report"
+      },
+      "purpose": {
+        "where": "Purpose paragraph on the MARAC card of the reports index"
+      },
+      "recipient": {
+        "where": "Who receives it line on the MARAC card of the reports index"
+      },
+      "risk": {
+        "daq": {
+          "maxLength": 32,
+          "where": "Row label in the MARAC risk identification table"
+        },
+        "dash": {
+          "maxLength": 32,
+          "where": "Row label in the MARAC risk identification table"
+        },
+        "overrides": {
+          "where": "Row label in the MARAC risk identification table"
+        }
+      },
+      "sections": {
+        "agency": {
+          "screenshot": "phase-5/report-marac-light-comfortable.png",
+          "where": "Section title on the MARAC report"
+        },
+        "agencyNote": {
+          "where": "Note under the referrals by agency section title on the MARAC report"
+        },
+        "cases": {
+          "where": "Section title on the MARAC report"
+        },
+        "casesNote": {
+          "where": "Note under the cases section title on the MARAC report"
+        },
+        "links": {
+          "where": "Section title on the MARAC report"
+        },
+        "risk": {
+          "where": "Section title on the MARAC report"
+        },
+        "victims": {
+          "where": "Section title on the MARAC report"
+        },
+        "victimsNote": {
+          "where": "Note under the victim characteristics section title on the MARAC report"
+        }
+      },
+      "sources": {
+        "guidance": {
+          "where": "Source listed in the field set and sources panel of the MARAC report"
+        },
+        "keyFindings": {
+          "where": "Source listed in the field set and sources panel of the MARAC report"
+        },
+        "spotlight": {
+          "where": "Source listed in the field set and sources panel of the MARAC report"
+        }
+      },
+      "tables": {
+        "agencyEmpty": {
+          "where": "Empty row of the MARAC referrals by agency table"
+        }
+      },
+      "title": {
+        "maxLength": 36,
+        "screenshot": "phase-5/report-marac-light-comfortable.png",
+        "where": "Title of the MARAC report on the index card, the report screen, its print pack and the audit entry"
+      },
+      "verify": {
+        "olderThreshold": {
+          "where": "Verification note in the field set and sources panel of the MARAC report"
+        },
+        "template": {
+          "where": "Verification note in the field set and sources panel of the MARAC report"
+        }
+      },
+      "victims": {
+        "disability": {
+          "verbatim": true,
+          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
+        },
+        "interpreter": {
+          "verbatim": true,
+          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
+        },
+        "interpreterHow": {
+          "where": "How it is derived cell for the interpreter row of the MARAC victim characteristics table"
+        },
+        "lgbt": {
+          "verbatim": true,
+          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
+        },
+        "male": {
+          "verbatim": true,
+          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
+        },
+        "maleHow": {
+          "where": "How it is derived cell for the male victims row of the MARAC victim characteristics table"
+        },
+        "minority": {
+          "verbatim": true,
+          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
+        },
+        "minorityHow": {
+          "where": "How it is derived cell for the minority ethnic row of the MARAC victim characteristics table"
+        },
+        "notRecorded": {
+          "maxLength": 16,
+          "where": "Cases cell of the MARAC victim characteristics table for a field the record store does not hold"
+        },
+        "notRecordedHow": {
+          "where": "How it is derived cell for a field the record store does not hold in the MARAC victim characteristics table"
+        },
+        "older": {
+          "verbatim": true,
+          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
+        },
+        "olderHow": {
+          "where": "How it is derived cell for the older victims row of the MARAC victim characteristics table"
+        }
+      }
+    },
+    "meta": {
+      "period": {
+        "where": "First meta line under the controls of the ASP, MARAC, MAPPA and AWI reports: the period"
+      },
+      "verify": {
+        "where": "Last meta line under the controls of the ASP, CP, MARAC and AWI reports: the field set still needs verifying"
+      }
+    },
+    "notFound": {
+      "emptyText": {
+        "where": "Empty state text when the report route names no known report"
+      },
+      "emptyTitle": {
+        "maxLength": 32,
+        "where": "Empty state title when the report route names no known report"
+      },
+      "lede": {
+        "where": "Lede when the report route names no known report, with the requested name"
+      },
+      "title": {
+        "maxLength": 20,
+        "where": "Page title when the report route names no known report"
+      }
+    },
+    "period": {
+      "complete": {
+        "where": "Reporting period option for a completed period: its name and its date range"
+      },
+      "fourQuartersTo": {
+        "where": "Name of a rolling MARAC reporting period ending on a quarter end date"
+      },
+      "inProgress": {
+        "where": "Reporting period option for the period in progress: its name and its date range so far"
+      },
+      "range": {
+        "where": "A date range in a reporting period option and a quarter label in a chart data table"
+      },
+      "twoYearsTo31Mar": {
+        "where": "Name of an ASP biennium ending on 31 March of the given year"
+      },
+      "yearTo31Jul": {
+        "where": "Name of a CP reporting year ending on 31 July of the given year"
+      },
+      "yearTo31Mar": {
+        "where": "Name of a MAPPA or AWI reporting year ending on 31 March of the given year"
+      },
+      "yearToDate": {
+        "where": "Reporting period option for the AWI reporting year to date"
+      }
+    },
+    "table": {
+      "empty": {
+        "maxLength": 20,
+        "where": "Empty row of a report table on screen and in the print pack when the table gives no wording of its own"
+      }
+    },
+    "values": {
+      "notApplicable": {
+        "maxLength": 8,
+        "where": "A figure or cell that cannot be computed, such as a share with nothing to divide by"
       }
     }
   },

@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@mas/messages';
 import { TextField } from '@mas/ui';
 import { useState } from 'react';
 import { setQuery, useNavigate } from '@/lib/router';
@@ -11,12 +12,13 @@ import { useReportPeriod, withHint } from './useReport';
 
 /** MARAC SafeLives return for the rolling four quarters, with a fictional population for the rate. */
 export function ReportMarac() {
+  const t = useT();
   const data = useData();
   const navigate = useNavigate();
   const { now, route, periods, period, setPeriod } = useReportPeriod('marac');
   const population = parsePopulation(route.query);
   const [draft, setDraft] = useState(String(population));
-  const model = withHint(maracModel(data, now, period, population), periods, (p) => maracModel(data, now, p, population), (n) => `${n} ${n === 1 ? 'referral' : 'referrals'}`);
+  const model = withHint(maracModel(data, now, period, population), periods, (p) => maracModel(data, now, p, population), (n) => t('reports.marac.hint', { count: n }));
 
   function commit() {
     const n = Number(draft);
@@ -33,7 +35,7 @@ export function ReportMarac() {
       onPeriod={setPeriod}
       controls={
         <TextField
-          label="Adult female population (fictional)"
+          label={t('reports.marac.populationLabel')}
           type="number"
           inputMode="numeric"
           min={100}
@@ -44,7 +46,7 @@ export function ReportMarac() {
           onKeyDown={(e) => {
             if (e.key === 'Enter') commit();
           }}
-          hint="Clydeshore does not exist. Change the figure and the rate per 10,000 recalculates."
+          hint={t('reports.marac.populationHint')}
         />
       }
     />

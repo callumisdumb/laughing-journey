@@ -1,6 +1,7 @@
 'use client';
 
 import { CLASSIFICATION_LABELS, formatDateTime } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { Button, ClassificationBanner } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
 import { useEffect } from 'react';
@@ -13,6 +14,7 @@ import { resolvePeriod } from './period';
 import styles from './ReportPrintPack.module.css';
 
 function PackTable({ table }: { table: TableSpec }) {
+  const t = useT();
   const numeric = new Set(table.numeric ?? []);
   return (
     <>
@@ -31,7 +33,7 @@ function PackTable({ table }: { table: TableSpec }) {
         <tbody>
           {table.rows.length === 0 ? (
             <tr>
-              <td colSpan={table.columns.length}>{table.empty ?? 'None in period'}</td>
+              <td colSpan={table.columns.length}>{table.empty ?? t('reports.table.empty')}</td>
             </tr>
           ) : (
             table.rows.map((row, ri) => (
@@ -52,6 +54,7 @@ function PackTable({ table }: { table: TableSpec }) {
 
 /** A report as numbered pages with the classification marking, a running head and foot, and every chart's data table. */
 export function ReportPrintPack({ kind }: { kind: ReportKind }) {
+  const t = useT();
   const data = useData();
   const config = useConfig();
   const now = useNow();
@@ -62,7 +65,7 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
   const model = buildModel(kind, data, config, now, period, { population: parsePopulation(route.query) });
 
   useEffect(() => {
-    audit({ act: 'export', targetType: 'report', targetId: `${kind}:${period.id}`, targetLabel: `${model.title} print pack: ${period.label}` });
+    audit({ act: 'export', targetType: 'report', targetId: `${kind}:${period.id}`, targetLabel: t('print.reports.auditLabel', { title: model.title, period: period.label }) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind, period.id]);
 
@@ -92,14 +95,12 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
     <div className={styles.head}>
       <span>{marking}</span>
       <span>{model.title}</span>
-      <span>
-        Page {page} of {totalPages}
-      </span>
+      <span>{t('print.common.page', { page, total: totalPages })}</span>
     </div>
   );
   const foot = (
     <div className={styles.foot}>
-      <span>Printed {formatDateTime(now)} from the platform. Synthetic demonstration data.</span>
+      <span>{t('print.common.printedFooter', { when: formatDateTime(now) })}</span>
       <span>{marking}</span>
     </div>
   );
@@ -108,28 +109,28 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
     <div className={`${styles.pack} print-pack`}>
       <div className={`${styles.controls} no-print`}>
         <Button variant="secondary" icon={<ArrowLeft size={16} aria-hidden="true" />} onClick={() => navigate(back)}>
-          Back to the report
+          {t('print.reports.back')}
         </Button>
         <Button variant="primary" size="lg" icon={<Printer size={16} aria-hidden="true" />} onClick={() => window.print()}>
-          Print
+          {t('print.common.print')}
         </Button>
       </div>
       <ClassificationBanner level={model.classification} />
       <section className={`${styles.page} print-page`}>
         {head(1)}
         <h1 className={styles.title}>{model.title}</h1>
-        <p className={styles.meta}>{model.period.label}.</p>
+        <p className={styles.meta}>{t('print.reports.periodLine', { period: model.period.label })}</p>
         <p className={styles.meta}>{model.lede}</p>
         <p className={styles.meta}>{model.meta.join(' ')}</p>
-        <h2>Headline figures</h2>
+        <h2>{t('print.reports.headline')}</h2>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th scope="col">Measure</th>
+              <th scope="col">{t('print.reports.columns.measure')}</th>
               <th scope="col" data-align="num">
-                Value
+                {t('print.reports.columns.value')}
               </th>
-              <th scope="col">Note</th>
+              <th scope="col">{t('print.reports.columns.note')}</th>
             </tr>
           </thead>
           <tbody>
@@ -142,7 +143,7 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
             ))}
           </tbody>
         </table>
-        <h2>Field set and sources</h2>
+        <h2>{t('reports.frame.sourcesTitle')}</h2>
         <ul className={styles.list}>
           {model.verify.map((v) => (
             <li key={v}>{v}</li>
@@ -161,8 +162,8 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
               <h2>{s.title}</h2>
               {s.note ? <p className={styles.note}>{s.note}</p> : null}
               {s.chart ? <Chart spec={s.chart} /> : null}
-              {s.tables.map((t) => (
-                <PackTable key={t.id} table={t} />
+              {s.tables.map((table) => (
+                <PackTable key={table.id} table={table} />
               ))}
             </div>
           ))}

@@ -3,6 +3,7 @@
  * rolling quarters) and every option is a closed range of ISO calendar dates. Pure functions.
  */
 import { formatDate, localDateOf } from '@mas/domain';
+import { t } from '@mas/messages';
 import { addDays, addMonths, endOfMonth, format, parseISO, startOfMonth } from 'date-fns';
 import type { ReportKind } from './model';
 
@@ -36,7 +37,7 @@ function dayAfter(isoDate: string): string {
 }
 
 function range(from: string, to: string): string {
-  return `${formatDate(from)} to ${formatDate(to)}`;
+  return t('reports.period.range', { from: formatDate(from), to: formatDate(to) });
 }
 
 /** The Europe/London calendar date of an instant; a date-only string is already one. */
@@ -65,11 +66,11 @@ function yearPeriods(s: YearShape, today: string): Period[] {
   const out: Period[] = [];
   const next = latest + s.step;
   const nextFrom = dayAfter(yearEnd(latest, s));
-  out.push({ id: `${s.prefix}${next}`, label: `${s.name(next)}, in progress: ${range(nextFrom, today)}`, from: nextFrom, to: today, inProgress: true });
+  out.push({ id: `${s.prefix}${next}`, label: t('reports.period.inProgress', { name: s.name(next), range: range(nextFrom, today) }), from: nextFrom, to: today, inProgress: true });
   for (let k = 0; k < s.count; k += 1) {
     const end = latest - k * s.step;
     const from = dayAfter(yearEnd(end - s.step, s));
-    out.push({ id: `${s.prefix}${end}`, label: `${s.name(end)}: ${range(from, yearEnd(end, s))}`, from, to: yearEnd(end, s), inProgress: false });
+    out.push({ id: `${s.prefix}${end}`, label: t('reports.period.complete', { name: s.name(end), range: range(from, yearEnd(end, s)) }), from, to: yearEnd(end, s), inProgress: false });
   }
   return out;
 }
@@ -85,8 +86,9 @@ function quarterPeriods(today: string, count: number): Period[] {
     const from = iso(startOfMonth(addMonths(end, -11)));
     const endIso = iso(end);
     const id = `q${end.getFullYear()}-${Math.floor(end.getMonth() / 3) + 1}`;
-    if (k === 0) out.push({ id, label: `Four quarters to ${formatDate(endIso)}, in progress: ${range(from, today)}`, from, to: today, inProgress: true });
-    else out.push({ id, label: `Four quarters to ${formatDate(endIso)}: ${range(from, endIso)}`, from, to: endIso, inProgress: false });
+    const name = t('reports.period.fourQuartersTo', { date: formatDate(endIso) });
+    if (k === 0) out.push({ id, label: t('reports.period.inProgress', { name, range: range(from, today) }), from, to: today, inProgress: true });
+    else out.push({ id, label: t('reports.period.complete', { name, range: range(from, endIso) }), from, to: endIso, inProgress: false });
   }
   return out;
 }
@@ -94,8 +96,8 @@ function quarterPeriods(today: string, count: number): Period[] {
 function awiPeriods(today: string): Period[] {
   const y = Number(today.slice(0, 4));
   const start = `${y}-04-01` <= today ? `${y}-04-01` : `${y - 1}-04-01`;
-  const ytd: Period = { id: 'ytd', label: `Reporting year to date: ${range(start, today)}`, from: start, to: today, inProgress: true };
-  const years = yearPeriods({ prefix: 'y', endMonth: 3, endDay: 31, step: 1, count: 3, name: (e) => `Year to 31 Mar ${e}` }, today).filter((p) => !p.inProgress);
+  const ytd: Period = { id: 'ytd', label: t('reports.period.yearToDate', { range: range(start, today) }), from: start, to: today, inProgress: true };
+  const years = yearPeriods({ prefix: 'y', endMonth: 3, endDay: 31, step: 1, count: 3, name: (e) => t('reports.period.yearTo31Mar', { year: e }) }, today).filter((p) => !p.inProgress);
   return [ytd, ...years];
 }
 
@@ -103,13 +105,13 @@ export function periodsFor(kind: ReportKind, now: Date): Period[] {
   const today = localDateOf(now);
   switch (kind) {
     case 'cp':
-      return yearPeriods({ prefix: 'y', endMonth: 7, endDay: 31, step: 1, count: 8, name: (e) => `Year to 31 Jul ${e}` }, today);
+      return yearPeriods({ prefix: 'y', endMonth: 7, endDay: 31, step: 1, count: 8, name: (e) => t('reports.period.yearTo31Jul', { year: e }) }, today);
     case 'asp':
-      return yearPeriods({ prefix: 'b', endMonth: 3, endDay: 31, step: 2, count: 4, name: (e) => `Two years to 31 Mar ${e}` }, today);
+      return yearPeriods({ prefix: 'b', endMonth: 3, endDay: 31, step: 2, count: 4, name: (e) => t('reports.period.twoYearsTo31Mar', { year: e }) }, today);
     case 'marac':
       return quarterPeriods(today, 5);
     case 'mappa':
-      return yearPeriods({ prefix: 'y', endMonth: 3, endDay: 31, step: 1, count: 4, name: (e) => `Year to 31 Mar ${e}` }, today);
+      return yearPeriods({ prefix: 'y', endMonth: 3, endDay: 31, step: 1, count: 4, name: (e) => t('reports.period.yearTo31Mar', { year: e }) }, today);
     case 'awi':
       return awiPeriods(today);
   }
@@ -154,7 +156,7 @@ export function quartersIn(p: Period): Bucket[] {
   let d = new Date(first.getFullYear(), Math.floor(first.getMonth() / 3) * 3, 1);
   while (d <= to) {
     const end = endOfMonth(addMonths(d, 2));
-    out.push({ key: format(d, 'yyyy-MM'), short: format(d, 'MMM yy'), long: `${format(d, 'MMM')} to ${format(end, 'MMM yyyy')}`, end: iso(end <= to ? end : to) });
+    out.push({ key: format(d, 'yyyy-MM'), short: format(d, 'MMM yy'), long: t('reports.period.range', { from: format(d, 'MMM'), to: format(end, 'MMM yyyy') }), end: iso(end <= to ? end : to) });
     d = addMonths(d, 3);
   }
   return out;

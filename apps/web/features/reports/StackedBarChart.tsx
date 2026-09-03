@@ -18,6 +18,7 @@ export function StackedBarChart({ spec }: { spec: ChartSpec }) {
   const slot = plotW / n;
   const barW = Math.max(2, slot * 0.6);
   const y = (v: number) => top + plotH - (v / scaleMax) * plotH;
+  const yTitleTransform = `translate(16 ${top + plotH / 2}) rotate(-90)`;
 
   return (
     <ChartFrame spec={spec}>
@@ -71,7 +72,7 @@ export function StackedBarChart({ spec }: { spec: ChartSpec }) {
         <text className={styles.axisTitle} x={left + plotW / 2} y={height - 10} textAnchor="middle">
           {spec.xLabel}
         </text>
-        <text className={styles.axisTitle} transform={`translate(16 ${top + plotH / 2}) rotate(-90)`} textAnchor="middle">
+        <text className={styles.axisTitle} transform={yTitleTransform} textAnchor="middle">
           {spec.yLabel}
         </text>
       </svg>

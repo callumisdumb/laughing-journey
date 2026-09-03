@@ -3,10 +3,11 @@
  * meeting-level counts, so nothing here identifies a victim.
  */
 import { AGENCIES, AGENCY_SHORT, formatDateTime, localDateOf, type Dataset, type MaracProcess } from '@mas/domain';
+import { formatNumber, t } from '@mas/messages';
 import { agencyColourVar } from '@mas/ui';
 import { personById } from '@/lib/selectors';
 import { ageOn } from './helpers';
-import { countBy, pct, per10k, plural, scaleColour, sum, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
+import { countBy, pct, per10k, scaleColour, sum, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
 import { inPeriod, type Period } from './period';
 
 export function maracModel(data: Dataset, now: Date, period: Period, population: number): ReportModel {
@@ -23,6 +24,7 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
   const byAgency = countBy(referrals, (p) => p.detail.referral.referringAgency);
   const agencies = AGENCIES.filter((a) => (byAgency.get(a) ?? 0) > 0);
   const police = byAgency.get('police') ?? 0;
+  const populationLabel = formatNumber(population);
 
   const victims = referrals.map((p) => ({ p, v: personById(data, p.detail.referral.victimPersonId) }));
   const male = victims.filter(({ v }) => v?.sex === 'male').length;
@@ -46,120 +48,108 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
   const chart: ChartSpec = {
     id: 'marac-by-agency',
     kind: 'bar',
-    title: 'Referrals by agency',
-    summary: `Referrals by agency: ${plural(referrals.length, 'referral')}${agencies.length > 0 ? `, ${agencies.map((a) => `${byAgency.get(a) ?? 0} from ${AGENCY_SHORT[a]}`).join(', ')}` : ''}.`,
+    title: t('reports.marac.chart.title'),
+    summary: t('reports.marac.chart.summary', { referrals: referrals.length, breakdown: agencies.length > 0 ? t('reports.marac.chart.summaryBreakdown', { list: agencies.map((a) => t('reports.marac.chart.summaryItem', { count: byAgency.get(a) ?? 0, agency: AGENCY_SHORT[a] })).join(', ') }) : '' }),
     categories: agencies.map((a) => AGENCY_SHORT[a]),
     categoryColours: agencies.map((a) => agencyColourVar(a)),
     categoryLegend: agencies.map((a) => ({ key: a, label: AGENCY_SHORT[a], colour: agencyColourVar(a), agency: a })),
-    series: [{ key: 'referrals', label: 'Referrals', colour: scaleColour(0) }],
+    series: [{ key: 'referrals', label: t('reports.marac.chart.series'), colour: scaleColour(0) }],
     values: [agencies.map((a) => byAgency.get(a) ?? 0)],
-    xLabel: 'Referring agency',
-    yLabel: 'Referrals',
+    xLabel: t('reports.marac.chart.xLabel'),
+    yLabel: t('reports.marac.chart.yLabel'),
   };
 
   const agencyTable: TableSpec = {
     id: 'marac-agency-table',
-    columns: ['Referring agency', 'Referrals', 'Share of referrals'],
+    columns: [t('reports.marac.columns.referringAgency'), t('reports.marac.columns.referrals'), t('reports.marac.columns.share')],
     numeric: [1, 2],
     rows: agencies.map((a) => [AGENCY_SHORT[a], byAgency.get(a) ?? 0, pct(byAgency.get(a) ?? 0, referrals.length)]),
-    empty: 'No referrals in period',
+    empty: t('reports.marac.tables.agencyEmpty'),
   };
 
   const casesTable: TableSpec = {
     id: 'marac-cases',
-    columns: ['Measure', 'Count', 'Share or rate'],
+    columns: [t('reports.columns.measure'), t('reports.columns.count'), t('reports.marac.columns.shareOrRate')],
     numeric: [1, 2],
     rows: [
-      ['MARAC meetings held', meetingsHeld, ''],
-      ['Referrals received', referrals.length, ''],
-      ['Cases discussed at a MARAC held in the period', discussed.length, ''],
-      ['Referrals awaiting a meeting', awaiting.length, pct(awaiting.length, referrals.length)],
-      ['Repeat referrals (a further referral within 12 months of the last MARAC)', repeats.length, pct(repeats.length, referrals.length)],
-      ['Referrals on professional judgement below the DASH threshold', judgement.length, pct(judgement.length, referrals.length)],
-      ['Cases with children in the household', withChildren.length, pct(withChildren.length, referrals.length)],
-      ['Children in those households', children, ''],
-      ['Police referrals', police, pct(police, referrals.length)],
-      [`Cases discussed per 10,000 adult women (population ${population.toLocaleString('en-GB')}, fictional)`, discussed.length, per10k(discussed.length, population)],
-      ['Referrals per 10,000 adult women (same population)', referrals.length, per10k(referrals.length, population)],
+      [t('reports.marac.fields.meetingsHeld'), meetingsHeld, ''],
+      [t('reports.marac.fields.referralsReceived'), referrals.length, ''],
+      [t('reports.marac.fields.casesDiscussed'), discussed.length, ''],
+      [t('reports.marac.fields.awaiting'), awaiting.length, pct(awaiting.length, referrals.length)],
+      [t('reports.marac.fields.repeats'), repeats.length, pct(repeats.length, referrals.length)],
+      [t('reports.marac.fields.judgement'), judgement.length, pct(judgement.length, referrals.length)],
+      [t('reports.marac.fields.withChildren'), withChildren.length, pct(withChildren.length, referrals.length)],
+      [t('reports.marac.fields.children'), children, ''],
+      [t('reports.marac.fields.police'), police, pct(police, referrals.length)],
+      [t('reports.marac.fields.perTenThousand', { population: populationLabel }), discussed.length, per10k(discussed.length, population)],
+      [t('reports.marac.fields.referralsPerTenThousand'), referrals.length, per10k(referrals.length, population)],
     ],
   };
 
   const victimTable: TableSpec = {
     id: 'marac-victims',
-    columns: ['Characteristic', 'Cases', 'How it is derived'],
+    columns: [t('reports.marac.columns.characteristic'), t('reports.marac.columns.cases'), t('reports.marac.columns.derived')],
     numeric: [1],
     rows: [
-      ['Male victims', male, 'Sex on the person record'],
-      ['Victims aged 61 or over at referral', older, 'Date of birth on the person record; SafeLives counts older victims from 61'],
-      ['Minority ethnic victims', minority, 'Ethnicity recorded as other than Scottish; census categories are not held yet'],
-      ['Victims who need an interpreter', interpreter, 'Communication needs on the person record'],
-      ['LGBT victims', 'Not recorded', 'The record store has no field for this yet, so no number is given'],
-      ['Victims with a disability', 'Not recorded', 'The record store has no field for this yet, so no number is given'],
+      [t('reports.marac.victims.male'), male, t('reports.marac.victims.maleHow')],
+      [t('reports.marac.victims.older'), older, t('reports.marac.victims.olderHow')],
+      [t('reports.marac.victims.minority'), minority, t('reports.marac.victims.minorityHow')],
+      [t('reports.marac.victims.interpreter'), interpreter, t('reports.marac.victims.interpreterHow')],
+      [t('reports.marac.victims.lgbt'), t('reports.marac.victims.notRecorded'), t('reports.marac.victims.notRecordedHow')],
+      [t('reports.marac.victims.disability'), t('reports.marac.victims.notRecorded'), t('reports.marac.victims.notRecordedHow')],
     ],
   };
 
   const riskTable: TableSpec = {
     id: 'marac-risk',
-    columns: ['Risk identification', 'Count'],
+    columns: [t('reports.marac.columns.riskIdentification'), t('reports.columns.count')],
     numeric: [1],
     rows: [
-      ['SafeLives DASH checklists', dash],
-      ['Police Scotland DAQ', daq],
-      ['Professional judgement overrides of the tool score', overrides],
+      [t('reports.marac.risk.dash'), dash],
+      [t('reports.marac.risk.daq'), daq],
+      [t('reports.marac.risk.overrides'), overrides],
     ],
   };
 
   const linksTable: TableSpec = {
     id: 'marac-links',
-    columns: ['Link or outcome', 'Cases'],
+    columns: [t('reports.marac.columns.linkOrOutcome'), t('reports.marac.columns.cases')],
     numeric: [1],
     rows: [
-      ['Linked child protection process', cpLinked],
-      ['Linked adult support and protection process', aspLinked],
-      ['Linked MAPPA process', mappaLinked],
-      ['Perpetrator referred to MATAC', matac],
-      ['Disclosure Scheme for Domestic Abuse Scotland considered', dsdas],
-      ['MARAC flags placed on agency records in the period', flags],
-      ['Cases transferred to another MARAC', transfers],
+      [t('reports.marac.links.cp'), cpLinked],
+      [t('reports.marac.links.asp'), aspLinked],
+      [t('reports.marac.links.mappa'), mappaLinked],
+      [t('reports.marac.links.matac'), matac],
+      [t('reports.marac.links.dsdas'), dsdas],
+      [t('reports.marac.links.flags'), flags],
+      [t('reports.marac.links.transfers'), transfers],
     ],
   };
 
   const sections: ReportSection[] = [
-    { id: 'agency', title: 'Referrals by agency', note: 'The agency that made the referral, from the referral record.', chart, tables: [agencyTable] },
-    { id: 'cases', title: 'Cases, repeats and children', note: 'SafeLives counts cases discussed at each meeting; referrals are shown as well because a case referred late in a quarter is discussed in the next.', tables: [casesTable] },
-    { id: 'victims', title: 'Victim characteristics', note: 'Counts only. Where the record store holds no field, the return says so rather than guessing.', tables: [victimTable] },
-    { id: 'risk', title: 'Risk identification', tables: [riskTable] },
-    { id: 'links', title: 'Links, flags and outcomes', tables: [linksTable] },
+    { id: 'agency', title: t('reports.marac.sections.agency'), note: t('reports.marac.sections.agencyNote'), chart, tables: [agencyTable] },
+    { id: 'cases', title: t('reports.marac.sections.cases'), note: t('reports.marac.sections.casesNote'), tables: [casesTable] },
+    { id: 'victims', title: t('reports.marac.sections.victims'), note: t('reports.marac.sections.victimsNote'), tables: [victimTable] },
+    { id: 'risk', title: t('reports.marac.sections.risk'), tables: [riskTable] },
+    { id: 'links', title: t('reports.marac.sections.links'), tables: [linksTable] },
   ];
 
   return {
     kind: 'marac',
-    title: 'MARAC SafeLives return',
-    lede: 'The meeting-level counts SafeLives collects from every MARAC each quarter, computed from the referrals and meetings in the record store. Counts only: nothing here names a victim.',
+    title: t('reports.marac.title'),
+    lede: t('reports.marac.lede'),
     period,
     classification: 'official-sensitive',
-    meta: [
-      `Period ${period.label}.`,
-      `Computed ${formatDateTime(now)} from the local record store: ${plural(maracs.length, 'MARAC record')} in total, ${referrals.length} referred in the period.`,
-      `Rate per 10,000 uses an adult female population of ${population.toLocaleString('en-GB')} for Clydeshore, which is fictional and can be changed above.`,
-      'Field set to verify against the current template.',
-    ],
-    verify: [
-      'SafeLives publishes guidance and a data template workbook for MARACs; the field list here (cases, repeats, children, referral agency, older, male, minority ethnic, LGBT and disabled victims, cases per 10,000 adult women) follows the quarterly key findings reports and should be checked against the current workbook.',
-      'The older victim threshold of 61 follows the SafeLives spotlight on older people; confirm it against the current dataset definitions.',
-    ],
-    sources: [
-      'SafeLives, MARAC data: guidance for MARACs, and the MARAC data template workbook (safelives.org.uk).',
-      'SafeLives, Marac data key findings April 2024 to March 2025 (safelives.org.uk).',
-      'SafeLives, Spotlight on older people and domestic abuse (safelives.org.uk).',
-    ],
+    meta: [t('reports.meta.period', { period: period.label }), t('reports.marac.meta.computed', { dateTime: formatDateTime(now), records: maracs.length, referrals: referrals.length }), t('reports.marac.meta.population', { population: populationLabel }), t('reports.meta.verify')],
+    verify: [t('reports.marac.verify.template'), t('reports.marac.verify.olderThreshold')],
+    sources: [t('reports.marac.sources.guidance'), t('reports.marac.sources.keyFindings'), t('reports.marac.sources.spotlight')],
     figures: [
-      { id: 'referrals', label: 'Referrals received', value: String(referrals.length) },
-      { id: 'discussed', label: 'Cases discussed', value: String(discussed.length), note: `${plural(meetingsHeld, 'meeting')} held` },
-      { id: 'repeat', label: 'Repeat rate', value: pct(repeats.length, referrals.length), note: `${plural(repeats.length, 'repeat referral')}` },
-      { id: 'children', label: 'Children in households', value: String(children) },
-      { id: 'police', label: 'Police referrals', value: pct(police, referrals.length), note: `${police} of ${referrals.length}` },
-      { id: 'rate', label: 'Cases per 10,000 adult women', value: per10k(discussed.length, population), note: 'fictional population' },
+      { id: 'referrals', label: t('reports.marac.figures.referrals'), value: String(referrals.length) },
+      { id: 'discussed', label: t('reports.marac.figures.discussed'), value: String(discussed.length), note: t('reports.marac.figures.discussedNote', { count: meetingsHeld }) },
+      { id: 'repeat', label: t('reports.marac.figures.repeat'), value: pct(repeats.length, referrals.length), note: t('reports.marac.figures.repeatNote', { count: repeats.length }) },
+      { id: 'children', label: t('reports.marac.figures.children'), value: String(children) },
+      { id: 'police', label: t('reports.marac.figures.police'), value: pct(police, referrals.length), note: t('reports.marac.figures.policeNote', { police, referrals: referrals.length }) },
+      { id: 'rate', label: t('reports.marac.figures.rate'), value: per10k(discussed.length, population), note: t('reports.marac.figures.rateNote') },
     ],
     sections,
     activity: referrals.length + discussed.length,

@@ -2235,6 +2235,17 @@
         "meta": "<b>{name}</b>, {date}. Recorded by {recorder} ({agency}), {method}.{hasPreference, select, yes { How they want it used: {preference}} other {}}",
         "title": "Views of the person read into the record"
       }
+    },
+    "reports": {
+      "auditLabel": "{title} print pack: {period}",
+      "back": "Back to the report",
+      "columns": {
+        "measure": "Measure",
+        "note": "Note",
+        "value": "Value"
+      },
+      "headline": "Headline figures",
+      "periodLine": "{period}."
     }
   },
   "processes": {
@@ -2354,6 +2365,650 @@
       "familyFallback": "Family",
       "none": "Not yet recorded",
       "title": "Views and voice"
+    }
+  },
+  "reports": {
+    "asp": {
+      "chart": {
+        "summary": "Referrals by quarter and source agency: {referrals, plural, one {# referral} other {# referrals}} over {quarters, plural, one {# quarter} other {# quarters}}{from}.",
+        "summaryFrom": ", from {agencies}",
+        "title": "Referrals by quarter and source agency",
+        "xLabel": "Quarter",
+        "yLabel": "Referrals"
+      },
+      "columns": {
+        "adults": "Adults",
+        "agenciesInvolved": "Agencies involved",
+        "appliedFor": "Applied for",
+        "careInspectorateNotified": "Care Inspectorate notified",
+        "drafting": "Application in drafting",
+        "granted": "Granted",
+        "harmType": "Harm type",
+        "held": "Held in period",
+        "locationOfHarm": "Location of harm",
+        "meeting": "Meeting",
+        "notRequired": "Considered, not required",
+        "order": "Order",
+        "provider": "Provider",
+        "referrals": "Referrals",
+        "refused": "Refused",
+        "scheduled": "Scheduled, not yet held",
+        "setting": "Setting",
+        "sourceAgency": "Source agency",
+        "strandsOpen": "Strands open"
+      },
+      "conferences": {
+        "initial": "Initial case conference",
+        "review": "Review case conference"
+      },
+      "figures": {
+        "conferences": "Case conferences held",
+        "inquiries": "Inquiries",
+        "investigations": "Investigations",
+        "lsi": "Large Scale Investigations",
+        "orders": "Protection orders granted",
+        "referrals": "Referrals",
+        "referralsNote": "{count, plural, one {# adult} other {# adults}} at risk"
+      },
+      "hint": "{count, plural, one {# referral} other {# referrals}}",
+      "lede": "The activity figures an Adult Protection Committee needs for its biennial report, computed from the adult concern records, inquiries, investigations, case conferences and orders in the record store.",
+      "location": {
+        "careHome": "Care home or other regulated setting",
+        "hospital": "Hospital",
+        "ownHome": "Own home"
+      },
+      "measures": {
+        "adultsDeclined": "Adults who declined to be interviewed",
+        "advocacyOffered": "Investigations where independent advocacy was offered",
+        "capacityAssessed": "Investigations where capacity was assessed",
+        "inquiriesOpened": "Inquiries opened under section 4",
+        "interviews": "Interviews under section 8",
+        "investigationsStarted": "Investigations started",
+        "medicals": "Medical examinations requested under section 9",
+        "outcomeInvestigation": "Inquiry outcome: proceed to investigation",
+        "outcomeNoAction": "Inquiry outcome: no further ASP action",
+        "outcomePending": "Inquiry outcome: pending",
+        "outcomeSupport": "Inquiry outcome: support only",
+        "records": "Records requests under section 10",
+        "visits": "Visits under section 7"
+      },
+      "meta": {
+        "computed": "Computed {dateTime} from the local record store: {records, plural, one {# ASP record} other {# ASP records}} in total, {referrals} with a concern received in the period, about {adults, plural, one {# adult} other {# adults}}."
+      },
+      "orders": {
+        "assessmentOrderS11": "Assessment order (section 11)",
+        "banningOrderS19": "Banning order (section 19)",
+        "removalOrderS14": "Removal order (section 14)",
+        "warrantForEntry": "Warrant for entry"
+      },
+      "periodLabel": "Two years to 31 March",
+      "purpose": "The activity figures an Adult Protection Committee needs for the biennial report it must produce under the Adult Support and Protection (Scotland) Act 2007: referrals by source, inquiries, investigations, case conferences, protection orders and Large Scale Investigations, by harm type and where the harm happened.",
+      "recipient": "The APC convener, for the committee, the council, the health board and Police Scotland, then Scottish Ministers.",
+      "sections": {
+        "conferences": "Case conferences",
+        "conferencesNote": "Meetings marked held in the meeting record. Inter-agency discussions are not case conferences and are not counted here.",
+        "harm": "Harm types recorded at referral",
+        "harmNote": "A referral can record more than one harm type, so the column can add up to more than the number of referrals.",
+        "inquiries": "Inquiries and investigations",
+        "inquiriesNote": "Inquiries are dated from the section 4 inquiry record; investigations from the stage change. Powers are counted by the date each was used.",
+        "location": "Location of harm (derived)",
+        "locationNote": "Derived from the adult's recorded address on the day the concern was received: care home, hospital or own home. The concern record has no location field yet.",
+        "lsi": "Large Scale Investigations",
+        "lsiNote": "One row per LSI opened in the period, with the number of adults covered by its strands.",
+        "orders": "Protection orders",
+        "ordersNote": "{granted, select, none {No protection orders were granted in the period: none in period. } other {}}{drafting, plural, =0 {} one {# application is in drafting. } other {# applications are in drafting. }}Orders are attributed to the period of the referral they belong to; the record store does not yet date each decision.",
+        "referrals": "Referrals by quarter and source agency",
+        "referralsNote": "A referral is an adult concern record. A Large Scale Investigation counts once; the adults column shows how many people it covers."
+      },
+      "sources": {
+        "apcGuidance": "Adult Support and Protection (Scotland) Act 2007: guidance for Adult Protection Committees, Biennial Report (gov.scot).",
+        "nmds": "Adult Support and Protection National Minimum Dataset 2024-25 and its technical report (gov.scot).",
+        "statistics": "Adult Support and Protection Scotland, April 2019 to March 2022 (gov.scot), the last release with case conference and protection order pages."
+      },
+      "tables": {
+        "lsiEmpty": "No Large Scale Investigations in period",
+        "referralsEmpty": "No referrals in period"
+      },
+      "title": "ASP biennial report figures",
+      "verify": {
+        "location": "Location of harm is derived from the address, not recorded on the concern; treat that table as indicative.",
+        "nmds": "The Scottish Government guidance for Adult Protection Committees describes what a biennial report should cover (activity, trends, inputs and outcomes) rather than a fixed table set. The tables here follow the indicators of the ASP National Minimum Dataset, of which only referrals, inquiries and Large Scale Investigations were published for 2024-25; the harm type, location and order categories are the platform's own until the current template is checked."
+      }
+    },
+    "awi": {
+      "applicants": {
+        "council": "Council (Chief Social Work Officer)",
+        "private": "Private applicant"
+      },
+      "chart": {
+        "summary": "Applications by route and applicant: {applications, plural, one {# application} other {# applications}} started in the period, {council} by the council and {private} private.",
+        "title": "Applications by route and applicant",
+        "xLabel": "Route",
+        "yLabel": "Applications"
+      },
+      "columns": {
+        "age": "Age against the limits",
+        "application": "Application",
+        "daysFromApplication": "Days from application",
+        "granted": "Granted",
+        "mhoNotified": "MHO notified",
+        "order": "Order",
+        "reportDue": "Report due",
+        "sought": "Sought",
+        "status": "Status"
+      },
+      "figures": {
+        "applications": "Applications started",
+        "applicationsNote": "{count} by the council",
+        "concerns": "Capacity concerns raised",
+        "interim": "Interim orders sought",
+        "interimNote": "{count} granted",
+        "median": "Median days, application to order",
+        "medianNote": "no orders granted in period",
+        "mho": "MHO reports on time",
+        "mhoLate": "{count} late or overdue",
+        "mhoNoneDue": "none due",
+        "mhoRunning": "{count} still running, none late",
+        "mhoValue": "{onTime} of {total}",
+        "orders": "Orders granted"
+      },
+      "hint": "{count, plural, one {# concern or application} other {# concerns and applications}}",
+      "interim": {
+        "granted": "{age, plural, one {# day} other {# days}} old; statutory maximum {maximum}{warning, select, past {; past the 3 month warning} other {}}{renewals, plural, =0 {} one {; # renewal} other {; # renewals}}",
+        "notGranted": "Not yet granted; hearing {hearing}",
+        "notListed": "not yet listed",
+        "notYetGranted": "Not yet granted"
+      },
+      "lede": "How guardianship applications are moving: route and applicant, the Mental Health Officer report against the 21 day rule, interim orders against the statutory limits, and the days from application to order, computed from the AWI records in the record store.",
+      "measures": {
+        "assessments": "Capacity assessments completed",
+        "concerns": "Capacity concerns raised",
+        "fluctuating": "Assessed as fluctuating",
+        "hasCapacity": "Assessed as having capacity for the decision",
+        "lacksCapacity": "Assessed as lacking capacity for the decision",
+        "opgChecks": "OPG register checks",
+        "routeDecided": "Route decided: {route}",
+        "s13Applied": "Section 13ZA applied",
+        "s13Considered": "Section 13ZA considered"
+      },
+      "meta": {
+        "computed": "Computed {dateTime} from the local record store: {records, plural, one {# AWI record} other {# AWI records}} in total, {applications, plural, one {# application} other {# applications}} started in the period."
+      },
+      "mho": {
+        "late": "Submitted {date}, {days, plural, one {# day} other {# days}} late",
+        "onTime": "Submitted {date}, on time ({days, plural, one {# day} other {# days}})",
+        "overdue": "Not submitted, overdue by {days, plural, one {# day} other {# days}}",
+        "running": "In progress, {days, plural, one {# day} other {# days}} left"
+      },
+      "orderKinds": {
+        "combinedGuardianship": "Combined guardianship order",
+        "financialGuardianship": "Financial guardianship order",
+        "interimOrder": "Interim order",
+        "interventionOrder": "Intervention order",
+        "welfareGuardianship": "Welfare guardianship order"
+      },
+      "periodLabel": "Reporting year to date, from 1 April",
+      "purpose": "How guardianship applications are moving: route and applicant, the Mental Health Officer report against the 21 day rule in section 57(4), interim orders and their age, and the days from application to order.",
+      "recipient": "The Chief Social Work Officer and the MHO service, with the figures the Mental Welfare Commission and the Office of the Public Guardian collect.",
+      "routes": {
+        "guardianshipCombined": "Welfare and financial guardianship",
+        "guardianshipFinancial": "Financial guardianship",
+        "guardianshipWelfare": "Welfare guardianship",
+        "informalSupport": "Informal support and supported decision making",
+        "interventionOrder": "Intervention order",
+        "part5Certificate": "Part 5 certificate (medical treatment)",
+        "poaCovers": "Existing power of attorney covers the decision",
+        "s13za": "Section 13ZA arrangement"
+      },
+      "sections": {
+        "decisions": "Capacity concerns and route decisions",
+        "interim": "Interim orders",
+        "interimNote": "Interim orders run for 3 months by default and cannot exceed 6 months in total; the age is measured to {date}.",
+        "mho": "Mental Health Officer reports against the 21 day rule",
+        "mhoNoRule": "No MHO report rule is configured; 21 calendar days assumed.",
+        "mhoNote": "{rule} Applications are shown by reference, never by name.",
+        "mhoRule": "{label}: {reference} ({source}).",
+        "orders": "Orders granted in the period",
+        "ordersMedian": "Median {days, plural, one {# day} other {# days}} from application to order across {orders, plural, one {# order} other {# orders}}.",
+        "ordersNone": "No orders were granted in the period, so no median time from application to order can be given.",
+        "routes": "Applications by route and applicant",
+        "routesNote": "An application starts when the Mental Health Officer is notified under section 57(3); the route comes from the route decision."
+      },
+      "sources": {
+        "act": "Adults with Incapacity (Scotland) Act 2000, section 57 (legislation.gov.uk).",
+        "mwc": "Mental Welfare Commission for Scotland, Adults with Incapacity Act monitoring reports 2023-24 and 2024-25 (mwcscot.org.uk).",
+        "opg": "Office of the Public Guardian (Scotland), guardianship orders performance 2024-2025 and 2023-2024 (publicguardian-scotland.gov.uk)."
+      },
+      "tables": {
+        "interimEmpty": "No interim orders sought in period",
+        "mhoEmpty": "No applications with an MHO report in period",
+        "ordersEmpty": "No orders granted in period, so no median can be given"
+      },
+      "title": "AWI application timeliness",
+      "verify": {
+        "publications": "The Mental Welfare Commission monitoring report and the Office of the Public Guardian performance pages publish orders granted or registered by type (welfare, financial, combined), private against local authority guardians, order duration and the number of adults subject to guardianship. Neither publishes MHO report timeliness or time from application to order at national level, so those two measures are local and their layout is the platform's own."
+      }
+    },
+    "chart": {
+      "data": "Data for {title}",
+      "legend": "Legend for {title}",
+      "total": "Total"
+    },
+    "columns": {
+      "count": "Count",
+      "measure": "Measure"
+    },
+    "cp": {
+      "ageBands": {
+        "elevenToFifteen": "11 to 15",
+        "fiveToTen": "5 to 10",
+        "notRecorded": "Not recorded",
+        "oneToFour": "1 to 4",
+        "sixteenAndOver": "16 and over",
+        "unborn": "Unborn",
+        "underOne": "Under 1"
+      },
+      "charts": {
+        "byMonthSummary": "Registrations and de-registrations by month: {registrations, plural, one {# registration} other {# registrations}} and {deregistrations, plural, one {# de-registration} other {# de-registrations}} over {months, plural, one {# month} other {# months}}.",
+        "byMonthTitle": "Registrations and de-registrations by month",
+        "children": "Children",
+        "deregistrations": "De-registrations",
+        "month": "Month",
+        "monthEnd": "Month end",
+        "onRegister": "Children on the register",
+        "overTimeCategory": "{month} (at {date})",
+        "overTimeSummary": "Children on the register at each month end: {count} at {date}.",
+        "overTimeTitle": "Children on the register at each month end",
+        "registrations": "Registrations"
+      },
+      "columns": {
+        "ageAtEnd": "Age at period end",
+        "children": "Children",
+        "childrenRegistered": "Children registered",
+        "concern": "Concern identified at registration",
+        "held": "Held in period",
+        "history": "Registration history",
+        "lengthOfRegistration": "Length of registration",
+        "meeting": "Meeting",
+        "scheduled": "Scheduled, not yet held",
+        "timeOnRegister": "Time on the register"
+      },
+      "figures": {
+        "atEnd": "On the register at {date}",
+        "cppms": "CPPMs held",
+        "deregistrations": "De-registrations",
+        "preBirth": "Pre-birth registrations",
+        "registrations": "Registrations",
+        "registrationsNote": "{count} for the first time",
+        "reRegistrations": "Re-registrations within two years"
+      },
+      "hint": "{count, plural, one {# register movement} other {# register movements}}",
+      "history": {
+        "after": "Re-registered more than two years after de-registration",
+        "first": "Registered for the first time",
+        "within": "Re-registered within two years of de-registration"
+      },
+      "lede": "The register figures collected each year for the Children's Social Work Statistics, computed from the register entry on every child protection process in the record store.",
+      "lengthBands": {
+        "oneToTwoYears": "1 year to under 2 years",
+        "sixMonthsToOneYear": "6 months to under 1 year",
+        "twoYearsOrMore": "2 years or more",
+        "underSixMonths": "Under 6 months"
+      },
+      "meetings": {
+        "coreGroup": "Core group",
+        "cppm": "Initial CPPM",
+        "ird": "Inter-agency Referral Discussion",
+        "preBirth": "Pre-birth CPPM",
+        "review": "Review CPPM"
+      },
+      "meta": {
+        "computed": "Computed {dateTime} from the local record store: {records, plural, one {# child protection record} other {# child protection records}}, {entries, plural, one {# register entry} other {# register entries}} across all time.",
+        "period": "Period {period}, reference date {date}."
+      },
+      "periodLabel": "Year to 31 July",
+      "purpose": "The register figures collected each year for the Children's Social Work Statistics: registrations, de-registrations, the register at 31 July by age, concerns identified at registration, unborn children, re-registrations within two years and length of time on the register.",
+      "recipient": "The Child Protection Committee, and the council's annual return to the Scottish Government.",
+      "sections": {
+        "age": "Children on the register at {date}, by age",
+        "ageNote": "Age on the reference date. Unborn babies are counted where the expected date of delivery is after the reference date.",
+        "byMonth": "Registrations and de-registrations by month",
+        "byMonthNote": "Dated from the register entry on each child protection process.",
+        "concerns": "Concerns identified at registration",
+        "concernsNote": "From the register categories recorded at the CPPM. A child can have more than one concern, so the column can add up to more than the number of registrations.",
+        "history": "Previous registrations",
+        "historyNote": "A re-registration is a child registered again after an earlier de-registration; within two years follows the national publication.",
+        "length": "Length of time on the register",
+        "meetings": "Child protection meetings",
+        "meetingsNote": "Meetings marked held in the meeting record.",
+        "overTime": "The register over time",
+        "overTimeNote": "Children whose registration was open at the end of each month in the period."
+      },
+      "sources": {
+        "statistics2024": "Children's Social Work Statistics: Child Protection 2023-24 (gov.scot), for the concern categories and the length of registration finding.",
+        "statistics2025": "Children's Social Work Statistics: Child Protection 2024-25, Children on the child protection register (gov.scot)."
+      },
+      "tables": {
+        "lengthCurrentTitle": "Children on the register at {date}, by time on the register so far",
+        "lengthDeregTitle": "Children de-registered in the period, by length of registration"
+      },
+      "title": "Child Protection Register statistics",
+      "verify": {
+        "publication": "The Children's Social Work Statistics publish registrations, de-registrations, the register at 31 July, concerns at registration, unborn children, children registered before (with two years since the last de-registration as the dividing line) and length of registration. The age bands and length bands used here are the platform's own until the current publication tables are checked."
+      }
+    },
+    "figures": {
+      "noneInPeriod": "none in period"
+    },
+    "frame": {
+      "allReports": "All reports",
+      "emptyText": "Choose another reporting period. Every figure on this screen is computed from the record store, so an empty period shows zeros rather than estimates.",
+      "emptyTitle": "No figures for this period",
+      "periodLabel": "Reporting period",
+      "print": "Print pack",
+      "sourcesMeta": "What was verified, what was not, and where each figure comes from.",
+      "sourcesTitle": "Field set and sources",
+      "switchPeriod": "Switch to the period in progress"
+    },
+    "hint": {
+      "text": "Nothing in the record store falls in this period ({period}). The period in progress holds {activity}."
+    },
+    "index": {
+      "emptyText": "Reports are generated from the record store. Reset the demo data from Settings if the store is empty.",
+      "emptyTitle": "No reports available",
+      "footnote": "The dataset behind this demonstration holds eight worked scenarios and a background population, so every count is small. Counts are never padded and a period with nothing in it shows zeros.",
+      "lede": "Inspection-ready figures computed from the record store as it stands: one report per protection process, each with a print pack. Nothing here is typed in, so every number traces back to a record.",
+      "open": "Open {title}",
+      "opens": "{periodLabel}. Opens on {period}.",
+      "period": "Period",
+      "recipient": "Who receives it",
+      "title": "Reports"
+    },
+    "mappa": {
+      "chart": {
+        "category": "Category {category}",
+        "level": "Level {level}",
+        "summary": "Offenders by level and category on {date}: {count, plural, one {# offender} other {# offenders}} managed under MAPPA, {levels}.",
+        "summaryLevel": "{count} at Level {level}",
+        "title": "Offenders by level and category on {date}",
+        "xLabel": "Management level",
+        "yLabel": "Offenders"
+      },
+      "figures": {
+        "atEnd": "Offenders managed at {date}",
+        "l2": "Level 2 meetings held",
+        "l3": "Level 3 (MAPPP) meetings held",
+        "late": "Reviews late",
+        "orders": "Civil orders in force at {date}",
+        "ordersNote": "none on the register",
+        "sonr": "Notification requirement breaches"
+      },
+      "hint": "{count, plural, one {# offender} other {# offenders}} managed under MAPPA",
+      "interval": {
+        "none": "no rule configured",
+        "text": "{amount} {unit}"
+      },
+      "lede": "Counts only, never names. The MAPPA records behind these figures are restricted and stay on their distribution list; this report and its print pack carry no identifying detail.",
+      "meta": {
+        "computed": "Computed {dateTime} from the local record store: {records, plural, one {# MAPPA record} other {# MAPPA records}} in total, {managed} managed at some point in the period.",
+        "fieldSet": "Field set High: Annex 3 Tables 1 to 9 as the MAPPA National Guidance requires, for the year 1 April to 31 March. Every figure is a count; no offender is named."
+      },
+      "notes": {
+        "table1": "In the community means a Category 1 record open on {date} with the offender not in custody. The rate per 100,000 needs the mid-year population estimate, which the record store does not hold. The breach row reads the notification compliance flag, missing reads the person's alerts, and wanted is not recorded.",
+        "table2": "From the civil order register on each MAPPA record: an order is in force from the day it was made until it expires or is discharged, and made in the year by the date of the order. Convictions for breach are not recorded.",
+        "table3": "Level on {date} from the level history; an offender is Level 1 until the first multi-agency level decision. Review intervals from the clock rules in Admin: Level 2 every {level2}, Level 3 every {level3}. Review interval to verify against the current MAPPA National Guidance.",
+        "table4": "Category 2 records open on {date}, by level. Whether a patient is in hospital or in the community is not recorded.",
+        "table5": "Category 3 records open on {date}, by level; referrals dated by the referral for multi-agency management.",
+        "table6": "Sex as recorded on the person record, for the RSOs in the community counted in Table 1.",
+        "table7": "On licence means released with a licence that has not expired on {date}.",
+        "table8": "The record store holds no charge or conviction data for further offending. Every cell reads Data not held until a police or Crown Office feed supplies it.",
+        "table9": "Returns to custody are police custody events linked to a Category 1 record after the recorded release; licence breaches count breached conditions on records managed in the year."
+      },
+      "periodLabel": "Year to 31 March",
+      "purpose": "The counts in the tables Scottish Ministers ask for in every MAPPA annual report: offenders by category and level, Level 2 and Level 3 meetings, reviews against the national interval, disclosures and notification breaches. Counts only, never names.",
+      "recipient": "The Strategic Oversight Group, for the annual report published each October.",
+      "sections": {
+        "tableTitle": "Table {number}: {title}"
+      },
+      "sources": {
+        "guidance": "MAPPA National Guidance (2022 refresh), Annex 3: Annual Reports (gov.scot).",
+        "overview": "MAPPA in Scotland: national overview reports 2023-24 (Appendix C, MAPPA National Data) and 2024-25 (gov.scot).",
+        "sogReports": "Lanarkshire MAPPA Annual Reports 2024 and 2025, statistical information (South Lanarkshire Council); Tayside MAPPA Annual Report 2024-25 (Perth and Kinross Council); Highland and Islands MAPPA Annual Report 2024-25 (Orkney Islands Council)."
+      },
+      "title": "MAPPA annual report counts",
+      "units": {
+        "calendarDays": "calendar days",
+        "months": "months",
+        "weeks": "weeks",
+        "workingDays": "working days"
+      },
+      "verify": {
+        "interval": "Review interval to verify against the current MAPPA National Guidance: the seeded intervals are 12 weeks at Level 2 and 6 weeks at Level 3.",
+        "wording": "Table wording only: the field set is confirmed, but the titles and rows of Tables {extracted} were read from search extracts of published Strategic Oversight Group reports and Tables {reconstructed} are placed from the sequence with reconstructed wording. Every label is a placeholder in one file, to be replaced word for word when the supplied Annex 3 text arrives."
+      }
+    },
+    "mappaAnnex3": {
+      "dataNotHeld": "Data not held",
+      "table1": {
+        "column1": "Measure",
+        "column2": "Number",
+        "rowBreach": "RSOs charged with breaching the notification requirements in the year",
+        "rowCommunity": "RSOs in the community on 31 March",
+        "rowMissing": "RSOs missing on 31 March",
+        "rowPer100k": "RSOs per 100,000 of the population",
+        "rowWanted": "RSOs wanted on 31 March",
+        "title": "Registered sex offenders (RSOs)"
+      },
+      "table2": {
+        "column1": "Measure",
+        "column2": "Number",
+        "rowBreachConvictions": "Convictions for breach of an order in the year",
+        "rowRshoInForce": "Risk of Sexual Harm Orders (RSHOs) in force on 31 March",
+        "rowRshoMade": "RSHOs made by the courts in the year",
+        "rowShpoInForce": "Sexual Harm Prevention Orders (SHPOs) in force on 31 March",
+        "rowShpoMade": "SHPOs made by the courts in the year",
+        "rowSopoInForce": "Sexual Offences Prevention Orders (SOPOs) in force on 31 March",
+        "rowSopoMade": "SOPOs made by the courts in the year",
+        "rowSroInForce": "Sexual Risk Orders (SROs) in force on 31 March",
+        "rowSroMade": "SROs made by the courts in the year",
+        "title": "Civil orders: Sexual Offences Prevention Orders, Risk of Sexual Harm Orders, Sexual Harm Prevention Orders and Sexual Risk Orders"
+      },
+      "table3": {
+        "column1": "Category",
+        "column2": "Level 1",
+        "column3": "Level 2",
+        "column4": "Level 3",
+        "column5": "Total",
+        "rowRso": "Registered sex offenders (Category 1)",
+        "title": "RSOs by MAPPA management level on 31 March"
+      },
+      "table4": {
+        "column1": "Measure",
+        "column2": "Number",
+        "rowLevel1": "Of whom managed at Level 1",
+        "rowLevel2": "Of whom managed at Level 2",
+        "rowLevel3": "Of whom managed at Level 3",
+        "rowTotal": "Restricted patients the health board(s) in the MAPPA region had responsibility for on 31 March",
+        "title": "Restricted patients"
+      },
+      "table5": {
+        "column1": "Measure",
+        "column2": "Number",
+        "rowLevel2": "Of whom managed at Level 2",
+        "rowLevel3": "Of whom managed at Level 3",
+        "rowReferred": "Category 3 offenders referred for multi-agency management in the year",
+        "rowTotal": "Category 3 offenders managed under MAPPA on 31 March",
+        "title": "Other risk of serious harm offenders (Category 3)"
+      },
+      "table6": {
+        "column1": "Sex",
+        "column2": "Number",
+        "rowFemale": "Female",
+        "rowMale": "Male",
+        "rowNotRecorded": "Not recorded",
+        "rowTotal": "Total",
+        "title": "RSOs in the community by sex on 31 March"
+      },
+      "table7": {
+        "column1": "Measure",
+        "column2": "Number",
+        "rowSonrOnly": "Subject to the notification requirements only",
+        "rowSupervision": "Subject to statutory supervision on licence and to the notification requirements",
+        "rowTotal": "Total",
+        "title": "RSOs managed under statutory conditions and/or notification requirements on 31 March"
+      },
+      "table8": {
+        "column1": "Category",
+        "column2": "Number",
+        "rowCategory1": "Registered sex offenders (Category 1)",
+        "rowCategory2": "Restricted patients (Category 2)",
+        "rowCategory3": "Other risk of serious harm offenders (Category 3)",
+        "title": "MAPPA offenders charged with a serious further offence in the year"
+      },
+      "table9": {
+        "column1": "Measure",
+        "column2": "Number",
+        "rowInCustody": "RSOs in custody on 31 March",
+        "rowLicenceBreaches": "Licence conditions breached in the year",
+        "rowReleased": "RSOs released from custody in the year",
+        "rowReturned": "RSOs returned to custody in the year",
+        "title": "RSOs in custody and returned to custody"
+      }
+    },
+    "marac": {
+      "chart": {
+        "series": "Referrals",
+        "summary": "Referrals by agency: {referrals, plural, one {# referral} other {# referrals}}{breakdown}.",
+        "summaryBreakdown": ", {list}",
+        "summaryItem": "{count} from {agency}",
+        "title": "Referrals by agency",
+        "xLabel": "Referring agency",
+        "yLabel": "Referrals"
+      },
+      "columns": {
+        "cases": "Cases",
+        "characteristic": "Characteristic",
+        "derived": "How it is derived",
+        "linkOrOutcome": "Link or outcome",
+        "referrals": "Referrals",
+        "referringAgency": "Referring agency",
+        "riskIdentification": "Risk identification",
+        "share": "Share of referrals",
+        "shareOrRate": "Share or rate"
+      },
+      "fields": {
+        "awaiting": "Referrals awaiting a meeting",
+        "casesDiscussed": "Cases discussed at a MARAC held in the period",
+        "children": "Children in those households",
+        "judgement": "Referrals on professional judgement below the DASH threshold",
+        "meetingsHeld": "MARAC meetings held",
+        "perTenThousand": "Cases discussed per 10,000 adult women (population {population}, fictional)",
+        "police": "Police referrals",
+        "referralsPerTenThousand": "Referrals per 10,000 adult women (same population)",
+        "referralsReceived": "Referrals received",
+        "repeats": "Repeat referrals (a further referral within 12 months of the last MARAC)",
+        "withChildren": "Cases with children in the household"
+      },
+      "figures": {
+        "children": "Children in households",
+        "discussed": "Cases discussed",
+        "discussedNote": "{count, plural, one {# meeting} other {# meetings}} held",
+        "police": "Police referrals",
+        "policeNote": "{police} of {referrals}",
+        "rate": "Cases per 10,000 adult women",
+        "rateNote": "fictional population",
+        "referrals": "Referrals received",
+        "repeat": "Repeat rate",
+        "repeatNote": "{count, plural, one {# repeat referral} other {# repeat referrals}}"
+      },
+      "hint": "{count, plural, one {# referral} other {# referrals}}",
+      "lede": "The meeting-level counts SafeLives collects from every MARAC each quarter, computed from the referrals and meetings in the record store. Counts only: nothing here names a victim.",
+      "links": {
+        "asp": "Linked adult support and protection process",
+        "cp": "Linked child protection process",
+        "dsdas": "Disclosure Scheme for Domestic Abuse Scotland considered",
+        "flags": "MARAC flags placed on agency records in the period",
+        "mappa": "Linked MAPPA process",
+        "matac": "Perpetrator referred to MATAC",
+        "transfers": "Cases transferred to another MARAC"
+      },
+      "meta": {
+        "computed": "Computed {dateTime} from the local record store: {records, plural, one {# MARAC record} other {# MARAC records}} in total, {referrals} referred in the period.",
+        "population": "Rate per 10,000 uses an adult female population of {population} for Clydeshore, which is fictional and can be changed above."
+      },
+      "periodLabel": "Four quarters, rolling",
+      "populationHint": "Clydeshore does not exist. Change the figure and the rate per 10,000 recalculates.",
+      "populationLabel": "Adult female population (fictional)",
+      "purpose": "The meeting-level counts SafeLives collects from every MARAC each quarter: cases discussed, repeats, children in the households, referrals by agency, victim characteristics and cases per 10,000 adult women.",
+      "recipient": "The MARAC Coordinator and steering group, then the SafeLives national dataset.",
+      "risk": {
+        "daq": "Police Scotland DAQ",
+        "dash": "SafeLives DASH checklists",
+        "overrides": "Professional judgement overrides of the tool score"
+      },
+      "sections": {
+        "agency": "Referrals by agency",
+        "agencyNote": "The agency that made the referral, from the referral record.",
+        "cases": "Cases, repeats and children",
+        "casesNote": "SafeLives counts cases discussed at each meeting; referrals are shown as well because a case referred late in a quarter is discussed in the next.",
+        "links": "Links, flags and outcomes",
+        "risk": "Risk identification",
+        "victims": "Victim characteristics",
+        "victimsNote": "Counts only. Where the record store holds no field, the return says so rather than guessing."
+      },
+      "sources": {
+        "guidance": "SafeLives, MARAC data: guidance for MARACs, and the MARAC data template workbook (safelives.org.uk).",
+        "keyFindings": "SafeLives, Marac data key findings April 2024 to March 2025 (safelives.org.uk).",
+        "spotlight": "SafeLives, Spotlight on older people and domestic abuse (safelives.org.uk)."
+      },
+      "tables": {
+        "agencyEmpty": "No referrals in period"
+      },
+      "title": "MARAC SafeLives return",
+      "verify": {
+        "olderThreshold": "The older victim threshold of 61 follows the SafeLives spotlight on older people; confirm it against the current dataset definitions.",
+        "template": "SafeLives publishes guidance and a data template workbook for MARACs; the field list here (cases, repeats, children, referral agency, older, male, minority ethnic, LGBT and disabled victims, cases per 10,000 adult women) follows the quarterly key findings reports and should be checked against the current workbook."
+      },
+      "victims": {
+        "disability": "Victims with a disability",
+        "interpreter": "Victims who need an interpreter",
+        "interpreterHow": "Communication needs on the person record",
+        "lgbt": "LGBT victims",
+        "male": "Male victims",
+        "maleHow": "Sex on the person record",
+        "minority": "Minority ethnic victims",
+        "minorityHow": "Ethnicity recorded as other than Scottish; census categories are not held yet",
+        "notRecorded": "Not recorded",
+        "notRecordedHow": "The record store has no field for this yet, so no number is given",
+        "older": "Victims aged 61 or over at referral",
+        "olderHow": "Date of birth on the person record; SafeLives counts older victims from 61"
+      }
+    },
+    "meta": {
+      "period": "Period {period}.",
+      "verify": "Field set to verify against the current template."
+    },
+    "notFound": {
+      "emptyText": "The five reports are ASP biennial figures, Child Protection Register statistics, the MARAC SafeLives return, MAPPA annual report counts and AWI application timeliness.",
+      "emptyTitle": "Choose a report from the list",
+      "lede": "There is no report called {kind}.",
+      "title": "Report not found"
+    },
+    "period": {
+      "complete": "{name}: {range}",
+      "fourQuartersTo": "Four quarters to {date}",
+      "inProgress": "{name}, in progress: {range}",
+      "range": "{from} to {to}",
+      "twoYearsTo31Mar": "Two years to 31 Mar {year}",
+      "yearTo31Jul": "Year to 31 Jul {year}",
+      "yearTo31Mar": "Year to 31 Mar {year}",
+      "yearToDate": "Reporting year to date: {range}"
+    },
+    "table": {
+      "empty": "None in period"
+    },
+    "values": {
+      "notApplicable": "n/a"
     }
   },
   "search": {
