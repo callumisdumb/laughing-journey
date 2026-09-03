@@ -1727,6 +1727,322 @@
       "title": "Three-point test (ASP 2007 s3)"
     }
   },
+  "glossary": {
+    "apc": {
+      "definition": "Adult Protection Committee",
+      "term": "APC"
+    },
+    "asp": {
+      "definition": "Adult Support and Protection",
+      "term": "ASP"
+    },
+    "awi": {
+      "definition": "Adults with Incapacity",
+      "term": "AWI"
+    },
+    "chi": {
+      "definition": "Community Health Index number",
+      "term": "CHI"
+    },
+    "cog": {
+      "definition": "Chief Officers Group",
+      "term": "COG"
+    },
+    "cp": {
+      "definition": "Child protection",
+      "term": "CP"
+    },
+    "cpc": {
+      "definition": "Child Protection Committee",
+      "term": "CPC"
+    },
+    "cpo": {
+      "definition": "Child Protection Order",
+      "term": "CPO"
+    },
+    "cppm": {
+      "definition": "Child Protection Planning Meeting",
+      "term": "CPPM"
+    },
+    "cswo": {
+      "definition": "Chief Social Work Officer",
+      "term": "CSWO"
+    },
+    "daq": {
+      "definition": "Domestic Abuse Questions (Police Scotland)",
+      "term": "DAQ"
+    },
+    "dash": {
+      "definition": "Domestic Abuse, Stalking, Harassment and Honour-based violence risk checklist (SafeLives)",
+      "term": "DASH"
+    },
+    "dsdas": {
+      "definition": "Disclosure Scheme for Domestic Abuse Scotland",
+      "term": "DSDAS"
+    },
+    "dtc": {
+      "definition": "Duty to cooperate (MAPPA)",
+      "term": "DTC"
+    },
+    "era": {
+      "definition": "Environmental Risk Assessment",
+      "term": "ERA"
+    },
+    "girfec": {
+      "definition": "Getting it right for every child",
+      "term": "GIRFEC"
+    },
+    "hscp": {
+      "definition": "Health and Social Care Partnership",
+      "term": "HSCP"
+    },
+    "idaa": {
+      "definition": "Independent Domestic Abuse Advocate",
+      "term": "IDAA"
+    },
+    "ird": {
+      "definition": "Inter-agency Referral Discussion",
+      "term": "IRD"
+    },
+    "ivpd": {
+      "definition": "interim Vulnerable Persons Database (Police Scotland)",
+      "term": "iVPD"
+    },
+    "jii": {
+      "definition": "Joint Investigative Interview",
+      "term": "JII"
+    },
+    "jpfe": {
+      "definition": "Joint Paediatric Forensic Examination",
+      "term": "JPFE"
+    },
+    "lsCmi": {
+      "definition": "Level of Service/Case Management Inventory",
+      "term": "LS/CMI"
+    },
+    "lsi": {
+      "definition": "Large Scale Investigation",
+      "term": "LSI"
+    },
+    "mappa": {
+      "definition": "Multi-Agency Public Protection Arrangements",
+      "term": "MAPPA"
+    },
+    "mappp": {
+      "definition": "Multi-Agency Public Protection Panel (Level 3)",
+      "term": "MAPPP"
+    },
+    "mapps": {
+      "definition": "Multi-Agency Public Protection System (ViSOR replacement)",
+      "term": "MAPPS"
+    },
+    "marac": {
+      "definition": "Multi-Agency Risk Assessment Conference",
+      "term": "MARAC"
+    },
+    "matac": {
+      "definition": "Multi Agency Tasking and Coordination",
+      "term": "MATAC"
+    },
+    "mho": {
+      "definition": "Mental Health Officer",
+      "term": "MHO"
+    },
+    "mwc": {
+      "definition": "Mental Welfare Commission for Scotland",
+      "term": "MWC"
+    },
+    "olr": {
+      "definition": "Order for Lifelong Restriction",
+      "term": "OLR"
+    },
+    "opg": {
+      "definition": "Office of the Public Guardian (Scotland)",
+      "term": "OPG"
+    },
+    "poa": {
+      "definition": "Power of Attorney",
+      "term": "PoA"
+    },
+    "ppu": {
+      "definition": "Public Protection Unit",
+      "term": "PPU"
+    },
+    "ra": {
+      "definition": "Responsible Authority (MAPPA)",
+      "term": "RA"
+    },
+    "rm2000": {
+      "definition": "Risk Matrix 2000",
+      "term": "RM2000"
+    },
+    "rma": {
+      "definition": "Risk Management Authority",
+      "term": "RMA"
+    },
+    "rmp": {
+      "definition": "Risk Management Plan",
+      "term": "RMP"
+    },
+    "sa07": {
+      "definition": "Stable and Acute 2007",
+      "term": "SA07"
+    },
+    "scim": {
+      "definition": "Scottish Child Interview Model",
+      "term": "SCIM"
+    },
+    "scra": {
+      "definition": "Scottish Children's Reporter Administration",
+      "term": "SCRA"
+    },
+    "seemis": {
+      "definition": "Scottish schools management information system",
+      "term": "SEEMIS"
+    },
+    "shanarri": {
+      "definition": "Safe, Healthy, Achieving, Nurtured, Active, Respected, Responsible, Included",
+      "term": "SHANARRI"
+    },
+    "sog": {
+      "definition": "Strategic Oversight Group (MAPPA)",
+      "term": "SOG"
+    },
+    "sonr": {
+      "definition": "Sex Offender Notification Requirements",
+      "term": "SONR"
+    },
+    "sps": {
+      "definition": "Scottish Prison Service",
+      "term": "SPS"
+    },
+    "visor": {
+      "definition": "Violent and Sex Offender Register",
+      "term": "ViSOR"
+    },
+    "vns": {
+      "definition": "Victim Notification Scheme",
+      "term": "VNS"
+    }
+  },
+  "help": {
+    "about": {
+      "facts": {
+        "build": "Build",
+        "data": "Data",
+        "dataText": "Synthetic, generated from a fixed seed. Postcodes begin with Q, V or X. CHI numbers are generated and tagged synthetic.",
+        "network": "Network",
+        "networkText": "None. Connectors are mock adapters behind the real interface.",
+        "telemetry": "Telemetry",
+        "telemetryText": "None.",
+        "whatIs": "What it is",
+        "whatIsText": "A high-fidelity, clickable desktop mockup of a multi-agency public protection platform for Scotland. No backend."
+      },
+      "legislation": {
+        "aspAct": "Adult Support and Protection (Scotland) Act 2007 and Code of Practice (July 2022)",
+        "awiAct": "Adults with Incapacity (Scotland) Act 2000 and Codes of Practice",
+        "careJusticeAct": "Children (Care and Justice) (Scotland) Act 2024",
+        "childrenAct1995": "Children (Scotland) Act 1995",
+        "chronologiesGuide": "Care Inspectorate Practice Guide to Chronologies (2017)",
+        "cpGuidance": "National Guidance for Child Protection in Scotland 2021 (updated 2023)",
+        "cypAct": "Children and Young People (Scotland) Act 2014",
+        "dataProtection": "UK GDPR, Data Protection Act 2018 (Schedule 1 Part 2 paragraph 18), Data (Use and Access) Act 2025",
+        "domesticAbuseAct": "Domestic Abuse (Scotland) Act 2018",
+        "equallySafe": "Equally Safe strategy",
+        "hearingsAct": "Children\u2019s Hearings (Scotland) Act 2011",
+        "humanRightsAct": "Human Rights Act 1998",
+        "mappaAct": "Management of Offenders etc. (Scotland) Act 2005 and MAPPA National Guidance (current edition)",
+        "mentalHealthAct": "Mental Health (Care and Treatment) (Scotland) Act 2003",
+        "rmaFrame": "Risk Management Authority Standards and Guidelines for Risk Management (FRAME)",
+        "sexualOffencesAct": "Sexual Offences Act 2003 Part 2",
+        "socialWorkAct": "Social Work (Scotland) Act 1968 s13ZA",
+        "uncrcAct": "UNCRC (Incorporation) (Scotland) Act 2024"
+      },
+      "legislationMeta": "Named in the product where a duty, a clock or a lawful basis comes from them.",
+      "legislationTitle": "Legislation and guidance referenced",
+      "meta": "Working name. The product has no public name yet; the lantern and the word Platform stand in for the wordmark.",
+      "notice": "Any resemblance to a real person, family, address or case is coincidental.",
+      "noticeLead": "Synthetic data. No network. No telemetry. Every person, address and record is fictional."
+    },
+    "clockRules": {
+      "columnConfidence": "Confidence",
+      "columnDue": "Due",
+      "columnProcess": "Process",
+      "columnRule": "Rule",
+      "columnSource": "Source",
+      "columnTrigger": "Trigger",
+      "confidence": {
+        "advisory": "Advisory",
+        "high": "High",
+        "local": "Local",
+        "verify": "Verify"
+      },
+      "dueWarning": "Warn at {due}",
+      "meta": "Rules marked Verify or Local are seeded from local procedures or secondary sources and are to verify against the primary source before use.",
+      "tableLabel": "Clock rules",
+      "title": "Clock rules",
+      "toVerify": "to verify"
+    },
+    "glossary": {
+      "countAll": "{count, plural, one {# term} other {# terms}}",
+      "countFiltered": "{shown} of {total} terms",
+      "emptyText": "Try the abbreviation on its own, or a word from the full name.",
+      "emptyTitle": "No terms match",
+      "find": "Find a term",
+      "findPlaceholder": "Type an abbreviation or a word from its meaning"
+    },
+    "guidance": {
+      "columnEdition": "Edition",
+      "columnGuidance": "Guidance",
+      "meta": "Set in Admin. The clocks and process labels follow these editions.",
+      "tableLabel": "Guidance editions",
+      "title": "Guidance editions in use"
+    },
+    "lede": "What the abbreviations mean, which keys work, which editions of guidance the clocks follow, and what this build is.",
+    "shortcuts": {
+      "columnKey": "Key",
+      "columnWhat": "What happens",
+      "dialogs": {
+        "escapeKey": "Escape",
+        "escapeWhat": "Close the dialog without saving",
+        "where": "Dialogs"
+      },
+      "intro": "The shell does not bind keys for search, the context drawer or help; each is reached with Tab in the order it appears on screen, and every control shows a visible focus ring. The keys below work inside the parts named.",
+      "introLead": "No global shortcuts yet.",
+      "lists": {
+        "enterKey": "Enter",
+        "enterWhat": "Open the focused row",
+        "where": "Lists with row links (processes, meetings, people)"
+      },
+      "search": {
+        "downKey": "Down arrow",
+        "downWhat": "Highlight the next suggestion",
+        "enterKey": "Enter",
+        "enterWhat": "Open the highlighted person or process, or run a full search",
+        "escapeKey": "Escape",
+        "escapeWhat": "Close the suggestions",
+        "upKey": "Up arrow",
+        "upWhat": "Highlight the previous suggestion",
+        "where": "Search box in the top bar"
+      },
+      "tableLabel": "Keys in {where}",
+      "tabs": {
+        "arrowsKey": "Left and Right arrows",
+        "arrowsWhat": "Move between tabs",
+        "homeEndKey": "Home and End",
+        "homeEndWhat": "Jump to the first or last tab",
+        "where": "Tab lists (Person 360, Sharing, Help)"
+      }
+    },
+    "tabs": {
+      "about": "About",
+      "glossary": "Glossary",
+      "guidance": "Guidance in use",
+      "label": "Help sections",
+      "shortcuts": "Keyboard shortcuts"
+    },
+    "title": "Help"
+  },
   "home": {
     "clocks": {
       "count": "{count} running",

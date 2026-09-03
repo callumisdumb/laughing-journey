@@ -5433,6 +5433,936 @@
       }
     }
   },
+  "glossary": {
+    "apc": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of APC, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "asp": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of ASP, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "awi": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of AWI, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "chi": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of CHI, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "cog": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of COG, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "cp": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of CP, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "cpc": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of CPC, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "cpo": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of CPO, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "cppm": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of CPPM, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "cswo": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of CSWO, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "daq": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of DAQ, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "dash": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of DASH, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "dsdas": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of DSDAS, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "dtc": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of DTC, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "era": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of ERA, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "girfec": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of GIRFEC, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "hscp": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of HSCP, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "idaa": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of IDAA, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "ird": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of IRD, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "ivpd": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of iVPD, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "jii": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of JII, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "jpfe": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of JPFE, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "lsCmi": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of LS/CMI, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "lsi": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of LSI, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "mappa": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of MAPPA, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "mappp": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of MAPPP, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "mapps": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of MAPPS, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "marac": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of MARAC, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "matac": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of MATAC, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "mho": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of MHO, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "mwc": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of MWC, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "olr": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of OLR, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "opg": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of OPG, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "poa": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of PoA, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "ppu": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of PPU, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "ra": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of RA, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "rm2000": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of RM2000, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "rma": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of RMA, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "rmp": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of RMP, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "sa07": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of SA07, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "scim": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of SCIM, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "scra": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of SCRA, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "seemis": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of SEEMIS, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "shanarri": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of SHANARRI, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "sog": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of SOG, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "sonr": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of SONR, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "sps": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of SPS, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "visor": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of ViSOR, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "vns": {
+      "definition": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary definition of VNS, shown in the Help glossary list"
+      },
+      "term": {
+        "maxLength": 12,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    }
+  },
+  "help": {
+    "about": {
+      "facts": {
+        "build": {
+          "maxLength": 16,
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Key in the About key-value list"
+        },
+        "data": {
+          "maxLength": 16,
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Key in the About key-value list"
+        },
+        "dataText": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Value in the About key-value list"
+        },
+        "network": {
+          "maxLength": 16,
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Key in the About key-value list"
+        },
+        "networkText": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Value in the About key-value list"
+        },
+        "telemetry": {
+          "maxLength": 16,
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Key in the About key-value list"
+        },
+        "telemetryText": {
+          "maxLength": 16,
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Value in the About key-value list"
+        },
+        "whatIs": {
+          "maxLength": 16,
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Key in the About key-value list"
+        },
+        "whatIsText": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Value in the About key-value list"
+        }
+      },
+      "legislation": {
+        "aspAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "awiAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "careJusticeAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "childrenAct1995": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "chronologiesGuide": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "cpGuidance": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "cypAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "dataProtection": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "domesticAbuseAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "equallySafe": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "hearingsAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "humanRightsAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "mappaAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "mentalHealthAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "rmaFrame": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "sexualOffencesAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "socialWorkAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        },
+        "uncrcAct": {
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Item in the legislation and guidance list on the About tab"
+        }
+      },
+      "legislationMeta": {
+        "screenshot": "phase-5/help-about-light-comfortable.png",
+        "where": "Meta line under the legislation heading"
+      },
+      "legislationTitle": {
+        "maxLength": 40,
+        "screenshot": "phase-5/help-about-light-comfortable.png",
+        "where": "Heading of the legislation sheet on the About tab"
+      },
+      "meta": {
+        "screenshot": "phase-5/help-about-light-comfortable.png",
+        "where": "Meta line under the product name on the About tab"
+      },
+      "notice": {
+        "screenshot": "phase-5/help-about-light-comfortable.png",
+        "where": "Rest of the notice at the foot of the About sheet, after the bold opening"
+      },
+      "noticeLead": {
+        "screenshot": "phase-5/help-about-light-comfortable.png",
+        "where": "Bold opening of the notice at the foot of the About sheet"
+      }
+    },
+    "clockRules": {
+      "columnConfidence": {
+        "maxLength": 16,
+        "where": "Clock rules column header"
+      },
+      "columnDue": {
+        "maxLength": 16,
+        "where": "Clock rules column header"
+      },
+      "columnProcess": {
+        "maxLength": 16,
+        "where": "Clock rules column header"
+      },
+      "columnRule": {
+        "maxLength": 16,
+        "where": "Clock rules column header"
+      },
+      "columnSource": {
+        "maxLength": 16,
+        "where": "Clock rules column header"
+      },
+      "columnTrigger": {
+        "maxLength": 16,
+        "where": "Clock rules column header"
+      },
+      "confidence": {
+        "advisory": {
+          "maxLength": 12,
+          "where": "Confidence pill on the Help clock rules table"
+        },
+        "high": {
+          "maxLength": 12,
+          "where": "Confidence pill on the Help clock rules table"
+        },
+        "local": {
+          "maxLength": 12,
+          "where": "Confidence pill on the Help clock rules table"
+        },
+        "verify": {
+          "maxLength": 12,
+          "where": "Confidence pill on the Help clock rules table"
+        }
+      },
+      "dueWarning": {
+        "maxLength": 32,
+        "where": "Due cell of a warning rule; due is the formatted timescale"
+      },
+      "meta": {
+        "where": "Meta line under the clock rules heading"
+      },
+      "tableLabel": {
+        "maxLength": 24,
+        "where": "Accessible name of the clock rules table"
+      },
+      "title": {
+        "maxLength": 24,
+        "where": "Heading of the clock rules sheet on the guidance tab"
+      },
+      "toVerify": {
+        "maxLength": 16,
+        "where": "Flag beside the confidence pill of a rule still to verify"
+      }
+    },
+    "glossary": {
+      "countAll": {
+        "maxLength": 16,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Count beside the filter when nothing is filtered"
+      },
+      "countFiltered": {
+        "maxLength": 24,
+        "where": "Count beside the filter when a filter is applied"
+      },
+      "emptyText": {
+        "where": "Empty state text when the filter matches nothing"
+      },
+      "emptyTitle": {
+        "maxLength": 32,
+        "where": "Empty state title when the filter matches nothing"
+      },
+      "find": {
+        "maxLength": 24,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Label of the glossary filter field"
+      },
+      "findPlaceholder": {
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Placeholder of the glossary filter field"
+      }
+    },
+    "guidance": {
+      "columnEdition": {
+        "maxLength": 16,
+        "where": "Guidance editions column header"
+      },
+      "columnGuidance": {
+        "maxLength": 16,
+        "where": "Guidance editions column header"
+      },
+      "meta": {
+        "where": "Meta line under the guidance editions heading"
+      },
+      "tableLabel": {
+        "maxLength": 24,
+        "where": "Accessible name of the guidance editions table"
+      },
+      "title": {
+        "maxLength": 32,
+        "where": "Heading of the guidance editions sheet"
+      }
+    },
+    "lede": {
+      "screenshot": "phase-5/help-glossary-light-comfortable.png",
+      "where": "Help page lede under the heading"
+    },
+    "shortcuts": {
+      "columnKey": {
+        "maxLength": 16,
+        "where": "Shortcut table column header"
+      },
+      "columnWhat": {
+        "maxLength": 24,
+        "where": "Shortcut table column header"
+      },
+      "dialogs": {
+        "escapeKey": {
+          "maxLength": 24,
+          "where": "Key name in the dialog group"
+        },
+        "escapeWhat": {
+          "where": "What the key does in the dialog group"
+        },
+        "where": {
+          "maxLength": 24,
+          "where": "Heading of the dialog shortcut group"
+        }
+      },
+      "intro": {
+        "where": "Rest of the keyboard shortcuts intro, after the bold opening sentence"
+      },
+      "introLead": {
+        "maxLength": 32,
+        "where": "Bold opening sentence of the keyboard shortcuts intro"
+      },
+      "lists": {
+        "enterKey": {
+          "maxLength": 24,
+          "where": "Key name in the row link group"
+        },
+        "enterWhat": {
+          "where": "What the key does in the row link group"
+        },
+        "where": {
+          "maxLength": 56,
+          "where": "Heading of the row link shortcut group"
+        }
+      },
+      "search": {
+        "downKey": {
+          "maxLength": 24,
+          "where": "Key name in the search box group"
+        },
+        "downWhat": {
+          "where": "What the key does in the search box group"
+        },
+        "enterKey": {
+          "maxLength": 24,
+          "where": "Key name in the search box group"
+        },
+        "enterWhat": {
+          "where": "What the key does in the search box group"
+        },
+        "escapeKey": {
+          "maxLength": 24,
+          "where": "Key name in the search box group"
+        },
+        "escapeWhat": {
+          "where": "What the key does in the search box group"
+        },
+        "upKey": {
+          "maxLength": 24,
+          "where": "Key name in the search box group"
+        },
+        "upWhat": {
+          "where": "What the key does in the search box group"
+        },
+        "where": {
+          "maxLength": 40,
+          "where": "Heading of the search box shortcut group"
+        }
+      },
+      "tableLabel": {
+        "where": "Accessible name of each shortcut table; where is the group heading"
+      },
+      "tabs": {
+        "arrowsKey": {
+          "maxLength": 32,
+          "where": "Key name in the tab list group"
+        },
+        "arrowsWhat": {
+          "where": "What the key does in the tab list group"
+        },
+        "homeEndKey": {
+          "maxLength": 24,
+          "where": "Key name in the tab list group"
+        },
+        "homeEndWhat": {
+          "where": "What the key does in the tab list group"
+        },
+        "where": {
+          "maxLength": 48,
+          "where": "Heading of the tab list shortcut group"
+        }
+      }
+    },
+    "tabs": {
+      "about": {
+        "maxLength": 24,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Help tab"
+      },
+      "glossary": {
+        "maxLength": 24,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Help tab"
+      },
+      "guidance": {
+        "maxLength": 24,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Help tab"
+      },
+      "label": {
+        "maxLength": 24,
+        "where": "Accessible name of the Help tab list"
+      },
+      "shortcuts": {
+        "maxLength": 24,
+        "screenshot": "phase-5/help-glossary-light-comfortable.png",
+        "where": "Help tab"
+      }
+    },
+    "title": {
+      "maxLength": 16,
+      "screenshot": "phase-5/help-glossary-light-comfortable.png",
+      "where": "Help page heading"
+    }
+  },
   "home": {
     "clocks": {
       "count": {
