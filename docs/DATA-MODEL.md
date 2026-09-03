@@ -311,15 +311,15 @@ Variant 5
 
 | Field | Type | Required |
 |---|---|---|
-| `concern` | object { receivedAt, source, sourceAgency, sourceReference, summary, harmTypes, immediateSafety, policeInvolved } | yes |
+| `concern` | object { receivedAt, source, sourceAgency, sourceReference, summary, harmTypes, primaryHarmType, traffickingKinds, harmTypeOther, primaryClientGroup, clientGroupOther, immediateSafety, policeInvolved } | yes |
 | `threePointTest` | object { assessedAt, byName, byUserId, a, b, c, outcome } | yes |
 | `screening` | object { outcome, rationale, at, byName } | no |
-| `inquiry` | object { openedAt, interAgencyDiscussionMeetingId, agenciesContacted, outcome, rationale, decidedAt } | no |
+| `inquiry` | object { openedAt, interAgencyDiscussionMeetingId, agenciesContacted, outcome, action, rationale, decidedAt } | no |
 | `investigation` | object { councilOfficerUserId, secondWorkerUserId, visits, interviews, medicalExamination, recordsRequests, consent, capacity, unduePressure, advocacy } | no |
 | `ordersConsidered` | array of object { order, considered, decision, rationale } | yes |
 | `planId` | string | no |
 | `closure` | object { at, reason } | no |
-| `lsi` | object { setting, provider, strands, agenciesInvolved, careInspectorateNotified, commissioningInvolved } | no |
+| `lsi` | object { setting, provider, strands, agenciesInvolved, careInspectorateNotified, commissioningInvolved, chairUserId, chairIsSeniorCouncilOfficer } | no |
 
 ### CpDetail
 
@@ -330,7 +330,7 @@ Variant 5
 | `ird` | object { meetingId, heldAt, outOfHours, participants, contributions, decisions, siblingsConsidered, interimSafetyPlanId, childViewsSought } | no |
 | `investigation` | object { openedAt, jiiHeldAt, jiiModel, medicalHeldAt, summary } | no |
 | `cppm` | object { meetingId, heldAt, decision, rationale } | no |
-| `register` | object { registeredAt, categories, deregisteredAt, deregistrationReason, transfer } | no |
+| `register` | object { registeredAt, concerns, localCategory, deregisteredAt, deregistrationReason, deregistrationNote, transfer } | no |
 | `coreGroup` | object { memberUserIds, leadProfessionalUserId, namedPersonUserId, firstMeetingAt } | no |
 | `childsPlanId` | string | no |
 | `preBirth` | object { expectedDeliveryDate, motherPersonId, gestationWeeksAtConcern } | no |
@@ -518,6 +518,7 @@ Variant 5
 | `reviewDate` | string (date) | no |
 | `status` | "draft" \| "active" \| "reviewed" \| "ended" | yes |
 | `consentNote` | string | no |
+| `noFurtherActionAgreed` | boolean | no |
 
 ### RiskAssessment
 
@@ -666,7 +667,7 @@ Variant 5
 |---|---|---|
 | `id` | string | yes |
 | `process` | "asp" \| "cp" \| "marac" \| "mappa" \| "awi" | yes |
-| `unit` | "calendar-days" \| "working-days" \| "weeks" \| "months" | yes |
+| `unit` | "hours" \| "calendar-days" \| "working-days" \| "weeks" \| "months" | yes |
 | `amount` | number | yes |
 | `kind` | "deadline" \| "warning" \| "expiry" \| "review" | yes |
 | `direction` | "after" \| "before" | no |

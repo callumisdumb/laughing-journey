@@ -15,7 +15,7 @@ const notApplicable = t('reports.values.notApplicable');
 
 function figures(kind: ReportKind, periodId: string | null) {
   const period = resolvePeriod(kind, now, periodId);
-  const model = buildModel(kind, data, DEFAULT_CONFIG, now, period, { population: 41000 });
+  const model = buildModel(kind, data, DEFAULT_CONFIG, now, period, { population: 41000, childPopulation: 18500 });
   return { period, model, map: Object.fromEntries(model.figures.map((f) => [f.id, f.value])) };
 }
 
@@ -43,8 +43,47 @@ describe('report figures are computed from the seed, never typed in', () => {
     expect(y2026.map['re-registrations']).toBe('0');
     expect(figures('cp', 'y2019').map['registrations']).toBe('1');
     expect(figures('cp', 'y2021').map['deregistrations']).toBe('1');
-    const age = y2026.model.sections.find((s) => s.id === 'age')?.tables[0]?.rows.find((r) => r[0] === t('reports.cp.ageBands.fiveToTen'));
-    expect(age?.[1]).toBe(1);
+    // The publication's tables: sex first, then age, each with a percentage column and a total.
+    const ageSection = y2026.model.sections.find((s) => s.id === 'age');
+    const sexRows = ageSection?.tables[0]?.rows ?? [];
+    const ageRows = ageSection?.tables[1]?.rows ?? [];
+    expect(sexRows.find((r) => r[0] === t('reports.cp.sexRows.male'))).toEqual([t('reports.cp.sexRows.male'), 1, '100.0']);
+    expect(ageRows.find((r) => r[0] === t('reports.cp.ageBands.fiveToTen'))).toEqual([t('reports.cp.ageBands.fiveToTen'), 1, '100.0']);
+    // No under-1 band: the publication bands 0 to 4 together.
+    expect(ageRows.map((r) => r[0])).toContain(t('reports.cp.ageBands.zeroToFour'));
+    expect(ageRows.map((r) => r[0])).toContain(t('reports.cp.ageBands.unknown'));
+    expect(ageRows[ageRows.length - 1]?.[0]).toBe(t('reports.cp.rows.total'));
+
+    // The rate per 1,000 uses the placeholder child population passed to the model.
+    const rateRows = y2026.model.sections.find((s) => s.id === 'rate')?.tables[0]?.rows ?? [];
+    expect(rateRows[0]?.[2]).toBe('0.1'); // 1 child in 18,500
+
+    // Table 1.3a: Aiden's CPPM had an IRD nine days before it, so it counts as linked.
+    expect(y2026.map['ird-linked']).toBe('1');
+    const linkage = y2026.model.sections.find((s) => s.id === 'linkage')?.tables[0]?.rows ?? [];
+    const linkageRow = (key: string) => linkage.find((r) => r[0] === t(`reports.cp.linkage.${key}` as 'reports.cp.linkage.withIrd'));
+    expect(linkageRow('withIrd')?.[1]).toBe(1);
+    expect(linkageRow('withoutIrd')?.[1]).toBe(0);
+    expect(linkageRow('registrationsWithIrd')?.[1]).toBe(1);
+
+    // Concerns, not a category of registration: Aiden's register entry carries three.
+    const concerns = y2026.model.sections.find((s) => s.id === 'concerns')?.tables[0]?.rows ?? [];
+    expect(concerns.filter((r) => r[1] === 1).map((r) => r[0])).toEqual(expect.arrayContaining([t('domain.cpConcerns.emotionalAbuse'), t('domain.cpConcerns.physicalAbuse'), t('domain.cpConcerns.domesticAbuse')]));
+
+    // De-registration reasons come from the publication's list, and Chloe's is coded.
+    const y2021 = figures('cp', 'y2021');
+    const reasons = y2021.model.sections.find((s) => s.id === 'length')?.tables[2]?.rows ?? [];
+    expect(reasons).toHaveLength(9);
+    expect(reasons.find((r) => r[0] === t('domain.cpDeregistrationReasons.childWithOtherCarers'))?.[1]).toBe(1);
+    // A child who died is never named in the report.
+    expect(JSON.stringify(y2021.model)).not.toContain('Chloe');
+
+    // Time since last de-registration, for registrations in the year.
+    const since = y2026.model.sections.find((s) => s.id === 'history')?.tables[1]?.rows ?? [];
+    expect(since.find((r) => r[0] === t('reports.cp.sinceBands.never'))?.[1]).toBe(1);
+
+    expect(y2026.model.meta.join(' ')).toContain(t('reports.cp.meta.fieldSet'));
+    expect(y2026.model.meta.join(' ')).not.toContain(t('reports.meta.verify'));
   });
 
   it('ASP: nothing in the biennium to 31 Mar 2026, three referrals in the biennium in progress', () => {

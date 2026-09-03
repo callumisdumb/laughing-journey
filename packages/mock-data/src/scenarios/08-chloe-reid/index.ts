@@ -293,7 +293,7 @@ export function seedChloeReid(ctx: BuildContext): void {
       },
       investigation: { openedAt: at('2019-02-20', '12:00'), medicalHeldAt: at('2019-02-22', '14:00'), summary: 'Medical: underweight, otherwise well. Mother acknowledged drinking daily and did not engage with the alcohol service. Chloe settled with her aunt.' },
       cppm: { heldAt: at('2019-03-19', '10:00'), decision: 'register', rationale: 'Risk of neglect if returned to her mother; registration to hold the plan while compulsory measures were sought.' },
-      register: { registeredAt: '2019-03-19', categories: ['neglect', 'parental-substance-use'], deregisteredAt: '2020-11-04', deregistrationReason: 'Living with her aunt under a compulsory supervision order; the risk from her mother is managed by the placement.' },
+      register: { registeredAt: '2019-03-19', concerns: ['neglect', 'parental-substance-use'], deregisteredAt: '2020-11-04', deregistrationReason: 'child-with-other-carers', deregistrationNote: 'Living with her aunt under a compulsory supervision order; the risk from her mother is managed by the placement.' },
     },
   };
   ctx.data.processes.push(cp2019);

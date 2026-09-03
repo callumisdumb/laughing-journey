@@ -605,23 +605,51 @@ export function aspGenderLabel(gender: AspGender): string {
 }
 
 
-export const CP_REGISTER_CATEGORIES = [
-  'physical-abuse',
-  'emotional-abuse',
-  'sexual-abuse',
-  'neglect',
+/**
+ * Concerns raised at a child protection planning meeting. The 2021 national guidance says it is not
+ * necessary to identify a category of registration when placing a child on the register, so what the
+ * meeting records is its concerns, and a child may have more than one (D-056). The five the
+ * publication confirms as consistently most common are listed first, in its own wording; the rest
+ * are the platform's and await the template.
+ */
+export const CP_CONCERNS = [
   'domestic-abuse',
+  'neglect',
   'parental-substance-use',
-  'parental-mental-health',
+  'parent-mental-ill-health',
+  'emotional-abuse',
+  'physical-abuse',
+  'sexual-abuse',
   'non-engaging-family',
   'child-placing-self-at-risk',
   'other',
 ] as const;
-export type CpRegisterCategory = (typeof CP_REGISTER_CATEGORIES)[number];
+export type CpConcern = (typeof CP_CONCERNS)[number];
 
-export function cpRegisterCategoryLabel(category: CpRegisterCategory): string {
-  return tKey(`domain.cpRegisterCategories.${keySegment(category)}`);
+export function cpConcernLabel(concern: CpConcern): string {
+  return tKey(`domain.cpConcerns.${keySegment(concern)}`);
 }
+
+/** Reasons for de-registration, in the wording of Children's Social Work Statistics: Child Protection. */
+export const CP_DEREGISTRATION_REASONS = [
+  'taken-into-care-risk-reduced',
+  'child-with-other-carers',
+  'child-died',
+  'removal-of-perpetrator',
+  'improved-home-situation',
+  'automatically-deregistered-age',
+  'moved-away-no-continued-risk',
+  'other-reason',
+  'reason-not-known',
+] as const;
+export type CpDeregistrationReason = (typeof CP_DEREGISTRATION_REASONS)[number];
+
+export function cpDeregistrationReasonLabel(reason: CpDeregistrationReason): string {
+  return tKey(`domain.cpDeregistrationReasons.${keySegment(reason)}`);
+}
+
+
+
 
 
 export const MAPPA_CATEGORIES = [1, 2, 3] as const;

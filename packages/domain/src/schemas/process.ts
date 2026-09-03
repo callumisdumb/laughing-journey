@@ -8,7 +8,8 @@ import {
   CASE_PARTY_SOURCES,
   CLASSIFICATIONS,
   CONSENT_STATUSES,
-  CP_REGISTER_CATEGORIES,
+  CP_CONCERNS,
+  CP_DEREGISTRATION_REASONS,
   EXCLUSION_PARTIES,
   HARM_TYPES,
   MAPPA_CATEGORIES,
@@ -229,9 +230,18 @@ export const cpDetailSchema = z.object({
   }).optional(),
   register: z.object({
     registeredAt: isoDate,
-    categories: z.array(z.enum(CP_REGISTER_CATEGORIES)),
+    /**
+     * The concerns the planning meeting recorded. The 2021 national guidance says a category of
+     * registration need not be identified, so concerns are what the register carries and a child
+     * may have more than one (D-056).
+     */
+    concerns: z.array(z.enum(CP_CONCERNS)).min(1),
+    /** A local category, where a partnership uses one. National guidance does not require it. */
+    localCategory: z.string().optional(),
     deregisteredAt: isoDate.optional(),
-    deregistrationReason: z.string().optional(),
+    /** Coded reason, in the wording of the national statistics publication. */
+    deregistrationReason: z.enum(CP_DEREGISTRATION_REASONS).optional(),
+    deregistrationNote: z.string().optional(),
     transfer: z.object({ direction: z.enum(['in', 'out']), area: z.string(), at: isoDate }).optional(),
   }).optional(),
   coreGroup: z.object({

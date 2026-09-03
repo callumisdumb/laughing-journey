@@ -7,7 +7,7 @@ import { ArrowLeft, Printer } from 'lucide-react';
 import { useEffect } from 'react';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { useAppStore, useConfig, useData, useNow } from '@/lib/store';
-import { buildModel, parsePopulation } from './buildModel';
+import { buildModel, parseChildPopulation, parsePopulation } from './buildModel';
 import { Chart } from './Chart';
 import type { ReportKind, ReportSection, TableSpec } from './model';
 import { resolvePeriod } from './period';
@@ -62,7 +62,7 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
   const navigate = useNavigate();
   const audit = useAppStore((s) => s.audit);
   const period = resolvePeriod(kind, now, route.query.get('period'));
-  const model = buildModel(kind, data, config, now, period, { population: parsePopulation(route.query) });
+  const model = buildModel(kind, data, config, now, period, { population: parsePopulation(route.query), childPopulation: parseChildPopulation(route.query) });
 
   useEffect(() => {
     audit({ act: 'export', targetType: 'report', targetId: `${kind}:${period.id}`, targetLabel: t('print.reports.auditLabel', { title: model.title, period: period.label }) });

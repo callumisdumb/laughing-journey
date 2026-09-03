@@ -253,7 +253,8 @@ export function seedAidenBoyle(ctx: BuildContext): void {
         summary: 'JII: Aiden described being grabbed by the arm and pushed towards the stairs by Craig on 18 May, and shouting "most nights". Medical: four oval bruises consistent with a grip, no other injuries. Craig Torrance charged with assault on 23 May; bail conditions not to approach the address or Aiden.',
       },
       cppm: { meetingId: AIDEN.cppm, heldAt: at('2026-06-12', '10:00'), decision: 'register', rationale: 'Ongoing risk of emotional and physical harm; mother\'s capacity to protect depends on maintaining separation from Craig Torrance and engaging with support.' },
-      register: { registeredAt: '2026-06-12', categories: ['emotional-abuse', 'physical-abuse'] },
+      // The 2021 guidance does not require a category of registration, so the meeting recorded its concerns.
+      register: { registeredAt: '2026-06-12', concerns: ['emotional-abuse', 'physical-abuse', 'domestic-abuse'] },
       coreGroup: { memberUserIds: [sw, head, hv, ds], leadProfessionalUserId: sw, namedPersonUserId: head, firstMeetingAt: at('2026-07-01', '14:00') },
       childsPlanId: AIDEN.childsPlan,
     },

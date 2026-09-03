@@ -4508,6 +4508,11 @@
       "deregisteredValue": {
         "where": "De-registered value: the date and the reason"
       },
+      "localCategory": {
+        "maxLength": 40,
+        "screenshot": "phase-3/process-cp-light-comfortable.png",
+        "where": "Pill on the CP register card where a partnership records a local category of registration"
+      },
       "notHeld": {
         "maxLength": 20,
         "where": "CPPM value before the meeting"
@@ -5638,6 +5643,100 @@
         "where": "Consent status in the ASP investigation panel and the lawful basis section of the drawer"
       }
     },
+    "cpConcerns": {
+      "childPlacingSelfAtRisk": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "where": "Concern raised at a planning meeting; the platform's own wording, awaiting the published list"
+      },
+      "domesticAbuse": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Concern raised at a planning meeting, one of the five the publication confirms as most common"
+      },
+      "emotionalAbuse": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Concern raised at a planning meeting, one of the five the publication confirms as most common"
+      },
+      "neglect": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Concern raised at a planning meeting, one of the five the publication confirms as most common"
+      },
+      "nonEngagingFamily": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "where": "Concern raised at a planning meeting; the platform's own wording, awaiting the published list"
+      },
+      "other": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "where": "Concern raised at a planning meeting; the platform's own wording, awaiting the published list"
+      },
+      "parentalSubstanceUse": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Concern raised at a planning meeting, one of the five the publication confirms as most common"
+      },
+      "parentMentalIllHealth": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Concern raised at a planning meeting, one of the five the publication confirms as most common"
+      },
+      "physicalAbuse": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "where": "Concern raised at a planning meeting; the platform's own wording, awaiting the published list"
+      },
+      "sexualAbuse": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "where": "Concern raised at a planning meeting; the platform's own wording, awaiting the published list"
+      }
+    },
+    "cpDeregistrationReasons": {
+      "automaticallyDeregisteredAge": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Reason for de-registration, Children's Social Work Statistics: Child Protection"
+      },
+      "childDied": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Reason for de-registration, Children's Social Work Statistics: Child Protection"
+      },
+      "childWithOtherCarers": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Reason for de-registration, Children's Social Work Statistics: Child Protection"
+      },
+      "improvedHomeSituation": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Reason for de-registration, Children's Social Work Statistics: Child Protection"
+      },
+      "movedAwayNoContinuedRisk": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Reason for de-registration, Children's Social Work Statistics: Child Protection"
+      },
+      "otherReason": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Reason for de-registration, Children's Social Work Statistics: Child Protection"
+      },
+      "reasonNotKnown": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Reason for de-registration, Children's Social Work Statistics: Child Protection"
+      },
+      "removalOfPerpetrator": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Reason for de-registration, Children's Social Work Statistics: Child Protection"
+      },
+      "takenIntoCareRiskReduced": {
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "verbatim": true,
+        "where": "Reason for de-registration, Children's Social Work Statistics: Child Protection"
+      }
+    },
     "cppmDecisions": {
       "notRegister": {
         "maxLength": 16,
@@ -5650,48 +5749,6 @@
       "register": {
         "maxLength": 16,
         "where": "CPPM decision in the CP panels"
-      }
-    },
-    "cpRegisterCategories": {
-      "childPlacingSelfAtRisk": {
-        "maxLength": 40,
-        "where": "Child protection register category in the CP panels, register lists and reports"
-      },
-      "domesticAbuse": {
-        "maxLength": 40,
-        "where": "Child protection register category in the CP panels, register lists and reports"
-      },
-      "emotionalAbuse": {
-        "maxLength": 40,
-        "where": "Child protection register category in the CP panels, register lists and reports"
-      },
-      "neglect": {
-        "maxLength": 40,
-        "where": "Child protection register category in the CP panels, register lists and reports"
-      },
-      "nonEngagingFamily": {
-        "maxLength": 40,
-        "where": "Child protection register category in the CP panels, register lists and reports"
-      },
-      "other": {
-        "maxLength": 40,
-        "where": "Child protection register category in the CP panels, register lists and reports"
-      },
-      "parentalMentalHealth": {
-        "maxLength": 40,
-        "where": "Child protection register category in the CP panels, register lists and reports"
-      },
-      "parentalSubstanceUse": {
-        "maxLength": 40,
-        "where": "Child protection register category in the CP panels, register lists and reports"
-      },
-      "physicalAbuse": {
-        "maxLength": 40,
-        "where": "Child protection register category in the CP panels, register lists and reports"
-      },
-      "sexualAbuse": {
-        "maxLength": 40,
-        "where": "Child protection register category in the CP panels, register lists and reports"
       }
     },
     "detailLevels": {
@@ -13579,32 +13636,34 @@
     "cp": {
       "ageBands": {
         "elevenToFifteen": {
-          "maxLength": 16,
-          "where": "Age band row in the CP register by age table"
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Register age band, Children's Social Work Statistics: Child Protection"
         },
         "fiveToTen": {
-          "maxLength": 16,
-          "where": "Age band row in the CP register by age table"
-        },
-        "notRecorded": {
-          "maxLength": 16,
-          "where": "Age band row in the CP register by age table when the child record is missing"
-        },
-        "oneToFour": {
-          "maxLength": 16,
-          "where": "Age band row in the CP register by age table"
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Register age band, Children's Social Work Statistics: Child Protection"
         },
         "sixteenAndOver": {
-          "maxLength": 16,
-          "where": "Age band row in the CP register by age table"
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Register age band, Children's Social Work Statistics: Child Protection"
         },
         "unborn": {
-          "maxLength": 16,
-          "where": "Age band row in the CP register by age table"
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Register age band, Children's Social Work Statistics: Child Protection"
         },
-        "underOne": {
-          "maxLength": 16,
-          "where": "Age band row in the CP register by age table"
+        "unknown": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Register age band, Children's Social Work Statistics: Child Protection"
+        },
+        "zeroToFour": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Register age band, Children's Social Work Statistics: Child Protection"
         }
       },
       "charts": {
@@ -13666,6 +13725,11 @@
           "maxLength": 36,
           "where": "Column header in the CP concerns table"
         },
+        "count": {
+          "maxLength": 32,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Column header: count"
+        },
         "held": {
           "maxLength": 16,
           "where": "Column header in the CP meetings table"
@@ -13678,17 +13742,47 @@
           "maxLength": 24,
           "where": "Column header in the CP de-registered by length table"
         },
+        "measure": {
+          "maxLength": 32,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Column header: measure"
+        },
         "meeting": {
           "maxLength": 12,
           "where": "Column header in the CP meetings table"
+        },
+        "percentage": {
+          "maxLength": 32,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Column header: percentage"
+        },
+        "ratePerThousand": {
+          "maxLength": 32,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Column header: ratePerThousand"
+        },
+        "reason": {
+          "maxLength": 32,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Column header: reason"
         },
         "scheduled": {
           "maxLength": 24,
           "where": "Column header in the CP meetings table"
         },
+        "sex": {
+          "maxLength": 32,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Column header: sex"
+        },
         "timeOnRegister": {
           "maxLength": 24,
           "where": "Column header in the CP time on the register table"
+        },
+        "timeSinceLast": {
+          "maxLength": 32,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Column header: timeSinceLast"
         }
       },
       "figures": {
@@ -13703,6 +13797,16 @@
         "deregistrations": {
           "maxLength": 20,
           "where": "Headline figure label on the CP report"
+        },
+        "irdLinked": {
+          "maxLength": 48,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Headline figure counting planning meetings with an IRD in the preceding 28 days"
+        },
+        "irdLinkedNote": {
+          "maxLength": 24,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Note under that headline figure"
         },
         "preBirth": {
           "maxLength": 24,
@@ -13740,21 +13844,72 @@
         "where": "Lede under the CP report title"
       },
       "lengthBands": {
-        "oneToTwoYears": {
-          "maxLength": 28,
-          "where": "Length band row in the CP length of registration tables"
+        "eighteenMonthsToTwoYears": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Length of registration band, Children's Social Work Statistics: Child Protection"
+        },
+        "noDateInformation": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Length of registration band, Children's Social Work Statistics: Child Protection"
+        },
+        "oneToEighteenMonths": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Length of registration band, Children's Social Work Statistics: Child Protection"
         },
         "sixMonthsToOneYear": {
-          "maxLength": 28,
-          "where": "Length band row in the CP length of registration tables"
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Length of registration band, Children's Social Work Statistics: Child Protection"
         },
         "twoYearsOrMore": {
-          "maxLength": 28,
-          "where": "Length band row in the CP length of registration tables"
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Length of registration band, Children's Social Work Statistics: Child Protection"
         },
         "underSixMonths": {
-          "maxLength": 28,
-          "where": "Length band row in the CP length of registration tables"
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Length of registration band, Children's Social Work Statistics: Child Protection"
+        }
+      },
+      "linkage": {
+        "irds": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Table 1.3a column, Children's Social Work Statistics: Child Protection"
+        },
+        "planningMeetings": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Table 1.3a column, Children's Social Work Statistics: Child Protection"
+        },
+        "registrations": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Table 1.3a column, Children's Social Work Statistics: Child Protection"
+        },
+        "registrationsWithIrd": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Table 1.3a column, Children's Social Work Statistics: Child Protection"
+        },
+        "registrationsWithoutIrd": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Table 1.3a column, Children's Social Work Statistics: Child Protection"
+        },
+        "withIrd": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Table 1.3a column, Children's Social Work Statistics: Child Protection"
+        },
+        "withoutIrd": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Table 1.3a column, Children's Social Work Statistics: Child Protection"
         }
       },
       "meetings": {
@@ -13783,6 +13938,10 @@
         "computed": {
           "where": "Meta line under the CP report controls: when it was computed and from how many records"
         },
+        "fieldSet": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Meta line naming the statistics publication as the source of the field set"
+        },
         "period": {
           "where": "First meta line under the CP report controls: the period and its reference date"
         }
@@ -13791,11 +13950,39 @@
         "maxLength": 32,
         "where": "Period line on the CP card of the reports index"
       },
+      "populationHint": {
+        "maxLength": 48,
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "where": "Hint under the child population control"
+      },
+      "populationLabel": {
+        "maxLength": 48,
+        "screenshot": "phase-5/report-cp-light-comfortable.png",
+        "where": "Label of the editable child population control"
+      },
       "purpose": {
         "where": "Purpose paragraph on the CP card of the reports index"
       },
       "recipient": {
         "where": "Who receives it line on the CP card of the reports index"
+      },
+      "rows": {
+        "deregistrationsInYear": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Row label: deregistrationsInYear"
+        },
+        "onRegisterAt": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Row label: onRegisterAt"
+        },
+        "registrationsInYear": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Row label: registrationsInYear"
+        },
+        "total": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Row label: total"
+        }
       },
       "sections": {
         "age": {
@@ -13826,6 +14013,15 @@
         "length": {
           "where": "Section title on the CP report"
         },
+        "linkage": {
+          "maxLength": 48,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Heading of the IRD and planning meeting linkage section"
+        },
+        "linkageNote": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Note under the linkage section, defining the 28 day measure"
+        },
         "meetings": {
           "where": "Section title on the CP report"
         },
@@ -13837,6 +14033,79 @@
         },
         "overTimeNote": {
           "where": "Note under the register over time section title on the CP report"
+        },
+        "rate": {
+          "maxLength": 32,
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Heading of the rate per 1,000 section"
+        },
+        "rateNote": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Note under the rate section, saying the denominator is a placeholder"
+        }
+      },
+      "sexRows": {
+        "female": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Register sex row, Children's Social Work Statistics: Child Protection"
+        },
+        "male": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Register sex row, Children's Social Work Statistics: Child Protection"
+        },
+        "unborn": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Register sex row, Children's Social Work Statistics: Child Protection"
+        },
+        "unknown": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Register sex row, Children's Social Work Statistics: Child Protection"
+        }
+      },
+      "sinceBands": {
+        "beforeTimeUnknown": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Time since last de-registration band, Children's Social Work Statistics: Child Protection"
+        },
+        "eighteenMonthsToTwoYears": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Time since last de-registration band, Children's Social Work Statistics: Child Protection"
+        },
+        "never": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Time since last de-registration band, Children's Social Work Statistics: Child Protection"
+        },
+        "oneToEighteenMonths": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Time since last de-registration band, Children's Social Work Statistics: Child Protection"
+        },
+        "sixMonthsToOneYear": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Time since last de-registration band, Children's Social Work Statistics: Child Protection"
+        },
+        "twoYearsOrMore": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Time since last de-registration band, Children's Social Work Statistics: Child Protection"
+        },
+        "underSixMonths": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Time since last de-registration band, Children's Social Work Statistics: Child Protection"
+        },
+        "unknownWhether": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "verbatim": true,
+          "where": "Time since last de-registration band, Children's Social Work Statistics: Child Protection"
         }
       },
       "sources": {
@@ -13848,11 +14117,23 @@
         }
       },
       "tables": {
+        "ageTitle": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Title of the ageTitle table"
+        },
         "lengthCurrentTitle": {
           "where": "Title of the second table in the CP length of time section, with the reference date"
         },
         "lengthDeregTitle": {
           "where": "Title of the first table in the CP length of time section"
+        },
+        "reasonTitle": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Title of the reasonTitle table"
+        },
+        "sexTitle": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "Title of the sexTitle table"
         }
       },
       "title": {
@@ -13861,8 +14142,13 @@
         "where": "Title of the CP report on the index card, the report screen, its print pack and the audit entry"
       },
       "verify": {
-        "publication": {
-          "where": "Verification note in the field set and sources panel of the CP report"
+        "concerns": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "What remains to verify about the concern list"
+        },
+        "population": {
+          "screenshot": "phase-5/report-cp-light-comfortable.png",
+          "where": "What remains to verify about the rate denominator"
         }
       }
     },

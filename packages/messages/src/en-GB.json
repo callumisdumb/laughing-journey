@@ -754,7 +754,7 @@
     },
     "page": {
       "ledeFull": "Showing every entry: {role} has oversight.",
-      "ledeOwn": "Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone\u2019s.",
+      "ledeOwn": "Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone’s.",
       "ledeTail": "Every read of a restricted record, every share, every break-glass and every persona switch is here, newest first.",
       "title": "Audit"
     },
@@ -1404,6 +1404,7 @@
       "daysOnRegister": "Days on register",
       "deregistered": "De-registered",
       "deregisteredValue": "{date}. {reason}",
+      "localCategory": "Local category: {category}",
       "notHeld": "Not yet held",
       "notOnRegister": "Not on the register",
       "open": "Open CPPM",
@@ -1585,11 +1586,11 @@
       "women": "Women"
     },
     "aspInquiryActions": {
-      "criteriaNoOpportunity": "Meets three-point criteria \u2014 no opportunity for further ASP intervention",
-      "criteriaOngoing": "Meets three-point criteria \u2013 ongoing ASP work",
-      "criteriaSupport": "Meets three-point criteria \u2014 non-ASP support provided or offered",
-      "noCriteriaNoAction": "Does not meet the three-point criteria \u2013 no further action",
-      "noCriteriaSupport": "Does not meet the three-point criteria \u2013 non-ASP support offered or provided",
+      "criteriaNoOpportunity": "Meets three-point criteria — no opportunity for further ASP intervention",
+      "criteriaOngoing": "Meets three-point criteria – ongoing ASP work",
+      "criteriaSupport": "Meets three-point criteria — non-ASP support provided or offered",
+      "noCriteriaNoAction": "Does not meet the three-point criteria – no further action",
+      "noCriteriaSupport": "Does not meet the three-point criteria – non-ASP support offered or provided",
       "pendingUnknown": "Pending / Unknown"
     },
     "aspInquiryOutcomes": {
@@ -1781,22 +1782,33 @@
       "soughtAndGiven": "Consent sought and given",
       "soughtAndRefusedOverridden": "Consent sought and refused, overridden with reason"
     },
-    "cppmDecisions": {
-      "notRegister": "Do not register",
-      "pending": "Pending",
-      "register": "Register"
-    },
-    "cpRegisterCategories": {
-      "childPlacingSelfAtRisk": "Child placing themselves at risk",
+    "cpConcerns": {
+      "childPlacingSelfAtRisk": "Child placing self at risk",
       "domesticAbuse": "Domestic abuse",
       "emotionalAbuse": "Emotional abuse",
       "neglect": "Neglect",
       "nonEngagingFamily": "Non-engaging family",
-      "other": "Other concern",
-      "parentalMentalHealth": "Parental mental health",
+      "other": "Other",
       "parentalSubstanceUse": "Parental substance use",
+      "parentMentalIllHealth": "Parent mental ill health",
       "physicalAbuse": "Physical abuse",
       "sexualAbuse": "Sexual abuse"
+    },
+    "cpDeregistrationReasons": {
+      "automaticallyDeregisteredAge": "Child automatically de-registered because of age",
+      "childDied": "Child died",
+      "childWithOtherCarers": "Child with other carers",
+      "improvedHomeSituation": "Improved home situation",
+      "movedAwayNoContinuedRisk": "Child moved away - no continued risk",
+      "otherReason": "Other reason",
+      "reasonNotKnown": "Reason not known",
+      "removalOfPerpetrator": "Removal of perpetrator",
+      "takenIntoCareRiskReduced": "Child taken into care & risk reduced"
+    },
+    "cppmDecisions": {
+      "notRegister": "Do not register",
+      "pending": "Pending",
+      "register": "Register"
     },
     "detailLevels": {
       "fields": "Named fields only",
@@ -2741,7 +2753,7 @@
         "dataProtection": "UK GDPR, Data Protection Act 2018 (Schedule 1 Part 2 paragraph 18), Data (Use and Access) Act 2025",
         "domesticAbuseAct": "Domestic Abuse (Scotland) Act 2018",
         "equallySafe": "Equally Safe strategy",
-        "hearingsAct": "Children\u2019s Hearings (Scotland) Act 2011",
+        "hearingsAct": "Children’s Hearings (Scotland) Act 2011",
         "humanRightsAct": "Human Rights Act 1998",
         "mappaAct": "Management of Offenders etc. (Scotland) Act 2005 and MAPPA National Guidance (current edition)",
         "mentalHealthAct": "Mental Health (Care and Treatment) (Scotland) Act 2003",
@@ -4300,13 +4312,12 @@
     },
     "cp": {
       "ageBands": {
-        "elevenToFifteen": "11 to 15",
-        "fiveToTen": "5 to 10",
-        "notRecorded": "Not recorded",
-        "oneToFour": "1 to 4",
-        "sixteenAndOver": "16 and over",
+        "elevenToFifteen": "11-15",
+        "fiveToTen": "5-10",
+        "sixteenAndOver": "16+",
         "unborn": "Unborn",
-        "underOne": "Under 1"
+        "unknown": "Unknown",
+        "zeroToFour": "0-4"
       },
       "charts": {
         "byMonthSummary": "Registrations and de-registrations by month: {registrations, plural, one {# registration} other {# registrations}} and {deregistrations, plural, one {# de-registration} other {# de-registrations}} over {months, plural, one {# month} other {# months}}.",
@@ -4326,17 +4337,26 @@
         "children": "Children",
         "childrenRegistered": "Children registered",
         "concern": "Concern identified at registration",
+        "count": "Number",
         "held": "Held in period",
         "history": "Registration history",
         "lengthOfRegistration": "Length of registration",
+        "measure": "Measure",
         "meeting": "Meeting",
+        "percentage": "Percentage",
+        "ratePerThousand": "Rate per 1,000",
+        "reason": "Reason for de-registration",
         "scheduled": "Scheduled, not yet held",
-        "timeOnRegister": "Time on the register"
+        "sex": "Sex",
+        "timeOnRegister": "Time on the register",
+        "timeSinceLast": "Time since last de-registration"
       },
       "figures": {
         "atEnd": "On the register at {date}",
         "cppms": "CPPMs held",
         "deregistrations": "De-registrations",
+        "irdLinked": "Planning meetings with an IRD in 28 days",
+        "irdLinkedNote": "of {total} held",
         "preBirth": "Pre-birth registrations",
         "registrations": "Registrations",
         "registrationsNote": "{count} for the first time",
@@ -4350,10 +4370,21 @@
       },
       "lede": "The register figures collected each year for the Children's Social Work Statistics, computed from the register entry on every child protection process in the record store.",
       "lengthBands": {
-        "oneToTwoYears": "1 year to under 2 years",
+        "eighteenMonthsToTwoYears": "18 months to under 2 years",
+        "noDateInformation": "No date of registration information",
+        "oneToEighteenMonths": "1 year to under 18 months",
         "sixMonthsToOneYear": "6 months to under 1 year",
         "twoYearsOrMore": "2 years or more",
-        "underSixMonths": "Under 6 months"
+        "underSixMonths": "Less than 6 months"
+      },
+      "linkage": {
+        "irds": "IRD Number",
+        "planningMeetings": "Initial and Pre-Birth Planning Meetings",
+        "registrations": "Registrations from initial and pre-birth Planning Meetings",
+        "registrationsWithIrd": "Number of registrations with an IRD recorded within 28 days of Planning Meeting",
+        "registrationsWithoutIrd": "Number of registrations with no IRD recorded within 28 days of Planning Meeting",
+        "withIrd": "Number of Planning Meetings with an IRD recorded within 28 days of the Planning Meeting",
+        "withoutIrd": "Number of Planning Meetings without an IRD recorded within 28 days of the Planning Meeting"
       },
       "meetings": {
         "coreGroup": "Core group",
@@ -4364,11 +4395,20 @@
       },
       "meta": {
         "computed": "Computed {dateTime} from the local record store: {records, plural, one {# child protection record} other {# child protection records}}, {entries, plural, one {# register entry} other {# register entries}} across all time.",
+        "fieldSet": "Field set from Children's Social Work Statistics: Child Protection 2024-25. Register figures are as at 31 July; activity figures are for the financial year.",
         "period": "Period {period}, reference date {date}."
       },
       "periodLabel": "Year to 31 July",
+      "populationHint": "Fictional. Used for the rate per 1,000.",
+      "populationLabel": "Children aged 0 to 17 (dd Mon yyyy estimate)",
       "purpose": "The register figures collected each year for the Children's Social Work Statistics: registrations, de-registrations, the register at 31 July by age, concerns identified at registration, unborn children, re-registrations within two years and length of time on the register.",
       "recipient": "The Child Protection Committee, and the council's annual return to the Scottish Government.",
+      "rows": {
+        "deregistrationsInYear": "De-registrations in the year",
+        "onRegisterAt": "On the register at {date}",
+        "registrationsInYear": "Registrations in the year",
+        "total": "Total"
+      },
       "sections": {
         "age": "Children on the register at {date}, by age",
         "ageNote": "Age on the reference date. Unborn babies are counted where the expected date of delivery is after the reference date.",
@@ -4379,22 +4419,46 @@
         "history": "Previous registrations",
         "historyNote": "A re-registration is a child registered again after an earlier de-registration; within two years follows the national publication.",
         "length": "Length of time on the register",
+        "linkage": "IRDs, planning meetings and registrations",
+        "linkageNote": "A planning meeting counts as being without an IRD where no IRD was recorded in the 28 days preceding it, which is the mirror of the initial CPPM clock and the national proxy for whether the 28 day route was followed. {rate} percent of planning meetings in the period led to a registration.",
         "meetings": "Child protection meetings",
         "meetingsNote": "Meetings marked held in the meeting record.",
         "overTime": "The register over time",
-        "overTimeNote": "Children whose registration was open at the end of each month in the period."
+        "overTimeNote": "Children whose registration was open at the end of each month in the period.",
+        "rate": "Rate per 1,000 children",
+        "rateNote": "The publication reports the register as a rate per 1,000 children aged 0 to 17, using National Records of Scotland mid-year population estimates. The denominator here is a placeholder: a fictional Clydeshore child population of {population}, editable above."
+      },
+      "sexRows": {
+        "female": "Female",
+        "male": "Male",
+        "unborn": "Unborn",
+        "unknown": "Unknown"
+      },
+      "sinceBands": {
+        "beforeTimeUnknown": "Registered before but time unknown",
+        "eighteenMonthsToTwoYears": "18 months to under 2 years",
+        "never": "Never been registered before",
+        "oneToEighteenMonths": "1 year to under 18 months",
+        "sixMonthsToOneYear": "6 months to under 1 year",
+        "twoYearsOrMore": "2 years or more",
+        "underSixMonths": "Less than 6 months",
+        "unknownWhether": "Unknown whether child was registered before"
       },
       "sources": {
         "statistics2024": "Children's Social Work Statistics: Child Protection 2023-24 (gov.scot), for the concern categories and the length of registration finding.",
         "statistics2025": "Children's Social Work Statistics: Child Protection 2024-25, Children on the child protection register (gov.scot)."
       },
       "tables": {
+        "ageTitle": "By age at {date}",
         "lengthCurrentTitle": "Children on the register at {date}, by time on the register so far",
-        "lengthDeregTitle": "Children de-registered in the period, by length of registration"
+        "lengthDeregTitle": "Children de-registered in the period, by length of registration",
+        "reasonTitle": "Reason for de-registration",
+        "sexTitle": "By sex at {date}"
       },
       "title": "Child Protection Register statistics",
       "verify": {
-        "publication": "The Children's Social Work Statistics publish registrations, de-registrations, the register at 31 July, concerns at registration, unborn children, children registered before (with two years since the last de-registration as the dividing line) and length of registration. The age bands and length bands used here are the platform's own until the current publication tables are checked."
+        "concerns": "The five most common concerns are confirmed from the publication; the remaining concern labels are the platform's own and await the template.",
+        "population": "The child population used for the rate per 1,000 is fictional; replace it with the National Records of Scotland estimate for the area."
       }
     },
     "figures": {
@@ -4832,7 +4896,7 @@
         "label": "Clocks due this week"
       },
       "connectorInbox": {
-        "hint": "New events from your agency\u2019s systems waiting for review.",
+        "hint": "New events from your agency’s systems waiting for review.",
         "label": "Connector inbox items"
       },
       "meetingInvites": {

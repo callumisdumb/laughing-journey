@@ -1,6 +1,6 @@
 'use client';
 
-import { agencyShort, cpRegisterCategoryLabel, cppmDecisionLabel, formatDate, formatDateTime, irdMedicalKindLabel, planStatusLabel, type CpProcess } from '@mas/domain';
+import { agencyShort, cpConcernLabel, cppmDecisionLabel, formatDate, formatDateTime, irdMedicalKindLabel, planStatusLabel, type CpProcess } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, KeyValue, Pill, Sheet, SheetBody, SheetHead } from '@mas/ui';
 import { differenceInCalendarDays, differenceInWeeks, parseISO, subWeeks } from 'date-fns';
@@ -145,7 +145,7 @@ export function CpPanels({ process }: { process: CpProcess }) {
             <KeyValue
               items={[
                 { key: t('cp.cppm.cppm'), value: d.cppm ? t('cp.cppm.cppmValue', { hasHeld: d.cppm.heldAt ? 'yes' : 'no', when: d.cppm.heldAt ? formatDateTime(d.cppm.heldAt) : '', decision: cppmDecisionLabel(d.cppm.decision), rationale: d.cppm.rationale ?? '' }) : t('cp.cppm.notHeld') },
-                { key: t('cp.cppm.register'), value: d.register ? <span className={styles.pills}><Pill tone="critical" size="sm">{t('cp.cppm.registered', { date: formatDate(d.register.registeredAt) })}</Pill>{d.register.categories.map((c) => <Pill key={c} tone="high" size="sm">{cpRegisterCategoryLabel(c)}</Pill>)}</span> : t('cp.cppm.notOnRegister') },
+                { key: t('cp.cppm.register'), value: d.register ? <span className={styles.pills}><Pill tone="critical" size="sm">{t('cp.cppm.registered', { date: formatDate(d.register.registeredAt) })}</Pill>{d.register.concerns.map((c) => <Pill key={c} tone="high" size="sm">{cpConcernLabel(c)}</Pill>)}{d.register.localCategory ? <Pill tone="outline" size="sm">{t('cp.cppm.localCategory', { category: d.register.localCategory })}</Pill> : null}</span> : t('cp.cppm.notOnRegister') },
                 ...(d.register?.deregisteredAt ? [{ key: t('cp.cppm.deregistered'), value: t('cp.cppm.deregisteredValue', { date: formatDate(d.register.deregisteredAt), reason: d.register.deregistrationReason ?? '' }) }] : []),
                 ...(d.register?.transfer ? [{ key: t('cp.cppm.transfer'), value: t('cp.cppm.transferValue', { direction: d.register.transfer.direction, area: d.register.transfer.area, date: formatDate(d.register.transfer.at) }) }] : []),
                 { key: t('cp.cppm.daysOnRegister'), value: d.register ? String(differenceInCalendarDays(now, parseISO(d.register.registeredAt))) : '' },
