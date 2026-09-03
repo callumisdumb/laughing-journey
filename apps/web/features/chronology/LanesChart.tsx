@@ -209,14 +209,17 @@ export function LanesChart({ events, analyses, agencies, domain, lensResults, hi
             const sx = Math.max(pad, x(startIso));
             const ex = Math.max(sx + 6, Math.min(width - pad, x(endIso)));
             const laneIndex = lanes.length - 1;
-            const y = laneIndex * laneHeight + 8 + 10 + (i % 3) * 10;
+            const rowGap = compact ? 11 : 12;
+            const y = laneIndex * laneHeight + 8 + rowGap + (i % (compact ? 2 : 3)) * rowGap;
+            const labelText = a.title.length > 34 ? `${a.title.slice(0, 32)}...` : a.title;
+            const labelX = Math.max(pad, Math.min(sx, width - pad - labelText.length * 6.2));
             return (
               <g key={a.id} className={styles.analysis} data-selected={selectedAnalysisId === a.id ? 'true' : undefined} tabIndex={0} role="button" aria-label={`Analysis: ${a.title}, ${a.authorName}`} onClick={(e) => { e.stopPropagation(); onSelectAnalysis(a.id); }} onPointerDown={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectAnalysis(a.id); } }}>
                 <line x1={sx} x2={ex} y1={y} y2={y} />
                 <line x1={sx} x2={sx} y1={y - 4} y2={y + 4} />
                 <line x1={ex} x2={ex} y1={y - 4} y2={y + 4} />
-                <text x={ex > width - 220 ? ex : ex + 6} y={ex > width - 220 ? y - 6 : y + 4} textAnchor={ex > width - 220 ? 'end' : 'start'}>
-                  {a.title.length > 34 ? `${a.title.slice(0, 32)}...` : a.title}
+                <text x={labelX} y={y - 5} textAnchor="start">
+                  {labelText}
                 </text>
               </g>
             );

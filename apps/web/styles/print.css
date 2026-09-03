@@ -11,6 +11,11 @@
     height: auto;
   }
 
+  /* Only the content prints: no rail, top bar or context drawer. */
+  .app-shell > :not(.app-content) {
+    display: none;
+  }
+
   .app-content {
     overflow: visible;
   }
