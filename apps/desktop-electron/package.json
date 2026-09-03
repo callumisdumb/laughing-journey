@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Thin Electron shell that loads the static export from apps/web/out",
+  "description": "Thin Electron shell for Person360, loading the static export from apps/web/out",
   "main": "dist/main.cjs",
   "scripts": {
     "dev": "tsc -p tsconfig.json && node scripts/rename.mjs && cross-env MAS_DEV_URL=http://localhost:3000 electron .",

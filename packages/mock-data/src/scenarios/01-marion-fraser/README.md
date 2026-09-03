@@ -11,7 +11,7 @@ A linked AWI process holds the capacity question: Dr Farouk will assess Marion's
 ## Demo path
 
 1. Sign in as Moira Gilmour (Clydeshore HSCP, council officer). Home shows the initial case conference clock at 9 days, the overdue action to move Marion's pension to a new account, and one pending connector event.
-2. Open People, search "Marion". Open Person 360. Read the header: age, address since 1971, no alerts, an ASP badge at investigation and an AWI badge at capacity concern, both with next dates. The drawer shows who is involved by agency and why.
+2. Open People, search "Marion". Open Person record. Read the header: age, address since 1971, no alerts, an ASP badge at investigation and an AWI badge at capacity concern, both with next dates. The drawer shows who is involved by agency and why.
 3. Open Marion's views. Her words from 28 August sit at the top: stay at home, keep Callum out of trouble, get the money back, and her preference that Callum is not told what she said until Moira has spoken to him.
 4. Open the Chronology tab, then "Open wide". Read the GP lane from the 2024 memory concerns to the November 2025 diagnosis, the March 2026 fall admission, care at home starting in April, the household change in June, the two carer concerns, and the bank's Adult Concern Report in August. Switch to Moira's analysis note: withdrawals align with the nephew's visits. Note that police enquiries about the nephew are agency-only and do not appear in the integrated view.
 5. Click the Adult Concern Report event. The drawer shows the iVPD source, the lawful basis (ASP 2007 s5 and s10, UK GDPR 6(1)(c) and 9(2)(g)) and the audit trail, including that the connector event was promoted by Moira on 21 August.

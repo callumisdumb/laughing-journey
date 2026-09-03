@@ -13,7 +13,7 @@ The victim has no record on the platform and is referred to only as "the victim"
 ## Demo path
 
 1. Sign in as Priya Sharif (Police Scotland, sex offender liaison). Home shows the Level 2 review clock at about five weeks and two actions due this month: the disclosure decision (9 Sep) and the ERA (12 Sep, owned by housing).
-2. Open People, search "Muir". Open Person 360. The header shows the restricted classification, the MAPPA alert, the supported accommodation address with the pre-custody tenancy in the history, and SONR compliant with the next notification date. Note the ViSOR reference in the record panel: a string, not a link.
+2. Open People, search "Muir". Open Person record. The header shows the restricted classification, the MAPPA alert, the supported accommodation address with the pre-custody tenancy in the history, and SONR compliant with the next notification date. Note the ViSOR reference in the record panel: a string, not a link.
 3. Open the MAPPA dashboard from the process card. Walk the five stages on the stepper: notification (SPS, 10 May), referral (2 Jun, with the three risk assessments listed by tool, date, assessor and band), pre-meeting returns, the 14 July meeting, managed. Open the level history and read the reason for Level 2.
 4. Open the Risk Management Plan: triggers, contingencies, controls, victim safety, accommodation, employment, associates, plus the five licence conditions and the outcomes with their actions.
 5. Open the Environmental Risk Assessment panel: proposed address, four concerns, assessor, no conclusion yet. Then the disclosure panel: recipient, the three facts that would be disclosed and nothing more, the rationale, status pending.

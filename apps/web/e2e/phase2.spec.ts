@@ -50,24 +50,24 @@ test.describe('person 360', () => {
     await expect(page.getByText(/2 moves/)).toBeVisible();
     await expect(page.getByRole('complementary', { name: 'Context' }).getByText('Who is involved')).toBeVisible();
     await expectNoAxeViolations(page);
-    await capture(page, { phase: PHASE, screen: 'person-360', fullPage: true });
+    await capture(page, { phase: PHASE, screen: 'person-record', fullPage: true });
     await setAppearance(page, 'dark', 'comfortable');
-    await capture(page, { phase: PHASE, screen: 'person-360', theme: 'dark', fullPage: true });
+    await capture(page, { phase: PHASE, screen: 'person-record', theme: 'dark', fullPage: true });
     await setAppearance(page, 'light', 'compact');
-    await capture(page, { phase: PHASE, screen: 'person-360', density: 'compact', fullPage: true });
+    await capture(page, { phase: PHASE, screen: 'person-record', density: 'compact', fullPage: true });
     await setAppearance(page, 'light', 'comfortable');
     await page.getByRole('tab', { name: /Views and voice/ }).click();
     await expect(page.getByText(/I like school and my gran/)).toBeVisible();
-    await capture(page, { phase: PHASE, screen: 'person-360-voice', fullPage: true });
+    await capture(page, { phase: PHASE, screen: 'person-record-voice', fullPage: true });
     await page.getByRole('tab', { name: /Processes/ }).click();
     await expect(page.getByRole('link', { name: /Child protection: Aiden Boyle/ })).toBeVisible();
-    await capture(page, { phase: PHASE, screen: 'person-360-processes' });
+    await capture(page, { phase: PHASE, screen: 'person-record-processes' });
     await page.getByRole('tab', { name: /Sharing and audit/ }).click();
     await expect(page.getByText('Shared about this person')).toBeVisible();
-    await capture(page, { phase: PHASE, screen: 'person-360-sharing', fullPage: true });
+    await capture(page, { phase: PHASE, screen: 'person-record-sharing', fullPage: true });
     await page.getByRole('tab', { name: /Chronology/ }).click();
     await expect(page.getByRole('application')).toBeVisible();
-    await capture(page, { phase: PHASE, screen: 'person-360-chronology', fullPage: true });
+    await capture(page, { phase: PHASE, screen: 'person-record-chronology', fullPage: true });
   });
 
   test('housing officer sees presence only', async ({ page }) => {
@@ -75,7 +75,7 @@ test.describe('person 360', () => {
     await page.goto(`/people/${AIDEN}?tab=processes`);
     await waitForData(page);
     await expect(page.getByText(/presence only/)).toBeVisible();
-    await capture(page, { phase: PHASE, screen: 'person-360-presence-only' });
+    await capture(page, { phase: PHASE, screen: 'person-record-presence-only' });
   });
 
   test('records views', async ({ page }) => {

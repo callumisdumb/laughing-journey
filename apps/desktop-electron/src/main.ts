@@ -69,7 +69,7 @@ function send(win: BrowserWindow, action: string): void {
 function buildMenu(win: BrowserWindow): void {
   const t = loadMessages();
   const isMac = process.platform === 'darwin';
-  const appName = t('common.app.name');
+  const appName = t('product.name');
   const template: MenuItemConstructorOptions[] = [
     {
       label: appName,
@@ -123,7 +123,7 @@ function createWindow(): void {
     height: 900,
     minWidth: 1200,
     minHeight: 760,
-    title: loadMessages()('common.app.name'),
+    title: loadMessages()('product.name'),
     backgroundColor: '#FCFAF5',
     webPreferences: { preload: join(__dirname, 'preload.cjs'), contextIsolation: true, sandbox: true, nodeIntegration: false },
   });

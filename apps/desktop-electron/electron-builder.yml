@@ -1,5 +1,6 @@
-appId: scot.example.mas-platform
-productName: Platform
+appId: uk.person360.app
+productName: Person360
+artifactName: Person360-${version}-${os}-${arch}.${ext}
 directories:
   output: release
 files:

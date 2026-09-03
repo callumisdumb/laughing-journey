@@ -11,7 +11,7 @@ Because Douglas objects, section 13ZA of the 1968 Act cannot be used, and the ro
 ## Demo path
 
 1. Sign in as Graeme Dunlop (Clydeshore HSCP, Mental Health Officer). Home shows the MHO report clock at 12 days with its source (AWI 2000 s57(4)) and his report task due 14 September.
-2. Open People, search "Ishbel". Open Person 360. The header shows the inpatient alert (ward 7, delayed discharge), the home address and the hospital address period with its note, the communication needs (hearing aids, mid-morning, short sentences), and the AWI badge at application with the hearing date.
+2. Open People, search "Ishbel". Open Person record. The header shows the inpatient alert (ward 7, delayed discharge), the home address and the hospital address period with its note, the communication needs (hearing aids, mid-morning, short sentences), and the AWI badge at application with the hearing date.
 3. Open her views: her own words from 7 August at the top, then the family views from 20 August with both children quoted.
 4. Open the Chronology tab. Read the falls: May 2025 found at once, March 2026 a long lie, July 2026 a fracture. Read the GP lane: diagnosis, power of attorney recommended twice. Switch to Stuart's analysis note on the falls. The two capacity assessments, the OPG check, the route decision and the court lodgement follow in order.
 5. Open the inbox: a pending TrakCare ward note from 1 September (she tried to leave the ward at 03:20, second episode this week). Promote it with the AWI lawful basis.

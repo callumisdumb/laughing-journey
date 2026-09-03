@@ -12,7 +12,7 @@ Status at handover: all six phases are complete on the working branch; the phase
 |---|---|---|
 | 0 Plan | BRIEF, PLAN, DESIGN (with self-critique), DATA-MODEL outline, DECISIONS, NOTES, RESEARCH, NEED-TO-KNOW, CLAUDE.md | Docs committed, no app code |
 | 1 Foundation | Workspace, tooling, tokens, fonts, primitives, glyphs, layout shell, custom router, mock data engine with scenario 4 (Aiden Boyle), sign-in, Home | `pnpm typecheck && pnpm lint && pnpm test` green, Home and sign-in screenshot committed |
-| 2 Hero | Person 360, Integrated Chronology (lanes + list), connector inbox, print pack | Screenshots reviewed, self-critique against brief section 8 written to NOTES |
+| 2 Hero | Person record, Integrated Chronology (lanes + list), connector inbox, print pack | Screenshots reviewed, self-critique against brief section 8 written to NOTES |
 | 3 Processes | ASP, CP, MARAC, MAPPA, AWI dashboards with forms and clocks; all eight scenarios with READMEs | Each scenario demo path walks end to end |
 | 4 Meetings and sharing | Meeting workspace (before, during, after, chair mode), Actions, Sharing and notifications, need-to-know admin | Screenshots, axe clean |
 | 5 Operations | Connectors admin, Reports, Audit, Admin, Settings and Help | Screenshots, axe clean |
@@ -28,7 +28,7 @@ All routes live under one Next.js App Router page that prerenders every known pa
 | `/` | Home: clocks, worklist, today | 10.2 |
 | `/worklist` | Dense table with saved views and drawer preview | 10.3 |
 | `/people` and `/search` | People list and global search results | 10.4 |
-| `/people/:id` (+ `?tab=`) | Person 360: overview, chronology, processes, views and voice, documents, sharing and audit | 10.5 |
+| `/people/:id` (+ `?tab=`) | Person record: overview, chronology, processes, views and voice, documents, sharing and audit | 10.5 |
 | `/people/:id/chronology` | Integrated chronology, wide mode | 10.6 |
 | `/inbox` | Connector events awaiting review (per agency user) | 7, 10.6 |
 | `/processes` and `/processes/:id` | Process list; dashboard rendered by process type (ASP, CP, MARAC, MAPPA, AWI, LSI mode) | 10.7 |

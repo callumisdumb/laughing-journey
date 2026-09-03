@@ -10,6 +10,17 @@
   border-bottom: 2px solid var(--color-ink-1);
 }
 
+/* The screen's own name, above the person's. Person record, not Person360: the product name and the
+   screen name must not collide (D-057). */
+.kicker {
+  margin: 0 0 2px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
 .nameRow {
   display: flex;
   flex-wrap: wrap;

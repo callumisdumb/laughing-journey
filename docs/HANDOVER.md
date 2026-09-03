@@ -113,12 +113,12 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | inbox | light comfortable |
 | inbox-promote | light comfortable |
 | people | light comfortable |
-| person-360-chronology | light comfortable |
-| person-360 | dark comfortable, light comfortable, light compact |
-| person-360-presence-only | light comfortable |
-| person-360-processes | light comfortable |
-| person-360-sharing | light comfortable |
-| person-360-voice | light comfortable |
+| person-record-chronology | light comfortable |
+| person-record | dark comfortable, light comfortable, light compact |
+| person-record-presence-only | light comfortable |
+| person-record-processes | light comfortable |
+| person-record-sharing | light comfortable |
+| person-record-voice | light comfortable |
 | search-results | light comfortable |
 | search-typeahead | light comfortable |
 | worklist-clocks | light comfortable |
@@ -206,7 +206,7 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | meeting-during | dark comfortable, light compact |
 | meetings | dark comfortable, light compact |
 | people | dark comfortable, light compact |
-| person-360 | dark comfortable, light compact |
+| person-record | dark comfortable, light compact |
 | process-asp | dark comfortable, light compact |
 | process-awi | dark comfortable, light compact |
 | process-cp-1024 | dark compact, light comfortable |

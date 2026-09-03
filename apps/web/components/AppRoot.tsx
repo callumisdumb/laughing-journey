@@ -42,7 +42,7 @@ function Boot() {
   if (!ready || !route.ready) {
     return (
       <div className="page" data-app-ready="false">
-        <SkeletonLines lines={8} label={t('common.app.loading')} />
+        <SkeletonLines lines={8} label={t('common.app.loading', { app: t('product.name') })} />
       </div>
     );
   }

@@ -49,8 +49,8 @@ export function SignIn() {
     <div className={styles.screen} data-app-ready="true">
       <section className={styles.intro} aria-labelledby="signin-title">
         <div className={styles.brand}>
-          <WordmarkGlyph size={24} variant="filled" title={t('common.app.name')} />
-          <span className={styles.brandText}>{t('common.app.name')}</span>
+          <WordmarkGlyph size={24} variant="filled" title={t('product.name')} />
+          <span className={styles.brandText}>{t('product.name')}</span>
         </div>
         <div>
           <h1 className={styles.headline} id="signin-title">

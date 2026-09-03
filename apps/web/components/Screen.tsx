@@ -13,7 +13,7 @@ import { Inbox } from '@/features/inbox/Inbox';
 import { MeetingList } from '@/features/meetings/MeetingList';
 import { MeetingWorkspace } from '@/features/meetings/MeetingWorkspace';
 import { PeopleList } from '@/features/people/PeopleList';
-import { Person360 } from '@/features/person/Person360';
+import { PersonRecord } from '@/features/person/PersonRecord';
 import { Placeholder } from '@/features/placeholder/Placeholder';
 import { ProcessList } from '@/features/process/ProcessList';
 import { ProcessScreen } from '@/features/process/ProcessScreen';
@@ -53,8 +53,10 @@ export function Screen() {
 
   useEffect(() => {
     const key = (TITLE_KEYS as Record<string, TitleKey>)[head ?? ''];
-    document.title = t('common.app.titleWithScreen', { screen: key ? t(key) : t('common.app.name'), app: t('common.app.name') });
-  }, [head, t]);
+    // A person's own screen is the Person record, not the People list it was reached from (D-057).
+    const screen = head === 'people' && id ? t('person.screenName') : key ? t(key) : t('product.name');
+    document.title = t('common.app.titleWithScreen', { screen, app: t('product.name') });
+  }, [head, id, t]);
 
   switch (head) {
     case undefined:
@@ -63,7 +65,7 @@ export function Screen() {
       return <Worklist />;
     case 'people':
       if (id && sub === 'chronology') return <ChronologyScreen personId={id} />;
-      if (id) return <Person360 personId={id} />;
+      if (id) return <PersonRecord personId={id} />;
       return <PeopleList />;
     case 'search':
       return <Search />;

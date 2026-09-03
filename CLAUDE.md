@@ -1,6 +1,6 @@
-# mas-platform
+# Person360
 
-Multi-agency public protection platform for Scotland: a high-fidelity, clickable desktop mockup with no backend. The product has no public name. The UI chrome uses a lantern glyph and the word "Platform" as a placeholder wordmark.
+Person360: multi-agency public protection for Scotland, a high-fidelity clickable desktop mockup with no backend. The product name lives in the message catalogue as `product.name`, so a rebrand is one edit. The UI chrome pairs it with a lantern glyph until a mark is designed. The hero screen is the Person record, deliberately not named after the product (D-057).
 
 Read `docs/BRIEF.md` first. It is the single source of truth. Then `docs/PLAN.md`, `docs/DESIGN.md`, `docs/DECISIONS.md`, `docs/NOTES.md` and `docs/RESEARCH.md`.
 

@@ -17,7 +17,7 @@ import { LanesChart } from '@/features/chronology/LanesChart';
 import { useChronologyStore } from '@/features/chronology/state';
 import { useChronology } from '@/features/chronology/useChronology';
 import { NetworkGraph } from './NetworkGraph';
-import styles from './Person360.module.css';
+import styles from './PersonRecord.module.css';
 
 /** Argument bag for t.rich, typed so a React node (the bold lead-in of a header fact) can fill an argument. */
 const rich = (values: RichValues): RichValues => values;
@@ -37,7 +37,7 @@ function alertTone(kind: Person['alerts'][number]['kind']) {
   }
 }
 
-export function Person360({ personId }: { personId: string }) {
+export function PersonRecord({ personId }: { personId: string }) {
   const t = useT();
   const data = useData();
   const config = useConfig();
@@ -129,6 +129,7 @@ export function Person360({ personId }: { personId: string }) {
     <div className="page">
       <header className={styles.header}>
         <div>
+          <p className={styles.kicker}>{t('person.screenName')}</p>
           <div className={styles.nameRow}>
             <h1 className={styles.name}>{fullName(person)}</h1>
             {person.preferredName ? <span className={styles.known}>{t('person.header.knownAs', { name: person.preferredName })}</span> : null}

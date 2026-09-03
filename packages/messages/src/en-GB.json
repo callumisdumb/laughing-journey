@@ -1059,9 +1059,7 @@
       "yes": "Yes"
     },
     "app": {
-      "loading": "Loading the platform",
-      "name": "Platform",
-      "tagline": "Multi-agency public protection platform (mockup, synthetic data only)",
+      "loading": "Loading {app}",
       "titleWithScreen": "{screen}: {app}"
     },
     "badge": {
@@ -2764,7 +2762,7 @@
       },
       "legislationMeta": "Named in the product where a duty, a clock or a lawful basis comes from them.",
       "legislationTitle": "Legislation and guidance referenced",
-      "meta": "Working name. The product has no public name yet; the lantern and the word Platform stand in for the wordmark.",
+      "meta": "The lantern glyph stands in for a wordmark until a mark is designed.",
       "notice": "Any resemblance to a real person, family, address or case is coincidental.",
       "noticeLead": "Synthetic data. No network. No telemetry. Every person, address and record is fictional."
     },
@@ -2835,7 +2833,7 @@
         "arrowsWhat": "Move between tabs",
         "homeEndKey": "Home and End",
         "homeEndWhat": "Jump to the first or last tab",
-        "where": "Tab lists (Person 360, Sharing, Help)"
+        "where": "Tab lists (Person record, Sharing, Help)"
       }
     },
     "tabs": {
@@ -3737,6 +3735,7 @@
     "restricted": {
       "reason": "Every open process for this person is restricted and you are not on the distribution list."
     },
+    "screenName": "Person record",
     "sharing": {
       "columns": {
         "level": "Level",
@@ -4058,6 +4057,10 @@
       "none": "Not yet recorded",
       "title": "Views and voice"
     }
+  },
+  "product": {
+    "name": "Person360",
+    "tagline": "Multi-agency public protection for Scotland (mockup, synthetic data only)"
   },
   "reports": {
     "asp": {

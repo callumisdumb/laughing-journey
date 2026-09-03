@@ -3570,15 +3570,7 @@
     "app": {
       "loading": {
         "screenshot": "phase-1/home-light-comfortable.png",
-        "where": "Loading state before the platform has booted, and its accessible label"
-      },
-      "name": {
-        "maxLength": 20,
-        "screenshot": "phase-1/home-light-comfortable.png",
-        "where": "The placeholder wordmark beside the lantern in the rail, on sign-in and in the browser tab"
-      },
-      "tagline": {
-        "where": "The document description in the page head; not shown on screen"
+        "where": "Loading state before the product has booted, and its accessible label"
       },
       "titleWithScreen": {
         "where": "The browser tab title while a screen is open, with the screen name and the app name as arguments"
@@ -8393,8 +8385,7 @@
         "where": "Heading of the legislation sheet on the About tab"
       },
       "meta": {
-        "screenshot": "phase-5/help-about-light-comfortable.png",
-        "where": "Meta line under the product name on the About tab"
+        "where": "Note on the About screen about the placeholder wordmark"
       },
       "notice": {
         "screenshot": "phase-5/help-about-light-comfortable.png",
@@ -8602,21 +8593,27 @@
       "tabs": {
         "arrowsKey": {
           "maxLength": 32,
-          "where": "Key name in the tab list group"
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Key column of the tab list row on the Help shortcuts table"
         },
         "arrowsWhat": {
-          "where": "What the key does in the tab list group"
+          "maxLength": 32,
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "What the arrow keys do inside a tab list"
         },
         "homeEndKey": {
           "maxLength": 24,
-          "where": "Key name in the tab list group"
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Key column of the Home and End row on the Help shortcuts table"
         },
         "homeEndWhat": {
-          "where": "What the key does in the tab list group"
+          "maxLength": 40,
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "What Home and End do inside a tab list"
         },
         "where": {
-          "maxLength": 48,
-          "where": "Heading of the tab list shortcut group"
+          "screenshot": "phase-5/help-about-light-comfortable.png",
+          "where": "Which screens have tab lists, on the Help shortcuts table"
         }
       }
     },
@@ -11800,6 +11797,11 @@
         "where": "Restricted state reason on Person 360 when every open process is restricted to the user"
       }
     },
+    "screenName": {
+      "maxLength": 24,
+      "screenshot": "phase-2/person-record-light-comfortable.png",
+      "where": "Name of the person record screen: its page title, tab title and print pack header. Deliberately not the product name (D-057)."
+    },
     "sharing": {
       "columns": {
         "level": {
@@ -12860,6 +12862,16 @@
         "screenshot": "phase-3/process-cp-light-comfortable.png",
         "where": "Sheet title of the views and voice card on the process screen"
       }
+    }
+  },
+  "product": {
+    "name": {
+      "maxLength": 24,
+      "screenshot": "phase-1/home-light-comfortable.png",
+      "where": "The product name, everywhere a name belongs: the rail wordmark, the window and tab titles, both desktop shells' menus and About dialogs, print pack furniture and the sign-in screen. One edit rebrands the product."
+    },
+    "tagline": {
+      "where": "One-line description of the product, in the document head and the About screen"
     }
   },
   "reports": {

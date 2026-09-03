@@ -11,7 +11,7 @@ const SCREENS: Array<{ id: string; path: string; user: string; heading: RegExp |
   { id: 'home', path: '/', user: 'usr_janet_kerr', heading: /Good morning|Home|Tuesday/ },
   { id: 'worklist', path: '/worklist', user: 'usr_janet_kerr', heading: 'Worklist' },
   { id: 'people', path: '/people', user: 'usr_janet_kerr', heading: 'People' },
-  { id: 'person-360', path: '/people/per_aiden_boyle', user: 'usr_janet_kerr', heading: 'Aiden Boyle' },
+  { id: 'person-record', path: '/people/per_aiden_boyle', user: 'usr_janet_kerr', heading: 'Aiden Boyle' },
   { id: 'chronology', path: '/people/per_aiden_boyle/chronology', user: 'usr_janet_kerr', heading: /chronology/i },
   { id: 'inbox', path: '/inbox', user: 'usr_janet_kerr', heading: 'Inbox' },
   { id: 'processes', path: '/processes', user: 'usr_janet_kerr', heading: 'Processes' },

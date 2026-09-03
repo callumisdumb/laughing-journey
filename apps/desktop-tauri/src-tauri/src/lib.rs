@@ -89,7 +89,7 @@ pub fn run() {
     builder
         .setup(|app| {
             let t = Messages::load(app.handle());
-            let app_name = t.get("common.app.name", &[]);
+            let app_name = t.get("product.name", &[]);
             let about = AboutMetadataBuilder::new()
                 .name(Some(app_name.clone()))
                 .version(Some(env!("CARGO_PKG_VERSION")))

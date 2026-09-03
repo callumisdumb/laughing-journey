@@ -46,8 +46,8 @@ export function Rail() {
   return (
     <nav className={styles.rail} data-collapsed={collapsed ? 'true' : 'false'} aria-label={t('nav.rail.label')}>
       <div className={styles.brand}>
-        <WordmarkGlyph size={24} variant="filled" title={t('common.app.name')} />
-        <span className={styles.brandText}>{t('common.app.name')}</span>
+        <WordmarkGlyph size={24} variant="filled" title={t('product.name')} />
+        <span className={styles.brandText}>{t('product.name')}</span>
       </div>
       <div className={styles.nav}>
         {items.map((it) => (

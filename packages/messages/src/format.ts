@@ -96,7 +96,7 @@ export function sampleArguments(message: string, samples: Record<string, Primiti
   return values;
 }
 
-const NAME_SAMPLES: Record<string, PrimitiveType> = { name: 'Janet Kerr', person: 'Aiden Boyle', user: 'Janet Kerr', agency: 'Social work', role: 'Lead professional', date: '02 Sep 2026', time: '09:00', app: 'Platform', screen: 'Home', reference: 'CP-2026-0412', format: 'dd Mon yyyy', example: '02 Sep 2026', key: 'common.app.name' };
+const NAME_SAMPLES: Record<string, PrimitiveType> = { name: 'Janet Kerr', person: 'Aiden Boyle', user: 'Janet Kerr', agency: 'Social work', role: 'Lead professional', date: '02 Sep 2026', time: '09:00', app: 'Person360', screen: 'Home', reference: 'CP-2026-0412', format: 'dd Mon yyyy', example: '02 Sep 2026', key: 'product.name' };
 
 /** The argument names a message uses, in order of first appearance. */
 export function messageArguments(message: string): string[] {

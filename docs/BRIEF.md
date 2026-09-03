@@ -276,7 +276,7 @@ Connector events land in an **inbox** per agency user, not straight into the int
 Take Beam's warmth and confidence, then make it ours. Beam's actual tokens are: cream `#fffcf8`, beige `#ede7de`, a warm dark chocolate `#2e1616` instead of black, a lava orange `#ea603e` accent, pinks for marketing moments, `Season Mix` display type, `Graphik` body, `DM Mono` for data, and mostly 0.5rem radii. We are not copying those values. Two things must be different for this product:
 1. **Our accent cannot be red, orange, amber or green** because those hues carry risk meaning (RAG) throughout the product, and it cannot be blue because blue is Police Scotland's agency colour in the chronology.
 2. This is a working tool used for hours a day with dense information, not a marketing site. Warmth stays; decoration goes.
-Write the design plan in `docs/DESIGN.md` first: four to six named base colours, type roles, a layout concept with ASCII wireframes for the three hero screens (Person 360, Integrated Chronology, Meeting Workspace), and principles. Then critique it: if any part is what you would produce for any dashboard, change it and say why.
+Write the design plan in `docs/DESIGN.md` first: four to six named base colours, type roles, a layout concept with ASCII wireframes for the three hero screens (Person record, Integrated Chronology, Meeting Workspace), and principles. Then critique it: if any part is what you would produce for any dashboard, change it and say why.
 ### 8.2 Tokens (starting point, refine in DESIGN.md)
 ```css
 @theme {
@@ -337,7 +337,7 @@ Create a small custom SVG set in `packages/ui/src/glyphs/`: one glyph per agency
 - Every component in `packages/ui` and every feature component with more than trivial structure has a `ComponentName.module.css`. Tailwind utilities are for spacing and one-off alignment, not for the component's identity. A component's states (hover, focus-visible, active, selected, disabled, loading, error, restricted) live in its CSS with `data-state` attributes, not in class-name soup.
 - Use CSS custom properties for component theming (`--card-padding`, `--timeline-gap`) so density and theme change without JS.
 - Focus ring: 2px accent outline with 2px paper offset, everywhere, including on custom controls.
-- Motion: one orchestrated moment on first load of Person 360 (the chronology lanes settle into place, 320ms). Elsewhere, motion only answers user actions: drawer open, row expand, clock tick. No hover lifts on cards. Respect `prefers-reduced-motion`.
+- Motion: one orchestrated moment on first load of Person record (the chronology lanes settle into place, 320ms). Elsewhere, motion only answers user actions: drawer open, row expand, clock tick. No hover lifts on cards. Respect `prefers-reduced-motion`.
 - Print stylesheet produces a clean, paginated, header-and-footer document with the record reference, subject name, date, classification marking and page numbers.
 - Stylelint enforces: no `!important` outside `utilities.css`, no hex colours outside `tokens.css`, no `px` font sizes, property order, and no unused custom properties.
 ### 8.7 Copy
@@ -374,7 +374,7 @@ Greeting by first name and role. Three regions: **Clocks** (statutory countdowns
 Dense table with saved views (Mine, Team, Overdue, By process). Bulk actions. Inline preview in the drawer.
 ### 10.4 Search and people
 Global search with typeahead across name, alias, DoB, CHI (synthetic), address, reference number. Results show process badges, restricted indicators, and "you are not on this case" affordances. People list with filters by process, agency involvement, locality, age band.
-### 10.5 Person 360 (hero screen 1)
+### 10.5 Person record (hero screen 1)
 Header: name, preferred name, pronouns if recorded, age and DoB, address with move history count, interpreter and communication needs, alerts (e.g. "Known risk to staff: lone visits not advised", "MARAC flag until 14 Mar 2027"), process badges with stage and next date. Body tabs: Overview (network graph and household, key contacts by agency with role and last contact, current plans and clocks), Chronology, Processes, Views and voice, Documents, Sharing and audit. The context drawer defaults to "Who is involved" (a people-by-agency list with contact details and their case role).
 ### 10.6 Integrated chronology (hero screen 2)
 Two synchronised views: **Lanes** (horizontal time axis, one lane per agency, events as glyph-marked points sized by significance, brushable zoom from years to days) and **List** (virtualised table: date, agency, type, title, response, outcome, significance, source, visibility). Filters: agency, event type, significance, process, date window, source (manual vs connector), visibility. Toggle between single-agency, integrated and "as it would appear in the CPPM pack". Analysis lane beneath the events. Pattern lenses as a togglable overlay with explanatory copy. Add event form with the fact/analysis separation enforced. Inbox of connector events awaiting review. Export to print pack with classification marking. Keyboard navigation across events with a details panel in the drawer.
@@ -407,7 +407,7 @@ Theme, density, notification preferences, glossary, keyboard shortcuts, about (b
 - **Clocks are pure.** `computeClock(trigger, rule, now)` returns due date, days remaining, RAG band, and the rule reference. 100% test coverage on clocks and need-to-know resolution.
 - **Feature folders own their UI, hooks, schemas mapping, and CSS.** Shared primitives live in `packages/ui` (Button, IconButton, Pill, Badge, Card, Drawer, Dialog, Tabs, Table, Form controls, Toast, Skeleton, EmptyState, RestrictedState, ClockNumeral, AgencyMark, ProcessMark, RiskBand, Timeline primitives).
 - **Every screen has a Playwright test** that loads it under the default persona, waits for data, runs axe, and captures a screenshot to `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`. Review the screenshots yourself after each phase and fix what looks wrong before moving on. A picture is worth a thousand tokens.
-- **Performance budget.** First render of Person 360 under 150 ms on the seeded data; chronology list virtualised; lanes view handles 5,000 events at 60 fps on a mid-range laptop.
+- **Performance budget.** First render of Person record under 150 ms on the seeded data; chronology list virtualised; lanes view handles 5,000 events at 60 fps on a mid-range laptop.
 - **Commits.** Conventional commits, one feature per commit, `pnpm typecheck && pnpm lint && pnpm test` green before each. Update `docs/NOTES.md` and `docs/DECISIONS.md` as you go, not at the end.
 - **Desktop packaging.** `pnpm build` produces the static export; `pnpm desktop:tauri:build` produces a macOS `.dmg` and, via CI config, a Windows `.msi`/`.exe`; `pnpm desktop:electron:build` is the fallback. App icon is a placeholder lantern. Window minimum 1200 by 760. Native menu with About, Reset demo data, Toggle theme, Zoom.
 ---
@@ -418,7 +418,7 @@ The mockup is done when: all screens in section 10 exist; all eight scenarios ca
 ## 13. Working method and checkpoints
 **Phase 0, plan (no code):** read the brief, write `PLAN.md`, `DESIGN.md` (with self-critique), `DATA-MODEL.md` outline, and an ASCII wireframe of the three hero screens. **Checkpoint 1:** present these and ask at most five questions. Then proceed.
 **Phase 1, foundation:** workspace, tooling, tokens, fonts, primitives, layout shell, mock data engine and one scenario, sign-in, Home.
-**Phase 2, the hero:** Person 360 and Integrated Chronology, with connectors inbox and print pack. Screenshots. Self-critique against section 8.
+**Phase 2, the hero:** Person record and Integrated Chronology, with connectors inbox and print pack. Screenshots. Self-critique against section 8.
 **Phase 3, processes:** ASP, CP, MARAC, MAPPA, AWI dashboards with their forms and clocks; all eight scenarios.
 **Phase 4, meetings and sharing:** Meeting workspace, Actions, Sharing and notifications, need-to-know admin.
 **Phase 5, operations:** Connectors admin, Reports, Audit, Admin, Settings.

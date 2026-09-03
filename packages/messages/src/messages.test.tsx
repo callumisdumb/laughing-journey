@@ -7,7 +7,7 @@ afterEach(() => resetAllOverrides());
 
 describe('catalogue', () => {
   it('flattens the bundled catalogue to dot keys', () => {
-    expect(BUNDLED['common.app.name']).toBe('Platform');
+    expect(BUNDLED['product.name']).toBe('Person360');
   });
   it('renders ICU arguments, plurals and selects', () => {
     expect(formatMessage('{count, plural, one {# action} other {# actions}} due', { count: 1 })).toBe('1 action due');
@@ -27,24 +27,24 @@ describe('catalogue', () => {
 
 describe('overrides', () => {
   it('layers a session override over the bundled text and resets', () => {
-    expect(t('common.app.name')).toBe('Platform');
-    setOverride('common.app.name', 'Lantern');
-    expect(t('common.app.name')).toBe('Lantern');
+    expect(t('product.name')).toBe('Person360');
+    setOverride('product.name', 'Lantern');
+    expect(t('product.name')).toBe('Lantern');
     resetAllOverrides();
-    expect(t('common.app.name')).toBe('Platform');
+    expect(t('product.name')).toBe('Person360');
   });
   it('re-renders components when an override changes', () => {
     function Name() {
       const tr = useT();
-      return <h1>{tr('common.app.name')}</h1>;
+      return <h1>{tr('product.name')}</h1>;
     }
     render(
       <MessagesProvider>
         <Name />
       </MessagesProvider>,
     );
-    expect(screen.getByRole('heading')).toHaveTextContent('Platform');
-    act(() => setOverride('common.app.name', 'Lantern'));
+    expect(screen.getByRole('heading')).toHaveTextContent('Person360');
+    act(() => setOverride('product.name', 'Lantern'));
     expect(screen.getByRole('heading')).toHaveTextContent('Lantern');
   });
 });

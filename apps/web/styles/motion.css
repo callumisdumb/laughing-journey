@@ -1,4 +1,4 @@
-/* Durations and easings. Motion answers user actions; one orchestrated moment on Person 360 first load. */
+/* Durations and easings. Motion answers user actions; one orchestrated moment on the person record's first load. */
 :root {
   --dur-fast: 120ms;
   --dur-base: 160ms;
@@ -26,7 +26,7 @@
   }
 }
 
-/* The one orchestrated moment: chronology lanes settle on first load of Person 360. */
+/* The one orchestrated moment: chronology lanes settle on the person record's first load. */
 .settle-in {
   animation: settle-in var(--dur-settle) var(--ease-standard) both;
 }

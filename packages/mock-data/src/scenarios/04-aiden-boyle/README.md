@@ -11,7 +11,7 @@ On 20 May 2026 Aiden showed his class teacher bruising to his upper arm and said
 ## Demo path
 
 1. Sign in as Janet Kerr (Clydeshore Council, social worker). Home shows the review CPPM clock at 12 days and the overdue recovery service action.
-2. Open People, search "Aiden". Open Person 360. Read the header: age, address with three moves, register alert, CP badge with stage and next date. The drawer shows who is involved by agency.
+2. Open People, search "Aiden". Open Person record. Read the header: age, address with three moves, register alert, CP badge with stage and next date. The drawer shows who is involved by agency.
 3. Open the Chronology tab, then "Open wide". Turn on the escalation lens: the three police reports light up in sequence. Turn on missed contacts: health visitor gaps line up with household changes. Read the two analysis notes in their own lane.
 4. Click any event to see source, agency, lawful basis and audit in the drawer.
 5. Open the inbox (three connector events waiting): promote the SEEMIS attendance event to the integrated chronology with a lawful basis; dismiss nothing.

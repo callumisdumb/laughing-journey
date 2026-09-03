@@ -263,7 +263,7 @@ export function Help() {
       <TabPanel id="about" active={tab === 'about'} idPrefix="help">
         <div className="stack">
           <Sheet>
-            <SheetHead title={t('common.app.name')} meta={t('help.about.meta')} divided />
+            <SheetHead title={t('product.name')} meta={t('help.about.meta')} divided />
             <SheetBody>
               <KeyValue
                 items={[

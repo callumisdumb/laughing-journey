@@ -79,7 +79,7 @@ Every one has a `.module.css` and `data-state` attributes. No component depends 
 
 ## 6. Hero screen wireframes
 
-### 6.1 Person 360
+### 6.1 Person record
 
 ```
 +----------------------------------------------------------------------+ drawer
@@ -154,7 +154,7 @@ Chair mode: the same data at 1.125rem base, rail collapsed, drawer hidden, agend
 
 ## 7. Motion
 
-- One orchestrated moment: Person 360 first load, chronology lanes settle from 8px below with opacity 0 to 1 over 320ms, staggered 30ms per lane, `cubic-bezier(0.2, 0, 0, 1)`.
+- One orchestrated moment: Person record first load, chronology lanes settle from 8px below with opacity 0 to 1 over 320ms, staggered 30ms per lane, `cubic-bezier(0.2, 0, 0, 1)`.
 - Drawer open 200ms, row expand 160ms, clock tick 120ms colour transition. No hover lifts. `prefers-reduced-motion: reduce` sets every duration to 0.
 
 ## 8. Iconography
@@ -170,7 +170,7 @@ What in the first draft of this plan is what anyone would produce for any dashbo
 3. **Coloured pill badges for everything.** Pills are reserved for process and stage. Agencies are marks (glyph + colour + label) rather than pills, so the chronology and the drawer do not become confetti.
 4. **A plain data table for the chronology.** The table stays for scanning, but the lanes view is the identity of the product: agency rows, significance-sized points, an analysis row that visibly differs from the fact rows, and a brush. This is the screen you would not get from a template.
 5. **Blue links and a blue primary button.** Blue is the police colour here, so the accent is heather and it appears in exactly the places that mean "the product is speaking": primary actions, links, focus, selection, the analysis bracket.
-6. **Views and voice as a text area at the bottom of a form.** Changed to VoiceBlock, placed in the top third of Person 360 and every process dashboard, styled unlike any other block so the person's words are unmistakable.
+6. **Views and voice as a text area at the bottom of a form.** Changed to VoiceBlock, placed in the top third of Person record and every process dashboard, styled unlike any other block so the person's words are unmistakable.
 7. **An avatar circle with initials.** Removed. The product does not show faces or initials; identity is name, date of birth and reference. This is also a safeguarding choice: a screen glanced at across a room should not identify a person by a coloured circle.
 8. **Sidebar with a logo and menu.** Kept, because practitioners need it, but the rail ends with the user's agency glyph and persona so it always shows "who am I looking at this as", which matters for need-to-know.
 9. **A generic search bar.** Search results show the process badges, the restricted indicator and "you are not on this case" affordance, because the interesting question in this product is not "does this person exist" but "what am I allowed to see".

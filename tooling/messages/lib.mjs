@@ -6,7 +6,7 @@ export const ROOT = resolve(new URL('../..', import.meta.url).pathname);
 export const CATALOGUE = resolve(ROOT, 'packages/messages/src/en-GB.json');
 export const CONTEXT = resolve(ROOT, 'packages/messages/src/en-GB.context.json');
 export const GENERATED = resolve(ROOT, 'packages/messages/src/keys.generated.ts');
-export const NAMESPACES = ['common', 'nav', 'states', 'errors', 'forms', 'home', 'worklist', 'search', 'person', 'chronology', 'inbox', 'processes', 'asp', 'cp', 'marac', 'mappa', 'awi', 'meetings', 'actions', 'sharing', 'connectors', 'reports', 'audit', 'admin', 'settings', 'help', 'glossary', 'print', 'desktop', 'domain'];
+export const NAMESPACES = ['product', 'common', 'nav', 'states', 'errors', 'forms', 'home', 'worklist', 'search', 'person', 'chronology', 'inbox', 'processes', 'asp', 'cp', 'marac', 'mappa', 'awi', 'meetings', 'actions', 'sharing', 'connectors', 'reports', 'audit', 'admin', 'settings', 'help', 'glossary', 'print', 'desktop', 'domain'];
 export const MAX_DEPTH = 4;
 
 export function readJson(path) {

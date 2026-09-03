@@ -1,8 +1,8 @@
 {
-  "name": "mas-platform",
+  "name": "person360",
   "private": true,
   "version": "0.1.0",
-  "description": "Multi-agency public protection platform (Scotland): high-fidelity desktop mockup",
+  "description": "Person360: multi-agency public protection for Scotland, high-fidelity desktop mockup",
   "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": ">=22"

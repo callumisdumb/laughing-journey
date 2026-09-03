@@ -329,7 +329,7 @@ Accessed 2026-09-03 (the demo clock reads 02 Sep 2026; this is the real date the
 - MHO report timeliness uses the awi.mho.report rule (21 days from notice, s57(4)) and interim order age uses awi.interim.warning (3 months) and awi.interim.maximum (6 months). Where a rule is missing from Admin the report falls back to 21, 91 and 183 calendar days and says no rule is configured.
 - Fields the record store cannot answer (LGBT and disabled victims for MARAC) are shown as "Not recorded", never as zero.
 
-| Report | Verified from extracts | Platform's own until the template is checked |
+| Report | Verified from extracts | The product's own until the template is checked |
 |---|---|---|
 | ASP biennial figures | Biennial report duty and content expectation; NMDS referrals, inquiries, LSIs, harm type and location of harm | Table layout, harm and location category lists, case conference and order definitions |
 | CP register statistics | 31 July reference date; registrations, de-registrations, unborn share, two year re-registration line, concern categories, under 6 months band | Age bands, the other length bands |

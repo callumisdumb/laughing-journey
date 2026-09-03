@@ -10,8 +10,8 @@ import './globals.css';
 import { APPEARANCE_BOOT_SCRIPT } from '@/lib/appearance';
 
 export const metadata: Metadata = {
-  title: t('common.app.name'),
-  description: t('common.app.tagline'),
+  title: t('product.name'),
+  description: t('product.tagline'),
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
