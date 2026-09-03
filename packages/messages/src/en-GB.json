@@ -3109,6 +3109,11 @@
     },
     "lede": "What the abbreviations mean, which keys work, which editions of guidance the clocks follow, and what this build is.",
     "security": {
+      "browser": {
+        "meta": "Use the desktop application, not a browser tab",
+        "text": "On the desktop application your key is held by the operating system's own keychain, tied to your account on that machine and, on most computers, to the hardware. A web browser has nothing equivalent, so in a browser the key sits in the page's storage, where any script running on the page could read it, and with it every case cached on that device. That is a different kind of risk rather than a smaller one, so the desktop application is the supported way to use this and the browser build is for development and for demonstrations. If your organisation does allow browser access, treat any cross-site scripting fault in the application as a key compromise: revoke the device, do not simply refresh the page.",
+        "title": "Why the desktop application rather than a browser"
+      },
       "colleagues": {
         "meta": "No, and nothing can",
         "text": "No. Encryption controls who can open a record; it cannot control what someone does with a record they are entitled to open. Someone on a case sees the case. What the product does instead is record every read, record every restricted read separately, and make the audit log impossible to edit quietly, so misuse is found afterwards rather than prevented beforehand. If someone tells you encryption solves this, they are selling something.",

@@ -96,7 +96,7 @@ function dueLabel(t: Translator, rule: ClockRule): string {
  * escrow exists) and that encryption stops a colleague misusing what they are entitled to see (it
  * does not, and nothing can).
  */
-const SECURITY_SECTIONS = ['whatIsEncrypted', 'whatIsNot', 'whoCanSee', 'escrow', 'lostKey', 'colleagues', 'search', 'offline'] as const;
+const SECURITY_SECTIONS = ['whatIsEncrypted', 'whatIsNot', 'whoCanSee', 'escrow', 'lostKey', 'browser', 'colleagues', 'search', 'offline'] as const;
 
 export function Help() {
   const t = useT();

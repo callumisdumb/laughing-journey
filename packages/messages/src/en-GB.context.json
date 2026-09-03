@@ -9413,6 +9413,22 @@
       "where": "Help page lede under the heading"
     },
     "security": {
+      "browser": {
+        "meta": {
+          "maxLength": 60,
+          "screenshot": "security/help-security-light-comfortable.png",
+          "where": "Meta line of the Security page section on the browser device key"
+        },
+        "text": {
+          "screenshot": "security/help-security-light-comfortable.png",
+          "where": "Body of the Security page section saying the desktop shells are the supported deployment and why"
+        },
+        "title": {
+          "maxLength": 60,
+          "screenshot": "security/help-security-light-comfortable.png",
+          "where": "Title of the Security page section on the browser device key"
+        }
+      },
       "colleagues": {
         "meta": {
           "maxLength": 60,

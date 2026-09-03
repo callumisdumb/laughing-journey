@@ -196,9 +196,10 @@ Counting a caseload needs the caseload. Returns are computed client-side in the 
 3. **Metadata is visible to the operator** (8.1).
 4. **A blind index reveals equality** (8.2).
 5. **A device stolen while unlocked keeps cached access** until the offline grace period expires.
-6. **Removing someone from a case cannot unread what they already saw** (section 5).
-7. **The controller can reach any record** through escrow. By design, and the reason the product is lawful to deploy.
-8. **Hardware security module backing for escrow shares is not implemented** in this mockup. Software shares only. Noted so nobody mistakes the demonstration for the deployment.
+6. **In a browser the device private key is held in `localStorage`, where any script running in the page origin can read it.** The desktop shells hold it in the OS keychain, bound to the OS user account and, on most platforms, to hardware. There is no equivalent store in a browser, so any cross-site scripting flaw in the application reads the key and with it every wrapped key cached on that device. That is a materially different risk from the keychain path, not a smaller version of the same one. **The desktop shells are therefore the supported deployment and the browser build is for development and demonstration**, and the Security page in Help says so rather than leaving it in a table.
+7. **Removing someone from a case cannot unread what they already saw** (section 5).
+8. **The controller can reach any record** through escrow. By design, and the reason the product is lawful to deploy.
+9. **Hardware security module backing for escrow shares is not implemented** in this mockup. Software shares only. Noted so nobody mistakes the demonstration for the deployment.
 
 ## 9. What this mockup actually builds, and what it represents
 
