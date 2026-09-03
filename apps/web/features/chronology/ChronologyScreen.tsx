@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCY_SHORT, EVENT_FAMILIES, EVENT_FAMILY_LABELS, LENS_IDS, LENS_LABELS, PROCESS_SHORT, formatDate, formatDateTime, type Agency, type EventFamily, type LensId, type Significance } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { Button, EmptyState, RestrictedState } from '@mas/ui';
 import { subDays, subMonths, subYears } from 'date-fns';
 import { ArrowLeft, Inbox, Plus, Printer } from 'lucide-react';
@@ -20,7 +21,20 @@ import { useChronologyStore } from './state';
 import { useChronology } from './useChronology';
 import styles from './ChronologyScreen.module.css';
 
+type Zoom = 'all' | '3y' | '12m' | '90d' | '30d';
+
+const ZOOMS: Zoom[] = ['all', '3y', '12m', '90d', '30d'];
+
+const ZOOM_LABELS = {
+  all: 'chronology.screen.zoom.all',
+  '3y': 'chronology.screen.zoom.threeYears',
+  '12m': 'chronology.screen.zoom.twelveMonths',
+  '90d': 'chronology.screen.zoom.ninetyDays',
+  '30d': 'chronology.screen.zoom.thirtyDays',
+} as const;
+
 export function ChronologyScreen({ personId }: { personId: string }) {
+  const t = useT();
   const route = useRoute();
   const navigate = useNavigate();
   const data = useData();
@@ -54,7 +68,7 @@ export function ChronologyScreen({ personId }: { personId: string }) {
   if (!model.person) {
     return (
       <div className="page">
-        <EmptyState title="Person not found" text="This record does not exist in the demo dataset." actions={<AppLink href="/people">Back to people</AppLink>} />
+        <EmptyState title={t('person.notFound.title')} text={t('person.notFound.text')} actions={<AppLink href="/people">{t('person.notFound.back')}</AppLink>} />
       </div>
     );
   }
@@ -66,15 +80,15 @@ export function ChronologyScreen({ personId }: { personId: string }) {
   if (!model.canSeeIntegrated && model.processes.some((p) => p.classification === 'restricted') && model.visible.length === 0) {
     return (
       <div className="page">
-        <RestrictedState reason="This person's chronology belongs to a restricted process and you are not on its distribution list." breakGlass="unavailable" />
+        <RestrictedState reason={t('chronology.screen.restricted')} breakGlass="unavailable" />
       </div>
     );
   }
 
   const inboxCount = inboxForUser(data, user).filter((c) => c.subjectId === personId).length;
-  const windowLabel = store.window ? `${formatDate(store.window.from)} to ${formatDate(store.window.to)}` : `${formatDate(model.domain.from)} to ${formatDate(model.domain.to)} (everything)`;
+  const windowLabel = store.window ? t('chronology.screen.window', { from: formatDate(store.window.from), to: formatDate(store.window.to) }) : t('chronology.screen.windowAll', { from: formatDate(model.domain.from), to: formatDate(model.domain.to) });
 
-  function zoom(kind: 'all' | '3y' | '12m' | '90d' | '30d') {
+  function zoom(kind: Zoom) {
     if (kind === 'all') return store.setWindow(null);
     const to = now.toISOString();
     const from = kind === '3y' ? subYears(now, 3) : kind === '12m' ? subMonths(now, 12) : kind === '90d' ? subDays(now, 90) : subDays(now, 30);
@@ -94,71 +108,61 @@ export function ChronologyScreen({ personId }: { personId: string }) {
           <AppLink href={personPath(personId)} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 'var(--text-sm)' }}>
             <ArrowLeft size={14} aria-hidden="true" /> {name}
           </AppLink>
-          <h1>{name}: {store.view === 'single' ? `${AGENCY_SHORT[user.agency]} chronology` : store.view === 'pack' ? 'chronology as it appears in the meeting pack' : 'integrated chronology'}</h1>
-          <p className="page-lede">
-            {model.events.length} of {model.visible.length} events shown. Window: {windowLabel}.
-          </p>
+          <h1>{t('chronology.screen.heading', { name, view: store.view, agency: AGENCY_SHORT[user.agency] })}</h1>
+          <p className="page-lede">{t('chronology.screen.lede', { shown: model.events.length, total: model.visible.length, window: windowLabel })}</p>
         </div>
       </div>
 
       <div className={styles.toolbar}>
-        <div className={styles.segmented} role="group" aria-label="Chronology view">
+        <div className={styles.segmented} role="group" aria-label={t('chronology.screen.viewGroup')}>
           <button type="button" className={styles.segment} aria-pressed={store.view === 'single'} onClick={() => store.setView('single')}>
-            Single agency
+            {t('chronology.screen.view.single')}
           </button>
           <button type="button" className={styles.segment} aria-pressed={store.view === 'integrated'} onClick={() => store.setView('integrated')} disabled={!model.canSeeIntegrated}>
-            Integrated
+            {t('chronology.screen.view.integrated')}
           </button>
           <button type="button" className={styles.segment} aria-pressed={store.view === 'pack'} onClick={() => store.setView('pack')} disabled={!model.canSeeIntegrated}>
-            As it appears in the pack
+            {t('chronology.screen.view.pack')}
           </button>
         </div>
-        <div className={styles.segmented} role="group" aria-label="Time window">
-          {(
-            [
-              ['all', 'All'],
-              ['3y', '3 years'],
-              ['12m', '12 months'],
-              ['90d', '90 days'],
-              ['30d', '30 days'],
-            ] as const
-          ).map(([k, label]) => (
+        <div className={styles.segmented} role="group" aria-label={t('chronology.screen.windowGroup')}>
+          {ZOOMS.map((k) => (
             <button key={k} type="button" className={styles.segment} aria-pressed={k === 'all' ? store.window === null : false} onClick={() => zoom(k)}>
-              {label}
+              {t(ZOOM_LABELS[k])}
             </button>
           ))}
         </div>
         <div className={styles.actions}>
           <Button variant="secondary" icon={<Inbox size={16} aria-hidden="true" />} onClick={() => navigate('/inbox')} disabled={inboxCount === 0}>
-            Review inbox ({inboxCount})
+            {t('chronology.screen.reviewInbox', { count: inboxCount })}
           </Button>
           <Button variant="secondary" icon={<Printer size={16} aria-hidden="true" />} onClick={() => navigate(`${route.path}?view=print`)}>
-            Export pack
+            {t('chronology.screen.exportPack')}
           </Button>
           <Button variant="primary" icon={<Plus size={16} aria-hidden="true" />} onClick={() => setAdding(true)}>
-            Add event
+            {t('chronology.screen.addEvent')}
           </Button>
         </div>
       </div>
 
-      <div className={styles.filters} role="group" aria-label="Filters">
-        <span className={styles.filterLabel}>Agency</span>
+      <div className={styles.filters} role="group" aria-label={t('chronology.filters.group')}>
+        <span className={styles.filterLabel}>{t('chronology.filters.agency')}</span>
         {model.agencies.map((a) => (
           <button key={a} type="button" className={styles.chip} aria-pressed={store.filters.agencies.includes(a)} onClick={() => store.setFilters({ agencies: toggle<Agency>(store.filters.agencies, a) })}>
             {AGENCY_SHORT[a]}
           </button>
         ))}
-        <span className={styles.filterLabel}>Significance</span>
+        <span className={styles.filterLabel}>{t('chronology.filters.significance')}</span>
         {(['high', 'moderate', 'low'] as Significance[]).map((s) => (
           <button key={s} type="button" className={styles.chip} aria-pressed={store.filters.significance.includes(s)} onClick={() => store.setFilters({ significance: toggle<Significance>(store.filters.significance, s) })}>
             {s}
           </button>
         ))}
         <label className={styles.filterLabel} htmlFor="chron-family">
-          Type
+          {t('chronology.filters.type.label')}
         </label>
         <select id="chron-family" className={styles.select} value={store.filters.families[0] ?? ''} onChange={(e) => store.setFilters({ families: e.target.value ? [e.target.value as EventFamily] : [] })}>
-          <option value="">Any type</option>
+          <option value="">{t('chronology.filters.type.any')}</option>
           {EVENT_FAMILIES.map((f) => (
             <option key={f} value={f}>
               {EVENT_FAMILY_LABELS[f]}
@@ -166,10 +170,10 @@ export function ChronologyScreen({ personId }: { personId: string }) {
           ))}
         </select>
         <label className={styles.filterLabel} htmlFor="chron-process">
-          Process
+          {t('chronology.filters.process.label')}
         </label>
         <select id="chron-process" className={styles.select} value={store.filters.processId ?? ''} onChange={(e) => store.setFilters({ processId: e.target.value || null })}>
-          <option value="">Any process</option>
+          <option value="">{t('chronology.filters.process.any')}</option>
           {model.processes.map((p) => (
             <option key={p.id} value={p.id}>
               {PROCESS_SHORT[p.type]} {p.reference}
@@ -177,26 +181,26 @@ export function ChronologyScreen({ personId }: { personId: string }) {
           ))}
         </select>
         <label className={styles.filterLabel} htmlFor="chron-source">
-          Source
+          {t('chronology.filters.source.label')}
         </label>
         <select id="chron-source" className={styles.select} value={store.filters.source} onChange={(e) => store.setFilters({ source: e.target.value as 'all' | 'manual' | 'connector' })}>
-          <option value="all">Manual and connector</option>
-          <option value="manual">Manual only</option>
-          <option value="connector">Connector only</option>
+          <option value="all">{t('chronology.filters.source.all')}</option>
+          <option value="manual">{t('chronology.filters.source.manual')}</option>
+          <option value="connector">{t('chronology.filters.source.connector')}</option>
         </select>
         <label className={styles.filterLabel} htmlFor="chron-vis">
-          Visibility
+          {t('chronology.filters.visibility.label')}
         </label>
         <select id="chron-vis" className={styles.select} value={store.filters.visibility[0] ?? ''} onChange={(e) => store.setFilters({ visibility: e.target.value ? [e.target.value as 'agency-only' | 'integrated' | 'restricted'] : [] })}>
-          <option value="">Any</option>
-          <option value="agency-only">Agency only</option>
-          <option value="integrated">Integrated</option>
-          <option value="restricted">Restricted</option>
+          <option value="">{t('chronology.filters.visibility.any')}</option>
+          <option value="agency-only">{t('chronology.filters.visibility.agencyOnly')}</option>
+          <option value="integrated">{t('chronology.filters.visibility.integrated')}</option>
+          <option value="restricted">{t('chronology.filters.visibility.restricted')}</option>
         </select>
       </div>
 
-      <div className={styles.filters} role="group" aria-label="Pattern lenses">
-        <span className={styles.filterLabel}>Lenses</span>
+      <div className={styles.filters} role="group" aria-label={t('chronology.lenses.group')}>
+        <span className={styles.filterLabel}>{t('chronology.lenses.label')}</span>
         {LENS_IDS.map((id: LensId) => (
           <button key={id} type="button" className={styles.chip} aria-pressed={store.lenses.includes(id)} onClick={() => store.toggleLens(id)}>
             {LENS_LABELS[id].label}
@@ -216,7 +220,7 @@ export function ChronologyScreen({ personId }: { personId: string }) {
         </div>
       ) : null}
 
-      <ScreenState state={state} empty={{ title: 'No events to show', text: store.view === 'single' ? `No ${AGENCY_SHORT[user.agency]} events are recorded for ${name}. Add one, or review the connector inbox.` : `No integrated events are shared for ${name} yet. Promote events from a single-agency chronology with a lawful basis.` }}>
+      <ScreenState state={state} empty={{ title: t('chronology.screen.empty.title'), text: store.view === 'single' ? t('chronology.screen.empty.single', { agency: AGENCY_SHORT[user.agency], name }) : t('chronology.screen.empty.integrated', { name }) }}>
         <LanesChart
           events={model.events}
           analyses={model.analyses}
@@ -235,17 +239,15 @@ export function ChronologyScreen({ personId }: { personId: string }) {
           <EventList events={model.events} selectedEventId={store.selectedEventId} highlighted={model.highlighted} onSelect={store.select} height={440} />
         </div>
         <div className={styles.section}>
-          <h2>Analysis notes</h2>
-          <p className={styles.windowNote}>Professional judgement, kept apart from the facts above and linked to the events it rests on.</p>
-          {model.analyses.length === 0 ? <p className={styles.windowNote}>No analysis notes yet.</p> : null}
+          <h2>{t('chronology.analysis.title')}</h2>
+          <p className={styles.windowNote}>{t('chronology.analysis.lede')}</p>
+          {model.analyses.length === 0 ? <p className={styles.windowNote}>{t('chronology.analysis.none')}</p> : null}
           <div className={styles.analysisList}>
             {model.analyses.map((a) => (
               <div key={a.id} className={styles.analysisNote} data-selected={store.selectedAnalysisId === a.id ? 'true' : undefined} role="button" tabIndex={0} onClick={() => store.selectAnalysis(a.id)} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && store.selectAnalysis(a.id)}>
                 <strong>{a.title}</strong>
                 <span>{a.text}</span>
-                <span className={styles.analysisMeta}>
-                  {a.kind}. {a.authorName} ({AGENCY_SHORT[a.agency]}), {formatDateTime(a.recordedAt)}. Rests on {a.eventIds.length} {a.eventIds.length === 1 ? 'event' : 'events'}.
-                </span>
+                <span className={styles.analysisMeta}>{t('chronology.analysis.meta', { kind: a.kind, author: a.authorName, agency: AGENCY_SHORT[a.agency], when: formatDateTime(a.recordedAt), count: a.eventIds.length })}</span>
               </div>
             ))}
           </div>

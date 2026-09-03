@@ -73,6 +73,161 @@
       "truncated": "Showing the first {limit}. Refine the search to see the rest."
     }
   },
+  "chronology": {
+    "addEvent": {
+      "analysis": {
+        "eventOption": "{date}: {title}",
+        "eventsLegend": "Facts this note rests on (required)",
+        "kind": "Kind of note",
+        "kindPattern": "Pattern",
+        "kindRecommendation": "Recommendation",
+        "kindRisk": "Risk judgement",
+        "text": "Your judgement and what it rests on",
+        "title": "Title"
+      },
+      "errors": {
+        "date": "Enter a date",
+        "detail": "A short factual detail is required",
+        "eventIds": "Link at least one event",
+        "necessity": "Say why sharing is necessary and proportionate",
+        "opinion": "This reads as opinion. Record the fact here and put your judgement in an analysis note.",
+        "purpose": "Sharing needs a purpose",
+        "significanceReason": "High significance needs a reason",
+        "text": "Explain your judgement and what it rests on",
+        "title": "Say what happened in one line"
+      },
+      "fields": {
+        "approximate": "Date is approximate",
+        "date": "Date",
+        "detail": "Detail (short and factual)",
+        "detailHint": "What happened, who was there, what was seen or said. Not what you think about it.",
+        "eventType": "Event type",
+        "necessity": "Necessity and proportionality",
+        "necessityHint": "Why the other agencies need this to protect the person, and why nothing less would do.",
+        "outcome": "Outcome (what changed)",
+        "purpose": "Purpose of sharing",
+        "response": "Response (what was done)",
+        "significance": "Significance",
+        "significanceReason": "Why is this high significance?",
+        "time": "Time (if known)",
+        "title": "Title (one line, plain language)"
+      },
+      "kind": {
+        "analysis": "An analysis note",
+        "analysisHint": "Your professional judgement about facts already recorded.",
+        "fact": "A fact",
+        "factHint": "Something that happened: dated, brief, no opinion.",
+        "legend": "What are you recording?"
+      },
+      "submitAnalysis": "Record analysis note",
+      "submitFact": "Record event",
+      "title": "Record in the chronology",
+      "toast": {
+        "analysisText": "It sits in the analysis lane, linked to the facts it rests on.",
+        "analysisTitle": "Analysis note recorded",
+        "factAgency": "Added to your agency's chronology.",
+        "factIntegrated": "Shared into the integrated chronology with a lawful basis.",
+        "factTitle": "Event recorded"
+      },
+      "visibility": {
+        "agencyOnly": "My agency only",
+        "agencyOnlyHint": "Single-agency chronology.",
+        "integrated": "Integrated chronology",
+        "integratedHint": "Shared with the other agencies on the case. A lawful basis is recorded.",
+        "legend": "Visibility"
+      }
+    },
+    "analysis": {
+      "lede": "Professional judgement, kept apart from the facts above and linked to the events it rests on.",
+      "meta": "{kind}. {author} ({agency}), {when}. Rests on {count, plural, one {# event} other {# events}}.",
+      "none": "No analysis notes yet.",
+      "title": "Analysis notes"
+    },
+    "eventList": {
+      "approximate": "(approx.)",
+      "columns": {
+        "agency": "Agency",
+        "date": "Date",
+        "outcome": "Outcome",
+        "response": "Response",
+        "significance": "Significance",
+        "source": "Source",
+        "title": "Title",
+        "type": "Type",
+        "visibility": "Visibility"
+      },
+      "empty": "No events match the current view, filters and window.",
+      "label": "Chronology events",
+      "sourceManual": "Manual"
+    },
+    "filters": {
+      "agency": "Agency",
+      "group": "Filters",
+      "process": {
+        "any": "Any process",
+        "label": "Process"
+      },
+      "significance": "Significance",
+      "source": {
+        "all": "Manual and connector",
+        "connector": "Connector only",
+        "label": "Source",
+        "manual": "Manual only"
+      },
+      "type": {
+        "any": "Any type",
+        "label": "Type"
+      },
+      "visibility": {
+        "agencyOnly": "Agency only",
+        "any": "Any",
+        "integrated": "Integrated",
+        "label": "Visibility",
+        "restricted": "Restricted"
+      }
+    },
+    "lanes": {
+      "analysisLabel": "Analysis: {title}, {author}",
+      "analysisLane": "Analysis",
+      "group": "Chronology lanes by agency",
+      "hint": "Drag across the axis to zoom to a period. Point size is significance. Dashed halos mark events a pattern lens is prompting about.",
+      "instructions": "{events} events across {agencies} agencies. Use Tab to reach an event, arrow keys to move between events, Enter to open. Drag to zoom to a period.",
+      "pointLabel": "{title}, {date}, {agency}, {significance} significance"
+    },
+    "lenses": {
+      "group": "Pattern lenses",
+      "label": "Lenses"
+    },
+    "screen": {
+      "addEvent": "Add event",
+      "empty": {
+        "integrated": "No integrated events are shared for {name} yet. Promote events from a single-agency chronology with a lawful basis.",
+        "single": "No {agency} events are recorded for {name}. Add one, or review the connector inbox.",
+        "title": "No events to show"
+      },
+      "exportPack": "Export pack",
+      "heading": "{name}: {view, select, single {{agency} chronology} pack {chronology as it appears in the meeting pack} other {integrated chronology}}",
+      "lede": "{shown} of {total} events shown. Window: {window}.",
+      "restricted": "This person's chronology belongs to a restricted process and you are not on its distribution list.",
+      "reviewInbox": "Review inbox ({count})",
+      "view": {
+        "integrated": "Integrated",
+        "pack": "As it appears in the pack",
+        "single": "Single agency"
+      },
+      "viewGroup": "Chronology view",
+      "window": "{from} to {to}",
+      "windowAll": "{from} to {to} (everything)",
+      "windowGroup": "Time window",
+      "zoom": {
+        "all": "All",
+        "ninetyDays": "90 days",
+        "thirtyDays": "30 days",
+        "threeYears": "3 years",
+        "twelveMonths": "12 months"
+      }
+    }
+  },
   "common": {
     "actions": {
       "cancel": "Cancel",
@@ -645,6 +800,47 @@
       },
       "lede": "Structured, dated and attributed. The person's views are read into every meeting record.",
       "record": "Record views"
+    }
+  },
+  "print": {
+    "chronology": {
+      "analysis": {
+        "entry": "{title} ({kind}; {author}, {agency}, {date}). {text}",
+        "title": "Analysis (professional judgement, kept separate from the facts above)"
+      },
+      "approximate": "(approx.)",
+      "back": "Back to chronology",
+      "columns": {
+        "agency": "Agency",
+        "date": "Date",
+        "event": "Event",
+        "responseOutcome": "Response and outcome",
+        "significance": "Significance",
+        "type": "Type"
+      },
+      "lawfulBasis": {
+        "entry": "{purpose} {article6}; {article9}; {article10}{gateways}. {necessity} Authorised by {author}.",
+        "none": "No integrated events in this pack.",
+        "title": "Lawful basis for the integrated events"
+      },
+      "meta": {
+        "address": "Address: {address}.",
+        "compiledFor": "Compiled for: {purpose}. Contains only events judged relevant, necessary and proportionate for that purpose (Care Inspectorate Practice Guide to Chronologies, 2017).",
+        "dob": "Date of birth: {date}. CHI (synthetic): {chi}.",
+        "generalRecord": "general record",
+        "processes": "Processes: {reference}.",
+        "window": "Window: {from} to {to}. {count} events. View: {filtered, select, yes {filtered} other {unfiltered}}."
+      },
+      "noOpenProcess": "No open process",
+      "outcome": "Outcome: {outcome}",
+      "title": "Integrated chronology: {name}"
+    },
+    "common": {
+      "page": "Page {page} of {total}",
+      "print": "Print",
+      "printedFooter": "Printed {when} from the platform. Synthetic demonstration data.",
+      "runningHead": "{classification}. {reference}",
+      "subjectHead": "{name}, born {date}"
     }
   },
   "search": {

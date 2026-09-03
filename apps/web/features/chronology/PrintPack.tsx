@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCY_SHORT, CLASSIFICATION_LABELS, EVENT_FAMILY_LABELS, eventFamily, formatDate, formatDateTime } from '@mas/domain';
+import { useT, type RichValues } from '@mas/messages';
 import { Button, ClassificationBanner } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
 import { useEffect } from 'react';
@@ -13,8 +14,12 @@ import styles from './PrintPack.module.css';
 
 const ROWS_PER_PAGE = 18;
 
+/** Argument bag for t.rich, typed so a React node (the bold lead-in of an entry) can fill an argument. */
+const rich = (values: RichValues): RichValues => values;
+
 /** The chronology as a paginated print pack with classification marking, header and footer on every page. */
 export function PrintPack({ personId }: { personId: string }) {
+  const t = useT();
   const data = useData();
   const now = useNow();
   const audit = useAppStore((s) => s.audit);
@@ -34,26 +39,21 @@ export function PrintPack({ personId }: { personId: string }) {
   if (pages.length === 0) pages.push([]);
   const processes = model.processes.filter((p) => p.status === 'open');
   const classification = processes.some((p) => p.classification === 'restricted') ? 'restricted' : 'official-sensitive';
-  const reference = processes.map((p) => p.reference).join(', ') || 'No open process';
+  const reference = processes.map((p) => p.reference).join(', ') || t('print.chronology.noOpenProcess');
   const bases = data.lawfulBases.filter((b) => events.some((e) => e.lawfulBasisId === b.id));
   const totalPages = pages.length + 1;
+  const dateOfBirth = person.dateOfBirth ? formatDate(person.dateOfBirth) : t('common.values.notRecorded');
 
   const head = (page: number) => (
     <div className={styles.head}>
-      <span>
-        {CLASSIFICATION_LABELS[classification]}. {reference}
-      </span>
-      <span>
-        {fullName(person)}, born {person.dateOfBirth ? formatDate(person.dateOfBirth) : 'not recorded'}
-      </span>
-      <span>
-        Page {page} of {totalPages}
-      </span>
+      <span>{t('print.common.runningHead', { classification: CLASSIFICATION_LABELS[classification], reference })}</span>
+      <span>{t('print.common.subjectHead', { name: fullName(person), date: dateOfBirth })}</span>
+      <span>{t('print.common.page', { page, total: totalPages })}</span>
     </div>
   );
   const foot = (
     <div className={styles.foot}>
-      <span>Printed {formatDateTime(now)} from the platform. Synthetic demonstration data.</span>
+      <span>{t('print.common.printedFooter', { when: formatDateTime(now) })}</span>
       <span>{CLASSIFICATION_LABELS[classification]}</span>
     </div>
   );
@@ -62,31 +62,28 @@ export function PrintPack({ personId }: { personId: string }) {
     <div className={`${styles.pack} print-pack`}>
       <div className={`${styles.controls} no-print`}>
         <Button variant="secondary" icon={<ArrowLeft size={16} aria-hidden="true" />} onClick={() => navigate(chronologyPath(personId))}>
-          Back to chronology
+          {t('print.chronology.back')}
         </Button>
         <Button variant="primary" icon={<Printer size={16} aria-hidden="true" />} onClick={() => window.print()}>
-          Print
+          {t('print.common.print')}
         </Button>
       </div>
       <ClassificationBanner level={classification} />
       <section className={`${styles.page} print-page`}>
         {head(1)}
-        <h1 className={styles.title}>Integrated chronology: {fullName(person)}</h1>
+        <h1 className={styles.title}>{t('print.chronology.title', { name: fullName(person) })}</h1>
         <div className={styles.meta}>
-          <div>Date of birth: {person.dateOfBirth ? formatDate(person.dateOfBirth) : 'not recorded'}. CHI (synthetic): {person.chi ?? 'none'}.</div>
-          <div>Address: {currentAddress(data, person).line}.</div>
-          <div>Processes: {reference}.</div>
-          <div>
-            Window: {formatDate(model.domain.from)} to {formatDate(model.domain.to)}. {events.length} events. View: {model.visible.length === events.length ? 'unfiltered' : 'filtered'}.
-          </div>
-          <div>Compiled for: {processes[0] ? `${processes[0].title}` : 'general record'}. Contains only events judged relevant, necessary and proportionate for that purpose (Care Inspectorate Practice Guide to Chronologies, 2017).</div>
+          <div>{t('print.chronology.meta.dob', { date: dateOfBirth, chi: person.chi ?? t('common.values.none') })}</div>
+          <div>{t('print.chronology.meta.address', { address: currentAddress(data, person).line })}</div>
+          <div>{t('print.chronology.meta.processes', { reference })}</div>
+          <div>{t('print.chronology.meta.window', { from: formatDate(model.domain.from), to: formatDate(model.domain.to), count: events.length, filtered: model.visible.length === events.length ? 'no' : 'yes' })}</div>
+          <div>{t('print.chronology.meta.compiledFor', { purpose: processes[0]?.title ?? t('print.chronology.meta.generalRecord') })}</div>
         </div>
-        <h2>Lawful basis for the integrated events</h2>
-        {bases.length === 0 ? <p>No integrated events in this pack.</p> : null}
+        <h2>{t('print.chronology.lawfulBasis.title')}</h2>
+        {bases.length === 0 ? <p>{t('print.chronology.lawfulBasis.none')}</p> : null}
         {bases.map((b) => (
           <p key={b.id} style={{ fontSize: 'var(--text-sm)', maxWidth: 'none' }}>
-            <strong>{b.purpose}.</strong> {b.article6}; {b.article9Condition}; {b.article10Criminal !== 'not applicable' ? `${b.article10Criminal}; ` : ''}
-            {b.statutoryGateway.join('; ')}. {b.necessityAndProportionality} Authorised by {b.authorisedByName}.
+            {t.rich('print.chronology.lawfulBasis.entry', rich({ purpose: <strong>{b.purpose}.</strong>, article6: b.article6, article9: b.article9Condition, article10: b.article10Criminal !== 'not applicable' ? `${b.article10Criminal}; ` : '', gateways: b.statutoryGateway.join('; '), necessity: b.necessityAndProportionality, author: b.authorisedByName }))}
           </p>
         ))}
         {foot}
@@ -97,12 +94,12 @@ export function PrintPack({ personId }: { personId: string }) {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Agency</th>
-                <th scope="col">Type</th>
-                <th scope="col">Event</th>
-                <th scope="col">Response and outcome</th>
-                <th scope="col">Significance</th>
+                <th scope="col">{t('print.chronology.columns.date')}</th>
+                <th scope="col">{t('print.chronology.columns.agency')}</th>
+                <th scope="col">{t('print.chronology.columns.type')}</th>
+                <th scope="col">{t('print.chronology.columns.event')}</th>
+                <th scope="col">{t('print.chronology.columns.responseOutcome')}</th>
+                <th scope="col">{t('print.chronology.columns.significance')}</th>
               </tr>
             </thead>
             <tbody>
@@ -110,7 +107,7 @@ export function PrintPack({ personId }: { personId: string }) {
                 <tr key={e.id}>
                   <td>
                     {e.hasTime ? formatDateTime(e.occurredAt) : formatDate(e.occurredAt)}
-                    {e.approximate ? ' (approx.)' : ''}
+                    {e.approximate ? ` ${t('print.chronology.approximate')}` : ''}
                   </td>
                   <td>{AGENCY_SHORT[e.agency]}</td>
                   <td>{EVENT_FAMILY_LABELS[eventFamily(e.eventType)]}</td>
@@ -121,7 +118,7 @@ export function PrintPack({ personId }: { personId: string }) {
                   </td>
                   <td>
                     {e.response ?? ''}
-                    {e.outcome ? ` Outcome: ${e.outcome}` : ''}
+                    {e.outcome ? ` ${t('print.chronology.outcome', { outcome: e.outcome })}` : ''}
                   </td>
                   <td>
                     {e.significance}
@@ -133,10 +130,10 @@ export function PrintPack({ personId }: { personId: string }) {
           </table>
           {i === pages.length - 1 && model.analyses.length > 0 ? (
             <div className={styles.analysis}>
-              <h3>Analysis (professional judgement, kept separate from the facts above)</h3>
+              <h3>{t('print.chronology.analysis.title')}</h3>
               {model.analyses.map((a) => (
                 <p key={a.id} style={{ fontSize: 'var(--text-sm)', maxWidth: 'none', marginBottom: 6 }}>
-                  <strong>{a.title}</strong> ({a.kind}; {a.authorName}, {AGENCY_SHORT[a.agency]}, {formatDate(a.recordedAt)}). {a.text}
+                  {t.rich('print.chronology.analysis.entry', rich({ title: <strong>{a.title}</strong>, kind: a.kind, author: a.authorName, agency: AGENCY_SHORT[a.agency], date: formatDate(a.recordedAt), text: a.text }))}
                 </p>
               ))}
             </div>

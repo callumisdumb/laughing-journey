@@ -254,6 +254,582 @@
       }
     }
   },
+  "chronology": {
+    "addEvent": {
+      "analysis": {
+        "eventOption": {
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Checkbox label for one recent event in the add event dialog: ISO date and title"
+        },
+        "eventsLegend": {
+          "maxLength": 40,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Legend of the linked facts checklist in the analysis half of the add event dialog"
+        },
+        "kind": {
+          "maxLength": 20,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the note kind select in the analysis half of the add event dialog"
+        },
+        "kindPattern": {
+          "maxLength": 20,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Note kind option in the add event dialog"
+        },
+        "kindRecommendation": {
+          "maxLength": 20,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Note kind option in the add event dialog"
+        },
+        "kindRisk": {
+          "maxLength": 20,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Note kind option in the add event dialog"
+        },
+        "text": {
+          "maxLength": 40,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the judgement field in the analysis half of the add event dialog"
+        },
+        "title": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the title field in the analysis half of the add event dialog"
+        }
+      },
+      "errors": {
+        "date": {
+          "maxLength": 32,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Validation message when the event date is missing or malformed"
+        },
+        "detail": {
+          "maxLength": 48,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Validation message when the fact detail is shorter than ten characters"
+        },
+        "eventIds": {
+          "maxLength": 32,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Validation message when an analysis note links no event"
+        },
+        "necessity": {
+          "maxLength": 56,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Validation message when an integrated event has no necessity note"
+        },
+        "opinion": {
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Validation message under the detail field when the title or detail reads as opinion"
+        },
+        "purpose": {
+          "maxLength": 32,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Validation message when an integrated event has no sharing purpose"
+        },
+        "significanceReason": {
+          "maxLength": 40,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Validation message when a high significance event has no reason"
+        },
+        "text": {
+          "maxLength": 48,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Validation message when the analysis judgement is shorter than twenty characters"
+        },
+        "title": {
+          "maxLength": 40,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Validation message when the fact title is shorter than five characters"
+        }
+      },
+      "fields": {
+        "approximate": {
+          "maxLength": 24,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Checkbox label in the fact half of the add event dialog"
+        },
+        "date": {
+          "maxLength": 12,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the date field in the fact half of the add event dialog"
+        },
+        "detail": {
+          "maxLength": 32,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the detail field in the fact half of the add event dialog"
+        },
+        "detailHint": {
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Hint under the detail field in the add event dialog"
+        },
+        "eventType": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the event type select in the add event dialog"
+        },
+        "necessity": {
+          "maxLength": 32,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the necessity field shown when an event is shared into the integrated chronology"
+        },
+        "necessityHint": {
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Hint under the necessity field in the add event dialog"
+        },
+        "outcome": {
+          "maxLength": 32,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the outcome field in the add event dialog"
+        },
+        "purpose": {
+          "maxLength": 24,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the purpose field shown when an event is shared into the integrated chronology"
+        },
+        "response": {
+          "maxLength": 32,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the response field in the add event dialog"
+        },
+        "significance": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the significance select in the add event dialog"
+        },
+        "significanceReason": {
+          "maxLength": 40,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the reason field shown when significance is high"
+        },
+        "time": {
+          "maxLength": 20,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the optional time field in the add event dialog"
+        },
+        "title": {
+          "maxLength": 40,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Label of the title field in the fact half of the add event dialog"
+        }
+      },
+      "kind": {
+        "analysis": {
+          "maxLength": 20,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Radio label for recording an analysis note"
+        },
+        "analysisHint": {
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Hint under the analysis note radio"
+        },
+        "fact": {
+          "maxLength": 20,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Radio label for recording a fact"
+        },
+        "factHint": {
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Hint under the fact radio"
+        },
+        "legend": {
+          "maxLength": 32,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Legend of the fact or analysis radio group at the top of the add event dialog"
+        }
+      },
+      "submitAnalysis": {
+        "maxLength": 24,
+        "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+        "where": "Primary button of the add event dialog when recording an analysis note"
+      },
+      "submitFact": {
+        "maxLength": 20,
+        "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+        "where": "Primary button of the add event dialog when recording a fact"
+      },
+      "title": {
+        "maxLength": 32,
+        "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+        "where": "Title of the add event dialog"
+      },
+      "toast": {
+        "analysisText": {
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Toast text after an analysis note is recorded"
+        },
+        "analysisTitle": {
+          "maxLength": 32,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Toast title after an analysis note is recorded"
+        },
+        "factAgency": {
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Toast text after an agency-only event is recorded"
+        },
+        "factIntegrated": {
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Toast text after an integrated event is recorded"
+        },
+        "factTitle": {
+          "maxLength": 24,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Toast title after a fact is recorded"
+        }
+      },
+      "visibility": {
+        "agencyOnly": {
+          "maxLength": 24,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Radio label for an agency-only event"
+        },
+        "agencyOnlyHint": {
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Hint under the agency-only radio"
+        },
+        "integrated": {
+          "maxLength": 24,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Radio label for an integrated event"
+        },
+        "integratedHint": {
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Hint under the integrated radio"
+        },
+        "legend": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
+          "where": "Legend of the visibility radio group in the add event dialog"
+        }
+      }
+    },
+    "analysis": {
+      "lede": {
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Note under the analysis notes heading on the chronology screen"
+      },
+      "meta": {
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Meta line of an analysis note: kind, author and agency, when recorded, and how many events it rests on"
+      },
+      "none": {
+        "maxLength": 32,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Note under the analysis notes heading when the person has no analysis note"
+      },
+      "title": {
+        "maxLength": 24,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Heading of the analysis notes section on the chronology screen"
+      }
+    },
+    "eventList": {
+      "approximate": {
+        "maxLength": 12,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Suffix after an approximate date in the chronology event list"
+      },
+      "columns": {
+        "agency": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Column header of the chronology event list"
+        },
+        "date": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Column header of the chronology event list"
+        },
+        "outcome": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Column header of the chronology event list"
+        },
+        "response": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Column header of the chronology event list"
+        },
+        "significance": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Column header of the chronology event list"
+        },
+        "source": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Column header of the chronology event list"
+        },
+        "title": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Column header of the chronology event list"
+        },
+        "type": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Column header of the chronology event list"
+        },
+        "visibility": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Column header of the chronology event list"
+        }
+      },
+      "empty": {
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Message in the chronology event list when no event matches the view, filters and window"
+      },
+      "label": {
+        "maxLength": 32,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Accessible name of the chronology event list table"
+      },
+      "sourceManual": {
+        "maxLength": 16,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Source cell of the chronology event list for an event recorded by hand"
+      }
+    },
+    "filters": {
+      "agency": {
+        "maxLength": 16,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Label before the agency chips in the chronology filter bar"
+      },
+      "group": {
+        "maxLength": 16,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Accessible name of the chronology filter bar"
+      },
+      "process": {
+        "any": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "First option of the process filter on the chronology screen"
+        },
+        "label": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Label of the process filter on the chronology screen"
+        }
+      },
+      "significance": {
+        "maxLength": 16,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Label before the significance chips in the chronology filter bar"
+      },
+      "source": {
+        "all": {
+          "maxLength": 24,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Option of the source filter on the chronology screen"
+        },
+        "connector": {
+          "maxLength": 24,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Option of the source filter on the chronology screen"
+        },
+        "label": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Label of the source filter on the chronology screen"
+        },
+        "manual": {
+          "maxLength": 24,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Option of the source filter on the chronology screen"
+        }
+      },
+      "type": {
+        "any": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "First option of the event type filter on the chronology screen"
+        },
+        "label": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Label of the event type filter on the chronology screen"
+        }
+      },
+      "visibility": {
+        "agencyOnly": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Option of the visibility filter on the chronology screen"
+        },
+        "any": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "First option of the visibility filter on the chronology screen"
+        },
+        "integrated": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Option of the visibility filter on the chronology screen"
+        },
+        "label": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Label of the visibility filter on the chronology screen"
+        },
+        "restricted": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Option of the visibility filter on the chronology screen"
+        }
+      }
+    },
+    "lanes": {
+      "analysisLabel": {
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Accessible name of an analysis note span in the lanes chart, with its title and author"
+      },
+      "analysisLane": {
+        "maxLength": 16,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Lane label for the analysis lane at the foot of the lanes chart"
+      },
+      "group": {
+        "maxLength": 32,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Accessible name of the lanes chart group"
+      },
+      "hint": {
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Hint under the lanes chart explaining drag to zoom, point size and dashed halos"
+      },
+      "instructions": {
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Accessible name of the lanes chart canvas: event and agency counts and the keyboard instructions"
+      },
+      "pointLabel": {
+        "screenshot": "phase-2/chronology-event-selected-light-comfortable.png",
+        "where": "Accessible name and tooltip of an event point in the lanes chart"
+      }
+    },
+    "lenses": {
+      "group": {
+        "maxLength": 20,
+        "screenshot": "phase-2/chronology-lenses-light-comfortable.png",
+        "where": "Accessible name of the pattern lens chip row"
+      },
+      "label": {
+        "maxLength": 12,
+        "screenshot": "phase-2/chronology-lenses-light-comfortable.png",
+        "where": "Label before the pattern lens chips"
+      }
+    },
+    "screen": {
+      "addEvent": {
+        "maxLength": 16,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Primary button on the chronology toolbar that opens the add event dialog"
+      },
+      "empty": {
+        "integrated": {
+          "screenshot": "phase-2/chronology-state-empty-light-comfortable.png",
+          "where": "Empty state text on the integrated chronology, with the person's name"
+        },
+        "single": {
+          "screenshot": "phase-2/chronology-state-empty-light-comfortable.png",
+          "where": "Empty state text on the single-agency chronology, with the agency and the person's name"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-2/chronology-state-empty-light-comfortable.png",
+          "where": "Empty state title on the chronology screen"
+        }
+      },
+      "exportPack": {
+        "maxLength": 16,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Secondary button on the chronology toolbar that opens the print pack"
+      },
+      "heading": {
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Page heading of the chronology screen: the person's name, then the view (single agency with the agency name, pack, or integrated)"
+      },
+      "lede": {
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Lede under the chronology heading: events shown out of visible, and the window"
+      },
+      "restricted": {
+        "screenshot": "phase-2/chronology-state-restricted-light-comfortable.png",
+        "where": "Restricted state reason on the chronology screen when it belongs to a restricted process"
+      },
+      "reviewInbox": {
+        "maxLength": 24,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Secondary button on the chronology toolbar that opens the connector inbox, with the pending count"
+      },
+      "view": {
+        "integrated": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Segmented control option for the integrated chronology view"
+        },
+        "pack": {
+          "maxLength": 32,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Segmented control option for the view as it appears in the meeting pack"
+        },
+        "single": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Segmented control option for the single-agency chronology view"
+        }
+      },
+      "viewGroup": {
+        "maxLength": 24,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Accessible name of the chronology view segmented control"
+      },
+      "window": {
+        "maxLength": 32,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Window shown in the lede when a time window is set"
+      },
+      "windowAll": {
+        "maxLength": 40,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Window shown in the lede when no time window is set"
+      },
+      "windowGroup": {
+        "maxLength": 16,
+        "screenshot": "phase-2/chronology-light-comfortable.png",
+        "where": "Accessible name of the time window segmented control"
+      },
+      "zoom": {
+        "all": {
+          "maxLength": 12,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Time window option"
+        },
+        "ninetyDays": {
+          "maxLength": 12,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Time window option"
+        },
+        "thirtyDays": {
+          "maxLength": 12,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Time window option"
+        },
+        "threeYears": {
+          "maxLength": 12,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Time window option"
+        },
+        "twelveMonths": {
+          "maxLength": 12,
+          "screenshot": "phase-2/chronology-light-comfortable.png",
+          "where": "Time window option"
+        }
+      }
+    }
+  },
   "common": {
     "actions": {
       "cancel": {
@@ -2234,6 +2810,139 @@
         "maxLength": 16,
         "screenshot": "phase-2/person-360-voice-light-comfortable.png",
         "where": "Primary button on the Views and voice tab and the submit button of the record views dialog"
+      }
+    }
+  },
+  "print": {
+    "chronology": {
+      "analysis": {
+        "entry": {
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "One analysis note in the print pack's analysis section: the title (passed in bold as the title argument), then kind, author, agency and date in brackets, then the note"
+        },
+        "title": {
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Heading of the analysis section on the last page of the chronology print pack"
+        }
+      },
+      "approximate": {
+        "maxLength": 12,
+        "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+        "where": "Suffix after an approximate date in the print pack event table"
+      },
+      "back": {
+        "maxLength": 24,
+        "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+        "where": "Button above the chronology print pack that returns to the chronology screen; not printed"
+      },
+      "columns": {
+        "agency": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Column header in the print pack event table"
+        },
+        "date": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Column header in the print pack event table"
+        },
+        "event": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Column header in the print pack event table: title and detail"
+        },
+        "responseOutcome": {
+          "maxLength": 24,
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Column header in the print pack event table"
+        },
+        "significance": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Column header in the print pack event table"
+        },
+        "type": {
+          "maxLength": 16,
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Column header in the print pack event table: event family"
+        }
+      },
+      "lawfulBasis": {
+        "entry": {
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "One lawful basis record on the print pack cover page: the purpose (passed in bold as the purpose argument), then the articles, gateways, necessity note and who authorised it"
+        },
+        "none": {
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Cover page of the print pack when no event in the pack carries a lawful basis"
+        },
+        "title": {
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Heading of the lawful basis section on the print pack cover page"
+        }
+      },
+      "meta": {
+        "address": {
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Cover page detail line: the person's current address"
+        },
+        "compiledFor": {
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Cover page detail line: the process the pack was compiled for and the relevance statement"
+        },
+        "dob": {
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Cover page detail line: date of birth and synthetic CHI"
+        },
+        "generalRecord": {
+          "maxLength": 24,
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Purpose shown in the compiled-for line when the person has no open process"
+        },
+        "processes": {
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Cover page detail line: the open process references"
+        },
+        "window": {
+          "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+          "where": "Cover page detail line: the time window, event count and whether the view was filtered"
+        }
+      },
+      "noOpenProcess": {
+        "maxLength": 24,
+        "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+        "where": "Reference shown in the running head and cover page when the person has no open process"
+      },
+      "outcome": {
+        "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+        "where": "Outcome fragment appended after the response in the print pack event table"
+      },
+      "title": {
+        "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+        "where": "Title on the print pack cover page, with the person's name"
+      }
+    },
+    "common": {
+      "page": {
+        "maxLength": 20,
+        "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+        "where": "Page number on the right of every print pack running head"
+      },
+      "print": {
+        "maxLength": 12,
+        "where": "Primary button above a print pack that opens the browser print dialogue"
+      },
+      "printedFooter": {
+        "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+        "where": "Left of the footer on every print pack page, with the print date and time"
+      },
+      "runningHead": {
+        "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+        "where": "Left of the running head on every print pack page: classification marking and process references"
+      },
+      "subjectHead": {
+        "screenshot": "phase-2/chronology-print-pack-light-comfortable.png",
+        "where": "Centre of the running head on every print pack page: the person's name and date of birth"
       }
     }
   },

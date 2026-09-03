@@ -1,6 +1,7 @@
 'use client';
 
 import { EVENT_FAMILY_LABELS, eventFamily, formatDate, formatDateTime, type ChronologyEvent } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { AgencyMark } from '@mas/ui';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { AlertTriangle, Circle, Flag } from 'lucide-react';
@@ -17,8 +18,21 @@ export interface EventListProps {
 
 const SIG_ICON = { high: <AlertTriangle size={12} aria-hidden="true" />, moderate: <Flag size={12} aria-hidden="true" />, low: <Circle size={10} aria-hidden="true" /> } as const;
 
+const COLUMNS = [
+  'chronology.eventList.columns.date',
+  'chronology.eventList.columns.agency',
+  'chronology.eventList.columns.type',
+  'chronology.eventList.columns.title',
+  'chronology.eventList.columns.response',
+  'chronology.eventList.columns.outcome',
+  'chronology.eventList.columns.significance',
+  'chronology.eventList.columns.source',
+  'chronology.eventList.columns.visibility',
+] as const;
+
 /** Virtualised, keyboard-navigable chronology table. Newest first. */
 export function EventList({ events, selectedEventId, highlighted, onSelect, height = 480 }: EventListProps) {
+  const t = useT();
   const parentRef = useRef<HTMLDivElement>(null);
   const rowHeight = typeof document !== 'undefined' && document.documentElement.dataset.density === 'compact' ? 32 : 40;
   const virtualizer = useVirtualizer({ count: events.length, getScrollElement: () => parentRef.current, estimateSize: () => rowHeight, overscan: 12 });
@@ -32,16 +46,16 @@ export function EventList({ events, selectedEventId, highlighted, onSelect, heig
   const dimming = highlighted.size > 0;
 
   return (
-    <div className={styles.list} role="table" aria-label="Chronology events" aria-rowcount={events.length} style={{ '--list-height': `${height}px` } as CSSProperties}>
+    <div className={styles.list} role="table" aria-label={t('chronology.eventList.label')} aria-rowcount={events.length} style={{ '--list-height': `${height}px` } as CSSProperties}>
       <div className={styles.header} role="row">
-        {['Date', 'Agency', 'Type', 'Title', 'Response', 'Outcome', 'Significance', 'Source', 'Visibility'].map((h) => (
-          <div key={h} role="columnheader" className={styles.cell}>
-            {h}
+        {COLUMNS.map((key) => (
+          <div key={key} role="columnheader" className={styles.cell}>
+            {t(key)}
           </div>
         ))}
       </div>
       <div className={styles.viewport} ref={parentRef}>
-        {events.length === 0 ? <div className={styles.empty}>No events match the current view, filters and window.</div> : null}
+        {events.length === 0 ? <div className={styles.empty}>{t('chronology.eventList.empty')}</div> : null}
         <div className={styles.inner} style={{ height: virtualizer.getTotalSize() }} role="rowgroup">
           {virtualizer.getVirtualItems().map((v) => {
             const e = events[v.index]!;
@@ -72,7 +86,7 @@ export function EventList({ events, selectedEventId, highlighted, onSelect, heig
               >
                 <div role="cell" className={`${styles.cell} ${styles.date}`}>
                   {e.hasTime ? formatDateTime(e.occurredAt) : formatDate(e.occurredAt)}
-                  {e.approximate ? <span className={styles.approx}> (approx.)</span> : null}
+                  {e.approximate ? <span className={styles.approx}> {t('chronology.eventList.approximate')}</span> : null}
                 </div>
                 <div role="cell" className={styles.cell}>
                   <AgencyMark agency={e.agency} />
@@ -95,7 +109,7 @@ export function EventList({ events, selectedEventId, highlighted, onSelect, heig
                   </span>
                 </div>
                 <div role="cell" className={`${styles.cell} ${styles.muted}`}>
-                  {e.sourceSystem === 'manual' ? 'Manual' : e.sourceSystem}
+                  {e.sourceSystem === 'manual' ? t('chronology.eventList.sourceManual') : e.sourceSystem}
                 </div>
                 <div role="cell" className={`${styles.cell} ${styles.muted}`}>
                   {e.visibility.replace('-', ' ')}

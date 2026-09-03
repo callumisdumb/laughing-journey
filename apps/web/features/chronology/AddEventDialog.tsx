@@ -1,48 +1,54 @@
 'use client';
 
 import { EVENT_TYPES, SIGNIFICANCES, type ChronologyAnalysis, type ChronologyEvent, type LawfulBasisRecord } from '@mas/domain';
+import { useT, type Translator } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
 
-const factSchema = z
-  .object({
-    kind: z.literal('fact'),
-    occurredDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a date'),
-    occurredTime: z.string().optional(),
-    approximate: z.boolean(),
-    eventType: z.enum(EVENT_TYPES),
-    title: z.string().min(5, 'Say what happened in one line').max(120),
-    detail: z.string().min(10, 'A short factual detail is required').max(600),
-    response: z.string().max(400).optional(),
-    outcome: z.string().max(400).optional(),
-    significance: z.enum(SIGNIFICANCES),
-    significanceReason: z.string().max(200).optional(),
-    visibility: z.enum(['agency-only', 'integrated']),
-    purpose: z.string().max(200).optional(),
-    necessity: z.string().max(600).optional(),
-  })
-  .superRefine((v, ctx) => {
-    if (v.significance === 'high' && !v.significanceReason?.trim()) ctx.addIssue({ code: 'custom', path: ['significanceReason'], message: 'High significance needs a reason' });
-    if (v.visibility === 'integrated') {
-      if (!v.purpose || v.purpose.trim().length < 5) ctx.addIssue({ code: 'custom', path: ['purpose'], message: 'Sharing needs a purpose' });
-      if (!v.necessity || v.necessity.trim().length < 20) ctx.addIssue({ code: 'custom', path: ['necessity'], message: 'Say why sharing is necessary and proportionate' });
-    }
-    if (/\b(I think|I believe|in my view|seems|appears to be|probably)\b/i.test(`${v.title} ${v.detail}`)) ctx.addIssue({ code: 'custom', path: ['detail'], message: 'This reads as opinion. Record the fact here and put your judgement in an analysis note.' });
+/** Built with the translator so every validation message comes from the catalogue and follows an Admin override. */
+function buildSchema(t: Translator) {
+  const factSchema = z
+    .object({
+      kind: z.literal('fact'),
+      occurredDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, t('chronology.addEvent.errors.date')),
+      occurredTime: z.string().optional(),
+      approximate: z.boolean(),
+      eventType: z.enum(EVENT_TYPES),
+      title: z.string().min(5, t('chronology.addEvent.errors.title')).max(120),
+      detail: z.string().min(10, t('chronology.addEvent.errors.detail')).max(600),
+      response: z.string().max(400).optional(),
+      outcome: z.string().max(400).optional(),
+      significance: z.enum(SIGNIFICANCES),
+      significanceReason: z.string().max(200).optional(),
+      visibility: z.enum(['agency-only', 'integrated']),
+      purpose: z.string().max(200).optional(),
+      necessity: z.string().max(600).optional(),
+    })
+    .superRefine((v, ctx) => {
+      if (v.significance === 'high' && !v.significanceReason?.trim()) ctx.addIssue({ code: 'custom', path: ['significanceReason'], message: t('chronology.addEvent.errors.significanceReason') });
+      if (v.visibility === 'integrated') {
+        if (!v.purpose || v.purpose.trim().length < 5) ctx.addIssue({ code: 'custom', path: ['purpose'], message: t('chronology.addEvent.errors.purpose') });
+        if (!v.necessity || v.necessity.trim().length < 20) ctx.addIssue({ code: 'custom', path: ['necessity'], message: t('chronology.addEvent.errors.necessity') });
+      }
+      if (/\b(I think|I believe|in my view|seems|appears to be|probably)\b/i.test(`${v.title} ${v.detail}`)) ctx.addIssue({ code: 'custom', path: ['detail'], message: t('chronology.addEvent.errors.opinion') });
+    });
+
+  const analysisSchema = z.object({
+    kind: z.literal('analysis'),
+    eventIds: z.array(z.string()).min(1, t('chronology.addEvent.errors.eventIds')),
+    analysisKind: z.enum(['pattern', 'risk', 'recommendation']),
+    title: z.string().min(5).max(120),
+    text: z.string().min(20, t('chronology.addEvent.errors.text')).max(1200),
   });
 
-const analysisSchema = z.object({
-  kind: z.literal('analysis'),
-  eventIds: z.array(z.string()).min(1, 'Link at least one event'),
-  analysisKind: z.enum(['pattern', 'risk', 'recommendation']),
-  title: z.string().min(5).max(120),
-  text: z.string().min(20, 'Explain your judgement and what it rests on').max(1200),
-});
+  return z.discriminatedUnion('kind', [factSchema, analysisSchema]);
+}
 
-const schema = z.discriminatedUnion('kind', [factSchema, analysisSchema]);
-type FormValues = z.infer<typeof schema>;
+type FormValues = z.infer<ReturnType<typeof buildSchema>>;
 
 export interface AddEventDialogProps {
   open: boolean;
@@ -54,12 +60,14 @@ export interface AddEventDialogProps {
 
 /** One form, two records: a fact or an analysis note. The separation is enforced by the schema. */
 export function AddEventDialog({ open, onClose, personId, processIds, recentEvents }: AddEventDialogProps) {
+  const t = useT();
   const user = useCurrentUser();
   const now = useNow();
   const upsert = useAppStore((s) => s.upsert);
   const audit = useAppStore((s) => s.audit);
   const newId = useAppStore((s) => s.newId);
   const { toast } = useToast();
+  const schema = useMemo(() => buildSchema(t), [t]);
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { kind: 'fact', occurredDate: now.toISOString().slice(0, 10), approximate: false, eventType: 'social-work.visit', title: '', detail: '', significance: 'moderate', visibility: 'agency-only' },
@@ -76,7 +84,7 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
       const a: ChronologyAnalysis = { id: newId('ana'), synthetic: true, subjectId: personId, processId: processIds[0], eventIds: values.eventIds, authorUserId: user.id, authorName: by, agency: user.agency, recordedAt: now.toISOString(), kind: values.analysisKind, title: values.title, text: values.text };
       upsert('analyses', a);
       audit({ act: 'edit', targetType: 'event', targetId: a.id, targetLabel: `Analysis note: ${a.title}`, processId: processIds[0] });
-      toast({ title: 'Analysis note recorded', text: 'It sits in the analysis lane, linked to the facts it rests on.', tone: 'success' });
+      toast({ title: t('chronology.addEvent.toast.analysisTitle'), text: t('chronology.addEvent.toast.analysisText'), tone: 'success' });
     } else {
       let lawfulBasisId: string | undefined;
       if (values.visibility === 'integrated') {
@@ -88,7 +96,7 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
       const ev: ChronologyEvent = { id: newId('evt'), synthetic: true, subjectIds: [personId], occurredAt, hasTime: Boolean(values.occurredTime), approximate: values.approximate, recordedAt: now.toISOString(), agency: user.agency, sourceSystem: 'manual', recordedByUserId: user.id, recordedByName: by, eventType: values.eventType, title: values.title, detail: values.detail, response: values.response || undefined, outcome: values.outcome || undefined, significance: values.significance, significanceReason: values.significanceReason || undefined, linkedPersonIds: [], linkedProcessIds: processIds, evidenceRefs: [], visibility: values.visibility, lawfulBasisId, versions: [{ at: now.toISOString(), byUserId: user.id, byName: by, change: 'Recorded' }] };
       upsert('events', ev);
       audit({ act: 'edit', targetType: 'event', targetId: ev.id, targetLabel: ev.title, processId: processIds[0] });
-      toast({ title: 'Event recorded', text: values.visibility === 'integrated' ? 'Shared into the integrated chronology with a lawful basis.' : "Added to your agency's chronology.", tone: 'success' });
+      toast({ title: t('chronology.addEvent.toast.factTitle'), text: values.visibility === 'integrated' ? t('chronology.addEvent.toast.factIntegrated') : t('chronology.addEvent.toast.factAgency'), tone: 'success' });
     }
     form.reset();
     onClose();
@@ -98,15 +106,15 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
     <Dialog
       open={open}
       onClose={onClose}
-      title="Record in the chronology"
+      title={t('chronology.addEvent.title')}
       size="lg"
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>
-            Cancel
+            {t('common.actions.cancel')}
           </Button>
           <Button variant="primary" onClick={() => void form.handleSubmit(submit)()}>
-            {kind === 'analysis' ? 'Record analysis note' : 'Record event'}
+            {kind === 'analysis' ? t('chronology.addEvent.submitAnalysis') : t('chronology.addEvent.submitFact')}
           </Button>
         </>
       }
@@ -117,7 +125,7 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
           name="kind"
           render={({ field }) => (
             <RadioGroup
-              legend="What are you recording?"
+              legend={t('chronology.addEvent.kind.legend')}
               name="kind"
               value={field.value}
               onChange={(v) => {
@@ -126,8 +134,8 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
               }}
               orientation="horizontal"
               options={[
-                { value: 'fact', label: 'A fact', hint: 'Something that happened: dated, brief, no opinion.' },
-                { value: 'analysis', label: 'An analysis note', hint: 'Your professional judgement about facts already recorded.' },
+                { value: 'fact', label: t('chronology.addEvent.kind.fact'), hint: t('chronology.addEvent.kind.factHint') },
+                { value: 'analysis', label: t('chronology.addEvent.kind.analysis'), hint: t('chronology.addEvent.kind.analysisHint') },
               ]}
             />
           )}
@@ -135,57 +143,57 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
         {kind === 'fact' ? (
           <>
             <div className="cluster" style={{ alignItems: 'flex-start' }}>
-              <Controller control={form.control} name="occurredDate" render={({ field }) => <DateField label="Date" required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={'occurredDate' in errors ? errors.occurredDate?.message : undefined} />} />
-              <TextField label="Time (if known)" type="time" {...form.register('occurredTime')} />
-              <CheckboxField label="Date is approximate" {...form.register('approximate')} />
+              <Controller control={form.control} name="occurredDate" render={({ field }) => <DateField label={t('chronology.addEvent.fields.date')} required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={'occurredDate' in errors ? errors.occurredDate?.message : undefined} />} />
+              <TextField label={t('chronology.addEvent.fields.time')} type="time" {...form.register('occurredTime')} />
+              <CheckboxField label={t('chronology.addEvent.fields.approximate')} {...form.register('approximate')} />
             </div>
-            <SelectField label="Event type" required {...form.register('eventType')} options={EVENT_TYPES.map((t) => ({ value: t, label: t }))} />
-            <TextField label="Title (one line, plain language)" required maxLength={120} {...form.register('title')} error={'title' in errors ? errors.title?.message : undefined} />
-            <TextareaField label="Detail (short and factual)" required maxLength={600} {...form.register('detail')} error={'detail' in errors ? errors.detail?.message : undefined} hint="What happened, who was there, what was seen or said. Not what you think about it." />
-            <TextareaField label="Response (what was done)" maxLength={400} {...form.register('response')} />
-            <TextareaField label="Outcome (what changed)" maxLength={400} {...form.register('outcome')} />
-            <SelectField label="Significance" required {...form.register('significance')} options={SIGNIFICANCES.map((s) => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))} />
-            {significance === 'high' ? <TextField label="Why is this high significance?" required {...form.register('significanceReason')} error={'significanceReason' in errors ? errors.significanceReason?.message : undefined} /> : null}
+            <SelectField label={t('chronology.addEvent.fields.eventType')} required {...form.register('eventType')} options={EVENT_TYPES.map((eventType) => ({ value: eventType, label: eventType }))} />
+            <TextField label={t('chronology.addEvent.fields.title')} required maxLength={120} {...form.register('title')} error={'title' in errors ? errors.title?.message : undefined} />
+            <TextareaField label={t('chronology.addEvent.fields.detail')} required maxLength={600} {...form.register('detail')} error={'detail' in errors ? errors.detail?.message : undefined} hint={t('chronology.addEvent.fields.detailHint')} />
+            <TextareaField label={t('chronology.addEvent.fields.response')} maxLength={400} {...form.register('response')} />
+            <TextareaField label={t('chronology.addEvent.fields.outcome')} maxLength={400} {...form.register('outcome')} />
+            <SelectField label={t('chronology.addEvent.fields.significance')} required {...form.register('significance')} options={SIGNIFICANCES.map((s) => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))} />
+            {significance === 'high' ? <TextField label={t('chronology.addEvent.fields.significanceReason')} required {...form.register('significanceReason')} error={'significanceReason' in errors ? errors.significanceReason?.message : undefined} /> : null}
             <Controller
               control={form.control}
               name="visibility"
               render={({ field }) => (
                 <RadioGroup
-                  legend="Visibility"
+                  legend={t('chronology.addEvent.visibility.legend')}
                   name="visibility"
                   value={field.value}
                   onChange={field.onChange}
                   options={[
-                    { value: 'agency-only', label: 'My agency only', hint: 'Single-agency chronology.' },
-                    { value: 'integrated', label: 'Integrated chronology', hint: 'Shared with the other agencies on the case. A lawful basis is recorded.' },
+                    { value: 'agency-only', label: t('chronology.addEvent.visibility.agencyOnly'), hint: t('chronology.addEvent.visibility.agencyOnlyHint') },
+                    { value: 'integrated', label: t('chronology.addEvent.visibility.integrated'), hint: t('chronology.addEvent.visibility.integratedHint') },
                   ]}
                 />
               )}
             />
             {visibility === 'integrated' ? (
               <>
-                <TextField label="Purpose of sharing" required {...form.register('purpose')} error={'purpose' in errors ? errors.purpose?.message : undefined} />
-                <TextareaField label="Necessity and proportionality" required {...form.register('necessity')} error={'necessity' in errors ? errors.necessity?.message : undefined} hint="Why the other agencies need this to protect the person, and why nothing less would do." />
+                <TextField label={t('chronology.addEvent.fields.purpose')} required {...form.register('purpose')} error={'purpose' in errors ? errors.purpose?.message : undefined} />
+                <TextareaField label={t('chronology.addEvent.fields.necessity')} required {...form.register('necessity')} error={'necessity' in errors ? errors.necessity?.message : undefined} hint={t('chronology.addEvent.fields.necessityHint')} />
               </>
             ) : null}
           </>
         ) : (
           <>
-            <SelectField label="Kind of note" required {...form.register('analysisKind')} options={[{ value: 'pattern', label: 'Pattern' }, { value: 'risk', label: 'Risk judgement' }, { value: 'recommendation', label: 'Recommendation' }]} />
-            <TextField label="Title" required maxLength={120} {...form.register('title')} error={'title' in errors ? errors.title?.message : undefined} />
-            <TextareaField label="Your judgement and what it rests on" required maxLength={1200} {...form.register('text')} error={'text' in errors ? errors.text?.message : undefined} />
+            <SelectField label={t('chronology.addEvent.analysis.kind')} required {...form.register('analysisKind')} options={[{ value: 'pattern', label: t('chronology.addEvent.analysis.kindPattern') }, { value: 'risk', label: t('chronology.addEvent.analysis.kindRisk') }, { value: 'recommendation', label: t('chronology.addEvent.analysis.kindRecommendation') }]} />
+            <TextField label={t('chronology.addEvent.analysis.title')} required maxLength={120} {...form.register('title')} error={'title' in errors ? errors.title?.message : undefined} />
+            <TextareaField label={t('chronology.addEvent.analysis.text')} required maxLength={1200} {...form.register('text')} error={'text' in errors ? errors.text?.message : undefined} />
             <Controller
               control={form.control}
               name="eventIds"
               render={({ field }) => (
                 <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
-                  <legend style={{ fontWeight: 700, fontSize: 'var(--text-sm)', marginBottom: 6 }}>Facts this note rests on (required)</legend>
+                  <legend style={{ fontWeight: 700, fontSize: 'var(--text-sm)', marginBottom: 6 }}>{t('chronology.addEvent.analysis.eventsLegend')}</legend>
                   {'eventIds' in errors && errors.eventIds ? <div role="alert" style={{ color: 'var(--color-risk-critical)', fontSize: 'var(--text-sm)' }}>{errors.eventIds.message}</div> : null}
                   <div className="stack" style={{ gap: 4, maxHeight: 220, overflow: 'auto' }}>
                     {recentEvents.slice(0, 40).map((e) => (
                       <CheckboxField
                         key={e.id}
-                        label={`${e.occurredAt.slice(0, 10)}: ${e.title}`}
+                        label={t('chronology.addEvent.analysis.eventOption', { date: e.occurredAt.slice(0, 10), title: e.title })}
                         checked={field.value.includes(e.id)}
                         onChange={(ev) => field.onChange(ev.target.checked ? [...field.value, e.id] : field.value.filter((x) => x !== e.id))}
                       />

@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCY_SHORT, type Agency, type ChronologyAnalysis, type ChronologyEvent, type LensResult } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { AGENCY_GLYPHS, AgencyMark } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
@@ -52,6 +53,7 @@ function ticksFor(from: Date, to: Date): Array<{ at: Date; label: string; major:
 }
 
 export function LanesChart({ events, analyses, agencies, domain, lensResults, highlighted, selectedEventId, selectedAnalysisId, onSelectEvent, onSelectAnalysis, onBrush, compact = false, settle = false }: LanesChartProps) {
+  const t = useT();
   const wrapRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(900);
   const [drag, setDrag] = useState<{ x0: number; x1: number } | null>(null);
@@ -160,30 +162,30 @@ export function LanesChart({ events, analyses, agencies, domain, lensResults, hi
   const dimming = highlighted.size > 0;
 
   return (
-    <div className={styles.chart} data-compact={compact ? 'true' : undefined} role="group" aria-label="Chronology lanes by agency">
+    <div className={styles.chart} data-compact={compact ? 'true' : undefined} role="group" aria-label={t('chronology.lanes.group')}>
       <div className={styles.labels} aria-hidden="true">
         {lanes.map((l) => (
           <div key={l.key} className={styles.label} data-lane={l.key}>
-            {l.agency ? <AgencyMark agency={l.agency} /> : 'Analysis'}
+            {l.agency ? <AgencyMark agency={l.agency} /> : t('chronology.lanes.analysisLane')}
           </div>
         ))}
         <div className={styles.axisLabel} />
       </div>
       <div className={styles.svgWrap} ref={wrapRef}>
-        <svg className={styles.svg} width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="application" aria-label={`${events.length} events across ${agencies.length} agencies. Use Tab to reach an event, arrow keys to move between events, Enter to open. Drag to zoom to a period.`} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp}>
+        <svg className={styles.svg} width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="application" aria-label={t('chronology.lanes.instructions', { events: events.length, agencies: agencies.length })} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp}>
           {lanes.map((l, i) => (
             <g key={l.key} className={settle ? 'settle-in' : undefined} data-lane={Math.min(i, 5)}>
               {l.key === 'analysis' ? <rect className={styles.analysisBand} x={0} y={i * laneHeight + 8} width={width} height={laneHeight} /> : null}
               <line className={styles.laneLine} x1={0} x2={width} y1={(i + 1) * laneHeight + 8} y2={(i + 1) * laneHeight + 8} />
             </g>
           ))}
-          {ticks.map((t) => {
-            const tx = x(t.at.toISOString());
+          {ticks.map((tick) => {
+            const tx = x(tick.at.toISOString());
             return (
-              <g key={t.at.toISOString()}>
+              <g key={tick.at.toISOString()}>
                 <line className={styles.gridLine} x1={tx} x2={tx} y1={8} y2={height - AXIS} />
-                <text className={styles.axisText} x={tx + 3} y={height - 8} fontWeight={t.major ? 700 : 400}>
-                  {t.label}
+                <text className={styles.axisText} x={tx + 3} y={height - 8} fontWeight={tick.major ? 700 : 400}>
+                  {tick.label}
                 </text>
               </g>
             );
@@ -214,7 +216,7 @@ export function LanesChart({ events, analyses, agencies, domain, lensResults, hi
             const labelText = a.title.length > 34 ? `${a.title.slice(0, 32)}...` : a.title;
             const labelX = Math.max(pad, Math.min(sx, width - pad - labelText.length * 6.2));
             return (
-              <g key={a.id} className={styles.analysis} data-selected={selectedAnalysisId === a.id ? 'true' : undefined} tabIndex={0} role="button" aria-label={`Analysis: ${a.title}, ${a.authorName}`} onClick={(e) => { e.stopPropagation(); onSelectAnalysis(a.id); }} onPointerDown={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectAnalysis(a.id); } }}>
+              <g key={a.id} className={styles.analysis} data-selected={selectedAnalysisId === a.id ? 'true' : undefined} tabIndex={0} role="button" aria-label={t('chronology.lanes.analysisLabel', { title: a.title, author: a.authorName })} onClick={(e) => { e.stopPropagation(); onSelectAnalysis(a.id); }} onPointerDown={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectAnalysis(a.id); } }}>
                 <line x1={sx} x2={ex} y1={y} y2={y} />
                 <line x1={sx} x2={sx} y1={y - 4} y2={y + 4} />
                 <line x1={ex} x2={ex} y1={y - 4} y2={y + 4} />
@@ -230,7 +232,8 @@ export function LanesChart({ events, analyses, agencies, domain, lensResults, hi
             const Glyph = AGENCY_GLYPHS[p.event.agency];
             const r = RADIUS[p.event.significance];
             const style = { '--agency': `var(--color-agency-${p.event.agency})` } as CSSProperties;
-            const label = `${p.event.title}, ${p.event.occurredAt.slice(0, 10)}, ${AGENCY_SHORT[p.event.agency]}, ${p.event.significance} significance`;
+            const label = t('chronology.lanes.pointLabel', { title: p.event.title, date: p.event.occurredAt.slice(0, 10), agency: AGENCY_SHORT[p.event.agency], significance: p.event.significance });
+            const glyphTransform = `translate(${p.cx - 5}, ${p.cy - 5})`;
             return (
               <g
                 key={p.event.id}
@@ -258,7 +261,7 @@ export function LanesChart({ events, analyses, agencies, domain, lensResults, hi
                 {highlighted.has(p.event.id) ? <circle className={styles.halo} cx={p.cx} cy={p.cy} r={r + 5} /> : null}
                 <circle cx={p.cx} cy={p.cy} r={r} />
                 {p.event.significance === 'high' && !compact ? (
-                  <g className={styles.glyph} transform={`translate(${p.cx - 5}, ${p.cy - 5})`}>
+                  <g className={styles.glyph} transform={glyphTransform}>
                     <Glyph size={16} variant="outline" style={{ width: 10, height: 10 }} />
                   </g>
                 ) : null}
@@ -278,7 +281,7 @@ export function LanesChart({ events, analyses, agencies, domain, lensResults, hi
             </g>
           ) : null}
         </svg>
-        <div className={styles.hint}>Drag across the axis to zoom to a period. Point size is significance. Dashed halos mark events a pattern lens is prompting about.</div>
+        <div className={styles.hint}>{t('chronology.lanes.hint')}</div>
       </div>
     </div>
   );
