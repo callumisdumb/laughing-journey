@@ -47,6 +47,7 @@ const EXEMPTIONS = [
   { file: 'docs/DECISIONS.md', rules: '*', reason: 'D-063 and D-064 record the algorithm choices, including the rejected ones.' },
   { file: 'docs/NOTES.md', rules: '*', reason: 'The visual log records what was tried and rejected.' },
   { file: 'docs/DPIA-NOTES.md', rules: '*', reason: 'The DPIA note names the algorithms for the Article 32 mapping.' },
+  { file: 'docs/HANDOVER.md', rules: '*', reason: 'Section 2 summarises D-063 and D-064, which means listing the refused algorithms.' },
 ];
 
 const EXTENSIONS = /\.(ts|tsx|js|jsx|mjs|cjs|rs|md)$/;

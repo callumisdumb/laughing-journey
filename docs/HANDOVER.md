@@ -1,6 +1,6 @@
 # Handover
 
-What was built, what was decided, what was verified, and what is left. Read with `docs/BRIEF.md` (the request), `docs/PLAN.md` (the shape), `docs/DESIGN.md` (the look), `docs/DECISIONS.md` (the why), `docs/NOTES.md` (the phase logs), `docs/RESEARCH.md` (the sources) and `docs/DEMO.md` (the ten minute script).
+What was built, what was decided, what was verified, and what is left. Read with `docs/BRIEF.md` (the request), `docs/PLAN.md` (the shape), `docs/DESIGN.md` (the look), `docs/DECISIONS.md` (the why), `docs/NOTES.md` (the phase logs), `docs/RESEARCH.md` (the sources) and `docs/DEMO.md` (the demo script), `docs/THREAT-MODEL.md`, `docs/SECURITY.md`, `docs/CRYPTO-INVENTORY.md` and `docs/DPIA-NOTES.md` (the cryptographic architecture, what it does not do, and the mapping to Article 32).
 
 Everything in the dataset is fictional. Postcodes are in the Q, V and X ranges, CHI numbers are synthetic, and every person, address, organisation and record was invented for this mockup.
 
@@ -12,6 +12,7 @@ Everything in the dataset is fictional. Postcodes are in the Q, V and X ranges, 
 | Design system | `packages/ui`, `apps/web/styles/tokens.css`, `docs/DESIGN.md` | Warm paper, heather accent, Atkinson Hyperlegible, Bricolage Grotesque, JetBrains Mono for audit only. Light and dark, comfortable and compact. Contrast is checked by a script over every text and control pairing. |
 | Synthetic data | `packages/mock-data` | Deterministic generator (seed `clydeshore-2026`, demo now 02 Sep 2026 09:00), eight worked scenarios under `src/scenarios`, 58 background households, audit trail. |
 | Copy catalogue | `packages/messages`, `docs/MESSAGES.md` | Every user-visible string in `src/en-GB.json` with `src/en-GB.context.json` beside it; typed keys, ICU MessageFormat, three-layer overrides (bundled, local file, session) edited in Admin, Copy and labels; `pnpm messages:check` in lint. |
+| Cryptography | `packages/crypto`, `docs/SECURITY.md`, `docs/THREAT-MODEL.md` | One suite (`v1-x25519-mlkem768-aes256gcm`): AES-256-GCM content, hybrid X25519 with ML-KEM-768 key wrapping, Ed25519 with ML-DSA-65 signatures, Argon2id, Shamir 2 of 5 escrow, a signed audit hash chain. Primitives from @noble only; known-answer vectors from RFC 7748, RFC 8032, RFC 5869, FIPS 180-4 and NIST CAVP; a committed ciphertext fixture that is never regenerated. `docs/CRYPTO-INVENTORY.md` is generated from the source and checked for drift in lint. |
 | Connectors | `packages/connectors` | Ten mock adapters with fixtures, mapping tables, simulated latency, outage and degraded toggles, and "how this would connect for real" copy. |
 | Web app | `apps/web` | Next.js 16 static export with a client-side router; every screen in brief section 10. |
 | Desktop shells | `apps/desktop-tauri`, `apps/desktop-electron` | Tauri 2 is the primary target (config, Rust menu, capabilities); Electron is the verified fallback. Both load `apps/web/out`. |
@@ -40,6 +41,13 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - TypeScript 5.9, ESLint 9.39, Playwright 1.62.1, TanStack Table 8.21 are pinned for the reasons in D-002, D-003, D-013, D-014 and D-038.
 - Every screen accepts `?state=` for designed states (D-012). Telemetry is off at the build level (D-018).
 - Electron is the demo build and Tauri stays configured (D-032); the Linux build container has no GTK or WebKitGTK, so the Tauri binary is not built here (D-007). See section 4.
+
+### Security
+- The claim is exact and the product never exceeds it: record content is end to end encrypted, the product as a whole is not, and every record is encrypted to exactly the principals the need-to-know rules entitle rather than to one organisational key (D-065). `docs/THREAT-MODEL.md` ranks the adversaries and `docs/SECURITY.md` section 10 is the rule that no screen may claim more.
+- Entitlement is a key, not a boolean: the resolver returns a wrapping list, `canSee` was deleted, and a test walks every source file to make sure nothing reintroduces a content gate (D-066).
+- Audit is signed and chained rather than encrypted, because it exists to be read by the people it polices; only the free-text detail is encrypted (D-067).
+- Escrow is two of five across five organisations, and two holders from the same organisation are refused in code rather than in policy (D-068). Two colluding holders can read anything, which is stated plainly everywhere it matters.
+- Primitives come from @noble only, and the build fails on MD5, SHA-1, ECB, DES, RC4, PBKDF2, scrypt, a supplied nonce or the platform pseudo-random source anywhere in the repository (D-063, D-064).
 
 ## 3. Verification table
 
@@ -84,7 +92,7 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 
 ## 5. Screenshot index
 
-148 screenshots under `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 (full page where the screen scrolls). Light comfortable is the default; dark and compact variants are listed where captured. Phase 6 holds the dark and compact sweep of every screen. The `classification` and `nmds` folders are the two rounds added on 03 September 2026 and are captured by their own specs.
+153 screenshots under `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 (full page where the screen scrolls). Light comfortable is the default; dark and compact variants are listed where captured. Phase 6 holds the dark and compact sweep of every screen. The `classification`, `nmds` and `security` folders are the three rounds added on 03 September 2026 and are captured by their own specs.
 
 ### phase-1
 
@@ -235,6 +243,15 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | nmds-filled | light comfortable |
 | nmds-return | light comfortable |
 
+### security
+
+| Screen | Variants |
+|---|---|
+| server-view | dark comfortable, light comfortable |
+| audit-chain | light comfortable |
+| statutory-disclosure | light comfortable |
+| help-security | light comfortable |
+
 ## 6. Known gaps and TODO(verify)
 
 Everything marked here is either configuration seeded from research rather than a primary source, or a deliberate limit of a mockup with no backend.
@@ -257,6 +274,10 @@ Everything marked here is either configuration seeded from research rather than 
 - Tauri binary not built in this environment (no GTK or WebKitGTK); Electron is the demo build (D-032) and Tauri stays configured; see section 4. The Tauri shell's catalogue-driven menu in `src-tauri/src/lib.rs` (embedded with `include_str!`, overrides from the store plugin) could not be compiled here for the same reason, so the first macOS or Windows build should check it; the Electron shell's equivalent was packaged and smoke-tested with the bundled `resources/en-GB.json`.
 - The MAPPA report is counts only, by design, and the unit test asserts that no name reaches its model.
 - Exclusions are keyed on the case-role register (D-035). A person who should be excluded but is not linked to the perpetrator by a relationship record, and not named in the referral, must be added to the register by hand; nothing infers it from free text.
+- Cryptography: `packages/crypto` and everything it drives are real and run on every page. What is represented rather than deployed is listed in `docs/SECURITY.md` section 9 and repeated here so nobody has to look: there is no transport security because there is no transport; escrow shares are held in software, not in a hardware security module; the connector gateway is a structural boundary in the code rather than a separately deployed component; and rotation is on demand because a mockup has no scheduler. Neither a penetration test nor an independent cryptographic review has happened, and a real deployment needs both.
+- Metadata is visible to whoever hosts the store, by design and in full: record identifiers, key-holder identifiers, coarse record type, classification, day-bucketed timestamps and the existence of links. The "What the host can see" screen in Admin shows it with real values rather than a sanitised version.
+- The blind index supports exact match on reference numbers and dates of birth bucketed to the month, and it reveals equality. Names are never indexed. Encrypted search is not solved here and nothing in the product says it is.
+- Removing someone from a case rotates the key and stops future access. It cannot unread what they have already read, and the interface says so at the point of removal.
 
 ### Waiting on the product owner
 - Ayrshire values for the four local clocks (ASP inquiry decision, ASP initial case conference, ASP plan review, MARAC research return): seeded values stay until then and are marked to verify.
@@ -266,6 +287,7 @@ Everything marked here is either configuration seeded from research rather than 
 ### Grep points
 - `TODO(verify)` in code marks the two configuration points above; every clock rule with `todoVerify: true` is listed in section 3.
 - `docs/DECISIONS.md` D-041 to D-046 and D-026 carry the domain and layout choices most likely to be questioned.
+- `docs/DECISIONS.md` D-063 to D-072 carry the cryptographic choices, and every one of them is the kind of thing a security reviewer will ask about first.
 
 ## 7. Commands
 
@@ -283,6 +305,8 @@ pnpm docs:data-model               # regenerate docs/DATA-MODEL.md from the Zod 
 pnpm messages:types                # regenerate the MessageKey union from packages/messages/src/en-GB.json
 pnpm messages:check                # ICU syntax, key usage, context coverage and style rules (also part of pnpm lint)
 pnpm messages:extract              # list string literals that have not moved to the catalogue
+pnpm crypto:inventory              # regenerate docs/CRYPTO-INVENTORY.md from the source
+pnpm crypto:inventory:check        # fail on drift between the source and the inventory (also part of pnpm lint)
 ```
 
 Playwright is pinned to 1.62.1. On macOS or Windows run `pnpm exec playwright install chromium` once in `apps/web` (it downloads the matching Chrome for Testing build); in the build container that download is blocked, so the suite runs against the preinstalled Chromium through `PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium` (D-038).

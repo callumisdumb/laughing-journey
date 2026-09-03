@@ -22,16 +22,16 @@ Every ciphertext and every key record carries its suite identifier, and decrypti
 
 | Algorithm | Purpose | Parameters | Rotation | Where the key lives | Used by |
 |---|---|---|---|---|---|
-| AES-256-GCM | Record content, wrapped keys, the local store at rest, audit detail fields | 256-bit key, 96-bit nonce | Per record, on every write; a fresh key on every rotation | Never stored: generated per record and wrapped to entitled principals | packages/crypto |
-| X25519 | Classical half of hybrid key establishment for key wrapping | 256-bit | Ephemeral per wrap; principal keys on the principal rotation schedule | Private half in the OS keychain (device) or wrapped to a user key (all others) | packages/crypto |
+| AES-256-GCM | Record content, wrapped keys, the local store at rest, audit detail fields | 256-bit key, 96-bit nonce | Per record, on every write; a fresh key on every rotation | Never stored: generated per record and wrapped to entitled principals | apps/web, packages/connectors, packages/crypto |
+| X25519 | Classical half of hybrid key establishment for key wrapping | 256-bit | Ephemeral per wrap; principal keys on the principal rotation schedule | Private half in the OS keychain (device) or wrapped to a user key (all others) | apps/web, packages/crypto |
 | ML-KEM-768 | Post-quantum half of hybrid key establishment, against harvest-now-decrypt-later | 1184-byte encapsulation key, 2400-byte decapsulation key, 1088-byte ciphertext | As X25519, alongside it | As X25519 | packages/crypto |
 | HKDF-SHA-256 | Deriving wrapping, local store, blind index, recovery and audit detail keys, one info string each | 256-bit output | Derived on demand; never stored | Not stored | packages/crypto |
 | Ed25519 | Audit entries, exports and enrolment approvals with a short verification horizon | 256-bit key, 64-byte signature | Per device; revoked on device revocation or departure | Private half in the OS keychain | packages/crypto |
 | ML-DSA-65 | Audit entries, meeting minutes and disclosure decisions that must verify in decades | 1952-byte public key, 4032-byte private key, ~3309-byte signature | As Ed25519, alongside it | As Ed25519 | packages/crypto |
 | Argon2id | Stretching a recovery passphrase | 65536 KiB memory, 3 passes, 4 lanes, 256-bit output | On every recovery | Not stored; the salt is stored beside the wrapped key | packages/crypto |
 | SHA-256 | The audit hash chain, and the hash inside HKDF and HMAC | 256-bit | Not applicable | Chain links stored in the clear beside each audit entry | packages/crypto |
-| HMAC-SHA-256 | Blind index tags for exact-match lookup on reference numbers and bucketed dates of birth | 256-bit key | With the index key, on the record rotation schedule | Index key held only by clients; tags stored by the server | packages/crypto |
-| Shamir's Secret Sharing over GF(256) | Splitting the escrow key so no one person holds it | 2 of 5 | On a schedule and on any holder's departure | One share per holder, in five different organisations; hardware security module backed in production | apps/web, packages/connectors, packages/crypto, packages/domain, packages/mock-data |
+| HMAC-SHA-256 | Blind index tags for exact-match lookup on reference numbers and bucketed dates of birth | 256-bit key | With the index key, on the record rotation schedule | Index key held only by clients; tags stored by the server | apps/web, packages/crypto |
+| Shamir's Secret Sharing over GF(256) | Splitting the escrow key so no one person holds it | 2 of 5 | On a schedule and on any holder's departure | One share per holder, in five different organisations; hardware security module backed in production | apps/web, packages/crypto |
 
 ## Key types
 

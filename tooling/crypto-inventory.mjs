@@ -105,7 +105,7 @@ const algorithms = [
   { name: spec.passwordKdf, purpose: 'Stretching a recovery passphrase', length: `${argonMemory} KiB memory, ${argonPasses} passes, ${argonLanes} lanes, 256-bit output`, rotation: 'On every recovery', storage: 'Not stored; the salt is stored beside the wrapped key', used: usedBy('argon2id') },
   { name: 'SHA-256', purpose: 'The audit hash chain, and the hash inside HKDF and HMAC', length: '256-bit', rotation: 'Not applicable', storage: 'Chain links stored in the clear beside each audit entry', used: usedBy('sha256') },
   { name: 'HMAC-SHA-256', purpose: 'Blind index tags for exact-match lookup on reference numbers and bucketed dates of birth', length: '256-bit key', rotation: 'With the index key, on the record rotation schedule', storage: 'Index key held only by clients; tags stored by the server', used: usedBy('blindIndexTag|hmac\\(') },
-  { name: `Shamir's Secret Sharing over GF(256)`, purpose: 'Splitting the escrow key so no one person holds it', length: `${escrowThreshold} of ${escrowShares}`, rotation: 'On a schedule and on any holder\'s departure', storage: 'One share per holder, in five different organisations; hardware security module backed in production', used: usedBy('shamir|combine\\(|split\\(') },
+  { name: `Shamir's Secret Sharing over GF(256)`, purpose: 'Splitting the escrow key so no one person holds it', length: `${escrowThreshold} of ${escrowShares}`, rotation: 'On a schedule and on any holder\'s departure', storage: 'One share per holder, in five different organisations; hardware security module backed in production', used: usedBy('shamir|splitEscrowKey|reconstructEscrowKey|ESCROW_THRESHOLD|ESCROW_SHARES') },
 ];
 
 const keyKinds = [
