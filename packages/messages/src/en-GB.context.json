@@ -1,4 +1,221 @@
 {
+  "actions": {
+    "audit": {
+      "complete": {
+        "where": "Audit entry when an action is completed, with the action title"
+      },
+      "escalated": {
+        "where": "Audit entry when an action is escalated, with who it went to and the action title"
+      }
+    },
+    "completeDialog": {
+      "confirm": {
+        "maxLength": 16,
+        "screenshot": "phase-4/actions-complete-light-comfortable.png",
+        "where": "Primary button of the record completion dialog"
+      },
+      "evidence": {
+        "maxLength": 24,
+        "screenshot": "phase-4/actions-complete-light-comfortable.png",
+        "where": "Textarea label in the record completion dialog"
+      },
+      "evidenceHint": {
+        "screenshot": "phase-4/actions-complete-light-comfortable.png",
+        "where": "Hint under the evidence textarea in the record completion dialog"
+      },
+      "title": {
+        "maxLength": 24,
+        "screenshot": "phase-4/actions-complete-light-comfortable.png",
+        "where": "Title of the dialog that records an action as complete"
+      },
+      "toastText": {
+        "where": "Toast body after an action is completed"
+      },
+      "toastTitle": {
+        "maxLength": 20,
+        "where": "Toast title after an action is completed"
+      }
+    },
+    "escalateDialog": {
+      "confirm": {
+        "maxLength": 12,
+        "where": "Danger button of the escalate dialog"
+      },
+      "title": {
+        "maxLength": 32,
+        "where": "Title of the dialog that escalates an overdue action"
+      },
+      "to": {
+        "maxLength": 16,
+        "where": "Text field label in the escalate dialog"
+      },
+      "toastText": {
+        "where": "Toast body after an action is escalated"
+      },
+      "toastTitle": {
+        "where": "Toast title after an action is escalated, with who it went to"
+      },
+      "toHint": {
+        "where": "Hint under the escalate to field: the process short name and the action owner"
+      },
+      "toPlaceholder": {
+        "where": "Placeholder of the escalate to field"
+      }
+    },
+    "list": {
+      "columns": {
+        "action": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Column header of the actions list"
+        },
+        "due": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Column header of the actions list"
+        },
+        "evidence": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Column header of the actions list"
+        },
+        "owner": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Column header of the actions list"
+        },
+        "status": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Column header of the actions list"
+        }
+      },
+      "complete": {
+        "maxLength": 12,
+        "screenshot": "phase-4/actions-light-comfortable.png",
+        "where": "Row button on an open action that opens the record completion dialog"
+      },
+      "done": {
+        "screenshot": "phase-4/actions-light-comfortable.png",
+        "where": "Small line under the due date of a completed action, with the completion date and time"
+      },
+      "empty": {
+        "mineText": {
+          "where": "Empty state body of the actions list when viewing your own actions"
+        },
+        "text": {
+          "where": "Empty state body of the actions list for the team and all views"
+        },
+        "title": {
+          "maxLength": 20,
+          "where": "Empty state title of the actions list"
+        }
+      },
+      "escalate": {
+        "maxLength": 12,
+        "screenshot": "phase-4/actions-light-comfortable.png",
+        "where": "Quiet row button on an overdue action that opens the escalate dialog"
+      },
+      "escalatedNote": {
+        "screenshot": "phase-4/actions-light-comfortable.png",
+        "where": "Sentence in the meta line of an action that has been escalated: to whom and when"
+      },
+      "filters": {
+        "groupBy": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Select label of the grouping control above the actions list"
+        },
+        "status": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Select label of the status filter above the actions list"
+        }
+      },
+      "fromMeeting": {
+        "screenshot": "phase-4/actions-light-comfortable.png",
+        "where": "Fragment in the meta line of an action that came from a meeting; the link tag wraps the meeting title"
+      },
+      "groupOptions": {
+        "agency": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Option of the group by select"
+        },
+        "none": {
+          "maxLength": 16,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Option of the group by select meaning a single ungrouped table"
+        },
+        "process": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Option of the group by select"
+        }
+      },
+      "lede": {
+        "screenshot": "phase-4/actions-light-comfortable.png",
+        "where": "Lede under the actions list title, ending with how many are overdue"
+      },
+      "meetingFallback": {
+        "maxLength": 12,
+        "where": "Stands in for the meeting title in an action's meta line when the meeting is not in the dataset"
+      },
+      "overdue": {
+        "maxLength": 12,
+        "screenshot": "phase-4/actions-light-comfortable.png",
+        "where": "Pill on an action whose due date has passed"
+      },
+      "statusOptions": {
+        "any": {
+          "maxLength": 8,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Option of the status filter meaning every status"
+        },
+        "complete": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Option of the status filter"
+        },
+        "open": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Option of the status filter"
+        },
+        "overdue": {
+          "maxLength": 12,
+          "screenshot": "phase-4/actions-light-comfortable.png",
+          "where": "Option of the status filter"
+        }
+      },
+      "title": {
+        "maxLength": 12,
+        "screenshot": "phase-4/actions-light-comfortable.png",
+        "where": "Page title of the actions list"
+      },
+      "viewsLabel": {
+        "screenshot": "phase-4/actions-light-comfortable.png",
+        "where": "Accessible name of the mine, my team and all switch above the actions list"
+      }
+    },
+    "views": {
+      "all": {
+        "maxLength": 16,
+        "screenshot": "phase-4/actions-team-light-compact.png",
+        "where": "Third button of the whose actions switch: every action the viewer can see"
+      },
+      "mine": {
+        "maxLength": 8,
+        "screenshot": "phase-4/actions-light-comfortable.png",
+        "where": "First button of the whose actions switch"
+      },
+      "team": {
+        "maxLength": 12,
+        "screenshot": "phase-4/actions-team-light-compact.png",
+        "where": "Second button of the whose actions switch"
+      }
+    }
+  },
   "admin": {
     "copy": {
       "audit": {

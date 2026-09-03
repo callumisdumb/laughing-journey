@@ -1,4 +1,71 @@
 {
+  "actions": {
+    "audit": {
+      "complete": "Action complete: {title}",
+      "escalated": "Action escalated to {name}: {title}"
+    },
+    "completeDialog": {
+      "confirm": "Mark complete",
+      "evidence": "Evidence of completion",
+      "evidenceHint": "What was done, when, and how you know. Inspectors read this.",
+      "title": "Record completion",
+      "toastText": "Evidence of completion is recorded against the plan.",
+      "toastTitle": "Action complete"
+    },
+    "escalateDialog": {
+      "confirm": "Escalate",
+      "title": "Escalate an overdue action",
+      "to": "Escalate to",
+      "toastText": "The escalation is visible on the process and the audit log.",
+      "toastTitle": "Escalated to {name}",
+      "toHint": "{process} action owned by {owner}.",
+      "toPlaceholder": "Team leader or chair by name"
+    },
+    "list": {
+      "columns": {
+        "action": "Action",
+        "due": "Due",
+        "evidence": "Evidence",
+        "owner": "Owner",
+        "status": "Status"
+      },
+      "complete": "Complete",
+      "done": "done {when}",
+      "empty": {
+        "mineText": "Nothing is assigned to you with this status.",
+        "text": "No actions match.",
+        "title": "No actions"
+      },
+      "escalate": "Escalate",
+      "escalatedNote": "Escalated to {name} on {date}.",
+      "filters": {
+        "groupBy": "Group by",
+        "status": "Status"
+      },
+      "fromMeeting": "from <link>{title}</link>",
+      "groupOptions": {
+        "agency": "Agency",
+        "none": "No grouping",
+        "process": "Process"
+      },
+      "lede": "Every owned, dated action across every process you can see. {count, plural, =0 {Nothing overdue.} other {# overdue.}}",
+      "meetingFallback": "meeting",
+      "overdue": "overdue",
+      "statusOptions": {
+        "any": "Any",
+        "complete": "Complete",
+        "open": "Open",
+        "overdue": "Overdue"
+      },
+      "title": "Actions",
+      "viewsLabel": "Whose actions"
+    },
+    "views": {
+      "all": "All I can see",
+      "mine": "Mine",
+      "team": "My team"
+    }
+  },
   "admin": {
     "copy": {
       "audit": {

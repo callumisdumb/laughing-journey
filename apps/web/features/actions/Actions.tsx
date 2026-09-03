@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCY_SHORT, PROCESS_SHORT, formatDate, formatDateTime, relativeDays, type Action } from '@mas/domain';
+import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, Dialog, Pill, ProcessMark, SelectField, Table, TableWrap, TextField, TextareaField, useToast } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { useEffect, useState } from 'react';
@@ -16,7 +17,11 @@ import styles from './Actions.module.css';
 type View = 'mine' | 'team' | 'all';
 type GroupBy = 'process' | 'agency' | 'none';
 
+/** Renders the <link> tag of a catalogue message as a link to the given path. */
+const linkTo = (href: string): RichValues => ({ link: (chunks) => <AppLink href={href}>{chunks}</AppLink> });
+
 export function Actions() {
+  const t = useT();
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
@@ -76,8 +81,8 @@ export function Actions() {
   function complete() {
     if (!completing) return;
     upsert('actions', { ...completing, status: 'complete', completedAt: now.toISOString(), evidence });
-    audit({ act: 'edit', targetType: 'process', targetId: completing.processId, targetLabel: `Action complete: ${completing.title}`, processId: completing.processId });
-    toast({ title: 'Action complete', text: 'Evidence of completion is recorded against the plan.', tone: 'success' });
+    audit({ act: 'edit', targetType: 'process', targetId: completing.processId, targetLabel: t('actions.audit.complete', { title: completing.title }), processId: completing.processId });
+    toast({ title: t('actions.completeDialog.toastTitle'), text: t('actions.completeDialog.toastText'), tone: 'success' });
     setCompleting(null);
     setEvidence('');
   }
@@ -85,8 +90,8 @@ export function Actions() {
   function escalate() {
     if (!escalating) return;
     upsert('actions', { ...escalating, escalatedAt: now.toISOString(), escalatedToName: escalateTo });
-    audit({ act: 'edit', targetType: 'process', targetId: escalating.processId, targetLabel: `Action escalated to ${escalateTo}: ${escalating.title}`, processId: escalating.processId });
-    toast({ title: `Escalated to ${escalateTo}`, text: 'The escalation is visible on the process and the audit log.', tone: 'info' });
+    audit({ act: 'edit', targetType: 'process', targetId: escalating.processId, targetLabel: t('actions.audit.escalated', { name: escalateTo, title: escalating.title }), processId: escalating.processId });
+    toast({ title: t('actions.escalateDialog.toastTitle', { name: escalateTo }), text: t('actions.escalateDialog.toastText'), tone: 'info' });
     setEscalating(null);
     setEscalateTo('');
   }
@@ -97,17 +102,17 @@ export function Actions() {
     <div className="page">
       <div className="page-head">
         <div className="page-head-text">
-          <h1>Actions</h1>
-          <p className="page-lede">Every owned, dated action across every process you can see. {overdueCount > 0 ? `${overdueCount} overdue.` : 'Nothing overdue.'}</p>
+          <h1>{t('actions.list.title')}</h1>
+          <p className="page-lede">{t('actions.list.lede', { count: overdueCount })}</p>
         </div>
       </div>
       <div className={styles.toolbar}>
-        <div className={styles.views} role="group" aria-label="Whose actions">
+        <div className={styles.views} role="group" aria-label={t('actions.list.viewsLabel')}>
           {(
             [
-              ['mine', 'Mine'],
-              ['team', 'My team'],
-              ['all', 'All I can see'],
+              ['mine', t('actions.views.mine')],
+              ['team', t('actions.views.team')],
+              ['all', t('actions.views.all')],
             ] as Array<[View, string]>
           ).map(([v, label]) => (
             <button key={v} type="button" className={styles.view} aria-pressed={view === v} onClick={() => set('view', v === 'mine' ? null : v)}>
@@ -115,10 +120,10 @@ export function Actions() {
             </button>
           ))}
         </div>
-        <SelectField label="Status" value={status} onChange={(e) => set('status', e.target.value === 'open' ? null : e.target.value)} options={[{ value: 'open', label: 'Open' }, { value: 'overdue', label: 'Overdue' }, { value: 'complete', label: 'Complete' }, { value: 'any', label: 'Any' }]} />
-        <SelectField label="Group by" value={groupBy} onChange={(e) => set('group', e.target.value === 'process' ? null : e.target.value)} options={[{ value: 'process', label: 'Process' }, { value: 'agency', label: 'Agency' }, { value: 'none', label: 'No grouping' }]} />
+        <SelectField label={t('actions.list.filters.status')} value={status} onChange={(e) => set('status', e.target.value === 'open' ? null : e.target.value)} options={[{ value: 'open', label: t('actions.list.statusOptions.open') }, { value: 'overdue', label: t('actions.list.statusOptions.overdue') }, { value: 'complete', label: t('actions.list.statusOptions.complete') }, { value: 'any', label: t('actions.list.statusOptions.any') }]} />
+        <SelectField label={t('actions.list.filters.groupBy')} value={groupBy} onChange={(e) => set('group', e.target.value === 'process' ? null : e.target.value)} options={[{ value: 'process', label: t('actions.list.groupOptions.process') }, { value: 'agency', label: t('actions.list.groupOptions.agency') }, { value: 'none', label: t('actions.list.groupOptions.none') }]} />
       </div>
-      <ScreenState state={dev ?? (rows.length === 0 ? 'empty' : 'ready')} empty={{ title: 'No actions', text: view === 'mine' ? 'Nothing is assigned to you with this status.' : 'No actions match.' }}>
+      <ScreenState state={dev ?? (rows.length === 0 ? 'empty' : 'ready')} empty={{ title: t('actions.list.empty.title'), text: view === 'mine' ? t('actions.list.empty.mineText') : t('actions.list.empty.text') }}>
         {groups.map(([label, list]) => (
           <div key={label}>
             {groupBy !== 'none' ? <h2 className={styles.group}>{label}</h2> : null}
@@ -126,13 +131,13 @@ export function Actions() {
               <Table>
                 <thead>
                   <tr>
-                    <th scope="col">Action</th>
-                    <th scope="col">Owner</th>
-                    <th scope="col">Due</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Evidence</th>
+                    <th scope="col">{t('actions.list.columns.action')}</th>
+                    <th scope="col">{t('actions.list.columns.owner')}</th>
+                    <th scope="col">{t('actions.list.columns.due')}</th>
+                    <th scope="col">{t('actions.list.columns.status')}</th>
+                    <th scope="col">{t('actions.list.columns.evidence')}</th>
                     <th scope="col">
-                      <span className="visually-hidden">Actions</span>
+                      <span className="visually-hidden">{t('common.columns.actions')}</span>
                     </th>
                   </tr>
                 </thead>
@@ -147,8 +152,8 @@ export function Actions() {
                           <span className={styles.title}>{a.title}</span>
                           <span className={styles.meta}>
                             {process ? <AppLink href={processPath(process.id)}><ProcessMark type={process.type} /></AppLink> : null} {subject ? fullName(subject) : ''}
-                            {a.meetingId ? <> from <AppLink href={meetingPath(a.meetingId)}>{data.meetings.find((m) => m.id === a.meetingId)?.title ?? 'meeting'}</AppLink></> : ''}
-                            {a.escalatedAt ? ` Escalated to ${a.escalatedToName} on ${formatDate(a.escalatedAt)}.` : ''}
+                            {a.meetingId ? <> {t.rich('actions.list.fromMeeting', { ...linkTo(meetingPath(a.meetingId)), title: data.meetings.find((m) => m.id === a.meetingId)?.title ?? t('actions.list.meetingFallback') })}</> : ''}
+                            {a.escalatedAt ? <> {t('actions.list.escalatedNote', { name: a.escalatedToName ?? '', date: formatDate(a.escalatedAt) })}</> : ''}
                           </span>
                         </td>
                         <td>
@@ -156,11 +161,11 @@ export function Actions() {
                         </td>
                         <td className={overdue ? styles.overdue : undefined} style={{ whiteSpace: 'nowrap' }}>
                           {formatDate(a.due)}
-                          <span className={styles.meta}>{a.status === 'complete' ? `done ${a.completedAt ? formatDateTime(a.completedAt) : ''}` : relativeDays(days)}</span>
+                          <span className={styles.meta}>{a.status === 'complete' ? t('actions.list.done', { when: a.completedAt ? formatDateTime(a.completedAt) : '' }) : relativeDays(days)}</span>
                         </td>
                         <td>
                           <Pill size="sm" tone={a.status === 'complete' ? 'low' : overdue ? 'critical' : a.status === 'in-progress' ? 'accent' : 'neutral'}>
-                            {overdue ? 'overdue' : a.status.replace('-', ' ')}
+                            {overdue ? t('actions.list.overdue') : a.status.replace('-', ' ')}
                           </Pill>
                         </td>
                         <td>{a.evidence ?? ''}</td>
@@ -168,11 +173,11 @@ export function Actions() {
                           {a.status !== 'complete' && a.status !== 'cancelled' ? (
                             <span className={styles.rowActions}>
                               <Button size="sm" variant="secondary" onClick={() => setCompleting(a)}>
-                                Complete
+                                {t('actions.list.complete')}
                               </Button>
                               {overdue && !a.escalatedAt ? (
                                 <Button size="sm" variant="quiet" onClick={() => setEscalating(a)}>
-                                  Escalate
+                                  {t('actions.list.escalate')}
                                 </Button>
                               ) : null}
                             </span>
@@ -188,13 +193,41 @@ export function Actions() {
         ))}
       </ScreenState>
 
-      <Dialog open={completing !== null} onClose={() => setCompleting(null)} title="Record completion" actions={<><Button variant="quiet" onClick={() => setCompleting(null)}>Cancel</Button><Button variant="primary" disabled={evidence.trim().length < 5} onClick={complete}>Mark complete</Button></>}>
+      <Dialog
+        open={completing !== null}
+        onClose={() => setCompleting(null)}
+        title={t('actions.completeDialog.title')}
+        actions={
+          <>
+            <Button variant="quiet" onClick={() => setCompleting(null)}>
+              {t('common.actions.cancel')}
+            </Button>
+            <Button variant="primary" disabled={evidence.trim().length < 5} onClick={complete}>
+              {t('actions.completeDialog.confirm')}
+            </Button>
+          </>
+        }
+      >
         <p style={{ marginBottom: 10 }}>{completing?.title}</p>
-        <TextareaField label="Evidence of completion" required value={evidence} onChange={(e) => setEvidence(e.target.value)} hint="What was done, when, and how you know. Inspectors read this." />
+        <TextareaField label={t('actions.completeDialog.evidence')} required value={evidence} onChange={(e) => setEvidence(e.target.value)} hint={t('actions.completeDialog.evidenceHint')} />
       </Dialog>
-      <Dialog open={escalating !== null} onClose={() => setEscalating(null)} title="Escalate an overdue action" actions={<><Button variant="quiet" onClick={() => setEscalating(null)}>Cancel</Button><Button variant="danger" disabled={escalateTo.trim().length < 3} onClick={escalate}>Escalate</Button></>}>
+      <Dialog
+        open={escalating !== null}
+        onClose={() => setEscalating(null)}
+        title={t('actions.escalateDialog.title')}
+        actions={
+          <>
+            <Button variant="quiet" onClick={() => setEscalating(null)}>
+              {t('common.actions.cancel')}
+            </Button>
+            <Button variant="danger" disabled={escalateTo.trim().length < 3} onClick={escalate}>
+              {t('actions.escalateDialog.confirm')}
+            </Button>
+          </>
+        }
+      >
         <p style={{ marginBottom: 10 }}>{escalating?.title}</p>
-        <TextField label="Escalate to" required value={escalateTo} onChange={(e) => setEscalateTo(e.target.value)} placeholder="Team leader or chair by name" hint={escalating ? `${PROCESS_SHORT[data.processes.find((p) => p.id === escalating.processId)?.type ?? 'cp']} action owned by ${escalating.ownerName}.` : undefined} />
+        <TextField label={t('actions.escalateDialog.to')} required value={escalateTo} onChange={(e) => setEscalateTo(e.target.value)} placeholder={t('actions.escalateDialog.toPlaceholder')} hint={escalating ? t('actions.escalateDialog.toHint', { process: PROCESS_SHORT[data.processes.find((p) => p.id === escalating.processId)?.type ?? 'cp'], owner: escalating.ownerName }) : undefined} />
       </Dialog>
     </div>
   );
