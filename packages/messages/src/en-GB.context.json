@@ -7093,6 +7093,339 @@
       }
     }
   },
+  "sharing": {
+    "audit": {
+      "responded": {
+        "where": "Audit entry when a request for information is answered: who asked and how many fields were provided"
+      },
+      "sent": {
+        "where": "Audit entry when a queued share is sent: detail level and recipient"
+      }
+    },
+    "inbound": {
+      "notifications": {
+        "empty": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Line in the notifications sheet when nothing has been shared with the viewer"
+        },
+        "markRead": {
+          "maxLength": 12,
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Quiet button on an unread notification"
+        },
+        "meta": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Meta line of the notifications sheet: unread count"
+        },
+        "read": {
+          "maxLength": 8,
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Pill on a notification that has been read"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Heading of the notifications sheet on the inbound tab"
+        },
+        "whyYou": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Line under each notification giving the reason the viewer received it"
+        }
+      },
+      "requests": {
+        "asksAbout": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Heading of one inbound request: who asked, their agency and the subject"
+        },
+        "emptyText": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Empty state body of the requests sheet"
+        },
+        "emptyTitle": {
+          "maxLength": 16,
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Empty state title of the requests sheet"
+        },
+        "fields": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Line on an inbound request listing the fields asked for"
+        },
+        "meta": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Meta line of the requests sheet: open count"
+        },
+        "purpose": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Line on an inbound request giving its purpose"
+        },
+        "received": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Meta line of one inbound request: process, when it was received and when it is due"
+        },
+        "respond": {
+          "maxLength": 12,
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Primary button on an open inbound request"
+        },
+        "response": {
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Line on an answered inbound request: when and by whom, the text and the fields provided"
+        },
+        "title": {
+          "maxLength": 48,
+          "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+          "where": "Heading of the requests sheet on the inbound tab"
+        }
+      }
+    },
+    "lede": {
+      "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
+      "where": "Lede under the sharing page title"
+    },
+    "outbound": {
+      "columns": {
+        "detailLevel": {
+          "maxLength": 16,
+          "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
+          "where": "Column header of the outbound queue"
+        },
+        "process": {
+          "maxLength": 12,
+          "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
+          "where": "Column header of the outbound queue"
+        },
+        "recipient": {
+          "maxLength": 12,
+          "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
+          "where": "Column header of the outbound queue"
+        },
+        "status": {
+          "maxLength": 12,
+          "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
+          "where": "Column header of the outbound queue"
+        },
+        "when": {
+          "maxLength": 12,
+          "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
+          "where": "Column header of the outbound queue"
+        },
+        "why": {
+          "maxLength": 12,
+          "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
+          "where": "Column header of the outbound queue"
+        }
+      },
+      "empty": {
+        "text": {
+          "where": "Empty state body of the outbound queue"
+        },
+        "title": {
+          "maxLength": 16,
+          "where": "Empty state title of the outbound queue"
+        }
+      },
+      "send": {
+        "maxLength": 8,
+        "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
+        "where": "Row button on a queued share"
+      },
+      "sentToastText": {
+        "where": "Toast body after a queued share is sent, with the recipient name"
+      },
+      "sentToastTitle": {
+        "maxLength": 8,
+        "where": "Toast title after a queued share is sent"
+      }
+    },
+    "preview": {
+      "caseMembership": {
+        "maxLength": 20,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Rules row of the preview card when access comes from case membership rather than a rule"
+      },
+      "defaultDeny": {
+        "maxLength": 20,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Rules row of the preview card when no rule and no membership applies"
+      },
+      "empty": {
+        "text": {
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Empty state body of the preview tab before a process and a role are chosen"
+        },
+        "title": {
+          "maxLength": 32,
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Empty state title of the preview tab before a process and a role are chosen"
+        }
+      },
+      "everything": {
+        "maxLength": 12,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Named fields row of the preview card for full access"
+      },
+      "excludedText": {
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Excluded party row of the preview card: the role and party on the case register, the reason, and that it cannot be lifted"
+      },
+      "hidden": {
+        "maxLength": 8,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Redacted value in the preview card for anything the viewer would not see"
+      },
+      "nameRedacted": {
+        "maxLength": 16,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Redacted subject name in the preview card when names are withheld"
+      },
+      "noExclusions": {
+        "maxLength": 8,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Exclusions row of the preview card when none apply at this stage"
+      },
+      "note": {
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Note under the preview selects explaining what the preview applies"
+      },
+      "nothing": {
+        "maxLength": 8,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Stands in for the detail level in the preview headline when the viewer would see nothing"
+      },
+      "process": {
+        "maxLength": 12,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Select label on the preview tab"
+      },
+      "processPlaceholder": {
+        "maxLength": 20,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Placeholder of the process select on the preview tab"
+      },
+      "rows": {
+        "detail": {
+          "maxLength": 32,
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Row label of the preview card"
+        },
+        "excludedParty": {
+          "maxLength": 16,
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Row label of the preview card"
+        },
+        "exclusions": {
+          "maxLength": 24,
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Row label of the preview card"
+        },
+        "lawfulBasis": {
+          "maxLength": 20,
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Row label of the preview card"
+        },
+        "namedFields": {
+          "maxLength": 16,
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Row label of the preview card"
+        },
+        "processExists": {
+          "maxLength": 16,
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Row label of the preview card"
+        },
+        "rules": {
+          "maxLength": 16,
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Row label of the preview card"
+        },
+        "stageLead": {
+          "maxLength": 16,
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Row label of the preview card"
+        },
+        "subject": {
+          "maxLength": 12,
+          "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+          "where": "Row label of the preview card"
+        }
+      },
+      "seenAs": {
+        "maxLength": 12,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Select label on the preview tab for the role to preview as"
+      },
+      "seenAsPlaceholder": {
+        "maxLength": 16,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Placeholder of the seen as select on the preview tab"
+      },
+      "visible": {
+        "maxLength": 8,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Detail row of the preview card for full access"
+      },
+      "wouldSee": {
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Headline of the preview card: the viewer name, the detail level and whether names are redacted"
+      }
+    },
+    "respondDialog": {
+      "confirm": {
+        "maxLength": 16,
+        "where": "Primary button of the respond dialog"
+      },
+      "fieldsLegend": {
+        "maxLength": 24,
+        "where": "Legend of the checkbox group in the respond dialog"
+      },
+      "intro": {
+        "where": "Opening paragraph of the respond dialog: who asked, for what and why"
+      },
+      "response": {
+        "maxLength": 12,
+        "where": "Textarea label in the respond dialog"
+      },
+      "responseHint": {
+        "where": "Hint under the response textarea in the respond dialog"
+      },
+      "title": {
+        "maxLength": 24,
+        "where": "Title of the dialog that answers an inbound request"
+      },
+      "toastText": {
+        "where": "Toast body after a response is sent"
+      },
+      "toastTitle": {
+        "maxLength": 16,
+        "where": "Toast title after a response is sent"
+      }
+    },
+    "tabs": {
+      "inbound": {
+        "maxLength": 20,
+        "screenshot": "phase-4/sharing-inbound-light-comfortable.png",
+        "where": "Second tab of the sharing page"
+      },
+      "label": {
+        "where": "Accessible name of the sharing page tab list"
+      },
+      "outbound": {
+        "maxLength": 20,
+        "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
+        "where": "First tab of the sharing page"
+      },
+      "preview": {
+        "maxLength": 20,
+        "screenshot": "phase-4/sharing-preview-light-comfortable.png",
+        "where": "Third tab of the sharing page"
+      }
+    },
+    "title": {
+      "maxLength": 32,
+      "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
+      "where": "Page title of the sharing page"
+    }
+  },
   "states": {
     "clock": {
       "flag": {

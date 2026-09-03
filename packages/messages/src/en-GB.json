@@ -2106,6 +2106,101 @@
       "restrictedSubject": "restricted"
     }
   },
+  "sharing": {
+    "audit": {
+      "responded": "Responded to {name}: {count} fields",
+      "sent": "{level} to {name}"
+    },
+    "inbound": {
+      "notifications": {
+        "empty": "Nothing has been shared with you yet.",
+        "markRead": "Mark read",
+        "meta": "{count} unread. Each one says why you received it.",
+        "read": "read",
+        "title": "Notifications to you",
+        "whyYou": "Why you: {reason}"
+      },
+      "requests": {
+        "asksAbout": "{name} ({agency}) asks about {subject}",
+        "emptyText": "Requests from other agencies for named fields appear here with their purpose and lawful basis.",
+        "emptyTitle": "No requests",
+        "fields": "<b>Fields requested:</b> {fields}",
+        "meta": "{count} open",
+        "purpose": "<b>Purpose:</b> {purpose}",
+        "received": "{hasProcess, select, yes {{process} {reference}. } other {}}Received {received}{hasDue, select, yes {, due {due}} other {}}.",
+        "respond": "Respond",
+        "response": "<b>Response {when} by {name}:</b> {text} (fields: {fields})",
+        "title": "Requests for information from other agencies"
+      }
+    },
+    "lede": "Every share carries a purpose, a lawful basis, a proportionality note and an author. Nothing leaves without a reason the recipient can read.",
+    "outbound": {
+      "columns": {
+        "detailLevel": "Detail level",
+        "process": "Process",
+        "recipient": "Recipient",
+        "status": "Status",
+        "when": "When",
+        "why": "Why"
+      },
+      "empty": {
+        "text": "Shares are created when a meeting minute is distributed, an event is promoted to the integrated chronology, or a notification rule fires.",
+        "title": "No shares yet"
+      },
+      "send": "Send",
+      "sentToastText": "{name} will see why they received it and under what lawful basis.",
+      "sentToastTitle": "Sent"
+    },
+    "preview": {
+      "caseMembership": "Case membership",
+      "defaultDeny": "None; default deny",
+      "empty": {
+        "text": "See exactly what that person would see, and why.",
+        "title": "Choose a process and a role"
+      },
+      "everything": "Everything",
+      "excludedText": "{name} is recorded on this case as {role} ({party}). {reason}. This cannot be lifted here.",
+      "hidden": "hidden",
+      "nameRedacted": "[name redacted]",
+      "noExclusions": "None",
+      "note": "The preview applies the same need-to-know resolution the product applies for that person: agency, role, case membership and stage.",
+      "nothing": "nothing",
+      "process": "Process",
+      "processPlaceholder": "Choose a process",
+      "rows": {
+        "detail": "Detail (events, decisions, plans)",
+        "excludedParty": "Excluded party",
+        "exclusions": "Exclusions at this stage",
+        "lawfulBasis": "Lawful basis shown",
+        "namedFields": "Named fields",
+        "processExists": "Process exists",
+        "rules": "Rules that apply",
+        "stageLead": "Stage and lead",
+        "subject": "Subject"
+      },
+      "seenAs": "Seen as",
+      "seenAsPlaceholder": "Choose a role",
+      "visible": "Visible",
+      "wouldSee": "{name} would see: {level}{redacted, select, yes { (names redacted)} other {}}"
+    },
+    "respondDialog": {
+      "confirm": "Send response",
+      "fieldsLegend": "Fields you are providing",
+      "intro": "{name} asked for: {fields}. Purpose: {purpose}. Provide only what is necessary and proportionate for that purpose.",
+      "response": "Response",
+      "responseHint": "Facts only. Anything you decline to share, say why.",
+      "title": "Respond to the request",
+      "toastText": "Only the fields you ticked are shared. The response carries the same lawful basis as the request.",
+      "toastTitle": "Response sent"
+    },
+    "tabs": {
+      "inbound": "Inbound requests",
+      "label": "Sharing sections",
+      "outbound": "Outbound queue",
+      "preview": "What would X see"
+    },
+    "title": "Sharing and notifications"
+  },
   "states": {
     "clock": {
       "flag": {
