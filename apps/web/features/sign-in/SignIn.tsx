@@ -1,7 +1,7 @@
 'use client';
 
 import { ROLE_DEFINITIONS, type Organisation } from '@mas/domain';
-import { useT } from '@mas/messages';
+import { useT, type MessageKey } from '@mas/messages';
 import { AGENCY_GLYPHS, Pill, WordmarkGlyph } from '@mas/ui';
 import { Info, Lock, ShieldCheck, Sparkles } from 'lucide-react';
 import { useState } from 'react';
@@ -9,18 +9,19 @@ import { useNavigate } from '@/lib/router';
 import { useAppStore, useData } from '@/lib/store';
 import styles from './SignIn.module.css';
 
-const KIND_LABEL: Record<Organisation['kind'], string> = {
-  council: 'Council',
-  hscp: 'Health and social care partnership',
-  'health-board': 'Health board',
-  police: 'Police',
-  'third-sector': 'Third sector',
-  sps: 'Prison service',
-  scra: "Children's Reporter",
-  court: 'Court and prosecution',
-  regulator: 'Regulator and oversight',
-  'fire-rescue': 'Fire and rescue',
-};
+/** The kind shown under each organisation in the picker. */
+const KIND_KEYS = {
+  council: 'home.signIn.orgKinds.council',
+  hscp: 'home.signIn.orgKinds.hscp',
+  'health-board': 'home.signIn.orgKinds.healthBoard',
+  police: 'home.signIn.orgKinds.police',
+  'third-sector': 'home.signIn.orgKinds.thirdSector',
+  sps: 'home.signIn.orgKinds.sps',
+  scra: 'home.signIn.orgKinds.scra',
+  court: 'home.signIn.orgKinds.court',
+  regulator: 'home.signIn.orgKinds.regulator',
+  'fire-rescue': 'home.signIn.orgKinds.fireRescue',
+} as const satisfies Record<Organisation['kind'], MessageKey>;
 
 export function SignIn() {
   const t = useT();
@@ -53,25 +54,25 @@ export function SignIn() {
         </div>
         <div>
           <h1 className={styles.headline} id="signin-title">
-            One person. Many processes. One shared picture.
+            {t('home.signIn.headline')}
           </h1>
-          <p className={styles.lede}>Adult support and protection, child protection, MARAC, MAPPA and Adults with Incapacity, run by the agencies who share the risk, with the person present in their own record.</p>
+          <p className={styles.lede}>{t('home.signIn.lede')}</p>
           <div className={styles.badges}>
-            <Pill icon={<ShieldCheck size={14} aria-hidden="true" />}>Need-to-know by design</Pill>
-            <Pill icon={<Lock size={14} aria-hidden="true" />}>Every restricted read audited</Pill>
-            <Pill icon={<Sparkles size={14} aria-hidden="true" />}>Runs offline</Pill>
+            <Pill icon={<ShieldCheck size={14} aria-hidden="true" />}>{t('home.signIn.badges.needToKnow')}</Pill>
+            <Pill icon={<Lock size={14} aria-hidden="true" />}>{t('home.signIn.badges.audited')}</Pill>
+            <Pill icon={<Sparkles size={14} aria-hidden="true" />}>{t('home.signIn.badges.offline')}</Pill>
           </div>
         </div>
         <div className={styles.demo}>
           <Info size={16} aria-hidden="true" />
-          <span>This is a demonstration build. Every person, case, address and number is synthetic. Sign-in is a persona picker in place of your organisation&apos;s single sign-on.</span>
+          <span>{t('home.signIn.demoNote')}</span>
         </div>
       </section>
-      <section className={styles.picker} aria-label="Choose organisation and persona">
+      <section className={styles.picker} aria-label={t('home.signIn.pickerLabel')}>
         <div>
           <div className={styles.step}>
             <span className={styles.stepNumber}>1</span>
-            <h2 className={styles.stepTitle}>Your organisation</h2>
+            <h2 className={styles.stepTitle}>{t('home.signIn.orgStep')}</h2>
           </div>
           <div className={styles.orgs} style={{ marginTop: 12 }}>
             {orgs.map((o) => {
@@ -85,7 +86,7 @@ export function SignIn() {
                   <span>
                     <span className={styles.orgName}>{o.name}</span>
                     <br />
-                    <span className={styles.orgKind}>{KIND_LABEL[o.kind]}</span>
+                    <span className={styles.orgKind}>{t(KIND_KEYS[o.kind])}</span>
                   </span>
                 </button>
               );
@@ -96,14 +97,14 @@ export function SignIn() {
           <div>
             <div className={styles.step}>
               <span className={styles.stepNumber}>2</span>
-              <h2 className={styles.stepTitle}>Who are you today</h2>
+              <h2 className={styles.stepTitle}>{t('home.signIn.personaStep')}</h2>
             </div>
             <div className={styles.personas} style={{ marginTop: 12 }}>
               {personas.map((u) => (
                 <button key={u.id} type="button" className={styles.persona} data-last={last === u.id ? 'true' : undefined} onClick={() => choose(u.id)}>
                   {last === u.id ? (
                     <Pill size="sm" tone="accent" className={styles.lastTag}>
-                      Last time
+                      {t('home.signIn.lastTime')}
                     </Pill>
                   ) : null}
                   <span className={styles.personaName}>

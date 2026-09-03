@@ -437,6 +437,256 @@
       }
     }
   },
+  "home": {
+    "clocks": {
+      "count": {
+        "maxLength": 20,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, count beside the Clocks heading"
+      },
+      "due": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, line under each clock: the due date, then the override reason or the trigger line"
+      },
+      "empty": {
+        "screenshot": "phase-1/home-state-empty-light-comfortable.png",
+        "where": "Home, Clocks region when no statutory clock is running"
+      },
+      "title": {
+        "maxLength": 20,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, heading of the statutory clocks region"
+      },
+      "trigger": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, trigger line under a clock that has not been overridden: the process code and the trigger date"
+      }
+    },
+    "empty": {
+      "text": {
+        "screenshot": "phase-1/home-state-empty-light-comfortable.png",
+        "where": "Home, empty state body when nothing is waiting on you"
+      },
+      "title": {
+        "maxLength": 32,
+        "screenshot": "phase-1/home-state-empty-light-comfortable.png",
+        "where": "Home, empty state title when nothing is waiting on you"
+      }
+    },
+    "greeting": {
+      "afternoon": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, greeting heading from noon until 18:00, with the person's given name"
+      },
+      "evening": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, greeting heading from 18:00, with the person's given name"
+      },
+      "morning": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, greeting heading before noon, with the person's given name"
+      },
+      "role": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, line under the greeting: your role and today's date"
+      }
+    },
+    "items": {
+      "actionMeta": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, waiting on you: detail line under an action, with the process and subject, then the due date"
+      },
+      "inbox": {
+        "maxLength": 12,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, waiting on you: the when column for an inbox event"
+      },
+      "meetingMeta": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, waiting on you: detail line under a meeting to prepare for"
+      },
+      "prepareFor": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, waiting on you: title of a meeting to prepare for, with the meeting title as argument"
+      },
+      "processSubject": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, waiting on you: the process code and subject name that start an action's detail line"
+      },
+      "received": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, waiting on you: detail line under an inbox event with the subject and the date received"
+      },
+      "reportFor": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, waiting on you: title of a pre-meeting report request, with the meeting title as argument"
+      },
+      "reportMeta": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, waiting on you: detail line under a report request with the dates requested and due"
+      },
+      "researchMeta": {
+        "screenshot": "phase-3/home-mho-light-comfortable.png",
+        "where": "Home, waiting on you: detail line under a MARAC research request with the due date"
+      },
+      "researchReturn": {
+        "screenshot": "phase-3/home-mho-light-comfortable.png",
+        "where": "Home, waiting on you: title of a MARAC research request, with the victim's name or the process reference"
+      },
+      "reviewEvent": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, waiting on you: title of an inbox event, with the connector name and the event title"
+      }
+    },
+    "signIn": {
+      "badges": {
+        "audited": {
+          "maxLength": 32,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, second pill under the lede"
+        },
+        "needToKnow": {
+          "maxLength": 32,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, first pill under the lede"
+        },
+        "offline": {
+          "maxLength": 32,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, third pill under the lede"
+        }
+      },
+      "demoNote": {
+        "screenshot": "phase-1/sign-in-light-comfortable.png",
+        "where": "Sign-in, note at the foot of the introduction explaining the demonstration build"
+      },
+      "headline": {
+        "maxLength": 60,
+        "screenshot": "phase-1/sign-in-light-comfortable.png",
+        "where": "Sign-in, headline"
+      },
+      "lastTime": {
+        "maxLength": 12,
+        "screenshot": "phase-1/sign-in-light-comfortable.png",
+        "where": "Sign-in, tag on the persona chosen last time"
+      },
+      "lede": {
+        "screenshot": "phase-1/sign-in-light-comfortable.png",
+        "where": "Sign-in, paragraph under the headline"
+      },
+      "orgKinds": {
+        "council": {
+          "maxLength": 40,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, kind shown under a council in the organisation picker"
+        },
+        "court": {
+          "maxLength": 40,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, kind shown under a court or prosecution organisation in the organisation picker"
+        },
+        "fireRescue": {
+          "maxLength": 40,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, kind shown under the fire and rescue service in the organisation picker"
+        },
+        "healthBoard": {
+          "maxLength": 40,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, kind shown under a health board in the organisation picker"
+        },
+        "hscp": {
+          "maxLength": 40,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, kind shown under a health and social care partnership in the organisation picker"
+        },
+        "police": {
+          "maxLength": 40,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, kind shown under the police in the organisation picker"
+        },
+        "regulator": {
+          "maxLength": 40,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, kind shown under a regulator or oversight body in the organisation picker"
+        },
+        "scra": {
+          "maxLength": 40,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, kind shown under the Children's Reporter in the organisation picker"
+        },
+        "sps": {
+          "maxLength": 40,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, kind shown under the prison service in the organisation picker"
+        },
+        "thirdSector": {
+          "maxLength": 40,
+          "screenshot": "phase-1/sign-in-light-comfortable.png",
+          "where": "Sign-in, kind shown under a third sector organisation in the organisation picker"
+        }
+      },
+      "orgStep": {
+        "maxLength": 32,
+        "screenshot": "phase-1/sign-in-light-comfortable.png",
+        "where": "Sign-in, heading of step 1, the organisation picker"
+      },
+      "personaStep": {
+        "maxLength": 32,
+        "screenshot": "phase-1/sign-in-light-comfortable.png",
+        "where": "Sign-in, heading of step 2, the persona picker"
+      },
+      "pickerLabel": {
+        "maxLength": 40,
+        "screenshot": "phase-1/sign-in-light-comfortable.png",
+        "where": "Sign-in, accessible name of the picker section"
+      }
+    },
+    "today": {
+      "count": {
+        "maxLength": 20,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, count beside the Today heading"
+      },
+      "empty": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, Today region when nothing is scheduled, with the next meeting line as argument"
+      },
+      "nextMeeting": {
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, the next meeting line inside the Today empty text: title and date"
+      },
+      "noNext": {
+        "maxLength": 24,
+        "where": "Home, stands in for the next meeting line when none is scheduled"
+      },
+      "title": {
+        "maxLength": 20,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, heading of the Today region"
+      },
+      "visit": {
+        "maxLength": 12,
+        "where": "Home, Today region: the time column for a home visit due today"
+      }
+    },
+    "waiting": {
+      "count": {
+        "maxLength": 20,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, count beside the Waiting on you heading"
+      },
+      "empty": {
+        "screenshot": "phase-1/home-state-empty-light-comfortable.png",
+        "where": "Home, Waiting on you region when nothing is assigned to you"
+      },
+      "title": {
+        "maxLength": 20,
+        "screenshot": "phase-1/home-light-comfortable.png",
+        "where": "Home, heading of the Waiting on you region"
+      }
+    }
+  },
   "nav": {
     "drawer": {
       "access": {

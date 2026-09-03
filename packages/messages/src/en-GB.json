@@ -144,6 +144,77 @@
       "recordedBy": "Recorded by {name}, {method}."
     }
   },
+  "home": {
+    "clocks": {
+      "count": "{count} running",
+      "due": "Due {date}. {detail}",
+      "empty": "No statutory clocks are running on your cases.",
+      "title": "Clocks",
+      "trigger": "From {process} trigger on {date}."
+    },
+    "empty": {
+      "text": "No statutory clocks, inbox events or actions are assigned to you. Search for a person to start.",
+      "title": "Nothing waiting on you"
+    },
+    "greeting": {
+      "afternoon": "Good afternoon, {name}",
+      "evening": "Good evening, {name}",
+      "morning": "Good morning, {name}",
+      "role": "{role}. {date}."
+    },
+    "items": {
+      "actionMeta": "{context}. Due {date}.",
+      "inbox": "inbox",
+      "meetingMeta": "{type}. {date} at {time}, {location}.",
+      "prepareFor": "Prepare for {meeting}",
+      "processSubject": "{process}: {subject}",
+      "received": "{name}. Received {date}.",
+      "reportFor": "Report for {meeting}",
+      "reportMeta": "Requested {sent}. Due {due}.",
+      "researchMeta": "Search your records for the victim, perpetrator and children. Due {date}.",
+      "researchReturn": "MARAC research return: {subject}",
+      "reviewEvent": "Review {connector} event: {title}"
+    },
+    "signIn": {
+      "badges": {
+        "audited": "Every restricted read audited",
+        "needToKnow": "Need-to-know by design",
+        "offline": "Runs offline"
+      },
+      "demoNote": "This is a demonstration build. Every person, case, address and number is synthetic. Sign-in is a persona picker in place of your organisation's single sign-on.",
+      "headline": "One person. Many processes. One shared picture.",
+      "lastTime": "Last time",
+      "lede": "Adult support and protection, child protection, MARAC, MAPPA and Adults with Incapacity, run by the agencies who share the risk, with the person present in their own record.",
+      "orgKinds": {
+        "council": "Council",
+        "court": "Court and prosecution",
+        "fireRescue": "Fire and rescue",
+        "healthBoard": "Health board",
+        "hscp": "Health and social care partnership",
+        "police": "Police",
+        "regulator": "Regulator and oversight",
+        "scra": "Children's Reporter",
+        "sps": "Prison service",
+        "thirdSector": "Third sector"
+      },
+      "orgStep": "Your organisation",
+      "personaStep": "Who are you today",
+      "pickerLabel": "Choose organisation and persona"
+    },
+    "today": {
+      "count": "{count} scheduled",
+      "empty": "No meetings or visits today. The next meeting is {next}.",
+      "nextMeeting": "{title} on {date}",
+      "noNext": "not yet scheduled",
+      "title": "Today",
+      "visit": "Visit"
+    },
+    "waiting": {
+      "count": "{count} items",
+      "empty": "Nothing is waiting on you.",
+      "title": "Waiting on you"
+    }
+  },
   "nav": {
     "drawer": {
       "access": {
