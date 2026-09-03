@@ -119,3 +119,22 @@ Running log of what was tried visually, what was rejected and why. Newest at the
 - The Playwright "simulate outage" test could not click the switch because the real input was a 1px hidden element behind the drawn track. The input now covers the whole label, which also gives pointer and touch users the full target (44px tall in comfortable density).
 - Reports: the MARAC "referrals by agency" bar for Health rendered as ink, not teal. Tailwind had dropped `--color-agency-health` from the built CSS because no stylesheet referenced it (the charts, marks and lanes all pass agency colours as inline `var()`); `@theme static` now emits every token (D-027). The AWI stacked chart's category labels collided ("Financial guardianship" against "Welfare and financial guardianship"); axis labels now wrap to the slot width in both bar charts. The zero-period hint said "1 offenders"; it now pluralises.
 - Report print pack: black on white, classification banner, running head and foot with "Page n of N", one section per page, the chart in print ink with its table beneath. The shell chrome is hidden by the print stylesheet, so the agent's own `:global` rule for the same purpose was removed.
+
+## Phase 6
+
+### Desktop packaging
+
+- Tauri: `cargo check` resolves every crate and writes `Cargo.lock`, then stops at the missing `gdk-3.0` system library. The container has no GTK or WebKitGTK, so the binary is built on macOS or Windows (commands in `docs/HANDOVER.md` section 7). The Rust menu, capabilities and config are complete and the web app handles the `mas-menu` actions in `apps/web/lib/desktop.ts`.
+- Electron: the main and preload scripts compile, the Electron binary downloads through the proxy, and `electron-builder --dir --linux` produces `release/linux-unpacked` with the export under `resources/web/out`. The same config lists dmg, nsis and msi for the other platforms.
+- Menu bridge: reset demo, toggle theme and zoom (rem based, 80 to 150 percent, remembered per machine) come through one handler for both shells; in a browser nothing is registered.
+
+### Print pass
+
+- The print stylesheet now hides everything in the shell except the content column, so a print pack is the pack alone. Before this the rail, the top bar and the drawer printed above and below the pack.
+- Chronology pack and every report pack: black on white through the print tokens, classification banner, running head and foot with page numbers, one section per page, charts in print ink with the data table beneath.
+
+### Accessibility pass
+
+- axe (WCAG 2.0 A and AA, 2.1 A and AA, 2.2 AA tags) runs on every captured screen in every suite; the sweep in `e2e/phase6.spec.ts` repeats it in dark theme and compact density for every route.
+- Fixes that came out of the passes: labelled focusable table regions, `role="img"` on the DAQ ticks, dialog title ids per instance, tab panels kept in the document, switches with a full-size hit target, the drawer removed from the document when its column is closed, and the analysis labels in the lanes chart staggered so they never overlap.
+- Keyboard: the first Tab lands on a named control, dialogs open on Enter and close on Escape, the search box is a labelled combobox with arrow keys, and every row action is a real button or link.

@@ -6,6 +6,8 @@ Operating mode: autonomous. The two checkpoints in brief section 13 are removed.
 
 ## 1. Phases
 
+Status at handover: all six phases are complete on the working branch; the phase logs are in `docs/NOTES.md` and the handover in `docs/HANDOVER.md`.
+
 | Phase | Deliverable | Done when |
 |---|---|---|
 | 0 Plan | BRIEF, PLAN, DESIGN (with self-critique), DATA-MODEL outline, DECISIONS, NOTES, RESEARCH, NEED-TO-KNOW, CLAUDE.md | Docs committed, no app code |
