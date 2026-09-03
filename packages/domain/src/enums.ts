@@ -373,6 +373,11 @@ export const AUDIT_ACTS = [
   'edit',
   'promote',
   'sign-in',
+  // Government Security Classification, Annex 2. A raise is always allowed; a lower needs a named
+  // role and is refused otherwise, so both are recorded exactly as break-glass is.
+  'classify',
+  'classification-raise',
+  'classification-lower',
 ] as const;
 export type AuditAct = (typeof AUDIT_ACTS)[number];
 

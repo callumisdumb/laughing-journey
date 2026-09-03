@@ -139,7 +139,8 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
     title: t('reports.marac.title'),
     lede: t('reports.marac.lede'),
     period,
-    classification: 'official-sensitive',
+    // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
+    classification: 'official',
     meta: [t('reports.meta.period', { period: period.label }), t('reports.marac.meta.computed', { dateTime: formatDateTime(now), records: maracs.length, referrals: referrals.length }), t('reports.marac.meta.population', { population: populationLabel }), t('reports.meta.verify')],
     verify: [t('reports.marac.verify.template'), t('reports.marac.verify.olderThreshold')],
     sources: [t('reports.marac.sources.guidance'), t('reports.marac.sources.keyFindings'), t('reports.marac.sources.spotlight')],

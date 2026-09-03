@@ -2396,6 +2396,18 @@
         "maxLength": 16,
         "where": "Act pill and act filter option on the Audit screen for a break-glass grant"
       },
+      "classificationLower": {
+        "maxLength": 24,
+        "where": "Audit act label: a classification was lowered below the derived level"
+      },
+      "classificationRaise": {
+        "maxLength": 24,
+        "where": "Audit act label: a classification was raised above the derived level"
+      },
+      "classify": {
+        "maxLength": 24,
+        "where": "Audit act label: a classification was assigned at the level it derives"
+      },
       "edit": {
         "maxLength": 16,
         "where": "Act pill and act filter option on the Audit screen for an edit"
@@ -8038,6 +8050,15 @@
         "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
       }
     },
+    "gsc": {
+      "definition": {
+        "where": "Glossary definition of the Government Security Classification scheme"
+      },
+      "term": {
+        "maxLength": 40,
+        "where": "Glossary term: Government Security Classification"
+      }
+    },
     "hscp": {
       "definition": {
         "screenshot": "phase-5/help-glossary-light-comfortable.png",
@@ -8201,6 +8222,24 @@
         "maxLength": 12,
         "screenshot": "phase-5/help-glossary-light-comfortable.png",
         "where": "Glossary term (brief Appendix A), shown in the Help glossary list"
+      }
+    },
+    "official": {
+      "definition": {
+        "where": "Glossary definition of the Official classification"
+      },
+      "term": {
+        "maxLength": 40,
+        "where": "Glossary term: Official"
+      }
+    },
+    "officialSensitive": {
+      "definition": {
+        "where": "Glossary definition of the Official-Sensitive classification"
+      },
+      "term": {
+        "maxLength": 40,
+        "where": "Glossary term: Official-Sensitive"
       }
     },
     "olr": {
@@ -10575,6 +10614,10 @@
           "maxLength": 16,
           "where": "Context panel, share section: row label for the channel the share went by"
         },
+        "classification": {
+          "maxLength": 24,
+          "where": "Drawer row label: the Annex 2 classification recorded with a lawful basis"
+        },
         "consent": {
           "maxLength": 16,
           "screenshot": "phase-3/process-cp-light-comfortable.png",
@@ -10614,6 +10657,10 @@
           "maxLength": 16,
           "screenshot": "phase-3/process-cp-light-comfortable.png",
           "where": "Context panel, lawful basis: row label for the necessity and proportionality note"
+        },
+        "noMarking": {
+          "maxLength": 40,
+          "where": "Drawer row value where the classification is Official and needs no marking"
         },
         "offenceData": {
           "maxLength": 16,
@@ -12693,6 +12740,65 @@
       "title": {
         "maxLength": 40,
         "where": "Title of the break-glass dialog"
+      }
+    },
+    "classification": {
+      "audit": {
+        "where": "Audit entry label when a classification is assigned, raised or lowered"
+      },
+      "change": {
+        "maxLength": 24,
+        "where": "Header action opening the classification dialog"
+      },
+      "intro": {
+        "where": "Opening paragraph of the classification dialog"
+      },
+      "level": {
+        "label": {
+          "maxLength": 24,
+          "where": "Field label for the classification level"
+        },
+        "mayLower": {
+          "where": "Field hint where the signed-in role may lower a classification"
+        },
+        "mayNotLower": {
+          "where": "Field hint where the signed-in role may not lower a classification"
+        }
+      },
+      "reason": {
+        "hint": {
+          "where": "Field hint for the classification reason"
+        },
+        "label": {
+          "maxLength": 24,
+          "where": "Field label for the classification reason"
+        }
+      },
+      "refused": {
+        "text": {
+          "where": "Toast text when a lower is refused"
+        },
+        "title": {
+          "maxLength": 48,
+          "where": "Toast title when a lower is refused"
+        }
+      },
+      "saved": {
+        "text": {
+          "where": "Toast text confirming a recorded classification"
+        },
+        "title": {
+          "maxLength": 32,
+          "where": "Toast title confirming a recorded classification"
+        }
+      },
+      "submit": {
+        "maxLength": 24,
+        "where": "Primary button of the classification dialog"
+      },
+      "title": {
+        "maxLength": 40,
+        "where": "Title of the classification dialog"
       }
     },
     "clocks": {
@@ -15984,6 +16090,10 @@
     },
     "outbound": {
       "columns": {
+        "classification": {
+          "maxLength": 16,
+          "where": "Column header: the Annex 2 marking a share carries"
+        },
         "detailLevel": {
           "maxLength": 16,
           "screenshot": "phase-4/sharing-outbound-light-comfortable.png",

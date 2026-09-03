@@ -62,3 +62,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* The marking on a notification a recipient is about to open: uppercase, not a colour cue alone. */
+.rowMarking {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-ink-2);
+}

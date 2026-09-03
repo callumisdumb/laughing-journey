@@ -278,7 +278,8 @@ export function mappaModel(data: Dataset, config: Config, now: Date, period: Per
     title: t('reports.mappa.title'),
     lede: t('reports.mappa.lede'),
     period,
-    classification: 'official-sensitive',
+    // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
+    classification: 'official',
     meta: [t('reports.meta.period', { period: period.label }), t('reports.mappa.meta.reportingPeriod'), t('reports.mappa.meta.computed', { dateTime: formatDateTime(now), records: mappas.length, managed: during.length }), t('reports.mappa.meta.fieldSet'), t('reports.mappa.meta.noNames')],
     verify: [t('reports.mappa.verify.interval')],
     sources: [t('reports.mappa.sources.guidance'), t('reports.mappa.sources.sogReports'), t('reports.mappa.sources.overview')],

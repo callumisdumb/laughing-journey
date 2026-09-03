@@ -16,6 +16,7 @@ import {
   MAPPA_LEVELS,
   TRAFFICKING_KINDS,
 } from '../enums';
+import { CLASSIFICATION_LEVELS } from '../classification/classify';
 import { evidenceRefSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
 export const stageEntrySchema = z.object({
@@ -472,6 +473,19 @@ const processBase = {
   stageHistory: z.array(stageEntrySchema),
   status: z.enum(['open', 'closed', 'transferred']),
   classification: z.enum(CLASSIFICATIONS),
+  /**
+   * A recorded Annex 2 override. It is applied as stored: the permission check happens when it is
+   * made, so a lower that reached the record was authorised by a role in config at that moment.
+   */
+  classificationOverride: z
+    .object({
+      level: z.enum(CLASSIFICATION_LEVELS),
+      reason: z.string().min(1),
+      byUserId: idSchema,
+      byName: z.string(),
+      at: isoDateTime,
+    })
+    .optional(),
   openedAt: isoDateTime,
   closedAt: isoDateTime.optional(),
   closureReason: z.string().optional(),

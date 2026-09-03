@@ -220,7 +220,8 @@ export function aspModel(data: Dataset, now: Date, period: Period): ReportModel 
     title: t('reports.asp.title'),
     lede: t('reports.asp.lede'),
     period,
-    classification: 'official-sensitive',
+    // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
+    classification: 'official',
     meta: [t('reports.meta.period', { period: period.label }), t('reports.asp.meta.computed', { dateTime: formatDateTime(now), records: asp.length, referrals: referrals.length, adults: adults.size }), t('reports.asp.meta.fieldSet')],
     verify: [t('reports.asp.verify.ageBands'), t('reports.asp.verify.location')],
     sources: [t('reports.asp.sources.apcGuidance'), t('reports.asp.sources.nmds'), t('reports.asp.sources.statistics')],

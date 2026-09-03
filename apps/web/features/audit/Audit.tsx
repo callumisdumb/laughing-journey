@@ -33,6 +33,9 @@ const ACT_TONES: Record<AuditAct, PillTone> = {
   export: 'high',
   edit: 'outline',
   promote: 'accent',
+  classify: 'neutral',
+  'classification-raise': 'high',
+  'classification-lower': 'critical',
   'sign-in': 'low',
 };
 

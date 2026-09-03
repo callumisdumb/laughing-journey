@@ -1,10 +1,10 @@
 'use client';
 
-import { STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, classificationFor, relativeDays, stageLabel, type Process } from '@mas/domain';
+import { STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, CLASSIFICATION_LEVELS, applyOverride, canLower, classificationFor, classificationLevelLabel, marking, relativeDays, stageLabel, type ClassificationLevel, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { Lock, UserPlus } from 'lucide-react';
+import { Lock, ShieldCheck, UserPlus } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
@@ -34,6 +34,10 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const [breakGlassOpen, setBreakGlassOpen] = useState(false);
   const [reason, setReason] = useState('');
   const [reasonCategory, setReasonCategory] = useState('');
+  const [classifyOpen, setClassifyOpen] = useState(false);
+  const [classifyLevel, setClassifyLevel] = useState<ClassificationLevel>('official-sensitive');
+  const [classifyReason, setClassifyReason] = useState('');
+  const upsert = useAppStore((s) => s.upsert);
 
   const process = data.processes.find((p) => p.id === processId);
 
@@ -56,6 +60,10 @@ export function ProcessScreen({ processId }: { processId: string }) {
   }
 
   const access = accessForUser(data, config, user, process, grants, now);
+  // Annex 2: the level is derived from the record and a recorded override is applied as stored.
+  const derived = classificationFor(config, process.classification);
+  const classification = classificationFor(config, process.classification, process.classificationOverride);
+  const mayLower = canLower(user.roleId, config.classificationLowerableBy);
   const subjects = process.subjectIds.map((id) => personById(data, id)).filter(Boolean) as NonNullable<ReturnType<typeof personById>>[];
   const clocks = clocksForProcess(data, config, process, now);
   const meetings = data.meetings.filter((m) => m.processId === process.id).sort((a, b) => (a.scheduledAt < b.scheduledAt ? 1 : -1));
@@ -88,7 +96,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
           <Pill size="sm" tone={process.status === 'open' ? 'low' : 'outline'}>
             {processStatusLabel(process.status)}
           </Pill>
-          <ClassificationTag classification={classificationFor(config, process.classification)} />
+          <ClassificationTag classification={classification} />
         </div>
         <h1 className={styles.title}>{access.level === 'none' ? t('processes.head.restrictedTitle', { process: processLabel(process.type) }) : process.title}</h1>
         {access.level !== 'none' ? (
@@ -107,6 +115,19 @@ export function ProcessScreen({ processId }: { processId: string }) {
         {access.level === 'presence' ? (
           <Button variant="secondary" icon={<UserPlus size={16} aria-hidden="true" />} onClick={() => toast({ title: t('processes.head.requestSent.title'), text: t('processes.head.requestSent.text', { hasLead: lead ? 'yes' : 'no', name: lead ? userName(lead) : '' }) })}>
             {t('processes.head.askToBeInvolved')}
+          </Button>
+        ) : null}
+        {access.level === 'full' ? (
+          <Button
+            variant="quiet"
+            icon={<ShieldCheck size={16} aria-hidden="true" />}
+            onClick={() => {
+              setClassifyLevel(classification.level);
+              setClassifyReason(process.classificationOverride?.reason ?? '');
+              setClassifyOpen(true);
+            }}
+          >
+            {t('processes.classification.change')}
           </Button>
         ) : null}
       </div>
@@ -306,6 +327,58 @@ export function ProcessScreen({ processId }: { processId: string }) {
         <p>{t('processes.breakGlass.intro', { reason: access.reason })}</p>
         <SelectField label={t('processes.breakGlass.category.label')} required value={reasonCategory} onChange={(e) => setReasonCategory(e.target.value)} placeholder={t('processes.breakGlass.category.placeholder')} options={config.breakGlassReasons.map((r) => ({ value: r, label: r }))} />
         <TextareaField label={t('processes.breakGlass.reason.label')} required value={reason} onChange={(e) => setReason(e.target.value)} hint={t('processes.breakGlass.reason.hint')} />
+      </Dialog>
+
+      <Dialog
+        open={classifyOpen}
+        onClose={() => setClassifyOpen(false)}
+        title={t('processes.classification.title')}
+        actions={
+          <>
+            <Button variant="quiet" onClick={() => setClassifyOpen(false)}>
+              {t('common.actions.cancel')}
+            </Button>
+            <Button
+              variant="primary"
+              disabled={classifyReason.trim().length < 15 || (classifyLevel === 'official' && derived.level === 'official-sensitive' && !mayLower)}
+              onClick={() => {
+                const override = { level: classifyLevel, reason: classifyReason.trim(), byUserId: user.id, byName: userName(user), at: now.toISOString() };
+                const result = applyOverride(derived, override, { roleId: user.roleId, lowerableBy: config.classificationLowerableBy });
+                if (result.refused) {
+                  toast({ title: t('processes.classification.refused.title'), text: t('processes.classification.refused.text'), tone: 'error' });
+                  return;
+                }
+                const lowering = classifyLevel === 'official' && derived.level === 'official-sensitive';
+                const raising = classifyLevel === 'official-sensitive' && derived.level === 'official';
+                upsert('processes', { ...process, classificationOverride: override });
+                audit({
+                  act: lowering ? 'classification-lower' : raising ? 'classification-raise' : 'classify',
+                  targetType: 'process',
+                  targetId: process.id,
+                  targetLabel: t('processes.classification.audit', { reference: process.reference, level: classificationLevelLabel(classifyLevel) }),
+                  processId: process.id,
+                  reason: override.reason,
+                  restricted: process.classification === 'restricted',
+                });
+                setClassifyOpen(false);
+                toast({ title: t('processes.classification.saved.title'), text: t('processes.classification.saved.text', { marking: marking(result.classification) ?? t('nav.drawer.fields.noMarking') }), tone: 'success' });
+              }}
+            >
+              {t('processes.classification.submit')}
+            </Button>
+          </>
+        }
+      >
+        <p>{t('processes.classification.intro', { marking: marking(derived) ?? t('nav.drawer.fields.noMarking') })}</p>
+        <SelectField
+          label={t('processes.classification.level.label')}
+          required
+          value={classifyLevel}
+          onChange={(e) => setClassifyLevel(e.target.value as ClassificationLevel)}
+          options={CLASSIFICATION_LEVELS.map((level) => ({ value: level, label: classificationLevelLabel(level) }))}
+          hint={mayLower ? t('processes.classification.level.mayLower') : t('processes.classification.level.mayNotLower')}
+        />
+        <TextareaField label={t('processes.classification.reason.label')} required value={classifyReason} onChange={(e) => setClassifyReason(e.target.value)} hint={t('processes.classification.reason.hint')} />
       </Dialog>
     </div>
   );

@@ -184,13 +184,15 @@ export function makeViews(ctx: BuildContext, v: Partialish<ViewsRecord, 'id'>): 
   return vr;
 }
 
-export function makeLawfulBasis(ctx: BuildContext, lb: Partialish<LawfulBasisRecord, 'id' | 'createdAt' | 'article10Criminal' | 'consentStatus'>): LawfulBasisRecord {
+export function makeLawfulBasis(ctx: BuildContext, lb: Partialish<LawfulBasisRecord, 'id' | 'createdAt' | 'article10Criminal' | 'consentStatus' | 'classification'>): LawfulBasisRecord {
   const rec: LawfulBasisRecord = {
     ...lb,
     id: lb.id ?? ctx.ids.next('lb'),
     synthetic: true,
     createdAt: lb.createdAt ?? ctx.nowIso,
     article10Criminal: lb.article10Criminal ?? 'not applicable',
+    // Every lawful basis in this product concerns case content, so Official-Sensitive is the floor.
+    classification: lb.classification ?? 'official-sensitive',
     consentStatus: lb.consentStatus ?? 'not-required',
   };
   ctx.data.lawfulBases.push(rec);

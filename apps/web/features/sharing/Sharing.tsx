@@ -1,6 +1,6 @@
 'use client';
 
-import { agencyShort, contextFor, detailLevelLabel, exclusionPartyLabel, formatDate, formatDateTime, isExcludedParty, processShort, resolveNeedToKnow, roleLabel, shareStatusLabel, stageLabel, type InformationRequest, type Process, type User } from '@mas/domain';
+import { agencyShort, classificationFor, contextFor, detailLevelLabel, exclusionPartyLabel, formatDate, formatDateTime, isExcludedParty, marking, processShort, resolveNeedToKnow, roleLabel, shareStatusLabel, stageLabel, type Config, type Dataset, type InformationRequest, type Process, type User } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, CheckboxField, Dialog, EmptyState, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Table, TableWrap, Tabs, TextareaField, useToast } from '@mas/ui';
 import { Eye, Lock } from 'lucide-react';
@@ -16,6 +16,16 @@ import styles from './Sharing.module.css';
 
 /** Renders the <b> tag of a catalogue message as <strong>, for the bold lead-ins on a request. */
 const STRONG: RichValues = { b: (chunks) => <strong>{chunks}</strong> };
+
+/**
+ * The Annex 2 marking a share carries, from the classification recorded with its lawful basis.
+ * Undefined at Official: a share of routine information is not marked, and saying so in words is
+ * better than an empty cell.
+ */
+function shareMarking(config: Config, data: Dataset, lawfulBasisId: string): string | undefined {
+  const basis = data.lawfulBases.find((b) => b.id === lawfulBasisId);
+  return basis ? marking(classificationFor(config, basis.classification)) : undefined;
+}
 
 export function Sharing() {
   const t = useT();
@@ -108,6 +118,7 @@ export function Sharing() {
                   <th scope="col">{t('sharing.outbound.columns.recipient')}</th>
                   <th scope="col">{t('sharing.outbound.columns.process')}</th>
                   <th scope="col">{t('sharing.outbound.columns.detailLevel')}</th>
+                  <th scope="col">{t('sharing.outbound.columns.classification')}</th>
                   <th scope="col">{t('sharing.outbound.columns.why')}</th>
                   <th scope="col">{t('sharing.outbound.columns.status')}</th>
                   <th scope="col">
@@ -130,6 +141,7 @@ export function Sharing() {
                         {detailLevelLabel(s.detailLevel)}
                         {s.fields ? <span className={styles.rowReason}>{s.fields.join('; ')}</span> : null}
                       </td>
+                      <td>{shareMarking(config, data, s.lawfulBasisId) ?? <span className={styles.rowReason}>{t('nav.drawer.fields.noMarking')}</span>}</td>
                       <td>
                         {s.summary}
                         <span className={styles.rowReason}>{s.reason}</span>
@@ -166,6 +178,7 @@ export function Sharing() {
                           <td>
                             {s.summary}
                             <span className={styles.rowReason}>{t('sharing.inbound.notifications.whyYou', { reason: s.reason })}</span>
+                            {shareMarking(config, data, s.lawfulBasisId) ? <span className={styles.rowMarking}>{shareMarking(config, data, s.lawfulBasisId)}</span> : null}
                           </td>
                           <td>{p ? <AppLink href={processPath(p.id)}>{p.reference}</AppLink> : ''}</td>
                           <td>{detailLevelLabel(s.detailLevel)}</td>

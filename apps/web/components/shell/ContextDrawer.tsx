@@ -1,7 +1,7 @@
 'use client';
 
-import { actionStatusLabel, agencyShort, analysisKindLabel, attendanceLabel, channelLabel, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, visibilityLabel, type CaseParty, type Process } from '@mas/domain';
-import { useT } from '@mas/messages';
+import { actionStatusLabel, agencyShort, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type Process, type RecordClassification } from '@mas/domain';
+import { useT, type Translator } from '@mas/messages';
 import { AgencyMark, IconButton, Pill, RiskBand } from '@mas/ui';
 import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -10,6 +10,14 @@ import { useSelection } from '@/lib/selection';
 import { accessForUser, fullName, membersByAgency, personById, processById, processesInvolving, userById, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
 import styles from './ContextDrawer.module.css';
+
+/**
+ * The Annex 2 marking of a recorded lawful basis, read as text so a screen reader gets it in the row
+ * rather than only as a tag. Official has no marking, so the row says so rather than sitting empty.
+ */
+function classificationSummary(config: Config, stored: RecordClassification, t: Translator): string {
+  return marking(classificationFor(config, stored)) ?? t('nav.drawer.fields.noMarking');
+}
 
 function Section({ title, icon, children }: { title: string; icon: ReactNode; children: ReactNode }) {
   return (
@@ -137,6 +145,7 @@ function NeedToKnow({ process }: { process: Process }) {
 function LawfulBasis({ process }: { process: Process }) {
   const t = useT();
   const data = useData();
+  const config = useConfig();
   const ids = new Set(data.sharingRecords.filter((s) => s.processId === process.id).map((s) => s.lawfulBasisId));
   const bases = data.lawfulBases.filter((b) => ids.has(b.id));
   if (bases.length === 0) return <p className={styles.empty}>{t('nav.drawer.lawfulBasis.empty')}</p>;
@@ -150,6 +159,8 @@ function LawfulBasis({ process }: { process: Process }) {
           <dd>{b.article6}</dd>
           <dt>{t('nav.drawer.fields.article9')}</dt>
           <dd>{b.article9Condition}</dd>
+          <dt>{t('nav.drawer.fields.classification')}</dt>
+          <dd>{classificationSummary(config, b.classification, t)}</dd>
           <dt>{t('nav.drawer.fields.gateway')}</dt>
           <dd>{b.statutoryGateway.join('; ')}</dd>
           <dt>{t('nav.drawer.fields.necessity')}</dt>
@@ -213,6 +224,7 @@ export function ContextDrawer() {
   const toggle = useAppearance((s) => s.toggleDrawer);
   const selection = useSelection((s) => s.selection);
   const data = useData();
+  const config = useConfig();
   const user = useCurrentUser();
 
   let title: string;
@@ -448,6 +460,8 @@ export function ContextDrawer() {
               <dd>{basis.article9Condition}</dd>
               <dt>{t('nav.drawer.fields.offenceData')}</dt>
               <dd>{basis.article10Criminal}</dd>
+              <dt>{t('nav.drawer.fields.classification')}</dt>
+              <dd>{classificationSummary(config, basis.classification, t)}</dd>
               <dt>{t('nav.drawer.fields.gateway')}</dt>
               <dd>{basis.statutoryGateway.join('; ')}</dd>
               <dt>{t('nav.drawer.fields.necessity')}</dt>

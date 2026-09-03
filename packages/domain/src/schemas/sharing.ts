@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AGENCIES, ALL_STAGES, CHANNELS, CONSENT_STATUSES, DETAIL_LEVELS } from '../enums';
+import { AGENCIES, ALL_STAGES, CHANNELS, CLASSIFICATIONS, CONSENT_STATUSES, DETAIL_LEVELS } from '../enums';
 import { idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
 export const lawfulBasisRecordSchema = z.object({
@@ -14,6 +14,11 @@ export const lawfulBasisRecordSchema = z.object({
     'not applicable',
   ]),
   article10Criminal: z.enum(['DPA 2018 s10 and Sch 1', 'not applicable']),
+  /**
+   * The Annex 2 classification of what is being shared, recorded alongside the Article 6, 9 and 10
+   * basis. A share carries its marking, and the record of the decision says which marking that was.
+   */
+  classification: z.enum(CLASSIFICATIONS),
   statutoryGateway: z.array(z.string()),
   necessityAndProportionality: z.string().min(1),
   consentStatus: z.enum(CONSENT_STATUSES),

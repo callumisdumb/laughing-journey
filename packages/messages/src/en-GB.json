@@ -730,6 +730,9 @@
   "audit": {
     "acts": {
       "breakGlass": "Break-glass",
+      "classificationLower": "Classification lowered",
+      "classificationRaise": "Classification raised",
+      "classify": "Classify",
       "edit": "Edit",
       "export": "Export",
       "personaSwitch": "Persona switch",
@@ -2638,6 +2641,10 @@
       "definition": "Getting it right for every child",
       "term": "GIRFEC"
     },
+    "gsc": {
+      "definition": "Government Security Classification. The UK scheme every Scottish Government department, non-departmental public body and agency follows. It has three levels: Official, Secret and Top Secret. A classification says how sensitive information is in terms of the likely impact of its compromise, loss or misuse, and what it must be defended against. This product implements Official and Official-Sensitive only: nothing in its scope reaches defence, diplomacy or national security, so it does not offer Secret or Top Secret.",
+      "term": "GSC"
+    },
     "hscp": {
       "definition": "Health and Social Care Partnership",
       "term": "HSCP"
@@ -2697,6 +2704,14 @@
     "mwc": {
       "definition": "Mental Welfare Commission for Scotland",
       "term": "MWC"
+    },
+    "official": {
+      "definition": "The lowest Government Security Classification, and the majority of what the public sector creates or processes. Some of it could have damaging consequences if lost, stolen or published, but it is not subject to a heightened risk profile. There is no requirement to mark routine Official information, and this product does not mark it: a product that stamps every page trains people to ignore markings.",
+      "term": "Official"
+    },
+    "officialSensitive": {
+      "definition": "A limited subset of Official information that could have more damaging consequences if lost, stolen or published. It must be clearly marked, and special handling instructions may be added where the sensitivity justifies strict restrictions on sharing. Annex 2 of the MAPPA National Guidance gives four examples: case details involving vulnerable individuals where a serious risk of harm or criminal activity may result from disclosure; information about investigations or proceedings that could disrupt law enforcement or prejudice a case; security information; and personal data defined as special category or sensitive under data protection legislation.",
+      "term": "Official-Sensitive"
     },
     "olr": {
       "definition": "Order for Lifelong Restriction",
@@ -3403,6 +3418,7 @@
         "authorisedBy": "Authorised by",
         "cases": "Cases",
         "channel": "Channel",
+        "classification": "Classification",
         "consent": "Consent",
         "due": "Due",
         "evidence": "Evidence",
@@ -3412,6 +3428,7 @@
         "level": "Level",
         "name": "Name",
         "necessity": "Necessity",
+        "noMarking": "Official, no marking required",
         "offenceData": "Offence data",
         "outcome": "Outcome",
         "owner": "Owner",
@@ -4005,6 +4022,30 @@
       },
       "submit": "Open with this reason",
       "title": "Open a restricted record"
+    },
+    "classification": {
+      "audit": "Classification of {reference} set to {level}",
+      "change": "Change classification",
+      "intro": "This record derives {marking} from what it is about. Raising the classification is always allowed. Lowering it needs one of the roles configured in Admin, and either way the change is recorded in the audit log with your reason.",
+      "level": {
+        "label": "Classification",
+        "mayLower": "Your role may lower a classification as well as raise one.",
+        "mayNotLower": "Your role may raise a classification but not lower one."
+      },
+      "reason": {
+        "hint": "At least 15 characters. This is what an auditor reads, so say what changed rather than that it changed.",
+        "label": "Why this classification"
+      },
+      "refused": {
+        "text": "Lowering a classification needs one of the roles configured in Admin. Nothing has been changed.",
+        "title": "Your role may not lower a classification"
+      },
+      "saved": {
+        "text": "This record now carries {marking}.",
+        "title": "Classification recorded"
+      },
+      "submit": "Record classification",
+      "title": "Classification of this record"
     },
     "clocks": {
       "none": "No clock running",
@@ -5007,6 +5048,7 @@
     "lede": "Every share carries a purpose, a lawful basis, a proportionality note and an author. Nothing leaves without a reason the recipient can read.",
     "outbound": {
       "columns": {
+        "classification": "Classification",
         "detailLevel": "Detail level",
         "process": "Process",
         "recipient": "Recipient",

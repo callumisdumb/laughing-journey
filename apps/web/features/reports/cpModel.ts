@@ -319,7 +319,8 @@ export function cpModel(data: Dataset, now: Date, period: Period, childPopulatio
     title: t('reports.cp.title'),
     lede: t('reports.cp.lede'),
     period,
-    classification: 'official-sensitive',
+    // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
+    classification: 'official',
     meta: [t('reports.cp.meta.period', { period: period.label, date: endLabel }), t('reports.cp.meta.computed', { dateTime: formatDateTime(now), records: cps.length, entries: entries.length }), t('reports.cp.meta.fieldSet')],
     verify: [t('reports.cp.verify.concerns'), t('reports.cp.verify.population')],
     sources: [t('reports.cp.sources.statistics2025'), t('reports.cp.sources.statistics2024')],

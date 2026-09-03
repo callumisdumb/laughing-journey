@@ -177,7 +177,8 @@ export function awiModel(data: Dataset, config: Config, now: Date, period: Perio
     title: t('reports.awi.title'),
     lede: t('reports.awi.lede'),
     period,
-    classification: 'official-sensitive',
+    // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
+    classification: 'official',
     meta: [t('reports.meta.period', { period: period.label }), t('reports.awi.meta.computed', { dateTime: formatDateTime(now), records: awis.length, applications: applications.length }), t('reports.meta.verify')],
     verify: [t('reports.awi.verify.publications')],
     sources: [t('reports.awi.sources.mwc'), t('reports.awi.sources.opg'), t('reports.awi.sources.act')],
