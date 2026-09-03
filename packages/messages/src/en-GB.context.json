@@ -5289,18 +5289,87 @@
         "where": "Channel of a share in the drawer and sharing records"
       }
     },
+    "classificationReasons": {
+      "aspOrderOrLsi": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why a classification was derived: aspOrderOrLsi"
+      },
+      "cpRecord": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why a classification was derived: cpRecord"
+      },
+      "criminalOffenceData": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why a classification was derived: criminalOffenceData"
+      },
+      "linkedRecord": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why a classification was derived: linkedRecord"
+      },
+      "mappaRecord": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why a classification was derived: mappaRecord"
+      },
+      "maracRecord": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why a classification was derived: maracRecord"
+      },
+      "namesPerpetrator": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why a classification was derived: namesPerpetrator"
+      },
+      "openRestrictedProcess": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why a classification was derived: openRestrictedProcess"
+      },
+      "routineOfficial": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why a classification was derived: routineOfficial"
+      },
+      "securityInformation": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why a classification was derived: securityInformation"
+      },
+      "specialCategoryData": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why a classification was derived: specialCategoryData"
+      }
+    },
     "classifications": {
       "official": {
-        "maxLength": 32,
-        "where": "Classification marking on the banner of sensitive and restricted records and print packs"
+        "maxLength": 24,
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "The Official classification level, wherever a level is named"
+      },
+      "officialDefinition": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Annex 2's definition of Official, on the glossary and the Admin classification screen"
       },
       "officialSensitive": {
-        "maxLength": 32,
-        "where": "Classification marking on the banner of sensitive and restricted records and print packs"
+        "maxLength": 24,
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "The Official-Sensitive classification level, wherever a level is named"
+      },
+      "officialSensitiveDefinition": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Annex 2's definition of Official-Sensitive, with its four examples"
+      },
+      "officialSensitiveMarking": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "verbatim": true,
+        "where": "The marking stamped on a print pack page and prefixed to a download name; Annex 2's own form"
       },
       "restricted": {
         "maxLength": 32,
         "where": "Classification marking on the banner of sensitive and restricted records and print packs"
+      },
+      "scheme": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Annex 2's description of the scheme itself, on the glossary and the Admin classification screen"
+      },
+      "secretDefinition": {
+        "screenshot": "phase-4/meeting-minutes-print-light-comfortable.png",
+        "where": "Why the product offers neither Secret nor Top Secret, on the glossary"
       }
     },
     "clockRules": {
@@ -5913,6 +5982,33 @@
       "victim": {
         "maxLength": 48,
         "where": "Who an exclusion names: the must-not-receive list in the drawer, the sharing preview, meeting invites and Admin exclusions"
+      }
+    },
+    "handling": {
+      "chairApprovalRequired": {
+        "maxLength": 48,
+        "screenshot": "phase-5/admin-markings-light-comfortable.png",
+        "where": "Handling instruction: the MAPPA chair must agree before wider sharing"
+      },
+      "distributionListOnly": {
+        "maxLength": 48,
+        "screenshot": "phase-5/admin-markings-light-comfortable.png",
+        "where": "Handling instruction appended after the marking on a restricted record"
+      },
+      "doNotForward": {
+        "maxLength": 48,
+        "screenshot": "phase-5/admin-markings-light-comfortable.png",
+        "where": "Handling instruction asking a recipient not to forward the material"
+      },
+      "notForSubjectAccess": {
+        "maxLength": 48,
+        "screenshot": "phase-5/admin-markings-light-comfortable.png",
+        "where": "Handling instruction for material unlikely to be released under a subject access request"
+      },
+      "policeUseOnly": {
+        "maxLength": 48,
+        "screenshot": "phase-5/admin-markings-light-comfortable.png",
+        "where": "Handling instruction restricting material to police recipients"
       }
     },
     "harmTypes": {

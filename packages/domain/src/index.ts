@@ -7,3 +7,4 @@ export * from './permissions';
 export * from './config';
 export * from './chronology';
 export * from './forms';
+export * from './classification/classify';

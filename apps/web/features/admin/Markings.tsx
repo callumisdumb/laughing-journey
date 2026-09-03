@@ -1,6 +1,6 @@
 'use client';
 
-import { CLASSIFICATIONS, type Classification } from '@mas/domain';
+import { CLASSIFICATIONS, type RecordClassification } from '@mas/domain';
 import { tKey, useT, type Translator } from '@mas/messages';
 import { Button, Sheet, SheetBody, SheetHead, TextField, TextareaField } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,9 +12,9 @@ import { SectionHead } from './SectionHead';
 import { sectionLabel } from './sections';
 import { useAdminConfig } from './useAdminConfig';
 
-const MARKING_KEYS: Record<Classification, string> = { official: 'official', 'official-sensitive': 'officialSensitive', restricted: 'restricted' };
-const markingTitle = (id: Classification) => tKey(`admin.markings.${MARKING_KEYS[id]}.title`);
-const markingUse = (id: Classification) => tKey(`admin.markings.${MARKING_KEYS[id]}.use`);
+const MARKING_KEYS: Record<RecordClassification, string> = { official: 'official', 'official-sensitive': 'officialSensitive', restricted: 'restricted' };
+const markingTitle = (id: RecordClassification) => tKey(`admin.markings.${MARKING_KEYS[id]}.title`);
+const markingUse = (id: RecordClassification) => tKey(`admin.markings.${MARKING_KEYS[id]}.use`);
 
 function markingsSchema(t: Translator) {
   return z.object({

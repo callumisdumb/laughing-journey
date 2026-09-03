@@ -146,10 +146,15 @@ export function riskBandLabel(band: RiskBand): string {
   return tKey(`domain.riskBands.${keySegment(band)}`);
 }
 
+/**
+ * The classification stored on a record. It predates the Annex 2 model in `classification/` and is
+ * the input to it, not a replacement: `restricted` is the MAPPA distribution-list concept, which in
+ * Annex 2 terms is Official-Sensitive with a handling instruction (see `recordClassification`).
+ */
 export const CLASSIFICATIONS = ['official', 'official-sensitive', 'restricted'] as const;
-export type Classification = (typeof CLASSIFICATIONS)[number];
+export type RecordClassification = (typeof CLASSIFICATIONS)[number];
 
-export function classificationLabel(level: Classification): string {
+export function classificationLabel(level: RecordClassification): string {
   return tKey(`domain.classifications.${keySegment(level)}`);
 }
 

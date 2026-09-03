@@ -754,7 +754,7 @@
     },
     "page": {
       "ledeFull": "Showing every entry: {role} has oversight.",
-      "ledeOwn": "Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone\u2019s.",
+      "ledeOwn": "Showing your own entries. Oversight roles, system administrators and Caldicott guardians see everyone’s.",
       "ledeTail": "Every read of a restricted record, every share, every break-glass and every persona switch is here, newest first.",
       "title": "Audit"
     },
@@ -1584,11 +1584,11 @@
       "women": "Women"
     },
     "aspInquiryActions": {
-      "criteriaNoOpportunity": "Meets three-point criteria \u2014 no opportunity for further ASP intervention",
-      "criteriaOngoing": "Meets three-point criteria \u2013 ongoing ASP work",
-      "criteriaSupport": "Meets three-point criteria \u2014 non-ASP support provided or offered",
-      "noCriteriaNoAction": "Does not meet the three-point criteria \u2013 no further action",
-      "noCriteriaSupport": "Does not meet the three-point criteria \u2013 non-ASP support offered or provided",
+      "criteriaNoOpportunity": "Meets three-point criteria — no opportunity for further ASP intervention",
+      "criteriaOngoing": "Meets three-point criteria – ongoing ASP work",
+      "criteriaSupport": "Meets three-point criteria — non-ASP support provided or offered",
+      "noCriteriaNoAction": "Does not meet the three-point criteria – no further action",
+      "noCriteriaSupport": "Does not meet the three-point criteria – non-ASP support offered or provided",
       "pendingUnknown": "Pending / Unknown"
     },
     "aspInquiryOutcomes": {
@@ -1642,10 +1642,28 @@
       "inApp": "In app",
       "secureEmailDigest": "Secure email digest"
     },
+    "classificationReasons": {
+      "aspOrderOrLsi": "ASP protection order application or Large Scale Investigation workspace",
+      "cpRecord": "Child protection IRD record, JII planning record or CPPM minute",
+      "criminalOffenceData": "Carries criminal offence data under UK GDPR Article 10",
+      "linkedRecord": "Inherited from a linked record, which a derived classification is never lower than",
+      "mappaRecord": "MAPPA record, minute, Risk Management Plan, Environmental Risk Assessment, disclosure decision or pre-meeting return",
+      "maracRecord": "MARAC referral, research return, meeting record or action plan",
+      "namesPerpetrator": "Names a perpetrator, an alleged perpetrator, or a person subject to bail or licence conditions",
+      "openRestrictedProcess": "The person has an open restricted process and this view would reveal the link",
+      "routineOfficial": "Routine Official information, which needs no marking",
+      "securityInformation": "Security information: break-glass audit entries, the audit export, connector credentials",
+      "specialCategoryData": "Carries special category personal data under UK GDPR Article 9"
+    },
     "classifications": {
-      "official": "OFFICIAL",
-      "officialSensitive": "OFFICIAL-SENSITIVE",
-      "restricted": "OFFICIAL-SENSITIVE: RESTRICTED"
+      "official": "Official",
+      "officialDefinition": "The lowest classification, and the majority of information the public sector creates or processes, including routine business operations and services. Some of it could have damaging consequences if lost, stolen or published in the media, but it is not subject to a heightened risk profile. There is no requirement to explicitly mark routine Official information.",
+      "officialSensitive": "Official-Sensitive",
+      "officialSensitiveDefinition": "A limited subset of Official information that could have more damaging consequences if it were lost, stolen or published. It must be clearly marked Official-Sensitive, and special handling instructions may be added where the sensitivity justifies strict restrictions on sharing. Annex 2 gives four examples: case details involving vulnerable individuals where a serious risk of harm or criminal activity may result from disclosure; information about investigations, civil or criminal proceedings that could disrupt law enforcement or prejudice legal cases; security information; and personal data defined as special category or sensitive under data protection legislation.",
+      "officialSensitiveMarking": "OFFICIAL-SENSITIVE",
+      "restricted": "OFFICIAL-SENSITIVE: RESTRICTED",
+      "scheme": "All Scottish Government departments, non-departmental public bodies and agencies follow the UK Government Security Classification scheme, which has three levels: Official, Secret and Top Secret. Classifications indicate the sensitivity of information in terms of the likely impact of compromise, loss or misuse, and the need to defend against different threats. We each have a responsibility to protect and safeguard information.",
+      "secretDefinition": "Used for highly sensitive information relating to defence, diplomacy or national security. Nothing in this product's scope reaches Secret or Top Secret, so it offers neither level."
     },
     "clockRules": {
       "aspCaseconferenceInitial": {
@@ -1859,6 +1877,13 @@
       "perpetratorAssociates": "Perpetrator's family or associates",
       "public": "Public",
       "victim": "Victim"
+    },
+    "handling": {
+      "chairApprovalRequired": "Chair approval required before wider sharing",
+      "distributionListOnly": "Distribution list only",
+      "doNotForward": "Do not forward",
+      "notForSubjectAccess": "Not for subject access disclosure",
+      "policeUseOnly": "Police use only"
     },
     "harmTypes": {
       "discriminatory": "Discriminatory harm",
@@ -2751,7 +2776,7 @@
         "dataProtection": "UK GDPR, Data Protection Act 2018 (Schedule 1 Part 2 paragraph 18), Data (Use and Access) Act 2025",
         "domesticAbuseAct": "Domestic Abuse (Scotland) Act 2018",
         "equallySafe": "Equally Safe strategy",
-        "hearingsAct": "Children\u2019s Hearings (Scotland) Act 2011",
+        "hearingsAct": "Children’s Hearings (Scotland) Act 2011",
         "humanRightsAct": "Human Rights Act 1998",
         "mappaAct": "Management of Offenders etc. (Scotland) Act 2005 and MAPPA National Guidance (current edition)",
         "mentalHealthAct": "Mental Health (Care and Treatment) (Scotland) Act 2003",
@@ -4899,7 +4924,7 @@
         "label": "Clocks due this week"
       },
       "connectorInbox": {
-        "hint": "New events from your agency\u2019s systems waiting for review.",
+        "hint": "New events from your agency’s systems waiting for review.",
         "label": "Connector inbox items"
       },
       "meetingInvites": {
