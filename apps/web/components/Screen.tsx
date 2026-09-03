@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { Actions } from '@/features/actions/Actions';
+import { Admin } from '@/features/admin/Admin';
 import { Audit } from '@/features/audit/Audit';
 import { Connectors } from '@/features/connectors/Connectors';
 import { Help } from '@/features/help/Help';
@@ -59,7 +60,7 @@ export function Screen() {
     case 'audit':
       return <Audit />;
     case 'admin':
-      return <Placeholder title="Admin" phase={5} />;
+      return <Admin section={id} />;
     case 'settings':
       return <Settings />;
     case 'help':
