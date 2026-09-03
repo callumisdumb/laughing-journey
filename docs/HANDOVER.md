@@ -324,7 +324,7 @@ Desktop target shell (Tauri), macOS:
 ```
 rustup default stable
 pnpm install
-pnpm desktop:tauri:build           # apps/desktop-tauri/src-tauri/target/release/bundle/dmg/Platform_0.1.0_*.dmg
+pnpm desktop:tauri:build           # apps/desktop-tauri/src-tauri/target/release/bundle/dmg/Person360_0.1.0_*.dmg
 ```
 
 Tauri on Windows: install the Rust MSVC toolchain and Visual Studio Build Tools, then `pnpm desktop:tauri:build`; the bundle embeds the WebView2 bootstrapper, output under `src-tauri/target/release/bundle/nsis` and `msi`.
