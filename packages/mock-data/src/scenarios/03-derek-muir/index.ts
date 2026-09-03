@@ -156,6 +156,10 @@ export function seedDerekMuir(ctx: BuildContext): void {
         { id: 'lic_derek_4', text: 'To attend and engage with the community sex offender programme (Moving Forward 2 Change) as directed by the supervising officer', status: 'active' },
         { id: 'lic_derek_5', text: 'To notify the supervising officer and the police of any intimate relationship, and of any employment, paid or unpaid, before it starts', status: 'active' },
       ],
+      // Civil order register: a Sexual Harm Prevention Order granted on the chief constable's application before release, for the minimum five years.
+      orders: [
+        { id: 'ord_derek_shpo', kind: 'shpo', madeAt: '2026-07-20', expiresAt: '2031-07-19', court: 'Ardvale Sheriff Court', status: 'active' },
+      ],
       riskAssessmentIds: riskIds,
       rmp: {
         planId: DEREK.rmp,

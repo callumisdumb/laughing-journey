@@ -59,13 +59,37 @@ describe('report figures are computed from the seed, never typed in', () => {
     expect(q.map['police']).toBe('50.0%');
   });
 
-  it('MAPPA: one Category 1 Level 2 offender in the year in progress, review not yet due, no names anywhere', () => {
-    expect(figures('mappa', null).model.activity).toBe(0);
+  it('MAPPA: Annex 3 Tables 1 to 9, one Category 1 Level 2 RSO in the community in the year in progress, no names anywhere', () => {
+    const y2026 = figures('mappa', null);
+    expect(y2026.model.activity).toBe(0);
     const y2027 = figures('mappa', 'y2027');
     expect(y2027.map['at-end']).toBe('1');
     expect(y2027.map['l2']).toBe('1');
-    expect(y2027.model.sections.find((s) => s.id === 'reviews')?.tables[0]?.rows[0]).toEqual(['Level 2', '12 weeks', 1, 0, 0, 1]);
-    expect(JSON.stringify(y2027.model)).not.toContain('Muir');
+    expect(y2027.map['late']).toBe('0');
+    expect(y2027.map['orders']).toBe('1');
+    expect(y2027.model.meta.join(' ')).toContain('Annex 3 tables 1 to 9 (MAPPA National Guidance)');
+    expect(y2027.model.meta.join(' ')).not.toContain('Field set to verify');
+
+    // Nine sections, one per table, in the annex order, and the only chart sits on Table 3.
+    expect(y2027.model.sections.map((s) => s.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `table-${n}`));
+    expect(y2027.model.sections.map((s) => s.title.startsWith('Table '))).not.toContain(false);
+    expect(y2027.model.sections.filter((s) => s.chart).map((s) => s.id)).toEqual(['table-3']);
+
+    // Figures are keyed on row ids, so the checks read the cells by position rather than by label.
+    const values = (model: typeof y2027.model, id: string) => model.sections.find((s) => s.id === id)?.tables[0]?.rows.map((r) => r.slice(1));
+    expect(values(y2027.model, 'table-1')).toEqual([[1], ['Data not held'], [0], ['Data not held'], [0]]);
+    expect(values(y2027.model, 'table-2')).toEqual([[0], [0], [0], [0], [1], [1], [0], [0], ['Data not held']]);
+    expect(values(y2026.model, 'table-2')?.[4]).toEqual([0]);
+    expect(values(y2027.model, 'table-3')).toEqual([[0, 1, 0, 1]]);
+    expect(values(y2027.model, 'table-4')).toEqual([[0], [0], [0], [0]]);
+    expect(values(y2027.model, 'table-5')).toEqual([[0], [0], [0], [0]]);
+    expect(values(y2027.model, 'table-6')).toEqual([[1], [0], [0], [1]]);
+    expect(values(y2027.model, 'table-7')).toEqual([[1], [0], [1]]);
+    expect(values(y2027.model, 'table-8')?.flat()).toEqual(['Data not held', 'Data not held', 'Data not held']);
+    expect(values(y2027.model, 'table-9')).toEqual([[0], [1], [0], [0]]);
+
+    const json = JSON.stringify(y2027.model);
+    for (const identifying of ['Muir', 'Derek', 'MAPPA-2026-0034', '1974-06-08', '08 Jun 1974', 'ViSOR', 'Ardvale Sheriff Court']) expect(json).not.toContain(identifying);
   });
 
   it('AWI: one council welfare application with the MHO report still running and no order yet', () => {

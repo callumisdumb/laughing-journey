@@ -94,6 +94,7 @@ const mappa: MappaProcess = {
     leadResponsibleAuthority: 'police',
     visorReference: 'V-1',
     victimPersonIds: ['per_mappa_victim'],
+    orders: [],
     notification: { at: '2026-05-10T14:00:00+01:00', source: 'SPS', byName: 'B' },
     sonr: { subject: true, compliant: true },
     custody: {},

@@ -38,4 +38,15 @@ describe('scenario 3', () => {
     expect(clock?.completedAt).toBeUndefined();
     expect(ctx.data.meetings.filter((m) => m.processId === DEREK.process).length).toBe(2);
   });
+
+  it('holds one active Sexual Harm Prevention Order on the civil order register for the annual report', () => {
+    const ctx = createContext('test', '2026-09-02T09:00:00+01:00');
+    seedOrganisations(ctx);
+    seedDerekMuir(ctx);
+    const process = ctx.data.processes.find((p) => p.id === DEREK.process);
+    if (process?.type !== 'mappa') throw new Error('expected a MAPPA process');
+    expect(process.detail.orders).toHaveLength(1);
+    expect(process.detail.orders[0]).toMatchObject({ kind: 'shpo', status: 'active', madeAt: '2026-07-20', court: 'Ardvale Sheriff Court' });
+    expect(process.detail.orders[0]?.expiresAt).toBe('2031-07-19');
+  });
 });

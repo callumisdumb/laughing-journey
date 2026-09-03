@@ -29,3 +29,4 @@ The victim has no record on the platform and is referred to only as "the victim"
 - The Risk Management Plan and the Environmental Risk Assessment under the National Accommodation Strategy for Sex Offenders, with housing receiving fields only.
 - Disclosure decisions to third parties as recorded decisions with facts and rationale, and the rule that MAPPA information is not given to victims or employers by any other route.
 - The Level 2 review clock from the MAPPA National Guidance 2022: no less than once every twelve weeks.
+- A civil order register on the MAPPA record: a Sexual Harm Prevention Order made at Ardvale Sheriff Court on 20 Jul 2026 for five years, which the annual report counts in Annex 3 Table 2 without naming him.

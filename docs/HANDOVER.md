@@ -26,6 +26,7 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - MAPPA records are restricted; non-members see presence only and Responsible Authority agencies can break glass with a reason for four hours, audited (D-044).
 - Statutory clocks carry a source and a confidence; Verify and Local rules are `TODO(verify)` in code and marked in the product (D-041). The IRD label and the ASP council officer eligibility are configuration (D-040, D-045).
 - An unborn baby is a Person with `lifeStage: 'unborn'` and an expected delivery date (D-046).
+- Exclusions are keyed on the case-role register (D-035); the MARAC DAQ and the MAPPA referral ask who else must not receive information and feed it (D-047). The MAPPA annual report is Annex 3 Tables 1 to 9 with the field set High and placeholder wording (D-048).
 - Facts and analysis are separate records; a fact that reads as opinion is rejected by the schema and analysis must cite a fact (D-020b).
 
 ### Design
@@ -35,9 +36,9 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 
 ### Engineering
 - Static export plus a `pushState` router that prerenders every known path (D-004); the dataset is generated at start-up from a seeded PRNG, not committed JSON (D-005).
-- TypeScript 5.9, ESLint 9.39, Playwright 1.56, TanStack Table 8.21 are pinned for the reasons in D-002, D-003, D-013 and D-014.
+- TypeScript 5.9, ESLint 9.39, Playwright 1.62.1, TanStack Table 8.21 are pinned for the reasons in D-002, D-003, D-013, D-014 and D-038.
 - Every screen accepts `?state=` for designed states (D-012). Telemetry is off at the build level (D-018).
-- Tauri is primary; the Linux build container has no GTK or WebKitGTK, so the Tauri binary is not built here and Electron is the verified packaging path (D-007). See section 4.
+- Electron is the demo build and Tauri stays configured (D-032); the Linux build container has no GTK or WebKitGTK, so the Tauri binary is not built here (D-007). See section 4.
 
 ## 3. Verification table
 
@@ -219,11 +220,12 @@ Everything marked here is either configuration seeded from research rather than 
 
 ### Statutory and local values to verify (also in `docs/RESEARCH.md` and Admin, Timescales)
 - `asp.inquiry.decision` (5 working days), `asp.caseconference.initial` (21 calendar days), `asp.plan.review` (3 months) and `marac.research.return` (5 working days): local values; confirm against the Clydeshore equivalent's own procedures.
-- `cp.cppm.review.first`: seeded at the national 6 months with a note that some areas hold the first review at 3 months; the Aiden Boyle scenario carries a 3 month local override with its reason.
-- `awi.interim.warning`: the 6 month statutory limit is High confidence; the Expert Working Group citation for the warning is Verify.
-- Scottish bank holidays used by working-day clocks (`bankHolidays` in `default-config.ts`): confirm against the published list each year.
-- ASP s52 council officer eligibility wording (`aspCouncilOfficerEligibility`): confirm against the local rule.
-- Report field sets (ASP biennial, CP register, MARAC SafeLives return, MAPPA annual, AWI timeliness): the figures are computed from the dataset, but the column sets follow search extracts of the current templates because the source sites were unreachable through the session proxy. Each report says "Field set to verify against the current template" in its meta line; sources are in `docs/RESEARCH.md` section 5.
+- Every CP clock is High from Appendix D of the 2021 national guidance, read live on 03 Sep 2026 (section 6.4 of `docs/RESEARCH.md`): `cp.cppm.review.first` is the 6 month maximum with no local override anywhere, and the Aiden Boyle review is brought forward by a decision of the meeting, not by a rule.
+- `awi.interim.warning`: High. The 3 month default and 6 month total limit are s57 as amended, and the warning cites the Adults with Incapacity Reform Expert Working Group minutes of April 2026 (section 6.5).
+- Scottish bank holidays used by working-day clocks: the committed gov.uk feed fixture (`packages/domain/src/config/bank-holidays.json`, Scotland division, 2025 to 2027, including 15 June 2026); refresh with `pnpm holidays:sync`. The council holiday list in `default-config.ts` is fictional and marked to verify.
+- ASP s52 council officer eligibility wording (`aspCouncilOfficerEligibility`): seeded from SSI 2008/306; confirm against the local rule.
+- Report field sets for the ASP biennial, CP register, MARAC SafeLives return and AWI timeliness reports: the figures are computed from the dataset, but the column sets follow search extracts of the current templates because the source sites were unreachable through the session proxy. Each of those four says "Field set to verify against the current template" in its meta line; sources are in `docs/RESEARCH.md` section 5.
+- MAPPA annual report: the field set is High (Annex 3 Tables 1 to 9, year 1 April to 31 March, D-048). Only the label wording is a placeholder, in `apps/web/features/reports/mappaAnnex3.ts`, until the supplied Annex 3 text is pasted in (section 6.7).
 
 ### Product limits by design
 - No backend, no real integrations, no authentication. Personas are a switcher; every switch is audited.
@@ -234,9 +236,9 @@ Everything marked here is either configuration seeded from research rather than 
 - Exclusions are keyed on the case-role register (D-035). A person who should be excluded but is not linked to the perpetrator by a relationship record, and not named in the referral, must be added to the register by hand; nothing infers it from free text.
 
 ### Waiting on the product owner
-- Ayrshire values for the five local clocks (ASP inquiry decision, ASP initial case conference, ASP plan review, MARAC research return, core group escalation): seeded values stay until then and are marked to verify.
+- Ayrshire values for the four local clocks (ASP inquiry decision, ASP initial case conference, ASP plan review, MARAC research return): seeded values stay until then and are marked to verify.
 - Official report templates in `docs/templates/` (see the README there); the five returns are reconciled against them when they arrive.
-- The supplied Annex 3 table text for the MAPPA annual report, to paste into `apps/web/features/reports/mappaAnnex3.ts` (the nine tables are built from the published template until then).
+- The supplied Annex 3 table text for the MAPPA annual report, to paste over the placeholder labels in `apps/web/features/reports/mappaAnnex3.ts` (the field set and the figures behind the nine tables are complete; only the wording waits).
 
 ### Grep points
 - `TODO(verify)` in code marks the two configuration points above; every clock rule with `todoVerify: true` is listed in section 3.
