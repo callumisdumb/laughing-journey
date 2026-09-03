@@ -59,7 +59,10 @@ export const personSchema = z.object({
   contact: z.object({ phone: z.string().optional(), email: z.string().optional() }),
   gpPractice: z.string().optional(),
   school: z.string().optional(),
-  ethnicity: z.string().optional(),
+  // No ethnicity field. The ASP national return, the MAPPA annual report and the DPIA all say the
+  // platform does not hold it, and a dead field on the most sensitive entity in the product is how a
+  // protected characteristic gets populated later by somebody who does not know why it was empty.
+  // See D-079. A test asserts it stays absent.
   deceased: z.boolean().optional(),
   createdAt: isoDateTime,
 });

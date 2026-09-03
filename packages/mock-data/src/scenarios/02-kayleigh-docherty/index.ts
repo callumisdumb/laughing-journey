@@ -115,7 +115,6 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
     ],
     householdId: hh,
     gpPractice: 'Portlennan Medical Practice',
-    ethnicity: 'scottish',
     contact: { phone: '07700 900231' },
     alerts: [{ id: 'alt_kayleigh_marac', kind: 'marac-flag', text: 'MARAC flag', from: '2026-01-09', to: '2027-01-08' }],
     createdAt: at('2019-06-03', '10:00'),
@@ -135,7 +134,6 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
     householdId: hh,
     gpPractice: 'Portlennan Medical Practice',
     school: 'Ardvale Primary',
-    ethnicity: 'scottish',
     createdAt: at('2019-06-03', '10:00'),
   });
   const mason = makePerson(ctx, {
@@ -149,7 +147,6 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
     addressHistory: [{ addressId: home.id, from: '2023-01-20' }],
     householdId: hh,
     gpPractice: 'Portlennan Medical Practice',
-    ethnicity: 'scottish',
     createdAt: at('2023-01-21', '10:00'),
   });
   const ryan = makePerson(ctx, {
@@ -164,7 +161,6 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
       { addressId: ryanHome.id, from: '2025-06-02', note: 'Council tenancy in his own name' },
     ],
     gpPractice: 'Craiglarrick Health Centre',
-    ethnicity: 'scottish',
     contact: { phone: '07700 900418' },
     alerts: [
       { id: 'alt_ryan_staff', kind: 'staff-safety', text: 'Known risk to staff: lone visits not advised', from: '2025-03-15' },
@@ -183,7 +179,6 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
     dateOfBirth: '1989-11-03',
     chi: syntheticChi(ctx, '1989-11-03', 'male'),
     addressHistory: [{ addressId: craigHome.id, from: '2016-04-11', note: 'Private let' }],
-    ethnicity: 'scottish',
     createdAt: at('2024-03-17', '09:10'),
   });
 

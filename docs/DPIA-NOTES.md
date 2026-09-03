@@ -10,7 +10,8 @@ Person360 is a mockup with no backend, so nothing here is a statement about a de
 
 The record store holds child protection, adult support and protection, domestic abuse and MAPPA material for a multi-agency partnership. In UK GDPR terms that means:
 
-- **Article 9 special category data** throughout: health, including mental health and capacity; sex life and sexual orientation, in MARAC and MAPPA material; racial or ethnic origin, collected for the ASP national return.
+- **Article 9 special category data** throughout: health, including mental health and capacity; sex life and sexual orientation, in MARAC and MAPPA material.
+- **Not racial or ethnic origin.** The record store holds no ethnicity field, deliberately (D-079). The ASP national return reports every ethnicity row as not collected, MAPPA Annex 3 Table 8 reads "Data not held" throughout, and the MARAC return reports minority ethnic victims as not recorded. A real deployment that collected it for the ASP return would add this category to the DPIA and would need a lawful basis and a collection route for it; this one does not have either, and says so rather than carrying an empty field that somebody fills in later.
 - **Article 10 data** relating to criminal convictions and offences, in the MAPPA and MARAC records.
 - Data about **children**, who Recital 38 singles out as meriting specific protection.
 - Data about **adults at risk**, whose ability to exercise their own rights may be exactly what is in question.

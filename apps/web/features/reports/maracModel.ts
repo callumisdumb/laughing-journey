@@ -29,7 +29,6 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
   const victims = referrals.map((p) => ({ p, v: personById(data, p.detail.referral.victimPersonId) }));
   const male = victims.filter(({ v }) => v?.sex === 'male').length;
   const older = victims.filter(({ p, v }) => v?.dateOfBirth && ageOn(v.dateOfBirth, localDateOf(p.detail.referral.receivedAt)) >= 61).length;
-  const minority = victims.filter(({ v }) => v?.ethnicity && v.ethnicity !== 'scottish').length;
   const interpreter = victims.filter(({ v }) => v?.communicationNeeds.interpreterLanguage).length;
 
   const risk = referrals.map((p) => data.riskAssessments.find((r) => r.id === p.detail.referral.riskAssessmentId));
@@ -93,7 +92,7 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
     rows: [
       [t('reports.marac.victims.male'), male, t('reports.marac.victims.maleHow')],
       [t('reports.marac.victims.older'), older, t('reports.marac.victims.olderHow')],
-      [t('reports.marac.victims.minority'), minority, t('reports.marac.victims.minorityHow')],
+      [t('reports.marac.victims.minority'), t('reports.marac.victims.notRecorded'), t('reports.marac.victims.notRecordedHow')],
       [t('reports.marac.victims.interpreter'), interpreter, t('reports.marac.victims.interpreterHow')],
       [t('reports.marac.victims.lgbt'), t('reports.marac.victims.notRecorded'), t('reports.marac.victims.notRecordedHow')],
       [t('reports.marac.victims.disability'), t('reports.marac.victims.notRecorded'), t('reports.marac.victims.notRecordedHow')],

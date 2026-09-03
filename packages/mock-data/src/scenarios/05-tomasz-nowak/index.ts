@@ -39,7 +39,6 @@ export function seedTomaszNowak(ctx: BuildContext): void {
     communicationNeeds: { interpreterLanguage: 'Polish', needs: ['Polish interpreter for meetings and visits'], note: 'Reads English well; prefers to speak Polish for anything that matters. Written material to be provided in Polish.' },
     contact: { phone: '07700 900318' },
     gpPractice: 'Portlennan Medical Practice',
-    ethnicity: 'polish',
     createdAt: at('2016-09-12', '10:00'),
   });
   ctx.data.households.push({ id: hh, synthetic: true, addressId: vennel.id, memberIds: [tomasz.id], label: 'Nowak household, Dunlarrick' });

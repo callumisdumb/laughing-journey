@@ -57,7 +57,6 @@ export function makePerson(
     contact: p.contact ?? {},
     gpPractice: p.gpPractice,
     school: p.school,
-    ethnicity: p.ethnicity,
     deceased: p.deceased,
     createdAt: p.createdAt ?? ctx.nowIso,
   };

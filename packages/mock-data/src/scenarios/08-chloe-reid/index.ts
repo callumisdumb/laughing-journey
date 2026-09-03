@@ -102,7 +102,6 @@ export function seedChloeReid(ctx: BuildContext): void {
     ],
     householdId: hh,
     gpPractice: 'Portlennan Medical Practice',
-    ethnicity: 'scottish',
     contact: { phone: '07700 900314' },
     alerts: [{ id: 'alt_chloe_care', kind: 'other', text: 'Care experienced: aftercare entitlement to age 26 (Children and Young People (Scotland) Act 2014 s29)', from: '2023-06-20' }],
     createdAt: at('2019-02-15', '20:45'),
@@ -132,7 +131,6 @@ export function seedChloeReid(ctx: BuildContext): void {
     ],
     householdId: hh,
     gpPractice: 'Craiglarrick Health Centre',
-    ethnicity: 'scottish',
     contact: { phone: '07700 900522' },
     alerts: [{ id: 'alt_blake_nho', kind: 'other', text: 'Non-harassment order in favour of a previous partner until 11 Sep 2026 (Ardvale Sheriff Court, 12 Mar 2025)', from: '2025-03-12', to: '2026-09-11' }],
     createdAt: at('2024-02-12', '09:00'),
@@ -146,7 +144,6 @@ export function seedChloeReid(ctx: BuildContext): void {
     chi: syntheticChi(ctx, '1971-09-03', 'female'),
     addressHistory: [{ addressId: sheenaHome.id, from: '2012-04-01' }],
     gpPractice: 'Portlennan Medical Practice',
-    ethnicity: 'scottish',
     contact: { phone: '07700 900377' },
     createdAt: at('2019-02-20', '12:00'),
   });
@@ -159,7 +156,6 @@ export function seedChloeReid(ctx: BuildContext): void {
     chi: syntheticChi(ctx, '1984-05-17', 'female'),
     addressHistory: [{ addressId: donnaHome.id, from: '2005-11-01' }],
     gpPractice: 'Portlennan Medical Practice',
-    ethnicity: 'scottish',
     createdAt: at('2019-02-15', '20:45'),
   });
 

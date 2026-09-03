@@ -41,7 +41,6 @@ export function seedMarionFraser(ctx: BuildContext): void {
     communicationNeeds: { needs: ['Hearing aid (left ear); check it is in before any conversation', 'Clearer in the mornings; arrange visits before midday'], note: 'Vascular dementia; capacity fluctuates through the day' },
     contact: { phone: '01000 342118' },
     gpPractice: 'Portlennan Medical Practice',
-    ethnicity: 'scottish',
     createdAt: at('2024-02-13', '10:00'),
   });
   const callum = makePerson(ctx, {
@@ -54,7 +53,6 @@ export function seedMarionFraser(ctx: BuildContext): void {
     addressHistory: [{ addressId: callumFlat.id, from: '2021-10-01', note: 'Council tenancy; stays some nights at 14 Shore Loan since about June 2026' }],
     contact: { phone: '07700 900274' },
     gpPractice: 'Craiglarrick Health Centre',
-    ethnicity: 'scottish',
     createdAt: at('2025-03-18', '10:00'),
   });
 

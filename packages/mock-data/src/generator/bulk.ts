@@ -83,7 +83,6 @@ export function seedBulkPopulation(ctx: BuildContext, householdCount: number): B
         addressHistory: [{ addressId: addr.id, from: movedIn }],
         householdId: hhId,
         gpPractice: town.gpPractice,
-        ethnicity: pool.origin,
         communicationNeeds: interpreter ? { interpreterLanguage: interpreter, needs: [`${interpreter} interpreter for meetings`] } : { needs: [] },
       });
       members.push(p);
@@ -106,7 +105,6 @@ export function seedBulkPopulation(ctx: BuildContext, householdCount: number): B
         householdId: hhId,
         gpPractice: town.gpPractice,
         school: schoolFor(town.name, dob, ctx),
-        ethnicity: pool.origin,
       });
       relate(ctx, parent.id, p.id, parent.sex === 'female' ? 'mother-of' : 'father-of');
       members.push(p);

@@ -62,7 +62,6 @@ export function seedWhinbraeLsi(ctx: BuildContext): void {
       addressHistory: [{ addressId: home.id, from: admitted, note: 'Permanent resident, Whinbrae House' }],
       householdId: WHINBRAE.household,
       gpPractice: 'Craiglarrick Health Centre',
-      ethnicity: 'scottish',
       createdAt: at(admitted, '10:00'),
       ...extra,
     });
@@ -78,7 +77,6 @@ export function seedWhinbraeLsi(ctx: BuildContext): void {
     communicationNeeds: { needs: ['Type 1 diabetes: insulin twice daily, time critical'] },
   });
   const zofia = resident(WHINBRAE.zofia, 'Zofia', 'Wisniewska', 'female', '1942-02-20', '2024-09-30', {
-    ethnicity: 'polish',
     communicationNeeds: { interpreterLanguage: 'Polish', needs: ['Polish interpreter for any interview, meeting or consent discussion', 'Reads Polish; written English limited'], note: 'Speaks some English day to day but reverts to Polish when tired or unwell' },
   });
   const margaret = resident(WHINBRAE.margaret, 'Margaret', 'Cairns', 'female', '1946-04-25', '2025-06-16', {
@@ -94,8 +92,8 @@ export function seedWhinbraeLsi(ctx: BuildContext): void {
   ctx.data.households.push({ id: WHINBRAE.household, synthetic: true, addressId: home.id, memberIds: all, label: 'Whinbrae House residents' });
 
   // Relatives named in the record.
-  const linda = makePerson(ctx, { id: WHINBRAE.linda, givenName: 'Linda', familyName: 'Paterson', sex: 'female', dateOfBirth: '1961-08-09', chi: syntheticChi(ctx, '1961-08-09', 'female'), addressHistory: [{ addressId: lindaHome.id, from: '2004-03-01' }], contact: { phone: '07700 900418' }, ethnicity: 'scottish', createdAt: at('2023-11-06', '10:00') });
-  const robert = makePerson(ctx, { id: WHINBRAE.robert, givenName: 'Robert', familyName: 'Kilgour', sex: 'male', dateOfBirth: '1963-12-02', chi: syntheticChi(ctx, '1963-12-02', 'male'), addressHistory: [{ addressId: robertHome.id, from: '1998-06-15' }], contact: { phone: '07700 900419' }, ethnicity: 'scottish', createdAt: at('2024-02-19', '10:00') });
+  const linda = makePerson(ctx, { id: WHINBRAE.linda, givenName: 'Linda', familyName: 'Paterson', sex: 'female', dateOfBirth: '1961-08-09', chi: syntheticChi(ctx, '1961-08-09', 'female'), addressHistory: [{ addressId: lindaHome.id, from: '2004-03-01' }], contact: { phone: '07700 900418' }, createdAt: at('2023-11-06', '10:00') });
+  const robert = makePerson(ctx, { id: WHINBRAE.robert, givenName: 'Robert', familyName: 'Kilgour', sex: 'male', dateOfBirth: '1963-12-02', chi: syntheticChi(ctx, '1963-12-02', 'male'), addressHistory: [{ addressId: robertHome.id, from: '1998-06-15' }], contact: { phone: '07700 900419' }, createdAt: at('2024-02-19', '10:00') });
   relate(ctx, linda.id, wilma.id, 'child-of', { notes: 'Daughter; visits twice a week; raised the financial concern' });
   relate(ctx, linda.id, wilma.id, 'carer-of', { notes: 'Manages her mother\'s post and bills' });
   relate(ctx, robert.id, jean.id, 'child-of');

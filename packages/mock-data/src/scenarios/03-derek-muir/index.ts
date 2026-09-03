@@ -55,7 +55,6 @@ export function seedDerekMuir(ctx: BuildContext): void {
     ],
     householdId: hh,
     gpPractice: 'Craiglarrick Health Centre',
-    ethnicity: 'scottish',
     contact: { phone: '07700 900334' },
     alerts: [{ id: 'alt_derek_mappa', kind: 'mappa', text: 'MAPPA managed (restricted)', from: '2026-07-14', visibleTo: ['police', 'social-work', 'health', 'sps'] }],
     createdAt: at('2026-05-10', '14:10'),

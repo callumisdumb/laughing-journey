@@ -43,7 +43,6 @@ export function seedIshbelGrant(ctx: BuildContext): void {
     alerts: [{ id: 'alt_ishbel_inpatient', kind: 'other', text: 'Inpatient, Clydeshore Royal Infirmary ward 7 (since 15 Jul 2026); delayed discharge', from: '2026-07-15' }],
     contact: { phone: '01000 618402' },
     gpPractice: 'Portlennan Medical Practice',
-    ethnicity: 'scottish',
     createdAt: at('2023-02-14', '10:00'),
   });
   const morag = makePerson(ctx, {
@@ -55,7 +54,6 @@ export function seedIshbelGrant(ctx: BuildContext): void {
     chi: syntheticChi(ctx, '1968-03-22', 'female'),
     addressHistory: [{ addressId: moragHome.id, from: '2002-04-15' }],
     contact: { phone: '07700 900452' },
-    ethnicity: 'scottish',
     createdAt: at('2023-02-14', '10:00'),
   });
   const douglas = makePerson(ctx, {
@@ -67,7 +65,6 @@ export function seedIshbelGrant(ctx: BuildContext): void {
     chi: syntheticChi(ctx, '1971-08-09', 'male'),
     addressHistory: [{ addressId: douglasHome.id, from: '2015-11-01' }],
     contact: { phone: '07700 900461' },
-    ethnicity: 'scottish',
     createdAt: at('2024-09-10', '10:00'),
   });
 

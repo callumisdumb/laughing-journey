@@ -57,7 +57,6 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     householdId: hh,
     gpPractice: 'Craiglarrick Health Centre',
     school: 'Ardvale Primary',
-    ethnicity: 'scottish',
     alerts: [{ id: 'alt_aiden_cp', kind: 'cp-register', text: 'On the Child Protection Register since 12 Jun 2026 (emotional abuse, physical abuse)', from: '2026-06-12' }],
     createdAt: at('2019-03-15', '10:00'),
   });
@@ -71,7 +70,6 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     addressHistory: history,
     householdId: hh,
     gpPractice: 'Craiglarrick Health Centre',
-    ethnicity: 'scottish',
     contact: { phone: '07700 900111' },
     createdAt: at('2019-03-15', '10:00'),
   });
@@ -83,7 +81,6 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     dateOfBirth: '1995-01-22',
     chi: syntheticChi(ctx, '1995-01-22', 'male'),
     addressHistory: [{ addressId: craiglarrick.id, from: '2024-06-01', to: '2026-05-21', note: 'Left the household under the interim safety plan' }],
-    ethnicity: 'scottish',
     alerts: [{ id: 'alt_craig_bail', kind: 'other', text: 'Bail condition: not to approach 12 Brae Wynd or Aiden Boyle (23 May 2026)', from: '2026-05-23' }],
     createdAt: at('2023-09-02', '10:00'),
   });
@@ -95,7 +92,6 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     dateOfBirth: '1993-11-08',
     chi: syntheticChi(ctx, '1993-11-08', 'male'),
     addressHistory: [{ addressId: kevinHome.id, from: '2022-03-01' }],
-    ethnicity: 'scottish',
     createdAt: at('2019-03-15', '10:00'),
   });
   const agnes = makePerson(ctx, {
@@ -107,7 +103,6 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     chi: syntheticChi(ctx, '1968-04-30', 'female'),
     addressHistory: [{ addressId: agnesHome.id, from: '2010-08-01' }],
     contact: { phone: '07700 900222' },
-    ethnicity: 'scottish',
     createdAt: at('2021-06-10', '10:00'),
   });
   const maisie = makePerson(ctx, {
@@ -121,7 +116,6 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     addressHistory: history.slice(1).map((h) => ({ ...h, from: h.from < '2023-04-18' ? '2023-04-18' : h.from })),
     householdId: hh,
     gpPractice: 'Craiglarrick Health Centre',
-    ethnicity: 'scottish',
     createdAt: at('2023-04-19', '10:00'),
   });
 

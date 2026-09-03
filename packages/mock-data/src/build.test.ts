@@ -77,6 +77,18 @@ describe('buildDataset', () => {
     expect(share.classification).not.toBe(source.classification);
   });
 
+  it('holds no ethnicity, anywhere, which three documents and two returns depend on', () => {
+    // The ASP national return reports every ethnicity row as not collected, MAPPA Annex 3 Table 8
+    // reads Data not held, and the DPIA says the dataset does not carry it. Those statements are only
+    // worth anything if something checks them, and the field is exactly the kind that gets added back
+    // by somebody who does not know why it was empty. See D-079.
+    for (const person of data.people) {
+      expect(Object.keys(person)).not.toContain('ethnicity');
+    }
+    const dump = JSON.stringify(data.people);
+    expect(dump).not.toContain('ethnicity');
+  });
+
   it('keeps ages and schools consistent', () => {
     for (const p of data.people) {
       if (p.lifeStage === 'child' && p.dateOfBirth) {

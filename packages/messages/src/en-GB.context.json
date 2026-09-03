@@ -16430,9 +16430,6 @@
           "verbatim": true,
           "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
         },
-        "minorityHow": {
-          "where": "How it is derived cell for the minority ethnic row of the MARAC victim characteristics table"
-        },
         "notRecorded": {
           "maxLength": 16,
           "where": "Cases cell of the MARAC victim characteristics table for a field the record store does not hold"

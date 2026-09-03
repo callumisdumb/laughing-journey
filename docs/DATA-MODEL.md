@@ -135,7 +135,6 @@ Generated on 2026-09-03 by `pnpm docs:data-model`. Do not edit below this line.
 | `contact` | object { phone, email } | yes |
 | `gpPractice` | string | no |
 | `school` | string | no |
-| `ethnicity` | string | no |
 | `deceased` | boolean | no |
 | `createdAt` | string (date-time) | yes |
 
