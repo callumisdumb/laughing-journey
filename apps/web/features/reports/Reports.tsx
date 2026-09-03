@@ -15,6 +15,7 @@ import { ReportAwi } from './ReportAwi';
 import { ReportCp } from './ReportCp';
 import { ReportMappa } from './ReportMappa';
 import { ReportMarac } from './ReportMarac';
+import { NmdsExport } from './NmdsExport';
 import { ReportPrintPack } from './ReportPrintPack';
 import styles from './Reports.module.css';
 
@@ -82,7 +83,7 @@ function ReportNotFound({ kind }: { kind: string }) {
   );
 }
 
-/** Route table for /reports and /reports/<kind>, including the ?print=1 pack. */
+/** Route table for /reports and /reports/<kind>, including the ?print=1 pack and the ?nmds=1 return. */
 export function Reports({ kind }: { kind?: string }) {
   const route = useRoute();
   const select = useSelection((s) => s.select);
@@ -94,6 +95,7 @@ export function Reports({ kind }: { kind?: string }) {
   if (!kind) return <ReportsIndex />;
   if (!isReportKind(kind)) return <ReportNotFound kind={kind} />;
   if (route.query.get('print') === '1') return <ReportPrintPack kind={kind} />;
+  if (kind === 'asp' && route.query.get('nmds') === '1') return <NmdsExport />;
   switch (kind) {
     case 'asp':
       return <ReportAsp />;

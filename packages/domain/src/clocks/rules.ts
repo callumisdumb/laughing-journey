@@ -154,6 +154,69 @@ const RULES: ClockRuleData[] = [
     todoVerify: true,
   },
   {
+    /**
+     * The four quarterly submission deadlines for the ASP National Minimum Dataset. The workbook's
+     * own notes give a worked example against "August 12th, the Scottish Government submission date
+     * for returns", and say the current deadlines live on the ASP data collection web page rather
+     * than in the workbook, so these dates are configuration seeded from the product owner and
+     * marked to verify against that page each year.
+     *
+     * The clock runs from the last day of the quarter, so Q1 (1 April to 30 June) is due 45 calendar
+     * days later. That is the shape the deadline takes, not a rule stated anywhere: the published
+     * dates are absolute, and an area that finds them moved edits them in Admin.
+     */
+    id: 'asp.nmds.q1',
+    process: 'asp',
+    unit: 'calendar-days',
+    amount: 45,
+    kind: 'deadline',
+    warnDays: 14,
+    source: 'ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page',
+    sourceRef: 'Actions can be tracked up to the submission date you have been provided with for each quarterly data return. If 100 inquiries were begun in Quarter 1 (1 April - 30 June inclusive) we ask you to record what actions were taken, tracking these up to August 12th, the Scottish Government submission date for returns. Deadline seeded as 14 Aug 2026 for Q1 2026/27',
+    confidence: 'verify',
+    todoVerify: true,
+    localNote: 'Confirm the four 2026-27 submission dates against the ASP data collection web page, which the guidance names as the source rather than printing them.',
+  },
+  {
+    id: 'asp.nmds.q2',
+    process: 'asp',
+    unit: 'calendar-days',
+    amount: 44,
+    kind: 'deadline',
+    warnDays: 14,
+    source: 'ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page',
+    sourceRef: 'Q2 2026/27 covers 1 July to 30 September; deadline seeded as 13 Nov 2026',
+    confidence: 'verify',
+    todoVerify: true,
+    localNote: 'Confirm against the ASP data collection web page.',
+  },
+  {
+    id: 'asp.nmds.q3',
+    process: 'asp',
+    unit: 'calendar-days',
+    amount: 43,
+    kind: 'deadline',
+    warnDays: 14,
+    source: 'ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page',
+    sourceRef: 'Q3 2026/27 covers 1 October to 31 December; deadline seeded as 12 Feb 2027',
+    confidence: 'verify',
+    todoVerify: true,
+    localNote: 'Confirm against the ASP data collection web page.',
+  },
+  {
+    id: 'asp.nmds.q4',
+    process: 'asp',
+    unit: 'calendar-days',
+    amount: 44,
+    kind: 'deadline',
+    warnDays: 14,
+    source: 'ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page',
+    sourceRef: 'Q4 2026/27 covers 1 January to 31 March; deadline seeded as 14 May 2027',
+    confidence: 'verify',
+    todoVerify: true,
+    localNote: 'Confirm against the ASP data collection web page.',
+  },
+  {
     // The three ASP protection orders and their statutory durations, from the NMDS Annex 2 glossary
     // (which restates the 2007 Act and the July 2022 Code of Practice). Applications are made by
     // the council, except a banning order, which the adult or another person entitled to occupy the

@@ -13683,6 +13683,10 @@
         "screenshot": "phase-5/report-asp-light-comfortable.png",
         "where": "Cell value where the demonstration build holds none of a protected characteristic"
       },
+      "openReturn": {
+        "maxLength": 32,
+        "where": "Control on the ASP report opening the quarterly workbook return"
+      },
       "orders": {
         "assessmentOrderS11": {
           "maxLength": 32,
@@ -15916,6 +15920,338 @@
       },
       "verify": {
         "where": "Last meta line under the controls of the ASP, CP, MARAC and AWI reports: the field set still needs verifying"
+      }
+    },
+    "nmds": {
+      "audit": {
+        "where": "Audit entry label when the ASP data workbook is filled"
+      },
+      "backToReport": {
+        "where": "Link back to the ASP report from the return screen"
+      },
+      "blockEmptyText": {
+        "where": "Empty state text for a return block with no rows"
+      },
+      "blockEmptyTitle": {
+        "where": "Empty state title for a return block with no rows"
+      },
+      "blockMeta": {
+        "where": "Meta line naming the workbook sheet a block writes to"
+      },
+      "blocks": {
+        "actions": {
+          "where": "Heading of the actions block of the return preview"
+        },
+        "ageAndGender": {
+          "where": "Heading of the ageAndGender block of the return preview"
+        },
+        "attendees": {
+          "where": "Heading of the attendees block of the return preview"
+        },
+        "caring": {
+          "where": "Heading of the caring block of the return preview"
+        },
+        "clientGroup": {
+          "where": "Heading of the clientGroup block of the return preview"
+        },
+        "conferences": {
+          "where": "Heading of the conferences block of the return preview"
+        },
+        "ethnicity": {
+          "where": "Heading of the ethnicity block of the return preview"
+        },
+        "harm": {
+          "where": "Heading of the harm block of the return preview"
+        },
+        "inquiries": {
+          "where": "Heading of the inquiries block of the return preview"
+        },
+        "location": {
+          "where": "Heading of the location block of the return preview"
+        },
+        "lsis": {
+          "where": "Heading of the lsis block of the return preview"
+        },
+        "plansAndPowers": {
+          "where": "Heading of the plansAndPowers block of the return preview"
+        },
+        "referrals": {
+          "where": "Heading of the referrals block of the return preview"
+        }
+      },
+      "caveats": {
+        "caring": {
+          "where": "Caveat line offered for the workbook: caring"
+        },
+        "ethnicity": {
+          "where": "Caveat line offered for the workbook: ethnicity"
+        },
+        "gender": {
+          "where": "Caveat line offered for the workbook: gender"
+        },
+        "orderDates": {
+          "where": "Caveat line offered for the workbook: orderDates"
+        },
+        "synthetic": {
+          "where": "Caveat line offered for the workbook: synthetic"
+        },
+        "uptake": {
+          "where": "Caveat line offered for the workbook: uptake"
+        }
+      },
+      "caveatsMeta": {
+        "where": "Meta line under the caveats heading"
+      },
+      "caveatsNone": {
+        "where": "Shown where the return has nothing to caveat"
+      },
+      "caveatsTitle": {
+        "where": "Heading of the caveats section"
+      },
+      "checks": {
+        "actionsWith": {
+          "where": "The workbook's own consistency check: actionsWith"
+        },
+        "actionsWithout": {
+          "where": "The workbook's own consistency check: actionsWithout"
+        },
+        "ageGender": {
+          "where": "The workbook's own consistency check: ageGender"
+        },
+        "clientGroupWith": {
+          "where": "The workbook's own consistency check: clientGroupWith"
+        },
+        "clientGroupWithout": {
+          "where": "The workbook's own consistency check: clientGroupWithout"
+        },
+        "detail": {
+          "where": "The workbook's own consistency check: detail"
+        },
+        "ethnicity": {
+          "where": "The workbook's own consistency check: ethnicity"
+        },
+        "ethnicityNotHeld": {
+          "where": "The workbook's own consistency check: ethnicityNotHeld"
+        },
+        "harmWith": {
+          "where": "The workbook's own consistency check: harmWith"
+        },
+        "harmWithout": {
+          "where": "The workbook's own consistency check: harmWithout"
+        },
+        "locationWith": {
+          "where": "The workbook's own consistency check: locationWith"
+        },
+        "locationWithout": {
+          "where": "The workbook's own consistency check: locationWithout"
+        }
+      },
+      "checksMeta": {
+        "where": "Meta line under the consistency checks heading"
+      },
+      "checkStates": {
+        "fail": {
+          "maxLength": 24,
+          "where": "Result pill on a consistency check: fail"
+        },
+        "notApplicable": {
+          "maxLength": 24,
+          "where": "Result pill on a consistency check: notApplicable"
+        },
+        "pass": {
+          "maxLength": 24,
+          "where": "Result pill on a consistency check: pass"
+        }
+      },
+      "checksTitle": {
+        "where": "Heading of the consistency checks section"
+      },
+      "chooseTemplate": {
+        "where": "Button opening the file picker for the blank workbook"
+      },
+      "columns": {
+        "cell": {
+          "maxLength": 16,
+          "where": "Column header of a return preview table: cell"
+        },
+        "row": {
+          "maxLength": 16,
+          "where": "Column header of a return preview table: row"
+        },
+        "value": {
+          "maxLength": 16,
+          "where": "Column header of a return preview table: value"
+        }
+      },
+      "failuresWarning": {
+        "where": "Warning shown above the fill controls when a consistency check fails"
+      },
+      "filled": {
+        "text": {
+          "where": "Toast text after filling the workbook"
+        },
+        "title": {
+          "where": "Toast title after filling the workbook"
+        }
+      },
+      "lede": {
+        "where": "Lede of the ASP data workbook return screen"
+      },
+      "meta": {
+        "where": "Line naming the quarter covered and the submission deadline"
+      },
+      "missingSheets": {
+        "where": "Warning where the chosen workbook lacks a sheet the return needs"
+      },
+      "quarterLabel": {
+        "where": "Field label for the quarter selector"
+      },
+      "quarters": {
+        "q1": {
+          "maxLength": 40,
+          "where": "Option in the quarter selector: q1"
+        },
+        "q2": {
+          "maxLength": 40,
+          "where": "Option in the quarter selector: q2"
+        },
+        "q3": {
+          "maxLength": 40,
+          "where": "Option in the quarter selector: q3"
+        },
+        "q4": {
+          "maxLength": 40,
+          "where": "Option in the quarter selector: q4"
+        }
+      },
+      "refusedRow": {
+        "where": "One refused cell, naming the formula that was left alone"
+      },
+      "refusedTitle": {
+        "where": "Heading of the refused cell list"
+      },
+      "rows": {
+        "adultsInvited": {
+          "where": "Row label in the return preview: adultsInvited"
+        },
+        "adultUptake": {
+          "where": "Row label in the return preview: adultUptake"
+        },
+        "advocatesInvited": {
+          "where": "Row label in the return preview: advocatesInvited"
+        },
+        "advocateUptake": {
+          "where": "Row label in the return preview: advocateUptake"
+        },
+        "assessmentApplied": {
+          "where": "Row label in the return preview: assessmentApplied"
+        },
+        "assessmentGranted": {
+          "where": "Row label in the return preview: assessmentGranted"
+        },
+        "banningApplied": {
+          "where": "Row label in the return preview: banningApplied"
+        },
+        "banningGranted": {
+          "where": "Row label in the return preview: banningGranted"
+        },
+        "careHomeCs": {
+          "where": "Row label in the return preview: careHomeCs"
+        },
+        "childCare": {
+          "where": "Row label in the return preview: childCare"
+        },
+        "childPresent": {
+          "where": "Row label in the return preview: childPresent"
+        },
+        "hospitalCode": {
+          "where": "Row label in the return preview: hospitalCode"
+        },
+        "initialConferences": {
+          "where": "Row label in the return preview: initialConferences"
+        },
+        "managedPlans": {
+          "where": "Row label in the return preview: managedPlans"
+        },
+        "newPlans": {
+          "where": "Row label in the return preview: newPlans"
+        },
+        "otherCaring": {
+          "where": "Row label in the return preview: otherCaring"
+        },
+        "removalApplied": {
+          "where": "Row label in the return preview: removalApplied"
+        },
+        "removalGranted": {
+          "where": "Row label in the return preview: removalGranted"
+        },
+        "reviewConferences": {
+          "where": "Row label in the return preview: reviewConferences"
+        },
+        "supportServiceCs": {
+          "where": "Row label in the return preview: supportServiceCs"
+        },
+        "withoutPowers": {
+          "where": "Row label in the return preview: withoutPowers"
+        },
+        "withoutPowersPrefix": {
+          "where": "Row label in the return preview: withoutPowersPrefix"
+        },
+        "withPowers": {
+          "where": "Row label in the return preview: withPowers"
+        },
+        "withPowersPrefix": {
+          "where": "Row label in the return preview: withPowersPrefix"
+        }
+      },
+      "save": {
+        "where": "Primary button saving the filled workbook"
+      },
+      "sheets": {
+        "ageAndGender": {
+          "verbatim": true,
+          "where": "Workbook sheet name as the ASP data workbook 2026-27 spells it: ageAndGender"
+        },
+        "all": {
+          "verbatim": true,
+          "where": "Workbook sheet name as the ASP data workbook 2026-27 spells it: all"
+        },
+        "attendees": {
+          "verbatim": true,
+          "where": "Workbook sheet name as the ASP data workbook 2026-27 spells it: attendees"
+        },
+        "caring": {
+          "verbatim": true,
+          "where": "Workbook sheet name as the ASP data workbook 2026-27 spells it: caring"
+        },
+        "ethnicity": {
+          "verbatim": true,
+          "where": "Workbook sheet name as the ASP data workbook 2026-27 spells it: ethnicity"
+        },
+        "plansAndPowers": {
+          "verbatim": true,
+          "where": "Workbook sheet name as the ASP data workbook 2026-27 spells it: plansAndPowers"
+        }
+      },
+      "templateNote": {
+        "where": "Note explaining why the template is chosen from disk rather than bundled"
+      },
+      "title": {
+        "where": "Title of the ASP data workbook return screen"
+      },
+      "unreadable": {
+        "text": {
+          "where": "Toast text after filling the workbook"
+        },
+        "title": {
+          "where": "Toast title after filling the workbook"
+        }
+      },
+      "workbookMeta": {
+        "where": "Meta line counting the cells the return will write"
+      },
+      "workbookTitle": {
+        "where": "Heading of the fill section"
       }
     },
     "notFound": {

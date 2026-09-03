@@ -9,3 +9,4 @@ export * from './chronology';
 export * from './forms';
 export * from './classification/classify';
 export * from './classification/fromConfig';
+export * from './nmds/cellMap';

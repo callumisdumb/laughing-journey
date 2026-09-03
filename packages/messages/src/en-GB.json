@@ -4313,6 +4313,7 @@
       },
       "notApplicable": "Not applicable",
       "notCollected": "Not collected",
+      "openReturn": "ASP data workbook return",
       "orders": {
         "assessmentOrderS11": "Assessment order (section 11)",
         "banningOrderS19": "Banning order (section 19)",
@@ -4982,6 +4983,126 @@
     "meta": {
       "period": "Period {period}.",
       "verify": "Field set to verify against the current template."
+    },
+    "nmds": {
+      "audit": "ASP data workbook {quarter} 2026-27: {written} cells written, {refused} refused",
+      "backToReport": "Back to the ASP report",
+      "blockEmptyText": "Nothing in this quarter falls under this indicator.",
+      "blockEmptyTitle": "No figures for this block",
+      "blockMeta": "Sheet: {sheet}",
+      "blocks": {
+        "actions": "Indicators 10 and 11: action taken following inquiries",
+        "ageAndGender": "Indicator 13: age group and gender",
+        "attendees": "Indicators 5 and 6: invitations to a case conference",
+        "caring": "Indicator 18: caring responsibilities and children present",
+        "clientGroup": "Indicator 17: primary client group",
+        "conferences": "Indicator 4: case conferences",
+        "ethnicity": "Indicator 14: ethnicity",
+        "harm": "Indicator 15: primary type of harm",
+        "inquiries": "Indicators 2 and 3: inquiries",
+        "location": "Indicator 16: primary location of harm",
+        "lsis": "Indicator 19: Large Scale Investigations",
+        "plansAndPowers": "Indicators 8 and 9: plans and protection orders",
+        "referrals": "Indicator 1: ASP referrals by source"
+      },
+      "caveats": {
+        "caring": "Caring responsibilities and the presence of a child at an incident are not recorded as fields, so indicator 18 is returned as nought throughout. The nought means not collected, not none.",
+        "ethnicity": "Ethnicity is not held in this system, so all {count} categories are returned as nought. The nought means not collected rather than none: no adult declined to answer, because the question is not asked.",
+        "gender": "Gender is derived from the sex held on the record, so only Male and Female carry figures. Trans or non-binary and Prefer not to say are returned as nought because the question is not asked, not because nobody answered that way.",
+        "orderDates": "Protection orders carry no date of their own on the record, so each is counted in the quarter its inquiry was triggered in. Where a case runs across a quarter boundary this can place an application a quarter early.",
+        "synthetic": "Figures cover {from} to {to}. This return was prepared from a demonstration dataset and contains no real case information.",
+        "uptake": "Uptake is left blank where no invitation was issued in the quarter. Nought per cent would read as a failure to invite anyone, which is a different thing from having nobody to invite."
+      },
+      "caveatsMeta": "Draft lines for the workbook's reflections and caveats boxes",
+      "caveatsNone": "Nothing to caveat. Every indicator in this quarter is counted from a field the record holds.",
+      "caveatsTitle": "What this return cannot count",
+      "checks": {
+        "actionsWith": "Action taken matches inquiries using investigatory powers",
+        "actionsWithout": "Action taken matches inquiries without investigatory powers",
+        "ageGender": "Age and gender match all inquiries",
+        "clientGroupWith": "Client group matches inquiries using investigatory powers",
+        "clientGroupWithout": "Client group matches inquiries without investigatory powers",
+        "detail": "{counted} against {expected}",
+        "ethnicity": "Ethnicity matches all inquiries",
+        "ethnicityNotHeld": "Not held",
+        "harmWith": "Type of harm matches inquiries using investigatory powers",
+        "harmWithout": "Type of harm matches inquiries without investigatory powers",
+        "locationWith": "Location of harm matches inquiries using investigatory powers",
+        "locationWithout": "Location of harm matches inquiries without investigatory powers"
+      },
+      "checksMeta": "The workbook's own check rows, run before the file is written",
+      "checkStates": {
+        "fail": "Does not match",
+        "notApplicable": "Not applicable",
+        "pass": "Matches"
+      },
+      "checksTitle": "Consistency checks",
+      "chooseTemplate": "Choose the blank workbook",
+      "columns": {
+        "cell": "Cell",
+        "row": "Workbook row",
+        "value": "Figure"
+      },
+      "failuresWarning": "{count, plural, one {One consistency check does not match} other {# consistency checks do not match}}. Look at the figures above before you send this return.",
+      "filled": {
+        "text": "{written} cells written. {refused, plural, =0 {Nothing was refused.} one {One cell was refused because the workbook computes it.} other {# cells were refused because the workbook computes them.}}",
+        "title": "Workbook filled"
+      },
+      "lede": "The quarterly return to ASPData@gov.scot, filled into the published workbook. Check every figure before you send it: the workbook's own guidance puts data quality on the person submitting.",
+      "meta": "{from} to {to}. Due {due}, {overdue, select, yes {which was {days, plural, one {# day} other {# days}} ago} other {in {days, plural, one {# day} other {# days}}}}.",
+      "missingSheets": "This workbook has no sheet named: {sheets}. It may be a different edition from the one this return was built against.",
+      "quarterLabel": "Quarter",
+      "quarters": {
+        "q1": "Q1 2026/27, April to June",
+        "q2": "Q2 2026/27, July to September",
+        "q3": "Q3 2026/27, October to December",
+        "q4": "Q4 2026/27, January to March"
+      },
+      "refusedRow": "{sheet} cell {cell} holds the formula {formula} and was left alone.",
+      "refusedTitle": "{count, plural, one {One cell was left alone} other {# cells were left alone}} because the workbook computes them. Nothing was overwritten.",
+      "rows": {
+        "adultsInvited": "Adults at risk invited to attend",
+        "adultUptake": "Adults at risk, uptake as a percentage",
+        "advocatesInvited": "Case conferences where an independent advocate was invited",
+        "advocateUptake": "Independent advocates, uptake as a percentage",
+        "assessmentApplied": "Assessment orders applied for",
+        "assessmentGranted": "Assessment orders granted",
+        "banningApplied": "Banning or temporary banning orders applied for",
+        "banningGranted": "Banning or temporary banning orders granted",
+        "careHomeCs": "Care home CS number",
+        "childCare": "Adults with child care responsibilities",
+        "childPresent": "Cases where a child was present at the incident",
+        "hospitalCode": "NHS hospital location code",
+        "initialConferences": "Initial case conferences",
+        "managedPlans": "Adults on a plan at the end of the quarter",
+        "newPlans": "Plans newly commenced in the quarter",
+        "otherCaring": "Adults with caring responsibilities for other adults",
+        "removalApplied": "Removal orders applied for",
+        "removalGranted": "Removal orders granted",
+        "reviewConferences": "Review case conferences",
+        "supportServiceCs": "Support service CS number",
+        "withoutPowers": "Inquiries without investigatory powers",
+        "withoutPowersPrefix": "{label}, without powers",
+        "withPowers": "Inquiries using investigatory powers",
+        "withPowersPrefix": "{label}, with powers"
+      },
+      "save": "Save the filled workbook",
+      "sheets": {
+        "ageAndGender": "13 AGE & GENDER",
+        "all": "Every sheet",
+        "attendees": "5-7 CC ATTENDEES",
+        "caring": "18 CARING RESPONSIBILITIES",
+        "ethnicity": "14 ETHNICITY",
+        "plansAndPowers": "8-9 ASPPs & POWERS"
+      },
+      "templateNote": "Choose the blank workbook published for 2026-27. Nothing is downloaded: the file stays on this machine, and the return is written into a copy of it so the sheets, formulas and charts are the ones Scottish Government expects. Any cell the workbook computes for itself is left alone.",
+      "title": "ASP data workbook return",
+      "unreadable": {
+        "text": "That file could not be read as a workbook. Choose the .xlsx published for 2026-27.",
+        "title": "Could not read that file"
+      },
+      "workbookMeta": "{cells} cells will be written",
+      "workbookTitle": "Fill the workbook"
     },
     "notFound": {
       "emptyText": "The five reports are ASP biennial figures, Child Protection Register statistics, the MARAC SafeLives return, MAPPA annual report counts and AWI application timeliness.",
