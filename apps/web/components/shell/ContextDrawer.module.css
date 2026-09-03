@@ -4,7 +4,11 @@
   display: flex;
   flex-direction: column;
   grid-area: drawer;
+
+  /* As with the rail: the track sizes the column, and this stops the column sizing the track. */
+  min-width: 0;
   min-height: 0;
+  overflow: hidden;
   background: var(--color-paper-1);
   border-left: 1px solid var(--color-line-1);
   transition: width var(--dur-drawer) var(--ease-standard);
@@ -174,4 +178,17 @@
 .kv dd {
   margin: 0;
   overflow-wrap: anywhere;
+}
+
+/*
+ * The panel form, below 1280, where a docked third column would take a third of the record. Same
+ * content, same widths inside, so the need-to-know answer reads identically in both shapes.
+ */
+.overlay {
+  --dialog-width: 22rem;
+}
+
+.overlayBody {
+  display: flex;
+  flex-direction: column;
 }

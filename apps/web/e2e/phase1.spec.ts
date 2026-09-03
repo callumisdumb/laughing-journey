@@ -47,7 +47,9 @@ test.describe('home', () => {
     await signInAs(page, 'usr_janet_kerr');
     await page.goto('/');
     await waitForData(page);
-    await page.getByRole('button', { name: /Janet Kerr Demo/ }).click();
+    // The button's accessible name is an explicit label now, because below 1024 its visible name
+    // and demo tag are hidden and a chevron alone has no name at all.
+    await page.getByRole('button', { name: /Janet Kerr.*Switch persona/ }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await page.getByRole('button', { name: /Paul Mackay/ }).click();
     await expect(page.getByRole('heading', { name: /Good morning, Paul/ })).toBeVisible();

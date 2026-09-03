@@ -22,7 +22,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SHOTS = join(ROOT, 'docs', 'SCREENSHOTS');
 
 /** Capture rounds in the order they happened, so the sheet reads as a history rather than a listing. */
-const ORDER = ['phase-1', 'phase-2', 'phase-3', 'phase-4', 'phase-5', 'phase-6', 'classification', 'nmds', 'security', 'dialogs'];
+const ORDER = ['phase-1', 'phase-2', 'phase-3', 'phase-4', 'phase-5', 'phase-6', 'classification', 'nmds', 'security', 'dialogs', 'layout'];
 
 /** What each round was. A contact sheet with no captions is a wall of thumbnails. */
 const ROUND_NOTES = {
@@ -36,6 +36,7 @@ const ROUND_NOTES = {
   nmds: 'The ASP data workbook return, previewed against the cells it writes to.',
   security: 'The cryptographic architecture made inspectable: what the host can see, the audit chain, statutory disclosure and the Security page.',
   dialogs: 'The one dialog primitive: a statutory form taller than the viewport, scrolling its body and keeping its footer, in both themes.',
+  layout: 'The four layout modes: the same person record docked, compact and as panels.',
 };
 
 /** Rounds, each with its screenshots, newest round last. */

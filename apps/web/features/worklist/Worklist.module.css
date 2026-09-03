@@ -1,7 +1,9 @@
 .views {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   width: fit-content;
+  max-width: 100%;
   margin-bottom: var(--density-gap);
   padding: 4px;
   background: var(--color-paper-2);

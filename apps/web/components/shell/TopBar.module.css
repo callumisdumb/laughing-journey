@@ -81,3 +81,49 @@
   top: 2px;
   right: 2px;
 }
+
+.personaName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The count alone, shown only where the sentence does not fit. */
+.clocksCount {
+  display: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/**
+ * Below 1024 the bar sheds everything that is not the thing itself. This is the 400 percent zoom
+ * case as much as the small window one: a 1280px viewport at 400 percent is a 320px one, and WCAG
+ * 2.2 1.4.10 asks that nothing there needs scrolling in two directions. The top bar was what broke
+ * it, holding a 160px search box, a sentence about clocks, two icon buttons and a name in a row
+ * that could not wrap: 592px of content in a 320px window.
+ */
+:root[data-layout='narrow'] .bar {
+  gap: 6px;
+  padding: 0 10px;
+}
+
+:root[data-layout='narrow'] .clocksText,
+:root[data-layout='narrow'] .personaName,
+:root[data-layout='narrow'] .demoTag {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+:root[data-layout='narrow'] .clocksCount {
+  display: inline;
+}
+
+:root[data-layout='narrow'] .clocks {
+  padding: 0 10px;
+}
+
+:root[data-layout='narrow'] .persona {
+  padding: 0 6px;
+}

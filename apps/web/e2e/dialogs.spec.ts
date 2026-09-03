@@ -50,7 +50,7 @@ const DIALOGS: readonly DialogSpec[] = [
   { name: 'action-complete', user: 'usr_janet_kerr', path: '/actions', open: 'Complete' },
   { name: 'action-escalate', user: 'usr_janet_kerr', path: '/actions', open: 'Escalate' },
   { name: 'reset-demo-data', user: 'usr_janet_kerr', path: '/settings', open: 'Reset demo data' },
-  { name: 'persona-switcher', user: 'usr_janet_kerr', path: '/', open: { selector: 'button[aria-haspopup="dialog"]' } },
+  { name: 'persona-switcher', user: 'usr_janet_kerr', path: '/', open: { selector: 'button[aria-label*="Switch persona"]' } },
   { name: 'admin-reset', user: 'usr_sam_ogilvie', path: '/admin', open: 'Reset demo data' },
   { name: 'admin-timescale', user: 'usr_sam_ogilvie', path: '/admin/timescales', open: 'Edit' },
   { name: 'admin-form-version', user: 'usr_sam_ogilvie', path: '/admin/forms', open: 'Add version' },

@@ -11991,6 +11991,15 @@
         "screenshot": "phase-1/home-light-comfortable.png",
         "where": "Accessible name of the bell button in the top bar, with the unread count as argument"
       },
+      "openContext": {
+        "where": "Top bar button below 1280, where the context panel is an overlay rather than a third column. Opens it."
+      },
+      "openNavigation": {
+        "where": "Top bar button below 1024, where the navigation rail is a panel rather than a column. Opens it."
+      },
+      "personaLabel": {
+        "where": "Accessible name of the persona button in the top bar. The visible name and demo tag are hidden below 1024, so the button needs a name of its own."
+      },
       "signIn": {
         "maxLength": 16,
         "where": "Persona button in the top bar when nobody is signed in"

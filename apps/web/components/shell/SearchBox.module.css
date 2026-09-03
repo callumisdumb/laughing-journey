@@ -89,3 +89,8 @@
   color: var(--color-ink-3);
   border-top: 1px solid var(--color-line-1);
 }
+
+/* The search box is the one thing on the bar that can give up width, so below 1024 it does. */
+:root[data-layout='narrow'] .box {
+  min-width: 0;
+}

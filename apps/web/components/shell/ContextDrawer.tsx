@@ -2,7 +2,7 @@
 
 import { accessRestrictionLabel, actionStatusLabel, agencyShort, classificationLabel, effectiveClassification, formatDate, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, recipientView, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type ClassifiedRecord, type Process } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
-import { AgencyMark, IconButton, Pill, RiskBand } from '@mas/ui';
+import { AgencyMark, Dialog, IconButton, Pill, RiskBand } from '@mas/ui';
 import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, ShieldCheck, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useAppearance } from '@/lib/appearance';
@@ -250,10 +250,17 @@ function YourAccess({ process }: { process: Process }) {
   );
 }
 
-export function ContextDrawer() {
+/**
+ * What the drawer is showing, built once and used by both shapes it takes.
+ *
+ * The drawer is a docked third column while there is room for one and a panel over the record when
+ * there is not, and the two must show exactly the same thing: the need-to-know answer for the
+ * current selection is the point of the drawer, and a version of it that is different at 1200px
+ * would be a second implementation of the access rules. So the content is computed here and the
+ * shape is chosen by the layout mode.
+ */
+function useDrawerContent(): { title: string; body: ReactNode } {
   const t = useT();
-  const collapsed = useAppearance((s) => s.drawerCollapsed);
-  const toggle = useAppearance((s) => s.toggleDrawer);
   const selection = useSelection((s) => s.selection);
   const data = useData();
   const config = useConfig();
@@ -551,6 +558,16 @@ export function ContextDrawer() {
     ) : null;
   }
 
+  return { title, body };
+}
+
+/** The docked third column, in the layout modes wide enough to hold one. */
+export function ContextDrawer() {
+  const t = useT();
+  const collapsed = useAppearance((s) => s.drawerCollapsed);
+  const toggle = useAppearance((s) => s.toggleDrawer);
+  const { title, body } = useDrawerContent();
+
   return (
     <aside className={styles.drawer} data-collapsed={collapsed ? 'true' : 'false'} aria-label={t('nav.drawer.label')}>
       <div className={styles.head}>
@@ -565,5 +582,20 @@ export function ContextDrawer() {
         </div>
       ) : null}
     </aside>
+  );
+}
+
+/**
+ * The same drawer as a panel over the record, below 1280 where a third column would leave the record
+ * less than half the screen. It is the dialog primitive at its `inline-end` placement rather than a
+ * second overlay implementation, so it gets the top layer, focus trapped inside, Escape and the page
+ * held still without any of that being written twice.
+ */
+export function ContextDrawerOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { title, body } = useDrawerContent();
+  return (
+    <Dialog open={open} onClose={onClose} title={title} placement="inline-end" size="sm" className={styles.overlay}>
+      <div className={styles.overlayBody}>{body}</div>
+    </Dialog>
   );
 }

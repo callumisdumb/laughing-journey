@@ -3866,6 +3866,9 @@
       "clocksLabel": "{count} statutory clocks due within 7 days",
       "demo": "Demo",
       "notifications": "Notifications, {count} unread",
+      "openContext": "Open the context panel",
+      "openNavigation": "Open navigation",
+      "personaLabel": "{name}, {demo}. Switch persona",
       "signIn": "Sign in",
       "unread": "unread"
     }

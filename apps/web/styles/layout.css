@@ -1,7 +1,16 @@
-/* App shell grid, content grid, wide mode. Components style their own insides. */
+/**
+ * App shell grid. Components style their own insides.
+ *
+ * Every track width here is chosen by `data-layout` on the document element, which one module sets
+ * from the viewport width (`apps/web/lib/layout.ts`). There are deliberately no media queries in
+ * this file: the layout used to take its columns from breakpoints here and its component states
+ * from the appearance store, so at 1100px the rail's track was 72px while the rail still rendered
+ * its expanded contents, which want 125px. That is a clipped rail, not a collapsed one. One
+ * attribute drives both, so they cannot disagree.
+ */
 .app-shell {
   display: grid;
-  grid-template-columns: var(--rail-width) minmax(0, 1fr) var(--drawer-width);
+  grid-template-columns: var(--rail-track) minmax(0, 1fr) var(--drawer-track);
   grid-template-rows: var(--topbar-height) minmax(0, 1fr);
   grid-template-areas:
     'rail topbar drawer'
@@ -10,41 +19,81 @@
   background: var(--color-paper-0);
 }
 
+/**
+ * The two side tracks are fixed, and the record takes what is left. `minmax(0, 1fr)` on the middle
+ * is what stops a wide table pushing the record's track past the viewport and dragging the drawer
+ * off the right-hand edge; the side elements carry a matching `min-width` of their own, so content
+ * inside them cannot widen a track either. Both halves of that are needed: the track constrains the
+ * element, and the `min-width` stops the element asking for more.
+ */
+:root[data-layout='wide'] {
+  --rail-track: var(--rail-width);
+  --drawer-track: var(--drawer-width);
+}
+
+:root[data-layout='standard'] {
+  --rail-track: var(--rail-width);
+  --drawer-track: var(--drawer-width-standard);
+}
+
+/* Below 1280 an expanded rail and a docked drawer leave the record less than half the screen. */
+:root[data-layout='compact'] {
+  --rail-track: var(--rail-width-collapsed);
+  --drawer-track: 0px;
+}
+
+/* Below 1024 the chrome gets out of the way entirely. This is also the 400 percent zoom case. */
+:root[data-layout='narrow'] {
+  --rail-track: 0px;
+  --drawer-track: 0px;
+}
+
+/* The default before the boot script runs, and on the server, where there is no viewport to read. */
+:root {
+  --rail-track: var(--rail-width);
+  --drawer-track: var(--drawer-width-standard);
+}
+
+/* A person can still collapse either column by hand in the modes where it is a column at all. */
 .app-shell[data-rail='collapsed'] {
-  grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) var(--drawer-width);
+  --rail-track: var(--rail-width-collapsed);
 }
 
 .app-shell[data-drawer='collapsed'] {
-  grid-template-columns: var(--rail-width) minmax(0, 1fr) var(--drawer-width-collapsed);
+  --drawer-track: var(--drawer-width-collapsed);
 }
 
-.app-shell[data-rail='collapsed'][data-drawer='collapsed'] {
-  grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) var(--drawer-width-collapsed);
-}
-
+/* The chair's meeting view and the configuration screens have no selection, so no drawer (D-026). */
 .app-shell[data-chrome='minimal'] {
-  grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) 0;
+  --rail-track: var(--rail-width-collapsed);
+  --drawer-track: 0px;
 }
 
 .app-shell[data-chrome='wide'] {
-  grid-template-columns: var(--rail-width) minmax(0, 1fr) 0;
+  --drawer-track: 0px;
 }
 
-.app-shell[data-chrome='wide'][data-rail='collapsed'] {
-  grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) 0;
-}
-
-/* With the drawer column at zero the drawer itself leaves the page, so nothing overflows or stays in the tab order. */
+/* With a track at zero the element leaves the page, so nothing overflows or stays in the tab order. */
 .app-shell[data-chrome='minimal'] > aside,
-.app-shell[data-chrome='wide'] > aside {
+.app-shell[data-chrome='wide'] > aside,
+:root[data-layout='compact'] .app-shell > aside,
+:root[data-layout='narrow'] .app-shell > aside,
+:root[data-layout='narrow'] .app-shell > nav {
   display: none;
 }
 
+/**
+ * The record's own columns respond to the space the record has, not the space the window has. A two
+ * column panel inside an 832px record at 1440 and inside an 832px record at 1920 should look the
+ * same, and under a media query it does not. Declaring the content area a container is what makes
+ * `@container record (...)` available to every panel inside it.
+ */
 .app-content {
   grid-area: content;
   min-width: 0;
   overflow: auto;
   overscroll-behavior: contain;
+  container: record / inline-size;
 }
 
 .page {
@@ -95,21 +144,12 @@
   align-items: center;
 }
 
-@media (width <= 1279px) {
-  .app-shell,
-  .app-shell[data-rail='collapsed'],
-  .app-shell[data-drawer='collapsed'],
-  .app-shell[data-rail='collapsed'][data-drawer='collapsed'] {
-    grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) var(--drawer-width-collapsed);
-  }
-
-  .app-shell[data-drawer='open'] {
-    grid-template-columns: var(--rail-width-collapsed) minmax(0, 1fr) var(--drawer-width);
-  }
+/**
+ * The twelve column content grid halves below 1024, so a `span 6` half becomes a full row rather
+ * than a column too narrow to read. Expressed on the layout mode like everything else, so there is
+ * one definition of where 1024 is.
+ */
+:root[data-layout='narrow'] .grid-12 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
-@media (width <= 1023px) {
-  .grid-12 {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-}

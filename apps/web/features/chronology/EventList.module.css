@@ -1,9 +1,18 @@
+/*
+ * The chronology's nine columns have a real minimum: 110 + 130 + 120 + 220 + 160 + 160 + 96 + 90 + 96
+ * plus eight gaps and the padding, which is 1270px. Below that the list scrolls sideways inside
+ * itself rather than pushing the record's own column past the window, which is what it did: at a
+ * 320px viewport the row sat 1283px wide and took the page with it. The number is stated once here
+ * and used by the header, the rows and the scrolled box, so the three cannot drift apart.
+ */
 .list {
   --row-height: var(--density-row);
+  --row-min-width: 1270px;
 
   display: flex;
   flex-direction: column;
   min-width: 0;
+  overflow-x: auto;
   border: 1px solid var(--color-line-1);
   border-radius: var(--radius-lg);
 }
@@ -14,6 +23,7 @@
   grid-template-columns: 110px 130px 120px minmax(220px, 3fr) minmax(160px, 2fr) minmax(160px, 2fr) 96px 90px 96px;
   gap: 0 8px;
   align-items: center;
+  min-width: var(--row-min-width);
   padding: 0 12px;
 }
 
@@ -35,6 +45,7 @@
 .inner {
   position: relative;
   width: 100%;
+  min-width: var(--row-min-width);
 }
 
 .row {

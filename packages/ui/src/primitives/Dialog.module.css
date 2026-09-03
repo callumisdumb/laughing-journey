@@ -52,6 +52,60 @@
   max-width: 1200px;
 }
 
+/**
+ * The edge placements, for the panels that belong against a side of the screen rather than in the
+ * middle of it: the context drawer and the navigation rail, once the viewport is too narrow to dock
+ * them as columns. Same primitive, same top layer, same focus trap, same Escape, same scroll lock.
+ *
+ * The centring margin is replaced rather than removed. `margin-inline-start: auto` against two zero
+ * insets pushes the panel to the end edge and keeps the block margins at `auto`, so nothing here
+ * reintroduces the zero margin the guard exists to catch.
+ */
+.dialog[data-placement='inline-end'],
+.dialog[data-placement='inline-start'] {
+  --dialog-inset: 0px;
+
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(var(--dialog-width), calc(100vw - 3rem));
+  height: 100dvh;
+  max-height: none;
+  border-radius: 0;
+}
+
+.dialog[data-placement='inline-end'] {
+  margin-inline: auto 0;
+  border-inline-end: 0;
+}
+
+.dialog[data-placement='inline-start'] {
+  margin-inline: 0 auto;
+  border-inline-start: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dialog[data-placement='inline-end'][open] {
+    animation: dialog-in-end var(--dur-base) var(--ease-standard);
+  }
+
+  .dialog[data-placement='inline-start'][open] {
+    animation: dialog-in-start var(--dur-base) var(--ease-standard);
+  }
+}
+
+@keyframes dialog-in-end {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+
+@keyframes dialog-in-start {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+}
+
 .dialog::backdrop {
   background: rgb(34 32 27 / 45%);
 }

@@ -69,7 +69,36 @@ Rules: sentence case everywhere; no all-caps; no letter-spacing tricks; prose pa
 - Content: 12-column grid, 24px gutters, max 1200px, `data-width="wide"` for the chronology removes the max.
 - Context drawer: 360px, collapsible to a 40px tab. Sections stack: Who is involved, Need to know, Lawful basis, Audit. The drawer reacts to selection: a chronology event, a person, a share, an action.
 - Density: `data-density="comfortable|compact"` on the root scales row heights (40 to 32), panel padding (20 to 12) and the base size stays 0.875rem. Density is CSS variables only.
-- Minimum viewport 1024px; the drawer becomes an overlay below 1280px.
+
+### 4.1 Layout modes
+
+Four named modes, chosen by viewport width and written to `data-layout` on the document element by `apps/web/lib/layout.ts`. The stylesheet carries no media query for layout: every track width is a custom property redefined per mode, so a breakpoint cannot be changed in one place and missed in the other. The boot script writes the mode before the first paint, as the theme does.
+
+| Mode | From | Rail | Context drawer | Content |
+|---|---|---|---|---|
+| `wide` | 1600 | 248px column, collapsible by hand | 360px column | 12 columns, capped at 1200 |
+| `standard` | 1280 | 248px column, collapsible by hand | 320px column | 12 columns, capped at 1200 |
+| `compact` | 1024 | 72px icon column, no toggle | overlay panel from the top bar | 12 columns, full width |
+| `narrow` | below 1024 | overlay panel from the top bar | overlay panel from the top bar | 6 columns, full width |
+
+Both overlays are the dialog primitive at its `inline-start` and `inline-end` placements, so they get the top layer, focus trapped inside, Escape and the page held still without a second implementation of any of it.
+
+The rule the modes exist to enforce: the width of a side column and the state of the component in it come from the same attribute. They used to come from different places, and at 1100px the rail's track was 72px while the rail still rendered its expanded contents, which want 125px. That is a clipped rail, not a collapsed one.
+
+Panels respond to the record's width rather than the window's, through `@container record (...)`: the content area is a size container, so a two column panel behaves the same in an 872px record at 1440 and an 872px record at 1920 with different chrome.
+
+### 4.2 Truncation policy
+
+Text is allowed not to fit in exactly two ways.
+
+1. **It wraps.** The default, and required for anything carrying a sentence. A person record's alert is the case that decides this: "do not visit alone" truncated is worse than useless.
+2. **It truncates with a visible ellipsis and the full string reachable**, in a `title` or an accessible name. For identifiers in tight rows: a name in a table cell, a reference in a column.
+
+What is not allowed is the third thing: text sliced off with no ellipsis and no way to read the rest, because that looks like the text ended there. `apps/web/e2e/layout.spec.ts` asserts it on five screens at 1024, ignoring visually hidden text, which clips a 1px box by design.
+
+### 4.3 Reflow
+
+Minimum viewport 1024px for the product as designed. WCAG 2.2 1.4.10 is met below that rather than declared out of scope: a 1280px viewport at 400 percent zoom is a 320px one, so `narrow` is the reflow mode. At 320 the document never scrolls sideways and neither does the record region; content with a real minimum width, a nine-column chronology row, a nine-stage stepper, a wide table, scrolls inside its own box. The spec asserts both halves, because a record region that scrolls horizontally is 1.4.10 failing in disguise.
 
 ## 5. Components (packages/ui)
 

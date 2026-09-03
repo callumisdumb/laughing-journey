@@ -127,6 +127,9 @@
   --rail-width-collapsed: 72px;
   --topbar-height: 56px;
   --drawer-width: 360px;
+
+  /* Standard, 1280 to 1599, where 360px would take a third of the record's width. */
+  --drawer-width-standard: 320px;
   --drawer-width-collapsed: 40px;
   --content-max: 1200px;
   --content-gutter: 24px;

@@ -8,6 +8,7 @@ import '@fontsource-variable/bricolage-grotesque/wdth.css';
 import '@fontsource/jetbrains-mono/400.css';
 import './globals.css';
 import { APPEARANCE_BOOT_SCRIPT } from '@/lib/appearance';
+import { LAYOUT_BOOT_SCRIPT } from '@/lib/layout';
 
 export const metadata: Metadata = {
   title: t('product.name'),
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en-GB" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: APPEARANCE_BOOT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: LAYOUT_BOOT_SCRIPT }} />
       </head>
       <body>{children}</body>
     </html>

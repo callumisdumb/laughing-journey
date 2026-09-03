@@ -162,7 +162,7 @@ export function PersonRecord({ personId }: { personId: string }) {
           {person.alerts.length > 0 ? (
             <div className={styles.alerts}>
               {person.alerts.map((a) => (
-                <Pill key={a.id} tone={alertTone(a.kind)} icon={a.kind === 'staff-safety' ? <ShieldAlert size={14} aria-hidden="true" /> : a.kind === 'marac-flag' ? <Flag size={14} aria-hidden="true" /> : <AlertTriangle size={14} aria-hidden="true" />}>
+                <Pill key={a.id} wrap tone={alertTone(a.kind)} icon={a.kind === 'staff-safety' ? <ShieldAlert size={14} aria-hidden="true" /> : a.kind === 'marac-flag' ? <Flag size={14} aria-hidden="true" /> : <AlertTriangle size={14} aria-hidden="true" />}>
                   {a.text}
                   {a.to ? ` ${t('person.header.alertUntil', { date: formatDate(a.to) })}` : ''}
                 </Pill>

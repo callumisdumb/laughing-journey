@@ -22,6 +22,15 @@ import styles from './Dialog.module.css';
  */
 export type DialogSize = 'sm' | 'md' | 'lg' | 'full';
 
+/**
+ * Where the dialog sits. `centre` is the modal a decision interrupts you with; the two edge
+ * placements are the panels that belong against a side of the screen, which is what the context
+ * drawer and the navigation rail become once the viewport is too narrow to dock them as columns.
+ * They are the same primitive because they need the same four things from the platform: the top
+ * layer, focus trapped inside, Escape, and the page behind held still.
+ */
+export type DialogPlacement = 'centre' | 'inline-start' | 'inline-end';
+
 export interface DialogProps {
   open: boolean;
   onClose: () => void;
@@ -29,6 +38,7 @@ export interface DialogProps {
   children: ReactNode;
   actions?: ReactNode;
   size?: DialogSize;
+  placement?: DialogPlacement;
   /** Marks a confirmation that destroys or discloses, so it reads as different before the button. */
   tone?: 'default' | 'destructive';
   /**
@@ -44,7 +54,7 @@ export interface DialogProps {
 /** How many modals are open, so the last one out restores the page's scrolling. */
 let openCount = 0;
 
-export function Dialog({ open, onClose, title, children, actions, size = 'md', tone = 'default', errors, busy = false, className }: DialogProps) {
+export function Dialog({ open, onClose, title, children, actions, size = 'md', placement = 'centre', tone = 'default', errors, busy = false, className }: DialogProps) {
   const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -154,7 +164,7 @@ export function Dialog({ open, onClose, title, children, actions, size = 'md', t
   }, [open, onScroll]);
 
   return (
-    <dialog ref={ref} className={cn(styles.dialog, className)} data-size={size} data-tone={tone} aria-labelledby={titleId} aria-busy={busy || undefined}>
+    <dialog ref={ref} className={cn(styles.dialog, className)} data-size={size} data-placement={placement} data-tone={tone} aria-labelledby={titleId} aria-busy={busy || undefined}>
       <div className={styles.head}>
         <h2 className={styles.title} id={titleId}>
           {title}

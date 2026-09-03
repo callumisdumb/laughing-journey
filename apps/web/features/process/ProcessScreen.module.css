@@ -67,6 +67,18 @@
   align-items: start;
 }
 
+/*
+ * The two columns become one when the record itself is narrow, not when the window is. A container
+ * query rather than a media query because the record is 872px at 1440 and 1312px at 1920 with the
+ * same chrome, and 952px at 1024 with none: the number that decides whether two columns fit is the
+ * record's, and the window's does not predict it.
+ */
+@container record (width < 44rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .main,
 .side {
   display: flex;
@@ -75,8 +87,15 @@
   min-width: 0;
 }
 
+/*
+ * A grid item's `min-width` defaults to `auto`, which is its min-content width, so a full-width row
+ * holding anything with a wide minimum sets the track for the whole layout: at a 320px record this
+ * row's min-content was 453px and both columns above it inherited that. Explicitly zero, so the
+ * track comes from the layout and the content inside scrolls in its own box where it has to.
+ */
 .wide {
   grid-column: 1 / -1;
+  min-width: 0;
 }
 
 .clockList {

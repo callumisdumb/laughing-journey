@@ -9,11 +9,20 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   tone?: PillTone;
   size?: 'sm' | 'md';
   icon?: ReactNode;
+  /**
+   * Lets the pill wrap to more than one line and take its height from its content.
+   *
+   * A pill is a short label and its default is one line, but a few carry a whole sentence: a person
+   * record's alerts are the case that forced this. "Do not visit alone, previous assault on a
+   * visiting worker" truncated to fit a 24px chip is either a sentence running off the edge of a
+   * narrow record or, worse, an ellipsis in the middle of a staff safety warning.
+   */
+  wrap?: boolean;
 }
 
-export function Pill({ tone = 'neutral', size = 'md', icon, className, children, ...rest }: PillProps) {
+export function Pill({ tone = 'neutral', size = 'md', icon, wrap = false, className, children, ...rest }: PillProps) {
   return (
-    <span className={cn(styles.pill, className)} data-tone={tone} data-size={size} {...rest}>
+    <span className={cn(styles.pill, className)} data-tone={tone} data-size={size} data-wrap={wrap ? 'true' : undefined} {...rest}>
       {icon}
       {children}
     </span>

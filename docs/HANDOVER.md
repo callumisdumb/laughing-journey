@@ -35,6 +35,9 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - No avatars or initials circles; identity is name, date of birth and reference (D-022). Pills are for process and stage only; agencies use marks with a glyph, a colour and a label (D-023).
 - Two agency colours were added for regulators and fire and rescue (D-021), and three text colours were darkened to pass 4.5:1 on every paper step (D-020).
 - Wide tables are labelled focusable regions so keyboards can scroll them (D-024). Dates are typed as dd Mon yyyy in a shared field rather than picked from the browser's locale-formatted control (D-049).
+- Four named layout modes chosen by width, applied through one attribute, with no media query for layout anywhere in the stylesheet (D-092). Below 1280 the rail is icons and the drawer is a panel; below 1024 both are panels (D-093), and both panels are the dialog primitive rather than a second overlay implementation (D-094). Panels respond to the record's width through a container query, not the window's (D-095).
+- Text either wraps or truncates with a visible ellipsis and the full string reachable; nothing is sliced silently (D-096). Asserted on five screens rather than described.
+- One dialog primitive, centred by rules of its own with a compiled-CSS guard behind it, because a framework preflight can zero the margin that centres a native dialog without touching a line of this repository's code (D-088, D-089). Long forms summarise their validation failures at the top of the body (D-090).
 
 ### Engineering
 - Static export plus a `pushState` router that prerenders every known path (D-004); the dataset is generated at start-up from a seeded PRNG, not committed JSON (D-005).

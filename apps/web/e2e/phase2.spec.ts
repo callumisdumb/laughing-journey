@@ -135,7 +135,10 @@ test.describe('integrated chronology', () => {
     await page.getByLabel('Title (one line, plain language)').fill('Home visit: I think Stacey seems low');
     await page.getByLabel('Detail (short and factual)').fill('Visited at 10:00. Stacey said she had not slept.');
     await page.getByRole('dialog').getByRole('button', { name: 'Record event' }).click();
-    await expect(page.getByText(/reads as opinion/)).toBeVisible();
+    // Twice over: once in the summary at the top of the dialog body, which takes focus, and once
+    // against the field. The summary says what is wrong and the field says where.
+    await expect(page.getByRole('dialog').getByRole('alert').first()).toContainText(/reads as opinion/);
+    await expect(page.getByText(/reads as opinion/)).toHaveCount(2);
     await capture(page, { phase: PHASE, screen: 'chronology-add-event-validation' });
     await page.getByLabel('Title (one line, plain language)').fill('Home visit: Stacey reports poor sleep');
     await page.getByRole('dialog').getByRole('button', { name: 'Record event' }).click();
@@ -145,7 +148,8 @@ test.describe('integrated chronology', () => {
     await page.getByRole('dialog').getByLabel(/^Title/).fill('Sleep and anxiety since May');
     await page.getByLabel('Your judgement and what it rests on').fill('Three reports of poor sleep since the disclosure suggest the plan should include mental health support for Stacey.');
     await page.getByRole('dialog').getByRole('button', { name: 'Record analysis note' }).click();
-    await expect(page.getByText('Link at least one event')).toBeVisible();
+    // In the summary and against the field group, for the same reason as above.
+    await expect(page.getByText('Link at least one event')).toHaveCount(2);
     await page.getByRole('dialog').getByRole('checkbox').first().check();
     await page.getByRole('dialog').getByRole('button', { name: 'Record analysis note' }).click();
     await expect(page.getByText('Analysis note recorded')).toBeVisible();

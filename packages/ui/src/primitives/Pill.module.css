@@ -4,15 +4,41 @@
   display: inline-flex;
   gap: 6px;
   align-items: center;
+
+  /*
+   * A pill is a short label, and a pill wider than the thing it sits in is a design error at that
+   * spot rather than something the layout should absorb: one on the process record was 453px inside
+   * a 320px column and took the whole page sideways with it. Capped and ellipsised, so the overflow
+   * is bounded and visible instead of silent. A pill that genuinely carries a sentence asks for
+   * `wrap` and grows downwards.
+   */
+  max-width: 100%;
   height: var(--pill-height);
   padding: 0 10px;
+  overflow: hidden;
   font-size: var(--text-sm);
   font-weight: 700;
   line-height: 1;
+  text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--color-ink-2);
   background: var(--color-paper-2);
   border-radius: var(--radius-pill);
+}
+
+/* A sentence in a pill: wraps, grows, and keeps its icon beside the first line. */
+.pill[data-wrap='true'] {
+  align-items: flex-start;
+  height: auto;
+  min-height: var(--pill-height);
+  padding-block: 3px;
+  text-align: start;
+  white-space: normal;
+}
+
+.pill[data-wrap='true'] > svg {
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .pill[data-size='sm'] {
