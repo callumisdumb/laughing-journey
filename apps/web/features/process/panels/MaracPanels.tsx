@@ -1,6 +1,7 @@
 'use client';
 
-import { AGENCY_SHORT, DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, formatDate, formatDateTime, type MaracProcess } from '@mas/domain';
+import { AGENCY_SHORT, DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, daqQuestionText, formatDate, formatDateTime, type MaracProcess } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { AgencyMark, Button, KeyValue, Pill, RiskBand, Sheet, SheetBody, SheetHead, Table, TableWrap } from '@mas/ui';
 import { Ban, Check, Flag, Repeat } from 'lucide-react';
 import { useState } from 'react';
@@ -12,6 +13,7 @@ import { DaqDialog } from '../forms/DaqDialog';
 import styles from './shared.module.css';
 
 export function MaracPanels({ process }: { process: MaracProcess }) {
+  const t = useT();
   const data = useData();
   const d = process.detail;
   const [daqOpen, setDaqOpen] = useState(false);
@@ -25,18 +27,18 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
     <>
       <Sheet>
         <SheetHead
-          title="Referral"
-          meta={`Received ${formatDateTime(d.referral.receivedAt)} from ${d.referral.referrerName} (${AGENCY_SHORT[d.referral.referringAgency]})`}
+          title={t('marac.referral.title')}
+          meta={t('marac.referral.meta', { when: formatDateTime(d.referral.receivedAt), name: d.referral.referrerName, agency: AGENCY_SHORT[d.referral.referringAgency] })}
           actions={
             <span className={styles.pills}>
               {d.referral.repeat ? (
                 <Pill tone="critical" icon={<Repeat size={14} aria-hidden="true" />}>
-                  Repeat: last heard {d.referral.previousHearingAt ? formatDate(d.referral.previousHearingAt) : 'within 12 months'}
+                  {t('marac.referral.repeat', { hasDate: d.referral.previousHearingAt ? 'yes' : 'no', date: d.referral.previousHearingAt ? formatDate(d.referral.previousHearingAt) : '' })}
                 </Pill>
               ) : (
-                <Pill tone="outline">First referral</Pill>
+                <Pill tone="outline">{t('marac.referral.first')}</Pill>
               )}
-              {d.referral.professionalJudgementReferral ? <Pill tone="medium">Professional judgement referral</Pill> : null}
+              {d.referral.professionalJudgementReferral ? <Pill tone="medium">{t('marac.referral.judgement')}</Pill> : null}
             </span>
           }
         />
@@ -44,32 +46,30 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
           <p style={{ marginBottom: 10 }}>{d.referral.summary}</p>
           <KeyValue
             items={[
-              { key: 'Victim', value: victim ? <AppLink href={personPath(victim.id)}>{fullName(victim)}</AppLink> : d.referral.victimPersonId },
-              { key: 'Children', value: d.referral.childPersonIds.length === 0 ? 'None' : d.referral.childPersonIds.map((id) => { const p = personById(data, id); return p ? <AppLink key={id} href={personPath(id)} style={{ marginRight: 8 }}>{fullName(p)}</AppLink> : id; }) },
-              { key: 'Perpetrator', value: <span>{perpetrator ? <AppLink href={personPath(perpetrator.id)}>{fullName(perpetrator)}</AppLink> : d.referral.perpetratorPersonId} <Pill size="sm" tone="restricted" icon={<Ban size={12} aria-hidden="true" />}>Must not receive anything about this process</Pill></span> },
-              { key: 'IDAA', value: `${d.idaa.name}, ${d.idaa.organisation}` },
+              { key: t('marac.referral.victim'), value: victim ? <AppLink href={personPath(victim.id)}>{fullName(victim)}</AppLink> : d.referral.victimPersonId },
+              { key: t('marac.referral.children'), value: d.referral.childPersonIds.length === 0 ? t('common.keyValue.none') : d.referral.childPersonIds.map((id) => { const p = personById(data, id); return p ? <AppLink key={id} href={personPath(id)} style={{ marginRight: 8 }}>{fullName(p)}</AppLink> : id; }) },
+              { key: t('marac.referral.perpetrator'), value: <span>{perpetrator ? <AppLink href={personPath(perpetrator.id)}>{fullName(perpetrator)}</AppLink> : d.referral.perpetratorPersonId} <Pill size="sm" tone="restricted" icon={<Ban size={12} aria-hidden="true" />}>{t('marac.referral.mustNotReceive')}</Pill></span> },
+              { key: t('marac.referral.idaa'), value: t('marac.referral.idaaValue', { name: d.idaa.name, organisation: d.idaa.organisation }) },
             ]}
           />
         </SheetBody>
       </Sheet>
 
       <Sheet>
-        <SheetHead title={ra ? `${ra.tool === 'dash' ? 'DASH' : 'DAQ'} risk checklist` : 'Risk checklist'} meta={ra ? `Completed ${formatDateTime(ra.assessedAt)} by ${ra.assessorName} (${AGENCY_SHORT[ra.assessorAgency]})` : 'Not recorded'} actions={<Button size="sm" variant="secondary" onClick={() => setDaqOpen(true)}>Record DAQ</Button>} />
+        <SheetHead title={ra ? t('marac.checklist.title', { tool: ra.tool }) : t('marac.checklist.titleNone')} meta={ra ? t('marac.checklist.meta', { when: formatDateTime(ra.assessedAt), name: ra.assessorName, agency: AGENCY_SHORT[ra.assessorAgency] }) : t('marac.checklist.notRecorded')} actions={<Button size="sm" variant="secondary" onClick={() => setDaqOpen(true)}>{t('marac.checklist.record')}</Button>} />
         <SheetBody>
           {ra ? (
             <>
               <div className={styles.score}>
                 <span className={styles.scoreNumeral}>{ra.score}</span>
-                <span className={styles.scoreLabel}>
-                  yes answers of {ra.maxScore}. {HIGH_RISK_THRESHOLD} or more indicates high risk.
-                </span>
-                <RiskBand band={ra.judgementOverride?.band ?? ra.band} label={ra.judgementOverride ? `${ra.bandLabel} (overridden to ${ra.judgementOverride.band})` : ra.bandLabel} size="lg" />
+                <span className={styles.scoreLabel}>{t('marac.checklist.scoreLabel', { max: ra.maxScore ?? '', threshold: HIGH_RISK_THRESHOLD })}</span>
+                <RiskBand band={ra.judgementOverride?.band ?? ra.band} label={ra.judgementOverride ? t('marac.checklist.overridden', { band: ra.bandLabel, override: ra.judgementOverride.band }) : ra.bandLabel} size="lg" />
               </div>
-              {ra.judgementOverride ? <p className={styles.warn}>Professional judgement override by {ra.judgementOverride.byName}: {ra.judgementOverride.reason}</p> : null}
+              {ra.judgementOverride ? <p className={styles.warn}>{t('marac.checklist.override', { name: ra.judgementOverride.byName, reason: ra.judgementOverride.reason })}</p> : null}
               <div className={styles.items}>
-                {(ra.items ?? questions.map((q) => ({ id: q.id, question: q.text, answer: 'unknown' as const }))).map((it) => (
+                {(ra.items ?? questions.map((q) => ({ id: q.id, question: daqQuestionText(q.id), answer: 'unknown' as const }))).map((it) => (
                   <div key={it.id} className={styles.item}>
-                    <span className={styles.tick} role="img" data-answer={it.answer} aria-label={`${it.answer}`}>
+                    <span className={styles.tick} role="img" data-answer={it.answer} aria-label={t('marac.checklist.answer', { answer: it.answer })}>
                       {it.answer === 'yes' ? <Check size={12} aria-hidden="true" /> : null}
                     </span>
                     <span>{it.question}</span>
@@ -78,29 +78,29 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
               </div>
             </>
           ) : (
-            <p className={styles.note}>Record the DAQ to score the referral.</p>
+            <p className={styles.note}>{t('marac.checklist.empty')}</p>
           )}
         </SheetBody>
       </Sheet>
 
       <Sheet>
-        <SheetHead title="Research requests" meta={`Each agency searches its records for the victim, the perpetrator and the children, and shares only what is relevant, necessary and proportionate. Names and dates of birth only in the request.`} />
+        <SheetHead title={t('marac.research.title')} meta={t('marac.research.meta')} />
         <SheetBody flush>
           <TableWrap style={{ border: 0, borderRadius: 0 }}>
             <Table>
               <thead>
                 <tr>
-                  <th scope="col">Agency</th>
-                  <th scope="col">Sent</th>
-                  <th scope="col">Due</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Return</th>
+                  <th scope="col">{t('marac.research.columns.agency')}</th>
+                  <th scope="col">{t('marac.research.columns.sent')}</th>
+                  <th scope="col">{t('marac.research.columns.due')}</th>
+                  <th scope="col">{t('marac.research.columns.status')}</th>
+                  <th scope="col">{t('marac.research.columns.return')}</th>
                 </tr>
               </thead>
               <tbody>
                 {d.researchRequests.length === 0 ? (
                   <tr>
-                    <td colSpan={5}>Research requests are sent by the coordinator when the case is listed.</td>
+                    <td colSpan={5}>{t('marac.research.empty')}</td>
                   </tr>
                 ) : null}
                 {d.researchRequests.map((r) => (
@@ -126,20 +126,20 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
 
       <div className={styles.grid2}>
         <Sheet>
-          <SheetHead title="Meeting slot" meta={meeting ? `${meeting.title}, ${formatDateTime(meeting.scheduledAt)} (${meeting.status})` : 'Not yet listed'} actions={meeting ? <AppLink href={meetingPath(meeting.id)}>Open</AppLink> : undefined} />
+          <SheetHead title={t('marac.meeting.title')} meta={meeting ? t('marac.meeting.meta', { title: meeting.title, when: formatDateTime(meeting.scheduledAt), status: meeting.status }) : t('marac.meeting.notListed')} actions={meeting ? <AppLink href={meetingPath(meeting.id)}>{t('marac.meeting.open')}</AppLink> : undefined} />
           <SheetBody>
-            <p className={styles.note}>The victim does not attend. The IDAA represents their wishes. The perpetrator is not told.</p>
+            <p className={styles.note}>{t('marac.meeting.note')}</p>
           </SheetBody>
         </Sheet>
         <Sheet>
-          <SheetHead title="Flags placed" meta={d.flags.length === 0 ? 'No MARAC flags yet' : `${d.flags.length} flags, 12 months from the hearing`} />
+          <SheetHead title={t('marac.flags.title')} meta={d.flags.length === 0 ? t('marac.flags.none') : t('marac.flags.meta', { count: d.flags.length })} />
           <SheetBody>
             <ul className={styles.list}>
               {d.flags.map((f, i) => (
                 <li key={i}>
                   <Flag size={14} aria-hidden="true" />
                   <span>
-                    <strong>{AGENCY_SHORT[f.agency]}</strong> on {f.system}: placed {formatDate(f.placedAt)}, expires {formatDate(f.expiresAt)}. Receipt {f.receiptRef}.
+                    <strong>{AGENCY_SHORT[f.agency]}</strong> {t('marac.flags.item', { system: f.system, placed: formatDate(f.placedAt), expires: formatDate(f.expiresAt), receipt: f.receiptRef })}
                   </span>
                 </li>
               ))}
@@ -149,7 +149,7 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
       </div>
 
       <Sheet>
-        <SheetHead title="IDAA feedback to the victim" meta={`${d.idaaFeedback.length} entries`} />
+        <SheetHead title={t('marac.feedback.title')} meta={t('marac.feedback.meta', { count: d.idaaFeedback.length })} />
         <SheetBody>
           <ul className={styles.list}>
             {d.idaaFeedback.map((f, i) => (
@@ -157,7 +157,7 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
                 <span style={{ fontWeight: 700 }}>{formatDate(f.at)}</span>
                 <span>
                   {f.summary}
-                  {f.victimResponse ? <span className={styles.listMeta} style={{ display: 'block' }}>Victim&apos;s response: {f.victimResponse}</span> : null}
+                  {f.victimResponse ? <span className={styles.listMeta} style={{ display: 'block' }}>{t('marac.feedback.victimResponse', { response: f.victimResponse })}</span> : null}
                 </span>
               </li>
             ))}
@@ -166,17 +166,17 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
       </Sheet>
 
       <Sheet>
-        <SheetHead title="Links to other processes" />
+        <SheetHead title={t('marac.links.title')} />
         <SheetBody>
           <div className={styles.pills}>
-            {d.links.cpProcessId ? <AppLink href={processPath(d.links.cpProcessId)}><Pill tone="accent">Child protection process</Pill></AppLink> : <Pill tone="outline">No child protection process</Pill>}
-            {d.links.aspProcessId ? <AppLink href={processPath(d.links.aspProcessId)}><Pill tone="accent">ASP process</Pill></AppLink> : null}
-            {d.links.mappaProcessId ? <AppLink href={processPath(d.links.mappaProcessId)}><Pill tone="restricted">MAPPA (perpetrator)</Pill></AppLink> : <Pill tone="outline">Perpetrator not MAPPA</Pill>}
-            <Pill tone={d.links.matacConsidered ? 'high' : 'outline'}>MATAC {d.links.matacConsidered ? `considered${d.links.matacReferredAt ? `, referred ${formatDate(d.links.matacReferredAt)}` : ''}` : 'not considered'}</Pill>
-            <Pill tone={d.links.dsdasConsidered ? 'medium' : 'outline'}>DSDAS {d.links.dsdasConsidered ? 'considered' : 'not considered'}</Pill>
+            {d.links.cpProcessId ? <AppLink href={processPath(d.links.cpProcessId)}><Pill tone="accent">{t('marac.links.cp')}</Pill></AppLink> : <Pill tone="outline">{t('marac.links.noCp')}</Pill>}
+            {d.links.aspProcessId ? <AppLink href={processPath(d.links.aspProcessId)}><Pill tone="accent">{t('marac.links.asp')}</Pill></AppLink> : null}
+            {d.links.mappaProcessId ? <AppLink href={processPath(d.links.mappaProcessId)}><Pill tone="restricted">{t('marac.links.mappa')}</Pill></AppLink> : <Pill tone="outline">{t('marac.links.noMappa')}</Pill>}
+            <Pill tone={d.links.matacConsidered ? 'high' : 'outline'}>{t('marac.links.matac', { considered: d.links.matacConsidered ? 'yes' : 'no', hasReferral: d.links.matacReferredAt ? 'yes' : 'no', date: d.links.matacReferredAt ? formatDate(d.links.matacReferredAt) : '' })}</Pill>
+            <Pill tone={d.links.dsdasConsidered ? 'medium' : 'outline'}>{t('marac.links.dsdas', { considered: d.links.dsdasConsidered ? 'yes' : 'no' })}</Pill>
           </div>
           {d.links.dsdasNote ? <p className={styles.note} style={{ marginTop: 8 }}>{d.links.dsdasNote}</p> : null}
-          {d.transfer ? <p className={styles.note} style={{ marginTop: 8 }}>Transferred to {d.transfer.toArea} on {formatDate(d.transfer.at)} (receiving coordinator {d.transfer.receivingCoordinator}).</p> : null}
+          {d.transfer ? <p className={styles.note} style={{ marginTop: 8 }}>{t('marac.links.transfer', { area: d.transfer.toArea, date: formatDate(d.transfer.at), coordinator: d.transfer.receivingCoordinator })}</p> : null}
         </SheetBody>
       </Sheet>
 
