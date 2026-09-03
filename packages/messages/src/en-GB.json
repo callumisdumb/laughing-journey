@@ -438,5 +438,81 @@
       "title": "Connector data may be out of date",
       "unknownSync": "some time ago"
     }
+  },
+  "worklist": {
+    "bulk": {
+      "clear": "Clear",
+      "complete": "Mark complete",
+      "evidence": "Marked complete from the worklist",
+      "selected": "{count} selected",
+      "toastDone": {
+        "text": "Evidence of completion can be added from the Actions register.",
+        "title": "{count, plural, one {# action} other {# actions}} marked complete"
+      },
+      "toastNone": {
+        "text": "Only actions can be completed in bulk. Inbox events and reports are handled on their own screens.",
+        "title": "Nothing to complete"
+      }
+    },
+    "clocks": {
+      "due": "Due {date}. {source}"
+    },
+    "columns": {
+      "due": "Due",
+      "item": "Item",
+      "kind": "Kind",
+      "owner": "Owner",
+      "process": "Process",
+      "select": "Select"
+    },
+    "empty": {
+      "clocks": {
+        "title": "No clocks running"
+      },
+      "overdue": {
+        "text": "Every action, return and report on your cases is on time.",
+        "title": "Nothing overdue"
+      },
+      "waiting": {
+        "text": "When a connector event, research request, report or action needs you, it appears here.",
+        "title": "Nothing waiting"
+      }
+    },
+    "groups": {
+      "unlinked": "Not linked to a process"
+    },
+    "head": {
+      "lede": "Everything waiting on you, your team, or a clock. Hover or focus a row to see who is involved in the panel.",
+      "title": "Worklist"
+    },
+    "items": {
+      "actionMeta": "{context}.",
+      "inboxMeta": "{connector} event for {subject}. Received {date}.",
+      "meetingMeta": "{type}, {location}.",
+      "prepareFor": "Prepare for {meeting}",
+      "processSubject": "{process}: {subject}",
+      "reportFor": "Report for {meeting}",
+      "reportMeta": "{type} on {date}.",
+      "researchMeta": "Search your records for the victim, perpetrator and children.",
+      "researchReturn": "MARAC research return: {subject}"
+    },
+    "kinds": {
+      "action": "Action",
+      "inbox": "Inbox",
+      "meeting": "Meeting",
+      "report": "Report",
+      "research": "Research"
+    },
+    "rows": {
+      "select": "Select {title}"
+    },
+    "views": {
+      "clocks": "Clocks",
+      "label": "Saved views",
+      "mine": "Mine",
+      "overdue": "Overdue",
+      "process": "By process",
+      "team": "Team"
+    }
   }
 }

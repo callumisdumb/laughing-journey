@@ -1,6 +1,7 @@
 'use client';
 
 import { MEETING_TYPE_LABELS, PROCESS_SHORT, formatDate, relativeDays, type Process, type User } from '@mas/domain';
+import { useT, type MessageKey, type Translator } from '@mas/messages';
 import { Button, CheckboxField, ClockNumeral, ProcessMark, Table, TableWrap, useToast } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { CalendarDays, FileText, Inbox, ListChecks, Search } from 'lucide-react';
@@ -10,7 +11,7 @@ import { ScreenState, useDevState } from '@/components/ScreenState';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { meetingPath, processPath } from '@/lib/routes';
 import { useSelection, type Selection } from '@/lib/selection';
-import { actionsForUser, clocksForUser, fullName, inboxForUser, meetingsForUser, personById, preMeetingRequestsForUser, researchRequestsForUser } from '@/lib/selectors';
+import { actionsForUser, clocksForUser, fullName, inboxForUser, meetingsForUser, personById, preMeetingRequestsForUser, researchRequestsForUser, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
 import styles from './Worklist.module.css';
 
@@ -30,38 +31,40 @@ interface Item {
   selection?: Selection;
 }
 
-function itemsFor(data: ReturnType<typeof useData>, user: User, now: Date): Item[] {
+function itemsFor(t: Translator, data: ReturnType<typeof useData>, user: User, now: Date): Item[] {
   const out: Item[] = [];
-  const owner = `${user.givenName} ${user.familyName}`;
+  const owner = userName(user);
   for (const c of inboxForUser(data, user)) {
     const subject = personById(data, c.subjectId);
-    out.push({ key: c.id, kind: 'inbox', href: `/inbox?event=${c.id}`, icon: <Inbox size={16} aria-hidden="true" />, title: c.mapped.title, meta: `${c.connectorId} event for ${subject ? fullName(subject) : c.subjectId}. Received ${formatDate(c.receivedAt)}.`, owner, selection: { kind: 'person', id: c.subjectId } });
+    out.push({ key: c.id, kind: 'inbox', href: `/inbox?event=${c.id}`, icon: <Inbox size={16} aria-hidden="true" />, title: c.mapped.title, meta: t('worklist.items.inboxMeta', { connector: c.connectorId, subject: subject ? fullName(subject) : c.subjectId, date: formatDate(c.receivedAt) }), owner, selection: { kind: 'person', id: c.subjectId } });
   }
   for (const { process, request } of researchRequestsForUser(data, user)) {
     const subject = personById(data, process.subjectIds[0]);
-    out.push({ key: request.id, kind: 'research', href: processPath(process.id), icon: <Search size={16} aria-hidden="true" />, title: `MARAC research return: ${subject ? fullName(subject) : process.reference}`, meta: 'Search your records for the victim, perpetrator and children.', due: request.dueAt, days: differenceInCalendarDays(parseISO(request.dueAt), now), owner, process, selection: { kind: 'process', id: process.id } });
+    out.push({ key: request.id, kind: 'research', href: processPath(process.id), icon: <Search size={16} aria-hidden="true" />, title: t('worklist.items.researchReturn', { subject: subject ? fullName(subject) : process.reference }), meta: t('worklist.items.researchMeta'), due: request.dueAt, days: differenceInCalendarDays(parseISO(request.dueAt), now), owner, process, selection: { kind: 'process', id: process.id } });
   }
   for (const { meeting, request } of preMeetingRequestsForUser(data, user)) {
     const process = data.processes.find((p) => p.id === meeting.processId);
-    out.push({ key: request.id, kind: 'report', href: meetingPath(meeting.id), icon: <FileText size={16} aria-hidden="true" />, title: `Report for ${meeting.title}`, meta: `${MEETING_TYPE_LABELS[meeting.type]} on ${formatDate(meeting.scheduledAt)}.`, due: request.dueAt, days: differenceInCalendarDays(parseISO(request.dueAt), now), owner, process, selection: process ? { kind: 'process', id: process.id } : undefined });
+    out.push({ key: request.id, kind: 'report', href: meetingPath(meeting.id), icon: <FileText size={16} aria-hidden="true" />, title: t('worklist.items.reportFor', { meeting: meeting.title }), meta: t('worklist.items.reportMeta', { type: MEETING_TYPE_LABELS[meeting.type], date: formatDate(meeting.scheduledAt) }), due: request.dueAt, days: differenceInCalendarDays(parseISO(request.dueAt), now), owner, process, selection: process ? { kind: 'process', id: process.id } : undefined });
   }
   for (const a of actionsForUser(data, user)) {
     const process = data.processes.find((p) => p.id === a.processId);
     const subject = process ? personById(data, process.subjectIds[0]) : undefined;
-    out.push({ key: a.id, kind: 'action', href: `/actions?action=${a.id}`, icon: <ListChecks size={16} aria-hidden="true" />, title: a.title, meta: `${process ? PROCESS_SHORT[process.type] : ''}${subject ? `: ${fullName(subject)}` : ''}.`, due: a.due, days: differenceInCalendarDays(parseISO(a.due), now), owner: a.ownerName, process, selection: process ? { kind: 'process', id: process.id } : undefined });
+    const context = process ? (subject ? t('worklist.items.processSubject', { process: PROCESS_SHORT[process.type], subject: fullName(subject) }) : PROCESS_SHORT[process.type]) : '';
+    out.push({ key: a.id, kind: 'action', href: `/actions?action=${a.id}`, icon: <ListChecks size={16} aria-hidden="true" />, title: a.title, meta: t('worklist.items.actionMeta', { context }), due: a.due, days: differenceInCalendarDays(parseISO(a.due), now), owner: a.ownerName, process, selection: process ? { kind: 'process', id: process.id } : undefined });
   }
   for (const m of meetingsForUser(data, user)) {
     const days = differenceInCalendarDays(parseISO(m.scheduledAt), now);
     if (m.status !== 'scheduled' || days < 0 || days > 14) continue;
     const process = data.processes.find((p) => p.id === m.processId);
-    out.push({ key: m.id, kind: 'meeting', href: meetingPath(m.id), icon: <CalendarDays size={16} aria-hidden="true" />, title: `Prepare for ${m.title}`, meta: `${MEETING_TYPE_LABELS[m.type]}, ${m.location}.`, due: m.scheduledAt.slice(0, 10), days, owner, process, selection: process ? { kind: 'process', id: process.id } : undefined });
+    out.push({ key: m.id, kind: 'meeting', href: meetingPath(m.id), icon: <CalendarDays size={16} aria-hidden="true" />, title: t('worklist.items.prepareFor', { meeting: m.title }), meta: t('worklist.items.meetingMeta', { type: MEETING_TYPE_LABELS[m.type], location: m.location }), due: m.scheduledAt.slice(0, 10), days, owner, process, selection: process ? { kind: 'process', id: process.id } : undefined });
   }
   return out.sort((a, b) => (a.days ?? 999) - (b.days ?? 999));
 }
 
-const KIND_LABEL: Record<Item['kind'], string> = { inbox: 'Inbox', research: 'Research', report: 'Report', action: 'Action', meeting: 'Meeting' };
+const KIND_KEYS = { inbox: 'worklist.kinds.inbox', research: 'worklist.kinds.research', report: 'worklist.kinds.report', action: 'worklist.kinds.action', meeting: 'worklist.kinds.meeting' } as const satisfies Record<Item['kind'], MessageKey>;
 
 export function Worklist() {
+  const t = useT();
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
@@ -84,12 +87,12 @@ export function Worklist() {
     if (view === 'team') {
       const team = data.users.filter((u) => u.teamId === user.teamId);
       const seen = new Set<string>();
-      return team.flatMap((u) => itemsFor(data, u, now)).filter((i) => (seen.has(i.key) ? false : (seen.add(i.key), true)));
+      return team.flatMap((u) => itemsFor(t, data, u, now)).filter((i) => (seen.has(i.key) ? false : (seen.add(i.key), true)));
     }
-    const mine = itemsFor(data, user, now);
+    const mine = itemsFor(t, data, user, now);
     if (view === 'overdue') return mine.filter((i) => (i.days ?? 1) < 0);
     return mine;
-  }, [data, user, now, view]);
+  }, [data, user, now, view, t]);
 
   const clocks = user ? clocksForUser(data, config, user, now) : [];
 
@@ -104,17 +107,34 @@ export function Worklist() {
     for (const key of checked) {
       const a = data.actions.find((x) => x.id === key);
       if (a) {
-        upsert('actions', { ...a, status: 'complete', completedAt: now.toISOString(), evidence: a.evidence ?? 'Marked complete from the worklist' });
+        upsert('actions', { ...a, status: 'complete', completedAt: now.toISOString(), evidence: a.evidence ?? t('worklist.bulk.evidence') });
         n += 1;
       }
     }
     setChecked(new Set());
-    toast({ title: n === 0 ? 'Nothing to complete' : `${n} ${n === 1 ? 'action' : 'actions'} marked complete`, text: n === 0 ? 'Only actions can be completed in bulk. Inbox events and reports are handled on their own screens.' : 'Evidence of completion can be added from the Actions register.', tone: n === 0 ? 'info' : 'success' });
+    toast(n === 0 ? { title: t('worklist.bulk.toastNone.title'), text: t('worklist.bulk.toastNone.text'), tone: 'info' } : { title: t('worklist.bulk.toastDone.title', { count: n }), text: t('worklist.bulk.toastDone.text'), tone: 'success' });
   }
 
   const state = dev ?? (view === 'clocks' ? (clocks.length === 0 ? 'empty' : 'ready') : items.length === 0 ? 'empty' : 'ready');
 
   const groups = view === 'process' ? [...new Map(items.map((i) => [i.process?.id ?? 'none', i.process])).entries()] : null;
+
+  const head = (
+    <thead>
+      <tr>
+        <th scope="col">
+          <span className="visually-hidden">{t('worklist.columns.select')}</span>
+        </th>
+        <th scope="col">{t('worklist.columns.kind')}</th>
+        <th scope="col">{t('worklist.columns.item')}</th>
+        <th scope="col">{t('worklist.columns.process')}</th>
+        <th scope="col">{t('worklist.columns.owner')}</th>
+        <th scope="col" data-align="num">
+          {t('worklist.columns.due')}
+        </th>
+      </tr>
+    </thead>
+  );
 
   const renderRows = (list: Item[]) =>
     list.map((it) => (
@@ -122,7 +142,7 @@ export function Worklist() {
         <td onClick={(e) => e.stopPropagation()}>
           {it.kind === 'action' ? (
             <CheckboxField
-              label={<span className="visually-hidden">Select {it.title}</span>}
+              label={<span className="visually-hidden">{t('worklist.rows.select', { title: it.title })}</span>}
               checked={checked.has(it.key)}
               onChange={(e) => {
                 const next = new Set(checked);
@@ -135,7 +155,7 @@ export function Worklist() {
         </td>
         <td>
           <span className={styles.kind}>
-            {it.icon} {KIND_LABEL[it.kind]}
+            {it.icon} {t(KIND_KEYS[it.kind])}
           </span>
         </td>
         <td>
@@ -161,18 +181,18 @@ export function Worklist() {
     <div className="page">
       <div className="page-head">
         <div className="page-head-text">
-          <h1>Worklist</h1>
-          <p className="page-lede">Everything waiting on you, your team, or a clock. Hover or focus a row to see who is involved in the panel.</p>
+          <h1>{t('worklist.head.title')}</h1>
+          <p className="page-lede">{t('worklist.head.lede')}</p>
         </div>
       </div>
-      <div className={styles.views} role="group" aria-label="Saved views">
+      <div className={styles.views} role="group" aria-label={t('worklist.views.label')}>
         {(
           [
-            ['mine', 'Mine'],
-            ['team', 'Team'],
-            ['overdue', 'Overdue'],
-            ['process', 'By process'],
-            ['clocks', 'Clocks'],
+            ['mine', t('worklist.views.mine')],
+            ['team', t('worklist.views.team')],
+            ['overdue', t('worklist.views.overdue')],
+            ['process', t('worklist.views.process')],
+            ['clocks', t('worklist.views.clocks')],
           ] as Array<[View, string]>
         ).map(([v, label]) => (
           <button key={v} type="button" className={styles.view} aria-pressed={view === v} onClick={() => setView(v)}>
@@ -180,46 +200,33 @@ export function Worklist() {
           </button>
         ))}
       </div>
-      <ScreenState state={state} empty={{ title: view === 'overdue' ? 'Nothing overdue' : view === 'clocks' ? 'No clocks running' : 'Nothing waiting', text: view === 'overdue' ? 'Every action, return and report on your cases is on time.' : 'When a connector event, research request, report or action needs you, it appears here.' }}>
+      <ScreenState state={state} empty={{ title: view === 'overdue' ? t('worklist.empty.overdue.title') : view === 'clocks' ? t('worklist.empty.clocks.title') : t('worklist.empty.waiting.title'), text: view === 'overdue' ? t('worklist.empty.overdue.text') : t('worklist.empty.waiting.text') }}>
         {view === 'clocks' ? (
           <div className="stack">
             {clocks.map((c) => (
               <AppLink key={c.triggerId} href={processPath(c.process.id)} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <ClockNumeral daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={`${c.subjectName}: ${c.label}`} sub={`Due ${formatDate(c.dueAt)}. ${c.sourceRef}`} size="sm" />
+                <ClockNumeral daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={`${c.subjectName}: ${c.label}`} sub={t('worklist.clocks.due', { date: formatDate(c.dueAt), source: c.sourceRef })} size="sm" />
               </AppLink>
             ))}
           </div>
         ) : (
           <>
             <div className={styles.bulk}>
-              <span>{checked.size} selected</span>
+              <span>{t('worklist.bulk.selected', { count: checked.size })}</span>
               <Button size="sm" variant="secondary" disabled={checked.size === 0} onClick={completeChecked}>
-                Mark complete
+                {t('worklist.bulk.complete')}
               </Button>
               <Button size="sm" variant="quiet" disabled={checked.size === 0} onClick={() => setChecked(new Set())}>
-                Clear
+                {t('worklist.bulk.clear')}
               </Button>
             </div>
             {groups ? (
               groups.map(([pid, process]) => (
                 <div key={pid}>
-                  <h2 className={styles.group}>{process ? `${process.reference}: ${process.title}` : 'Not linked to a process'}</h2>
+                  <h2 className={styles.group}>{process ? `${process.reference}: ${process.title}` : t('worklist.groups.unlinked')}</h2>
                   <TableWrap>
                     <Table>
-                      <thead>
-                        <tr>
-                          <th scope="col">
-                            <span className="visually-hidden">Select</span>
-                          </th>
-                          <th scope="col">Kind</th>
-                          <th scope="col">Item</th>
-                          <th scope="col">Process</th>
-                          <th scope="col">Owner</th>
-                          <th scope="col" data-align="num">
-                            Due
-                          </th>
-                        </tr>
-                      </thead>
+                      {head}
                       <tbody>{renderRows(items.filter((i) => (i.process?.id ?? 'none') === pid))}</tbody>
                     </Table>
                   </TableWrap>
@@ -228,20 +235,7 @@ export function Worklist() {
             ) : (
               <TableWrap>
                 <Table>
-                  <thead>
-                    <tr>
-                      <th scope="col">
-                        <span className="visually-hidden">Select</span>
-                      </th>
-                      <th scope="col">Kind</th>
-                      <th scope="col">Item</th>
-                      <th scope="col">Process</th>
-                      <th scope="col">Owner</th>
-                      <th scope="col" data-align="num">
-                        Due
-                      </th>
-                    </tr>
-                  </thead>
+                  {head}
                   <tbody>{renderRows(items)}</tbody>
                 </Table>
               </TableWrap>

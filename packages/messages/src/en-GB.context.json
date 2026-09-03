@@ -1414,5 +1414,225 @@
         "where": "Stands in for the last sync time in the stale notice when it is not known"
       }
     }
+  },
+  "worklist": {
+    "bulk": {
+      "clear": {
+        "maxLength": 16,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, bulk bar: button that clears the selection"
+      },
+      "complete": {
+        "maxLength": 20,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, bulk bar: button that completes the selected actions"
+      },
+      "evidence": {
+        "maxLength": 60,
+        "where": "Worklist, evidence note written on an action completed from the bulk bar; shows later in the Actions register"
+      },
+      "selected": {
+        "maxLength": 20,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, bulk bar: count of selected rows"
+      },
+      "toastDone": {
+        "text": {
+          "where": "Worklist, toast body after actions are completed from the bulk bar"
+        },
+        "title": {
+          "maxLength": 40,
+          "where": "Worklist, toast title after actions are completed from the bulk bar, with their number"
+        }
+      },
+      "toastNone": {
+        "text": {
+          "where": "Worklist, toast body when Mark complete is pressed with no action selected"
+        },
+        "title": {
+          "maxLength": 32,
+          "where": "Worklist, toast title when Mark complete is pressed with no action selected"
+        }
+      }
+    },
+    "clocks": {
+      "due": {
+        "screenshot": "phase-2/worklist-clocks-light-comfortable.png",
+        "where": "Worklist, clocks view: line under each clock with the due date and the statutory source"
+      }
+    },
+    "columns": {
+      "due": {
+        "maxLength": 12,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist table, due date column header"
+      },
+      "item": {
+        "maxLength": 12,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist table, item column header"
+      },
+      "kind": {
+        "maxLength": 12,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist table, kind column header"
+      },
+      "owner": {
+        "maxLength": 12,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist table, owner column header"
+      },
+      "process": {
+        "maxLength": 12,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist table, process column header"
+      },
+      "select": {
+        "maxLength": 12,
+        "where": "Worklist table, visually hidden header of the checkbox column"
+      }
+    },
+    "empty": {
+      "clocks": {
+        "title": {
+          "maxLength": 32,
+          "where": "Worklist, empty state title of the clocks view"
+        }
+      },
+      "overdue": {
+        "text": {
+          "where": "Worklist, empty state body of the overdue view"
+        },
+        "title": {
+          "maxLength": 32,
+          "where": "Worklist, empty state title of the overdue view"
+        }
+      },
+      "waiting": {
+        "text": {
+          "where": "Worklist, empty state body of the mine, team, by process and clocks views"
+        },
+        "title": {
+          "maxLength": 32,
+          "where": "Worklist, empty state title of the mine, team and by process views"
+        }
+      }
+    },
+    "groups": {
+      "unlinked": {
+        "maxLength": 32,
+        "where": "Worklist, by process view: heading of the group of items with no process"
+      }
+    },
+    "head": {
+      "lede": {
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, lede under the heading"
+      },
+      "title": {
+        "maxLength": 20,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, page heading"
+      }
+    },
+    "items": {
+      "actionMeta": {
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, detail line under an action: the process code and subject"
+      },
+      "inboxMeta": {
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, detail line under an inbox event: connector, subject and date received"
+      },
+      "meetingMeta": {
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, detail line under a meeting to prepare for: type and location"
+      },
+      "prepareFor": {
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, title of a meeting to prepare for, with the meeting title as argument"
+      },
+      "processSubject": {
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, the process code and subject name that make up an action's detail line"
+      },
+      "reportFor": {
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, title of a pre-meeting report request, with the meeting title as argument"
+      },
+      "reportMeta": {
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, detail line under a report request: meeting type and date"
+      },
+      "researchMeta": {
+        "where": "Worklist, detail line under a MARAC research request"
+      },
+      "researchReturn": {
+        "where": "Worklist, title of a MARAC research request, with the victim's name or the process reference"
+      }
+    },
+    "kinds": {
+      "action": {
+        "maxLength": 12,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, kind column for an action"
+      },
+      "inbox": {
+        "maxLength": 12,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, kind column for an inbox event"
+      },
+      "meeting": {
+        "maxLength": 12,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, kind column for a meeting to prepare for"
+      },
+      "report": {
+        "maxLength": 12,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, kind column for a pre-meeting report request"
+      },
+      "research": {
+        "maxLength": 12,
+        "where": "Worklist, kind column for a MARAC research request"
+      }
+    },
+    "rows": {
+      "select": {
+        "where": "Worklist, visually hidden label of the checkbox on an action row, with the action title as argument"
+      }
+    },
+    "views": {
+      "clocks": {
+        "maxLength": 16,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, saved view button showing statutory clocks"
+      },
+      "label": {
+        "maxLength": 20,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, accessible name of the saved views group"
+      },
+      "mine": {
+        "maxLength": 16,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, saved view button for your own items"
+      },
+      "overdue": {
+        "maxLength": 16,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, saved view button for overdue items"
+      },
+      "process": {
+        "maxLength": 16,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, saved view button that groups items by process"
+      },
+      "team": {
+        "maxLength": 16,
+        "screenshot": "phase-2/worklist-light-comfortable.png",
+        "where": "Worklist, saved view button for your team's items"
+      }
+    }
   }
 }
