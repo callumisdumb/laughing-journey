@@ -30,6 +30,8 @@ One line of rationale each. Newest at the bottom. Prefix D-nnn. Domain decisions
 - D-020c Print packs paginate in JS (18 rows a page) because Chrome cannot render page counters in fixed running headers; each page carries the marking, reference, subject and page number.
 - D-020d Connector pulls run through TanStack Query with the mock latency (200 to 1500 ms) visible; pulled events land in the inbox as pending and never in a chronology.
 - D-020e Every Person 360 view writes a `read` audit entry and every chronology export writes an `export` entry; restricted reads use `read-restricted`.
+- D-024 `TableWrap` renders a labelled, focusable region (`role="region"`, `aria-label`, `tabindex=0`) because wide tables scroll sideways and WCAG 2.1.1 needs a keyboard way to scroll them. Cost: one extra tab stop per table. Callers pass `label` where "Table" is not descriptive.
+- D-025 Scenario seeders are ordered 01 to 08 in `SCENARIOS` and run before the bulk population, so scenario ids are stable and never collide with generated ids. Seeders may not edit `build.ts`; wiring is a separate step.
 
 ## Design
 

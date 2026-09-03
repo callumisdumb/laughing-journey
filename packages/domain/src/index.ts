@@ -6,3 +6,4 @@ export * from './need-to-know';
 export * from './permissions';
 export * from './config';
 export * from './chronology';
+export * from './forms';

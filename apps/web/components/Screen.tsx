@@ -1,13 +1,19 @@
 'use client';
 
 import { useEffect } from 'react';
+import { Actions } from '@/features/actions/Actions';
 import { ChronologyScreen } from '@/features/chronology/ChronologyScreen';
 import { Home } from '@/features/home/Home';
 import { Inbox } from '@/features/inbox/Inbox';
+import { MeetingList } from '@/features/meetings/MeetingList';
+import { MeetingWorkspace } from '@/features/meetings/MeetingWorkspace';
 import { PeopleList } from '@/features/people/PeopleList';
 import { Person360 } from '@/features/person/Person360';
 import { Placeholder } from '@/features/placeholder/Placeholder';
+import { ProcessList } from '@/features/process/ProcessList';
+import { ProcessScreen } from '@/features/process/ProcessScreen';
 import { Search } from '@/features/search/Search';
+import { Sharing } from '@/features/sharing/Sharing';
 import { Worklist } from '@/features/worklist/Worklist';
 import { useRoute } from '@/lib/router';
 
@@ -35,13 +41,13 @@ export function Screen() {
     case 'inbox':
       return <Inbox />;
     case 'processes':
-      return <Placeholder title={id ? 'Process' : 'Processes'} phase={3} />;
+      return id ? <ProcessScreen processId={id} /> : <ProcessList />;
     case 'meetings':
-      return <Placeholder title={id ? 'Meeting workspace' : 'Meetings'} phase={4} />;
+      return id ? <MeetingWorkspace meetingId={id} /> : <MeetingList />;
     case 'actions':
-      return <Placeholder title="Actions" phase={4} />;
+      return <Actions />;
     case 'sharing':
-      return <Placeholder title="Sharing and notifications" phase={4} />;
+      return <Sharing />;
     case 'connectors':
       return <Placeholder title="Connectors" phase={5} />;
     case 'reports':

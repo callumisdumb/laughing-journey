@@ -1,0 +1,111 @@
+import { expect, test } from '@playwright/test';
+import { capture, expectNoAxeViolations, setAppearance, signInAs, waitForData } from './helpers';
+
+const PHASE = 'phase-4';
+
+test.describe('meetings', () => {
+  test('lists meetings I am invited to', async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await page.goto('/meetings');
+    await waitForData(page);
+    await expect(page.getByRole('heading', { name: 'Meetings' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Review CPPM: Aiden Boyle' })).toBeVisible();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'meetings' });
+  });
+
+  test('before the meeting: invites, requests and the pack', async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await page.goto('/meetings/mtg_aiden_review');
+    await waitForData(page);
+    await expect(page.getByRole('heading', { name: 'Review CPPM: Aiden Boyle' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Invite list' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Pack builder' })).toBeVisible();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'meeting-before', fullPage: true });
+    await page.getByRole('button', { name: 'Generate from need-to-know' }).click();
+    await expect(page.getByText(/need-to-know/i).first()).toBeVisible();
+  });
+
+  test('during the meeting: agenda, decisions and chair mode', async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await page.goto('/meetings/mtg_aiden_review?phase=during');
+    await waitForData(page);
+    await expect(page.getByRole('heading', { name: 'Agenda' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Decisions, rationale and dissent' })).toBeVisible();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'meeting-during', fullPage: true });
+    await page.getByRole('button', { name: 'Chair mode' }).click();
+    await expect(page.getByRole('button', { name: 'Exit chair mode' })).toBeVisible();
+    await capture(page, { phase: PHASE, screen: 'meeting-chair' });
+    await setAppearance(page, 'dark', 'comfortable');
+    await capture(page, { phase: PHASE, screen: 'meeting-chair', theme: 'dark' });
+  });
+
+  test('after the meeting: minute, distribution and clocks', async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await page.goto('/meetings/mtg_aiden_review?phase=after');
+    await waitForData(page);
+    await expect(page.getByRole('heading', { name: 'Minute' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Clocks after this meeting' })).toBeVisible();
+    await page.getByRole('button', { name: 'Generate from need-to-know' }).click();
+    await page.getByRole('button', { name: 'Mark draft' }).click();
+    await page.getByRole('button', { name: 'Chair approves' }).click();
+    await page.getByRole('button', { name: /^Distribute to \d+ recipients$/ }).click();
+    await expect(page.getByText('Minute: distributed')).toBeVisible();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'meeting-after', fullPage: true });
+    await page.getByRole('button', { name: 'Close meeting and update clocks' }).click();
+    await expect(page.getByText('Meeting closed')).toBeVisible();
+  });
+});
+
+test.describe('actions', () => {
+  test('actions across processes with completion evidence', async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await page.goto('/actions');
+    await waitForData(page);
+    await expect(page.getByRole('heading', { name: 'Actions' })).toBeVisible();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'actions' });
+    await page.getByRole('button', { name: 'Complete' }).first().click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await page.getByLabel(/^Evidence of completion/).fill('Visit made on 02 Sep 2026 at 10:15, Aiden seen alone, notes on the record.');
+    await capture(page, { phase: PHASE, screen: 'actions-complete' });
+    await page.getByRole('dialog').getByRole('button', { name: 'Mark complete' }).click();
+    await expect(page.getByText('Action complete')).toBeVisible();
+  });
+
+  test('team view groups by agency', async ({ page }) => {
+    await signInAs(page, 'usr_moira_gilmour');
+    await page.goto('/actions?view=team&group=agency');
+    await waitForData(page);
+    await expect(page.getByRole('heading', { name: 'Actions' })).toBeVisible();
+    await capture(page, { phase: PHASE, screen: 'actions-team', density: 'compact' });
+  });
+});
+
+test.describe('sharing', () => {
+  test('outbound sharing records and inbound notifications', async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await page.goto('/sharing');
+    await waitForData(page);
+    await expect(page.getByRole('heading', { name: 'Sharing and notifications' })).toBeVisible();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'sharing-outbound' });
+    await page.getByRole('tab', { name: /Inbound/ }).click();
+    await expect(page.getByRole('heading', { name: 'Notifications to you' })).toBeVisible();
+    await capture(page, { phase: PHASE, screen: 'sharing-inbound' });
+  });
+
+  test('preview what another role would see', async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await page.goto('/sharing?tab=preview');
+    await waitForData(page);
+    await page.getByLabel('Process').selectOption('prc_cp_aiden');
+    await page.getByLabel('Seen as').selectOption('usr_claire_cowan');
+    await expect(page.getByText(/would see/i).first()).toBeVisible();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'sharing-preview', fullPage: true });
+  });
+});

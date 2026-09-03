@@ -2,9 +2,14 @@ import type { HTMLAttributes, ReactNode, TableHTMLAttributes } from 'react';
 import { cn } from '../cn';
 import styles from './Table.module.css';
 
-export function TableWrap({ className, children, ...rest }: HTMLAttributes<HTMLDivElement>) {
+export interface TableWrapProps extends HTMLAttributes<HTMLDivElement> {
+  /** Accessible name for the scrollable region. Wide tables scroll sideways, so the wrapper is a focusable region. */
+  label?: string;
+}
+
+export function TableWrap({ className, children, label = 'Table', ...rest }: TableWrapProps) {
   return (
-    <div className={cn(styles.wrap, className)} {...rest}>
+    <div className={cn(styles.wrap, className)} role="region" aria-label={label} tabIndex={0} {...rest}>
       {children}
     </div>
   );

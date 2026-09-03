@@ -1,5 +1,12 @@
 import { DEMO_NOW_ISO, datasetSchema, type Dataset } from '@mas/domain';
+import { seedMarionFraser } from '../scenarios/01-marion-fraser';
+import { seedKayleighDocherty } from '../scenarios/02-kayleigh-docherty';
+import { seedDerekMuir } from '../scenarios/03-derek-muir';
 import { seedAidenBoyle } from '../scenarios/04-aiden-boyle';
+import { seedTomaszNowak } from '../scenarios/05-tomasz-nowak';
+import { seedIshbelGrant } from '../scenarios/06-ishbel-grant';
+import { seedRowanbankLsi } from '../scenarios/07-rowanbank-lsi';
+import { seedChloeReid } from '../scenarios/08-chloe-reid';
 import { seedBulkPopulation } from './bulk';
 import { createContext, type BuildContext } from './context';
 import { seedOrganisations } from './organisations';
@@ -19,7 +26,14 @@ export interface BuildOptions {
 export type ScenarioSeeder = (ctx: BuildContext) => void;
 
 export const SCENARIOS: Array<{ id: string; title: string; seed: ScenarioSeeder }> = [
+  { id: '01-marion-fraser', title: 'Marion Fraser, 78, Kirkbrae: adult support and protection with capacity concern', seed: seedMarionFraser },
+  { id: '02-kayleigh-docherty', title: 'Kayleigh Docherty, 29, Ardvale: MARAC with a linked child protection process', seed: seedKayleighDocherty },
+  { id: '03-derek-muir', title: 'Derek Muir, 41, Abbey Wynd: MAPPA level 2 (restricted)', seed: seedDerekMuir },
   { id: '04-aiden-boyle', title: 'Aiden Boyle, 7, Braeside: child protection', seed: seedAidenBoyle },
+  { id: '05-tomasz-nowak', title: 'Tomasz Nowak, 34, Harbour Row: adult support and protection with interpreter', seed: seedTomaszNowak },
+  { id: '06-ishbel-grant', title: 'Ishbel Grant, 84, ward 7: adults with incapacity, guardianship', seed: seedIshbelGrant },
+  { id: '07-rowanbank-lsi', title: 'Rowanbank care home: large scale investigation', seed: seedRowanbankLsi },
+  { id: '08-chloe-reid', title: 'Chloe Reid, 19, Kirkbrae: pre-birth child protection with a MARAC and a closed childhood record', seed: seedChloeReid },
 ];
 
 function linkMemberships(ctx: BuildContext): void {

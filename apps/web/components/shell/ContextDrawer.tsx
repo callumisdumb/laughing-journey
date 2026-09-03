@@ -282,6 +282,63 @@ export function ContextDrawer() {
         </Section>
       </>
     ) : null;
+  } else if (selection?.kind === 'meeting') {
+    const m = data.meetings.find((x) => x.id === selection.id);
+    title = m ? m.title : 'Meeting';
+    body = m ? (
+      <>
+        <Section title="Who is invited and why" icon={<Users size={14} aria-hidden="true" />}>
+          {m.invitees.map((i, idx) => (
+            <div key={`${i.name}-${idx}`} className={styles.member} style={{ paddingLeft: 0 }}>
+              <span className={styles.memberName}>
+                <AgencyMark agency={i.agency} hideLabel /> {i.name}, {i.role} ({i.attendance})
+              </span>
+              <span className={styles.memberMeta}>{i.reason}</span>
+            </div>
+          ))}
+        </Section>
+        <Section title="Distribution" icon={<FileCheck2 size={14} aria-hidden="true" />}>
+          {m.distribution.length === 0 ? <p className={styles.empty}>No distribution list yet. Generate it from need-to-know after the meeting.</p> : null}
+          {m.distribution.map((d) => (
+            <div key={d.id} className={styles.row}>
+              <span className={styles.rowLabel}>{d.recipientName}</span>
+              <Pill size="sm" tone={d.detailLevel === 'full' ? 'accent' : 'outline'}>
+                {DETAIL_LEVEL_LABELS[d.detailLevel]}
+              </Pill>
+              <span className={styles.rowReason}>{d.reason}</span>
+            </div>
+          ))}
+        </Section>
+      </>
+    ) : null;
+  } else if (selection?.kind === 'action') {
+    const a = data.actions.find((x) => x.id === selection.id);
+    const p = a ? data.processes.find((x) => x.id === a.processId) : undefined;
+    title = 'Action';
+    body = a ? (
+      <Section title="Action" icon={<FileCheck2 size={14} aria-hidden="true" />}>
+        <dl className={styles.kv}>
+          <dt>Action</dt>
+          <dd>{a.title}</dd>
+          <dt>Owner</dt>
+          <dd>
+            {a.ownerName} (<AgencyMark agency={a.ownerAgency} />)
+          </dd>
+          <dt>Due</dt>
+          <dd>{formatDateTime(a.due + 'T09:00:00+01:00').slice(0, 11)}</dd>
+          <dt>Status</dt>
+          <dd>{a.status}</dd>
+          <dt>Process</dt>
+          <dd>{p ? `${p.reference}: ${p.title}` : ''}</dd>
+          {a.evidence ? (
+            <>
+              <dt>Evidence</dt>
+              <dd>{a.evidence}</dd>
+            </>
+          ) : null}
+        </dl>
+      </Section>
+    ) : null;
   } else if (selection?.kind === 'analysis') {
     const an = data.analyses.find((a) => a.id === selection.id);
     title = 'Analysis note';

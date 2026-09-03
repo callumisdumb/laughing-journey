@@ -57,7 +57,7 @@ Outline written in Phase 0. From Phase 1 the entity tables below are regenerated
 
 ## Generated tables
 
-Generated on 2026-09-02 by `pnpm docs:data-model`. Do not edit below this line.
+Generated on 2026-09-03 by `pnpm docs:data-model`. Do not edit below this line.
 
 ### Organisation
 

@@ -50,3 +50,51 @@ Running log of what was tried visually, what was rejected and why. Newest at the
 6. Motion: the lanes settle on first load (320ms, staggered 30ms per lane) and nothing else moves unless the user acts. Reduced motion zeroes it.
 7. Copy: buttons say what happens ("Promote to integrated chronology", "Record lawful basis and promote", "Open with a reason"). Empty states say what to do next.
 8. What still looks generic: the People list is a plain filter row over a table. It does its job, but it is the one screen a template could produce. Left as is; the drawer affordance on hover is what makes it ours.
+
+## Phase 3
+
+### What was tried and rejected
+
+- Process dashboard frame: the first draft gave each process type its own page layout. Rejected: five layouts meant five places to learn. Every process now shares one frame (reference row, title, subjects, next meeting, stage stepper, clocks, then a two-column body of type-specific panels on the left and participants, views, meetings, sharing and actions on the right). The stepper is the only element that changes shape per type, because the stages differ by statute.
+- Stage stepper: tried a horizontal progress bar with percentages. Rejected: statutory stages are not a percentage of anything. The stepper is a list of named stages with the date and the person who moved the process into each one, taken from `stageHistory`, and the ASP stepper hides whichever of support plan and protection plan does not apply.
+- Clocks on the dashboard: tried a compact row of numerals only. Rejected: a numeral without its rule is a number without a meaning. Each clock carries the rule label, the trigger, the due date, and where the rule is Local or Verify the confidence and a TODO(verify) marker, the same object as in Admin.
+- Views panel: tried tucking the person's views into the participants column as a quote. Rejected: the brief makes the person's views prominent. The views panel sits at the top of the right column on every dashboard, with the advocate, interpreter or carer who recorded them named, and an empty state that says the views have not been sought rather than hiding the panel.
+- MARAC perpetrator exclusion: tried an "excluded" pill on the participants list. Rejected as too quiet. The MARAC panel carries a boxed statement naming who must not receive anything about the process, above the DAQ breakdown, and the same exclusion drives the invite and distribution generators in Phase 4.
+- MAPPA restricted state: tried a modal that demanded a reason on entry. Rejected: a modal on navigation traps keyboard users and hides the stage the process is at. The restricted state is a page: the process type, stage and lead agency are visible (presence), the reason for restriction is in words, and "Open with a reason" is an ordinary button for Responsible Authority agencies only. The break-glass window is four hours and every read is audited.
+- Statutory form dialogs: tried building them as multi-step wizards. Rejected: practitioners fill these forms with the file open beside them, so a wizard hides context. Each form is one dialog with the schema errors inline and the outcome computed live (the DAQ shows the count of yes answers against the threshold; the three-point test shows which limb is unmet).
+- LSI workspace: tried one dashboard per resident. Rejected: an LSI is one investigation with strands. The Rowanbank process has six subjects; the LSI panel lists strands per resident with their own status, the provider dissent is recorded by name, and the setting-level events sit in every resident's chronology.
+
+### Scenario data
+
+- Seven of the eight scenarios were authored by parallel agents to a shared contract (`scenarios/<nn-slug>/{index.ts,README.md,scenario.test.ts}`, exports `seedX` and an ids constant, no edits outside the folder). Wiring into `SCENARIOS` and `src/index.ts` was done afterwards in one pass (D-025). The dataset validates against the Zod schema with all eight scenarios and the 58 background households.
+- Clocks were checked against the demo now (02 Sep 2026): Marion's initial case conference is due 11 Sep, Ishbel's MHO report has 12 days left, Aiden's review CPPM carries a due override to 14 Sep with its reason, Tomasz's plan review runs from 09 Jul, Derek's Level 2 review is due from 14 Jul and the 06 Oct meeting will close it.
+
+### Screenshot review
+
+- Process list: the reference column wrapped "MARAC-2026-0093" over three lines and "Social work" over two. Both cells are now nowrap; the clock column takes the slack.
+- MAPPA dashboard: "Category and level" and "Lead Responsible Authority" sat side by side inside the narrow left column, so the category label wrapped one word per line and the ViSOR reference broke badly. They now stack. The same shot showed the participants list forcing the role text into a narrow second column; members are now name on one line and role, since date and reason below, on every dashboard.
+- MARAC dashboard: the DAQ tick glyphs carried aria-label on plain spans, which axe rejects (aria-prohibited-attr). They are role="img" now.
+- AWI dashboard: the capacity assessments table scrolls sideways at this width, which axe flagged as a scrollable region without keyboard focus. TableWrap is now a labelled focusable region (D-024).
+- Restricted state for a police officer off the distribution list: presence only (type, stage, lead, opened), the reason in words, one primary action. Break-glass then shows the full dashboard with the "access is active" reason in the drawer. Reads correctly.
+- Pre-birth CP: the 28 week cap reads as a sentence with the date it falls on, and the "subject is the unborn baby" note links to the mother's record. Good.
+
+## Phase 4
+
+### What was tried and rejected
+
+- Meeting workspace phases: tried a single long page with before, during and after sections stacked. Rejected: a chair running a meeting needs the agenda and attendance without scrolling past the invite list. The three phases are a segmented control (`?phase=`) and the URL is shareable.
+- Chair mode: tried a separate route. Rejected: chair mode is the same page with larger type and the rail collapsed (`?mode=chair`), so the chair can drop out of it without losing the agenda position.
+- Invite list and distribution list: both are generated from the need-to-know rows for the process stage, and every entry carries the rule id and the reason. Excluded parties (MARAC perpetrators and their associates, MAPPA victims) can never be added, even by hand; the generator says how many exclusions applied.
+- Meeting header: the first layout put the action buttons beside the title, which squeezed the title to half the width and wrapped the meta line. The reference row and the buttons now share the top line and the title takes the full width.
+- During phase: three equal columns made the agenda unreadable (one word per line). The agenda and the person's views now share the first row at half width each, attendance is a full-width grid of cards beneath, then shared information, decisions and live actions.
+- Closing a meeting applies `applyMeetingTransition`: the meeting type completes the clocks it satisfies and starts the ones it triggers (an initial CPPM completes cp.cppm.initial and starts cp.coregroup.first and cp.cppm.review.first). The transitions table is in the domain package with tests, and the After phase shows the clocks as they will stand once the meeting is closed.
+- Distribution: "Distribute" creates a SharingRecord per recipient with the detail level, purpose, lawful basis reference and the reason, plus one LawfulBasisRecord for the distribution. The Sharing screen shows the outbound queue and the inbound notifications with the reason each recipient received the item.
+- Actions: one screen across processes with mine / my team / all views, grouped by process or agency, completion with evidence (the evidence text is required and the dialog says inspectors read it), escalation for overdue actions.
+- "What would X see" preview: the same resolver the product uses, with the rules that matched, the exclusions at the stage and the lawful basis shown, so a coordinator can answer "why can the GP see this" without reading the config.
+
+### Screenshot review
+
+- Meetings list and the Before phase: fine after the header fix. Pre-meeting requests show sent versus returned with the return summary inline.
+- During: agenda items on one line each with the Start control; the child's voice block is the most prominent thing on the row, as intended. Chair mode shot: rail collapsed, larger type, agenda enlarged.
+- After: the minute steps (draft, chair approves, distribute) disable in order; the toasts from generating the distribution and distributing overlap the list for a moment, which is acceptable.
+- Actions: overdue rows carry the date in red plus "18 days overdue" in words. Sharing preview: the reason, matched rule and exclusions read clearly in a two-column layout.
