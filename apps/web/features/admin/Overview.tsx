@@ -1,5 +1,6 @@
 'use client';
 
+import { MESSAGE_KEYS, sessionOverrides, useT, type Translator } from '@mas/messages';
 import { DEFAULT_CONFIG, type Config, type Dataset } from '@mas/domain';
 import { Button, Dialog, Sheet, SheetBody, SheetHead, TextField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -35,12 +36,11 @@ const AREA_FIELDS: Array<{ name: keyof AreaValues; label: string }> = [
   { name: 'sheriffCourt', label: 'Sheriff court' },
 ];
 
-function sectionCounts(config: Config, data: Dataset): Record<AdminSectionId, string> {
+function sectionCounts(config: Config, data: Dataset, t: Translator): Record<AdminSectionId, string> {
   const toVerify = config.clockRules.filter((r) => r.confidence !== 'high' || r.todoVerify).length;
-  const changedLabels = Object.entries(config.labels).filter(([k, v]) => DEFAULT_CONFIG.labels[k] !== v).length;
   const processes = new Set(config.forms.map((f) => f.process)).size;
   return {
-    labels: `${Object.keys(config.labels).length} labels, ${changedLabels} changed from the default`,
+    labels: t('admin.copy.overviewCount', { total: MESSAGE_KEYS.length, changed: Object.keys(sessionOverrides()).length }),
     timescales: `${config.clockRules.length} clock rules, ${toVerify} to verify`,
     forms: `${config.forms.length} forms across ${processes} processes`,
     'need-to-know': `${config.needToKnow.length} audience rows, ${config.exclusions.length} exclusions`,
@@ -52,6 +52,7 @@ function sectionCounts(config: Config, data: Dataset): Record<AdminSectionId, st
 }
 
 export function Overview() {
+  const t = useT();
   const { config, canEdit, save } = useAdminConfig();
   const data = useData();
   const resetDemo = useAppStore((s) => s.resetDemo);
@@ -61,7 +62,7 @@ export function Overview() {
   const [saveErrors, setSaveErrors] = useState<string[]>([]);
   const form = useForm<AreaValues>({ resolver: zodResolver(areaSchema), defaultValues: config.area });
   const errors = form.formState.errors;
-  const counts = sectionCounts(config, data);
+  const counts = sectionCounts(config, data, t);
 
   function submit(values: AreaValues) {
     const result = save({ ...config, area: values }, 'overview', `Area details: ${values.councilName}`);

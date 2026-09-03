@@ -91,10 +91,11 @@ export function literals(path) {
   if (path.endsWith('.rs')) {
     const text = readFileSync(path, 'utf8');
     text.split('\n').forEach((line, i) => {
-      if (/^\s*\/\//.test(line)) return;
+      // Comments, accelerators, identifiers and developer-facing panics are not copy.
+      if (/^\s*\/\//.test(line) || /\.expect\(|panic!|include_str!/.test(line)) return;
       for (const m of line.matchAll(/"([^"\\]*)"/g)) {
         const s = m[1];
-        if (looksLikeCopy(s) && /\s|[a-z][A-Z]/.test(s) === true && !/^[a-z0-9_.:/-]+$/.test(s)) out.push({ file: rel, line: i + 1, text: s, kind: 'rust' });
+        if (looksLikeCopy(s) && /\s/.test(s)) out.push({ file: rel, line: i + 1, text: s, kind: 'rust' });
       }
     });
     return out;

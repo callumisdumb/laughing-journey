@@ -1,4 +1,259 @@
 {
+  "admin": {
+    "copy": {
+      "audit": {
+        "import": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Audit entry when copy overrides are imported from JSON"
+        },
+        "reset": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Audit entry when one message is reset"
+        },
+        "resetAll": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Audit entry when every override is reset"
+        },
+        "set": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Audit entry when a message is changed; shows in the audit ledger"
+        }
+      },
+      "columns": {
+        "actions": {
+          "maxLength": 20,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Visually hidden header of the actions column"
+        },
+        "current": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Column header: the text in use"
+        },
+        "default": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Column header: the catalogue text when changed"
+        },
+        "key": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Column header: the message key"
+        },
+        "where": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Column header: the context line"
+        }
+      },
+      "editor": {
+        "arguments": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Editor hint listing the ICU arguments the message uses"
+        },
+        "cancel": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Editor cancel button"
+        },
+        "emptyError": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Editor error when the text is blank"
+        },
+        "label": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Editor field label with the key as argument"
+        },
+        "noArguments": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Editor hint when the message takes no arguments"
+        },
+        "preview": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Heading above the live preview"
+        },
+        "previewEmpty": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Preview placeholder when the text is blank"
+        },
+        "save": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Editor save button"
+        },
+        "syntaxError": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Editor error with the ICU parser message as argument"
+        },
+        "verbatimWarning": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Warning shown in the editor for keys flagged verbatim in the context file"
+        }
+      },
+      "empty": {
+        "text": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Empty state body when no message matches the filters"
+        },
+        "title": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Empty state title when no message matches the filters"
+        }
+      },
+      "filters": {
+        "allNamespaces": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "First option of the namespace select"
+        },
+        "changedOnly": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Switch that limits the table to overridden messages"
+        },
+        "namespace": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Label of the namespace select"
+        },
+        "search": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Label of the search field"
+        },
+        "searchPlaceholder": {
+          "maxLength": 40,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Placeholder of the search field"
+        }
+      },
+      "importInvalid": {
+        "screenshot": "phase-5/admin-copy-light-comfortable.png",
+        "where": "Toast when an imported file is not a JSON object of strings"
+      },
+      "lede": {
+        "screenshot": "phase-5/admin-copy-light-comfortable.png",
+        "where": "Lede under the Copy and labels heading"
+      },
+      "overviewCount": {
+        "screenshot": "phase-5/admin-copy-light-comfortable.png",
+        "where": "Summary line for the section on the Admin overview"
+      },
+      "pills": {
+        "changed": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Pill beside a message that has an override"
+        },
+        "verbatim": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Pill beside a message whose wording is verbatim from a published template"
+        }
+      },
+      "resetAllDialog": {
+        "confirm": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Confirm button of the reset all dialog"
+        },
+        "text": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Body of the reset all dialog with the number of overrides"
+        },
+        "title": {
+          "maxLength": 32,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Title of the reset all dialog"
+        }
+      },
+      "rowActions": {
+        "edit": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Row button that opens the editor"
+        },
+        "reset": {
+          "maxLength": 12,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Row button that removes the override"
+        }
+      },
+      "summary": {
+        "screenshot": "phase-5/admin-copy-light-comfortable.png",
+        "where": "Line above the table with the counts shown, in total and changed"
+      },
+      "table": {
+        "maxLength": 32,
+        "screenshot": "phase-5/admin-copy-light-comfortable.png",
+        "where": "Accessible name of the table region"
+      },
+      "title": {
+        "maxLength": 24,
+        "screenshot": "phase-5/admin-copy-light-comfortable.png",
+        "where": "Section heading and sub-navigation label"
+      },
+      "toasts": {
+        "exported": {
+          "maxLength": 32,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Toast after exporting overrides"
+        },
+        "imported": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Toast text after importing overrides"
+        },
+        "reset": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Toast title after resetting one message"
+        },
+        "resetAll": {
+          "maxLength": 32,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Toast after resetting every override"
+        },
+        "resetText": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Toast text after resetting one message"
+        },
+        "saved": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Toast title after saving a message"
+        },
+        "savedText": {
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Toast text after saving a message"
+        }
+      },
+      "toolbar": {
+        "export": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Toolbar button that downloads the overrides as JSON"
+        },
+        "import": {
+          "maxLength": 24,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Toolbar button that opens a JSON file of overrides"
+        },
+        "resetAll": {
+          "maxLength": 16,
+          "screenshot": "phase-5/admin-copy-light-comfortable.png",
+          "where": "Toolbar button that opens the reset all dialog"
+        }
+      },
+      "truncated": {
+        "screenshot": "phase-5/admin-copy-light-comfortable.png",
+        "where": "Note under the table when more rows match than are shown"
+      }
+    }
+  },
   "common": {
     "actions": {
       "close": {

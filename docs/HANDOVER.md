@@ -11,6 +11,7 @@ Everything in the dataset is fictional. Postcodes are in the Q, V and X ranges, 
 | Domain model, clocks, need-to-know, permissions, forms | `packages/domain` | Zod schemas are the source of truth; `docs/DATA-MODEL.md` is generated from them. Unit tests cover clocks, transitions, resolver, permissions, lenses and forms. |
 | Design system | `packages/ui`, `apps/web/styles/tokens.css`, `docs/DESIGN.md` | Warm paper, heather accent, Atkinson Hyperlegible, Bricolage Grotesque, JetBrains Mono for audit only. Light and dark, comfortable and compact. Contrast is checked by a script over every text and control pairing. |
 | Synthetic data | `packages/mock-data` | Deterministic generator (seed `clydeshore-2026`, demo now 02 Sep 2026 09:00), eight worked scenarios under `src/scenarios`, 58 background households, audit trail. |
+| Copy catalogue | `packages/messages`, `docs/MESSAGES.md` | Every user-visible string in `src/en-GB.json` with `src/en-GB.context.json` beside it; typed keys, ICU MessageFormat, three-layer overrides (bundled, local file, session) edited in Admin, Copy and labels; `pnpm messages:check` in lint. |
 | Connectors | `packages/connectors` | Ten mock adapters with fixtures, mapping tables, simulated latency, outage and degraded toggles, and "how this would connect for real" copy. |
 | Web app | `apps/web` | Next.js 16 static export with a client-side router; every screen in brief section 10. |
 | Desktop shells | `apps/desktop-tauri`, `apps/desktop-electron` | Tauri 2 is the primary target (config, Rust menu, capabilities); Electron is the verified fallback. Both load `apps/web/out`. |
@@ -260,6 +261,9 @@ pnpm --filter @mas/web serve:out   # serve the export on http://localhost:3100 (
 pnpm e2e                           # Playwright, all phases, writes docs/SCREENSHOTS
 pnpm seed:export                   # write the generated dataset to packages/mock-data/dist as JSON
 pnpm docs:data-model               # regenerate docs/DATA-MODEL.md from the Zod schemas
+pnpm messages:types                # regenerate the MessageKey union from packages/messages/src/en-GB.json
+pnpm messages:check                # ICU syntax, key usage, context coverage and style rules (also part of pnpm lint)
+pnpm messages:extract              # list string literals that have not moved to the catalogue
 ```
 
 Playwright is pinned to 1.62.1. On macOS or Windows run `pnpm exec playwright install chromium` once in `apps/web` (it downloads the matching Chrome for Testing build); in the build container that download is blocked, so the suite runs against the preinstalled Chromium through `PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium` (D-038).
@@ -280,5 +284,7 @@ pnpm desktop:tauri:build           # apps/desktop-tauri/src-tauri/target/release
 ```
 
 Tauri on Windows: install the Rust MSVC toolchain and Visual Studio Build Tools, then `pnpm desktop:tauri:build`; the bundle embeds the WebView2 bootstrapper, output under `src-tauri/target/release/bundle/nsis` and `msi`.
+
+Copy: edit `packages/messages/src/en-GB.json` (hot-reloads in `pnpm dev`) or use Admin, Copy and labels, which applies at once, survives reload and is audited; `docs/MESSAGES.md` has the conventions and how a second locale drops in.
 
 Demo states: append `?state=loading|empty|error|restricted|offline|stale` to any screen. Personas: the switcher in the top bar, or `localStorage.setItem('mas.session', JSON.stringify({ userId: 'usr_janet_kerr' }))`. Reset: Settings, or the desktop menu, or the Admin overview.

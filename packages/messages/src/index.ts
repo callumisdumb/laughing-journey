@@ -1,5 +1,6 @@
 export { BUNDLED, LOCAL_OVERRIDES, LOCALE, NAMESPACES, TIME_ZONE, flatten, type CatalogueTree, type Messages } from './catalogue';
-export { formatMessage, formatRich, messageArguments, validateMessage, type MessageValues } from './format';
+export { CONTEXT, contextFor, type ContextEntry } from './context';
+export { formatMessage, formatRich, messageArguments, sampleArguments, validateMessage, type MessageValues } from './format';
 export { formatDate, formatDateTime, formatNumber, formatTime } from './intl';
 export type { MessageArgs, MessageKey } from './keys.generated';
 export { MESSAGE_KEYS } from './keys.generated';

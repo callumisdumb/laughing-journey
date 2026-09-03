@@ -38,7 +38,7 @@ All routes live under one Next.js App Router page that prerenders every known pa
 | `/connectors` | Adapter health, sync history, mapping preview, outage toggles | 10.11 |
 | `/reports` and `/reports/:kind` | ASP, CP register, MARAC return, MAPPA annual, AWI timeliness | 10.12 |
 | `/audit` | Audit log with filters and export | 10.13 |
-| `/admin/*` | Labels, timescales, forms, need-to-know, agencies, users, markings, defaults, reset | 10.14 |
+| `/admin/*` | Copy and labels (the message catalogue editor), timescales, forms, need-to-know, agencies, users, markings, defaults, reset | 10.14 |
 | `/settings` and `/help` | Theme, density, notifications, glossary, shortcuts, about | 10.15 |
 
 Every screen designs these states: loading skeleton, empty, error, restricted (with break-glass where allowed), offline, stale connector. A shared `ScreenState` wrapper renders them so every feature reaches them the same way, and each screen exposes them through a `?state=` query in development builds so Playwright can capture them.
@@ -65,9 +65,9 @@ Data flow: the seed generator runs deterministically at startup (and at build ti
 
 ## 4. Data model outline
 
-See `docs/DATA-MODEL.md`. Entities: Organisation, Agency, Team, User (persona), Person, Address, Household, Relationship, Process (discriminated union by type), Stage history, ClockTrigger, ChronologyEvent, ChronologyAnalysis, Meeting, Decision, Action, Plan, RiskAssessment, ViewsRecord, LawfulBasisRecord, SharingRecord, InformationRequest, ConnectorEvent (inbox), AuditEntry, Config (labels, clock rules, need-to-know rows, classification markings, forms and versions).
+See `docs/DATA-MODEL.md`. Entities: Organisation, Agency, Team, User (persona), Person, Address, Household, Relationship, Process (discriminated union by type), Stage history, ClockTrigger, ChronologyEvent, ChronologyAnalysis, Meeting, Decision, Action, Plan, RiskAssessment, ViewsRecord, LawfulBasisRecord, SharingRecord, InformationRequest, ConnectorEvent (inbox), AuditEntry, Config (clock rules, need-to-know rows, classification markings, forms and versions). Every user-visible string lives in the message catalogue, `packages/messages/src/en-GB.json` (`docs/MESSAGES.md`).
 
-Type-specific process detail: `AspDetail`, `CpDetail`, `MaracDetail`, `MappaDetail`, `AwiDetail`. Adding a process type means adding a detail schema, a need-to-know file, a clock rule set, labels, and a feature module.
+Type-specific process detail: `AspDetail`, `CpDetail`, `MaracDetail`, `MappaDetail`, `AwiDetail`. Adding a process type means adding a detail schema, a need-to-know file, a clock rule set, a catalogue namespace, and a feature module.
 
 ## 5. Design plan
 

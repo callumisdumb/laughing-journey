@@ -1,4 +1,78 @@
 {
+  "admin": {
+    "copy": {
+      "audit": {
+        "import": "Copy overrides imported: {count, plural, one {# key} other {# keys}}",
+        "reset": "Copy {key} reset to the catalogue text",
+        "resetAll": "All copy overrides reset: {count, plural, one {# key} other {# keys}}",
+        "set": "Copy {key} set to \"{text}\""
+      },
+      "columns": {
+        "actions": "Actions",
+        "current": "Current text",
+        "default": "Default",
+        "key": "Key",
+        "where": "Where it appears"
+      },
+      "editor": {
+        "arguments": "Arguments: {arguments}",
+        "cancel": "Cancel",
+        "emptyError": "Enter the text",
+        "label": "New text for {key}",
+        "noArguments": "No arguments",
+        "preview": "Preview",
+        "previewEmpty": "(empty)",
+        "save": "Save",
+        "syntaxError": "ICU syntax: {error}",
+        "verbatimWarning": "This wording is taken word for word from a published template. Change it only to match a newer edition of that template."
+      },
+      "empty": {
+        "text": "Try another word, or clear the filters.",
+        "title": "No copy matches"
+      },
+      "filters": {
+        "allNamespaces": "All namespaces",
+        "changedOnly": "Changed only",
+        "namespace": "Namespace",
+        "search": "Search copy",
+        "searchPlaceholder": "Text, key or where it appears"
+      },
+      "importInvalid": "That file is not a JSON object of key and text pairs",
+      "lede": "Every label, heading and message in the product, in one place. Change the text, not the meaning; the key never changes. Changes apply at once, survive reload and are audited.",
+      "overviewCount": "{total, plural, one {# message} other {# messages}}, {changed, plural, =0 {none changed} one {# changed} other {# changed}} from the catalogue",
+      "pills": {
+        "changed": "changed",
+        "verbatim": "verbatim"
+      },
+      "resetAllDialog": {
+        "confirm": "Reset all",
+        "text": "{count, plural, one {# change} other {# changes}} will return to the catalogue text.",
+        "title": "Reset all copy?"
+      },
+      "rowActions": {
+        "edit": "Edit",
+        "reset": "Reset"
+      },
+      "summary": "{shown, plural, one {# message} other {# messages}} shown of {total}, {changed, plural, =0 {none changed} one {# changed} other {# changed}}",
+      "table": "Copy and labels",
+      "title": "Copy and labels",
+      "toasts": {
+        "exported": "Overrides exported",
+        "imported": "{count, plural, one {# override} other {# overrides}} imported",
+        "reset": "Reset",
+        "resetAll": "All copy reset",
+        "resetText": "{key} returned to the catalogue text",
+        "saved": "Saved",
+        "savedText": "{key} updated"
+      },
+      "toolbar": {
+        "export": "Export overrides",
+        "import": "Import overrides",
+        "resetAll": "Reset all"
+      },
+      "truncated": "Showing the first {limit}. Refine the search to see the rest."
+    }
+  },
   "common": {
     "actions": {
       "close": "Close"

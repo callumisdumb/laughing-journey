@@ -98,11 +98,42 @@ test.describe('admin', () => {
     await capture(page, { phase: PHASE, screen: 'admin-defaults', theme: 'dark' });
   });
 
+  test('copy and labels: search, edit with preview, persist across reload, reset', async ({ page }) => {
+    await signInAs(page, ADMIN);
+    await page.goto('/admin/labels');
+    await waitForData(page);
+    await expect(page.getByRole('heading', { name: 'Copy and labels', level: 1 })).toBeVisible();
+    await page.getByLabel('Search copy').fill('admin.copy.title');
+    const row = page.getByRole('row', { name: /admin\.copy\.title/ });
+    await expect(row).toBeVisible();
+    await row.getByRole('button', { name: 'Edit' }).click();
+    const field = page.getByLabel('New text for admin.copy.title');
+    await field.fill('Copy and labels {');
+    await page.getByRole('button', { name: 'Save' }).click();
+    await expect(page.getByRole('alert')).toContainText('ICU syntax');
+    await field.fill('Copy and labels (Clydeshore)');
+    await expect(page.getByText('Copy and labels (Clydeshore)').first()).toBeVisible();
+    await page.getByRole('button', { name: 'Save' }).click();
+    await expect(page.getByRole('heading', { name: 'Copy and labels (Clydeshore)', level: 1 })).toBeVisible();
+    await expect(row.getByText('changed')).toBeVisible();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'admin-copy' });
+    await page.reload();
+    await waitForData(page);
+    await expect(page.getByRole('heading', { name: 'Copy and labels (Clydeshore)', level: 1 })).toBeVisible();
+    await page.getByLabel('Search copy').fill('admin.copy.title');
+    await page.getByRole('row', { name: /admin\.copy\.title/ }).getByRole('button', { name: 'Reset' }).click();
+    await expect(page.getByRole('heading', { name: 'Copy and labels', level: 1 })).toBeVisible();
+    await page.goto('/audit');
+    await waitForData(page);
+    await expect(page.getByText('Copy admin.copy.title set to "Copy and labels (Clydeshore)"')).toBeVisible();
+  });
+
   test('a practitioner sees admin read-only', async ({ page }) => {
     await signInAs(page, 'usr_janet_kerr');
     await page.goto('/admin/labels');
     await waitForData(page);
-    await expect(page.getByRole('heading', { name: 'Labels', level: 1 })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Copy and labels', level: 1 })).toBeVisible();
     await expect(page.getByText('Read-only: ask a system administrator')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Edit' }).first()).toBeDisabled();
     await expectNoAxeViolations(page);

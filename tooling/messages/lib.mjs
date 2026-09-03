@@ -13,10 +13,17 @@ export function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
 
-export function flatten(tree, prefix = '', out = {}) {
+/** A context entry is an object whose `where` is a string; a catalogue leaf is a string. */
+export function isContextEntry(value) {
+  return value !== null && typeof value === 'object' && typeof value.where === 'string';
+}
+
+/** Flatten a nested tree to dot keys. mode 'catalogue' stops at strings, 'context' at context entries. */
+export function flatten(tree, prefix = '', out = {}, mode = 'catalogue') {
   for (const [key, value] of Object.entries(tree)) {
     const path = prefix ? `${prefix}.${key}` : key;
-    if (value !== null && typeof value === 'object' && !Array.isArray(value) && !('where' in value)) flatten(value, path, out);
+    const leaf = mode === 'context' ? isContextEntry(value) || typeof value !== 'object' || value === null : typeof value !== 'object' || value === null;
+    if (!leaf) flatten(value, path, out, mode);
     else out[path] = value;
   }
   return out;

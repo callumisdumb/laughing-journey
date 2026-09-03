@@ -7,9 +7,9 @@ import { useSelection } from '@/lib/selection';
 import { useCurrentUser } from '@/lib/store';
 import styles from './Admin.module.css';
 import { Agencies } from './Agencies';
+import { Copy } from './Copy';
 import { Defaults } from './Defaults';
 import { Forms } from './Forms';
-import { Labels } from './Labels';
 import { Markings } from './Markings';
 import { NeedToKnow } from './NeedToKnow';
 import { Overview } from './Overview';
@@ -46,7 +46,7 @@ export function Admin({ section }: AdminProps) {
   } else {
     switch (section) {
       case 'labels':
-        body = <Labels />;
+        body = <Copy />;
         break;
       case 'timescales':
         body = <Timescales />;

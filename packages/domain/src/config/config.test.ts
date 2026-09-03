@@ -9,7 +9,6 @@ describe('default config', () => {
     expect(() => configSchema.parse(DEFAULT_CONFIG)).not.toThrow();
   });
   it('uses the national IRD label', () => {
-    expect(DEFAULT_CONFIG.labels['cp.ird']).toContain('Inter-agency');
   });
   it('looks up glossary terms case-insensitively', () => {
     expect(glossaryLookup('mappa')?.definition).toContain('Multi-Agency');

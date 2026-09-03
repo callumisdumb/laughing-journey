@@ -1,28 +1,4 @@
-/** Process labels that vary by local area. Admin edits these. */
-export const DEFAULT_LABELS: Record<string, string> = {
-  'cp.ird': 'Inter-agency Referral Discussion (IRD)',
-  'cp.ird.short': 'IRD',
-  'cp.cppm': 'Child Protection Planning Meeting (CPPM)',
-  'cp.cppm.short': 'CPPM',
-  'cp.core-group': 'Core group',
-  'cp.register': 'Child Protection Register',
-  'asp.case-conference': 'ASP case conference',
-  'asp.inter-agency-discussion': 'ASP inter-agency discussion',
-  'asp.council-officer': 'Council officer',
-  'asp.protection-plan': 'Adult Protection Plan',
-  'marac.meeting': 'MARAC',
-  'marac.idaa': 'Independent Domestic Abuse Advocate (IDAA)',
-  'mappa.level2': 'MAPPA Level 2 meeting',
-  'mappa.level3': 'MAPPP (Level 3)',
-  'awi.mho': 'Mental Health Officer (MHO)',
-  'awi.s13za': 'Section 13ZA arrangement',
-  'org.council': 'Council',
-  'org.health-board': 'Health board',
-  'org.sheriff-court': 'Sheriff court',
-  'org.reporter': 'Reporter',
-  'org.procurator-fiscal': 'Procurator fiscal',
-};
-
+/** Stage labels per process. Display text; the identifiers are the enum values. */
 export const ASP_STAGE_LABELS: Record<string, string> = {
   concern: 'Adult concern',
   screening: 'Screening',

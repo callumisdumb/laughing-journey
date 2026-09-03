@@ -13,7 +13,7 @@ const { parse } = require('@formatjs/icu-messageformat-parser');
 const catalogueTree = readJson(CATALOGUE);
 const contextTree = readJson(CONTEXT);
 const catalogue = flatten(catalogueTree);
-const context = flatten(contextTree);
+const context = flatten(contextTree, '', {}, 'context');
 const keys = new Set(Object.keys(catalogue));
 const errors = [];
 const warn = (msg) => errors.push(msg);

@@ -1,6 +1,6 @@
 /** The admin sections in navigation order. Ids match STATIC_ROUTES admin/<id>. */
 export const ADMIN_SECTIONS = [
-  { id: 'labels', label: 'Labels', description: 'Names that vary by area, such as what an IRD is called.' },
+  { id: 'labels', label: 'Copy and labels', description: 'Every label, heading and message in the product, editable with a live preview.' },
   { id: 'timescales', label: 'Timescales', description: 'Statutory and local clock rules, with their source and confidence.' },
   { id: 'forms', label: 'Forms', description: 'Forms in use and the version that applies from a date.' },
   { id: 'need-to-know', label: 'Need-to-know', description: 'Who is told what at each stage of each process, and who must not be.' },

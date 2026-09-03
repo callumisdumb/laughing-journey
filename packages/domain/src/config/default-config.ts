@@ -3,7 +3,6 @@ import bankHolidayFeed from './bank-holidays.json';
 import { EXCLUSIONS } from '../need-to-know/exclusions';
 import { NEED_TO_KNOW_ROWS } from '../need-to-know/resolve';
 import type { Config } from '../schemas/config';
-import { DEFAULT_LABELS } from './labels';
 
 /**
  * Scottish bank holidays used by working-day clocks.
@@ -28,7 +27,6 @@ export const DEFAULT_CONFIG: Config = {
     maracArea: 'Clydeshore MARAC',
     sheriffCourt: 'Ardvale Sheriff Court',
   },
-  labels: DEFAULT_LABELS,
   clockRules: CLOCK_RULES,
   needToKnow: NEED_TO_KNOW_ROWS,
   exclusions: EXCLUSIONS,

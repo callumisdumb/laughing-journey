@@ -90,7 +90,6 @@ export const areaConfigSchema = z.object({
 
 export const configSchema = z.object({
   area: areaConfigSchema,
-  labels: z.record(z.string(), z.string()),
   clockRules: z.array(clockRuleSchema),
   needToKnow: z.array(needToKnowRowSchema),
   exclusions: z.array(exclusionSchema),

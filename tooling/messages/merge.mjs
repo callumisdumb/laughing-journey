@@ -6,6 +6,9 @@ import { resolve } from 'node:path';
 import { CATALOGUE, CONTEXT, ROOT, readJson, setPath, writeJson, flatten } from './lib.mjs';
 
 const STAGING = resolve(ROOT, 'packages/messages/staging');
+// A commit in progress rewrites the catalogue briefly; wait for its lock to clear rather than read a partial file.
+const LOCK = resolve(ROOT, 'packages/messages/src/.commit-lock');
+for (let i = 0; i < 60 && existsSync(LOCK); i += 1) await new Promise((r) => setTimeout(r, 1000));
 if (!existsSync(STAGING)) {
   console.log('messages:merge: no staging directory');
   process.exit(0);
@@ -19,9 +22,10 @@ for (const file of readdirSync(STAGING).sort()) {
   const path = resolve(STAGING, file);
   if (!file.endsWith('.json')) continue;
   if (only.length && !only.some((o) => file === o || file.startsWith(`${o}.`))) continue;
-  const target = file.endsWith('.context.json') ? context : catalogue;
+  const isContext = file.endsWith('.context.json');
+  const target = isContext ? context : catalogue;
   const fragment = readJson(path);
-  for (const [key, value] of Object.entries(flatten(fragment))) {
+  for (const [key, value] of Object.entries(flatten(fragment, '', {}, isContext ? 'context' : 'catalogue'))) {
     setPath(target, key, value);
     merged += 1;
   }
