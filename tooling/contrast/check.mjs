@@ -26,7 +26,7 @@ function tokens(text) {
   return out;
 }
 
-const light = tokens(block(/@theme\s*\{/));
+const light = tokens(block(/@theme(?:\s+static)?\s*\{/));
 const dark = { ...light, ...tokens(block(/\[data-theme='dark'\]\s*\{/)) };
 
 function lum(hex) {

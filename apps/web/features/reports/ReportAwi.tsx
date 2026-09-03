@@ -10,6 +10,6 @@ export function ReportAwi() {
   const data = useData();
   const config = useConfig();
   const { now, periods, period, setPeriod } = useReportPeriod('awi');
-  const model = withHint(awiModel(data, config, now, period), periods, (p) => awiModel(data, config, now, p), 'concerns and applications');
+  const model = withHint(awiModel(data, config, now, period), periods, (p) => awiModel(data, config, now, p), (n) => `${n} ${n === 1 ? 'concern or application' : 'concerns and applications'}`);
   return <ReportFrame model={model} periods={periods} onPeriod={setPeriod} />;
 }

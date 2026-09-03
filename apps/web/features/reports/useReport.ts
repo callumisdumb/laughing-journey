@@ -19,10 +19,10 @@ export function useReportPeriod(kind: ReportKind) {
 }
 
 /** When the chosen period holds nothing but the period in progress does, say so and point at it. */
-export function withHint(model: ReportModel, periods: Period[], build: (p: Period) => ReportModel, noun: string): ReportModel {
+export function withHint(model: ReportModel, periods: Period[], build: (p: Period) => ReportModel, describe: (n: number) => string): ReportModel {
   const current = periods[0];
   if (model.activity > 0 || !current || current.id === model.period.id) return model;
   const alt = build(current);
   if (alt.activity === 0) return model;
-  return { ...model, hint: { text: `Nothing in the record store falls in this period (${model.period.label}). The period in progress holds ${alt.activity} ${noun}.`, periodId: current.id } };
+  return { ...model, hint: { text: `Nothing in the record store falls in this period (${model.period.label}). The period in progress holds ${describe(alt.activity)}.`, periodId: current.id } };
 }

@@ -16,7 +16,7 @@ export function ReportMarac() {
   const { now, route, periods, period, setPeriod } = useReportPeriod('marac');
   const population = parsePopulation(route.query);
   const [draft, setDraft] = useState(String(population));
-  const model = withHint(maracModel(data, now, period, population), periods, (p) => maracModel(data, now, p, population), 'referrals');
+  const model = withHint(maracModel(data, now, period, population), periods, (p) => maracModel(data, now, p, population), (n) => `${n} ${n === 1 ? 'referral' : 'referrals'}`);
 
   function commit() {
     const n = Number(draft);

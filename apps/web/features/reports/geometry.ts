@@ -16,3 +16,19 @@ export function ticksFor(maxValue: number): number[] {
   for (let v = 0; v <= top + 1e-9; v += step) out.push(Number(v.toFixed(6)));
   return out;
 }
+
+/** Break a category label into lines of at most maxChars, on spaces, so neighbouring labels never collide. */
+export function wrapLabel(label: string, maxChars: number): string[] {
+  const words = label.split(' ');
+  const lines: string[] = [];
+  let current = '';
+  for (const w of words) {
+    const next = current ? `${current} ${w}` : w;
+    if (next.length > maxChars && current) {
+      lines.push(current);
+      current = w;
+    } else current = next;
+  }
+  if (current) lines.push(current);
+  return lines.slice(0, 3);
+}

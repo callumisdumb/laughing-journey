@@ -9,7 +9,8 @@
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
-@theme {
+/* static: every token is emitted even when no stylesheet references it, because agency and print colours are applied through inline var() lookups. */
+@theme static {
   --font-sans: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
   --font-display: 'Bricolage Grotesque Variable', 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;

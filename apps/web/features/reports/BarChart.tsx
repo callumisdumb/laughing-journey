@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from 'react';
 import { ChartFrame } from './ChartFrame';
-import { GEOMETRY, ticksFor } from './geometry';
+import { GEOMETRY, wrapLabel, ticksFor } from './geometry';
 import type { ChartSpec } from './model';
 import styles from './BarChart.module.css';
 
@@ -53,11 +53,19 @@ export function BarChart({ spec }: { spec: ChartSpec }) {
           </g>
         ))}
         <line className={styles.axis} x1={left} x2={width - right} y1={y(0)} y2={y(0)} />
-        {spec.categories.map((c, ci) => (
-          <text key={c} className={styles.axisText} x={left + ci * slot + slot / 2} y={height - bottom + 20} textAnchor="middle">
-            {c}
-          </text>
-        ))}
+        {spec.categories.map((c, ci) => {
+          const lines = wrapLabel(c, Math.max(8, Math.floor(slot / 6.5)));
+          const cx = left + ci * slot + slot / 2;
+          return (
+            <text key={c} className={styles.axisText} x={cx} y={height - bottom + 20} textAnchor="middle">
+              {lines.map((line, li) => (
+                <tspan key={li} x={cx} dy={li === 0 ? 0 : 13}>
+                  {line}
+                </tspan>
+              ))}
+            </text>
+          );
+        })}
         <text className={styles.axisTitle} x={left + plotW / 2} y={height - 10} textAnchor="middle">
           {spec.xLabel}
         </text>
@@ -68,3 +76,4 @@ export function BarChart({ spec }: { spec: ChartSpec }) {
     </ChartFrame>
   );
 }
+

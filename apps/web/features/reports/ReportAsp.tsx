@@ -9,6 +9,6 @@ import { useReportPeriod, withHint } from './useReport';
 export function ReportAsp() {
   const data = useData();
   const { now, periods, period, setPeriod } = useReportPeriod('asp');
-  const model = withHint(aspModel(data, now, period), periods, (p) => aspModel(data, now, p), 'referrals');
+  const model = withHint(aspModel(data, now, period), periods, (p) => aspModel(data, now, p), (n) => `${n} ${n === 1 ? 'referral' : 'referrals'}`);
   return <ReportFrame model={model} periods={periods} onPeriod={setPeriod} />;
 }
