@@ -43,9 +43,9 @@ One line of rationale each. Newest at the bottom. Prefix D-nnn. Domain decisions
 ## Domain
 
 - D-040 The IRD label is configurable per local area; default "Inter-agency Referral Discussion (IRD)" per the 2021 national guidance.
-- D-041 Clock rules live in `packages/domain/src/config/clock-rules.ts`; every rule carries `source` and `confidence` from `docs/RESEARCH.md`. Rules marked Verify or Local are `TODO(verify)` in code and are shown in Admin with their confidence.
+- D-041 Clock rules live in `packages/domain/src/clocks/rules.ts`; every rule carries `source` and `confidence` from `docs/RESEARCH.md`. Rules marked Verify or Local are `TODO(verify)` in code and are shown in Admin with their confidence.
 - D-042 Need-to-know defaults to deny; where the brief's matrices are silent, the more restrictive reading is used (for example a referrer receives an acknowledgement and outcome only, never detail).
 - D-043 MARAC perpetrators and their associates, and MAPPA victims, are hard exclusions in the need-to-know rules: no detail level, not even presence, can be granted to them through the UI.
 - D-044 MAPPA records are `restricted` classification; non-members see a RestrictedState with break-glass (reason required, 4 hour window, audited). Break-glass is not available for MARAC perpetrator-linked personas at all.
-- D-045 Council officer eligibility under ASP s52 is configuration (`config/asp.ts`), seeded as registered social worker, or nurse or occupational therapist with the required post-qualifying training, per the Code of Practice; `TODO(verify)` against the local council rule.
+- D-045 Council officer eligibility under ASP s52 is configuration (`aspCouncilOfficerEligibility` in `packages/domain/src/config/default-config.ts`), seeded as registered social worker, or nurse or occupational therapist with the required post-qualifying training, per the Code of Practice; `TODO(verify)` against the local council rule.
 - D-046 An unborn baby is modelled as a Person with `lifeStage: 'unborn'` and `expectedDeliveryDate`, linked to the mother by an `unborn-child-of` relationship, so pre-birth IRDs and CPPMs have a subject without inventing a birth date.
