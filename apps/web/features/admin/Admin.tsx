@@ -11,7 +11,10 @@ import { Agencies } from './Agencies';
 import { Copy } from './Copy';
 import { Defaults } from './Defaults';
 import { Forms } from './Forms';
+import { ChainVerification } from './ChainVerification';
 import { Markings } from './Markings';
+import { ServerView } from './ServerView';
+import { StatutoryDisclosure } from './StatutoryDisclosure';
 import { NeedToKnow } from './NeedToKnow';
 import { Overview } from './Overview';
 import { SectionHead } from './SectionHead';
@@ -67,6 +70,15 @@ export function Admin({ section }: AdminProps) {
         break;
       case 'markings':
         body = <Markings />;
+        break;
+      case 'server-view':
+        body = <ServerView />;
+        break;
+      case 'audit-chain':
+        body = <ChainVerification />;
+        break;
+      case 'disclosure':
+        body = <StatutoryDisclosure />;
         break;
       case 'defaults':
         body = <Defaults />;

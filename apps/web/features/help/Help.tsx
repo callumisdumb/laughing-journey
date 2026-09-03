@@ -84,6 +84,20 @@ function dueLabel(t: Translator, rule: ClockRule): string {
   return rule.kind === 'warning' ? t('help.clockRules.dueWarning', { due }) : due;
 }
 
+/**
+ * The Security page, in the order a team leader would ask the questions.
+ *
+ * Written for someone running a team, not for a cryptographer. No marketing adjectives, no shields
+ * and no padlock iconography implying more than is true. The phrase "end-to-end encrypted" appears
+ * exactly once, attached to record content, which is the only place the claim is exact.
+ *
+ * The order matters: what is protected, then what is not, then the two things people most often
+ * assume wrongly, which are that the operator can be trusted to have no key (they have none, but
+ * escrow exists) and that encryption stops a colleague misusing what they are entitled to see (it
+ * does not, and nothing can).
+ */
+const SECURITY_SECTIONS = ['whatIsEncrypted', 'whatIsNot', 'whoCanSee', 'escrow', 'lostKey', 'colleagues', 'search', 'offline'] as const;
+
 export function Help() {
   const t = useT();
   const config = useConfig();
@@ -108,6 +122,7 @@ export function Help() {
     { id: 'glossary', label: t('help.tabs.glossary') },
     { id: 'shortcuts', label: t('help.tabs.shortcuts') },
     { id: 'guidance', label: t('help.tabs.guidance') },
+    { id: 'security', label: t('help.tabs.security') },
     { id: 'about', label: t('help.tabs.about') },
   ];
   const q = term.trim().toLowerCase();
@@ -257,6 +272,19 @@ export function Help() {
               </TableWrap>
             </SheetBody>
           </Sheet>
+        </div>
+      </TabPanel>
+
+      <TabPanel id="security" active={tab === 'security'} idPrefix="help">
+        <div className="stack">
+          {SECURITY_SECTIONS.map((section) => (
+            <Sheet key={section}>
+              <SheetHead title={t(`help.security.${section}.title` as const)} meta={t(`help.security.${section}.meta` as const)} />
+              <SheetBody>
+                <p className={styles.securityText}>{t(`help.security.${section}.text` as const)}</p>
+              </SheetBody>
+            </Sheet>
+          ))}
         </div>
       </TabPanel>
 

@@ -94,6 +94,39 @@
       "orgMeta": "{kind}. {teams, plural, one {# team} other {# teams}}, {members, plural, one {# persona} other {# personas}}. Short name: {shortName}.",
       "tableLabel": "{shortName} teams"
     },
+    "chain": {
+      "broken": "Broken",
+      "brokenText": "Broken at entry {at} of {count}. {reason}",
+      "columns": {
+        "action": "Action",
+        "actor": "Signed by",
+        "detail": "Detail",
+        "link": "Links to",
+        "position": "No.",
+        "when": "When"
+      },
+      "detailSealed": "Encrypted to oversight",
+      "emptyNote": "Sign in, open a record or break glass, and entries will appear here.",
+      "entriesMeta": "{count, plural, one {# entry} other {# entries}}, most recent last",
+      "entriesTitle": "Entries",
+      "explain": "A verification screen that has only ever reported success proves nothing. The second button verifies a copy of this same ledger with one entry edited the way somebody covering their tracks would, changing a restricted read into an ordinary one, so you can watch the break being found.",
+      "genesis": "genesis",
+      "lede": "Every audit entry is signed by the actor's device key and carries the hash of the entry before it. Editing an entry breaks its signature; removing one breaks the next entry's link.",
+      "noEntries": "No chain entries yet. The ledger holds {ledger, plural, one {# entry} other {# entries}} from earlier sessions, which this session did not sign.",
+      "okText": "{count, plural, =0 {No entries yet. The chain starts at the first audited action.} one {One entry, verified: its signature is valid and it links to the genesis.} other {All # entries verified: every signature is valid and every entry links to the one before it.}}",
+      "realMeta": "Head: {head}",
+      "realTitle": "The ledger",
+      "reasons": {
+        "linkBroken": "Its link does not match the hash of the entry before it, which is what happens when an entry is removed.",
+        "signatureInvalid": "Its signature does not verify, which is what happens when an entry is edited.",
+        "unknownSigner": "It was signed by a device this ledger does not know."
+      },
+      "tamperedMeta": "The real ledger is untouched: this is a copy with one entry edited",
+      "tamperedTitle": "A deliberately tampered copy",
+      "verified": "Verified",
+      "verifyReal": "Verify the ledger",
+      "verifyTampered": "Verify a tampered copy"
+    },
     "config": {
       "issue": "{path}: {message}",
       "savedToast": "Saved"
@@ -250,6 +283,45 @@
         "light": "Cream paper, warm ink.",
         "system": "Light or dark from the operating system."
       }
+    },
+    "disclosure": {
+      "audit": "{purpose} through escrow, authorised by {holders}",
+      "done": {
+        "text": "Signed by {signatures} holders. {notified, plural, one {# other holder has} other {# other holders have}} been notified, and the audit entry names both who acted.",
+        "title": "Disclosure recorded"
+      },
+      "formMeta": "Every field is on the audit entry",
+      "formTitle": "Request",
+      "holder": "{organisation}",
+      "holdersLegend": "Escrow holders acting",
+      "holdersMeta": "Two of five, across five organisations",
+      "holdersNote": "Two are needed, and they must be in different organisations. Two people in one council would meet the threshold and defeat the point of splitting it.",
+      "holdersTitle": "Who holds a share",
+      "lawfulBasis": "Lawful basis",
+      "lawfulBasisHint": "For example: UK GDPR Article 15, subject access. Or the court order's reference.",
+      "lede": "Producing a record under a subject access request, a sheriff's order or a scrutiny function. Two escrow holders in different organisations, a recorded lawful basis, and a signed audit entry naming both.",
+      "purpose": "Purpose",
+      "purposes": {
+        "breakGlass": "Break-glass",
+        "recovery": "Device recovery",
+        "statutoryDisclosure": "Statutory disclosure"
+      },
+      "ready": "Ready. Both holders will sign, and the other {notified, plural, one {# holder} other {# holders}} will be told this happened.",
+      "reason": "Why this record, and why now",
+      "reasonHint": "At least 15 characters. An auditor reads this, so say what is being produced and to whom.",
+      "record": "Record",
+      "refusals": {
+        "noLawfulBasis": "Record the lawful basis.",
+        "noReason": "Say why, in at least 15 characters. This is what an auditor reads.",
+        "sameOrganisation": "Both holders are in the same organisation. The split exists so that reaching a record needs agreement across organisational lines, not two signatures from one building.",
+        "thresholdNotMet": "Two holders are needed. One person cannot reach a record on their own, however senior."
+      },
+      "residualRisk": "Two holders acting together can reach any record. That is a governance control rather than a cryptographic one, and it is why the shares sit in five organisations with different lines of accountability rather than with five people in one council. It is stated here, and in the threat model, rather than left for someone to discover.",
+      "share": "Share {index}",
+      "submit": "Reconstruct the key and disclose",
+      "whyMeta": "The part that makes the design lawful",
+      "whyText": "A system whose operator genuinely could not decrypt could not answer a subject access request, comply with a sheriff's order, or give the Care Inspectorate the access its scrutiny function requires. It would not be lawful to deploy. So the controller can always reach a record, and the question worth asking is not whether it can, but what it takes, who has to agree, and whether it is recorded. This screen is the answer to all three.",
+      "whyTitle": "Why this exists"
     },
     "forms": {
       "addVersion": "Add version",
@@ -501,10 +573,13 @@
       },
       "counts": {
         "agencies": "{organisations, plural, one {# organisation} other {# organisations}}, {teams, plural, one {# team} other {# teams}}",
+        "auditChain": "{entries, plural, one {# ledger entry} other {# ledger entries}}, signed and chained",
         "defaults": "Theme {theme}, density {density}, break-glass {hours, plural, one {# hour} other {# hours}}, {bankHolidays, plural, one {# bank holiday} other {# bank holidays}}",
+        "disclosure": "{threshold} of {holders} holders, in different organisations",
         "forms": "{count, plural, one {# form} other {# forms}} across {processes, plural, one {# process} other {# processes}}",
         "markings": "{count, plural, one {# marking} other {# markings}}",
         "needToKnow": "{rows, plural, one {# audience row} other {# audience rows}}, {exclusions, plural, one {# exclusion} other {# exclusions}}",
+        "serverView": "{records, plural, one {# encrypted record} other {# encrypted records}}",
         "timescales": "{count, plural, one {# clock rule} other {# clock rules}}, {toVerify} to verify",
         "users": "{count, plural, one {# persona} other {# personas}}"
       },
@@ -525,9 +600,17 @@
         "description": "Organisations, teams and bases, as the seed holds them.",
         "label": "Agencies"
       },
+      "auditChain": {
+        "description": "Verify the signed, append-only audit chain and see a tampered copy fail.",
+        "label": "Audit chain"
+      },
       "defaults": {
         "description": "Theme, density, break-glass window, bank holidays and ASP eligibility.",
         "label": "Defaults"
+      },
+      "disclosure": {
+        "description": "Produce a record under a subject access request or a court order, through escrow and under split control.",
+        "label": "Statutory disclosure"
       },
       "forms": {
         "description": "Forms in use and the version that applies from a date.",
@@ -545,6 +628,10 @@
         "description": "Who is told what at each stage of each process, and who must not be.",
         "label": "Need-to-know"
       },
+      "serverView": {
+        "description": "The store as a hosting provider or a database administrator sees it, beside the same record as you see it.",
+        "label": "What the host can see"
+      },
       "timescales": {
         "description": "Statutory and local clock rules, with their source and confidence.",
         "label": "Timescales"
@@ -553,6 +640,55 @@
         "description": "Demo personas, their roles and cases. Sign in as any of them.",
         "label": "Users"
       }
+    },
+    "serverView": {
+      "ciphertextCell": "{preview}… ({bytes} bytes)",
+      "columns": {
+        "ciphertext": "Content",
+        "classification": "Classification",
+        "id": "Record",
+        "keyHolders": "Key holders",
+        "type": "Type",
+        "updatedAt": "Updated"
+      },
+      "holders": "Key holders",
+      "hostBadge": "No key",
+      "hostMeta": "A hosting provider, a database administrator, or an attacker with the backup",
+      "hostNote": "{bytes} bytes of ciphertext. There is no key in the store that opens it, and no administrative key exists: escrow is split across five organisations and its use is audited and notified.",
+      "hostTitle": "What the host sees",
+      "leakage": {
+        "classificationInfers": "Which records are Official-Sensitive",
+        "classificationVisible": "Classification",
+        "holdersInfers": "How many people can read a record, and which records share a reader. The identifiers are opaque and rotated, so not who.",
+        "holdersVisible": "Identifiers of key holders",
+        "idsInfers": "How many records exist, and roughly the order they were created in",
+        "idsVisible": "Record identifiers",
+        "infers": "What that lets them work out",
+        "linksInfers": "That two records concern related matters. Not what the relationship is.",
+        "linksVisible": "The existence of a link between records",
+        "timestampsInfers": "Roughly when work happens. Not the time of day, so a burst of activity at three in the morning is not visible.",
+        "timestampsVisible": "Timestamps, bucketed to the day",
+        "typeInfers": "That a MAPPA record exists, as distinct from an adult protection one. Not the stage, the title or the subject.",
+        "typeVisible": "Record type, coarsely",
+        "visible": "Visible to the operator"
+      },
+      "leakageMeta": "The residual leakage, stated rather than glossed",
+      "leakageNote": "Metadata is not encrypted, because a server that could not read any of it could not store, route or audit anything. This is what that costs, and it is the same list as docs/THREAT-MODEL.md section 3.",
+      "leakageTitle": "What an operator can work out anyway",
+      "lede": "The mock store rendered exactly as anyone with full storage access would see it, and the same record rendered as you see it. Both panels read the same store: the difference is a key.",
+      "linked": "Linked records",
+      "marking": "Marking",
+      "noKey": "You hold no key for this record, so there is nothing to show. This is what an unentitled colleague sees, and it is the same as what the host sees.",
+      "pickRecord": "Record to compare",
+      "practitionerBadge": "Key unwrapped",
+      "practitionerMeta": "Signed in as {name}",
+      "practitionerNote": "This is the same record. Nothing was fetched differently: your key unwrapped the content key, and the content key opened the ciphertext on the left.",
+      "practitionerTitle": "What you see",
+      "reference": "Reference",
+      "storeMeta": "{count, plural, one {# record} other {# records}}, as the operator holds them",
+      "storeNote": "This is the whole of what is stored. Content is ciphertext; the rest is metadata a server must hold in order to store, route and audit, and it is listed in full below rather than summarised.",
+      "storeTitle": "Every record in the store",
+      "titleField": "Title"
     },
     "timescales": {
       "audit": "{label}: {timescale}, warn {days} days",
@@ -2950,6 +3086,48 @@
       "title": "Guidance editions in use"
     },
     "lede": "What the abbreviations mean, which keys work, which editions of guidance the clocks follow, and what this build is.",
+    "security": {
+      "colleagues": {
+        "meta": "No, and nothing can",
+        "text": "No. Encryption controls who can open a record; it cannot control what someone does with a record they are entitled to open. Someone on a case sees the case. What the product does instead is record every read, record every restricted read separately, and make the audit log impossible to edit quietly, so misuse is found afterwards rather than prevented beforehand. If someone tells you encryption solves this, they are selling something.",
+        "title": "Does this stop a colleague misusing a case they are on"
+      },
+      "escrow": {
+        "meta": "Yes, and it has to be able to",
+        "text": "Yes, through escrow, and this is deliberate. The council is the data controller and has to be able to answer a subject access request, comply with a sheriff's order, and give the Care Inspectorate the access its scrutiny function requires. A system that genuinely could not do those things would not be lawful to run. What makes it safe is that no one person can do it: the escrow key is split five ways across five different organisations, and reaching a record needs two of them acting together, from different organisations, with a recorded reason and lawful basis. Both sign the record of it, the other three are told it happened, and it appears in the audit log. The honest limit is that two holders acting together can reach anything, which is why they sit in five organisations with different lines of accountability rather than five people in one building.",
+        "title": "So can the council ever get at a record"
+      },
+      "lostKey": {
+        "meta": "They are working again within the hour",
+        "text": "Revoke the device from Settings, which anyone can do for their own devices immediately, and enrol a replacement. Enrolling needs either another device you already have or two colleagues approving, and the approver reads a short code back to you so an enrolment cannot be quietly redirected to somebody else's machine. Your keys are then restored through the same escrow path, with your identity checked and the whole thing recorded. This is tested, because an untested recovery path is the usual way an encrypted system ends up unusable, and a practitioner who cannot open a safety plan is a safeguarding problem rather than an IT one.",
+        "title": "What happens if someone loses their laptop"
+      },
+      "offline": {
+        "meta": "72 hours by default",
+        "text": "Cases you already have stay open. Your keys for them are held on the device and keep working for three days by default, so a duty worker at three in the morning on a bank holiday is not stopped by a server they cannot reach. The status bar shows how long is left once the clock is running. Being added to a new case does need a connection, and the product says so at the point it matters rather than showing you an empty record.",
+        "title": "What happens out of hours, or with no signal"
+      },
+      "search": {
+        "meta": "The cost of the design, stated",
+        "text": "A system that cannot read your records cannot build an index of them, so search runs on your own device instead. When you sign in, the records you are entitled to are decrypted locally and indexed in memory. One consequence is worth knowing: search covers what you can see and nothing else, so a record you are not on will not appear even if you search for exactly the right thing. The screen says how many records were not searched, so you can tell the difference between \"there is nothing\" and \"there is nothing you can see\".",
+        "title": "Why search works differently here"
+      },
+      "whatIsEncrypted": {
+        "meta": "The one place the phrase is exact",
+        "text": "Record content is end-to-end encrypted. Every record is encrypted on the device that writes it, under a key of its own, and that key is wrapped only to the people the need-to-know rules entitle. Nobody else holds anything that opens it, including whoever hosts the system. That is not a permission a server chooses to honour, it is a fact about who holds which key: a colleague who is not on a case has nothing to try, so there is nothing to look up. That is the most common breach in this sector, and this is what turns it from something audit catches afterwards into something that cannot happen.",
+        "title": "What is encrypted"
+      },
+      "whatIsNot": {
+        "meta": "Said plainly, because a half-answer here is worse than none",
+        "text": "The product as a whole is not end-to-end encrypted, and you should not say it is. Three things are deliberately readable. Metadata: whoever runs the system can see that a record exists, roughly what kind it is, what classification it carries, roughly when it was worked on, and how many people hold a key. Not who they are, not the person's name, not a word of the content. The audit log: who did what, to which record, when, all readable, because it exists to be read by a Caldicott guardian, a lead officer, an inspector or the ICO, and encrypting it to the people it polices would be backwards. Only the free-text detail in an entry is encrypted. And search: what you type never leaves your device, but a small number of exact-match lookups use a tag that lets the system tell that two records share a value without knowing what the value is.",
+        "title": "What is not encrypted"
+      },
+      "whoCanSee": {
+        "meta": "Nobody, and there is a screen that shows it",
+        "text": "Nobody hosting or administering the system holds a key that opens a record. There is no master key and no administrative override. If you want to see this rather than take it on trust, Admin has a screen called \"What the host can see\": it renders the store exactly as a hosting provider or a database administrator would see it, beside the same record as you see it. Both panels read the same store. The difference is a key.",
+        "title": "Who at the supplier can see our records"
+      }
+    },
     "shortcuts": {
       "columnKey": "Key",
       "columnWhat": "What happens",
@@ -2990,6 +3168,7 @@
       "glossary": "Glossary",
       "guidance": "Guidance in use",
       "label": "Help sections",
+      "security": "Security",
       "shortcuts": "Keyboard shortcuts"
     },
     "title": "Help"

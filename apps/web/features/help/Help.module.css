@@ -118,3 +118,12 @@
 .legislation li:last-child {
   border-bottom: 0;
 }
+
+/* The Security page: prose a team leader reads, so a comfortable measure and no decoration. */
+.securityText {
+  max-width: 78ch;
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.65;
+  color: var(--color-ink-2);
+}

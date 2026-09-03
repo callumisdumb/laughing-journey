@@ -299,6 +299,93 @@
         "where": "Accessible name of each organisation's team table"
       }
     },
+    "chain": {
+      "broken": {
+        "where": "Audit chain verification screen: broken"
+      },
+      "brokenText": {
+        "where": "Audit chain verification screen: brokenText"
+      },
+      "columns": {
+        "action": {
+          "where": "Audit chain verification screen: columns.action"
+        },
+        "actor": {
+          "where": "Audit chain verification screen: columns.actor"
+        },
+        "detail": {
+          "where": "Audit chain verification screen: columns.detail"
+        },
+        "link": {
+          "where": "Audit chain verification screen: columns.link"
+        },
+        "position": {
+          "where": "Audit chain verification screen: columns.position"
+        },
+        "when": {
+          "where": "Audit chain verification screen: columns.when"
+        }
+      },
+      "detailSealed": {
+        "where": "Audit chain verification screen: detailSealed"
+      },
+      "emptyNote": {
+        "where": "Audit chain verification screen: emptyNote"
+      },
+      "entriesMeta": {
+        "where": "Audit chain verification screen: entriesMeta"
+      },
+      "entriesTitle": {
+        "where": "Audit chain verification screen: entriesTitle"
+      },
+      "explain": {
+        "where": "Audit chain verification screen: explain"
+      },
+      "genesis": {
+        "where": "Audit chain verification screen: genesis"
+      },
+      "lede": {
+        "where": "Audit chain verification screen: lede"
+      },
+      "noEntries": {
+        "where": "Audit chain verification screen: noEntries"
+      },
+      "okText": {
+        "where": "Audit chain verification screen: okText"
+      },
+      "realMeta": {
+        "where": "Audit chain verification screen: realMeta"
+      },
+      "realTitle": {
+        "where": "Audit chain verification screen: realTitle"
+      },
+      "reasons": {
+        "linkBroken": {
+          "where": "Audit chain verification screen: reasons.linkBroken"
+        },
+        "signatureInvalid": {
+          "where": "Audit chain verification screen: reasons.signatureInvalid"
+        },
+        "unknownSigner": {
+          "where": "Audit chain verification screen: reasons.unknownSigner"
+        }
+      },
+      "tamperedMeta": {
+        "where": "Audit chain verification screen: tamperedMeta"
+      },
+      "tamperedTitle": {
+        "where": "Audit chain verification screen: tamperedTitle"
+      },
+      "verified": {
+        "where": "Audit chain verification screen: verified"
+      },
+      "verifyReal": {
+        "where": "Audit chain verification screen: verifyReal"
+      },
+      "verifyTampered": {
+        "where": "Audit chain verification screen: verifyTampered"
+      }
+    },
     "config": {
       "issue": {
         "where": "One line in the save error list: the field path and the schema message"
@@ -817,6 +904,107 @@
           "screenshot": "phase-5/admin-defaults-light-comfortable.png",
           "where": "Hint under the follow-the-device option"
         }
+      }
+    },
+    "disclosure": {
+      "audit": {
+        "where": "Statutory disclosure screen: audit"
+      },
+      "done": {
+        "text": {
+          "where": "Statutory disclosure screen: done.text"
+        },
+        "title": {
+          "where": "Statutory disclosure screen: done.title"
+        }
+      },
+      "formMeta": {
+        "where": "Statutory disclosure screen: formMeta"
+      },
+      "formTitle": {
+        "where": "Statutory disclosure screen: formTitle"
+      },
+      "holder": {
+        "where": "Statutory disclosure screen: holder"
+      },
+      "holdersLegend": {
+        "where": "Statutory disclosure screen: holdersLegend"
+      },
+      "holdersMeta": {
+        "where": "Statutory disclosure screen: holdersMeta"
+      },
+      "holdersNote": {
+        "where": "Statutory disclosure screen: holdersNote"
+      },
+      "holdersTitle": {
+        "where": "Statutory disclosure screen: holdersTitle"
+      },
+      "lawfulBasis": {
+        "where": "Statutory disclosure screen: lawfulBasis"
+      },
+      "lawfulBasisHint": {
+        "where": "Statutory disclosure screen: lawfulBasisHint"
+      },
+      "lede": {
+        "where": "Statutory disclosure screen: lede"
+      },
+      "purpose": {
+        "where": "Statutory disclosure screen: purpose"
+      },
+      "purposes": {
+        "breakGlass": {
+          "where": "Statutory disclosure screen: purposes.breakGlass"
+        },
+        "recovery": {
+          "where": "Statutory disclosure screen: purposes.recovery"
+        },
+        "statutoryDisclosure": {
+          "where": "Statutory disclosure screen: purposes.statutoryDisclosure"
+        }
+      },
+      "ready": {
+        "where": "Statutory disclosure screen: ready"
+      },
+      "reason": {
+        "where": "Statutory disclosure screen: reason"
+      },
+      "reasonHint": {
+        "where": "Statutory disclosure screen: reasonHint"
+      },
+      "record": {
+        "where": "Statutory disclosure screen: record"
+      },
+      "refusals": {
+        "noLawfulBasis": {
+          "where": "Statutory disclosure screen: refusals.noLawfulBasis"
+        },
+        "noReason": {
+          "where": "Statutory disclosure screen: refusals.noReason"
+        },
+        "sameOrganisation": {
+          "where": "Statutory disclosure screen: refusals.sameOrganisation"
+        },
+        "thresholdNotMet": {
+          "where": "Statutory disclosure screen: refusals.thresholdNotMet"
+        }
+      },
+      "residualRisk": {
+        "where": "Statutory disclosure screen: residualRisk"
+      },
+      "share": {
+        "where": "Statutory disclosure screen: share"
+      },
+      "submit": {
+        "where": "Statutory disclosure screen: submit"
+      },
+      "whyMeta": {
+        "where": "Statutory disclosure screen: whyMeta"
+      },
+      "whyText": {
+        "where": "Statutory disclosure screen: whyText"
+      },
+      "whyTitle": {
+        "where": "Statutory disclosure screen: whyTitle"
       }
     },
     "forms": {
@@ -1649,9 +1837,15 @@
           "screenshot": "phase-5/admin-light-comfortable.png",
           "where": "Count line on the Agencies overview card"
         },
+        "auditChain": {
+          "where": "Count line on the Admin overview card for the audit chain section"
+        },
         "defaults": {
           "screenshot": "phase-5/admin-light-comfortable.png",
           "where": "Count line on the Defaults overview card; theme and density are the configured values"
+        },
+        "disclosure": {
+          "where": "Count line on the Admin overview card for the statutory disclosure section"
         },
         "forms": {
           "screenshot": "phase-5/admin-light-comfortable.png",
@@ -1664,6 +1858,9 @@
         "needToKnow": {
           "screenshot": "phase-5/admin-light-comfortable.png",
           "where": "Count line on the Need-to-know overview card"
+        },
+        "serverView": {
+          "where": "Count line on the Admin overview card for the server view section"
         },
         "timescales": {
           "screenshot": "phase-5/admin-light-comfortable.png",
@@ -1717,6 +1914,15 @@
           "where": "Admin section name: sub-navigation link, overview card title and section heading"
         }
       },
+      "auditChain": {
+        "description": {
+          "where": "Admin section description: auditChain"
+        },
+        "label": {
+          "maxLength": 40,
+          "where": "Admin section label: auditChain"
+        }
+      },
       "defaults": {
         "description": {
           "screenshot": "phase-5/admin-light-comfortable.png",
@@ -1726,6 +1932,15 @@
           "maxLength": 24,
           "screenshot": "phase-5/admin-light-comfortable.png",
           "where": "Admin section name: sub-navigation link, overview card title and section heading"
+        }
+      },
+      "disclosure": {
+        "description": {
+          "where": "Admin section description: disclosure"
+        },
+        "label": {
+          "maxLength": 40,
+          "where": "Admin section label: disclosure"
         }
       },
       "forms": {
@@ -1772,6 +1987,15 @@
           "where": "Admin section name: sub-navigation link, overview card title and section heading"
         }
       },
+      "serverView": {
+        "description": {
+          "where": "Admin section description: serverView"
+        },
+        "label": {
+          "maxLength": 40,
+          "where": "Admin section label: serverView"
+        }
+      },
       "timescales": {
         "description": {
           "screenshot": "phase-5/admin-light-comfortable.png",
@@ -1793,6 +2017,141 @@
           "screenshot": "phase-5/admin-light-comfortable.png",
           "where": "Admin section name: sub-navigation link, overview card title and section heading"
         }
+      }
+    },
+    "serverView": {
+      "ciphertextCell": {
+        "where": "\"What the host can see\" screen: ciphertextCell"
+      },
+      "columns": {
+        "ciphertext": {
+          "where": "\"What the host can see\" screen: columns.ciphertext"
+        },
+        "classification": {
+          "where": "\"What the host can see\" screen: columns.classification"
+        },
+        "id": {
+          "where": "\"What the host can see\" screen: columns.id"
+        },
+        "keyHolders": {
+          "where": "\"What the host can see\" screen: columns.keyHolders"
+        },
+        "type": {
+          "where": "\"What the host can see\" screen: columns.type"
+        },
+        "updatedAt": {
+          "where": "\"What the host can see\" screen: columns.updatedAt"
+        }
+      },
+      "holders": {
+        "where": "\"What the host can see\" screen: holders"
+      },
+      "hostBadge": {
+        "where": "\"What the host can see\" screen: hostBadge"
+      },
+      "hostMeta": {
+        "where": "\"What the host can see\" screen: hostMeta"
+      },
+      "hostNote": {
+        "where": "\"What the host can see\" screen: hostNote"
+      },
+      "hostTitle": {
+        "where": "\"What the host can see\" screen: hostTitle"
+      },
+      "leakage": {
+        "classificationInfers": {
+          "where": "\"What the host can see\" screen: leakage.classificationInfers"
+        },
+        "classificationVisible": {
+          "where": "\"What the host can see\" screen: leakage.classificationVisible"
+        },
+        "holdersInfers": {
+          "where": "\"What the host can see\" screen: leakage.holdersInfers"
+        },
+        "holdersVisible": {
+          "where": "\"What the host can see\" screen: leakage.holdersVisible"
+        },
+        "idsInfers": {
+          "where": "\"What the host can see\" screen: leakage.idsInfers"
+        },
+        "idsVisible": {
+          "where": "\"What the host can see\" screen: leakage.idsVisible"
+        },
+        "infers": {
+          "where": "\"What the host can see\" screen: leakage.infers"
+        },
+        "linksInfers": {
+          "where": "\"What the host can see\" screen: leakage.linksInfers"
+        },
+        "linksVisible": {
+          "where": "\"What the host can see\" screen: leakage.linksVisible"
+        },
+        "timestampsInfers": {
+          "where": "\"What the host can see\" screen: leakage.timestampsInfers"
+        },
+        "timestampsVisible": {
+          "where": "\"What the host can see\" screen: leakage.timestampsVisible"
+        },
+        "typeInfers": {
+          "where": "\"What the host can see\" screen: leakage.typeInfers"
+        },
+        "typeVisible": {
+          "where": "\"What the host can see\" screen: leakage.typeVisible"
+        },
+        "visible": {
+          "where": "\"What the host can see\" screen: leakage.visible"
+        }
+      },
+      "leakageMeta": {
+        "where": "\"What the host can see\" screen: leakageMeta"
+      },
+      "leakageNote": {
+        "where": "\"What the host can see\" screen: leakageNote"
+      },
+      "leakageTitle": {
+        "where": "\"What the host can see\" screen: leakageTitle"
+      },
+      "lede": {
+        "where": "\"What the host can see\" screen: lede"
+      },
+      "linked": {
+        "where": "\"What the host can see\" screen: linked"
+      },
+      "marking": {
+        "where": "\"What the host can see\" screen: marking"
+      },
+      "noKey": {
+        "where": "\"What the host can see\" screen: noKey"
+      },
+      "pickRecord": {
+        "where": "\"What the host can see\" screen: pickRecord"
+      },
+      "practitionerBadge": {
+        "where": "\"What the host can see\" screen: practitionerBadge"
+      },
+      "practitionerMeta": {
+        "where": "\"What the host can see\" screen: practitionerMeta"
+      },
+      "practitionerNote": {
+        "where": "\"What the host can see\" screen: practitionerNote"
+      },
+      "practitionerTitle": {
+        "where": "\"What the host can see\" screen: practitionerTitle"
+      },
+      "reference": {
+        "where": "\"What the host can see\" screen: reference"
+      },
+      "storeMeta": {
+        "where": "\"What the host can see\" screen: storeMeta"
+      },
+      "storeNote": {
+        "where": "\"What the host can see\" screen: storeNote"
+      },
+      "storeTitle": {
+        "where": "\"What the host can see\" screen: storeTitle"
+      },
+      "titleField": {
+        "where": "\"What the host can see\" screen: titleField"
       }
     },
     "timescales": {
@@ -8991,6 +9350,112 @@
       "screenshot": "phase-5/help-glossary-light-comfortable.png",
       "where": "Help page lede under the heading"
     },
+    "security": {
+      "colleagues": {
+        "meta": {
+          "maxLength": 60,
+          "where": "Security page meta line: colleagues"
+        },
+        "text": {
+          "where": "Security page body, written for a team leader rather than a cryptographer: colleagues"
+        },
+        "title": {
+          "maxLength": 60,
+          "where": "Security page heading: colleagues"
+        }
+      },
+      "escrow": {
+        "meta": {
+          "maxLength": 60,
+          "where": "Security page meta line: escrow"
+        },
+        "text": {
+          "where": "Security page body, written for a team leader rather than a cryptographer: escrow"
+        },
+        "title": {
+          "maxLength": 60,
+          "where": "Security page heading: escrow"
+        }
+      },
+      "lostKey": {
+        "meta": {
+          "maxLength": 60,
+          "where": "Security page meta line: lostKey"
+        },
+        "text": {
+          "where": "Security page body, written for a team leader rather than a cryptographer: lostKey"
+        },
+        "title": {
+          "maxLength": 60,
+          "where": "Security page heading: lostKey"
+        }
+      },
+      "offline": {
+        "meta": {
+          "maxLength": 60,
+          "where": "Security page meta line: offline"
+        },
+        "text": {
+          "where": "Security page body, written for a team leader rather than a cryptographer: offline"
+        },
+        "title": {
+          "maxLength": 60,
+          "where": "Security page heading: offline"
+        }
+      },
+      "search": {
+        "meta": {
+          "maxLength": 60,
+          "where": "Security page meta line: search"
+        },
+        "text": {
+          "where": "Security page body, written for a team leader rather than a cryptographer: search"
+        },
+        "title": {
+          "maxLength": 60,
+          "where": "Security page heading: search"
+        }
+      },
+      "whatIsEncrypted": {
+        "meta": {
+          "maxLength": 60,
+          "where": "Security page meta line: whatIsEncrypted"
+        },
+        "text": {
+          "where": "Security page body, written for a team leader rather than a cryptographer: whatIsEncrypted"
+        },
+        "title": {
+          "maxLength": 60,
+          "where": "Security page heading: whatIsEncrypted"
+        }
+      },
+      "whatIsNot": {
+        "meta": {
+          "maxLength": 60,
+          "where": "Security page meta line: whatIsNot"
+        },
+        "text": {
+          "where": "Security page body, written for a team leader rather than a cryptographer: whatIsNot"
+        },
+        "title": {
+          "maxLength": 60,
+          "where": "Security page heading: whatIsNot"
+        }
+      },
+      "whoCanSee": {
+        "meta": {
+          "maxLength": 60,
+          "where": "Security page meta line: whoCanSee"
+        },
+        "text": {
+          "where": "Security page body, written for a team leader rather than a cryptographer: whoCanSee"
+        },
+        "title": {
+          "maxLength": 60,
+          "where": "Security page heading: whoCanSee"
+        }
+      }
+    },
     "shortcuts": {
       "columnKey": {
         "maxLength": 16,
@@ -9116,6 +9581,10 @@
       "label": {
         "maxLength": 24,
         "where": "Accessible name of the Help tab list"
+      },
+      "security": {
+        "maxLength": 16,
+        "where": "Help tab label for the Security page"
       },
       "shortcuts": {
         "maxLength": 24,

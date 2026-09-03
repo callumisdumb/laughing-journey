@@ -49,6 +49,9 @@ function sectionCounts(config: Config, data: Dataset, t: Translator): Record<Adm
     agencies: t('admin.overview.counts.agencies', { organisations: data.organisations.length, teams: data.teams.length }),
     users: t('admin.overview.counts.users', { count: data.users.length }),
     markings: t('admin.overview.counts.markings', { count: config.classificationMarkings.length }),
+    'server-view': t('admin.overview.counts.serverView', { records: data.processes.length }),
+    'audit-chain': t('admin.overview.counts.auditChain', { entries: data.audit.length }),
+    disclosure: t('admin.overview.counts.disclosure', { threshold: 2, holders: 5 }),
     defaults: t('admin.overview.counts.defaults', { theme: config.defaults.theme, density: config.defaults.density, hours: config.breakGlassHours, bankHolidays: config.bankHolidays.length }),
   };
 }

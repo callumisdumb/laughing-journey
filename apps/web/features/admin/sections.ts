@@ -13,6 +13,9 @@ export const ADMIN_SECTIONS = [
   { id: 'agencies', key: 'agencies' },
   { id: 'users', key: 'users' },
   { id: 'markings', key: 'markings' },
+  { id: 'server-view', key: 'serverView' },
+  { id: 'audit-chain', key: 'auditChain' },
+  { id: 'disclosure', key: 'disclosure' },
   { id: 'defaults', key: 'defaults' },
 ] as const;
 
