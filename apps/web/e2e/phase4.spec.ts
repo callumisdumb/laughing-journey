@@ -98,26 +98,45 @@ test.describe('actions', () => {
 });
 
 test.describe('sharing', () => {
-  test('outbound sharing records and inbound notifications', async ({ page }) => {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`${theme} theme: outbound sharing records and inbound notifications`, async ({ page }) => {
+      await signInAs(page, 'usr_janet_kerr');
+      await page.addInitScript((t) => {
+        window.localStorage.setItem('mas.appearance', JSON.stringify({ theme: t, density: 'comfortable' }));
+      }, theme);
+      await page.goto('/sharing');
+      await waitForData(page);
+      await expect(page.getByRole('heading', { name: 'Sharing and notifications' })).toBeVisible();
+      await expectNoAxeViolations(page);
+      await capture(page, { phase: PHASE, screen: 'sharing-outbound', theme });
+      await page.getByRole('tab', { name: /Inbound/ }).click();
+      await expect(page.getByRole('heading', { name: 'Notifications to you' })).toBeVisible();
+      await capture(page, { phase: PHASE, screen: 'sharing-inbound', theme });
+    });
+
+    test(`${theme} theme: preview what another role would see`, async ({ page }) => {
+      await signInAs(page, 'usr_janet_kerr');
+      await page.addInitScript((t) => {
+        window.localStorage.setItem('mas.appearance', JSON.stringify({ theme: t, density: 'comfortable' }));
+      }, theme);
+      await page.goto('/sharing?tab=preview');
+      await waitForData(page);
+      await page.getByLabel('Process').selectOption('prc_cp_aiden');
+      await page.getByLabel('Seen as').selectOption('usr_claire_cowan');
+      await expect(page.getByText(/would see/i).first()).toBeVisible();
+      // The marking that recipient would actually be given, before anything is shared.
+      await expect(page.getByText('Marking they would get')).toBeVisible();
+      await expectNoAxeViolations(page);
+      await capture(page, { phase: PHASE, screen: 'sharing-preview', theme, fullPage: true });
+    });
+  }
+
+  test('a share carries the marking it went out under, not the source read at render time', async ({ page }) => {
     await signInAs(page, 'usr_janet_kerr');
     await page.goto('/sharing');
     await waitForData(page);
-    await expect(page.getByRole('heading', { name: 'Sharing and notifications' })).toBeVisible();
-    await expectNoAxeViolations(page);
-    await capture(page, { phase: PHASE, screen: 'sharing-outbound' });
-    await page.getByRole('tab', { name: /Inbound/ }).click();
-    await expect(page.getByRole('heading', { name: 'Notifications to you' })).toBeVisible();
-    await capture(page, { phase: PHASE, screen: 'sharing-inbound' });
-  });
-
-  test('preview what another role would see', async ({ page }) => {
-    await signInAs(page, 'usr_janet_kerr');
-    await page.goto('/sharing?tab=preview');
-    await waitForData(page);
-    await page.getByLabel('Process').selectOption('prc_cp_aiden');
-    await page.getByLabel('Seen as').selectOption('usr_claire_cowan');
-    await expect(page.getByText(/would see/i).first()).toBeVisible();
-    await expectNoAxeViolations(page);
-    await capture(page, { phase: PHASE, screen: 'sharing-preview', fullPage: true });
+    // The outbound table's classification column reads the share's own captured classification.
+    await expect(page.getByRole('columnheader', { name: 'Classification' })).toBeVisible();
+    await expect(page.getByText('OFFICIAL-SENSITIVE', { exact: false }).first()).toBeVisible();
   });
 });

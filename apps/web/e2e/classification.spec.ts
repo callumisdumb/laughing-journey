@@ -63,3 +63,26 @@ test('an aggregate report is Official and carries no marking', async ({ page }) 
   await expect(page.getByText('OFFICIAL-SENSITIVE')).toHaveCount(0);
   await capture(page, { phase: PHASE, screen: 'report-unmarked' });
 });
+
+test('RESTRICTED is not offered anywhere as a classification', async ({ page }) => {
+  // It was abolished on 2 April 2014 with the rest of the Government Protective Marking Scheme.
+  // The word still appears in this product, meaning access restriction, and the marking never does.
+  await signInAs(page, 'usr_janet_kerr');
+  await page.goto('/admin/markings');
+  await waitForData(page);
+  await expect(page.getByText('OFFICIAL-SENSITIVE: RESTRICTED')).toHaveCount(0);
+  await expect(page.getByRole('heading', { level: 2, name: 'Official-Sensitive, access restricted' })).toBeVisible();
+  // The three real levels are named, and the two the product cannot reach are shown as unreachable.
+  await expect(page.getByText('Secret', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('Top Secret', { exact: true }).first()).toBeVisible();
+});
+
+test('a raised classification says who raised it and why', async ({ page }) => {
+  await signInAs(page, 'usr_priya_sharif');
+  await page.goto('/processes/prc_mappa_derek');
+  await waitForData(page);
+  await page.getByRole('button', { name: 'Change classification' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  // No override recorded yet, so the dialog says the marking is derived rather than set by a person.
+  await expect(page.getByText('Derived from the record, with no override recorded.')).toBeVisible();
+});

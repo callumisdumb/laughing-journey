@@ -39,6 +39,49 @@ test('the host panel shows ciphertext and no case content', async ({ page }) => 
   await expect(page.getByText(/p:usr:/).first()).toBeVisible();
 });
 
+for (const theme of ['light', 'dark'] as const) {
+  test(`${theme} theme: statutory disclosure`, async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await page.addInitScript((t) => {
+      window.localStorage.setItem('mas.appearance', JSON.stringify({ theme: t, density: 'comfortable' }));
+    }, theme);
+    await page.goto('/admin/disclosure');
+    await waitForData(page);
+    await expect(page.getByRole('heading', { level: 1, name: 'Statutory disclosure' })).toBeVisible();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'statutory-disclosure', theme, fullPage: true });
+  });
+
+  test(`${theme} theme: the Security page`, async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await page.addInitScript((t) => {
+      window.localStorage.setItem('mas.appearance', JSON.stringify({ theme: t, density: 'comfortable' }));
+    }, theme);
+    await page.goto('/help?tab=security');
+    await waitForData(page);
+    await page.getByRole('tab', { name: 'Security' }).click();
+    await expect(page.getByRole('heading', { level: 2, name: 'What is not encrypted' })).toBeVisible();
+    // The browser key limitation, said in the product rather than only in a table two documents away.
+    await expect(page.getByRole('heading', { level: 2, name: 'Why the desktop application rather than a browser' })).toBeVisible();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'help-security', theme, fullPage: true });
+  });
+
+  test(`${theme} theme: the audit chain`, async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await page.addInitScript((t) => {
+      window.localStorage.setItem('mas.appearance', JSON.stringify({ theme: t, density: 'comfortable' }));
+    }, theme);
+    await page.goto('/processes/prc_cp_aiden');
+    await waitForData(page);
+    await page.goto('/admin/audit-chain');
+    await waitForData(page);
+    await expect(page.getByRole('heading', { level: 1, name: 'Audit chain' })).toBeVisible();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'audit-chain', theme });
+  });
+}
+
 test('the audit chain verifies, and a tampered copy fails', async ({ page }) => {
   await signInAs(page, 'usr_janet_kerr');
   // Generate some entries first: opening records writes to the ledger and the chain.
@@ -50,8 +93,6 @@ test('the audit chain verifies, and a tampered copy fails', async ({ page }) => 
   await waitForData(page);
   await expect(page.getByRole('heading', { level: 1, name: 'Audit chain' })).toBeVisible();
   await expect(page.getByRole('status').first()).toContainText(/verified|No entries yet/);
-  await expectNoAxeViolations(page);
-  await capture(page, { phase: PHASE, screen: 'audit-chain' });
 
   const tamperButton = page.getByRole('button', { name: 'Verify a tampered copy' });
   if (await tamperButton.isEnabled()) {
@@ -70,8 +111,6 @@ test('statutory disclosure refuses two holders from one organisation', async ({ 
   // Nothing selected: the threshold refusal.
   await expect(page.getByRole('status')).toContainText('Two holders are needed');
   await expect(page.getByRole('button', { name: 'Reconstruct the key and disclose' })).toBeDisabled();
-  await expectNoAxeViolations(page);
-  await capture(page, { phase: PHASE, screen: 'statutory-disclosure' });
 });
 
 test('the Security page names what is not encrypted', async ({ page }) => {
@@ -83,6 +122,4 @@ test('the Security page names what is not encrypted', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 2, name: 'Does this stop a colleague misusing a case they are on' })).toBeVisible();
   // The one claim that must never be overstated.
   await expect(page.getByText('No. Encryption controls who can open a record')).toBeVisible();
-  await expectNoAxeViolations(page);
-  await capture(page, { phase: PHASE, screen: 'help-security', fullPage: true });
 });
