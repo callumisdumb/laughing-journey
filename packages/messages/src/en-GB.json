@@ -386,6 +386,24 @@
       "unread": "unread"
     }
   },
+  "search": {
+    "empty": {
+      "text": "Check the spelling, or try a date of birth as dd/mm/yyyy, a postcode, or a reference like CP-2026-0412. People you cannot see at all are not listed.",
+      "title": "No matches"
+    },
+    "head": {
+      "prompt": "Type at least two characters in the search box: a name, alias, date of birth, CHI number, address or reference.",
+      "results": "{count, plural, one {# result} other {# results}} for \"{query}\"",
+      "title": "Search"
+    },
+    "result": {
+      "noProcess": "No open process",
+      "notOnCase": "you are not on this case",
+      "personMeta": "{age}. {address}. Matched on {matched}.",
+      "processMeta": "{process}: {subject}. Matched on {matched}.",
+      "restrictedSubject": "restricted"
+    }
+  },
   "states": {
     "clock": {
       "flag": {

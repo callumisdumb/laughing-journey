@@ -1277,6 +1277,56 @@
       }
     }
   },
+  "search": {
+    "empty": {
+      "text": {
+        "where": "Search results, empty state body when nothing matches"
+      },
+      "title": {
+        "maxLength": 24,
+        "where": "Search results, empty state title when nothing matches"
+      }
+    },
+    "head": {
+      "prompt": {
+        "where": "Search results, lede when fewer than two characters have been typed"
+      },
+      "results": {
+        "screenshot": "phase-2/search-results-light-comfortable.png",
+        "where": "Search results, lede with the number of matches and the query"
+      },
+      "title": {
+        "maxLength": 20,
+        "screenshot": "phase-2/search-results-light-comfortable.png",
+        "where": "Search results, page heading"
+      }
+    },
+    "result": {
+      "noProcess": {
+        "maxLength": 24,
+        "screenshot": "phase-2/search-results-light-comfortable.png",
+        "where": "Search results, under a person with no open process"
+      },
+      "notOnCase": {
+        "maxLength": 32,
+        "screenshot": "phase-2/search-results-light-comfortable.png",
+        "where": "Search results, beside a process mark you can see exists but are not a member of"
+      },
+      "personMeta": {
+        "screenshot": "phase-2/search-results-light-comfortable.png",
+        "where": "Search results, line under a person: age, address and what matched"
+      },
+      "processMeta": {
+        "screenshot": "phase-2/search-results-light-comfortable.png",
+        "where": "Search results, line under a process: process code, subject and what matched"
+      },
+      "restrictedSubject": {
+        "maxLength": 16,
+        "screenshot": "phase-2/search-results-light-comfortable.png",
+        "where": "Search results, stands in for the subject's name under a process you may not see"
+      }
+    }
+  },
   "states": {
     "clock": {
       "flag": {
