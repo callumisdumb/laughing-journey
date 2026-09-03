@@ -6,6 +6,7 @@ import { Button, CheckboxField, DateField, Dialog, RadioGroup, TextareaField, us
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { formErrorSummary } from '@/lib/formErrors';
 import { listedNames } from '@/lib/selectors';
 import { MustNotReceiveFields } from './MustNotReceiveFields';
 
@@ -88,6 +89,7 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
       onClose={onClose}
       title={t('forms.daq.title')}
       size="lg"
+      errors={formErrorSummary(errors)}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>

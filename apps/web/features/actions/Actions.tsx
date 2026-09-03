@@ -215,6 +215,8 @@ export function Actions() {
         open={escalating !== null}
         onClose={() => setEscalating(null)}
         title={t('actions.escalateDialog.title')}
+        size="sm"
+        tone="destructive"
         actions={
           <>
             <Button variant="quiet" onClick={() => setEscalating(null)}>

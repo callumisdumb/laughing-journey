@@ -2,7 +2,7 @@
 
 import { DEMO_NOW_ISO, agencyLabel, formatDateTime, roleLabel } from '@mas/domain';
 import { formatRich, useT, type MessageKey, type Translator } from '@mas/messages';
-import { AgencyMark, Button, Dialog, KeyValue, RadioGroup, Sheet, SheetBody, SheetHead, Switch, useToast } from '@mas/ui';
+import { AgencyMark, Button, ConfirmDialog, KeyValue, RadioGroup, Sheet, SheetBody, SheetHead, Switch, useToast } from '@mas/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useAppearance, type Density, type ThemePreference } from '@/lib/appearance';
 import { useSelection } from '@/lib/selection';
@@ -192,23 +192,15 @@ export function Settings() {
         </Sheet>
       </div>
 
-      <Dialog
+      <ConfirmDialog
         open={confirmReset}
         onClose={() => setConfirmReset(false)}
+        onConfirm={doReset}
         title={t('settings.reset.dialogTitle')}
-        actions={
-          <>
-            <Button variant="quiet" onClick={() => setConfirmReset(false)}>
-              {t('common.actions.cancel')}
-            </Button>
-            <Button variant="danger" onClick={doReset}>
-              {t('common.actions.resetDemo')}
-            </Button>
-          </>
-        }
+        confirmLabel={t('common.actions.resetDemo')}
       >
         <p>{t('settings.reset.dialogText')}</p>
-      </Dialog>
+      </ConfirmDialog>
     </div>
   );
 }

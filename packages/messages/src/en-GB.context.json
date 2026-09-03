@@ -4084,6 +4084,11 @@
         "where": "Toast title after the demo data is reset, in Settings and Admin"
       }
     },
+    "dialog": {
+      "errorsTitle": {
+        "where": "Heading of the validation summary at the top of a dialog body, with the number of problems"
+      }
+    },
     "keyValue": {
       "none": {
         "maxLength": 12,

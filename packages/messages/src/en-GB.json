@@ -1251,6 +1251,9 @@
       "audit": "Demo data reset to the seed",
       "toastTitle": "Demo data reset"
     },
+    "dialog": {
+      "errorsTitle": "{count, plural, one {# thing needs attention before this can be saved} other {# things need attention before this can be saved}}"
+    },
     "keyValue": {
       "none": "None"
     },

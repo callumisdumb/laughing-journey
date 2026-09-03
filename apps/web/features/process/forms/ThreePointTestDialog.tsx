@@ -6,6 +6,7 @@ import { Button, CheckboxField, DateField, Dialog, RadioGroup, TextareaField, us
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
+import { formErrorSummary } from '@/lib/formErrors';
 
 export function ThreePointTestDialog({ open, onClose, process }: { open: boolean; onClose: () => void; process: AspProcess }) {
   const t = useT();
@@ -44,6 +45,7 @@ export function ThreePointTestDialog({ open, onClose, process }: { open: boolean
       onClose={onClose}
       title={t('forms.threePointTest.title')}
       size="lg"
+      errors={formErrorSummary(errors)}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>

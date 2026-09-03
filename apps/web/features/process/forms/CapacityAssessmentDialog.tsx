@@ -6,6 +6,7 @@ import { Button, DateField, Dialog, RadioGroup, TextField, TextareaField, useToa
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
+import { formErrorSummary } from '@/lib/formErrors';
 
 /** The functional test items, in order; each has a legend under forms.capacity.functional. */
 const FUNCTIONAL = ['understands', 'retains', 'weighs', 'communicates', 'acts'] as const;
@@ -57,6 +58,7 @@ export function CapacityAssessmentDialog({ open, onClose, process }: { open: boo
       onClose={onClose}
       title={t('forms.capacity.title')}
       size="lg"
+      errors={formErrorSummary(errors)}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>

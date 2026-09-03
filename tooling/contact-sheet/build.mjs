@@ -22,7 +22,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SHOTS = join(ROOT, 'docs', 'SCREENSHOTS');
 
 /** Capture rounds in the order they happened, so the sheet reads as a history rather than a listing. */
-const ORDER = ['phase-1', 'phase-2', 'phase-3', 'phase-4', 'phase-5', 'phase-6', 'classification', 'nmds', 'security'];
+const ORDER = ['phase-1', 'phase-2', 'phase-3', 'phase-4', 'phase-5', 'phase-6', 'classification', 'nmds', 'security', 'dialogs'];
 
 /** What each round was. A contact sheet with no captions is a wall of thumbnails. */
 const ROUND_NOTES = {
@@ -35,6 +35,7 @@ const ROUND_NOTES = {
   classification: 'Government Security Classification: what is marked, what is not, and the derivation rules.',
   nmds: 'The ASP data workbook return, previewed against the cells it writes to.',
   security: 'The cryptographic architecture made inspectable: what the host can see, the audit chain, statutory disclosure and the Security page.',
+  dialogs: 'The one dialog primitive: a statutory form taller than the viewport, scrolling its body and keeping its footer, in both themes.',
 };
 
 /** Rounds, each with its screenshots, newest round last. */
@@ -63,22 +64,28 @@ function describe(file) {
   return { screen: match[1].replace(/-/g, ' '), theme: match[2], density: match[3] };
 }
 
-const THUMB_WIDTH = 420;
 /**
- * The size a reader can actually read. Captures are taken at 1440 wide, so this is close to native
- * and a screen's text is legible in the lightbox rather than merely recognisable. Both sizes ship,
- * because a grid of 159 full-size images is a page nobody can load and a grid of thumbnails with
- * nothing behind them is a page nobody can use.
+ * One width, used in both places.
+ *
+ * The sheet used to carry each capture twice: a 420px thumbnail for the grid and a 1280px copy for
+ * the lightbox. A 420px thumbnail of a 1440px screen is 29 percent of native, which is enough to
+ * recognise a screen you already know and not enough to read one you do not, so telling two similar
+ * captures apart meant opening both. Two encodings of the same picture also cost 12.6 MB, and
+ * raising the thumbnail to a legible size on top of that went past the 16 MB the page has to fit in.
+ *
+ * So the second encoding pays for the first. A single 1280px image serves the grid card, where the
+ * browser downsamples it to the column width and the text stays crisp, and the lightbox, where it is
+ * shown at full size. The page came down to 10.6 MB in the process. `loading="lazy"` keeps the
+ * decode cost to what is near the viewport, which is what makes one large source per card viable.
  */
-const FULL_WIDTH = 1280;
+const GALLERY_WIDTH = 1280;
 
 async function encode(path, width, quality) {
   const buffer = await sharp(path).resize({ width, withoutEnlargement: true }).webp({ quality }).toBuffer();
   return `data:image/webp;base64,${buffer.toString('base64')}`;
 }
 
-const thumbnail = (path) => encode(path, THUMB_WIDTH, 72);
-const fullSize = (path) => encode(path, FULL_WIDTH, 50);
+const gallery = (path) => encode(path, GALLERY_WIDTH, 50);
 
 function escapeHtml(text) {
   return text.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -111,20 +118,24 @@ writeFileSync(join(ROOT, 'docs', 'CONTACT-SHEET.md'), `${md.join('\n').trimEnd()
 /* ---------------------------------------------------------------------- html */
 
 const sections = [];
-/** The large images, indexed, so a card carries an index rather than a megabyte in an attribute. */
-const fullSizes = [];
+/**
+ * Captions and paths for the lightbox, indexed to match the cards. The image itself is not in here:
+ * the viewer reads it from the card's own `<img>`, because putting the same base64 in a JSON blob as
+ * well would put every capture in the file twice again, which is the thing this stopped doing.
+ */
+const captions = [];
 let index = 0;
 for (const round of all) {
   const cards = [];
   for (const shot of round.shots) {
     const { screen, theme, density } = describe(shot.file);
-    const src = await thumbnail(shot.path);
-    fullSizes.push({ src: await fullSize(shot.path), screen, meta: theme ? `${theme}, ${density}` : 'single capture', path: relative(ROOT, shot.path) });
+    const src = await gallery(shot.path);
+    captions.push({ screen, meta: theme ? `${theme}, ${density}` : 'single capture', path: relative(ROOT, shot.path) });
     const meta = theme ? `${theme}, ${density}` : 'single capture';
     cards.push(
       `<figure class="shot" data-theme-variant="${theme || 'none'}" data-density="${density || 'none'}">` +
         `<button type="button" class="open" data-index="${index}" aria-label="Open ${escapeHtml(screen)}, ${escapeHtml(meta)}, at full size">` +
-        `<img loading="lazy" decoding="async" src="${src}" alt="${escapeHtml(screen)}, ${escapeHtml(meta)}" width="${THUMB_WIDTH}"></button>` +
+        `<img loading="lazy" decoding="async" src="${src}" alt="${escapeHtml(screen)}, ${escapeHtml(meta)}" width="${GALLERY_WIDTH}"></button>` +
         `<figcaption><span class="screen">${escapeHtml(screen)}</span>` +
         (theme ? `<span class="chips"><span class="chip chip-${theme}">${theme}</span><span class="chip chip-${density}">${density}</span></span>` : '<span class="chips"><span class="chip">single capture</span></span>') +
         `<code>${escapeHtml(relative(ROOT, shot.path))}</code></figcaption></figure>`,
@@ -254,7 +265,7 @@ const html = `<title>Person360 Contact Sheet</title>
   .count { color: var(--ink-3); font-size: 12px; font-variant-numeric: tabular-nums; }
   .note { margin: 10px 0 20px; max-width: 72ch; color: var(--ink-2); font-size: 14px; text-wrap: pretty; }
 
-  .grid { display: grid; gap: 22px 20px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+  .grid { display: grid; gap: 26px 22px; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); }
   figure { display: flex; flex-direction: column; margin: 0; }
   .open {
     display: block; padding: 0; width: 100%;
@@ -330,7 +341,7 @@ const html = `<title>Person360 Contact Sheet</title>
     <h1>Person360 contact sheet</h1>
     <span class="tally">${total} captures, ${all.length} rounds, generated ${today}</span>
   </div>
-  <p class="lede">Every screenshot in the repository, in the order the rounds happened. All are captured by the Playwright suite at 1440 by 900, and every captured screen passes axe against the WCAG 2.2 AA tags. Light comfortable is the default; dark and compact appear where a round captured them. Click any capture to read it at full size, then use the arrow keys to walk the round.</p>
+  <p class="lede">Every screenshot in the repository, in the order the rounds happened. All are captured by the Playwright suite at 1440 by 900 and embedded at ${GALLERY_WIDTH} wide, so a card is readable in the grid rather than only recognisable; every captured screen passes axe against the WCAG 2.2 AA tags. Light comfortable is the default; dark and compact appear where a round captured them. Click any capture to open it at full size, then use the arrow keys to walk the round.</p>
   <div class="controls">
     <nav aria-label="Capture rounds">${nav}</nav>
     <div class="filter" role="group" aria-label="Filter by variant">
@@ -361,7 +372,7 @@ ${sections.join('\n')}
   </div>
 </dialog>
 
-<script id="shots" type="application/json">${JSON.stringify(fullSizes).replace(/</g, '\\u003c')}</script>
+<script id="shots" type="application/json">${JSON.stringify(captions).replace(/</g, '\\u003c')}</script>
 <script>
   const buttons = document.querySelectorAll('.filter button');
   for (const button of buttons) {
@@ -380,9 +391,11 @@ ${sections.join('\n')}
 
   function show(i) {
     const shot = shots[i];
-    if (!shot) return;
+    const card = document.querySelector('.open[data-index="' + i + '"] img');
+    if (!shot || !card) return;
     current = i;
-    image.src = shot.src;
+    // The same image the card shows, at its own size rather than the column's. One copy in the file.
+    image.src = card.src;
     image.alt = shot.screen + ', ' + shot.meta;
     document.getElementById('viewer-title').textContent = shot.screen;
     document.getElementById('viewer-meta').textContent = shot.meta;
@@ -426,4 +439,4 @@ ${sections.join('\n')}
 
 if (!existsSync(join(ROOT, 'docs'))) mkdirSync(join(ROOT, 'docs'));
 writeFileSync(join(ROOT, 'docs', 'CONTACT-SHEET.html'), html);
-console.log(`contact sheet: ${total} screenshots in ${all.length} rounds, ${(Buffer.byteLength(html) / 1e6).toFixed(1)} MB (thumbnails at ${THUMB_WIDTH}px, viewer images at ${FULL_WIDTH}px)`);
+console.log(`contact sheet: ${total} screenshots in ${all.length} rounds, ${(Buffer.byteLength(html) / 1e6).toFixed(1)} MB (one ${GALLERY_WIDTH}px image per capture, shared by the grid and the viewer)`);

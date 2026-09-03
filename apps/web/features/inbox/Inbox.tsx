@@ -263,6 +263,8 @@ export function Inbox() {
         open={dismissing !== null}
         onClose={() => setDismissing(null)}
         title={t('inbox.dismiss.title')}
+        size="sm"
+        tone="destructive"
         actions={
           <>
             <Button variant="quiet" onClick={() => setDismissing(null)}>

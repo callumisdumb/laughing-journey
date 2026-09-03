@@ -1,7 +1,7 @@
 'use client';
 
 import { CONTEXT, MESSAGE_KEYS, NAMESPACES, defaultMessage, formatMessage, messageArguments, replaceOverrides, resetAllOverrides, resetOverride, sampleArguments, sessionOverrides, setOverride, useT, validateMessage, type MessageKey } from '@mas/messages';
-import { Button, Dialog, EmptyState, Pill, SelectField, Switch, Table, TableWrap, TextField, TextareaField, useToast } from '@mas/ui';
+import { Button, ConfirmDialog, EmptyState, Pill, SelectField, Switch, Table, TableWrap, TextField, TextareaField, useToast } from '@mas/ui';
 import { Download, RotateCcw, Upload } from 'lucide-react';
 import { useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useAppStore } from '@/lib/store';
@@ -253,23 +253,15 @@ export function Copy() {
         </TableWrap>
       )}
       {matches.length > shown.length ? <p className={styles.summary}>{t('admin.copy.truncated', { limit: LIMIT })}</p> : null}
-      <Dialog
+      <ConfirmDialog
         open={resetAllOpen}
         onClose={() => setResetAllOpen(false)}
+        onConfirm={resetAll}
         title={t('admin.copy.resetAllDialog.title')}
-        actions={
-          <>
-            <Button variant="quiet" onClick={() => setResetAllOpen(false)}>
-              {t('admin.copy.editor.cancel')}
-            </Button>
-            <Button variant="primary" onClick={resetAll}>
-              {t('admin.copy.resetAllDialog.confirm')}
-            </Button>
-          </>
-        }
+        confirmLabel={t('admin.copy.resetAllDialog.confirm')}
       >
         <p>{t('admin.copy.resetAllDialog.text', { count: changedCount })}</p>
-      </Dialog>
+      </ConfirmDialog>
     </>
   );
 }

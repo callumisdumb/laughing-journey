@@ -2,7 +2,7 @@
 
 import { MESSAGE_KEYS, sessionOverrides, useT, type Translator } from '@mas/messages';
 import { DEFAULT_CONFIG, type Config, type Dataset } from '@mas/domain';
-import { Button, Dialog, Sheet, SheetBody, SheetHead, TextField, useToast } from '@mas/ui';
+import { Button, ConfirmDialog, Sheet, SheetBody, SheetHead, TextField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RotateCcw } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -141,23 +141,15 @@ export function Overview() {
       </div>
 
       {resetOpen ? (
-        <Dialog
+        <ConfirmDialog
           open
           onClose={() => setResetOpen(false)}
+          onConfirm={confirmReset}
           title={t('admin.overview.reset.dialogTitle')}
-          actions={
-            <>
-              <Button variant="quiet" onClick={() => setResetOpen(false)}>
-                {t('common.actions.cancel')}
-              </Button>
-              <Button variant="danger" onClick={confirmReset}>
-                {t('common.actions.resetDemo')}
-              </Button>
-            </>
-          }
+          confirmLabel={t('common.actions.resetDemo')}
         >
           <p>{t('admin.overview.reset.dialogText')}</p>
-        </Dialog>
+        </ConfirmDialog>
       ) : null}
     </>
   );

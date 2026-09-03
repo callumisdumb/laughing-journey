@@ -6,6 +6,7 @@ import { Button, CheckboxField, Dialog, RadioGroup, SelectField, TextField, Text
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { formErrorSummary } from '@/lib/formErrors';
 import { listedNames } from '@/lib/selectors';
 import { MustNotReceiveFields } from './MustNotReceiveFields';
 
@@ -78,6 +79,7 @@ export function MappaReferralDialog({ open, onClose, process }: { open: boolean;
       onClose={onClose}
       title={t('forms.mappaReferral.title')}
       size="lg"
+      errors={formErrorSummary(errors)}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>

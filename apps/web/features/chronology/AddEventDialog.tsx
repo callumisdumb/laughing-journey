@@ -8,6 +8,7 @@ import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { formErrorSummary } from '@/lib/formErrors';
 
 /** Built with the translator so every validation message comes from the catalogue and follows an Admin override. */
 function buildSchema(t: Translator) {
@@ -109,6 +110,7 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
       onClose={onClose}
       title={t('chronology.addEvent.title')}
       size="lg"
+      errors={formErrorSummary(errors)}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>
