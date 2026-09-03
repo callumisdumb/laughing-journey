@@ -186,6 +186,8 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
     const shares: SharingRecord[] = meeting!.distribution.map((d) => ({ id: newId('shr'), synthetic: true, processId: process!.id, subjectId: meeting!.subjectIds[0] ?? '', stage: process!.stage, recipient: { userId: d.recipientUserId, name: d.recipientName, agency: d.agency, role: d.role }, detailLevel: d.detailLevel, fields: d.fields, lawfulBasisId: lb.id, channel: 'in-app' as const, status: 'sent' as const, createdAt: now.toISOString(), sentAt: now.toISOString(), reason: d.reason, createdByUserId: user!.id, createdByName: userName(user!), summary: `Minute of ${meeting!.title} (${DETAIL_LEVEL_LABELS[d.detailLevel]})` }));
     for (const s of shares) upsert('sharingRecords', s);
     update({ minute: { ...meeting!.minute, status: 'distributed', distributedAt: now.toISOString() }, distribution: meeting!.distribution.map((d, i) => ({ ...d, sharingRecordId: shares[i]?.id })) });
+    const recordClocks = process!.clocks.map((c) => (c.ruleId === 'cp.cppm.record.distribute' && !c.completedAt ? { ...c, completedAt: now.toISOString(), note: 'Record distributed from the meeting workspace' } : c));
+    if (recordClocks.some((c, i) => c !== process!.clocks[i])) upsert('processes', { ...process!, clocks: recordClocks });
     audit({ act: 'share', targetType: 'meeting', targetId: meeting!.id, targetLabel: `Minute distributed to ${shares.length} recipients`, processId: process!.id, restricted: process!.classification === 'restricted' });
     toast({ title: `Minute distributed to ${shares.length} recipients`, text: 'Each share carries the lawful basis and the reason the recipient needs it.', tone: 'success' });
   }

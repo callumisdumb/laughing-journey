@@ -350,14 +350,33 @@ The proxy blocked www.legislation.gov.uk, www.gov.uk, www.gov.scot and www.mygov
 ### 6.2 Scottish bank holidays 2025 to 2027
 - Source of truth: the gov.uk bank holidays feed, division "scotland" (https://www.gov.uk/bank-holidays.json); listing at https://www.gov.scot/publications/bank-holidays/. Both blocked through the proxy; dates taken from published listings (ukpublicholidays.co.uk, qppstudio.net, ukholidaysinfo.uk) found on 2026-09-03.
 - Finding: 2026 has ten Scottish bank holidays including the one-off Monday 15 June 2026 for the men's World Cup; 2027 returns to nine with 4 January substituting for 2 January (a Saturday), 27 and 28 December substituting for Christmas Day and Boxing Day. 2025: 1 and 2 January, 18 April, 5 and 26 May, 4 August, 1 December (St Andrew's Day substitute), 25 and 26 December.
-- Confidence: High for the standard dates; Verify the feed once a year. Council local holidays are a separate editable list and are fictional.
+- Update 03 Sep 2026: the product owner verified the dates against the gov.uk Scotland feed, including the one-off 15 June 2026. The feed's Scotland division is committed as `packages/domain/src/config/bank-holidays.json` and refreshed with `pnpm holidays:sync` (D-037). Council local holidays are a separate editable list and are fictional.
 
 ### 6.3 Place names (renames)
-- Method: web search for each candidate on 2026-09-03; a candidate was rejected if any real place, business or property carried the name.
-- Rejected: Auchenvale (a farm at Colmonell, Ayrshire, in the 1882 county directory); Cairnbrae (a natural burial ground near Dundee and a camp at Crieff).
-- Adopted, no search footprint found: Auchentorran (replaces Auchentorran), Portlennan (replaces Portlennan), Dunlarrick (replaces Dunlarrick), Craiglarrick (replaces Craiglarrick). Whinbrae House replaces Whinbrae House; "Whinbrae" appears only as a holiday cottage in Bridlington and a house name in Ilkley, neither a care home.
+- Method: web search for each candidate on 2026-09-03; a candidate was rejected if any real place, business or property carried the name. The brief (`docs/BRIEF.md`) keeps the original names as the source document; every scenario README, `docs/DEMO.md`, the seed, the tests and the screenshots use the new names.
+- Renames, old name to new name:
+  - Kilbrannan to Auchentorran (a town; "Auchenvale" was rejected: a farm at Colmonell, Ayrshire, in the 1882 county directory; "Auchentorran" has no search footprint)
+  - Portnellan to Portlennan (a coastal town; no search footprint)
+  - Glenmoray to Dunlarrick (a town; no search footprint)
+  - Braeside to Craiglarrick (a town; "Cairnbrae" was rejected: a natural burial ground near Dundee and a camp at Crieff; "Craiglarrick" has no search footprint)
+  - Rowanbank Care Home to Whinbrae House (the LSI care home; "Whinbrae" appears only as a holiday cottage in Bridlington and a house name in Ilkley, neither a care home; the provider in the seed is "Whinbrae House Care (Scotland) Ltd")
 - Kept: Ardvale, Clydeshore.
 
-### 6.4 New CP clocks (product owner values)
-- `cp.cppm.notice` 5 calendar days before the CPPM, `cp.coregroup.escalate` 3 calendar days, `cp.prebirth.review` 3 months after the birth (advisory): values supplied by the product owner on 03 Sep 2026. The 2021 national guidance (Part 3 and Appendix D) requires invitations and reports in advance of a CPPM and escalation of core group concerns to the chair but was not re-read for exact figures through the proxy. Confidence: Verify (notice), Local (escalation), Advisory (post-birth review).
-- `cp.cppm.review.first`: corrected to the Appendix D value of 6 months with no local override.
+### 6.4 CP clocks from Appendix D, read live by the product owner (03 Sep 2026)
+- Source: National Guidance for Child Protection in Scotland 2021 (updated 2023), Appendix D, read live by the product owner on 03 Sep 2026 (the session proxy blocks gov.scot, so the values below are as supplied from that reading).
+- Findings, all High:
+  - `cp.cppm.notice`: invitations, reports and notice to the family no later than 5 calendar days before the CPPM (counts back from the meeting date).
+  - `cp.coregroup.escalate`: a significant change or concern within the plan is escalated within 3 calendar days.
+  - `cp.coregroup.first`: first core group within 15 working days of the CPPM (confirmed).
+  - `cp.prebirth.review`: review of the pre-birth plan within 3 months of the pre-birth CPPM; after the birth the review may be deferred on professional judgement with the reason recorded (a due date override in the product).
+  - `cp.cppm.inquorate.reconvene`: an inquorate CPPM is reconvened within 10 working days.
+  - `cp.cppm.record.distribute`: the record of the CPPM is distributed within 10 working days; distributing the minute from the workspace completes it and the minutes pack shows the deadline.
+  - `cp.cppm.initial`: 28 calendar days following a child protection investigation; the "concern being raised" framing belongs to the unborn baby row (`cp.prebirth.cppm`).
+  - `cp.cppm.review.first`: 6 months, no local override.
+
+### 6.5 Adults with Incapacity: interim orders
+- Source: Adults with Incapacity Reform: Expert Working Group minutes, April 2026 (gov.scot, published June 2026), cited by the product owner on 03 Sep 2026; statutory limits from the Adults with Incapacity (Scotland) Act 2000 s57 as amended by the Adult Support and Protection (Scotland) Act 2007 s60.
+- Finding: the minutes record the Group's concern about prolonged interim orders; the 3 month default and 6 month maximum are statutory. `awi.interim.warning` cites the minutes and no longer carries a Verify flag.
+
+### 6.6 Playwright
+- `@playwright/test` 1.62.1 (npm, 03 Sep 2026): its Chromium (v1234, Chrome for Testing 151) could not be downloaded through the session proxy from either the default host or the Microsoft mirror, so the suite runs in the container against the preinstalled Chromium build 1194 through `PLAYWRIGHT_CHROMIUM_PATH`; verified with a passing spec. On macOS run `pnpm exec playwright install chromium` once.

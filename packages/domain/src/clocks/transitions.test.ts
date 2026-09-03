@@ -17,9 +17,9 @@ describe('meeting transitions', () => {
   it('a CPPM completes the initial clock and starts core group and review clocks', () => {
     const r = applyMeetingTransition([{ id: 'c1', ruleId: 'cp.cppm.initial', triggeredAt: '2026-05-20T11:30:00+01:00' }], 'cppm', '2026-06-12T10:00:00+01:00', newId);
     expect(r.completed).toEqual(['cp.cppm.initial']);
-    expect(r.started.sort()).toEqual(['cp.coregroup.first', 'cp.cppm.review.first']);
+    expect(r.started.sort()).toEqual(['cp.coregroup.first', 'cp.cppm.record.distribute', 'cp.cppm.review.first']);
     expect(r.clocks.find((c) => c.ruleId === 'cp.cppm.initial')?.completedAt).toBe('2026-06-12T10:00:00+01:00');
-    expect(r.clocks.length).toBe(3);
+    expect(r.clocks.length).toBe(4);
   });
   it('does not start a clock that is already running, and leaves completed ones alone', () => {
     const r = applyMeetingTransition([{ id: 'c1', ruleId: 'mappa.level2.review', triggeredAt: '2026-07-14T10:00:00+01:00', completedAt: '2026-08-01T10:00:00+01:00' }, { id: 'c2', ruleId: 'mappa.level2.review', triggeredAt: '2026-08-01T10:00:00+01:00' }], 'mappa-level2', '2026-10-06T10:00:00+01:00', newId);

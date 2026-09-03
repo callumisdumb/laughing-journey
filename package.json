@@ -20,6 +20,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "seed:export": "pnpm --filter @mas/mock-data seed:export",
+    "holidays:sync": "node tooling/holidays/sync.mjs",
     "docs:data-model": "pnpm --filter @mas/domain docs:data-model",
     "desktop:tauri:dev": "pnpm --filter @mas/desktop-tauri dev",
     "desktop:tauri:build": "pnpm --filter @mas/web build && pnpm --filter @mas/desktop-tauri build",

@@ -161,7 +161,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                   <SheetBody>
                     <div className={styles.clockList}>
                       {clocks.map((c) => (
-                        <ClockNumeral key={c.triggerId} daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={`Due ${formatDate(c.dueAt)}. ${c.overridden ? c.overrideReason : c.sourceRef}${c.todoVerify ? ' (local value, to verify)' : ''}`} size="sm" />
+                        <ClockNumeral key={c.triggerId} daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={`Due ${formatDate(c.dueAt)}. ${c.overridden ? c.overrideReason : c.sourceRef}${c.todoVerify ? ' (local value, to verify)' : ''}${c.deferrable && c.deferralNote ? ` ${c.deferralNote}.` : ''}`} size="sm" />
                       ))}
                     </div>
                   </SheetBody>

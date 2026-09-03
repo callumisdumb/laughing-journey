@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCIES, AGENCY_LABELS, AGENCY_SHORT, CLASSIFICATION_LABELS, DETAIL_LEVEL_LABELS, MEETING_TYPE_LABELS, PROCESS_LABELS, VIEWS_KIND_LABELS, formatDate, formatDateTime, formatTime, type Action, type Dataset, type LawfulBasisRecord, type Meeting } from '@mas/domain';
+import { AGENCIES, AGENCY_LABELS, AGENCY_SHORT, CLASSIFICATION_LABELS, DETAIL_LEVEL_LABELS, MEETING_TYPE_LABELS, PROCESS_LABELS, VIEWS_KIND_LABELS, formatDate, formatDateTime, formatTime, type Action, type Dataset, type LawfulBasisRecord, type Meeting, dueDateFor, findClockRule, localDateOf } from '@mas/domain';
 import { Button, ClassificationBanner, RestrictedState } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
@@ -106,7 +106,8 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
 
   if (!user) return null;
   if (!meeting || !process) {
-    return (
+  
+  return (
       <div className="page">
         <RestrictedState title="Meeting not found" reason="This meeting does not exist in the demo dataset." breakGlass="unavailable" />
         <AppLink href="/meetings">All meetings</AppLink>
@@ -399,6 +400,10 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
   const pages = paginate(sections);
   const totalPages = pages.length;
 
+  const recordRule = process.type === 'cp' ? findClockRule(config.clockRules, 'cp.cppm.record.distribute') : undefined;
+  const recordTrigger = process.clocks.find((c) => c.ruleId === 'cp.cppm.record.distribute' && !c.completedAt);
+  const recordDeadline = recordRule && recordTrigger ? `${formatDate(localDateOf(dueDateFor(recordRule, recordTrigger.triggeredAt, { bankHolidays: config.bankHolidays, councilHolidays: config.councilHolidays })))} (10 working days after the meeting, Appendix D)` : recordRule && process.clocks.some((c) => c.ruleId === 'cp.cppm.record.distribute' && c.completedAt) ? 'Distributed within the 10 working days (Appendix D)' : null;
+
   const head = (page: number) => (
     <div className={styles.head}>
       <span>
@@ -480,6 +485,12 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
                 <div className={styles.metaRow}>
                   <dt>Minute status</dt>
                   <dd>{minuteStatusLine(meeting.minute, meeting.distribution.length)}</dd>
+                  {recordDeadline ? (
+                    <>
+                      <dt>Record due</dt>
+                      <dd>{recordDeadline}</dd>
+                    </>
+                  ) : null}
                 </div>
               </dl>
             </>

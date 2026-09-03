@@ -199,6 +199,7 @@ export function seedAidenBoyle(ctx: BuildContext): void {
       { id: 'clk_aiden_cg', ruleId: 'cp.coregroup.first', triggeredAt: at('2026-06-12', '10:00'), completedAt: at('2026-07-01', '14:00'), note: 'First core group on 1 Jul' },
       { id: 'clk_aiden_review', ruleId: 'cp.cppm.review.first', triggeredAt: at('2026-06-12', '10:00'), note: 'Statutory maximum 6 months. The review was brought forward to 14 Sep by the CPPM decision because the plan depends on separation being maintained' },
       { id: 'clk_aiden_notice', ruleId: 'cp.cppm.notice', triggeredAt: at('2026-09-14', '10:00'), note: 'Notice of the review CPPM to the family and invitees: counts back from the meeting date' },
+      { id: 'clk_aiden_record', ruleId: 'cp.cppm.record.distribute', triggeredAt: at('2026-06-12', '10:00'), completedAt: at('2026-06-19', '15:00'), note: 'Record of the initial CPPM distributed on working day 5' },
       { id: 'clk_aiden_escalate', ruleId: 'cp.coregroup.escalate', triggeredAt: at('2026-08-05', '14:00'), completedAt: at('2026-08-07', '11:00'), note: 'Core group 2 could not agree on contact; escalated to the chair on 7 Aug' },
     ],
     linkedProcessIds: [],

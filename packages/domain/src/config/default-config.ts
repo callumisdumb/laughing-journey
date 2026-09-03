@@ -1,4 +1,5 @@
 import { CLOCK_RULES } from '../clocks/rules';
+import bankHolidayFeed from './bank-holidays.json';
 import { EXCLUSIONS } from '../need-to-know/exclusions';
 import { NEED_TO_KNOW_ROWS } from '../need-to-know/resolve';
 import type { Config } from '../schemas/config';
@@ -9,41 +10,13 @@ import { DEFAULT_LABELS } from './labels';
  * TODO(verify): confirm against the Scottish Government published list each year. Admin can edit.
  */
 /**
- * Scottish bank holidays, 2025 to 2027, as published on the gov.uk bank holidays feed
- * (https://www.gov.uk/bank-holidays.json, division "scotland"). The feed was unreachable through the
- * session proxy on 03 Sep 2026, so the dates are from published listings and the feed should be re-read
- * once a year (see docs/RESEARCH.md section 1). 15 Jun 2026 is the one-off men's World Cup holiday.
+ * Scottish bank holidays from the gov.uk bank holidays feed (https://www.gov.uk/bank-holidays.json),
+ * committed as a fixture (bank-holidays.json, "scotland" division only) and refreshed with
+ * `pnpm holidays:sync`. Verified against the feed on 03 Sep 2026, including the one-off 15 June 2026.
  */
-export const BANK_HOLIDAYS_2026_2027: string[] = [
-  '2025-01-01',
-  '2025-01-02',
-  '2025-04-18',
-  '2025-05-05',
-  '2025-05-26',
-  '2025-08-04',
-  '2025-12-01',
-  '2025-12-25',
-  '2025-12-26',
-  '2026-01-01',
-  '2026-01-02',
-  '2026-04-03',
-  '2026-05-04',
-  '2026-05-25',
-  '2026-06-15',
-  '2026-08-03',
-  '2026-11-30',
-  '2026-12-25',
-  '2026-12-28',
-  '2027-01-01',
-  '2027-01-04',
-  '2027-03-26',
-  '2027-05-03',
-  '2027-05-31',
-  '2027-08-02',
-  '2027-11-30',
-  '2027-12-27',
-  '2027-12-28',
-];
+export const BANK_HOLIDAYS: string[] = bankHolidayFeed.scotland.events.map((e) => e.date);
+/** @deprecated use BANK_HOLIDAYS */
+export const BANK_HOLIDAYS_2026_2027 = BANK_HOLIDAYS;
 
 export const DEFAULT_CONFIG: Config = {
   area: {
@@ -83,7 +56,7 @@ export const DEFAULT_CONFIG: Config = {
     'For the functions under sections 11, 14, 16 and 18 (records, visits under warrant, assessment and removal orders): a registered social worker, occupational therapist or nurse with at least 12 months relevant experience',
     'Source: the Adult Support and Protection (Scotland) Act 2007 (Restriction on the Authorisation of Council Officers) Order 2008 (SSI 2008/306), in force 29 October 2008; wording to verify against the Order and any later amendment',
   ],
-  bankHolidays: BANK_HOLIDAYS_2026_2027,
+  bankHolidays: BANK_HOLIDAYS,
   /** Clydeshore local holidays (fictional): a spring and a September Monday, as Ayrshire councils commonly take. Editable in Admin. */
   councilHolidays: ['2026-04-13', '2026-09-21', '2027-04-12', '2027-09-20'],
   breakGlassHours: 4,

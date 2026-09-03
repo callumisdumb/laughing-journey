@@ -20,6 +20,9 @@ export const clockRuleSchema = z.object({
   localNote: z.string().optional(),
   /** Where the value is unverified in a primary source; surfaces a marker in Admin. */
   todoVerify: z.boolean().optional(),
+  /** The rule may be deferred on professional judgement (recorded as a due date override with a reason). */
+  deferrable: z.boolean().optional(),
+  deferralNote: z.string().optional(),
 });
 export type ClockRule = z.infer<typeof clockRuleSchema>;
 

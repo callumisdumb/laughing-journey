@@ -20,6 +20,9 @@ export interface ClockResult {
   overridden: boolean;
   overrideReason?: string;
   todoVerify: boolean;
+  /** The rule allows a professional-judgement deferral, recorded as an override with a reason. */
+  deferrable: boolean;
+  deferralNote?: string;
 }
 
 export interface ClockOptions {
@@ -101,6 +104,8 @@ export function computeClock(
     overridden,
     overrideReason: trigger.overrideReason,
     todoVerify: rule.todoVerify ?? false,
+    deferrable: rule.deferrable ?? false,
+    deferralNote: rule.deferralNote,
   };
 }
 
