@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCY_SHORT, DETAIL_LEVEL_LABELS, PROCESS_SHORT, ROLE_DEFINITIONS, formatDate, formatDateTime, resolveNeedToKnow, contextFor, stageLabel, type InformationRequest, type Process, type User } from '@mas/domain';
+import { AGENCY_SHORT, DETAIL_LEVEL_LABELS, EXCLUSION_PARTY_LABELS, PROCESS_SHORT, ROLE_DEFINITIONS, formatDate, formatDateTime, isExcludedParty, resolveNeedToKnow, contextFor, stageLabel, type InformationRequest, type Process, type User } from '@mas/domain';
 import { AgencyMark, Button, CheckboxField, Dialog, EmptyState, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Table, TableWrap, Tabs, TextareaField, useToast } from '@mas/ui';
 import { Eye, Lock } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -252,6 +252,7 @@ function Preview({ process, viewer }: { process: Process; viewer: User }) {
   const subject = personById(data, process.subjectIds[0]);
   const res = resolveNeedToKnow(contextFor(process), config.needToKnow, config.exclusions);
   const rows = res.recipients.filter((r) => r.agency === viewer.agency && (r.role === 'any' || r.role === viewer.roleId));
+  const excluded = isExcludedParty(process, { userId: viewer.id }, config.exclusions, process.stage, data.relationships);
   return (
     <div className={styles.previewCard} aria-live="polite">
       <div className={styles.previewLevel}>
@@ -285,6 +286,14 @@ function Preview({ process, viewer }: { process: Process; viewer: User }) {
           <dt>Rules that apply</dt>
           <dd>{rows.length === 0 ? (access.member ? 'Case membership' : 'None; default deny') : rows.map((r) => `${r.rowId} (${r.detailLevel})`).join('; ')}</dd>
         </div>
+        {excluded ? (
+          <div className={styles.previewRow}>
+            <dt>Excluded party</dt>
+            <dd>
+              {userName(viewer)} is recorded on this case as {excluded.party.label.toLowerCase()} ({EXCLUSION_PARTY_LABELS[excluded.party.party].toLowerCase()}). {excluded.party.reason ?? excluded.exclusion.reason}. This cannot be lifted here.
+            </dd>
+          </div>
+        ) : null}
         <div className={styles.previewRow}>
           <dt>Exclusions at this stage</dt>
           <dd>{res.exclusions.map((e) => e.label).join('; ') || 'None'}</dd>

@@ -107,7 +107,7 @@ export function meetingsForUser(data: Dataset, user: User): Meeting[] {
 
 export function accessForUser(data: Dataset, config: Config, user: User, process: Process, grants: BreakGlassGrant[], now: Date): AccessResult {
   const active = grants.filter((g) => g.processId === process.id && g.expiresAt > now.toISOString()).map((g) => g.processId);
-  return accessFor(user, process, { rows: config.needToKnow, activeBreakGlass: active });
+  return accessFor(user, process, { rows: config.needToKnow, exclusions: config.exclusions, activeBreakGlass: active });
 }
 
 export interface InvolvedPerson {

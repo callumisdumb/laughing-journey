@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCIES, AGENCY_SHORT, DETAIL_LEVELS, DETAIL_LEVEL_LABELS, MEETING_TYPE_LABELS, PROCESS_SHORT, ROLE_DEFINITIONS, applyMeetingTransition, contextFor, formatDate, formatDateTime, formatTime, resolveNeedToKnow, type Action, type Agency, type DetailLevel, type LawfulBasisRecord, type Meeting, type SharingRecord } from '@mas/domain';
+import { AGENCIES, AGENCY_SHORT, DETAIL_LEVELS, DETAIL_LEVEL_LABELS, MEETING_TYPE_LABELS, PROCESS_SHORT, ROLE_DEFINITIONS, applyMeetingTransition, contextFor, formatDate, formatDateTime, formatTime, isExcludedParty, resolveNeedToKnow, type Action, type Agency, type DetailLevel, type LawfulBasisRecord, type Meeting, type SharingRecord } from '@mas/domain';
 import { AgencyMark, Button, CheckboxField, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
 import { CheckCircle2, Maximize2, Minimize2, Play, Printer, Send, UserPlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -86,16 +86,25 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   function generateInvites() {
     const res = resolveNeedToKnow(contextFor(process!), config.needToKnow, config.exclusions);
     const additions: Meeting['invitees'] = [];
+    // Anyone holding an excluded party role on the case-role register is skipped, whatever their agency row says.
+    const excludedByRole = new Set<string>();
     for (const r of res.recipients) {
       if (r.detailLevel !== 'full') continue;
       const candidates = data.users.filter((u) => u.agency === r.agency && (r.role === 'any' ? true : u.roleId === r.role) && (u.caseMemberships.includes(process!.id) || r.role !== 'any'));
-      for (const u of candidates.slice(0, r.role === 'any' ? 1 : 2)) {
+      const eligible = candidates.filter((u) => {
+        const hit = isExcludedParty(process!, { userId: u.id }, config.exclusions, process!.stage, data.relationships);
+        if (hit) excludedByRole.add(u.id);
+        return !hit;
+      });
+      for (const u of eligible.slice(0, r.role === 'any' ? 1 : 2)) {
         if (meeting!.invitees.some((i) => i.userId === u.id) || additions.some((i) => i.userId === u.id)) continue;
         additions.push({ userId: u.id, name: userName(u), agency: u.agency, role: ROLE_DEFINITIONS[u.roleId].label, required: true, attendance: 'invited', reason: `${r.label}: ${r.reason}`, needToKnowRowId: r.rowId });
       }
     }
     update({ invitees: [...meeting!.invitees, ...additions] });
-    toast({ title: additions.length === 0 ? 'Invite list already complete' : `${additions.length} ${additions.length === 1 ? 'invitee' : 'invitees'} added from need-to-know`, text: res.exclusions.length > 0 ? `Excluded by rule: ${res.exclusions.map((e) => e.label).join('; ')}.` : 'Every invitee carries the reason they are invited.', tone: 'success' });
+    const ruleText = res.exclusions.length > 0 ? `Excluded by rule: ${res.exclusions.map((e) => e.label).join('; ')}.` : 'Every invitee carries the reason they are invited.';
+    const roleText = excludedByRole.size > 0 ? ` ${excludedByRole.size} ${excludedByRole.size === 1 ? 'person was' : 'people were'} left off because of their case role.` : '';
+    toast({ title: additions.length === 0 ? 'Invite list already complete' : `${additions.length} ${additions.length === 1 ? 'invitee' : 'invitees'} added from need-to-know`, text: `${ruleText}${roleText}`, tone: 'success' });
   }
 
   function sendRequest() {
@@ -148,18 +157,27 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   function generateDistribution() {
     const res = resolveNeedToKnow(contextFor(process!), config.needToKnow, config.exclusions);
     const entries: Meeting['distribution'] = [];
+    // Anyone holding an excluded party role on the case-role register never reaches the distribution list.
+    const excludedByRole = new Set<string>();
+    const excluded = (userId: string): boolean => {
+      const hit = isExcludedParty(process!, { userId }, config.exclusions, process!.stage, data.relationships);
+      if (hit) excludedByRole.add(userId);
+      return hit !== null;
+    };
     for (const i of meeting!.invitees) {
       if (!i.userId || entries.some((e) => e.recipientUserId === i.userId) || meeting!.distribution.some((e) => e.recipientUserId === i.userId)) continue;
+      if (excluded(i.userId)) continue;
       entries.push({ id: newId('dist'), recipientName: i.name, recipientUserId: i.userId, agency: i.agency, role: i.role, detailLevel: 'full', reason: 'Attendee', });
     }
     for (const r of res.recipients) {
       if (r.detailLevel === 'full') continue;
-      const u = data.users.find((x) => x.agency === r.agency && (r.role === 'any' ? true : x.roleId === r.role));
+      const u = data.users.filter((x) => x.agency === r.agency && (r.role === 'any' ? true : x.roleId === r.role)).find((x) => !excluded(x.id));
       if (!u || entries.some((e) => e.recipientUserId === u.id) || meeting!.distribution.some((e) => e.recipientUserId === u.id)) continue;
       entries.push({ id: newId('dist'), recipientName: userName(u), recipientUserId: u.id, agency: u.agency, role: ROLE_DEFINITIONS[u.roleId].label, detailLevel: r.detailLevel, fields: r.fields, reason: `${r.label}: ${r.reason}` });
     }
     update({ distribution: [...meeting!.distribution, ...entries] });
-    toast({ title: `${entries.length} recipients added`, text: `Detail level per recipient comes from the need-to-know rows for the ${PROCESS_SHORT[process!.type]} ${process!.stage} stage. Exclusions applied: ${res.exclusions.map((e) => e.label).join('; ') || 'none'}.`, tone: 'success' });
+    const roleText = excludedByRole.size > 0 ? ` ${excludedByRole.size} ${excludedByRole.size === 1 ? 'person was' : 'people were'} left off because of their case role.` : '';
+    toast({ title: `${entries.length} recipients added`, text: `Detail level per recipient comes from the need-to-know rows for the ${PROCESS_SHORT[process!.type]} ${process!.stage} stage. Exclusions applied: ${res.exclusions.map((e) => e.label).join('; ') || 'none'}.${roleText}`, tone: 'success' });
   }
 
   function distribute() {

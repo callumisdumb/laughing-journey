@@ -1,12 +1,12 @@
 'use client';
 
-import { AGENCY_SHORT, DETAIL_LEVEL_LABELS, ROLE_DEFINITIONS, contextFor, formatDateTime, resolveNeedToKnow, stageLabel, type Process } from '@mas/domain';
+import { AGENCY_SHORT, DETAIL_LEVEL_LABELS, EXCLUSION_PARTY_LABELS, ROLE_DEFINITIONS, contextFor, formatDateTime, partyRegister, resolveNeedToKnow, stageLabel, type CaseParty, type Process } from '@mas/domain';
 import { AgencyMark, IconButton, Pill, RiskBand } from '@mas/ui';
 import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useAppearance } from '@/lib/appearance';
 import { useSelection } from '@/lib/selection';
-import { accessForUser, fullName, membersByAgency, personById, processById, processesInvolving, userName } from '@/lib/selectors';
+import { accessForUser, fullName, membersByAgency, personById, processById, processesInvolving, userById, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
 import styles from './ContextDrawer.module.css';
 
@@ -60,8 +60,17 @@ function WhoIsInvolved({ processes }: { processes: Process[] }) {
 }
 
 function NeedToKnow({ process }: { process: Process }) {
+  const data = useData();
   const config = useConfig();
   const res = resolveNeedToKnow(contextFor(process), config.needToKnow, config.exclusions);
+  // The case-role register: who actually holds each excluded party role on this process.
+  const register = partyRegister(process, data.relationships);
+  const partyName = (p: CaseParty): string | undefined => {
+    const person = personById(data, p.personId);
+    if (person) return fullName(person);
+    const u = userById(data, p.userId);
+    return u ? userName(u) : undefined;
+  };
   return (
     <div>
       <p className={styles.empty}>
@@ -80,15 +89,35 @@ function NeedToKnow({ process }: { process: Process }) {
           </span>
         </div>
       ))}
-      {res.exclusions.map((e) => (
-        <div key={e.id} className={styles.exclusion}>
-          <Ban size={14} aria-hidden="true" />
-          <span>
-            <strong>Must not receive: {e.label}.</strong> {e.reason}
-            {e.liftableBy ? ` Can be lifted only by: ${e.liftableBy}.` : ''}
-          </span>
-        </div>
-      ))}
+      {res.exclusions.map((e) => {
+        const holders = register.filter((p) => p.party === e.party);
+        if (holders.length === 0) {
+          return (
+            <div key={e.id} className={styles.exclusion}>
+              <Ban size={14} aria-hidden="true" />
+              <span>
+                <strong>Must not receive: {e.label}.</strong> {e.reason}. Nobody is recorded in this role yet.
+                {e.liftableBy ? ` Can be lifted only by: ${e.liftableBy}.` : ''}
+              </span>
+            </div>
+          );
+        }
+        return holders.map((p) => {
+          const who = partyName(p);
+          const notes = [who ? p.label : undefined, p.reason ?? e.reason].filter(Boolean).join('. ');
+          return (
+            <div key={`${e.id}:${p.personId ?? p.userId ?? p.label}`} className={styles.exclusion}>
+              <Ban size={14} aria-hidden="true" />
+              <span>
+                <strong>
+                  Must not receive: {who ?? p.label} ({EXCLUSION_PARTY_LABELS[p.party]}).
+                </strong>{' '}
+                {notes}. Source: {p.source}.{e.liftableBy ? ` Can be lifted only by: ${e.liftableBy}.` : ''}
+              </span>
+            </div>
+          );
+        });
+      })}
     </div>
   );
 }

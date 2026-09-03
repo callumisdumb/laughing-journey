@@ -8,6 +8,18 @@ Source of truth is `packages/domain/src/need-to-know/*.ts`. This document is kep
 - Every notification shows the recipient why they are receiving it and the lawful basis.
 - The subject's own views section is visible to the subject in full; subject access is designed as a "what the person would see" preview only.
 
+## Case-role register
+
+Hard exclusions name a party, not a person: "the perpetrator", "the perpetrator's family or associates", "victims". The case-role register on each process (`parties` in `packages/domain/src/schemas/process.ts`) says who holds those roles. A party entry carries a person id or a user id, the party key, a plain-language label ("Perpetrator (named in the referral)"), the date it applies from, where it came from and, for hand-recorded entries, the reason.
+
+Entries come from three sources and are combined by `partyRegister` in `packages/domain/src/need-to-know/parties.ts`:
+
+- `referral`: read from the case record. For MARAC the referral's `perpetratorPersonId` is the perpetrator. For MAPPA the `victimPersonIds` on the case are victims.
+- `relationship`: derived from relationship records. Anyone recorded as the MARAC perpetrator's partner, former partner, sibling, parent, child, grandparent, grandchild, aunt or uncle, nephew or niece, relative, household member or associate, in either direction, is one of the perpetrator's family or associates. The victim and her children, whether listed in the referral or recorded as her children, are never derived as associates.
+- `manual`: recorded by hand with a reason, for example a persona who is the perpetrator's cousin, or the alleged perpetrator at an ASP case conference. ASP and child protection record nothing automatically: the alleged perpetrator and the parents-if-risk decision are recorded by hand when they apply.
+
+`isExcludedParty(process, { personId | userId })` matches a candidate against the register and the exclusion rows in force for the process type and stage. `accessFor` runs it first, before membership, roles or matrix rows, so an excluded party gets nothing (not even presence) and no break-glass. Invite and distribution generators skip excluded candidates and say how many were left off. The drawer lists the register under "Must not receive". Explicit entries win over derived ones with the same person and party. Hard exclusions cannot be lifted in the UI; where a rule carries `liftableBy`, the lift is a recorded decision on the case, not an edit to the register.
+
 ## ASP
 
 | Stage | Full | Summary | Fields | Must not receive |

@@ -6,6 +6,7 @@ import { CP_ROWS } from './cp';
 import { EXCLUSIONS } from './exclusions';
 import { MAPPA_ROWS } from './mappa';
 import { MARAC_ROWS } from './marac';
+import { applicableExclusions } from './parties';
 
 export const NEED_TO_KNOW_ROWS: NeedToKnowRow[] = [...ASP_ROWS, ...CP_ROWS, ...MARAC_ROWS, ...MAPPA_ROWS, ...AWI_ROWS];
 
@@ -69,10 +70,7 @@ export function resolveNeedToKnow(
       lawfulBasisHint: row.lawfulBasisHint,
     });
   }
-  const applicableExclusions = exclusions.filter(
-    (e) => e.process === ctx.process && (e.stage === '*' || e.stage === ctx.stage),
-  );
-  return { recipients, exclusions: applicableExclusions };
+  return { recipients, exclusions: applicableExclusions(ctx.process, ctx.stage, exclusions) };
 }
 
 export interface AudienceMatch {

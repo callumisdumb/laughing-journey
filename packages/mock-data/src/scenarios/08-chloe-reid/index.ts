@@ -6,7 +6,7 @@
  * the mother in the pre-birth process at the same time. The pre-birth CPPM is clocked to 28 weeks
  * gestation (4 Sep), earlier than the 28 calendar day rule would give.
  */
-import type { Agency, Process, RiskAssessment } from '@mas/domain';
+import { partiesFromRoles, type Agency, type Process, type RiskAssessment } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
 import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
@@ -256,7 +256,7 @@ export function seedChloeReid(ctx: BuildContext): void {
     viewsRecordIds: [],
     riskAssessmentIds: [],
     flags: { schoolAge: true, preSchool: false, jii: false, housingRelevant: false, unborn: false },
-    excludedUserIds: [],
+    parties: [],
     detail: {
       concern: {
         receivedAt: at('2019-02-15', '20:45'),
@@ -335,7 +335,7 @@ export function seedChloeReid(ctx: BuildContext): void {
     viewsRecordIds: ['vw_reid_mother'],
     riskAssessmentIds: [dash.id],
     flags: { unborn: true, schoolAge: false, preSchool: false, jii: false, housingRelevant: true, pregnant: true, criminalElement: true },
-    excludedUserIds: [],
+    parties: [],
     detail: {
       concern: {
         receivedAt: at('2026-08-18', '16:00'),
@@ -414,7 +414,18 @@ export function seedChloeReid(ctx: BuildContext): void {
     viewsRecordIds: ['vw_chloe_victim'],
     riskAssessmentIds: [dash.id],
     flags: { children: false, pregnant: true, perpetratorInCustody: false, perpetratorMappa: false, matacConsidered: false, criminalElement: true },
-    excludedUserIds: [],
+    // Case-role register. The perpetrator comes from the referral; associates are derived from relationship
+    // records once the process exists (partiesFromRoles). Chloe and the unborn baby are never excluded.
+    parties: [
+      {
+        personId: jordan.id,
+        party: 'perpetrator',
+        label: 'Perpetrator (named in the referral)',
+        since: '2026-08-26',
+        source: 'referral',
+        reason: 'Named as the perpetrator in the midwifery MARAC referral of 26 Aug 2026; lives with Chloe',
+      },
+    ],
     detail: {
       referral: {
         receivedAt: at('2026-08-26', '11:00'),
@@ -443,6 +454,7 @@ export function seedChloeReid(ctx: BuildContext): void {
       safeLivesReturn: { referralSource: 'Health (midwifery)', repeat: false, childrenCount: 0, outcomeCodes: [] },
     },
   };
+  marac.parties.push(...partiesFromRoles(marac, ctx.data.relationships).filter((p) => p.party === 'perpetrator-associates'));
   ctx.data.processes.push(marac);
 
   // ----- Views -----

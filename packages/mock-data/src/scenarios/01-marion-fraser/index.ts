@@ -145,7 +145,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
     viewsRecordIds: ['vw_marion_1'],
     riskAssessmentIds: [MARION.threePointTest],
     flags: { criminalElement: true, healthInput: true, financialHarm: true, recordsRequest: true, advocacyOffered: true, regulatedService: false, housingRelevant: false, jointVisit: false, medicalExamination: false },
-    excludedUserIds: [],
+    parties: [],
     detail: {
       concern: {
         receivedAt: at('2026-08-21', '09:30'),
@@ -245,7 +245,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
     viewsRecordIds: ['vw_marion_1'],
     riskAssessmentIds: [],
     flags: { welfareGuardianshipLikely: false, inHospital: false, careProvider: false, financialHarm: true },
-    excludedUserIds: [],
+    parties: [],
     detail: {
       concern: {
         raisedAt: at('2026-08-27', '14:00'),

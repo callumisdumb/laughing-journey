@@ -1,4 +1,4 @@
-import { datasetSchema } from '@mas/domain';
+import { datasetSchema, isExcludedParty } from '@mas/domain';
 import { describe, expect, it } from 'vitest';
 import { createContext } from '../../generator/context';
 import { seedOrganisations } from '../../generator/organisations';
@@ -36,6 +36,15 @@ describe('scenario 8', () => {
     for (const m of ctx.data.meetings) {
       for (const i of m.invitees) expect(i.name).not.toContain('Jordan Blake');
       for (const d of m.distribution) expect(d.recipientName).not.toContain('Jordan Blake');
+    }
+    const marac = ctx.data.processes.find((p) => p.id === CHLOE.marac);
+    if (!marac) throw new Error('no MARAC process');
+    expect(marac.parties.find((p) => p.personId === CHLOE.jordan)).toMatchObject({ party: 'perpetrator', source: 'referral' });
+    expect(isExcludedParty(marac, { personId: CHLOE.jordan })?.exclusion.id).toBe('marac.all.perpetrator');
+    // Chloe and the unborn baby are never associates, even though Jordan lives with her and is the baby's father.
+    for (const safe of [CHLOE.chloe, CHLOE.unborn]) {
+      expect(marac.parties.some((p) => p.personId === safe)).toBe(false);
+      expect(isExcludedParty(marac, { personId: safe }, undefined, undefined, ctx.data.relationships)).toBeNull();
     }
   });
 });

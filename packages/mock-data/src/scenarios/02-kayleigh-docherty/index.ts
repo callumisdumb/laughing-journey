@@ -6,7 +6,7 @@
  * conviction. He is never a recipient of anything: the MARAC exclusion rule (marac.all.perpetrator)
  * explains why in the drawer, and the CP IRD recorded what is withheld from him and why.
  */
-import type { Agency, Process, RiskAssessment } from '@mas/domain';
+import { partiesFromRoles, type Agency, type Process, type RiskAssessment } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
 import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
@@ -16,6 +16,7 @@ export const KAYLEIGH = {
   lily: 'per_lily_docherty',
   mason: 'per_mason_docherty',
   ryan: 'per_ryan_kerr',
+  craig: 'per_craig_kerr',
   marac: 'prc_marac_docherty',
   cp: 'prc_cp_docherty',
   maracMeeting: 'mtg_docherty_marac',
@@ -97,6 +98,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
   const home = makeAddress(ctx, { id: 'adr_docherty_home', line1: '8 Harbour Brae', town: 'Ardvale', postcode: 'QX1 2PW' });
   const gran = makeAddress(ctx, { id: 'adr_docherty_gran', line1: '14 Shore Loan', line2: 'Flat 1/2', town: 'Portnellan', postcode: 'QX3 6HN' });
   const ryanHome = makeAddress(ctx, { id: 'adr_ryan_kerr', line1: '15 Cannon Loan', town: 'Kilbrannan', postcode: 'QX2 4RE' });
+  const craigHome = makeAddress(ctx, { id: 'adr_craig_kerr', line1: '3 Weavers Court', town: 'Kilbrannan', postcode: 'QX2 5LT' });
 
   const hh = 'hh_docherty';
 
@@ -171,7 +173,22 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
     createdAt: at('2024-03-17', '09:00'),
   });
 
+  // Ryan's brother. He has no involvement with services; he is on the record because Ryan stayed with him after
+  // the March 2024 incident, and the relationship makes him a perpetrator's associate for MARAC need-to-know.
+  const craig = makePerson(ctx, {
+    id: KAYLEIGH.craig,
+    givenName: 'Craig',
+    familyName: 'Kerr',
+    sex: 'male',
+    dateOfBirth: '1989-11-03',
+    chi: syntheticChi(ctx, '1989-11-03', 'male'),
+    addressHistory: [{ addressId: craigHome.id, from: '2016-04-11', note: 'Private let' }],
+    ethnicity: 'scottish',
+    createdAt: at('2024-03-17', '09:10'),
+  });
+
   ctx.data.households.push({ id: hh, synthetic: true, addressId: home.id, memberIds: [kayleigh.id, lily.id, mason.id], label: 'Docherty household, Ardvale' });
+  relate(ctx, craig.id, ryan.id, 'sibling-of', { notes: 'Ryan stayed with him after the March 2024 incident' });
   relate(ctx, kayleigh.id, lily.id, 'mother-of', { notes: "Lily's father has had no contact since her birth" });
   relate(ctx, kayleigh.id, mason.id, 'mother-of');
   relate(ctx, ryan.id, mason.id, 'father-of', { notes: 'Named on the birth certificate. No contact under bail conditions since 24 Aug 2026.' });
@@ -286,7 +303,18 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
     viewsRecordIds: ['vw_docherty_adult', 'vw_docherty_victim'],
     riskAssessmentIds: [daq.id],
     flags: { children: true, pregnant: false, perpetratorInCustody: false, perpetratorMappa: false, matacConsidered: true, criminalElement: true },
-    excludedUserIds: [],
+    // Case-role register. The perpetrator comes from the referral; his family and associates are derived from
+    // relationship records below (partiesFromRoles), once the process exists. Neither can be lifted in the UI.
+    parties: [
+      {
+        personId: ryan.id,
+        party: 'perpetrator',
+        label: 'Perpetrator (named in the referral)',
+        since: '2026-08-24',
+        source: 'referral',
+        reason: 'Named as the perpetrator in the police MARAC referral of 24 Aug 2026; on bail with conditions not to approach Kayleigh or the children',
+      },
+    ],
     detail: {
       referral: {
         receivedAt: at('2026-08-24', '15:00'),
@@ -323,6 +351,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
       safeLivesReturn: { referralSource: 'Police Scotland', repeat: true, childrenCount: 2, outcomeCodes: [] },
     },
   };
+  marac.parties.push(...partiesFromRoles(marac, ctx.data.relationships).filter((p) => p.party === 'perpetrator-associates'));
   ctx.data.processes.push(marac);
 
   // ----- Child protection process -----
@@ -361,7 +390,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
     viewsRecordIds: ['vw_docherty_adult', 'vw_docherty_lily'],
     riskAssessmentIds: [daq.id],
     flags: { schoolAge: true, preSchool: true, jii: true, housingRelevant: true, criminalElement: true },
-    excludedUserIds: [],
+    parties: [],
     detail: {
       concern: {
         receivedAt: at('2026-08-23', '01:30'),

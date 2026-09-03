@@ -138,7 +138,7 @@ export function seedIshbelGrant(ctx: BuildContext): void {
     viewsRecordIds: ['vw_ishbel_1', 'vw_ishbel_family'],
     riskAssessmentIds: [],
     flags: { welfareGuardianshipLikely: true, inHospital: true, careProvider: false, financialInvestigation: false, welfareInvestigation: false },
-    excludedUserIds: [],
+    parties: [],
     detail: {
       concern: {
         raisedAt: at('2026-07-28', '11:00'),

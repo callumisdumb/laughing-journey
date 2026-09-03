@@ -2,8 +2,10 @@ import type { Agency, DetailLevel } from '../enums';
 import { ROLE_DEFINITIONS } from '../enums';
 import type { Process } from '../schemas/process';
 import type { User } from '../schemas/user';
+import { EXCLUSIONS } from '../need-to-know/exclusions';
+import { isExcludedParty } from '../need-to-know/parties';
 import { matchAudience, type ResolveContext } from '../need-to-know/resolve';
-import type { NeedToKnowRow } from '../schemas/config';
+import type { Exclusion, NeedToKnowRow } from '../schemas/config';
 
 export type AccessLevel = 'none' | DetailLevel;
 
@@ -25,6 +27,8 @@ export interface AccessResult {
 
 export interface AccessOptions {
   rows?: NeedToKnowRow[];
+  /** Exclusion rules in force; the user is checked against the process's case-role register. */
+  exclusions?: Exclusion[];
   /** Active break-glass grants: process ids the user has opened with a reason, still within the window. */
   activeBreakGlass?: string[];
 }
@@ -67,7 +71,7 @@ export function accessFor(user: User, process: Process, options: AccessOptions =
     member: false,
   };
 
-  if (process.excludedUserIds.includes(user.id)) {
+  if (isExcludedParty(process, { userId: user.id }, options.exclusions ?? EXCLUSIONS)) {
     return { ...base, level: 'none', reason: 'You must not receive information about this process.', breakGlass: 'unavailable' };
   }
 

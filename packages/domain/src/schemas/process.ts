@@ -2,9 +2,11 @@ import { z } from 'zod';
 import {
   AGENCIES,
   ALL_STAGES,
+  CASE_PARTY_SOURCES,
   CLASSIFICATIONS,
   CONSENT_STATUSES,
   CP_REGISTER_CATEGORIES,
+  EXCLUSION_PARTIES,
   HARM_TYPES,
   MAPPA_CATEGORIES,
   MAPPA_LEVELS,
@@ -41,6 +43,28 @@ export const membershipSchema = z.object({
   reason: z.string(),
 });
 export type Membership = z.infer<typeof membershipSchema>;
+
+/**
+ * Case-role register entry: a person or platform user who holds a role on this process that the
+ * need-to-know exclusions name (perpetrator, victim, employer and so on). Exclusions are keyed on
+ * the role, never on identity alone. Entries come from the referral, from relationship records,
+ * or are recorded by hand with a reason.
+ */
+export const casePartySchema = z
+  .object({
+    /** The person who holds the role, when they have a record. */
+    personId: idSchema.optional(),
+    /** A platform user who holds the role, for example a persona seeded as a perpetrator's associate. */
+    userId: idSchema.optional(),
+    party: z.enum(EXCLUSION_PARTIES),
+    /** How the person is described, e.g. "Perpetrator (named in the referral)". */
+    label: z.string(),
+    since: isoDate.optional(),
+    source: z.enum(CASE_PARTY_SOURCES),
+    reason: z.string().optional(),
+  })
+  .refine((party) => Boolean(party.personId || party.userId), { message: 'A case party needs a personId or a userId' });
+export type CaseParty = z.infer<typeof casePartySchema>;
 
 const decisionRecordSchema = z.object({
   decided: z.boolean(),
@@ -255,6 +279,8 @@ export const mappaDetailSchema = z.object({
   levelHistory: z.array(z.object({ level: z.union(MAPPA_LEVELS.map((l) => z.literal(l))), at: isoDate, reason: z.string(), meetingId: idSchema.optional() })),
   leadResponsibleAuthority: z.enum(['police', 'social-work', 'health', 'sps']),
   visorReference: z.string(),
+  /** Victims with a person record. Victims are a hard exclusion; the Victim Notification Scheme is a separate route. */
+  victimPersonIds: z.array(idSchema).default([]),
   notification: z.object({ at: isoDateTime, source: z.string(), byName: z.string() }),
   referral: z.object({ at: isoDateTime, byName: z.string(), riskAssessmentIds: z.array(idSchema), reason: z.string() }).optional(),
   sonr: z.object({
@@ -406,8 +432,8 @@ const processBase = {
   evidenceRefs: z.array(evidenceRefSchema).optional(),
   /** Context flags used by need-to-know conditions, e.g. criminalElement, regulatedService. */
   flags: z.record(z.string(), z.boolean()),
-  /** Persona IDs who must never receive anything about this process (e.g. a perpetrator's associate seeded as a persona). */
-  excludedUserIds: z.array(idSchema),
+  /** Case-role register: who holds an excluded party role on this process. See need-to-know/parties.ts. */
+  parties: z.array(casePartySchema).default([]),
 };
 
 export const processSchema = z.discriminatedUnion('type', [

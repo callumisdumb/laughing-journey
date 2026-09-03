@@ -203,7 +203,7 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     viewsRecordIds: ['vw_aiden_1', 'vw_aiden_2', 'vw_aiden_3', 'vw_aiden_parents'],
     riskAssessmentIds: [],
     flags: { schoolAge: true, jii: true, housingRelevant: false, preSchool: false },
-    excludedUserIds: [],
+    parties: [],
     detail: {
       concern: {
         receivedAt: at('2026-05-20', '09:40'),

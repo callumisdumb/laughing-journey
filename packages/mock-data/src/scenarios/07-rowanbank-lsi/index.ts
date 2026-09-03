@@ -164,7 +164,7 @@ export function seedRowanbankLsi(ctx: BuildContext): void {
     viewsRecordIds: ['vw_rowanbank_archie', 'vw_rowanbank_zofia', 'vw_rowanbank_linda'],
     riskAssessmentIds: [],
     flags: { regulatedService: true, financialHarm: true, criminalElement: true, healthInput: true, advocacyOffered: true, recordsRequest: true },
-    excludedUserIds: [],
+    parties: [],
     detail: {
       concern: {
         receivedAt: at('2026-07-30', '11:20'),

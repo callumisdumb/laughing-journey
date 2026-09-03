@@ -598,3 +598,30 @@ export const MAPPA_LEVEL_LABELS: Record<1 | 2 | 3, string> = {
   2: 'Level 2: active multi-agency management',
   3: 'Level 3: MAPPP, the critical few',
 };
+
+/** Who an exclusion names. Party keys are resolved against the case-role register on each process. */
+export const EXCLUSION_PARTIES = [
+  'perpetrator',
+  'perpetrator-associates',
+  'alleged-perpetrator',
+  'victim',
+  'employer',
+  'public',
+  'parents-if-risk',
+  'not-on-distribution',
+] as const;
+export type ExclusionParty = (typeof EXCLUSION_PARTIES)[number];
+export const EXCLUSION_PARTY_LABELS: Record<ExclusionParty, string> = {
+  perpetrator: 'Perpetrator',
+  'perpetrator-associates': "Perpetrator's family or associates",
+  'alleged-perpetrator': 'Alleged perpetrator',
+  victim: 'Victim',
+  employer: 'Employer',
+  public: 'Public',
+  'parents-if-risk': 'Parents and carers where sharing increases risk',
+  'not-on-distribution': 'Not on the distribution list',
+};
+
+/** Where a case-role register entry came from. */
+export const CASE_PARTY_SOURCES = ['referral', 'relationship', 'manual'] as const;
+export type CasePartySource = (typeof CASE_PARTY_SOURCES)[number];

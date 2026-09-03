@@ -129,7 +129,8 @@ export function seedDerekMuir(ctx: BuildContext): void {
     viewsRecordIds: ['vw_derek_1'],
     riskAssessmentIds: riskIds,
     flags: { housingRelevant: true, childInHousehold: false, inCustody: false },
-    excludedUserIds: [],
+    // Case-role register: the victim has no person record (see victimPersonIds), and no persona holds a victim, employer or public role.
+    parties: [],
     detail: {
       category: 1,
       level: 2,
@@ -138,6 +139,7 @@ export function seedDerekMuir(ctx: BuildContext): void {
       ],
       leadResponsibleAuthority: 'police',
       visorReference: 'ViSOR 2022/0451/Z',
+      victimPersonIds: [],
       notification: { at: at('2026-05-10', '14:00'), source: 'Scottish Prison Service, HMP Glenmoray (pre-release notification)', byName: name(colin) },
       referral: {
         at: at('2026-06-02', '11:00'),

@@ -42,7 +42,7 @@ const aspBase = {
   viewsRecordIds: [],
   riskAssessmentIds: [],
   flags: { criminalElement: true },
-  excludedUserIds: ['usr_excluded'],
+  parties: [{ userId: 'usr_excluded', party: 'alleged-perpetrator' as const, label: 'Alleged perpetrator (persona)', since: '2026-08-01', source: 'manual' as const, reason: 'Named in the concern' }],
   detail: {
     concern: { receivedAt: '2026-08-01T09:00:00+01:00', source: 'Bank via police', sourceAgency: 'police' as const, summary: 'x', harmTypes: ['financial' as const], immediateSafety: 'none', policeInvolved: true },
     threePointTest: { assessedAt: '2026-08-01T10:00:00+01:00', byName: 'A', a: { met: 'yes' as const, reasoning: 'r' }, b: { met: 'yes' as const, reasoning: 'r' }, c: { met: 'yes' as const, reasoning: 'r' }, outcome: 'met' as const },
@@ -60,13 +60,14 @@ const mappa: Process = {
   classification: 'restricted',
   flags: {},
   members: [],
-  excludedUserIds: [],
+  parties: [{ userId: 'usr_victim', party: 'victim', label: 'Victim (persona)', since: '2026-07-01', source: 'manual' }],
   detail: {
     category: 1,
     level: 2,
     levelHistory: [],
     leadResponsibleAuthority: 'police',
     visorReference: 'V-1',
+    victimPersonIds: [],
     notification: { at: '2026-07-01T09:00:00+01:00', source: 'SPS', byName: 'B' },
     sonr: { subject: true, compliant: true },
     custody: {},
@@ -79,10 +80,27 @@ const mappa: Process = {
 };
 
 describe('accessFor', () => {
-  it('denies excluded users outright', () => {
-    const r = accessFor(user({ id: 'usr_excluded' }), asp);
+  it('denies excluded parties outright at the stage the exclusion applies', () => {
+    const conference: Process = { ...asp, stage: 'case-conference' };
+    const r = accessFor(user({ id: 'usr_excluded' }), conference);
     expect(r.level).toBe('none');
+    expect(r.reason).toBe('You must not receive information about this process.');
     expect(r.breakGlass).toBe('unavailable');
+  });
+  it('keys the exclusion on the case role, not on membership or agency rows', () => {
+    const conference: Process = { ...asp, stage: 'case-conference', members: [...asp.members, { userId: 'usr_excluded', caseRole: 'council officer', agency: 'social-work', since: '2026-08-01', reason: 'wrongly added' }] };
+    expect(accessFor(user({ id: 'usr_excluded' }), conference).level).toBe('none');
+    const victim = accessFor(user({ id: 'usr_victim', agency: 'police', roleId: 'offender-management' }), mappa);
+    expect(victim.level).toBe('none');
+    expect(victim.breakGlass).toBe('unavailable');
+  });
+  it('applies exclusions only at the stages the rules name', () => {
+    const r = accessFor(user({ id: 'usr_excluded', agency: 'education', roleId: 'education-cp-lead' }), asp);
+    expect(r.level).toBe('presence');
+  });
+  it('uses the exclusions passed in options', () => {
+    const conference: Process = { ...asp, stage: 'case-conference' };
+    expect(accessFor(user({ id: 'usr_excluded' }), conference, { exclusions: [] }).level).toBe('presence');
   });
   it('gives members full access', () => {
     const r = accessFor(user({ id: 'usr_member' }), asp);

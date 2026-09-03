@@ -128,7 +128,7 @@ export function seedTomaszNowak(ctx: BuildContext): void {
     viewsRecordIds: ['vw_tomasz_1', 'vw_tomasz_2'],
     riskAssessmentIds: [TOMASZ.threePointTest],
     flags: { healthInput: true, housingRelevant: true, advocacyOffered: true, criminalElement: false, regulatedService: false, financialHarm: false, jointVisit: false, medicalExamination: false, recordsRequest: false },
-    excludedUserIds: [],
+    parties: [],
     detail: {
       concern: {
         receivedAt: at('2026-06-05', '14:20'),

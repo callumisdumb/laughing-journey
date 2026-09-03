@@ -1,4 +1,4 @@
-import { datasetSchema } from '@mas/domain';
+import { datasetSchema, isExcludedParty } from '@mas/domain';
 import { describe, expect, it } from 'vitest';
 import { createContext } from '../../generator/context';
 import { seedOrganisations } from '../../generator/organisations';
@@ -32,5 +32,22 @@ describe('scenario 2', () => {
     expect(daq?.items).toHaveLength(27);
     expect(daq?.items?.filter((i) => i.answer === 'yes')).toHaveLength(17);
     expect(marac?.type === 'marac' && marac.detail.researchRequests.length).toBe(8);
+  });
+
+  it('keys the MARAC exclusions on case role: perpetrator and his brother out, Kayleigh and the children never', () => {
+    const ctx = createContext('test', '2026-09-02T09:00:00+01:00');
+    seedOrganisations(ctx);
+    seedKayleighDocherty(ctx);
+    const marac = ctx.data.processes.find((p) => p.id === KAYLEIGH.marac);
+    if (!marac) throw new Error('no MARAC process');
+    expect(marac.parties.find((p) => p.personId === KAYLEIGH.ryan)?.party).toBe('perpetrator');
+    expect(marac.parties.find((p) => p.personId === KAYLEIGH.craig)).toMatchObject({ party: 'perpetrator-associates', source: 'relationship' });
+    expect(isExcludedParty(marac, { personId: KAYLEIGH.ryan })?.exclusion.id).toBe('marac.all.perpetrator');
+    expect(isExcludedParty(marac, { personId: KAYLEIGH.craig })?.exclusion.id).toBe('marac.all.associates');
+    for (const safe of [KAYLEIGH.kayleigh, KAYLEIGH.lily, KAYLEIGH.mason]) {
+      expect(marac.parties.some((p) => p.personId === safe)).toBe(false);
+      expect(isExcludedParty(marac, { personId: safe }, undefined, undefined, ctx.data.relationships)).toBeNull();
+    }
+    for (const m of marac.members) expect(isExcludedParty(marac, { userId: m.userId })).toBeNull();
   });
 });
