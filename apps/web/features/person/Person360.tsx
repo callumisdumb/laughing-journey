@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCY_SHORT, PLAN_TYPE_LABELS, PROCESS_SHORT, ROLE_DEFINITIONS, VIEWS_KINDS, VIEWS_KIND_LABELS, ageLabel, formatDate, formatDateTime, stageLabel, type Person, type Process, type ViewsRecord } from '@mas/domain';
+import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Tabs, Table, TableWrap, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
 import { AlertTriangle, ArrowUpRight, Flag, Languages, Lock, Plus, ShieldAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -18,14 +19,8 @@ import { useChronology } from '@/features/chronology/useChronology';
 import { NetworkGraph } from './NetworkGraph';
 import styles from './Person360.module.css';
 
-const TABS = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'chronology', label: 'Chronology' },
-  { id: 'processes', label: 'Processes' },
-  { id: 'voice', label: 'Views and voice' },
-  { id: 'documents', label: 'Documents' },
-  { id: 'sharing', label: 'Sharing and audit' },
-];
+/** Argument bag for t.rich, typed so a React node (the bold lead-in of a header fact) can fill an argument. */
+const rich = (values: RichValues): RichValues => values;
 
 function alertTone(kind: Person['alerts'][number]['kind']) {
   switch (kind) {
@@ -43,6 +38,7 @@ function alertTone(kind: Person['alerts'][number]['kind']) {
 }
 
 export function Person360({ personId }: { personId: string }) {
+  const t = useT();
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
@@ -68,7 +64,7 @@ export function Person360({ personId }: { personId: string }) {
   const [reasonCategory, setReasonCategory] = useState('');
   const [reason, setReason] = useState('');
   const [recording, setRecording] = useState(false);
-  const [voice, setVoice] = useState<{ kind: ViewsRecord['kind']; method: string; content: string }>({ kind: 'child-voice', method: 'In person', content: '' });
+  const [voice, setVoice] = useState<{ kind: ViewsRecord['kind']; method: string; content: string }>(() => ({ kind: 'child-voice', method: t('person.recordViews.methodDefault'), content: '' }));
 
   const tab = route.query.get('tab') ?? 'overview';
   const person = data.people.find((p) => p.id === personId);
@@ -87,10 +83,19 @@ export function Person360({ personId }: { personId: string }) {
   if (!person) {
     return (
       <div className="page">
-        <EmptyState title="Person not found" text="This record does not exist in the demo dataset." actions={<AppLink href="/people">Back to people</AppLink>} />
+        <EmptyState title={t('person.notFound.title')} text={t('person.notFound.text')} actions={<AppLink href="/people">{t('person.notFound.back')}</AppLink>} />
       </div>
     );
   }
+
+  const tabs = [
+    { id: 'overview', label: t('person.tabs.overview') },
+    { id: 'chronology', label: t('person.tabs.chronology') },
+    { id: 'processes', label: t('person.tabs.processes') },
+    { id: 'voice', label: t('person.tabs.voice') },
+    { id: 'documents', label: t('person.tabs.documents') },
+    { id: 'sharing', label: t('person.tabs.sharing') },
+  ];
 
   const processes = processesInvolving(data, person.id);
   const open = processes.filter((p) => p.status === 'open');
@@ -114,8 +119,8 @@ export function Person360({ personId }: { personId: string }) {
     upsert('viewsRecords', rec);
     audit({ act: 'edit', targetType: 'person', targetId: person!.id, targetLabel: `Views recorded: ${VIEWS_KIND_LABELS[voice.kind]}`, processId: open[0]?.id });
     setRecording(false);
-    setVoice({ kind: 'child-voice', method: 'In person', content: '' });
-    toast({ title: 'Views recorded', text: 'They appear at the top of the person\'s record and in every process view.', tone: 'success' });
+    setVoice({ kind: 'child-voice', method: t('person.recordViews.methodDefault'), content: '' });
+    toast({ title: t('person.recordViews.toast.title'), text: t('person.recordViews.toast.text'), tone: 'success' });
   }
 
   const state = dev ?? (allRestricted ? 'restricted' : 'ready');
@@ -126,34 +131,31 @@ export function Person360({ personId }: { personId: string }) {
         <div>
           <div className={styles.nameRow}>
             <h1 className={styles.name}>{fullName(person)}</h1>
-            {person.preferredName ? <span className={styles.known}>known as {person.preferredName}</span> : null}
+            {person.preferredName ? <span className={styles.known}>{t('person.header.knownAs', { name: person.preferredName })}</span> : null}
             {person.pronouns ? <span className={styles.known}>({person.pronouns})</span> : null}
           </div>
           <div className={styles.facts}>
             <span>
-              {person.lifeStage === 'unborn' ? (
-                <>
-                  <strong>Unborn</strong>, due {person.expectedDeliveryDate ? formatDate(person.expectedDeliveryDate) : 'date not recorded'}
-                </>
-              ) : (
-                <>
-                  <strong>{person.dateOfBirth ? ageLabel(person.dateOfBirth, now) : 'Age not recorded'}</strong>
-                  {person.dateOfBirth ? `, born ${formatDate(person.dateOfBirth)}` : ''}
-                </>
-              )}
+              {person.lifeStage === 'unborn'
+                ? person.expectedDeliveryDate
+                  ? t.rich('person.header.unbornDue', rich({ unborn: <strong>{t('person.header.unborn')}</strong>, date: formatDate(person.expectedDeliveryDate) }))
+                  : t.rich('person.header.unbornDueUnknown', rich({ unborn: <strong>{t('person.header.unborn')}</strong> }))
+                : person.dateOfBirth
+                  ? t.rich('person.header.ageBorn', rich({ age: <strong>{ageLabel(person.dateOfBirth, now)}</strong>, date: formatDate(person.dateOfBirth) }))
+                  : <strong>{t('person.header.ageNotRecorded')}</strong>}
             </span>
             <span>
               <strong>{address.line}</strong>
-              {address.moves > 0 ? ` (${address.moves} ${address.moves === 1 ? 'move' : 'moves'})` : ''}
+              {address.moves > 0 ? ` ${t('person.header.moves', { count: address.moves })}` : ''}
             </span>
-            {person.chi ? <span>CHI (synthetic) {person.chi}</span> : null}
+            {person.chi ? <span>{t('person.header.chi', { chi: person.chi })}</span> : null}
             {person.communicationNeeds.interpreterLanguage || person.communicationNeeds.needs.length > 0 ? (
               <span>
-                <Languages size={14} aria-hidden="true" style={{ verticalAlign: '-2px' }} /> {person.communicationNeeds.interpreterLanguage ? `${person.communicationNeeds.interpreterLanguage} interpreter` : ''}
+                <Languages size={14} aria-hidden="true" style={{ verticalAlign: '-2px' }} /> {person.communicationNeeds.interpreterLanguage ? t('person.header.interpreter', { language: person.communicationNeeds.interpreterLanguage }) : ''}
                 {person.communicationNeeds.needs.length ? ` ${person.communicationNeeds.needs.join('; ')}` : ''}
               </span>
             ) : (
-              <span>No communication needs recorded</span>
+              <span>{t('person.header.noCommunicationNeeds')}</span>
             )}
           </div>
           {person.alerts.length > 0 ? (
@@ -161,21 +163,21 @@ export function Person360({ personId }: { personId: string }) {
               {person.alerts.map((a) => (
                 <Pill key={a.id} tone={alertTone(a.kind)} icon={a.kind === 'staff-safety' ? <ShieldAlert size={14} aria-hidden="true" /> : a.kind === 'marac-flag' ? <Flag size={14} aria-hidden="true" /> : <AlertTriangle size={14} aria-hidden="true" />}>
                   {a.text}
-                  {a.to ? ` until ${formatDate(a.to)}` : ''}
+                  {a.to ? ` ${t('person.header.alertUntil', { date: formatDate(a.to) })}` : ''}
                 </Pill>
               ))}
             </div>
           ) : null}
         </div>
         <div className={styles.badges}>
-          {open.length === 0 ? <span className={styles.badgeNext}>No open process</span> : null}
+          {open.length === 0 ? <span className={styles.badgeNext}>{t('person.header.noOpenProcess')}</span> : null}
           {open.map((p) => {
             const access = accessOf(p);
             const next = nextMeetingFor(p);
             if (access.level === 'none')
               return (
                 <Pill key={p.id} tone="restricted" icon={<Lock size={14} aria-hidden="true" />}>
-                  Restricted process
+                  {t('person.header.restrictedProcess')}
                 </Pill>
               );
             return (
@@ -183,7 +185,7 @@ export function Person360({ personId }: { personId: string }) {
                 <AppLink href={processPath(p.id)} style={{ textDecoration: 'none' }}>
                   <ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.classification === 'restricted'} />
                 </AppLink>
-                <div className={styles.badgeNext}>{next ? `Next: ${next.title.split(':')[0]} ${formatDate(next.scheduledAt)}` : access.level === 'presence' ? 'You are not on this case' : 'No meeting scheduled'}</div>
+                <div className={styles.badgeNext}>{next ? t('person.header.nextMeeting', { title: next.title.split(':')[0] ?? '', date: formatDate(next.scheduledAt) }) : access.level === 'presence' ? t('person.header.notOnCase') : t('person.header.noMeeting')}</div>
               </span>
             );
           })}
@@ -192,41 +194,41 @@ export function Person360({ personId }: { personId: string }) {
 
       <ScreenState
         state={state}
-        restricted={{ reason: 'Every open process for this person is restricted and you are not on the distribution list.', breakGlass: open.some((p) => accessOf(p).breakGlass === 'available') ? 'available' : 'unavailable', onBreakGlass: () => setBreakGlassFor(open.find((p) => accessOf(p).breakGlass === 'available') ?? null) }}
+        restricted={{ reason: t('person.restricted.reason'), breakGlass: open.some((p) => accessOf(p).breakGlass === 'available') ? 'available' : 'unavailable', onBreakGlass: () => setBreakGlassFor(open.find((p) => accessOf(p).breakGlass === 'available') ?? null) }}
       >
         <div className={styles.tabBar}>
-          <Tabs items={TABS.map((t) => ({ ...t, count: t.id === 'processes' ? open.length : t.id === 'voice' ? views.length : undefined }))} value={tab} onChange={setTab} label="Person record sections" idPrefix="p360" />
+          <Tabs items={tabs.map((item) => ({ ...item, count: item.id === 'processes' ? open.length : item.id === 'voice' ? views.length : undefined }))} value={tab} onChange={setTab} label={t('person.tabs.label')} idPrefix="p360" />
         </div>
 
         <TabPanel id="overview" active={tab === 'overview'} idPrefix="p360">
           <div className={styles.overview}>
             <Sheet>
-              <SheetHead title="Clocks" meta={clocks.length === 0 ? 'No statutory clocks running' : `${clocks.length} running`} />
+              <SheetHead title={t('person.overview.clocks.title')} meta={clocks.length === 0 ? t('person.overview.clocks.none') : t('person.overview.clocks.running', { count: clocks.length })} />
               <SheetBody>
                 <div className={styles.clockList}>
                   {clocks.map((c) => (
                     <AppLink key={c.triggerId} href={processPath(c.process.id)} className={styles.clockLink}>
-                      <ClockNumeral daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={`Due ${formatDate(c.dueAt)}. ${c.overridden ? c.overrideReason : c.sourceRef}`} size="sm" />
+                      <ClockNumeral daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={t('person.overview.clocks.sub', { date: formatDate(c.dueAt), detail: (c.overridden ? c.overrideReason : c.sourceRef) ?? '' })} size="sm" />
                     </AppLink>
                   ))}
-                  {clocks.length === 0 ? <span className={styles.contactMeta}>Clocks start when a process reaches a stage with a statutory or local timescale.</span> : null}
+                  {clocks.length === 0 ? <span className={styles.contactMeta}>{t('person.overview.clocks.hint')}</span> : null}
                 </div>
               </SheetBody>
             </Sheet>
             <Sheet>
-              <SheetHead title="Household and network" meta="Relationships are dated and typed. Dashed marks an adult of concern." />
+              <SheetHead title={t('person.overview.network.title')} meta={t('person.overview.network.meta')} />
               <SheetBody>
                 <NetworkGraph person={person} concernIds={concernIds} />
               </SheetBody>
             </Sheet>
             <Sheet tone="paper">
-              <SheetHead title="Views and voice" meta={latestVoice ? `Latest of ${views.length}` : 'Nothing recorded yet'} actions={<Button size="sm" variant="quiet" onClick={() => setTab('voice')}>All</Button>} />
+              <SheetHead title={t('person.overview.voice.title')} meta={latestVoice ? t('person.overview.voice.latestOf', { count: views.length }) : t('person.overview.voice.none')} actions={<Button size="sm" variant="quiet" onClick={() => setTab('voice')}>{t('person.overview.voice.all')}</Button>} />
               <SheetBody>
-                {latestVoice ? <VoiceBlock record={latestVoice} personName={person.preferredName ?? person.givenName} size="sm" /> : <span className={styles.contactMeta}>The person&apos;s own words belong here, dated and attributed.</span>}
+                {latestVoice ? <VoiceBlock record={latestVoice} personName={person.preferredName ?? person.givenName} size="sm" /> : <span className={styles.contactMeta}>{t('person.overview.voice.placeholder')}</span>}
               </SheetBody>
             </Sheet>
             <Sheet className={styles.overviewWide}>
-              <SheetHead title="Key contacts by agency" meta="Who is on the case, their role, and when they last touched the record" />
+              <SheetHead title={t('person.overview.contacts.title')} meta={t('person.overview.contacts.meta')} />
               <SheetBody>
                 <div className={styles.contacts}>
                   {seeable.flatMap((p) => membersByAgency(data, p).flatMap((g) => g.members.map((m) => ({ p, g, m })))).map(({ p, g, m }) => {
@@ -235,21 +237,17 @@ export function Person360({ personId }: { personId: string }) {
                       <div key={`${p.id}-${m.membership.userId}`} className={styles.contact}>
                         <AgencyMark agency={g.agency} />
                         <span className={styles.contactName}>{m.user ? userName(m.user) : m.membership.userId}</span>
-                        <span className={styles.contactMeta}>
-                          {m.membership.caseRole} ({PROCESS_SHORT[p.type]}). {m.user ? ROLE_DEFINITIONS[m.user.roleId].label : ''}
-                        </span>
-                        <span className={styles.contactMeta}>
-                          {m.user?.phone ?? ''}. Last contact with the record {last ? formatDate(last.at) : 'not recorded'}.
-                        </span>
+                        <span className={styles.contactMeta}>{t('person.overview.contacts.role', { caseRole: m.membership.caseRole, process: PROCESS_SHORT[p.type], role: m.user ? ROLE_DEFINITIONS[m.user.roleId].label : '' })}</span>
+                        <span className={styles.contactMeta}>{t('person.overview.contacts.lastContact', { phone: m.user?.phone ?? '', date: last ? formatDate(last.at) : t('common.values.notRecorded') })}</span>
                       </div>
                     );
                   })}
-                  {seeable.length === 0 ? <span className={styles.contactMeta}>No case members visible to you.</span> : null}
+                  {seeable.length === 0 ? <span className={styles.contactMeta}>{t('person.overview.contacts.none')}</span> : null}
                 </div>
               </SheetBody>
             </Sheet>
             <Sheet className={styles.overviewWide}>
-              <SheetHead title="Current plans" meta={plans.length === 0 ? 'No active plan' : `${plans.length} active`} />
+              <SheetHead title={t('person.overview.plans.title')} meta={plans.length === 0 ? t('person.overview.plans.none') : t('person.overview.plans.active', { count: plans.length })} />
               <SheetBody>
                 <div className={styles.planList}>
                   {plans.map((pl) => {
@@ -260,11 +258,10 @@ export function Person360({ personId }: { personId: string }) {
                       <AppLink key={pl.id} href={processPath(pl.processId)} className={styles.plan} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <span className={styles.planTitle}>{pl.title}</span>
                         <Pill size="sm" tone={overdue > 0 ? 'critical' : 'neutral'}>
-                          {done} of {actions.length} done{overdue > 0 ? `, ${overdue} overdue` : ''}
+                          {t('person.overview.plans.progress', { done, total: actions.length, overdue })}
                         </Pill>
                         <span className={styles.planMeta}>
-                          {PLAN_TYPE_LABELS[pl.type]}. Coordinated by {pl.coordinatorName}. Agreed {formatDate(pl.agreedAt)}
-                          {pl.reviewDate ? `, review ${formatDate(pl.reviewDate)}` : ''}. {pl.outcomes.length} outcomes.
+                          {t('person.overview.plans.meta', { type: PLAN_TYPE_LABELS[pl.type], coordinator: pl.coordinatorName, agreed: formatDate(pl.agreedAt), hasReview: pl.reviewDate ? 'yes' : 'no', review: pl.reviewDate ? formatDate(pl.reviewDate) : '', outcomes: pl.outcomes.length })}
                         </span>
                       </AppLink>
                     );
@@ -278,7 +275,7 @@ export function Person360({ personId }: { personId: string }) {
         <TabPanel id="chronology" active={tab === 'chronology'} idPrefix="p360">
           <div className={styles.chronoActions}>
             <Button variant="primary" icon={<ArrowUpRight size={16} aria-hidden="true" />} onClick={() => navigate(chronologyPath(person.id))}>
-              Open wide
+              {t('person.chronology.openWide')}
             </Button>
           </div>
           <LanesChart events={model.events} analyses={model.analyses} agencies={model.agencies} domain={model.domain} lensResults={model.lensResults} highlighted={model.highlighted} selectedEventId={selectedEventId} selectedAnalysisId={selectedAnalysisId} onSelectEvent={(id) => { chronoSelect(id); if (id) select({ kind: 'event', id, personId: person.id }); }} onSelectAnalysis={(id) => { chronoSelectAnalysis(id); if (id) select({ kind: 'analysis', id, personId: person.id }); }} onBrush={chronoSetWindow} compact settle />
@@ -289,28 +286,28 @@ export function Person360({ personId }: { personId: string }) {
 
         <TabPanel id="processes" active={tab === 'processes'} idPrefix="p360">
           <div className={styles.processList}>
-            {processes.length === 0 ? <EmptyState title="No process" text="Nobody has opened a process for this person. Search results show them because they are known to a connector." /> : null}
+            {processes.length === 0 ? <EmptyState title={t('person.processes.empty.title')} text={t('person.processes.empty.text')} /> : null}
             {processes.map((p) => {
               const access = accessOf(p);
               if (access.level === 'none')
                 return (
-                  <RestrictedState key={p.id} title={`${PROCESS_SHORT[p.type]} ${p.reference}: restricted`} reason={access.reason} breakGlass={access.breakGlass} breakGlassAction={<Button variant="primary" onClick={() => setBreakGlassFor(p)}>Open with a reason</Button>} />
+                  <RestrictedState key={p.id} title={t('person.processes.restrictedTitle', { process: PROCESS_SHORT[p.type], reference: p.reference })} reason={access.reason} breakGlass={access.breakGlass} breakGlassAction={<Button variant="primary" onClick={() => setBreakGlassFor(p)}>{t('person.processes.openWithReason')}</Button>} />
                 );
               const next = nextMeetingFor(p);
-              const role = p.subjectIds.includes(person.id) ? 'Subject' : p.type === 'marac' && p.detail.referral.perpetratorPersonId === person.id ? 'Perpetrator' : p.type === 'marac' ? 'Child' : 'Parent';
+              const role = p.subjectIds.includes(person.id) ? t('person.processes.role.subject') : p.type === 'marac' && p.detail.referral.perpetratorPersonId === person.id ? t('person.processes.role.perpetrator') : p.type === 'marac' ? t('person.processes.role.child') : t('person.processes.role.parent');
               return (
                 <Sheet key={p.id} onMouseEnter={() => select({ kind: 'process', id: p.id })} onFocus={() => select({ kind: 'process', id: p.id })}>
                   <SheetHead
                     title={<AppLink href={processPath(p.id)}>{p.title}</AppLink>}
-                    meta={`${p.reference}. ${role}. Lead ${AGENCY_SHORT[p.leadAgency]}. Opened ${formatDate(p.openedAt)}. ${p.status === 'open' ? 'Open' : p.status}.`}
+                    meta={t('person.processes.meta', { reference: p.reference, role, agency: AGENCY_SHORT[p.leadAgency], date: formatDate(p.openedAt), status: p.status === 'open' ? t('person.processes.statusOpen') : p.status })}
                     actions={<ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.classification === 'restricted'} />}
                   />
                   <SheetBody>
                     <div className={styles.processRow}>
                       <span className={styles.processMeta}>
-                        {access.level === 'presence' ? 'You are not on this case: presence only. Ask the lead to be involved.' : access.level === 'summary' ? 'Summary access at this stage.' : access.level === 'fields' ? `Named fields only: ${access.fields.join('; ')}.` : access.reason}
+                        {access.level === 'presence' ? t('person.processes.access.presence') : access.level === 'summary' ? t('person.processes.access.summary') : access.level === 'fields' ? t('person.processes.access.fields', { fields: access.fields.join('; ') }) : access.reason}
                       </span>
-                      <span className={styles.processMeta}>{next ? <AppLink href={meetingPath(next.id)}>Next: {next.title}, {formatDate(next.scheduledAt)}</AppLink> : 'No meeting scheduled'}</span>
+                      <span className={styles.processMeta}>{next ? <AppLink href={meetingPath(next.id)}>{t('person.processes.nextMeeting', { title: next.title, date: formatDate(next.scheduledAt) })}</AppLink> : t('person.header.noMeeting')}</span>
                     </div>
                   </SheetBody>
                 </Sheet>
@@ -321,13 +318,13 @@ export function Person360({ personId }: { personId: string }) {
 
         <TabPanel id="voice" active={tab === 'voice'} idPrefix="p360">
           <div className="page-head">
-            <p className="page-lede">Structured, dated and attributed. The person&apos;s views are read into every meeting record.</p>
+            <p className="page-lede">{t('person.voice.lede')}</p>
             <Button variant="primary" icon={<Plus size={16} aria-hidden="true" />} onClick={() => setRecording(true)}>
-              Record views
+              {t('person.voice.record')}
             </Button>
           </div>
           <div className={styles.voices}>
-            {views.length === 0 ? <EmptyState title="No views recorded" text="Record what the person said, how it was sought, and who recorded it." /> : null}
+            {views.length === 0 ? <EmptyState title={t('person.voice.empty.title')} text={t('person.voice.empty.text')} /> : null}
             {views.map((v) => (
               <VoiceBlock key={v.id} record={v} personName={v.personId === person.id ? (person.preferredName ?? person.givenName) : (fullName(data.people.find((x) => x.id === v.personId) ?? person))} />
             ))}
@@ -337,19 +334,19 @@ export function Person360({ personId }: { personId: string }) {
         <TabPanel id="documents" active={tab === 'documents'} idPrefix="p360">
           {(() => {
             const docs = [
-              ...model.visible.flatMap((e) => e.evidenceRefs.map((r) => ({ id: `${e.id}-${r.ref}`, label: r.label ?? r.ref, kind: r.kind, source: `${AGENCY_SHORT[e.agency]} event: ${e.title}`, date: e.occurredAt }))),
+              ...model.visible.flatMap((e) => e.evidenceRefs.map((r) => ({ id: `${e.id}-${r.ref}`, label: r.label ?? r.ref, kind: r.kind, source: t('person.documents.source', { agency: AGENCY_SHORT[e.agency], title: e.title }), date: e.occurredAt }))),
               ...data.meetings.filter((m) => seeable.some((p) => p.id === m.processId)).flatMap((m) => m.pack.filter((pk) => pk.included).map((pk) => ({ id: `${m.id}-${pk.id}`, label: pk.label, kind: pk.kind, source: m.title, date: m.scheduledAt }))),
             ];
-            if (docs.length === 0) return <EmptyState title="No documents" text="Evidence references and meeting pack items appear here as the record grows." />;
+            if (docs.length === 0) return <EmptyState title={t('person.documents.empty.title')} text={t('person.documents.empty.text')} />;
             return (
               <TableWrap className={styles.docs}>
                 <Table>
                   <thead>
                     <tr>
-                      <th scope="col">Document</th>
-                      <th scope="col">Kind</th>
-                      <th scope="col">Source</th>
-                      <th scope="col">Date</th>
+                      <th scope="col">{t('person.documents.columns.document')}</th>
+                      <th scope="col">{t('person.documents.columns.kind')}</th>
+                      <th scope="col">{t('person.documents.columns.source')}</th>
+                      <th scope="col">{t('person.documents.columns.date')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -375,17 +372,17 @@ export function Person360({ personId }: { personId: string }) {
             return (
               <div className="stack">
                 <Sheet>
-                  <SheetHead title="Shared about this person" meta={`${shares.length} shares, each with a lawful basis`} />
+                  <SheetHead title={t('person.sharing.title')} meta={t('person.sharing.meta', { count: shares.length })} />
                   <SheetBody flush>
                     <TableWrap style={{ border: 0, borderRadius: 0 }}>
                       <Table>
                         <thead>
                           <tr>
-                            <th scope="col">When</th>
-                            <th scope="col">To</th>
-                            <th scope="col">Level</th>
-                            <th scope="col">Why</th>
-                            <th scope="col">Status</th>
+                            <th scope="col">{t('person.sharing.columns.when')}</th>
+                            <th scope="col">{t('person.sharing.columns.to')}</th>
+                            <th scope="col">{t('person.sharing.columns.level')}</th>
+                            <th scope="col">{t('person.sharing.columns.why')}</th>
+                            <th scope="col">{t('person.sharing.columns.status')}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -406,16 +403,16 @@ export function Person360({ personId }: { personId: string }) {
                   </SheetBody>
                 </Sheet>
                 <Sheet>
-                  <SheetHead title="Audit" meta="Every read, share, export and break-glass on this record" />
+                  <SheetHead title={t('person.audit.title')} meta={t('person.audit.meta')} />
                   <SheetBody flush>
                     <TableWrap style={{ border: 0, borderRadius: 0 }}>
                       <Table>
                         <thead>
                           <tr>
-                            <th scope="col">When</th>
-                            <th scope="col">Who</th>
-                            <th scope="col">Act</th>
-                            <th scope="col">Target</th>
+                            <th scope="col">{t('person.audit.columns.when')}</th>
+                            <th scope="col">{t('person.audit.columns.who')}</th>
+                            <th scope="col">{t('person.audit.columns.act')}</th>
+                            <th scope="col">{t('person.audit.columns.target')}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -427,7 +424,7 @@ export function Person360({ personId }: { personId: string }) {
                               </td>
                               <td>
                                 {a.act.replace(/-/g, ' ')}
-                                {a.restricted ? ' (restricted)' : ''}
+                                {a.restricted ? ` ${t('person.audit.restricted')}` : ''}
                               </td>
                               <td>{a.targetLabel}</td>
                             </tr>
@@ -446,11 +443,11 @@ export function Person360({ personId }: { personId: string }) {
       <Dialog
         open={breakGlassFor !== null}
         onClose={() => setBreakGlassFor(null)}
-        title="Open a restricted record"
+        title={t('person.breakGlass.title')}
         actions={
           <>
             <Button variant="quiet" onClick={() => setBreakGlassFor(null)}>
-              Cancel
+              {t('common.actions.cancel')}
             </Button>
             <Button
               variant="danger"
@@ -459,38 +456,38 @@ export function Person360({ personId }: { personId: string }) {
                 if (breakGlassFor) grantBreakGlass(breakGlassFor.id, reasonCategory, reason);
                 setBreakGlassFor(null);
                 setReason('');
-                toast({ title: 'Break-glass access granted', text: `Access lasts ${config.breakGlassHours} hours. Every read is audited and the MAPPA Coordinator is told.`, tone: 'info' });
+                toast({ title: t('person.breakGlass.toast.title'), text: t('person.breakGlass.toast.text', { hours: config.breakGlassHours }), tone: 'info' });
               }}
             >
-              Open with this reason
+              {t('person.breakGlass.submit')}
             </Button>
           </>
         }
       >
-        <p>You are not on the distribution list for {breakGlassFor?.reference}. State why you need it now. Your reason, your name and every read are written to the audit log and shown to the coordinator.</p>
-        <SelectField label="Why you need it" required value={reasonCategory} onChange={(e) => setReasonCategory(e.target.value)} placeholder="Choose a reason category" options={config.breakGlassReasons.map((r) => ({ value: r, label: r }))} />
-        <TextareaField label="Reason" required value={reason} onChange={(e) => setReason(e.target.value)} hint="At least 15 characters. For example: immediate safety concern for a child in the household, reported at 09:40 today." />
+        <p>{t('person.breakGlass.intro', { reference: breakGlassFor?.reference ?? '' })}</p>
+        <SelectField label={t('person.breakGlass.category')} required value={reasonCategory} onChange={(e) => setReasonCategory(e.target.value)} placeholder={t('person.breakGlass.categoryPlaceholder')} options={config.breakGlassReasons.map((r) => ({ value: r, label: r }))} />
+        <TextareaField label={t('person.breakGlass.reason')} required value={reason} onChange={(e) => setReason(e.target.value)} hint={t('person.breakGlass.reasonHint')} />
       </Dialog>
 
       <Dialog
         open={recording}
         onClose={() => setRecording(false)}
-        title={`Record the views of ${person.preferredName ?? person.givenName}`}
+        title={t('person.recordViews.title', { name: person.preferredName ?? person.givenName })}
         actions={
           <>
             <Button variant="quiet" onClick={() => setRecording(false)}>
-              Cancel
+              {t('common.actions.cancel')}
             </Button>
             <Button variant="primary" disabled={voice.content.trim().length < 5} onClick={recordViews}>
-              Record views
+              {t('person.voice.record')}
             </Button>
           </>
         }
       >
         <div className="stack">
-          <SelectField label="Whose views" value={voice.kind} onChange={(e) => setVoice({ ...voice, kind: e.target.value as ViewsRecord['kind'] })} options={VIEWS_KINDS.map((k) => ({ value: k, label: VIEWS_KIND_LABELS[k] }))} />
-          <TextField label="How the views were sought" value={voice.method} onChange={(e) => setVoice({ ...voice, method: e.target.value })} hint="For example: in person after school with drawing; via the IDAA; with a Polish interpreter." />
-          <TextareaField label="In their words" required value={voice.content} onChange={(e) => setVoice({ ...voice, content: e.target.value })} />
+          <SelectField label={t('person.recordViews.whose')} value={voice.kind} onChange={(e) => setVoice({ ...voice, kind: e.target.value as ViewsRecord['kind'] })} options={VIEWS_KINDS.map((k) => ({ value: k, label: VIEWS_KIND_LABELS[k] }))} />
+          <TextField label={t('person.recordViews.method')} value={voice.method} onChange={(e) => setVoice({ ...voice, method: e.target.value })} hint={t('person.recordViews.methodHint')} />
+          <TextareaField label={t('person.recordViews.content')} required value={voice.content} onChange={(e) => setVoice({ ...voice, content: e.target.value })} />
         </div>
       </Dialog>
     </div>

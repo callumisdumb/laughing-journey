@@ -1277,6 +1277,966 @@
       }
     }
   },
+  "person": {
+    "address": {
+      "none": {
+        "maxLength": 24,
+        "screenshot": "phase-2/people-light-comfortable.png",
+        "where": "Address line on the people list, Person 360 header and print pack when the person has no address on record"
+      }
+    },
+    "audit": {
+      "columns": {
+        "act": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+          "where": "Column header of the audit table on the Sharing and audit tab"
+        },
+        "target": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+          "where": "Column header of the audit table on the Sharing and audit tab"
+        },
+        "when": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+          "where": "Column header of the audit table on the Sharing and audit tab"
+        },
+        "who": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+          "where": "Column header of the audit table on the Sharing and audit tab"
+        }
+      },
+      "meta": {
+        "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+        "where": "Meta line under the Audit sheet title on the Sharing and audit tab"
+      },
+      "restricted": {
+        "maxLength": 16,
+        "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+        "where": "Suffix after the act in the audit table when the read was of a restricted record"
+      },
+      "title": {
+        "maxLength": 16,
+        "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+        "where": "Title of the audit sheet on the Sharing and audit tab"
+      }
+    },
+    "breakGlass": {
+      "category": {
+        "maxLength": 24,
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Label of the reason category select in the break-glass dialog"
+      },
+      "categoryPlaceholder": {
+        "maxLength": 32,
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Placeholder option of the reason category select in the break-glass dialog"
+      },
+      "intro": {
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Opening paragraph of the break-glass dialog, with the process reference as an argument"
+      },
+      "reason": {
+        "maxLength": 16,
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Label of the free-text reason field in the break-glass dialog"
+      },
+      "reasonHint": {
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Hint under the reason field in the break-glass dialog"
+      },
+      "submit": {
+        "maxLength": 24,
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Danger button that confirms the break-glass dialog"
+      },
+      "title": {
+        "maxLength": 32,
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Title of the break-glass dialog opened from a restricted process"
+      },
+      "toast": {
+        "text": {
+          "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+          "where": "Toast text after break-glass access is granted, with the access duration in hours"
+        },
+        "title": {
+          "maxLength": 32,
+          "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+          "where": "Toast title after break-glass access is granted"
+        }
+      }
+    },
+    "chronology": {
+      "openWide": {
+        "maxLength": 16,
+        "screenshot": "phase-2/person-360-chronology-light-comfortable.png",
+        "where": "Primary button on the Chronology tab that opens the full chronology screen"
+      }
+    },
+    "documents": {
+      "columns": {
+        "date": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Column header of the documents table"
+        },
+        "document": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Column header of the documents table"
+        },
+        "kind": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Column header of the documents table"
+        },
+        "source": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Column header of the documents table"
+        }
+      },
+      "empty": {
+        "text": {
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Empty state text on the Documents tab"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Empty state title on the Documents tab"
+        }
+      },
+      "source": {
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Source column of the documents table for an evidence reference: the agency and the event title"
+      }
+    },
+    "header": {
+      "ageBorn": {
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Person 360 header fact: the age (passed in bold as the age argument), then the date of birth"
+      },
+      "ageNotRecorded": {
+        "maxLength": 24,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Person 360 header fact, in bold, when the person has no date of birth"
+      },
+      "alertUntil": {
+        "maxLength": 20,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Suffix on an alert pill in the Person 360 header when the alert has an end date"
+      },
+      "chi": {
+        "maxLength": 32,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Person 360 header fact showing the synthetic CHI number"
+      },
+      "interpreter": {
+        "maxLength": 32,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Person 360 header fact beside the languages icon, with the interpreter language"
+      },
+      "knownAs": {
+        "maxLength": 32,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Beside the name in the Person 360 header, with the preferred name"
+      },
+      "moves": {
+        "maxLength": 20,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Bracketed count of address moves after the address in the Person 360 header"
+      },
+      "nextMeeting": {
+        "maxLength": 48,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Under a process badge in the Person 360 header: the next scheduled meeting and its date"
+      },
+      "noCommunicationNeeds": {
+        "maxLength": 40,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Person 360 header fact when no interpreter or communication need is recorded"
+      },
+      "noMeeting": {
+        "maxLength": 24,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Under a process badge in the Person 360 header and on the Processes tab when no meeting is scheduled"
+      },
+      "noOpenProcess": {
+        "maxLength": 24,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Badge area of the Person 360 header when the person has no open process"
+      },
+      "notOnCase": {
+        "maxLength": 32,
+        "screenshot": "phase-2/person-360-presence-only-light-comfortable.png",
+        "where": "Under a process badge in the Person 360 header when the user has presence-only access"
+      },
+      "restrictedProcess": {
+        "maxLength": 24,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Restricted pill in the Person 360 header for a process the user cannot see"
+      },
+      "unborn": {
+        "maxLength": 12,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Bold lead word of the Person 360 header fact for an unborn child; the unbornDue messages take it as the unborn argument"
+      },
+      "unbornDue": {
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Person 360 header fact for an unborn child: the bold unborn word, then the expected delivery date"
+      },
+      "unbornDueUnknown": {
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Person 360 header fact for an unborn child with no expected delivery date: the bold unborn word, then the placeholder"
+      }
+    },
+    "list": {
+      "ageBands": {
+        "adult": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Age band option in the people list filter"
+        },
+        "older": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Age band option in the people list filter"
+        },
+        "primary": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Age band option in the people list filter"
+        },
+        "secondary": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Age band option in the people list filter"
+        },
+        "unborn": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Age band option in the people list filter"
+        },
+        "under5": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Age band option in the people list filter"
+        }
+      },
+      "ageNotRecorded": {
+        "maxLength": 16,
+        "screenshot": "phase-2/people-light-comfortable.png",
+        "where": "Age cell of the people list when the person has no date of birth"
+      },
+      "columns": {
+        "address": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Column header of the people list"
+        },
+        "age": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Column header of the people list"
+        },
+        "agencies": {
+          "maxLength": 24,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Column header of the people list"
+        },
+        "name": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Column header of the people list"
+        },
+        "processes": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Column header of the people list"
+        }
+      },
+      "count": {
+        "maxLength": 32,
+        "screenshot": "phase-2/people-light-comfortable.png",
+        "where": "Count at the right of the people list heading: rows shown out of everyone known"
+      },
+      "empty": {
+        "text": {
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Empty state text on the people list when no row matches the filters"
+        },
+        "title": {
+          "maxLength": 40,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Empty state title on the people list when no row matches the filters"
+        }
+      },
+      "filters": {
+        "ageBand": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Label of the age band filter on the people list"
+        },
+        "agency": {
+          "maxLength": 20,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Label of the agency filter on the people list"
+        },
+        "anyAge": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Placeholder option of the age band filter"
+        },
+        "anyAgency": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Placeholder option of the agency filter"
+        },
+        "anyProcess": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Placeholder option of the process filter"
+        },
+        "anyTown": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Placeholder option of the locality filter"
+        },
+        "locality": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Label of the locality filter on the people list"
+        },
+        "process": {
+          "maxLength": 16,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Label of the process filter on the people list"
+        },
+        "search": {
+          "maxLength": 24,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Label of the search field on the people list"
+        },
+        "searchPlaceholder": {
+          "maxLength": 32,
+          "screenshot": "phase-2/people-light-comfortable.png",
+          "where": "Placeholder of the search field on the people list"
+        }
+      },
+      "knownAs": {
+        "maxLength": 32,
+        "screenshot": "phase-2/people-light-comfortable.png",
+        "where": "Under the name in the people list, with the preferred name"
+      },
+      "lede": {
+        "screenshot": "phase-2/people-light-comfortable.png",
+        "where": "Lede under the people list heading"
+      },
+      "noneOpen": {
+        "maxLength": 16,
+        "screenshot": "phase-2/people-light-comfortable.png",
+        "where": "Processes cell of the people list when the person has no open process"
+      },
+      "notOnCase": {
+        "maxLength": 24,
+        "screenshot": "phase-2/people-light-comfortable.png",
+        "where": "Processes cell of the people list beside a process mark the user is not a member of"
+      },
+      "restricted": {
+        "maxLength": 16,
+        "screenshot": "phase-2/people-light-comfortable.png",
+        "where": "Restricted pill in the processes cell of the people list"
+      },
+      "title": {
+        "maxLength": 16,
+        "screenshot": "phase-2/people-light-comfortable.png",
+        "where": "Page heading of the people list"
+      },
+      "unbornDue": {
+        "maxLength": 32,
+        "screenshot": "phase-2/people-light-comfortable.png",
+        "where": "Age cell of the people list for an unborn child, with the expected delivery date"
+      },
+      "unbornDueUnknown": {
+        "maxLength": 32,
+        "screenshot": "phase-2/people-light-comfortable.png",
+        "where": "Age cell of the people list for an unborn child with no expected delivery date"
+      }
+    },
+    "network": {
+      "inverse": {
+        "attorneyFor": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the attorney-for side of the relationship"
+        },
+        "auntOrUncleOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the aunt-or-uncle-of side of the relationship"
+        },
+        "carerOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the carer-of side of the relationship"
+        },
+        "childOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the child-of side of the relationship"
+        },
+        "fatherOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the father-of side of the relationship"
+        },
+        "grandchildOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the grandchild-of side of the relationship"
+        },
+        "grandparentOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the grandparent-of side of the relationship"
+        },
+        "guardianFor": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the guardian-for side of the relationship"
+        },
+        "landlordOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the landlord-of side of the relationship"
+        },
+        "motherOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the mother-of side of the relationship"
+        },
+        "nephewOrNieceOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the nephew-or-niece-of side of the relationship"
+        },
+        "parentOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the parent-of side of the relationship"
+        },
+        "professionalFor": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the professional-for side of the relationship"
+        },
+        "stepParentOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the step-parent-of side of the relationship"
+        },
+        "unbornChildOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph when the subject is the unborn-child-of side of the relationship"
+        }
+      },
+      "legend": {
+        "concern": {
+          "maxLength": 20,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Legend entry under the household and network graph for a dashed adult of concern"
+        },
+        "household": {
+          "maxLength": 20,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Legend entry under the household and network graph"
+        },
+        "wider": {
+          "maxLength": 20,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Legend entry under the household and network graph"
+        }
+      },
+      "listItem": {
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "One entry in the visually hidden list that mirrors the network graph for screen readers"
+      },
+      "member": {
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "One person in the network graph accessible summary, joined with semicolons"
+      },
+      "noRelationships": {
+        "maxLength": 32,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Network graph accessible summary when the person has no recorded relationships"
+      },
+      "relation": {
+        "associateOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the associate-of relationship type"
+        },
+        "attorneyFor": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the attorney-for relationship type"
+        },
+        "auntOrUncleOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the aunt-or-uncle-of relationship type"
+        },
+        "carerOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the carer-of relationship type"
+        },
+        "childOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the child-of relationship type"
+        },
+        "exPartnerOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the ex-partner-of relationship type"
+        },
+        "fatherOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the father-of relationship type"
+        },
+        "grandchildOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the grandchild-of relationship type"
+        },
+        "grandparentOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the grandparent-of relationship type"
+        },
+        "guardianFor": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the guardian-for relationship type"
+        },
+        "landlordOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the landlord-of relationship type"
+        },
+        "livesWith": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the lives-with relationship type"
+        },
+        "motherOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the mother-of relationship type"
+        },
+        "nephewOrNieceOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the nephew-or-niece-of relationship type"
+        },
+        "parentOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the parent-of relationship type"
+        },
+        "partnerOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the partner-of relationship type"
+        },
+        "professionalFor": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the professional-for relationship type"
+        },
+        "relativeOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the relative-of relationship type"
+        },
+        "siblingOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the sibling-of relationship type"
+        },
+        "stepParentOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the step-parent-of relationship type"
+        },
+        "unbornChildOf": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the unborn-child-of relationship type"
+        }
+      },
+      "summary": {
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Accessible label of the household and network graph, with the subject name and the member list"
+      }
+    },
+    "notFound": {
+      "back": {
+        "maxLength": 20,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Link back to the people list when a person id is not in the dataset"
+      },
+      "text": {
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Empty state text on Person 360 and the chronology when the person id is not in the dataset"
+      },
+      "title": {
+        "maxLength": 24,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Empty state title on Person 360 and the chronology when the person id is not in the dataset"
+      }
+    },
+    "overview": {
+      "clocks": {
+        "hint": {
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Note in the clocks sheet when no clock is running"
+        },
+        "none": {
+          "maxLength": 32,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Meta line of the clocks sheet when no clock is running"
+        },
+        "running": {
+          "maxLength": 20,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Meta line of the clocks sheet with the number of running clocks"
+        },
+        "sub": {
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Sub-line of each clock numeral: due date, then the override reason or the source reference"
+        },
+        "title": {
+          "maxLength": 16,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Title of the clocks sheet on the Overview tab"
+        }
+      },
+      "contacts": {
+        "lastContact": {
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Second meta line of a key contact: phone number and the date they last touched the record"
+        },
+        "meta": {
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Meta line under the key contacts sheet title"
+        },
+        "none": {
+          "maxLength": 40,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Note in the key contacts sheet when no process is visible to the user"
+        },
+        "role": {
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "First meta line of a key contact: case role, process code and role definition"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Title of the key contacts sheet on the Overview tab"
+        }
+      },
+      "network": {
+        "meta": {
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Meta line under the household and network sheet title"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Title of the household and network sheet on the Overview tab"
+        }
+      },
+      "plans": {
+        "active": {
+          "maxLength": 16,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Meta line of the current plans sheet with the number of active plans"
+        },
+        "meta": {
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Meta line of a plan card: type, coordinator, agreed date, optional review date and outcome count"
+        },
+        "none": {
+          "maxLength": 20,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Meta line of the current plans sheet when no plan is active"
+        },
+        "progress": {
+          "maxLength": 32,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Pill on a plan card: actions done out of total, with the overdue count when any"
+        },
+        "title": {
+          "maxLength": 16,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Title of the current plans sheet on the Overview tab"
+        }
+      },
+      "voice": {
+        "all": {
+          "maxLength": 8,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Quiet button on the views and voice sheet that opens the Views and voice tab"
+        },
+        "latestOf": {
+          "maxLength": 20,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Meta line of the views and voice sheet with the number of records"
+        },
+        "none": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Meta line of the views and voice sheet when nothing is recorded"
+        },
+        "placeholder": {
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Body of the views and voice sheet when nothing is recorded"
+        },
+        "title": {
+          "maxLength": 20,
+          "screenshot": "phase-2/person-360-light-comfortable.png",
+          "where": "Title of the views and voice sheet on the Overview tab"
+        }
+      }
+    },
+    "processes": {
+      "access": {
+        "fields": {
+          "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+          "where": "Access note on a process card when the user sees named fields only, with the field list"
+        },
+        "presence": {
+          "screenshot": "phase-2/person-360-presence-only-light-comfortable.png",
+          "where": "Access note on a process card when the user has presence-only access"
+        },
+        "summary": {
+          "maxLength": 40,
+          "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+          "where": "Access note on a process card when the user has summary access"
+        }
+      },
+      "empty": {
+        "text": {
+          "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+          "where": "Empty state text on the Processes tab"
+        },
+        "title": {
+          "maxLength": 16,
+          "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+          "where": "Empty state title on the Processes tab"
+        }
+      },
+      "meta": {
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Meta line of a process card: reference, the person's role, lead agency, opened date and status"
+      },
+      "nextMeeting": {
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Link on a process card to the next scheduled meeting, with its title and date"
+      },
+      "openWithReason": {
+        "maxLength": 24,
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Primary button on a restricted process card that opens the break-glass dialog"
+      },
+      "restrictedTitle": {
+        "maxLength": 40,
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Title of a restricted process card: process code and reference"
+      },
+      "role": {
+        "child": {
+          "maxLength": 16,
+          "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+          "where": "The person's role in a process, shown in the process card meta line"
+        },
+        "parent": {
+          "maxLength": 16,
+          "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+          "where": "The person's role in a process, shown in the process card meta line"
+        },
+        "perpetrator": {
+          "maxLength": 16,
+          "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+          "where": "The person's role in a process, shown in the process card meta line"
+        },
+        "subject": {
+          "maxLength": 16,
+          "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+          "where": "The person's role in a process, shown in the process card meta line"
+        }
+      },
+      "statusOpen": {
+        "maxLength": 12,
+        "screenshot": "phase-2/person-360-processes-light-comfortable.png",
+        "where": "Status word in the process card meta line for an open process"
+      }
+    },
+    "recordViews": {
+      "content": {
+        "maxLength": 20,
+        "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+        "where": "Label of the words field in the record views dialog"
+      },
+      "method": {
+        "maxLength": 32,
+        "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+        "where": "Label of the method field in the record views dialog"
+      },
+      "methodDefault": {
+        "maxLength": 20,
+        "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+        "where": "Default value of the method field in the record views dialog"
+      },
+      "methodHint": {
+        "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+        "where": "Hint under the method field in the record views dialog"
+      },
+      "title": {
+        "maxLength": 48,
+        "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+        "where": "Title of the record views dialog, with the person's preferred or given name"
+      },
+      "toast": {
+        "text": {
+          "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+          "where": "Toast text after views are recorded"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+          "where": "Toast title after views are recorded"
+        }
+      },
+      "whose": {
+        "maxLength": 20,
+        "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+        "where": "Label of the kind select in the record views dialog"
+      }
+    },
+    "restricted": {
+      "reason": {
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Restricted state reason on Person 360 when every open process is restricted to the user"
+      }
+    },
+    "sharing": {
+      "columns": {
+        "level": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+          "where": "Column header of the shares table on the Sharing and audit tab"
+        },
+        "status": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+          "where": "Column header of the shares table on the Sharing and audit tab"
+        },
+        "to": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+          "where": "Column header of the shares table on the Sharing and audit tab"
+        },
+        "when": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+          "where": "Column header of the shares table on the Sharing and audit tab"
+        },
+        "why": {
+          "maxLength": 12,
+          "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+          "where": "Column header of the shares table on the Sharing and audit tab"
+        }
+      },
+      "meta": {
+        "maxLength": 48,
+        "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+        "where": "Meta line under the shares sheet title, with the number of shares"
+      },
+      "title": {
+        "maxLength": 32,
+        "screenshot": "phase-2/person-360-sharing-light-comfortable.png",
+        "where": "Title of the shares sheet on the Sharing and audit tab"
+      }
+    },
+    "tabs": {
+      "chronology": {
+        "maxLength": 16,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Tab name on Person 360"
+      },
+      "documents": {
+        "maxLength": 16,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Tab name on Person 360"
+      },
+      "label": {
+        "maxLength": 32,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Accessible name of the Person 360 tab list"
+      },
+      "overview": {
+        "maxLength": 16,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Tab name on Person 360"
+      },
+      "processes": {
+        "maxLength": 16,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Tab name on Person 360"
+      },
+      "sharing": {
+        "maxLength": 20,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Tab name on Person 360"
+      },
+      "voice": {
+        "maxLength": 20,
+        "screenshot": "phase-2/person-360-light-comfortable.png",
+        "where": "Tab name on Person 360"
+      }
+    },
+    "voice": {
+      "empty": {
+        "text": {
+          "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+          "where": "Empty state text on the Views and voice tab"
+        },
+        "title": {
+          "maxLength": 24,
+          "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+          "where": "Empty state title on the Views and voice tab"
+        }
+      },
+      "lede": {
+        "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+        "where": "Lede at the top of the Views and voice tab"
+      },
+      "record": {
+        "maxLength": 16,
+        "screenshot": "phase-2/person-360-voice-light-comfortable.png",
+        "where": "Primary button on the Views and voice tab and the submit button of the record views dialog"
+      }
+    }
+  },
   "search": {
     "empty": {
       "text": {

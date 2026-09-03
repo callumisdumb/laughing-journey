@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCIES, AGENCY_SHORT, PROCESS_LABELS, PROCESS_TYPES, ageLabel, formatDate, stageLabel, type Agency, type Person } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { AgencyMark, Pill, ProcessMark, SelectField, Table, TableWrap, TextField, tableStyles } from '@mas/ui';
 import { Lock, UserX } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -27,6 +28,7 @@ function ageBandOf(p: Person, now: Date): AgeBand {
 }
 
 export function PeopleList() {
+  const t = useT();
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
@@ -72,38 +74,45 @@ export function PeopleList() {
     navigate(`/people${setQuery(route.query, { [key]: value || null })}`, { replace: true });
   }
 
+  const ageBands: Array<{ value: AgeBand; label: string }> = [
+    { value: 'unborn', label: t('person.list.ageBands.unborn') },
+    { value: '0-4', label: t('person.list.ageBands.under5') },
+    { value: '5-11', label: t('person.list.ageBands.primary') },
+    { value: '12-17', label: t('person.list.ageBands.secondary') },
+    { value: '18-64', label: t('person.list.ageBands.adult') },
+    { value: '65+', label: t('person.list.ageBands.older') },
+  ];
+
   const state = dev ?? (rows.length === 0 ? 'empty' : 'ready');
 
   return (
     <div className="page">
       <div className="page-head">
         <div className="page-head-text">
-          <h1>People</h1>
-          <p className="page-lede">Everyone known to the platform in Clydeshore. What you can open depends on your agency, your role and whether you are on the case.</p>
+          <h1>{t('person.list.title')}</h1>
+          <p className="page-lede">{t('person.list.lede')}</p>
         </div>
-        <span className={styles.count}>
-          {rows.length} of {data.people.length} people
-        </span>
+        <span className={styles.count}>{t('person.list.count', { shown: rows.length, total: data.people.length })}</span>
       </div>
       <div className={styles.filters}>
         <div className={styles.filterSearch}>
-          <TextField label="Name or address" type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder="Start typing a name" />
+          <TextField label={t('person.list.filters.search')} type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('person.list.filters.searchPlaceholder')} />
         </div>
-        <SelectField label="Process" value={processFilter} onChange={(e) => setFilter('process', e.target.value)} placeholder="Any process" options={PROCESS_TYPES.map((t) => ({ value: t, label: PROCESS_LABELS[t] }))} />
-        <SelectField label="Agency involved" value={agencyFilter} onChange={(e) => setFilter('agency', e.target.value)} placeholder="Any agency" options={AGENCIES.map((a) => ({ value: a, label: AGENCY_SHORT[a] }))} />
-        <SelectField label="Locality" value={townFilter} onChange={(e) => setFilter('town', e.target.value)} placeholder="Any town" options={TOWNS.map((t) => ({ value: t.name, label: t.name }))} />
-        <SelectField label="Age band" value={ageFilter} onChange={(e) => setFilter('age', e.target.value)} placeholder="Any age" options={[{ value: 'unborn', label: 'Unborn' }, { value: '0-4', label: '0 to 4' }, { value: '5-11', label: '5 to 11' }, { value: '12-17', label: '12 to 17' }, { value: '18-64', label: '18 to 64' }, { value: '65+', label: '65 and over' }]} />
+        <SelectField label={t('person.list.filters.process')} value={processFilter} onChange={(e) => setFilter('process', e.target.value)} placeholder={t('person.list.filters.anyProcess')} options={PROCESS_TYPES.map((pt) => ({ value: pt, label: PROCESS_LABELS[pt] }))} />
+        <SelectField label={t('person.list.filters.agency')} value={agencyFilter} onChange={(e) => setFilter('agency', e.target.value)} placeholder={t('person.list.filters.anyAgency')} options={AGENCIES.map((a) => ({ value: a, label: AGENCY_SHORT[a] }))} />
+        <SelectField label={t('person.list.filters.locality')} value={townFilter} onChange={(e) => setFilter('town', e.target.value)} placeholder={t('person.list.filters.anyTown')} options={TOWNS.map((town) => ({ value: town.name, label: town.name }))} />
+        <SelectField label={t('person.list.filters.ageBand')} value={ageFilter} onChange={(e) => setFilter('age', e.target.value)} placeholder={t('person.list.filters.anyAge')} options={ageBands} />
       </div>
-      <ScreenState state={state} empty={{ title: 'No people match these filters', text: 'Clear a filter or search by name, alias, date of birth, CHI, address or reference number from the top bar.' }}>
+      <ScreenState state={state} empty={{ title: t('person.list.empty.title'), text: t('person.list.empty.text') }}>
         <TableWrap>
           <Table>
             <thead>
               <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Age</th>
-                <th scope="col">Address</th>
-                <th scope="col">Processes</th>
-                <th scope="col">Agencies involved</th>
+                <th scope="col">{t('person.list.columns.name')}</th>
+                <th scope="col">{t('person.list.columns.age')}</th>
+                <th scope="col">{t('person.list.columns.address')}</th>
+                <th scope="col">{t('person.list.columns.processes')}</th>
+                <th scope="col">{t('person.list.columns.agencies')}</th>
               </tr>
             </thead>
             <tbody>
@@ -125,25 +134,31 @@ export function PeopleList() {
                       <AppLink href={personPath(r.person.id)} className={styles.name} onClick={(e) => e.stopPropagation()}>
                         {fullName(r.person)}
                       </AppLink>
-                      {r.person.preferredName ? <span className={styles.sub}>Known as {r.person.preferredName}</span> : null}
+                      {r.person.preferredName ? <span className={styles.sub}>{t('person.list.knownAs', { name: r.person.preferredName })}</span> : null}
                     </td>
                     <td className={tableStyles.table ? undefined : undefined}>
-                      {r.person.lifeStage === 'unborn' ? `Unborn, due ${r.person.expectedDeliveryDate ? formatDate(r.person.expectedDeliveryDate) : 'date not recorded'}` : r.person.dateOfBirth ? ageLabel(r.person.dateOfBirth, now) : 'Not recorded'}
+                      {r.person.lifeStage === 'unborn'
+                        ? r.person.expectedDeliveryDate
+                          ? t('person.list.unbornDue', { date: formatDate(r.person.expectedDeliveryDate) })
+                          : t('person.list.unbornDueUnknown')
+                        : r.person.dateOfBirth
+                          ? ageLabel(r.person.dateOfBirth, now)
+                          : t('person.list.ageNotRecorded')}
                       {r.person.dateOfBirth ? <span className={styles.sub}>{formatDate(r.person.dateOfBirth)}</span> : null}
                     </td>
                     <td>{r.address.line}</td>
                     <td>
                       <span className={styles.badges}>
-                        {r.processes.length === 0 ? <span className={styles.sub}>None open</span> : null}
+                        {r.processes.length === 0 ? <span className={styles.sub}>{t('person.list.noneOpen')}</span> : null}
                         {r.processes.map(({ process, access }) =>
                           access.level === 'none' ? (
                             <Pill key={process.id} tone="restricted" size="sm" icon={<Lock size={12} aria-hidden="true" />}>
-                              Restricted
+                              {t('person.list.restricted')}
                             </Pill>
                           ) : access.level === 'presence' ? (
                             <span key={process.id} className={styles.notOnCase}>
                               <ProcessMark type={process.type} />
-                              <UserX size={12} aria-hidden="true" /> not on this case
+                              <UserX size={12} aria-hidden="true" /> {t('person.list.notOnCase')}
                             </span>
                           ) : (
                             <ProcessMark key={process.id} type={process.type} stage={stageLabel(process.type, process.stage)} />

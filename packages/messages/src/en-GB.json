@@ -386,6 +386,267 @@
       "unread": "unread"
     }
   },
+  "person": {
+    "address": {
+      "none": "No address recorded"
+    },
+    "audit": {
+      "columns": {
+        "act": "Act",
+        "target": "Target",
+        "when": "When",
+        "who": "Who"
+      },
+      "meta": "Every read, share, export and break-glass on this record",
+      "restricted": "(restricted)",
+      "title": "Audit"
+    },
+    "breakGlass": {
+      "category": "Why you need it",
+      "categoryPlaceholder": "Choose a reason category",
+      "intro": "You are not on the distribution list for {reference}. State why you need it now. Your reason, your name and every read are written to the audit log and shown to the coordinator.",
+      "reason": "Reason",
+      "reasonHint": "At least 15 characters. For example: immediate safety concern for a child in the household, reported at 09:40 today.",
+      "submit": "Open with this reason",
+      "title": "Open a restricted record",
+      "toast": {
+        "text": "Access lasts {hours} hours. Every read is audited and the MAPPA Coordinator is told.",
+        "title": "Break-glass access granted"
+      }
+    },
+    "chronology": {
+      "openWide": "Open wide"
+    },
+    "documents": {
+      "columns": {
+        "date": "Date",
+        "document": "Document",
+        "kind": "Kind",
+        "source": "Source"
+      },
+      "empty": {
+        "text": "Evidence references and meeting pack items appear here as the record grows.",
+        "title": "No documents"
+      },
+      "source": "{agency} event: {title}"
+    },
+    "header": {
+      "ageBorn": "{age}, born {date}",
+      "ageNotRecorded": "Age not recorded",
+      "alertUntil": "until {date}",
+      "chi": "CHI (synthetic) {chi}",
+      "interpreter": "{language} interpreter",
+      "knownAs": "known as {name}",
+      "moves": "({count, plural, one {# move} other {# moves}})",
+      "nextMeeting": "Next: {title} {date}",
+      "noCommunicationNeeds": "No communication needs recorded",
+      "noMeeting": "No meeting scheduled",
+      "noOpenProcess": "No open process",
+      "notOnCase": "You are not on this case",
+      "restrictedProcess": "Restricted process",
+      "unborn": "Unborn",
+      "unbornDue": "{unborn}, due {date}",
+      "unbornDueUnknown": "{unborn}, due date not recorded"
+    },
+    "list": {
+      "ageBands": {
+        "adult": "18 to 64",
+        "older": "65 and over",
+        "primary": "5 to 11",
+        "secondary": "12 to 17",
+        "unborn": "Unborn",
+        "under5": "0 to 4"
+      },
+      "ageNotRecorded": "Not recorded",
+      "columns": {
+        "address": "Address",
+        "age": "Age",
+        "agencies": "Agencies involved",
+        "name": "Name",
+        "processes": "Processes"
+      },
+      "count": "{shown} of {total} people",
+      "empty": {
+        "text": "Clear a filter or search by name, alias, date of birth, CHI, address or reference number from the top bar.",
+        "title": "No people match these filters"
+      },
+      "filters": {
+        "ageBand": "Age band",
+        "agency": "Agency involved",
+        "anyAge": "Any age",
+        "anyAgency": "Any agency",
+        "anyProcess": "Any process",
+        "anyTown": "Any town",
+        "locality": "Locality",
+        "process": "Process",
+        "search": "Name or address",
+        "searchPlaceholder": "Start typing a name"
+      },
+      "knownAs": "Known as {name}",
+      "lede": "Everyone known to the platform in Clydeshore. What you can open depends on your agency, your role and whether you are on the case.",
+      "noneOpen": "None open",
+      "notOnCase": "not on this case",
+      "restricted": "Restricted",
+      "title": "People",
+      "unbornDue": "Unborn, due {date}",
+      "unbornDueUnknown": "Unborn, due date not recorded"
+    },
+    "network": {
+      "inverse": {
+        "attorneyFor": "grants power to",
+        "auntOrUncleOf": "nephew or niece",
+        "carerOf": "cared for by",
+        "childOf": "parent",
+        "fatherOf": "child",
+        "grandchildOf": "grandparent",
+        "grandparentOf": "grandchild",
+        "guardianFor": "under guardianship of",
+        "landlordOf": "tenant of",
+        "motherOf": "child",
+        "nephewOrNieceOf": "aunt or uncle",
+        "parentOf": "child",
+        "professionalFor": "supported by",
+        "stepParentOf": "step-child",
+        "unbornChildOf": "expectant parent"
+      },
+      "legend": {
+        "concern": "Adult of concern",
+        "household": "Same household",
+        "wider": "Wider network"
+      },
+      "listItem": "{name}: {relation}{household, select, yes {, same household} other {}}",
+      "member": "{name}, {relation}{household, select, yes {, same household} other {}}",
+      "noRelationships": "no relationships recorded",
+      "relation": {
+        "associateOf": "associate",
+        "attorneyFor": "attorney",
+        "auntOrUncleOf": "aunt or uncle",
+        "carerOf": "carer",
+        "childOf": "child",
+        "exPartnerOf": "ex-partner",
+        "fatherOf": "father",
+        "grandchildOf": "grandchild",
+        "grandparentOf": "grandparent",
+        "guardianFor": "guardian",
+        "landlordOf": "landlord",
+        "livesWith": "lives with",
+        "motherOf": "mother",
+        "nephewOrNieceOf": "nephew or niece",
+        "parentOf": "parent",
+        "partnerOf": "partner",
+        "professionalFor": "professional",
+        "relativeOf": "relative",
+        "siblingOf": "sibling",
+        "stepParentOf": "step-parent",
+        "unbornChildOf": "unborn child"
+      },
+      "summary": "Network of {name}: {list}"
+    },
+    "notFound": {
+      "back": "Back to people",
+      "text": "This record does not exist in the demo dataset.",
+      "title": "Person not found"
+    },
+    "overview": {
+      "clocks": {
+        "hint": "Clocks start when a process reaches a stage with a statutory or local timescale.",
+        "none": "No statutory clocks running",
+        "running": "{count} running",
+        "sub": "Due {date}. {detail}",
+        "title": "Clocks"
+      },
+      "contacts": {
+        "lastContact": "{phone}. Last contact with the record {date}.",
+        "meta": "Who is on the case, their role, and when they last touched the record",
+        "none": "No case members visible to you.",
+        "role": "{caseRole} ({process}). {role}",
+        "title": "Key contacts by agency"
+      },
+      "network": {
+        "meta": "Relationships are dated and typed. Dashed marks an adult of concern.",
+        "title": "Household and network"
+      },
+      "plans": {
+        "active": "{count} active",
+        "meta": "{type}. Coordinated by {coordinator}. Agreed {agreed}{hasReview, select, yes {, review {review}} other {}}. {outcomes} outcomes.",
+        "none": "No active plan",
+        "progress": "{done} of {total} done{overdue, plural, =0 {} other {, # overdue}}",
+        "title": "Current plans"
+      },
+      "voice": {
+        "all": "All",
+        "latestOf": "Latest of {count}",
+        "none": "Nothing recorded yet",
+        "placeholder": "The person's own words belong here, dated and attributed.",
+        "title": "Views and voice"
+      }
+    },
+    "processes": {
+      "access": {
+        "fields": "Named fields only: {fields}.",
+        "presence": "You are not on this case: presence only. Ask the lead to be involved.",
+        "summary": "Summary access at this stage."
+      },
+      "empty": {
+        "text": "Nobody has opened a process for this person. Search results show them because they are known to a connector.",
+        "title": "No process"
+      },
+      "meta": "{reference}. {role}. Lead {agency}. Opened {date}. {status}.",
+      "nextMeeting": "Next: {title}, {date}",
+      "openWithReason": "Open with a reason",
+      "restrictedTitle": "{process} {reference}: restricted",
+      "role": {
+        "child": "Child",
+        "parent": "Parent",
+        "perpetrator": "Perpetrator",
+        "subject": "Subject"
+      },
+      "statusOpen": "Open"
+    },
+    "recordViews": {
+      "content": "In their words",
+      "method": "How the views were sought",
+      "methodDefault": "In person",
+      "methodHint": "For example: in person after school with drawing; via the IDAA; with a Polish interpreter.",
+      "title": "Record the views of {name}",
+      "toast": {
+        "text": "They appear at the top of the person's record and in every process view.",
+        "title": "Views recorded"
+      },
+      "whose": "Whose views"
+    },
+    "restricted": {
+      "reason": "Every open process for this person is restricted and you are not on the distribution list."
+    },
+    "sharing": {
+      "columns": {
+        "level": "Level",
+        "status": "Status",
+        "to": "To",
+        "when": "When",
+        "why": "Why"
+      },
+      "meta": "{count} shares, each with a lawful basis",
+      "title": "Shared about this person"
+    },
+    "tabs": {
+      "chronology": "Chronology",
+      "documents": "Documents",
+      "label": "Person record sections",
+      "overview": "Overview",
+      "processes": "Processes",
+      "sharing": "Sharing and audit",
+      "voice": "Views and voice"
+    },
+    "voice": {
+      "empty": {
+        "text": "Record what the person said, how it was sought, and who recorded it.",
+        "title": "No views recorded"
+      },
+      "lede": "Structured, dated and attributed. The person's views are read into every meeting record.",
+      "record": "Record views"
+    }
+  },
   "search": {
     "empty": {
       "text": "Check the spelling, or try a date of birth as dd/mm/yyyy, a postcode, or a reference like CP-2026-0412. People you cannot see at all are not listed.",

@@ -268,6 +268,189 @@ export type MessageKey =
   | 'nav.topBar.notifications'
   | 'nav.topBar.signIn'
   | 'nav.topBar.unread'
+  | 'person.address.none'
+  | 'person.audit.columns.act'
+  | 'person.audit.columns.target'
+  | 'person.audit.columns.when'
+  | 'person.audit.columns.who'
+  | 'person.audit.meta'
+  | 'person.audit.restricted'
+  | 'person.audit.title'
+  | 'person.breakGlass.category'
+  | 'person.breakGlass.categoryPlaceholder'
+  | 'person.breakGlass.intro'
+  | 'person.breakGlass.reason'
+  | 'person.breakGlass.reasonHint'
+  | 'person.breakGlass.submit'
+  | 'person.breakGlass.title'
+  | 'person.breakGlass.toast.text'
+  | 'person.breakGlass.toast.title'
+  | 'person.chronology.openWide'
+  | 'person.documents.columns.date'
+  | 'person.documents.columns.document'
+  | 'person.documents.columns.kind'
+  | 'person.documents.columns.source'
+  | 'person.documents.empty.text'
+  | 'person.documents.empty.title'
+  | 'person.documents.source'
+  | 'person.header.ageBorn'
+  | 'person.header.ageNotRecorded'
+  | 'person.header.alertUntil'
+  | 'person.header.chi'
+  | 'person.header.interpreter'
+  | 'person.header.knownAs'
+  | 'person.header.moves'
+  | 'person.header.nextMeeting'
+  | 'person.header.noCommunicationNeeds'
+  | 'person.header.noMeeting'
+  | 'person.header.noOpenProcess'
+  | 'person.header.notOnCase'
+  | 'person.header.restrictedProcess'
+  | 'person.header.unborn'
+  | 'person.header.unbornDue'
+  | 'person.header.unbornDueUnknown'
+  | 'person.list.ageBands.adult'
+  | 'person.list.ageBands.older'
+  | 'person.list.ageBands.primary'
+  | 'person.list.ageBands.secondary'
+  | 'person.list.ageBands.unborn'
+  | 'person.list.ageBands.under5'
+  | 'person.list.ageNotRecorded'
+  | 'person.list.columns.address'
+  | 'person.list.columns.age'
+  | 'person.list.columns.agencies'
+  | 'person.list.columns.name'
+  | 'person.list.columns.processes'
+  | 'person.list.count'
+  | 'person.list.empty.text'
+  | 'person.list.empty.title'
+  | 'person.list.filters.ageBand'
+  | 'person.list.filters.agency'
+  | 'person.list.filters.anyAge'
+  | 'person.list.filters.anyAgency'
+  | 'person.list.filters.anyProcess'
+  | 'person.list.filters.anyTown'
+  | 'person.list.filters.locality'
+  | 'person.list.filters.process'
+  | 'person.list.filters.search'
+  | 'person.list.filters.searchPlaceholder'
+  | 'person.list.knownAs'
+  | 'person.list.lede'
+  | 'person.list.noneOpen'
+  | 'person.list.notOnCase'
+  | 'person.list.restricted'
+  | 'person.list.title'
+  | 'person.list.unbornDue'
+  | 'person.list.unbornDueUnknown'
+  | 'person.network.inverse.attorneyFor'
+  | 'person.network.inverse.auntOrUncleOf'
+  | 'person.network.inverse.carerOf'
+  | 'person.network.inverse.childOf'
+  | 'person.network.inverse.fatherOf'
+  | 'person.network.inverse.grandchildOf'
+  | 'person.network.inverse.grandparentOf'
+  | 'person.network.inverse.guardianFor'
+  | 'person.network.inverse.landlordOf'
+  | 'person.network.inverse.motherOf'
+  | 'person.network.inverse.nephewOrNieceOf'
+  | 'person.network.inverse.parentOf'
+  | 'person.network.inverse.professionalFor'
+  | 'person.network.inverse.stepParentOf'
+  | 'person.network.inverse.unbornChildOf'
+  | 'person.network.legend.concern'
+  | 'person.network.legend.household'
+  | 'person.network.legend.wider'
+  | 'person.network.listItem'
+  | 'person.network.member'
+  | 'person.network.noRelationships'
+  | 'person.network.relation.associateOf'
+  | 'person.network.relation.attorneyFor'
+  | 'person.network.relation.auntOrUncleOf'
+  | 'person.network.relation.carerOf'
+  | 'person.network.relation.childOf'
+  | 'person.network.relation.exPartnerOf'
+  | 'person.network.relation.fatherOf'
+  | 'person.network.relation.grandchildOf'
+  | 'person.network.relation.grandparentOf'
+  | 'person.network.relation.guardianFor'
+  | 'person.network.relation.landlordOf'
+  | 'person.network.relation.livesWith'
+  | 'person.network.relation.motherOf'
+  | 'person.network.relation.nephewOrNieceOf'
+  | 'person.network.relation.parentOf'
+  | 'person.network.relation.partnerOf'
+  | 'person.network.relation.professionalFor'
+  | 'person.network.relation.relativeOf'
+  | 'person.network.relation.siblingOf'
+  | 'person.network.relation.stepParentOf'
+  | 'person.network.relation.unbornChildOf'
+  | 'person.network.summary'
+  | 'person.notFound.back'
+  | 'person.notFound.text'
+  | 'person.notFound.title'
+  | 'person.overview.clocks.hint'
+  | 'person.overview.clocks.none'
+  | 'person.overview.clocks.running'
+  | 'person.overview.clocks.sub'
+  | 'person.overview.clocks.title'
+  | 'person.overview.contacts.lastContact'
+  | 'person.overview.contacts.meta'
+  | 'person.overview.contacts.none'
+  | 'person.overview.contacts.role'
+  | 'person.overview.contacts.title'
+  | 'person.overview.network.meta'
+  | 'person.overview.network.title'
+  | 'person.overview.plans.active'
+  | 'person.overview.plans.meta'
+  | 'person.overview.plans.none'
+  | 'person.overview.plans.progress'
+  | 'person.overview.plans.title'
+  | 'person.overview.voice.all'
+  | 'person.overview.voice.latestOf'
+  | 'person.overview.voice.none'
+  | 'person.overview.voice.placeholder'
+  | 'person.overview.voice.title'
+  | 'person.processes.access.fields'
+  | 'person.processes.access.presence'
+  | 'person.processes.access.summary'
+  | 'person.processes.empty.text'
+  | 'person.processes.empty.title'
+  | 'person.processes.meta'
+  | 'person.processes.nextMeeting'
+  | 'person.processes.openWithReason'
+  | 'person.processes.restrictedTitle'
+  | 'person.processes.role.child'
+  | 'person.processes.role.parent'
+  | 'person.processes.role.perpetrator'
+  | 'person.processes.role.subject'
+  | 'person.processes.statusOpen'
+  | 'person.recordViews.content'
+  | 'person.recordViews.method'
+  | 'person.recordViews.methodDefault'
+  | 'person.recordViews.methodHint'
+  | 'person.recordViews.title'
+  | 'person.recordViews.toast.text'
+  | 'person.recordViews.toast.title'
+  | 'person.recordViews.whose'
+  | 'person.restricted.reason'
+  | 'person.sharing.columns.level'
+  | 'person.sharing.columns.status'
+  | 'person.sharing.columns.to'
+  | 'person.sharing.columns.when'
+  | 'person.sharing.columns.why'
+  | 'person.sharing.meta'
+  | 'person.sharing.title'
+  | 'person.tabs.chronology'
+  | 'person.tabs.documents'
+  | 'person.tabs.label'
+  | 'person.tabs.overview'
+  | 'person.tabs.processes'
+  | 'person.tabs.sharing'
+  | 'person.tabs.voice'
+  | 'person.voice.empty.text'
+  | 'person.voice.empty.title'
+  | 'person.voice.lede'
+  | 'person.voice.record'
   | 'search.empty.text'
   | 'search.empty.title'
   | 'search.head.prompt'
@@ -621,6 +804,189 @@ export interface MessageArgs {
   'nav.topBar.notifications': { count: string | number };
   'nav.topBar.signIn': Record<string, never>;
   'nav.topBar.unread': Record<string, never>;
+  'person.address.none': Record<string, never>;
+  'person.audit.columns.act': Record<string, never>;
+  'person.audit.columns.target': Record<string, never>;
+  'person.audit.columns.when': Record<string, never>;
+  'person.audit.columns.who': Record<string, never>;
+  'person.audit.meta': Record<string, never>;
+  'person.audit.restricted': Record<string, never>;
+  'person.audit.title': Record<string, never>;
+  'person.breakGlass.category': Record<string, never>;
+  'person.breakGlass.categoryPlaceholder': Record<string, never>;
+  'person.breakGlass.intro': { reference: string | number };
+  'person.breakGlass.reason': Record<string, never>;
+  'person.breakGlass.reasonHint': Record<string, never>;
+  'person.breakGlass.submit': Record<string, never>;
+  'person.breakGlass.title': Record<string, never>;
+  'person.breakGlass.toast.text': { hours: string | number };
+  'person.breakGlass.toast.title': Record<string, never>;
+  'person.chronology.openWide': Record<string, never>;
+  'person.documents.columns.date': Record<string, never>;
+  'person.documents.columns.document': Record<string, never>;
+  'person.documents.columns.kind': Record<string, never>;
+  'person.documents.columns.source': Record<string, never>;
+  'person.documents.empty.text': Record<string, never>;
+  'person.documents.empty.title': Record<string, never>;
+  'person.documents.source': { agency: string | number; title: string | number };
+  'person.header.ageBorn': { age: string | number; date: string | number };
+  'person.header.ageNotRecorded': Record<string, never>;
+  'person.header.alertUntil': { date: string | number };
+  'person.header.chi': { chi: string | number };
+  'person.header.interpreter': { language: string | number };
+  'person.header.knownAs': { name: string | number };
+  'person.header.moves': { count: number };
+  'person.header.nextMeeting': { title: string | number; date: string | number };
+  'person.header.noCommunicationNeeds': Record<string, never>;
+  'person.header.noMeeting': Record<string, never>;
+  'person.header.noOpenProcess': Record<string, never>;
+  'person.header.notOnCase': Record<string, never>;
+  'person.header.restrictedProcess': Record<string, never>;
+  'person.header.unborn': Record<string, never>;
+  'person.header.unbornDue': { unborn: string | number; date: string | number };
+  'person.header.unbornDueUnknown': { unborn: string | number };
+  'person.list.ageBands.adult': Record<string, never>;
+  'person.list.ageBands.older': Record<string, never>;
+  'person.list.ageBands.primary': Record<string, never>;
+  'person.list.ageBands.secondary': Record<string, never>;
+  'person.list.ageBands.unborn': Record<string, never>;
+  'person.list.ageBands.under5': Record<string, never>;
+  'person.list.ageNotRecorded': Record<string, never>;
+  'person.list.columns.address': Record<string, never>;
+  'person.list.columns.age': Record<string, never>;
+  'person.list.columns.agencies': Record<string, never>;
+  'person.list.columns.name': Record<string, never>;
+  'person.list.columns.processes': Record<string, never>;
+  'person.list.count': { shown: string | number; total: string | number };
+  'person.list.empty.text': Record<string, never>;
+  'person.list.empty.title': Record<string, never>;
+  'person.list.filters.ageBand': Record<string, never>;
+  'person.list.filters.agency': Record<string, never>;
+  'person.list.filters.anyAge': Record<string, never>;
+  'person.list.filters.anyAgency': Record<string, never>;
+  'person.list.filters.anyProcess': Record<string, never>;
+  'person.list.filters.anyTown': Record<string, never>;
+  'person.list.filters.locality': Record<string, never>;
+  'person.list.filters.process': Record<string, never>;
+  'person.list.filters.search': Record<string, never>;
+  'person.list.filters.searchPlaceholder': Record<string, never>;
+  'person.list.knownAs': { name: string | number };
+  'person.list.lede': Record<string, never>;
+  'person.list.noneOpen': Record<string, never>;
+  'person.list.notOnCase': Record<string, never>;
+  'person.list.restricted': Record<string, never>;
+  'person.list.title': Record<string, never>;
+  'person.list.unbornDue': { date: string | number };
+  'person.list.unbornDueUnknown': Record<string, never>;
+  'person.network.inverse.attorneyFor': Record<string, never>;
+  'person.network.inverse.auntOrUncleOf': Record<string, never>;
+  'person.network.inverse.carerOf': Record<string, never>;
+  'person.network.inverse.childOf': Record<string, never>;
+  'person.network.inverse.fatherOf': Record<string, never>;
+  'person.network.inverse.grandchildOf': Record<string, never>;
+  'person.network.inverse.grandparentOf': Record<string, never>;
+  'person.network.inverse.guardianFor': Record<string, never>;
+  'person.network.inverse.landlordOf': Record<string, never>;
+  'person.network.inverse.motherOf': Record<string, never>;
+  'person.network.inverse.nephewOrNieceOf': Record<string, never>;
+  'person.network.inverse.parentOf': Record<string, never>;
+  'person.network.inverse.professionalFor': Record<string, never>;
+  'person.network.inverse.stepParentOf': Record<string, never>;
+  'person.network.inverse.unbornChildOf': Record<string, never>;
+  'person.network.legend.concern': Record<string, never>;
+  'person.network.legend.household': Record<string, never>;
+  'person.network.legend.wider': Record<string, never>;
+  'person.network.listItem': { name: string | number; relation: string | number; household: string };
+  'person.network.member': { name: string | number; relation: string | number; household: string };
+  'person.network.noRelationships': Record<string, never>;
+  'person.network.relation.associateOf': Record<string, never>;
+  'person.network.relation.attorneyFor': Record<string, never>;
+  'person.network.relation.auntOrUncleOf': Record<string, never>;
+  'person.network.relation.carerOf': Record<string, never>;
+  'person.network.relation.childOf': Record<string, never>;
+  'person.network.relation.exPartnerOf': Record<string, never>;
+  'person.network.relation.fatherOf': Record<string, never>;
+  'person.network.relation.grandchildOf': Record<string, never>;
+  'person.network.relation.grandparentOf': Record<string, never>;
+  'person.network.relation.guardianFor': Record<string, never>;
+  'person.network.relation.landlordOf': Record<string, never>;
+  'person.network.relation.livesWith': Record<string, never>;
+  'person.network.relation.motherOf': Record<string, never>;
+  'person.network.relation.nephewOrNieceOf': Record<string, never>;
+  'person.network.relation.parentOf': Record<string, never>;
+  'person.network.relation.partnerOf': Record<string, never>;
+  'person.network.relation.professionalFor': Record<string, never>;
+  'person.network.relation.relativeOf': Record<string, never>;
+  'person.network.relation.siblingOf': Record<string, never>;
+  'person.network.relation.stepParentOf': Record<string, never>;
+  'person.network.relation.unbornChildOf': Record<string, never>;
+  'person.network.summary': { name: string | number; list: string | number };
+  'person.notFound.back': Record<string, never>;
+  'person.notFound.text': Record<string, never>;
+  'person.notFound.title': Record<string, never>;
+  'person.overview.clocks.hint': Record<string, never>;
+  'person.overview.clocks.none': Record<string, never>;
+  'person.overview.clocks.running': { count: string | number };
+  'person.overview.clocks.sub': { date: string | number; detail: string | number };
+  'person.overview.clocks.title': Record<string, never>;
+  'person.overview.contacts.lastContact': { phone: string | number; date: string | number };
+  'person.overview.contacts.meta': Record<string, never>;
+  'person.overview.contacts.none': Record<string, never>;
+  'person.overview.contacts.role': { caseRole: string | number; process: string | number; role: string | number };
+  'person.overview.contacts.title': Record<string, never>;
+  'person.overview.network.meta': Record<string, never>;
+  'person.overview.network.title': Record<string, never>;
+  'person.overview.plans.active': { count: string | number };
+  'person.overview.plans.meta': { type: string | number; coordinator: string | number; agreed: string | number; hasReview: string; review: string | number; outcomes: string | number };
+  'person.overview.plans.none': Record<string, never>;
+  'person.overview.plans.progress': { done: string | number; total: string | number; overdue: number };
+  'person.overview.plans.title': Record<string, never>;
+  'person.overview.voice.all': Record<string, never>;
+  'person.overview.voice.latestOf': { count: string | number };
+  'person.overview.voice.none': Record<string, never>;
+  'person.overview.voice.placeholder': Record<string, never>;
+  'person.overview.voice.title': Record<string, never>;
+  'person.processes.access.fields': { fields: string | number };
+  'person.processes.access.presence': Record<string, never>;
+  'person.processes.access.summary': Record<string, never>;
+  'person.processes.empty.text': Record<string, never>;
+  'person.processes.empty.title': Record<string, never>;
+  'person.processes.meta': { reference: string | number; role: string | number; agency: string | number; date: string | number; status: string | number };
+  'person.processes.nextMeeting': { title: string | number; date: string | number };
+  'person.processes.openWithReason': Record<string, never>;
+  'person.processes.restrictedTitle': { process: string | number; reference: string | number };
+  'person.processes.role.child': Record<string, never>;
+  'person.processes.role.parent': Record<string, never>;
+  'person.processes.role.perpetrator': Record<string, never>;
+  'person.processes.role.subject': Record<string, never>;
+  'person.processes.statusOpen': Record<string, never>;
+  'person.recordViews.content': Record<string, never>;
+  'person.recordViews.method': Record<string, never>;
+  'person.recordViews.methodDefault': Record<string, never>;
+  'person.recordViews.methodHint': Record<string, never>;
+  'person.recordViews.title': { name: string | number };
+  'person.recordViews.toast.text': Record<string, never>;
+  'person.recordViews.toast.title': Record<string, never>;
+  'person.recordViews.whose': Record<string, never>;
+  'person.restricted.reason': Record<string, never>;
+  'person.sharing.columns.level': Record<string, never>;
+  'person.sharing.columns.status': Record<string, never>;
+  'person.sharing.columns.to': Record<string, never>;
+  'person.sharing.columns.when': Record<string, never>;
+  'person.sharing.columns.why': Record<string, never>;
+  'person.sharing.meta': { count: string | number };
+  'person.sharing.title': Record<string, never>;
+  'person.tabs.chronology': Record<string, never>;
+  'person.tabs.documents': Record<string, never>;
+  'person.tabs.label': Record<string, never>;
+  'person.tabs.overview': Record<string, never>;
+  'person.tabs.processes': Record<string, never>;
+  'person.tabs.sharing': Record<string, never>;
+  'person.tabs.voice': Record<string, never>;
+  'person.voice.empty.text': Record<string, never>;
+  'person.voice.empty.title': Record<string, never>;
+  'person.voice.lede': Record<string, never>;
+  'person.voice.record': Record<string, never>;
   'search.empty.text': Record<string, never>;
   'search.empty.title': Record<string, never>;
   'search.head.prompt': Record<string, never>;
@@ -706,4 +1072,4 @@ export interface MessageArgs {
   'worklist.views.team': Record<string, never>;
 }
 
-export const MESSAGE_KEYS: readonly MessageKey[] = ['admin.copy.audit.import', 'admin.copy.audit.reset', 'admin.copy.audit.resetAll', 'admin.copy.audit.set', 'admin.copy.columns.actions', 'admin.copy.columns.current', 'admin.copy.columns.default', 'admin.copy.columns.key', 'admin.copy.columns.where', 'admin.copy.editor.arguments', 'admin.copy.editor.cancel', 'admin.copy.editor.emptyError', 'admin.copy.editor.label', 'admin.copy.editor.noArguments', 'admin.copy.editor.preview', 'admin.copy.editor.previewEmpty', 'admin.copy.editor.save', 'admin.copy.editor.syntaxError', 'admin.copy.editor.verbatimWarning', 'admin.copy.empty.text', 'admin.copy.empty.title', 'admin.copy.filters.allNamespaces', 'admin.copy.filters.changedOnly', 'admin.copy.filters.namespace', 'admin.copy.filters.search', 'admin.copy.filters.searchPlaceholder', 'admin.copy.importInvalid', 'admin.copy.lede', 'admin.copy.overviewCount', 'admin.copy.pills.changed', 'admin.copy.pills.verbatim', 'admin.copy.resetAllDialog.confirm', 'admin.copy.resetAllDialog.text', 'admin.copy.resetAllDialog.title', 'admin.copy.rowActions.edit', 'admin.copy.rowActions.reset', 'admin.copy.summary', 'admin.copy.table', 'admin.copy.title', 'admin.copy.toasts.exported', 'admin.copy.toasts.imported', 'admin.copy.toasts.reset', 'admin.copy.toasts.resetAll', 'admin.copy.toasts.resetText', 'admin.copy.toasts.saved', 'admin.copy.toasts.savedText', 'admin.copy.toolbar.export', 'admin.copy.toolbar.import', 'admin.copy.toolbar.resetAll', 'admin.copy.truncated', 'common.actions.cancel', 'common.actions.close', 'common.actions.edit', 'common.actions.resetDemo', 'common.actions.view', 'common.answers.no', 'common.answers.notKnown', 'common.answers.yes', 'common.app.loading', 'common.app.name', 'common.app.tagline', 'common.app.titleWithScreen', 'common.badge.count', 'common.clockUnit.calendarDays', 'common.clockUnit.months', 'common.clockUnit.weeks', 'common.clockUnit.workingDays', 'common.columns.actions', 'common.dateField.formatError', 'common.dateField.hint', 'common.demoReset.audit', 'common.demoReset.toastTitle', 'common.keyValue.none', 'common.labels.restricted', 'common.marks.classification', 'common.person.ageBorn', 'common.person.ageNotRecorded', 'common.person.family', 'common.person.unborn', 'common.table.region', 'common.toast.dismiss', 'common.toast.region', 'common.values.dateNotRecorded', 'common.values.none', 'common.values.notApplicable', 'common.values.notRecorded', 'common.voice.recordedBy', 'home.clocks.count', 'home.clocks.due', 'home.clocks.empty', 'home.clocks.title', 'home.clocks.trigger', 'home.empty.text', 'home.empty.title', 'home.greeting.afternoon', 'home.greeting.evening', 'home.greeting.morning', 'home.greeting.role', 'home.items.actionMeta', 'home.items.inbox', 'home.items.meetingMeta', 'home.items.prepareFor', 'home.items.processSubject', 'home.items.received', 'home.items.reportFor', 'home.items.reportMeta', 'home.items.researchMeta', 'home.items.researchReturn', 'home.items.reviewEvent', 'home.signIn.badges.audited', 'home.signIn.badges.needToKnow', 'home.signIn.badges.offline', 'home.signIn.demoNote', 'home.signIn.headline', 'home.signIn.lastTime', 'home.signIn.lede', 'home.signIn.orgKinds.council', 'home.signIn.orgKinds.court', 'home.signIn.orgKinds.fireRescue', 'home.signIn.orgKinds.healthBoard', 'home.signIn.orgKinds.hscp', 'home.signIn.orgKinds.police', 'home.signIn.orgKinds.regulator', 'home.signIn.orgKinds.scra', 'home.signIn.orgKinds.sps', 'home.signIn.orgKinds.thirdSector', 'home.signIn.orgStep', 'home.signIn.personaStep', 'home.signIn.pickerLabel', 'home.today.count', 'home.today.empty', 'home.today.nextMeeting', 'home.today.noNext', 'home.today.title', 'home.today.visit', 'home.waiting.count', 'home.waiting.empty', 'home.waiting.title', 'nav.drawer.access.basis', 'nav.drawer.access.none', 'nav.drawer.audit.empty', 'nav.drawer.audit.entry', 'nav.drawer.audit.entryRestricted', 'nav.drawer.collapse', 'nav.drawer.details', 'nav.drawer.event.connector', 'nav.drawer.event.recordedBy', 'nav.drawer.event.whenApproximate', 'nav.drawer.fields.action', 'nav.drawer.fields.agency', 'nav.drawer.fields.article6', 'nav.drawer.fields.article9', 'nav.drawer.fields.author', 'nav.drawer.fields.authorisedBy', 'nav.drawer.fields.cases', 'nav.drawer.fields.channel', 'nav.drawer.fields.consent', 'nav.drawer.fields.due', 'nav.drawer.fields.evidence', 'nav.drawer.fields.gateway', 'nav.drawer.fields.isa', 'nav.drawer.fields.kind', 'nav.drawer.fields.level', 'nav.drawer.fields.name', 'nav.drawer.fields.necessity', 'nav.drawer.fields.offenceData', 'nav.drawer.fields.outcome', 'nav.drawer.fields.owner', 'nav.drawer.fields.process', 'nav.drawer.fields.purpose', 'nav.drawer.fields.recorded', 'nav.drawer.fields.response', 'nav.drawer.fields.role', 'nav.drawer.fields.significance', 'nav.drawer.fields.source', 'nav.drawer.fields.status', 'nav.drawer.fields.text', 'nav.drawer.fields.title', 'nav.drawer.fields.to', 'nav.drawer.fields.visibility', 'nav.drawer.fields.when', 'nav.drawer.fields.why', 'nav.drawer.involved.empty', 'nav.drawer.label', 'nav.drawer.lawfulBasis.empty', 'nav.drawer.lawfulBasis.notLinked', 'nav.drawer.lawfulBasis.singleAgency', 'nav.drawer.meeting.noDistribution', 'nav.drawer.needToKnow.fields', 'nav.drawer.needToKnow.liftableBy', 'nav.drawer.needToKnow.mustNotReceive', 'nav.drawer.needToKnow.mustNotReceiveParty', 'nav.drawer.needToKnow.nobodyRecorded', 'nav.drawer.needToKnow.source', 'nav.drawer.needToKnow.stage', 'nav.drawer.open', 'nav.drawer.section.action', 'nav.drawer.section.audit', 'nav.drawer.section.distribution', 'nav.drawer.section.event', 'nav.drawer.section.invitees', 'nav.drawer.section.judgement', 'nav.drawer.section.lawfulBasis', 'nav.drawer.section.lawfulBasisInclusion', 'nav.drawer.section.needToKnowFor', 'nav.drawer.section.needToKnowStage', 'nav.drawer.section.recipient', 'nav.drawer.section.restsOn', 'nav.drawer.section.signedIn', 'nav.drawer.section.versions', 'nav.drawer.section.whoIsInvolved', 'nav.drawer.section.yourAccess', 'nav.drawer.share.statusRead', 'nav.drawer.signedIn.casesOpen', 'nav.drawer.signedIn.help', 'nav.drawer.title.action', 'nav.drawer.title.analysis', 'nav.drawer.title.event', 'nav.drawer.title.meeting', 'nav.drawer.title.person', 'nav.drawer.title.process', 'nav.drawer.title.share', 'nav.drawer.title.yourAccess', 'nav.personaSwitcher.note', 'nav.personaSwitcher.title', 'nav.rail.collapse', 'nav.rail.expand', 'nav.rail.items.actions', 'nav.rail.items.admin', 'nav.rail.items.connectors', 'nav.rail.items.home', 'nav.rail.items.meetings', 'nav.rail.items.people', 'nav.rail.items.reports', 'nav.rail.items.sharing', 'nav.rail.items.worklist', 'nav.rail.label', 'nav.rail.personaTitle', 'nav.rail.waiting.actions', 'nav.rail.waiting.worklist', 'nav.search.label', 'nav.search.personMeta', 'nav.search.placeholder', 'nav.search.processMeta', 'nav.search.showAll', 'nav.search.suggestions', 'nav.titles.actions', 'nav.titles.admin', 'nav.titles.audit', 'nav.titles.connectors', 'nav.titles.help', 'nav.titles.home', 'nav.titles.inbox', 'nav.titles.meetings', 'nav.titles.people', 'nav.titles.processes', 'nav.titles.reports', 'nav.titles.search', 'nav.titles.settings', 'nav.titles.sharing', 'nav.titles.worklist', 'nav.topBar.clocksDue', 'nav.topBar.clocksLabel', 'nav.topBar.demo', 'nav.topBar.notifications', 'nav.topBar.signIn', 'nav.topBar.unread', 'search.empty.text', 'search.empty.title', 'search.head.prompt', 'search.head.results', 'search.head.title', 'search.result.noProcess', 'search.result.notOnCase', 'search.result.personMeta', 'search.result.processMeta', 'search.result.restrictedSubject', 'states.clock.flag.complete', 'states.clock.flag.dueSoon', 'states.clock.flag.overdue', 'states.clock.sr.complete', 'states.clock.sr.overdue', 'states.clock.sr.remaining', 'states.clock.unit.days', 'states.clock.unit.done', 'states.clock.unit.overdue', 'states.empty.title', 'states.error.retry', 'states.error.text', 'states.error.title', 'states.loading.label', 'states.offline.text', 'states.offline.title', 'states.placeholder.lede', 'states.placeholder.notFound', 'states.placeholder.text', 'states.placeholder.title', 'states.restricted.breakGlassAvailable', 'states.restricted.breakGlassUnavailable', 'states.restricted.open', 'states.restricted.reason', 'states.restricted.title', 'states.stale.refresh', 'states.stale.text', 'states.stale.title', 'states.stale.unknownSync', 'worklist.bulk.clear', 'worklist.bulk.complete', 'worklist.bulk.evidence', 'worklist.bulk.selected', 'worklist.bulk.toastDone.text', 'worklist.bulk.toastDone.title', 'worklist.bulk.toastNone.text', 'worklist.bulk.toastNone.title', 'worklist.clocks.due', 'worklist.columns.due', 'worklist.columns.item', 'worklist.columns.kind', 'worklist.columns.owner', 'worklist.columns.process', 'worklist.columns.select', 'worklist.empty.clocks.title', 'worklist.empty.overdue.text', 'worklist.empty.overdue.title', 'worklist.empty.waiting.text', 'worklist.empty.waiting.title', 'worklist.groups.unlinked', 'worklist.head.lede', 'worklist.head.title', 'worklist.items.actionMeta', 'worklist.items.inboxMeta', 'worklist.items.meetingMeta', 'worklist.items.prepareFor', 'worklist.items.processSubject', 'worklist.items.reportFor', 'worklist.items.reportMeta', 'worklist.items.researchMeta', 'worklist.items.researchReturn', 'worklist.kinds.action', 'worklist.kinds.inbox', 'worklist.kinds.meeting', 'worklist.kinds.report', 'worklist.kinds.research', 'worklist.rows.select', 'worklist.views.clocks', 'worklist.views.label', 'worklist.views.mine', 'worklist.views.overdue', 'worklist.views.process', 'worklist.views.team'];
+export const MESSAGE_KEYS: readonly MessageKey[] = ['admin.copy.audit.import', 'admin.copy.audit.reset', 'admin.copy.audit.resetAll', 'admin.copy.audit.set', 'admin.copy.columns.actions', 'admin.copy.columns.current', 'admin.copy.columns.default', 'admin.copy.columns.key', 'admin.copy.columns.where', 'admin.copy.editor.arguments', 'admin.copy.editor.cancel', 'admin.copy.editor.emptyError', 'admin.copy.editor.label', 'admin.copy.editor.noArguments', 'admin.copy.editor.preview', 'admin.copy.editor.previewEmpty', 'admin.copy.editor.save', 'admin.copy.editor.syntaxError', 'admin.copy.editor.verbatimWarning', 'admin.copy.empty.text', 'admin.copy.empty.title', 'admin.copy.filters.allNamespaces', 'admin.copy.filters.changedOnly', 'admin.copy.filters.namespace', 'admin.copy.filters.search', 'admin.copy.filters.searchPlaceholder', 'admin.copy.importInvalid', 'admin.copy.lede', 'admin.copy.overviewCount', 'admin.copy.pills.changed', 'admin.copy.pills.verbatim', 'admin.copy.resetAllDialog.confirm', 'admin.copy.resetAllDialog.text', 'admin.copy.resetAllDialog.title', 'admin.copy.rowActions.edit', 'admin.copy.rowActions.reset', 'admin.copy.summary', 'admin.copy.table', 'admin.copy.title', 'admin.copy.toasts.exported', 'admin.copy.toasts.imported', 'admin.copy.toasts.reset', 'admin.copy.toasts.resetAll', 'admin.copy.toasts.resetText', 'admin.copy.toasts.saved', 'admin.copy.toasts.savedText', 'admin.copy.toolbar.export', 'admin.copy.toolbar.import', 'admin.copy.toolbar.resetAll', 'admin.copy.truncated', 'common.actions.cancel', 'common.actions.close', 'common.actions.edit', 'common.actions.resetDemo', 'common.actions.view', 'common.answers.no', 'common.answers.notKnown', 'common.answers.yes', 'common.app.loading', 'common.app.name', 'common.app.tagline', 'common.app.titleWithScreen', 'common.badge.count', 'common.clockUnit.calendarDays', 'common.clockUnit.months', 'common.clockUnit.weeks', 'common.clockUnit.workingDays', 'common.columns.actions', 'common.dateField.formatError', 'common.dateField.hint', 'common.demoReset.audit', 'common.demoReset.toastTitle', 'common.keyValue.none', 'common.labels.restricted', 'common.marks.classification', 'common.person.ageBorn', 'common.person.ageNotRecorded', 'common.person.family', 'common.person.unborn', 'common.table.region', 'common.toast.dismiss', 'common.toast.region', 'common.values.dateNotRecorded', 'common.values.none', 'common.values.notApplicable', 'common.values.notRecorded', 'common.voice.recordedBy', 'home.clocks.count', 'home.clocks.due', 'home.clocks.empty', 'home.clocks.title', 'home.clocks.trigger', 'home.empty.text', 'home.empty.title', 'home.greeting.afternoon', 'home.greeting.evening', 'home.greeting.morning', 'home.greeting.role', 'home.items.actionMeta', 'home.items.inbox', 'home.items.meetingMeta', 'home.items.prepareFor', 'home.items.processSubject', 'home.items.received', 'home.items.reportFor', 'home.items.reportMeta', 'home.items.researchMeta', 'home.items.researchReturn', 'home.items.reviewEvent', 'home.signIn.badges.audited', 'home.signIn.badges.needToKnow', 'home.signIn.badges.offline', 'home.signIn.demoNote', 'home.signIn.headline', 'home.signIn.lastTime', 'home.signIn.lede', 'home.signIn.orgKinds.council', 'home.signIn.orgKinds.court', 'home.signIn.orgKinds.fireRescue', 'home.signIn.orgKinds.healthBoard', 'home.signIn.orgKinds.hscp', 'home.signIn.orgKinds.police', 'home.signIn.orgKinds.regulator', 'home.signIn.orgKinds.scra', 'home.signIn.orgKinds.sps', 'home.signIn.orgKinds.thirdSector', 'home.signIn.orgStep', 'home.signIn.personaStep', 'home.signIn.pickerLabel', 'home.today.count', 'home.today.empty', 'home.today.nextMeeting', 'home.today.noNext', 'home.today.title', 'home.today.visit', 'home.waiting.count', 'home.waiting.empty', 'home.waiting.title', 'nav.drawer.access.basis', 'nav.drawer.access.none', 'nav.drawer.audit.empty', 'nav.drawer.audit.entry', 'nav.drawer.audit.entryRestricted', 'nav.drawer.collapse', 'nav.drawer.details', 'nav.drawer.event.connector', 'nav.drawer.event.recordedBy', 'nav.drawer.event.whenApproximate', 'nav.drawer.fields.action', 'nav.drawer.fields.agency', 'nav.drawer.fields.article6', 'nav.drawer.fields.article9', 'nav.drawer.fields.author', 'nav.drawer.fields.authorisedBy', 'nav.drawer.fields.cases', 'nav.drawer.fields.channel', 'nav.drawer.fields.consent', 'nav.drawer.fields.due', 'nav.drawer.fields.evidence', 'nav.drawer.fields.gateway', 'nav.drawer.fields.isa', 'nav.drawer.fields.kind', 'nav.drawer.fields.level', 'nav.drawer.fields.name', 'nav.drawer.fields.necessity', 'nav.drawer.fields.offenceData', 'nav.drawer.fields.outcome', 'nav.drawer.fields.owner', 'nav.drawer.fields.process', 'nav.drawer.fields.purpose', 'nav.drawer.fields.recorded', 'nav.drawer.fields.response', 'nav.drawer.fields.role', 'nav.drawer.fields.significance', 'nav.drawer.fields.source', 'nav.drawer.fields.status', 'nav.drawer.fields.text', 'nav.drawer.fields.title', 'nav.drawer.fields.to', 'nav.drawer.fields.visibility', 'nav.drawer.fields.when', 'nav.drawer.fields.why', 'nav.drawer.involved.empty', 'nav.drawer.label', 'nav.drawer.lawfulBasis.empty', 'nav.drawer.lawfulBasis.notLinked', 'nav.drawer.lawfulBasis.singleAgency', 'nav.drawer.meeting.noDistribution', 'nav.drawer.needToKnow.fields', 'nav.drawer.needToKnow.liftableBy', 'nav.drawer.needToKnow.mustNotReceive', 'nav.drawer.needToKnow.mustNotReceiveParty', 'nav.drawer.needToKnow.nobodyRecorded', 'nav.drawer.needToKnow.source', 'nav.drawer.needToKnow.stage', 'nav.drawer.open', 'nav.drawer.section.action', 'nav.drawer.section.audit', 'nav.drawer.section.distribution', 'nav.drawer.section.event', 'nav.drawer.section.invitees', 'nav.drawer.section.judgement', 'nav.drawer.section.lawfulBasis', 'nav.drawer.section.lawfulBasisInclusion', 'nav.drawer.section.needToKnowFor', 'nav.drawer.section.needToKnowStage', 'nav.drawer.section.recipient', 'nav.drawer.section.restsOn', 'nav.drawer.section.signedIn', 'nav.drawer.section.versions', 'nav.drawer.section.whoIsInvolved', 'nav.drawer.section.yourAccess', 'nav.drawer.share.statusRead', 'nav.drawer.signedIn.casesOpen', 'nav.drawer.signedIn.help', 'nav.drawer.title.action', 'nav.drawer.title.analysis', 'nav.drawer.title.event', 'nav.drawer.title.meeting', 'nav.drawer.title.person', 'nav.drawer.title.process', 'nav.drawer.title.share', 'nav.drawer.title.yourAccess', 'nav.personaSwitcher.note', 'nav.personaSwitcher.title', 'nav.rail.collapse', 'nav.rail.expand', 'nav.rail.items.actions', 'nav.rail.items.admin', 'nav.rail.items.connectors', 'nav.rail.items.home', 'nav.rail.items.meetings', 'nav.rail.items.people', 'nav.rail.items.reports', 'nav.rail.items.sharing', 'nav.rail.items.worklist', 'nav.rail.label', 'nav.rail.personaTitle', 'nav.rail.waiting.actions', 'nav.rail.waiting.worklist', 'nav.search.label', 'nav.search.personMeta', 'nav.search.placeholder', 'nav.search.processMeta', 'nav.search.showAll', 'nav.search.suggestions', 'nav.titles.actions', 'nav.titles.admin', 'nav.titles.audit', 'nav.titles.connectors', 'nav.titles.help', 'nav.titles.home', 'nav.titles.inbox', 'nav.titles.meetings', 'nav.titles.people', 'nav.titles.processes', 'nav.titles.reports', 'nav.titles.search', 'nav.titles.settings', 'nav.titles.sharing', 'nav.titles.worklist', 'nav.topBar.clocksDue', 'nav.topBar.clocksLabel', 'nav.topBar.demo', 'nav.topBar.notifications', 'nav.topBar.signIn', 'nav.topBar.unread', 'person.address.none', 'person.audit.columns.act', 'person.audit.columns.target', 'person.audit.columns.when', 'person.audit.columns.who', 'person.audit.meta', 'person.audit.restricted', 'person.audit.title', 'person.breakGlass.category', 'person.breakGlass.categoryPlaceholder', 'person.breakGlass.intro', 'person.breakGlass.reason', 'person.breakGlass.reasonHint', 'person.breakGlass.submit', 'person.breakGlass.title', 'person.breakGlass.toast.text', 'person.breakGlass.toast.title', 'person.chronology.openWide', 'person.documents.columns.date', 'person.documents.columns.document', 'person.documents.columns.kind', 'person.documents.columns.source', 'person.documents.empty.text', 'person.documents.empty.title', 'person.documents.source', 'person.header.ageBorn', 'person.header.ageNotRecorded', 'person.header.alertUntil', 'person.header.chi', 'person.header.interpreter', 'person.header.knownAs', 'person.header.moves', 'person.header.nextMeeting', 'person.header.noCommunicationNeeds', 'person.header.noMeeting', 'person.header.noOpenProcess', 'person.header.notOnCase', 'person.header.restrictedProcess', 'person.header.unborn', 'person.header.unbornDue', 'person.header.unbornDueUnknown', 'person.list.ageBands.adult', 'person.list.ageBands.older', 'person.list.ageBands.primary', 'person.list.ageBands.secondary', 'person.list.ageBands.unborn', 'person.list.ageBands.under5', 'person.list.ageNotRecorded', 'person.list.columns.address', 'person.list.columns.age', 'person.list.columns.agencies', 'person.list.columns.name', 'person.list.columns.processes', 'person.list.count', 'person.list.empty.text', 'person.list.empty.title', 'person.list.filters.ageBand', 'person.list.filters.agency', 'person.list.filters.anyAge', 'person.list.filters.anyAgency', 'person.list.filters.anyProcess', 'person.list.filters.anyTown', 'person.list.filters.locality', 'person.list.filters.process', 'person.list.filters.search', 'person.list.filters.searchPlaceholder', 'person.list.knownAs', 'person.list.lede', 'person.list.noneOpen', 'person.list.notOnCase', 'person.list.restricted', 'person.list.title', 'person.list.unbornDue', 'person.list.unbornDueUnknown', 'person.network.inverse.attorneyFor', 'person.network.inverse.auntOrUncleOf', 'person.network.inverse.carerOf', 'person.network.inverse.childOf', 'person.network.inverse.fatherOf', 'person.network.inverse.grandchildOf', 'person.network.inverse.grandparentOf', 'person.network.inverse.guardianFor', 'person.network.inverse.landlordOf', 'person.network.inverse.motherOf', 'person.network.inverse.nephewOrNieceOf', 'person.network.inverse.parentOf', 'person.network.inverse.professionalFor', 'person.network.inverse.stepParentOf', 'person.network.inverse.unbornChildOf', 'person.network.legend.concern', 'person.network.legend.household', 'person.network.legend.wider', 'person.network.listItem', 'person.network.member', 'person.network.noRelationships', 'person.network.relation.associateOf', 'person.network.relation.attorneyFor', 'person.network.relation.auntOrUncleOf', 'person.network.relation.carerOf', 'person.network.relation.childOf', 'person.network.relation.exPartnerOf', 'person.network.relation.fatherOf', 'person.network.relation.grandchildOf', 'person.network.relation.grandparentOf', 'person.network.relation.guardianFor', 'person.network.relation.landlordOf', 'person.network.relation.livesWith', 'person.network.relation.motherOf', 'person.network.relation.nephewOrNieceOf', 'person.network.relation.parentOf', 'person.network.relation.partnerOf', 'person.network.relation.professionalFor', 'person.network.relation.relativeOf', 'person.network.relation.siblingOf', 'person.network.relation.stepParentOf', 'person.network.relation.unbornChildOf', 'person.network.summary', 'person.notFound.back', 'person.notFound.text', 'person.notFound.title', 'person.overview.clocks.hint', 'person.overview.clocks.none', 'person.overview.clocks.running', 'person.overview.clocks.sub', 'person.overview.clocks.title', 'person.overview.contacts.lastContact', 'person.overview.contacts.meta', 'person.overview.contacts.none', 'person.overview.contacts.role', 'person.overview.contacts.title', 'person.overview.network.meta', 'person.overview.network.title', 'person.overview.plans.active', 'person.overview.plans.meta', 'person.overview.plans.none', 'person.overview.plans.progress', 'person.overview.plans.title', 'person.overview.voice.all', 'person.overview.voice.latestOf', 'person.overview.voice.none', 'person.overview.voice.placeholder', 'person.overview.voice.title', 'person.processes.access.fields', 'person.processes.access.presence', 'person.processes.access.summary', 'person.processes.empty.text', 'person.processes.empty.title', 'person.processes.meta', 'person.processes.nextMeeting', 'person.processes.openWithReason', 'person.processes.restrictedTitle', 'person.processes.role.child', 'person.processes.role.parent', 'person.processes.role.perpetrator', 'person.processes.role.subject', 'person.processes.statusOpen', 'person.recordViews.content', 'person.recordViews.method', 'person.recordViews.methodDefault', 'person.recordViews.methodHint', 'person.recordViews.title', 'person.recordViews.toast.text', 'person.recordViews.toast.title', 'person.recordViews.whose', 'person.restricted.reason', 'person.sharing.columns.level', 'person.sharing.columns.status', 'person.sharing.columns.to', 'person.sharing.columns.when', 'person.sharing.columns.why', 'person.sharing.meta', 'person.sharing.title', 'person.tabs.chronology', 'person.tabs.documents', 'person.tabs.label', 'person.tabs.overview', 'person.tabs.processes', 'person.tabs.sharing', 'person.tabs.voice', 'person.voice.empty.text', 'person.voice.empty.title', 'person.voice.lede', 'person.voice.record', 'search.empty.text', 'search.empty.title', 'search.head.prompt', 'search.head.results', 'search.head.title', 'search.result.noProcess', 'search.result.notOnCase', 'search.result.personMeta', 'search.result.processMeta', 'search.result.restrictedSubject', 'states.clock.flag.complete', 'states.clock.flag.dueSoon', 'states.clock.flag.overdue', 'states.clock.sr.complete', 'states.clock.sr.overdue', 'states.clock.sr.remaining', 'states.clock.unit.days', 'states.clock.unit.done', 'states.clock.unit.overdue', 'states.empty.title', 'states.error.retry', 'states.error.text', 'states.error.title', 'states.loading.label', 'states.offline.text', 'states.offline.title', 'states.placeholder.lede', 'states.placeholder.notFound', 'states.placeholder.text', 'states.placeholder.title', 'states.restricted.breakGlassAvailable', 'states.restricted.breakGlassUnavailable', 'states.restricted.open', 'states.restricted.reason', 'states.restricted.title', 'states.stale.refresh', 'states.stale.text', 'states.stale.title', 'states.stale.unknownSync', 'worklist.bulk.clear', 'worklist.bulk.complete', 'worklist.bulk.evidence', 'worklist.bulk.selected', 'worklist.bulk.toastDone.text', 'worklist.bulk.toastDone.title', 'worklist.bulk.toastNone.text', 'worklist.bulk.toastNone.title', 'worklist.clocks.due', 'worklist.columns.due', 'worklist.columns.item', 'worklist.columns.kind', 'worklist.columns.owner', 'worklist.columns.process', 'worklist.columns.select', 'worklist.empty.clocks.title', 'worklist.empty.overdue.text', 'worklist.empty.overdue.title', 'worklist.empty.waiting.text', 'worklist.empty.waiting.title', 'worklist.groups.unlinked', 'worklist.head.lede', 'worklist.head.title', 'worklist.items.actionMeta', 'worklist.items.inboxMeta', 'worklist.items.meetingMeta', 'worklist.items.prepareFor', 'worklist.items.processSubject', 'worklist.items.reportFor', 'worklist.items.reportMeta', 'worklist.items.researchMeta', 'worklist.items.researchReturn', 'worklist.kinds.action', 'worklist.kinds.inbox', 'worklist.kinds.meeting', 'worklist.kinds.report', 'worklist.kinds.research', 'worklist.rows.select', 'worklist.views.clocks', 'worklist.views.label', 'worklist.views.mine', 'worklist.views.overdue', 'worklist.views.process', 'worklist.views.team'];

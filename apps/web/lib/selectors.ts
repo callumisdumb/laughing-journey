@@ -20,6 +20,7 @@ import {
   type User,
   type AccessResult,
 } from '@mas/domain';
+import { t } from '@mas/messages';
 import type { BreakGlassGrant } from './store';
 
 export function fullName(p: Pick<Person, 'givenName' | 'familyName' | 'preferredName'>): string {
@@ -129,7 +130,7 @@ export function currentAddress(data: Dataset, person: Person): { line: string; m
   const sorted = [...person.addressHistory].sort((a, b) => (a.from < b.from ? 1 : -1));
   const current = sorted.find((a) => !a.to) ?? sorted[0];
   const addr = current ? data.addresses.find((a) => a.id === current.addressId) : undefined;
-  const line = addr ? [addr.line1, addr.line2, addr.town, addr.postcode].filter(Boolean).join(', ') : 'No address recorded';
+  const line = addr ? [addr.line1, addr.line2, addr.town, addr.postcode].filter(Boolean).join(', ') : t('person.address.none');
   return { line, moves: Math.max(0, person.addressHistory.length - 1) };
 }
 

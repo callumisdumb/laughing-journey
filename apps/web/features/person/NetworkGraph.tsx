@@ -1,51 +1,26 @@
 'use client';
 
 import type { Person, Relationship } from '@mas/domain';
+import { hasMessage, tKey, useT } from '@mas/messages';
 import { fullName } from '@/lib/selectors';
 import { useData } from '@/lib/store';
 import styles from './NetworkGraph.module.css';
 
-const RELATION_WORDS: Record<Relationship['type'], string> = {
-  'mother-of': 'mother',
-  'father-of': 'father',
-  'parent-of': 'parent',
-  'step-parent-of': 'step-parent',
-  'child-of': 'child',
-  'unborn-child-of': 'unborn child',
-  'partner-of': 'partner',
-  'ex-partner-of': 'ex-partner',
-  'sibling-of': 'sibling',
-  'grandparent-of': 'grandparent',
-  'grandchild-of': 'grandchild',
-  'aunt-or-uncle-of': 'aunt or uncle',
-  'nephew-or-niece-of': 'nephew or niece',
-  'relative-of': 'relative',
-  'carer-of': 'carer',
-  'attorney-for': 'attorney',
-  'guardian-for': 'guardian',
-  'lives-with': 'lives with',
-  'associate-of': 'associate',
-  'landlord-of': 'landlord',
-  'professional-for': 'professional',
-};
+/** Relationship types are kebab-case enum values; their catalogue keys are the camelCase form. */
+function relationSegment(type: Relationship['type']): string {
+  return type.replace(/-([a-z])/g, (_match, letter: string) => letter.toUpperCase());
+}
 
-const INVERSE: Partial<Record<Relationship['type'], string>> = {
-  'mother-of': 'child',
-  'father-of': 'child',
-  'parent-of': 'child',
-  'step-parent-of': 'step-child',
-  'child-of': 'parent',
-  'unborn-child-of': 'expectant parent',
-  'grandparent-of': 'grandchild',
-  'grandchild-of': 'grandparent',
-  'aunt-or-uncle-of': 'nephew or niece',
-  'nephew-or-niece-of': 'aunt or uncle',
-  'carer-of': 'cared for by',
-  'attorney-for': 'grants power to',
-  'guardian-for': 'under guardianship of',
-  'landlord-of': 'tenant of',
-  'professional-for': 'supported by',
-};
+/** The word for the other person as the relationship names them, such as "mother" for mother-of. */
+function relationWord(type: Relationship['type']): string {
+  return tKey(`person.network.relation.${relationSegment(type)}`);
+}
+
+/** The word seen from the subject's side where the catalogue records one ("child" for mother-of), else the plain word. */
+function inverseWord(type: Relationship['type']): string {
+  const key = `person.network.inverse.${relationSegment(type)}`;
+  return hasMessage(key) ? tKey(key) : relationWord(type);
+}
 
 export interface NetworkGraphProps {
   person: Person;
@@ -55,6 +30,7 @@ export interface NetworkGraphProps {
 
 /** Household and network: the subject in the centre, household inner ring, everyone else outer ring. */
 export function NetworkGraph({ person, concernIds = [] }: NetworkGraphProps) {
+  const t = useT();
   const data = useData();
   const rels = data.relationships.filter((r) => r.fromPersonId === person.id || r.toPersonId === person.id);
   const household = new Set(data.households.find((h) => h.id === person.householdId)?.memberIds ?? []);
@@ -63,7 +39,7 @@ export function NetworkGraph({ person, concernIds = [] }: NetworkGraphProps) {
     const otherId = r.fromPersonId === person.id ? r.toPersonId : r.fromPersonId;
     const other = data.people.find((p) => p.id === otherId);
     if (!other || nodes.has(otherId)) continue;
-    const relation = r.fromPersonId === person.id ? (INVERSE[r.type] ?? RELATION_WORDS[r.type]) : RELATION_WORDS[r.type];
+    const relation = r.fromPersonId === person.id ? inverseWord(r.type) : relationWord(r.type);
     nodes.set(otherId, { person: other, relation, household: household.has(otherId) });
   }
   const list = [...nodes.values()];
@@ -79,10 +55,11 @@ export function NetworkGraph({ person, concernIds = [] }: NetworkGraphProps) {
       return { ...n, x: cx + Math.cos(angle) * radius * 0.7, y: cy + Math.sin(angle) * radius * 0.78 };
     });
   const placed = [...place(inner, 120, -Math.PI / 2), ...place(outer, 210, -Math.PI / 2 + Math.PI / 5)];
+  const summary = list.map((n) => t('person.network.member', { name: fullName(n.person), relation: n.relation, household: n.household ? 'yes' : 'no' })).join('; ');
 
   return (
     <div className={styles.graph}>
-      <svg className={styles.svg} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Network of ${fullName(person)}: ${list.map((n) => `${fullName(n.person)}, ${n.relation}${n.household ? ', same household' : ''}`).join('; ') || 'no relationships recorded'}`}>
+      <svg className={styles.svg} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('person.network.summary', { name: fullName(person), list: summary || t('person.network.noRelationships') })}>
         {placed.map((n) => (
           <line key={`e-${n.person.id}`} className={styles.edge} data-household={n.household ? 'true' : undefined} x1={cx} y1={cy} x2={n.x} y2={n.y} />
         ))}
@@ -110,23 +87,20 @@ export function NetworkGraph({ person, concernIds = [] }: NetworkGraphProps) {
       </svg>
       <div className={styles.legend} aria-hidden="true">
         <span className={styles.legendItem}>
-          <span className={styles.swatch} data-kind="household" /> Same household
+          <span className={styles.swatch} data-kind="household" /> {t('person.network.legend.household')}
         </span>
         <span className={styles.legendItem}>
-          <span className={styles.swatch} data-kind="other" /> Wider network
+          <span className={styles.swatch} data-kind="other" /> {t('person.network.legend.wider')}
         </span>
         {concernIds.length > 0 ? (
           <span className={styles.legendItem}>
-            <span className={styles.swatch} data-kind="concern" /> Adult of concern
+            <span className={styles.swatch} data-kind="concern" /> {t('person.network.legend.concern')}
           </span>
         ) : null}
       </div>
       <ul className="visually-hidden">
         {list.map((n) => (
-          <li key={n.person.id}>
-            {fullName(n.person)}: {n.relation}
-            {n.household ? ', same household' : ''}
-          </li>
+          <li key={n.person.id}>{t('person.network.listItem', { name: fullName(n.person), relation: n.relation, household: n.household ? 'yes' : 'no' })}</li>
         ))}
       </ul>
     </div>
