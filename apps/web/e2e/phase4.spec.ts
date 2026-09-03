@@ -58,6 +58,18 @@ test.describe('meetings', () => {
     await page.getByRole('button', { name: 'Close meeting and update clocks' }).click();
     await expect(page.getByText('Meeting closed')).toBeVisible();
   });
+
+  test('minutes print pack carries the classification marking and paginates', async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await page.goto('/meetings/mtg_aiden_review?view=print');
+    await waitForData(page);
+    await expect(page.getByRole('heading', { name: 'Review CPPM: Aiden Boyle', level: 1 })).toBeAttached();
+    await expect(page.getByText(/Page 1 of/)).toBeAttached();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'meeting-minutes', fullPage: true });
+    await page.emulateMedia({ media: 'print' });
+    await capture(page, { phase: PHASE, screen: 'meeting-minutes-print', fullPage: true });
+  });
 });
 
 test.describe('actions', () => {

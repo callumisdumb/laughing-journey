@@ -12,9 +12,9 @@ export interface MeetingTransition {
 
 export const MEETING_TRANSITIONS: Record<MeetingType, MeetingTransition> = {
   ird: { completes: [], starts: ['cp.cppm.initial'] },
-  cppm: { completes: ['cp.cppm.initial', 'cp.prebirth.cppm'], starts: ['cp.coregroup.first', 'cp.cppm.review.first'] },
-  'pre-birth-cppm': { completes: ['cp.prebirth.cppm', 'cp.cppm.initial'], starts: ['cp.coregroup.first', 'cp.cppm.review.first'] },
-  'cppm-review': { completes: ['cp.cppm.review.first', 'cp.cppm.review.subsequent'], starts: ['cp.cppm.review.subsequent'] },
+  cppm: { completes: ['cp.cppm.initial', 'cp.prebirth.cppm', 'cp.cppm.notice'], starts: ['cp.coregroup.first', 'cp.cppm.review.first'] },
+  'pre-birth-cppm': { completes: ['cp.prebirth.cppm', 'cp.cppm.initial', 'cp.cppm.notice'], starts: ['cp.coregroup.first', 'cp.cppm.review.first'] },
+  'cppm-review': { completes: ['cp.cppm.review.first', 'cp.cppm.review.subsequent', 'cp.cppm.notice'], starts: ['cp.cppm.review.subsequent'] },
   'core-group': { completes: ['cp.coregroup.first'], starts: [] },
   'asp-inter-agency-discussion': { completes: ['asp.inquiry.decision'], starts: [] },
   'asp-case-conference': { completes: ['asp.caseconference.initial'], starts: ['asp.plan.review'] },

@@ -145,3 +145,13 @@ Running log of what was tried visually, what was rejected and why. Newest at the
 - 1024 wide: the CP dashboard holds with no horizontal overflow; the title wraps to two lines and the stepper stays on one row.
 - One regression surfaced by the full run rather than by a screenshot: the inbox pull for a connector fetched each subject one after another with the simulated latency, so a social worker with four scenarios' worth of people waited over ten seconds. The pulls now run in parallel, which is also how a real adapter would be called.
 - The full suite must run from `apps/web` (`pnpm e2e`); run from the repository root it resolves a second copy of the Playwright test runner and collects the Vitest files too.
+
+## Round 2 (03 Sep 2026): the product owner's decisions on the handover
+
+- Timescales: `cp.cppm.review.first` is the Appendix D value, 6 months, with no local override; Aiden's review on 14 September is a meeting brought forward on significant change, recorded in the CPPM decision, not a clock change. Three CP clocks added on the owner's values and marked to verify: notice of the CPPM 5 calendar days before the meeting (the first rule that counts back from an anchor, D-029), core group escalation 3 calendar days, post-birth review 3 months (advisory). The five local clocks keep their seeds until the Ayrshire values arrive.
+- Holidays: the national list now covers 2025 to 2027 including the one-off 15 June 2026 holiday, sourced from the gov.uk feed's published listings because the feed itself is blocked through the proxy; a separate council holiday list (fictional dates) is editable in Admin and working-day clocks skip both (D-028).
+- Section 52: the council officer eligibility wording follows SSI 2008/306 (the professions, the SSSC and HCPC registers, 12 months relevant experience, the two groups of functions) and says it is to verify against the Order.
+- Break-glass: a reason category from an Admin-configured list plus free text; the audit entry carries both (D-031). The window was already configuration.
+- Appearance: Admin's default theme and density now apply on a device with no preference of its own (D-033).
+- Minutes: a dedicated print pack for any meeting, with the classification marking, running head and foot, attendance, the person's views, information shared by agency, decisions with dissent, actions, distribution and a chair signature block, reached from "Print minutes" in the After phase or `?view=print`.
+- Demo: scenarios 4, 2 and 1 with a sixty second restricted MAPPA moment as Moira Gilmour, two persona switches in total. Electron is the demo build (D-032).

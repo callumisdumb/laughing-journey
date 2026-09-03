@@ -336,3 +336,28 @@ Accessed 2026-09-03 (the demo clock reads 02 Sep 2026; this is the real date the
 | MARAC SafeLives return | Meeting-level counts; cases, repeats, children, referral agency, disability, cases per 10,000 adult women; older victims from 61 | Exact agency list, LGBT and male victim definitions, new workbook data points |
 | MAPPA annual report counts | Tables 1 to 9 required; Table 1 rows; 31 March reference; categories, levels, breaches, returns to custody, disclosures, civil orders appear | Titles and rows of Tables 2 to 9 |
 | AWI timeliness | Welfare, financial and combined split; private against local authority; orders granted; duration bands; interim orders exist | Interim order counts, MHO timeliness and application-to-order days (local measures) |
+
+## 6. Round 2 (03 Sep 2026): council officers, holidays, place names, new clocks
+
+The proxy blocked www.legislation.gov.uk, www.gov.uk, www.gov.scot and www.mygov.scot directly; findings below are from search extracts and should be re-read from the primary source on a machine with access.
+
+### 6.1 ASP council officer eligibility (section 52)
+- Source: The Adult Support and Protection (Scotland) Act 2007 (Restriction on the Authorisation of Council Officers) Order 2008, SSI 2008/306 (https://www.legislation.gov.uk/ssi/2008/306/made); secondary: Right Decisions ASP roles page (Dumfries and Galloway).
+- Accessed: 2026-09-03 (search extract; direct fetch blocked)
+- Finding: for the functions under sections 7 to 10 a council officer must be registered as a social worker or social service worker in the relevant part of the SSSC register, or as an occupational therapist under article 5(1) of the Health Professions Order 2001, or be a nurse, and have at least 12 months relevant experience of identifying, assessing and managing adults at risk of harm; for sections 11, 14, 16 and 18 the officer must be a registered social worker, occupational therapist or nurse with at least 12 months relevant experience. In force 29 October 2008.
+- Confidence: High for the professions and the 12 month requirement; Verify the exact article wording and any later amendment. Seeded into `aspCouncilOfficerEligibility`.
+
+### 6.2 Scottish bank holidays 2025 to 2027
+- Source of truth: the gov.uk bank holidays feed, division "scotland" (https://www.gov.uk/bank-holidays.json); listing at https://www.gov.scot/publications/bank-holidays/. Both blocked through the proxy; dates taken from published listings (ukpublicholidays.co.uk, qppstudio.net, ukholidaysinfo.uk) found on 2026-09-03.
+- Finding: 2026 has ten Scottish bank holidays including the one-off Monday 15 June 2026 for the men's World Cup; 2027 returns to nine with 4 January substituting for 2 January (a Saturday), 27 and 28 December substituting for Christmas Day and Boxing Day. 2025: 1 and 2 January, 18 April, 5 and 26 May, 4 August, 1 December (St Andrew's Day substitute), 25 and 26 December.
+- Confidence: High for the standard dates; Verify the feed once a year. Council local holidays are a separate editable list and are fictional.
+
+### 6.3 Place names (renames)
+- Method: web search for each candidate on 2026-09-03; a candidate was rejected if any real place, business or property carried the name.
+- Rejected: Auchenvale (a farm at Colmonell, Ayrshire, in the 1882 county directory); Cairnbrae (a natural burial ground near Dundee and a camp at Crieff).
+- Adopted, no search footprint found: Auchentorran (replaces Kilbrannan), Portlennan (replaces Portnellan), Dunlarrick (replaces Glenmoray), Craiglarrick (replaces Braeside). Whinbrae House replaces Rowanbank Care Home; "Whinbrae" appears only as a holiday cottage in Bridlington and a house name in Ilkley, neither a care home.
+- Kept: Ardvale, Clydeshore.
+
+### 6.4 New CP clocks (product owner values)
+- `cp.cppm.notice` 5 calendar days before the CPPM, `cp.coregroup.escalate` 3 calendar days, `cp.prebirth.review` 3 months after the birth (advisory): values supplied by the product owner on 03 Sep 2026. The 2021 national guidance (Part 3 and Appendix D) requires invitations and reports in advance of a CPPM and escalation of core group concerns to the chair but was not re-read for exact figures through the proxy. Confidence: Verify (notice), Local (escalation), Advisory (post-birth review).
+- `cp.cppm.review.first`: corrected to the Appendix D value of 6 months with no local override.

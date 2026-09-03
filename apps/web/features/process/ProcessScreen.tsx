@@ -1,7 +1,7 @@
 'use client';
 
 import { AGENCY_SHORT, PROCESS_LABELS, PROCESS_SHORT, STAGES_BY_PROCESS, formatDate, formatDateTime, formatTime, relativeDays, stageLabel, type Process } from '@mas/domain';
-import { AgencyMark, Button, ClassificationBanner, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
+import { AgencyMark, Button, ClassificationBanner, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { Lock, UserPlus } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
@@ -31,6 +31,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const dev = useDevState();
   const [breakGlassOpen, setBreakGlassOpen] = useState(false);
   const [reason, setReason] = useState('');
+  const [reasonCategory, setReasonCategory] = useState('');
 
   const process = data.processes.find((p) => p.id === processId);
 
@@ -299,11 +300,12 @@ export function ProcessScreen({ processId }: { processId: string }) {
             <Button
               variant="danger"
               icon={<Lock size={16} aria-hidden="true" />}
-              disabled={reason.trim().length < 15}
+              disabled={!reasonCategory || reason.trim().length < 15}
               onClick={() => {
-                grantBreakGlass(process.id, reason);
+                grantBreakGlass(process.id, reasonCategory, reason);
                 setBreakGlassOpen(false);
                 setReason('');
+                setReasonCategory('');
                 toast({ title: 'Break-glass access granted', text: `Access lasts ${config.breakGlassHours} hours. Every read is audited and the coordinator is told.`, tone: 'info' });
               }}
             >
@@ -313,7 +315,8 @@ export function ProcessScreen({ processId }: { processId: string }) {
         }
       >
         <p>{access.reason} State why you need it now. Your reason, your name and every read are written to the audit log and shown to the coordinator.</p>
-        <TextareaField label="Reason" required value={reason} onChange={(e) => setReason(e.target.value)} hint="At least 15 characters." />
+        <SelectField label="Why you need it" required value={reasonCategory} onChange={(e) => setReasonCategory(e.target.value)} placeholder="Choose a reason category" options={config.breakGlassReasons.map((r) => ({ value: r, label: r }))} />
+        <TextareaField label="Reason" required value={reason} onChange={(e) => setReason(e.target.value)} hint="At least 15 characters. Say what is happening now and why it cannot wait." />
       </Dialog>
     </div>
   );

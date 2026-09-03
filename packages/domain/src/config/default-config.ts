@@ -8,12 +8,28 @@ import { DEFAULT_LABELS } from './labels';
  * Scottish bank holidays used by working-day clocks.
  * TODO(verify): confirm against the Scottish Government published list each year. Admin can edit.
  */
+/**
+ * Scottish bank holidays, 2025 to 2027, as published on the gov.uk bank holidays feed
+ * (https://www.gov.uk/bank-holidays.json, division "scotland"). The feed was unreachable through the
+ * session proxy on 03 Sep 2026, so the dates are from published listings and the feed should be re-read
+ * once a year (see docs/RESEARCH.md section 1). 15 Jun 2026 is the one-off men's World Cup holiday.
+ */
 export const BANK_HOLIDAYS_2026_2027: string[] = [
+  '2025-01-01',
+  '2025-01-02',
+  '2025-04-18',
+  '2025-05-05',
+  '2025-05-26',
+  '2025-08-04',
+  '2025-12-01',
+  '2025-12-25',
+  '2025-12-26',
   '2026-01-01',
   '2026-01-02',
   '2026-04-03',
   '2026-05-04',
   '2026-05-25',
+  '2026-06-15',
   '2026-08-03',
   '2026-11-30',
   '2026-12-25',
@@ -61,12 +77,17 @@ export const DEFAULT_CONFIG: Config = {
   ],
   defaults: { theme: 'system', density: 'comfortable' },
   aspCouncilOfficerEligibility: [
-    'Registered social worker with the required post-qualifying experience',
-    'Registered nurse with the required post-qualifying experience and ASP training',
-    'Registered occupational therapist with the required post-qualifying experience and ASP training',
+    'Registered as a social worker, or as a social service worker in the relevant part of the SSSC register, with at least 12 months relevant experience of identifying, assessing and managing adults at risk of harm (functions under sections 7 to 10)',
+    'Registered as an occupational therapist in the HCPC register (Health Professions Order 2001, article 5(1)), with at least 12 months relevant experience',
+    'Registered nurse, with at least 12 months relevant experience',
+    'For the functions under sections 11, 14, 16 and 18 (records, visits under warrant, assessment and removal orders): a registered social worker, occupational therapist or nurse with at least 12 months relevant experience',
+    'Source: the Adult Support and Protection (Scotland) Act 2007 (Restriction on the Authorisation of Council Officers) Order 2008 (SSI 2008/306), in force 29 October 2008; wording to verify against the Order and any later amendment',
   ],
   bankHolidays: BANK_HOLIDAYS_2026_2027,
+  /** Clydeshore local holidays (fictional): a spring and a September Monday, as Ayrshire councils commonly take. Editable in Admin. */
+  councilHolidays: ['2026-04-13', '2026-09-21', '2027-04-12', '2027-09-20'],
   breakGlassHours: 4,
+  breakGlassReasons: ['Immediate risk to a child', 'Immediate risk to an adult', 'Court, hearing or panel deadline today', 'Request from the coordinator or chair', 'Other (state why)'],
   guidanceEditions: [
     { id: 'asp-cop', label: 'ASP Code of Practice', edition: 'July 2022' },
     { id: 'cp-national', label: 'National Guidance for Child Protection in Scotland', edition: '2021, updated 2023' },

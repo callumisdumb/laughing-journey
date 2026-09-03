@@ -24,6 +24,8 @@ export interface ClockResult {
 
 export interface ClockOptions {
   bankHolidays?: string[];
+  /** Council local holidays, kept separately in configuration; working-day clocks skip both lists. */
+  councilHolidays?: string[];
 }
 
 function isWorkingDay(date: Date, holidays: Set<string>): boolean {
@@ -33,9 +35,10 @@ function isWorkingDay(date: Date, holidays: Set<string>): boolean {
 
 export function addWorkingDays(start: Date, amount: number, holidays: Set<string>): Date {
   let d = start;
-  let remaining = amount;
+  let remaining = Math.abs(amount);
+  const step = amount < 0 ? -1 : 1;
   while (remaining > 0) {
-    d = addDays(d, 1);
+    d = addDays(d, step);
     if (isWorkingDay(d, holidays)) remaining -= 1;
   }
   return d;
@@ -44,16 +47,18 @@ export function addWorkingDays(start: Date, amount: number, holidays: Set<string
 /** Due date for a rule from a trigger instant, as a local calendar date. */
 export function dueDateFor(rule: ClockRule, triggeredAt: string, options: ClockOptions = {}): Date {
   const start = startOfDay(toLocal(triggeredAt));
-  const holidays = new Set(options.bankHolidays ?? []);
+  const holidays = new Set([...(options.bankHolidays ?? []), ...(options.councilHolidays ?? [])]);
+  // A 'before' rule counts back from its anchor (for a notice rule the trigger instant is the meeting date).
+  const amount = rule.direction === 'before' ? -rule.amount : rule.amount;
   switch (rule.unit) {
     case 'calendar-days':
-      return addDays(start, rule.amount);
+      return addDays(start, amount);
     case 'working-days':
-      return addWorkingDays(start, rule.amount, holidays);
+      return addWorkingDays(start, amount, holidays);
     case 'weeks':
-      return addWeeks(start, rule.amount);
+      return addWeeks(start, amount);
     case 'months':
-      return addMonths(start, rule.amount);
+      return addMonths(start, amount);
   }
 }
 

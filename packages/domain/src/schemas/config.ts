@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AGENCIES, ALL_STAGES, CHANNELS, CLASSIFICATIONS, DETAIL_LEVELS, PROCESS_TYPES, ROLES } from '../enums';
+import { AGENCIES, ALL_STAGES, CHANNELS, CLASSIFICATIONS, DETAIL_LEVELS, EXCLUSION_PARTIES, PROCESS_TYPES, ROLES } from '../enums';
 
 export const clockRuleSchema = z.object({
   id: z.string(),
@@ -9,6 +9,8 @@ export const clockRuleSchema = z.object({
   unit: z.enum(['calendar-days', 'working-days', 'weeks', 'months']),
   amount: z.number().positive(),
   kind: z.enum(['deadline', 'warning', 'expiry', 'review']),
+  /** 'after' counts forward from the trigger (the default); 'before' counts back from an anchor such as a meeting date, for notice rules. */
+  direction: z.enum(['after', 'before']).optional(),
   /** Days before due at which the clock turns medium (amber). */
   warnDays: z.number().int().nonnegative(),
   source: z.string(),
@@ -49,17 +51,8 @@ export const exclusionSchema = z.object({
   process: z.enum(PROCESS_TYPES),
   /** '*' for every stage. */
   stage: z.union([z.enum(ALL_STAGES), z.literal('*')]),
-  /** Who is excluded, as a party key on the process. */
-  party: z.enum([
-    'perpetrator',
-    'perpetrator-associates',
-    'alleged-perpetrator',
-    'victim',
-    'employer',
-    'public',
-    'parents-if-risk',
-    'not-on-distribution',
-  ]),
+  /** Who is excluded, as a party key resolved against the case-role register on the process. */
+  party: z.enum(EXCLUSION_PARTIES),
   label: z.string(),
   reason: z.string(),
   /** Some exclusions can be lifted by a recorded decision (e.g. a chair's decision). */
@@ -106,10 +99,14 @@ export const configSchema = z.object({
   }),
   /** ASP s52 council officer eligibility, configurable per council. TODO(verify) against local rule. */
   aspCouncilOfficerEligibility: z.array(z.string()),
-  /** Scottish bank holidays used by working-day clocks (ISO dates). */
+  /** Scottish bank holidays used by working-day clocks (ISO dates), from the gov.uk feed. */
   bankHolidays: z.array(z.string()),
+  /** Council local holidays (ISO dates), kept separately from the national list; working-day clocks skip both. */
+  councilHolidays: z.array(z.string()),
   /** Break-glass window in hours. */
   breakGlassHours: z.number().int().positive(),
+  /** Reason categories offered in the break-glass dialog; the free-text reason is recorded alongside. */
+  breakGlassReasons: z.array(z.string()).min(1),
   /** Editions in use, shown in Help and Admin. */
   guidanceEditions: z.array(z.object({ id: z.string(), label: z.string(), edition: z.string() })),
 });

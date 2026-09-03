@@ -47,8 +47,11 @@ Every clock rule in `packages/domain/src/clocks/rules.ts` with its seeded value,
 |---|---|---|---|---|---|---|
 | cp.cppm.initial | cp | Child protection procedures initiated (IRD) | 28 calendar-days | high | National Guidance for Child Protection in Scotland 2021 (updated 2023), Part 3 (Within 28 calendar days of the concern being raised, unless the IRD decides a CPPM is not required) |  |
 | cp.coregroup.first | cp | Initial CPPM held | 15 working-days | high | National Guidance for Child Protection in Scotland 2021, Appendix D (Within 15 working days of the CPPM) |  |
-| cp.cppm.review.first | cp | Initial CPPM held | 6 months | high | National Guidance for Child Protection in Scotland 2021, Appendix D (Within 6 months of the initial CPPM. Some areas hold the first review at 3 months (local practice)) |  |
+| cp.cppm.review.first | cp | Initial CPPM held | 6 months | high | National Guidance for Child Protection in Scotland 2021, Appendix D (Within 6 months of the initial CPPM (Appendix D). A review may be brought forward on significant change without altering the statutory maximum) |  |
 | cp.cppm.review.subsequent | cp | Review CPPM held | 6 months | high | National Guidance for Child Protection in Scotland 2021, Appendix D (At least every 6 months, or earlier on significant change) |  |
+| cp.cppm.notice | cp | CPPM date set (the clock counts back from the meeting date) | 5 calendar-days before | verify | National Guidance for Child Protection in Scotland 2021, Part 3 (invitations, reports and the family being told in advance) (Invitations and reports no later than 5 calendar days before the CPPM; value supplied by the product owner on 03 Sep 2026, to verify against the national guidance and the local procedures) | TODO(verify) |
+| cp.coregroup.escalate | cp | Core group unable to agree, or a concern raised that the plan is not working | 3 calendar-days | local | Local procedures (the national guidance requires escalation to the lead professional and the CPPM chair without setting a timescale) (Within 3 calendar days; value supplied by the product owner on 03 Sep 2026, to verify against the local procedures) | TODO(verify) |
+| cp.prebirth.review | cp | Birth of the baby | 3 months | advisory | National Guidance for Child Protection in Scotland 2021, Appendix D (review within 3 months of the pre-birth CPPM, with latitude after the birth) (Advisory: a review within 3 months of the birth so the plan is tested against the child as born; value supplied by the product owner on 03 Sep 2026) |  |
 | cp.prebirth.cppm | cp | Pre-birth concern raised | 28 calendar-days | high | National Guidance for Child Protection in Scotland 2021, Part 4 (unborn babies) (Within 28 calendar days of the concern and no later than 28 weeks gestation. The gestation cap is applied as a due date override on the process) |  |
 | asp.inquiry.decision | asp | Adult concern received | 5 working-days | local | Local procedures (the Code of Practice 2022 sets no national timescale) (West of Scotland inter-agency guidance and Edinburgh 2024 procedures use 5 working days) | TODO(verify) |
 | asp.caseconference.initial | asp | Adult concern received | 21 calendar-days | local | Local procedures (the Code of Practice 2022 sets no national timescale) (Highland 21 days; Orkney 20 days; Renfrewshire 20 working days) | TODO(verify) |
@@ -62,11 +65,11 @@ Every clock rule in `packages/domain/src/clocks/rules.ts` with its seeded value,
 | awi.interim.warning | awi | Interim order granted | 3 months | high | Adults with Incapacity (Scotland) Act 2000 s57 as amended by ASP Act 2007 s60 (Interim orders run for 3 months by default and cannot exceed 6 months in total. The Expert Working Group (2025 to 2026) has raised concerns about prolonged interim orders) |  |
 | awi.interim.maximum | awi | Interim order granted | 6 months | high | Adults with Incapacity (Scotland) Act 2000 s57 as amended (Total interim period cannot exceed 6 months) |  |
 
-Other configuration marked to verify: the Scottish bank holiday list used by working-day clocks (`default-config.ts`), the ASP s52 council officer eligibility wording, and the field sets of the inspection reports (see the Reports screens and `docs/RESEARCH.md` section 5).
+Other configuration marked to verify: the Scottish bank holiday list (re-read from the gov.uk feed yearly) and the fictional council holiday list, the ASP s52 council officer eligibility wording (seeded from SSI 2008/306, section 6.1 of `docs/RESEARCH.md`), and the field sets of the inspection reports (see `docs/templates/README.md` and `docs/RESEARCH.md` section 5). Five local clocks (ASP inquiry decision, ASP initial case conference, ASP plan review, MARAC research return, core group escalation) keep their seeded values until the Ayrshire values arrive.
 
 ## 4. Desktop packaging
 
-Both shells load the same static export from `apps/web/out`, expose the same native menu (About, Reset demo data, Toggle theme, Zoom in, Zoom out, Actual size) and send the same `mas-menu` actions, which `apps/web/lib/desktop.ts` handles. No shell has network, filesystem or shell permissions.
+Electron is the demo build (D-032). Tauri stays fully configured as the target shell and is built on macOS or Windows. Both shells load the same static export from `apps/web/out`, expose the same native menu (About, Reset demo data, Toggle theme, Zoom in, Zoom out, Actual size) and send the same `mas-menu` actions, which `apps/web/lib/desktop.ts` handles. No shell has network, filesystem or shell permissions.
 
 | Shell | Verified here | Result | What is left |
 |---|---|---|---|
@@ -250,7 +253,14 @@ pnpm docs:data-model               # regenerate docs/DATA-MODEL.md from the Zod 
 
 Playwright uses the preinstalled Chromium in this container; on another machine either run `pnpm exec playwright install chromium` in `apps/web` or set `PLAYWRIGHT_CHROMIUM_PATH` to a Chromium binary.
 
-Desktop, macOS (Tauri, primary):
+Desktop for the demo (Electron, verified here):
+
+```
+pnpm desktop:electron:build        # dmg on macOS, nsis and msi on Windows, into apps/desktop-electron/release
+pnpm desktop:electron:dev          # loads http://localhost:3000 from pnpm dev
+```
+
+Desktop target shell (Tauri), macOS:
 
 ```
 rustup default stable
@@ -258,13 +268,6 @@ pnpm install
 pnpm desktop:tauri:build           # apps/desktop-tauri/src-tauri/target/release/bundle/dmg/Platform_0.1.0_*.dmg
 ```
 
-Desktop, Windows (Tauri): install the Rust MSVC toolchain and Visual Studio Build Tools, then `pnpm desktop:tauri:build`; the bundle embeds the WebView2 bootstrapper, output under `src-tauri/target/release/bundle/nsis` and `msi`.
-
-Desktop, either platform (Electron fallback):
-
-```
-pnpm desktop:electron:build        # dmg on macOS, nsis and msi on Windows, into apps/desktop-electron/release
-pnpm desktop:electron:dev          # loads http://localhost:3000 from pnpm dev
-```
+Tauri on Windows: install the Rust MSVC toolchain and Visual Studio Build Tools, then `pnpm desktop:tauri:build`; the bundle embeds the WebView2 bootstrapper, output under `src-tauri/target/release/bundle/nsis` and `msi`.
 
 Demo states: append `?state=loading|empty|error|restricted|offline|stale` to any screen. Personas: the switcher in the top bar, or `localStorage.setItem('mas.session', JSON.stringify({ userId: 'usr_janet_kerr' }))`. Reset: Settings, or the desktop menu, or the Admin overview.

@@ -26,6 +26,11 @@ export function Defaults() {
   const [newHoliday, setNewHoliday] = useState('');
   const [holidayError, setHolidayError] = useState<string | null>(null);
   const [rules, setRules] = useState<string[]>(config.aspCouncilOfficerEligibility);
+  const [councilHolidays, setCouncilHolidays] = useState<string[]>(config.councilHolidays);
+  const [newCouncilHoliday, setNewCouncilHoliday] = useState('');
+  const [councilHolidayError, setCouncilHolidayError] = useState<string | null>(null);
+  const [reasons, setReasons] = useState<string[]>(config.breakGlassReasons);
+  const [newReason, setNewReason] = useState('');
   const [newRule, setNewRule] = useState('');
   const [ruleError, setRuleError] = useState<string | null>(null);
   const [listsDirty, setListsDirty] = useState(false);
@@ -52,6 +57,41 @@ export function Defaults() {
     setHolidays(holidays.filter((x) => x !== d));
     setListsDirty(true);
   }
+
+  function addCouncilHoliday() {
+    const v = newCouncilHoliday.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) {
+      setCouncilHolidayError('Enter a date');
+      return;
+    }
+    if (councilHolidays.includes(v)) {
+      setCouncilHolidayError(`${formatDate(v)} is already in the list`);
+      return;
+    }
+    setCouncilHolidays([...councilHolidays, v].sort());
+    setNewCouncilHoliday('');
+    setCouncilHolidayError(null);
+    setListsDirty(true);
+  }
+
+  function removeCouncilHoliday(d: string) {
+    setCouncilHolidays(councilHolidays.filter((x) => x !== d));
+    setListsDirty(true);
+  }
+
+  function addReason() {
+    const v = newReason.trim();
+    if (v.length < 3 || reasons.includes(v)) return;
+    setReasons([...reasons, v]);
+    setNewReason('');
+    setListsDirty(true);
+  }
+
+  function removeReason(r: string) {
+    if (reasons.length <= 1) return;
+    setReasons(reasons.filter((x) => x !== r));
+    setListsDirty(true);
+  }
   function addRule() {
     const v = newRule.trim();
     if (v.length < 5) {
@@ -73,9 +113,9 @@ export function Defaults() {
   }
   function submit(values: DefaultsValues) {
     const result = save(
-      { ...config, defaults: { theme: values.theme, density: values.density }, breakGlassHours: values.breakGlassHours, bankHolidays: holidays, aspCouncilOfficerEligibility: rules },
+      { ...config, defaults: { theme: values.theme, density: values.density }, breakGlassHours: values.breakGlassHours, bankHolidays: holidays, councilHolidays, breakGlassReasons: reasons, aspCouncilOfficerEligibility: rules },
       'defaults',
-      `Defaults: theme ${values.theme}, density ${values.density}, break-glass ${values.breakGlassHours} hours, ${holidays.length} bank holidays, ${rules.length} eligibility rules`,
+      `Defaults: theme ${values.theme}, density ${values.density}, break-glass ${values.breakGlassHours} hours, ${holidays.length} bank holidays, ${councilHolidays.length} council holidays, ${reasons.length} break-glass reason categories, ${rules.length} eligibility rules`,
     );
     setSaveErrors(result.errors);
     if (result.ok) {
@@ -86,6 +126,11 @@ export function Defaults() {
   function discard() {
     form.reset({ theme: config.defaults.theme, density: config.defaults.density, breakGlassHours: config.breakGlassHours });
     setHolidays(config.bankHolidays);
+    setCouncilHolidays(config.councilHolidays);
+    setNewCouncilHoliday('');
+    setCouncilHolidayError(null);
+    setReasons(config.breakGlassReasons);
+    setNewReason('');
     setRules(config.aspCouncilOfficerEligibility);
     setNewHoliday('');
     setNewRule('');
@@ -192,6 +237,35 @@ export function Defaults() {
         </Sheet>
 
         <Sheet>
+          <SheetHead title="Council local holidays" meta="Clydeshore's own holidays, kept apart from the national list. Working-day clocks skip these dates too. Fictional dates, to verify against the council calendar." />
+          <SheetBody>
+            <ul className={styles.list} aria-label="Council local holidays">
+              {councilHolidays.map((d) => (
+                <li key={d} className={styles.listItem}>
+                  <span>
+                    {formatDate(d)} <span className={styles.muted}>{d}</span>
+                  </span>
+                  {canEdit ? (
+                    <IconButton size="sm" aria-label={`Remove council holiday ${formatDate(d)}`} onClick={() => removeCouncilHoliday(d)}>
+                      <X size={14} aria-hidden="true" />
+                    </IconButton>
+                  ) : null}
+                </li>
+              ))}
+              {councilHolidays.length === 0 ? <li className={styles.muted}>No council holidays. Only the national list applies.</li> : null}
+            </ul>
+            {canEdit ? (
+              <div className={styles.addRow}>
+                <TextField label="Add a council holiday" type="date" value={newCouncilHoliday} onChange={(e) => setNewCouncilHoliday(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addCouncilHoliday()} error={councilHolidayError} />
+                <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addCouncilHoliday}>
+                  Add date
+                </Button>
+              </div>
+            ) : null}
+          </SheetBody>
+        </Sheet>
+
+        <Sheet>
           <SheetHead title="ASP council officer eligibility" meta="Who may act as a council officer under section 52 of the Adult Support and Protection (Scotland) Act 2007, to verify against the local rule." />
           <SheetBody>
             <ul className={styles.rules} aria-label="Eligibility rules">
@@ -212,6 +286,32 @@ export function Defaults() {
                 <TextField label="Add an eligibility rule" value={newRule} maxLength={160} placeholder="e.g. Registered social worker with the required post-qualifying experience" onChange={(e) => setNewRule(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addRule()} error={ruleError} className={styles.ruleInput} />
                 <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addRule}>
                   Add rule
+                </Button>
+              </div>
+            ) : null}
+          </SheetBody>
+        </Sheet>
+
+        <Sheet>
+          <SheetHead title="Break-glass reason categories" meta="Offered in the dialog when someone opens a restricted record; the free-text reason is recorded with the category. At least one category must remain." />
+          <SheetBody>
+            <ul className={styles.rules} aria-label="Break-glass reason categories">
+              {reasons.map((r) => (
+                <li key={r} className={styles.listItem}>
+                  <span>{r}</span>
+                  {canEdit && reasons.length > 1 ? (
+                    <IconButton size="sm" aria-label={`Remove reason category: ${r}`} onClick={() => removeReason(r)}>
+                      <X size={14} aria-hidden="true" />
+                    </IconButton>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+            {canEdit ? (
+              <div className={styles.addRow}>
+                <TextField label="Add a reason category" value={newReason} maxLength={80} placeholder="e.g. Immediate risk to a child" onChange={(e) => setNewReason(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addReason()} />
+                <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addReason}>
+                  Add category
                 </Button>
               </div>
             ) : null}

@@ -6,6 +6,7 @@
  */
 import { DEFAULT_CONFIG, ROLE_DEFINITIONS, demoNow, type AuditEntry, type Config, type Dataset, type User } from '@mas/domain';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
+import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
 import { create } from 'zustand';
 
 export type Collection = Exclude<keyof Dataset, 'meta'>;
@@ -13,6 +14,8 @@ type Overlay = Partial<Record<Collection, Record<string, unknown>>> & { config?:
 
 export interface BreakGlassGrant {
   processId: string;
+  /** One of config.breakGlassReasons. */
+  category: string;
   reason: string;
   grantedAt: string;
   expiresAt: string;
@@ -39,7 +42,7 @@ interface AppState {
   remove: (collection: Collection, id: string) => void;
   setConfig: (config: Config) => void;
   audit: (entry: Omit<AuditEntry, 'id' | 'synthetic' | 'at' | 'userId' | 'userName' | 'agency' | 'restricted'> & { restricted?: boolean }) => void;
-  grantBreakGlass: (processId: string, reason: string) => void;
+  grantBreakGlass: (processId: string, category: string, reason: string) => void;
   setLiveClock: (v: boolean) => void;
   resetDemo: () => void;
   newId: (prefix: string) => string;
@@ -113,6 +116,22 @@ function applyOverlay(data: Dataset, ov: Overlay): Dataset {
   return out;
 }
 
+/**
+ * Admin can set a default theme and density (config.defaults). They apply on a device that has no
+ * appearance preference of its own yet; once a person picks a theme in Settings that choice wins.
+ */
+function applyConfiguredAppearanceDefaults(config: Config): void {
+  if (typeof window === 'undefined') return;
+  try {
+    if (window.localStorage.getItem(APPEARANCE_KEY)) return;
+  } catch {
+    return;
+  }
+  const appearance = useAppearance.getState();
+  if (appearance.theme !== config.defaults.theme) appearance.setTheme(config.defaults.theme);
+  if (appearance.density !== config.defaults.density) appearance.setDensity(config.defaults.density);
+}
+
 export const useAppStore = create<AppState>((set, get) => ({
   ready: false,
   data: EMPTY,
@@ -127,7 +146,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     const session = readJson<Session>(SESSION_KEY) ?? { userId: null, breakGlass: [], liveClock: false };
     const nowIso = new Date().toISOString();
     session.breakGlass = (session.breakGlass ?? []).filter((g) => g.expiresAt > nowIso);
-    set({ data, config: overlay.config ?? DEFAULT_CONFIG, session: { ...session, breakGlass: session.breakGlass, liveClock: session.liveClock ?? false }, ready: true });
+    // Older persisted overlays may predate new configuration keys; defaults fill the gaps.
+    const config: Config = overlay.config ? { ...DEFAULT_CONFIG, ...overlay.config } : DEFAULT_CONFIG;
+    set({ data, config, session: { ...session, breakGlass: session.breakGlass, liveClock: session.liveClock ?? false }, ready: true });
+    applyConfiguredAppearanceDefaults(config);
   },
   now: () => (get().session.liveClock ? new Date() : demoNow()),
   currentUser: () => {
@@ -208,15 +230,15 @@ export const useAppStore = create<AppState>((set, get) => ({
     };
     get().upsert('audit', rec);
   },
-  grantBreakGlass: (processId, reason) => {
+  grantBreakGlass: (processId, category, reason) => {
     const now = get().now();
     const hours = get().config.breakGlassHours;
-    const grant: BreakGlassGrant = { processId, reason, grantedAt: now.toISOString(), expiresAt: new Date(now.getTime() + hours * 3600 * 1000).toISOString() };
+    const grant: BreakGlassGrant = { processId, category, reason, grantedAt: now.toISOString(), expiresAt: new Date(now.getTime() + hours * 3600 * 1000).toISOString() };
     const session = { ...get().session, breakGlass: [...get().session.breakGlass.filter((g) => g.processId !== processId), grant] };
     set({ session });
     writeJson(SESSION_KEY, session);
     const p = get().data.processes.find((x) => x.id === processId);
-    get().audit({ act: 'break-glass', targetType: 'process', targetId: processId, targetLabel: p ? `${p.reference}: ${p.title}` : processId, processId, reason, restricted: true, expiresAt: grant.expiresAt });
+    get().audit({ act: 'break-glass', targetType: 'process', targetId: processId, targetLabel: p ? `${p.reference}: ${p.title}` : processId, processId, reason: `${category}: ${reason}`, restricted: true, expiresAt: grant.expiresAt });
   },
   setLiveClock: (v) => {
     const session = { ...get().session, liveClock: v };

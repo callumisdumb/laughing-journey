@@ -19,6 +19,7 @@ interface AppearanceState {
 }
 
 const KEY = 'mas.appearance';
+export const APPEARANCE_KEY = KEY;
 
 function resolveTheme(pref: ThemePreference): 'light' | 'dark' {
   if (pref !== 'system') return pref;

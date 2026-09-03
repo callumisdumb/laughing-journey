@@ -11,6 +11,7 @@ import { chronologyPath, personPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, clocksForProcess, fullName, personById, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { MinutesPrintPack } from './MinutesPrintPack';
 import styles from './MeetingWorkspace.module.css';
 
 type Phase = 'before' | 'during' | 'after';
@@ -60,6 +61,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       </div>
     );
   }
+  if (route.query.get('view') === 'print') return <MinutesPrintPack meetingId={meetingId} />;
   const access = accessForUser(data, config, user, process, grants, now);
   const invited = meeting.invitees.some((i) => i.userId === user.id) || meeting.chairUserId === user.id || meeting.minuteTakerUserId === user.id;
   if (access.level === 'none' || (!invited && access.level !== 'full')) {
@@ -485,6 +487,9 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   </Button>
                   <Button variant="primary" disabled={meeting.minute.status !== 'chair-approved' || meeting.distribution.length === 0} onClick={distribute}>
                     Distribute to {meeting.distribution.length} recipients
+                  </Button>
+                  <Button variant="secondary" icon={<Printer size={16} aria-hidden="true" />} onClick={() => navigate(`${route.path}?view=print`)}>
+                    Print minutes
                   </Button>
                 </div>
                 <div className={styles.form} style={{ marginTop: 12 }}>

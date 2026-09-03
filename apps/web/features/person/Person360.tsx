@@ -65,6 +65,7 @@ export function Person360({ personId }: { personId: string }) {
   const selectedAnalysisId = useChronologyStore((s) => s.selectedAnalysisId);
   const model = useChronology(personId);
   const [breakGlassFor, setBreakGlassFor] = useState<Process | null>(null);
+  const [reasonCategory, setReasonCategory] = useState('');
   const [reason, setReason] = useState('');
   const [recording, setRecording] = useState(false);
   const [voice, setVoice] = useState<{ kind: ViewsRecord['kind']; method: string; content: string }>({ kind: 'child-voice', method: 'In person', content: '' });
@@ -453,9 +454,9 @@ export function Person360({ personId }: { personId: string }) {
             </Button>
             <Button
               variant="danger"
-              disabled={reason.trim().length < 15}
+              disabled={!reasonCategory || reason.trim().length < 15}
               onClick={() => {
-                if (breakGlassFor) grantBreakGlass(breakGlassFor.id, reason);
+                if (breakGlassFor) grantBreakGlass(breakGlassFor.id, reasonCategory, reason);
                 setBreakGlassFor(null);
                 setReason('');
                 toast({ title: 'Break-glass access granted', text: `Access lasts ${config.breakGlassHours} hours. Every read is audited and the MAPPA Coordinator is told.`, tone: 'info' });
@@ -467,6 +468,7 @@ export function Person360({ personId }: { personId: string }) {
         }
       >
         <p>You are not on the distribution list for {breakGlassFor?.reference}. State why you need it now. Your reason, your name and every read are written to the audit log and shown to the coordinator.</p>
+        <SelectField label="Why you need it" required value={reasonCategory} onChange={(e) => setReasonCategory(e.target.value)} placeholder="Choose a reason category" options={config.breakGlassReasons.map((r) => ({ value: r, label: r }))} />
         <TextareaField label="Reason" required value={reason} onChange={(e) => setReason(e.target.value)} hint="At least 15 characters. For example: immediate safety concern for a child in the household, reported at 09:40 today." />
       </Dialog>
 

@@ -114,3 +114,17 @@ describe('sortByUrgency', () => {
     expect(sortByUrgency([c, a]).map((x) => x.triggerId)).toEqual(['a', 'c']);
   });
 });
+
+describe('notice and holiday handling', () => {
+  it('counts a before rule back from its anchor', () => {
+    const notice = rule('cp.cppm.notice');
+    const due = dueDateFor(notice, '2026-09-14T10:00:00+01:00');
+    expect(due.toISOString().slice(0, 10)).toBe('2026-09-09');
+  });
+  it('skips council holidays as well as bank holidays for working-day rules', () => {
+    const r = rule('asp.inquiry.decision');
+    const plain = dueDateFor(r, '2026-09-18T10:00:00+01:00');
+    const withCouncil = dueDateFor(r, '2026-09-18T10:00:00+01:00', { councilHolidays: ['2026-09-21'] });
+    expect(withCouncil.getTime()).toBeGreaterThan(plain.getTime());
+  });
+});

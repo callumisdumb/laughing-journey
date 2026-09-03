@@ -69,7 +69,7 @@ export function clocksForProcess(data: Dataset, config: Config, process: Process
   for (const t of process.clocks) {
     const rule = findClockRule(config.clockRules, t.ruleId);
     if (!rule) continue;
-    out.push(computeClock(t, rule, now, { bankHolidays: config.bankHolidays }));
+    out.push(computeClock(t, rule, now, { bankHolidays: config.bankHolidays, councilHolidays: config.councilHolidays }));
   }
   return sortByUrgency(out);
 }
