@@ -1,6 +1,7 @@
 'use client';
 
 import { AGENCY_SHORT, HARM_TYPE_LABELS, formatDate, formatDateTime, type AspProcess } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { Button, KeyValue, Pill, Sheet, SheetBody, SheetHead, Table, TableWrap } from '@mas/ui';
 import { CheckCircle2, CircleDashed, XCircle } from 'lucide-react';
 import { useState } from 'react';
@@ -11,29 +12,27 @@ import { useData } from '@/lib/store';
 import { ThreePointTestDialog } from '../forms/ThreePointTestDialog';
 import styles from './shared.module.css';
 
-const LIMB_TEXT = {
-  a: 'Unable to safeguard their own wellbeing, property, rights or other interests',
-  b: 'At risk of harm',
-  c: 'More vulnerable to being harmed because of disability, mental disorder, illness or infirmity',
-};
-
 function Met({ met }: { met: 'yes' | 'no' | 'unclear' }) {
-  if (met === 'yes') return <Pill tone="low" size="sm" icon={<CheckCircle2 size={12} aria-hidden="true" />}>Met</Pill>;
-  if (met === 'no') return <Pill tone="critical" size="sm" icon={<XCircle size={12} aria-hidden="true" />}>Not met</Pill>;
-  return <Pill tone="medium" size="sm" icon={<CircleDashed size={12} aria-hidden="true" />}>Unclear</Pill>;
+  const t = useT();
+  if (met === 'yes') return <Pill tone="low" size="sm" icon={<CheckCircle2 size={12} aria-hidden="true" />}>{t('forms.threePointTest.met.met')}</Pill>;
+  if (met === 'no') return <Pill tone="critical" size="sm" icon={<XCircle size={12} aria-hidden="true" />}>{t('forms.threePointTest.met.notMet')}</Pill>;
+  return <Pill tone="medium" size="sm" icon={<CircleDashed size={12} aria-hidden="true" />}>{t('forms.threePointTest.met.unclear')}</Pill>;
 }
 
 export function AspPanels({ process }: { process: AspProcess }) {
+  const t = useT();
   const data = useData();
   const d = process.detail;
   const [testOpen, setTestOpen] = useState(false);
   const inv = d.investigation;
+  const officer = inv ? userById(data, inv.councilOfficerUserId) : undefined;
+  const second = inv?.secondWorkerUserId ? userById(data, inv.secondWorkerUserId) : undefined;
 
   return (
     <>
       {d.lsi ? (
         <Sheet tone="accent">
-          <SheetHead title={`Large Scale Investigation: ${d.lsi.setting}`} meta={`Provider ${d.lsi.provider}. ${d.lsi.strands.length} strands. Care Inspectorate ${d.lsi.careInspectorateNotified ? 'notified' : 'not notified'}. Commissioning ${d.lsi.commissioningInvolved ? 'involved' : 'not involved'}.`} />
+          <SheetHead title={t('asp.lsi.title', { setting: d.lsi.setting })} meta={t('asp.lsi.meta', { provider: d.lsi.provider, count: d.lsi.strands.length, notified: d.lsi.careInspectorateNotified ? 'yes' : 'no', involved: d.lsi.commissioningInvolved ? 'yes' : 'no' })} />
           <SheetBody>
             <div className={styles.pills} style={{ marginBottom: 10 }}>
               {d.lsi.agenciesInvolved.map((a) => (
@@ -54,7 +53,7 @@ export function AspPanels({ process }: { process: AspProcess }) {
                     </Pill>
                     <span className={styles.strandMeta}>
                       {s.concern}
-                      {lead ? ` Lead: ${userName(lead)}.` : ''}
+                      {lead ? ` ${t('asp.lsi.strandLead', { name: userName(lead) })}` : ''}
                     </span>
                   </div>
                 );
@@ -65,66 +64,66 @@ export function AspPanels({ process }: { process: AspProcess }) {
       ) : null}
 
       <Sheet>
-        <SheetHead title="Adult concern" meta={`Received ${formatDateTime(d.concern.receivedAt)} from ${d.concern.source} (${AGENCY_SHORT[d.concern.sourceAgency]})${d.concern.sourceReference ? `, ${d.concern.sourceReference}` : ''}`} />
+        <SheetHead title={t('asp.concern.title')} meta={t('asp.concern.meta', { when: formatDateTime(d.concern.receivedAt), source: d.concern.source, agency: AGENCY_SHORT[d.concern.sourceAgency], hasReference: d.concern.sourceReference ? 'yes' : 'no', reference: d.concern.sourceReference ?? '' })} />
         <SheetBody>
           <p style={{ marginBottom: 10 }}>{d.concern.summary}</p>
           <KeyValue
             items={[
-              { key: 'Harm types', value: <span className={styles.pills}>{d.concern.harmTypes.map((h) => <Pill key={h} size="sm" tone="high">{HARM_TYPE_LABELS[h]}</Pill>)}</span> },
-              { key: 'Immediate safety', value: d.concern.immediateSafety },
-              { key: 'Police involved', value: d.concern.policeInvolved ? 'Yes' : 'No' },
+              { key: t('asp.concern.harmTypes'), value: <span className={styles.pills}>{d.concern.harmTypes.map((h) => <Pill key={h} size="sm" tone="high">{HARM_TYPE_LABELS[h]}</Pill>)}</span> },
+              { key: t('asp.concern.immediateSafety'), value: d.concern.immediateSafety },
+              { key: t('asp.concern.policeInvolved'), value: d.concern.policeInvolved ? t('common.answers.yes') : t('common.answers.no') },
             ]}
           />
         </SheetBody>
       </Sheet>
 
       <Sheet>
-        <SheetHead title="Three-point test (s3)" meta={`Assessed ${formatDateTime(d.threePointTest.assessedAt)} by ${d.threePointTest.byName}. All three limbs must be met.`} actions={<Button size="sm" variant="secondary" onClick={() => setTestOpen(true)}>Record three-point test</Button>} />
+        <SheetHead title={t('asp.threePointTest.title')} meta={t('asp.threePointTest.meta', { when: formatDateTime(d.threePointTest.assessedAt), name: d.threePointTest.byName })} actions={<Button size="sm" variant="secondary" onClick={() => setTestOpen(true)}>{t('asp.threePointTest.record')}</Button>} />
         <SheetBody>
           <div className={styles.limbs}>
             {(['a', 'b', 'c'] as const).map((k) => (
               <div key={k} className={styles.limb}>
                 <Met met={d.threePointTest[k].met} />
-                <span className={styles.limbTitle}>Limb ({k}): {LIMB_TEXT[k]}</span>
+                <span className={styles.limbTitle}>{t('asp.threePointTest.limbTitle', { limb: k, text: t(`asp.threePointTest.limbs.${k}` as const) })}</span>
                 <span className={styles.limbText}>{d.threePointTest[k].reasoning}</span>
               </div>
             ))}
           </div>
           <p className={styles.note} style={{ marginTop: 10 }}>
-            Outcome: <strong>{d.threePointTest.outcome === 'met' ? 'adult at risk (all limbs met)' : d.threePointTest.outcome === 'not-met' ? 'not an adult at risk' : 'unclear, gather more information'}</strong>.
+            {t('asp.threePointTest.outcomeLabel')} <strong>{t('asp.threePointTest.outcomeValue', { outcome: d.threePointTest.outcome === 'not-met' ? 'notMet' : d.threePointTest.outcome })}</strong>.
           </p>
         </SheetBody>
       </Sheet>
 
       <div className={styles.grid2}>
         <Sheet>
-          <SheetHead title="Screening and inquiry (s4)" />
+          <SheetHead title={t('asp.screening.title')} />
           <SheetBody>
             <KeyValue
               items={[
-                { key: 'Screening', value: d.screening ? `${d.screening.outcome.replace(/-/g, ' ')} (${formatDate(d.screening.at)}, ${d.screening.byName}). ${d.screening.rationale}` : 'Not yet recorded' },
-                { key: 'Inquiry opened', value: d.inquiry ? formatDate(d.inquiry.openedAt) : 'Not opened' },
-                { key: 'Agencies contacted', value: d.inquiry ? d.inquiry.agenciesContacted.map((a) => AGENCY_SHORT[a]).join(', ') : '' },
-                { key: 'Inquiry outcome', value: d.inquiry ? `${d.inquiry.outcome.replace(/-/g, ' ')}${d.inquiry.decidedAt ? ` on ${formatDate(d.inquiry.decidedAt)}` : ''}. ${d.inquiry.rationale ?? ''}` : '' },
+                { key: t('asp.screening.screening'), value: d.screening ? t('asp.screening.screeningValue', { outcome: d.screening.outcome.replace(/-/g, ' '), date: formatDate(d.screening.at), name: d.screening.byName, rationale: d.screening.rationale }) : t('asp.screening.notRecorded') },
+                { key: t('asp.screening.inquiryOpened'), value: d.inquiry ? formatDate(d.inquiry.openedAt) : t('asp.screening.notOpened') },
+                { key: t('asp.screening.agenciesContacted'), value: d.inquiry ? d.inquiry.agenciesContacted.map((a) => AGENCY_SHORT[a]).join(', ') : '' },
+                { key: t('asp.screening.inquiryOutcome'), value: d.inquiry ? t('asp.screening.inquiryOutcomeValue', { outcome: d.inquiry.outcome.replace(/-/g, ' '), hasDate: d.inquiry.decidedAt ? 'yes' : 'no', date: d.inquiry.decidedAt ? formatDate(d.inquiry.decidedAt) : '', rationale: d.inquiry.rationale ?? '' }) : '' },
               ]}
             />
           </SheetBody>
         </Sheet>
         <Sheet>
-          <SheetHead title="Consent, capacity and advocacy" />
+          <SheetHead title={t('asp.consent.title')} />
           <SheetBody>
             {inv ? (
               <KeyValue
                 items={[
-                  { key: 'Consent', value: `${inv.consent.status.replace(/-/g, ' ')}. ${inv.consent.note}` },
-                  { key: 'Capacity', value: `${inv.capacity.assessed ? 'Assessed' : 'Not yet assessed'}${inv.capacity.fluctuates ? ', fluctuates' : ''}. ${inv.capacity.summary}${inv.capacity.linkedAwiProcessId ? ' ' : ''}` },
-                  ...(inv.capacity.linkedAwiProcessId ? [{ key: 'AWI process', value: <AppLink href={`/processes/${inv.capacity.linkedAwiProcessId}`}>Linked Adults with Incapacity process</AppLink> }] : []),
-                  { key: 'Undue pressure', value: inv.unduePressure.considered ? `Considered: ${inv.unduePressure.found ? 'found' : 'not found'}. ${inv.unduePressure.reasoning ?? ''}` : 'Not yet considered' },
-                  { key: 'Advocacy', value: inv.advocacy.offered ? `Offered${inv.advocacy.accepted ? ' and accepted' : inv.advocacy.accepted === false ? ', declined' : ''}${inv.advocacy.advocateName ? `: ${inv.advocacy.advocateName} (${inv.advocacy.provider ?? ''})` : ''}` : 'Not yet offered' },
+                  { key: t('asp.consent.consent'), value: t('asp.consent.consentValue', { status: inv.consent.status.replace(/-/g, ' '), note: inv.consent.note }) },
+                  { key: t('asp.consent.capacity'), value: t('asp.consent.capacityValue', { assessed: inv.capacity.assessed ? 'yes' : 'no', fluctuates: inv.capacity.fluctuates ? 'yes' : 'no', summary: inv.capacity.summary }) },
+                  ...(inv.capacity.linkedAwiProcessId ? [{ key: t('asp.consent.awiProcess'), value: <AppLink href={`/processes/${inv.capacity.linkedAwiProcessId}`}>{t('asp.consent.awiLink')}</AppLink> }] : []),
+                  { key: t('asp.consent.unduePressure'), value: inv.unduePressure.considered ? t('asp.consent.unduePressureValue', { found: inv.unduePressure.found ? 'yes' : 'no', reasoning: inv.unduePressure.reasoning ?? '' }) : t('asp.consent.unduePressureNone') },
+                  { key: t('asp.consent.advocacy'), value: inv.advocacy.offered ? t('asp.consent.advocacyValue', { accepted: inv.advocacy.accepted ? 'yes' : inv.advocacy.accepted === false ? 'declined' : 'no', hasAdvocate: inv.advocacy.advocateName ? 'yes' : 'no', advocate: inv.advocacy.advocateName ?? '', provider: inv.advocacy.provider ?? '' }) : t('asp.consent.advocacyNone') },
                 ]}
               />
             ) : (
-              <p className={styles.note}>Recorded once an investigation opens.</p>
+              <p className={styles.note}>{t('asp.consent.pending')}</p>
             )}
           </SheetBody>
         </Sheet>
@@ -132,57 +131,51 @@ export function AspPanels({ process }: { process: AspProcess }) {
 
       {inv ? (
         <Sheet>
-          <SheetHead title="Investigation powers used" meta={`Council officer ${userById(data, inv.councilOfficerUserId) ? userName(userById(data, inv.councilOfficerUserId)!) : ''}${inv.secondWorkerUserId ? `, second worker ${userName(userById(data, inv.secondWorkerUserId)!)}` : ''}`} />
+          <SheetHead title={t('asp.investigation.title')} meta={t('asp.investigation.meta', { officer: officer ? userName(officer) : '', hasSecond: second ? 'yes' : 'no', second: second ? userName(second) : '' })} />
           <SheetBody flush>
             <TableWrap style={{ border: 0, borderRadius: 0 }}>
               <Table>
                 <thead>
                   <tr>
-                    <th scope="col">Power</th>
-                    <th scope="col">When</th>
-                    <th scope="col">Detail</th>
-                    <th scope="col">Status</th>
+                    <th scope="col">{t('asp.investigation.columns.power')}</th>
+                    <th scope="col">{t('asp.investigation.columns.when')}</th>
+                    <th scope="col">{t('asp.investigation.columns.detail')}</th>
+                    <th scope="col">{t('asp.investigation.columns.status')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {inv.visits.map((v, i) => (
                     <tr key={`v${i}`}>
-                      <td>s7 visit</td>
+                      <td>{t('asp.investigation.visit')}</td>
                       <td>{formatDateTime(v.at)}</td>
-                      <td>
-                        {v.byNames.join(', ')}. {v.note}
-                      </td>
-                      <td>Done</td>
+                      <td>{t('asp.investigation.visitDetail', { names: v.byNames.join(', '), note: v.note })}</td>
+                      <td>{t('asp.investigation.done')}</td>
                     </tr>
                   ))}
                   {inv.interviews.map((v, i) => {
                     const p = personById(data, v.withPersonId);
                     return (
                       <tr key={`i${i}`}>
-                        <td>s8 interview</td>
+                        <td>{t('asp.investigation.interview')}</td>
                         <td>{formatDateTime(v.at)}</td>
-                        <td>
-                          With {p ? fullName(p) : v.withPersonId}. {v.note}
-                        </td>
-                        <td>{v.adultDeclined ? 'Adult declined' : 'Done'}</td>
+                        <td>{t('asp.investigation.interviewDetail', { name: p ? fullName(p) : v.withPersonId, note: v.note })}</td>
+                        <td>{v.adultDeclined ? t('asp.investigation.adultDeclined') : t('asp.investigation.done')}</td>
                       </tr>
                     );
                   })}
                   {inv.medicalExamination ? (
                     <tr>
-                      <td>s9 medical examination</td>
+                      <td>{t('asp.investigation.medical')}</td>
                       <td>{formatDateTime(inv.medicalExamination.requestedAt)}</td>
                       <td>{inv.medicalExamination.byName}</td>
-                      <td>{inv.medicalExamination.outcome ?? 'Requested'}</td>
+                      <td>{inv.medicalExamination.outcome ?? t('asp.investigation.requested')}</td>
                     </tr>
                   ) : null}
                   {inv.recordsRequests.map((r, i) => (
                     <tr key={`r${i}`}>
-                      <td>s10 records</td>
+                      <td>{t('asp.investigation.records')}</td>
                       <td>{formatDateTime(r.requestedAt)}</td>
-                      <td>
-                        {r.holder} ({AGENCY_SHORT[r.holderAgency]}). {r.note ?? ''}
-                      </td>
+                      <td>{t('asp.investigation.recordsDetail', { holder: r.holder, agency: AGENCY_SHORT[r.holderAgency], note: r.note ?? '' })}</td>
                       <td>{r.status}</td>
                     </tr>
                   ))}
@@ -194,9 +187,9 @@ export function AspPanels({ process }: { process: AspProcess }) {
       ) : null}
 
       <Sheet>
-        <SheetHead title="Protection orders considered" meta="Assessment (s11), removal (s14), banning (s19), warrants for entry" />
+        <SheetHead title={t('asp.orders.title')} meta={t('asp.orders.meta')} />
         <SheetBody>
-          {d.ordersConsidered.length === 0 ? <p className={styles.note}>No orders considered yet.</p> : null}
+          {d.ordersConsidered.length === 0 ? <p className={styles.note}>{t('asp.orders.empty')}</p> : null}
           <ul className={styles.list}>
             {d.ordersConsidered.map((o) => (
               <li key={o.order}>
@@ -213,7 +206,7 @@ export function AspPanels({ process }: { process: AspProcess }) {
 
       {d.closure ? (
         <Sheet tone="well">
-          <SheetHead title="Closure" meta={formatDate(d.closure.at)} />
+          <SheetHead title={t('asp.closure.title')} meta={formatDate(d.closure.at)} />
           <SheetBody>{d.closure.reason}</SheetBody>
         </Sheet>
       ) : null}
