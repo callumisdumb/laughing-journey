@@ -4,7 +4,7 @@ Audience: chief officers (council, health board, police), the CSWO, the Child an
 
 Three stories and one moment: Aiden Boyle (child protection), Kayleigh Docherty (MARAC with a linked child protection process), Marion Fraser (adult support and protection with a capacity concern), and sixty seconds on a restricted MAPPA record seen by someone who is not on it. Two persona switches in total: Janet Kerr to Karen Findlay to Moira Gilmour.
 
-Set-up (before the room fills): launch the Electron build (or `pnpm dev` and a browser at 1440 wide), sign in as Janet Kerr, set the theme to light and density to comfortable in Settings, and check the top bar shows "2 clocks due this week". Everything below is synthetic; the fixed demo clock is 02 Sep 2026, 09:00. Reset demo data in Settings if a previous run left changes behind.
+Set-up (before the room fills): launch the Electron build (or `pnpm dev` and a browser at 1440 wide), sign in as Janet Kerr, set the theme to light and density to comfortable in Settings, and check the top bar shows "3 clocks due this week". Everything below is synthetic; the fixed demo clock is 02 Sep 2026, 09:00. Reset demo data in Settings if a previous run left changes behind.
 
 | Minute | Screen | Say | Do |
 |---|---|---|---|
