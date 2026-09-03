@@ -1,7 +1,8 @@
 /**
  * Thin Electron shell (fallback to Tauri). Serves apps/web/out over a privileged app:// protocol
  * with index.html fallback so client-side routes deep-link correctly, and adds the same native
- * menu as the Tauri shell (About, Reset demo data, Toggle theme, Zoom).
+ * menu as the Tauri shell (About, Reset demo data, Toggle theme, Zoom). Menu and About text come
+ * from the message catalogue, with any saved overrides applied, so both shells read identically.
  */
 import { app, BrowserWindow, ipcMain, Menu, net, protocol, shell, type MenuItemConstructorOptions } from 'electron';
 import { existsSync, readFileSync, statSync, writeFileSync, unlinkSync } from 'node:fs';
@@ -22,39 +23,98 @@ function resolveFile(urlPath: string): string {
   return join(OUT_DIR, 'index.html');
 }
 
+/** Message overrides live beside the other app data, only the keys someone changed. */
+function overridesPath(): string {
+  return join(app.getPath('userData'), 'message-overrides.json');
+}
+
+type Tree = { [key: string]: string | Tree };
+
+function flatten(tree: Tree, prefix = '', out: Record<string, string> = {}): Record<string, string> {
+  for (const [key, value] of Object.entries(tree)) {
+    const path = prefix ? `${prefix}.${key}` : key;
+    if (typeof value === 'string') out[path] = value;
+    else flatten(value, path, out);
+  }
+  return out;
+}
+
+/**
+ * The catalogue: packages/messages/src/en-GB.json in development, resources/en-GB.json when
+ * packaged (electron-builder copies it). Saved overrides win. Shell messages take only simple
+ * {name} arguments, which is all the desktop namespace uses.
+ */
+function loadMessages(): (key: string, args?: Record<string, string>) => string {
+  const candidates = [join(process.resourcesPath ?? '', 'en-GB.json'), join(__dirname, '..', '..', '..', 'packages', 'messages', 'src', 'en-GB.json')];
+  let messages: Record<string, string> = {};
+  for (const c of candidates) {
+    if (existsSync(c)) {
+      messages = flatten(JSON.parse(readFileSync(c, 'utf8')) as Tree);
+      break;
+    }
+  }
+  try {
+    const path = overridesPath();
+    if (existsSync(path)) Object.assign(messages, JSON.parse(readFileSync(path, 'utf8')) as Record<string, string>);
+  } catch {
+    /* a corrupt overrides file must not stop the shell */
+  }
+  return (key, args = {}) => (messages[key] ?? key).replace(/\{(\w+)\}/g, (_m, name: string) => args[name] ?? `{${name}}`);
+}
+
 function send(win: BrowserWindow, action: string): void {
   win.webContents.send('mas-menu', action);
 }
 
 function buildMenu(win: BrowserWindow): void {
+  const t = loadMessages();
   const isMac = process.platform === 'darwin';
+  const appName = t('common.app.name');
   const template: MenuItemConstructorOptions[] = [
     {
-      label: 'Platform',
+      label: appName,
       submenu: [
-        { label: 'About Platform', click: () => app.showAboutPanel() },
+        { label: t('desktop.about.title', { app: appName }), click: () => app.showAboutPanel() },
         { type: 'separator' },
-        { label: 'Reset demo data', click: () => send(win, 'reset-demo') },
+        { label: t('desktop.menu.resetDemo'), click: () => send(win, 'reset-demo') },
         { type: 'separator' },
-        isMac ? { role: 'quit' } : { role: 'quit', label: 'Exit' },
+        { role: 'quit', label: isMac ? t('desktop.menu.quit') : t('desktop.menu.exit') },
       ],
     },
-    { role: 'editMenu' },
     {
-      label: 'View',
+      label: t('desktop.menu.edit'),
       submenu: [
-        { label: 'Toggle theme', accelerator: 'CmdOrCtrl+Shift+T', click: () => send(win, 'toggle-theme') },
+        { role: 'undo', label: t('desktop.menu.undo') },
+        { role: 'redo', label: t('desktop.menu.redo') },
         { type: 'separator' },
-        { label: 'Zoom in', accelerator: 'CmdOrCtrl+=', click: () => send(win, 'zoom-in') },
-        { label: 'Zoom out', accelerator: 'CmdOrCtrl+-', click: () => send(win, 'zoom-out') },
-        { label: 'Actual size', accelerator: 'CmdOrCtrl+0', click: () => send(win, 'zoom-reset') },
-        { type: 'separator' },
-        { role: 'togglefullscreen' },
+        { role: 'cut', label: t('desktop.menu.cut') },
+        { role: 'copy', label: t('desktop.menu.copy') },
+        { role: 'paste', label: t('desktop.menu.paste') },
+        { role: 'selectAll', label: t('desktop.menu.selectAll') },
       ],
     },
-    { role: 'windowMenu' },
+    {
+      label: t('desktop.menu.view'),
+      submenu: [
+        { label: t('desktop.menu.toggleTheme'), accelerator: 'CmdOrCtrl+Shift+T', click: () => send(win, 'toggle-theme') },
+        { type: 'separator' },
+        { label: t('desktop.menu.zoomIn'), accelerator: 'CmdOrCtrl+=', click: () => send(win, 'zoom-in') },
+        { label: t('desktop.menu.zoomOut'), accelerator: 'CmdOrCtrl+-', click: () => send(win, 'zoom-out') },
+        { label: t('desktop.menu.actualSize'), accelerator: 'CmdOrCtrl+0', click: () => send(win, 'zoom-reset') },
+        { type: 'separator' },
+        { role: 'togglefullscreen', label: t('desktop.menu.fullScreen') },
+      ],
+    },
+    {
+      label: t('desktop.menu.window'),
+      submenu: [
+        { role: 'minimize', label: t('desktop.menu.minimise') },
+        { role: 'close', label: t('desktop.menu.close') },
+      ],
+    },
   ];
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+  app.setAboutPanelOptions({ applicationName: appName, applicationVersion: app.getVersion(), credits: t('desktop.about.credits') });
 }
 
 function createWindow(): void {
@@ -63,7 +123,7 @@ function createWindow(): void {
     height: 900,
     minWidth: 1200,
     minHeight: 760,
-    title: 'Platform',
+    title: loadMessages()('common.app.name'),
     backgroundColor: '#FCFAF5',
     webPreferences: { preload: join(__dirname, 'preload.cjs'), contextIsolation: true, sandbox: true, nodeIntegration: false },
   });
@@ -74,13 +134,6 @@ function createWindow(): void {
   });
   if (DEV_URL) void win.loadURL(DEV_URL);
   else void win.loadURL('app://platform/');
-}
-
-app.setAboutPanelOptions({ applicationName: 'Platform', applicationVersion: app.getVersion(), credits: 'Multi-agency public protection platform (Scotland). Demonstration build with synthetic data only.' });
-
-/** Message overrides live beside the other app data, only the keys someone changed. */
-function overridesPath(): string {
-  return join(app.getPath('userData'), 'message-overrides.json');
 }
 
 ipcMain.handle('mas-overrides-load', () => {

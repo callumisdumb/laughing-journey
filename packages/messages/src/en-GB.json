@@ -1468,6 +1468,33 @@
       "title": "Pre-birth"
     }
   },
+  "desktop": {
+    "about": {
+      "credits": "Multi-agency public protection platform (Scotland). Demonstration build with synthetic data only.",
+      "title": "About {app}"
+    },
+    "menu": {
+      "actualSize": "Actual size",
+      "close": "Close window",
+      "copy": "Copy",
+      "cut": "Cut",
+      "edit": "Edit",
+      "exit": "Exit",
+      "fullScreen": "Toggle full screen",
+      "minimise": "Minimise",
+      "paste": "Paste",
+      "quit": "Quit",
+      "redo": "Redo",
+      "resetDemo": "Reset demo data",
+      "selectAll": "Select all",
+      "toggleTheme": "Toggle theme",
+      "undo": "Undo",
+      "view": "View",
+      "window": "Window",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
+    }
+  },
   "errors": {
     "capacity": {
       "decision": "Name the specific decision (capacity is decision-specific)",

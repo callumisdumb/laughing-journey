@@ -8,6 +8,8 @@ files:
 extraResources:
   - from: ../web/out
     to: web/out
+  - from: ../../packages/messages/src/en-GB.json
+    to: en-GB.json
 mac:
   category: public.app-category.productivity
   target: [dmg]

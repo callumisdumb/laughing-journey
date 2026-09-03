@@ -4748,6 +4748,95 @@
       }
     }
   },
+  "desktop": {
+    "about": {
+      "credits": {
+        "where": "Credits line in the native About dialog of both desktop shells"
+      },
+      "title": {
+        "maxLength": 24,
+        "where": "Title of the native About menu item, with the app name as argument"
+      }
+    },
+    "menu": {
+      "actualSize": {
+        "maxLength": 24,
+        "where": "Native menu item \"Actual size\" in both desktop shells"
+      },
+      "close": {
+        "maxLength": 24,
+        "where": "Native menu item \"Close window\" in both desktop shells"
+      },
+      "copy": {
+        "maxLength": 24,
+        "where": "Native menu item \"Copy\" in both desktop shells"
+      },
+      "cut": {
+        "maxLength": 24,
+        "where": "Native menu item \"Cut\" in both desktop shells"
+      },
+      "edit": {
+        "maxLength": 24,
+        "where": "Native menu item \"Edit (menu title)\" in both desktop shells"
+      },
+      "exit": {
+        "maxLength": 24,
+        "where": "Native menu item \"Exit (Windows and Linux)\" in both desktop shells"
+      },
+      "fullScreen": {
+        "maxLength": 24,
+        "where": "Native menu item \"Toggle full screen\" in both desktop shells"
+      },
+      "minimise": {
+        "maxLength": 24,
+        "where": "Native menu item \"Minimise\" in both desktop shells"
+      },
+      "paste": {
+        "maxLength": 24,
+        "where": "Native menu item \"Paste\" in both desktop shells"
+      },
+      "quit": {
+        "maxLength": 24,
+        "where": "Native menu item \"Quit (macOS)\" in both desktop shells"
+      },
+      "redo": {
+        "maxLength": 24,
+        "where": "Native menu item \"Redo\" in both desktop shells"
+      },
+      "resetDemo": {
+        "maxLength": 24,
+        "where": "Native menu item \"Reset demo data\" in both desktop shells"
+      },
+      "selectAll": {
+        "maxLength": 24,
+        "where": "Native menu item \"Select all\" in both desktop shells"
+      },
+      "toggleTheme": {
+        "maxLength": 24,
+        "where": "Native menu item \"Toggle theme\" in both desktop shells"
+      },
+      "undo": {
+        "maxLength": 24,
+        "where": "Native menu item \"Undo\" in both desktop shells"
+      },
+      "view": {
+        "maxLength": 24,
+        "where": "Native menu item \"View (menu title)\" in both desktop shells"
+      },
+      "window": {
+        "maxLength": 24,
+        "where": "Native menu item \"Window (menu title)\" in both desktop shells"
+      },
+      "zoomIn": {
+        "maxLength": 24,
+        "where": "Native menu item \"Zoom in\" in both desktop shells"
+      },
+      "zoomOut": {
+        "maxLength": 24,
+        "where": "Native menu item \"Zoom out\" in both desktop shells"
+      }
+    }
+  },
   "errors": {
     "capacity": {
       "decision": {
