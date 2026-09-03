@@ -1,7 +1,7 @@
 'use client';
 
 import { EVENT_TYPES, SIGNIFICANCES, type ChronologyAnalysis, type ChronologyEvent, type LawfulBasisRecord } from '@mas/domain';
-import { Button, CheckboxField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
+import { Button, CheckboxField, DateField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -135,7 +135,7 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
         {kind === 'fact' ? (
           <>
             <div className="cluster" style={{ alignItems: 'flex-start' }}>
-              <TextField label="Date" type="date" required {...form.register('occurredDate')} error={'occurredDate' in errors ? errors.occurredDate?.message : undefined} />
+              <Controller control={form.control} name="occurredDate" render={({ field }) => <DateField label="Date" required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={'occurredDate' in errors ? errors.occurredDate?.message : undefined} />} />
               <TextField label="Time (if known)" type="time" {...form.register('occurredTime')} />
               <CheckboxField label="Date is approximate" {...form.register('approximate')} />
             </div>

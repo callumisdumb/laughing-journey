@@ -2,7 +2,7 @@
  * Date helpers. UI shows dd Mon yyyy and 24-hour times in Europe/London.
  * Data stays ISO 8601. All functions are pure.
  */
-import { differenceInCalendarDays, differenceInYears, parseISO } from 'date-fns';
+import { differenceInCalendarDays, differenceInYears, format, isValid, parse, parseISO } from 'date-fns';
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 
 export const TIME_ZONE = 'Europe/London';
@@ -33,6 +33,32 @@ export function formatTime(iso: string | Date): string {
 export function localDateOf(iso: string | Date): string {
   const d = typeof iso === 'string' ? parseISO(iso) : iso;
   return formatInTimeZone(d, TIME_ZONE, 'yyyy-MM-dd');
+}
+
+/** The format practitioners type a date in, and the example shown beside every date field. */
+export const UI_DATE_FORMAT = 'dd Mon yyyy';
+export const UI_DATE_EXAMPLE = '02 Sep 2026';
+
+const TYPED_DATE_FORMATS = ['dd MMM yyyy', 'd MMM yyyy', 'dd MMMM yyyy', 'd MMMM yyyy', 'dd/MM/yyyy', 'd/M/yyyy', 'dd.MM.yyyy', 'yyyy-MM-dd'];
+
+/**
+ * Parse a date as a practitioner types it (02 Sep 2026, 2 September 2026, 02/09/2026 or ISO)
+ * to a yyyy-MM-dd calendar date. Returns undefined when the text is not a real date.
+ */
+export function parseTypedDate(text: string): string | undefined {
+  const trimmed = text.trim().replace(/\s+/g, ' ');
+  if (!trimmed) return undefined;
+  for (const pattern of TYPED_DATE_FORMATS) {
+    const d = parse(trimmed, pattern, new Date(2000, 0, 1));
+    if (isValid(d) && d.getFullYear() >= 1900 && d.getFullYear() <= 2100) return format(d, 'yyyy-MM-dd');
+  }
+  return undefined;
+}
+
+/** dd Mon yyyy for a calendar date (yyyy-MM-dd) without any time zone shift; empty for an empty or invalid value. */
+export function formatCalendarDate(iso: string): string {
+  const d = parse(iso, 'yyyy-MM-dd', new Date(2000, 0, 1));
+  return isValid(d) ? format(d, 'dd MMM yyyy') : '';
 }
 
 export function toLocal(iso: string | Date): Date {

@@ -5,6 +5,7 @@ export * from './primitives/Pill';
 export * from './primitives/Sheet';
 export * from './primitives/Tabs';
 export * from './primitives/Field';
+export * from './primitives/DateField';
 export * from './primitives/States';
 export * from './primitives/Marks';
 export * from './primitives/ClockNumeral';

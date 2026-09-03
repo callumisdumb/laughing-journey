@@ -1,0 +1,7 @@
+/* A typed date: wide enough for "02 Sep 2026" with room to correct it, never the full row. */
+
+.date {
+  width: 12em;
+  max-width: 100%;
+  font-variant-numeric: tabular-nums;
+}

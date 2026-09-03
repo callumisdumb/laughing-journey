@@ -1,7 +1,7 @@
 'use client';
 
 import { AGENCIES, AGENCY_LABELS, AUDIT_ACTS, ROLE_DEFINITIONS, formatDateTime, formatTime, localDateOf, type AuditAct, type AuditEntry, type Dataset } from '@mas/domain';
-import { AgencyMark, Button, Pill, SelectField, Switch, Table, TableWrap, TextField, useToast, type PillTone } from '@mas/ui';
+import { AgencyMark, Button, DateField, Pill, SelectField, Switch, Table, TableWrap, TextField, useToast, type PillTone } from '@mas/ui';
 import { Download, Lock, ShieldAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
@@ -195,8 +195,8 @@ export function Audit() {
         <SelectField label="User" value={userFilter} onChange={(e) => set('user', e.target.value || null)} placeholder="Anyone" options={userOptions} />
         <SelectField label="Agency" value={agencyFilter} onChange={(e) => set('agency', e.target.value || null)} placeholder="All agencies" options={AGENCIES.map((a) => ({ value: a, label: AGENCY_LABELS[a] }))} />
         <SelectField label="Act" value={actFilter} onChange={(e) => set('act', e.target.value || null)} placeholder="All acts" options={AUDIT_ACTS.map((a) => ({ value: a, label: ACT_LABELS[a] }))} />
-        <TextField label="From" type="date" value={from} onChange={(e) => set('from', e.target.value || null)} />
-        <TextField label="To" type="date" value={to} onChange={(e) => set('to', e.target.value || null)} />
+        <DateField label="From" value={from} onChange={(v) => set('from', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />
+        <DateField label="To" value={to} onChange={(v) => set('to', /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)} />
       </div>
       <div className={styles.quick}>
         <Switch label="Break-glass and restricted reads only" checked={quick} onChange={(e) => set('quick', e.target.checked ? '1' : null)} />

@@ -1,7 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { Button } from './Button';
 import { ClockNumeral } from './ClockNumeral';
+import { DateField } from './DateField';
 import { AgencyMark, RiskBand } from './Marks';
 import { RestrictedState } from './States';
 
@@ -32,5 +34,30 @@ describe('primitives', () => {
   it('explains break-glass availability', () => {
     render(<RestrictedState reason="Not on the distribution list." breakGlass="unavailable" />);
     expect(screen.getByText(/not available for your agency/)).toBeInTheDocument();
+  });
+
+  it('shows a typed date as dd Mon yyyy and hands the form a calendar date', () => {
+    function Harness() {
+      const [value, setValue] = useState('2026-09-02');
+      return (
+        <>
+          <DateField label="Date completed" value={value} onChange={setValue} />
+          <output data-testid="value">{value}</output>
+        </>
+      );
+    }
+    render(<Harness />);
+    const input = screen.getByLabelText<HTMLInputElement>('Date completed');
+    expect(input.value).toBe('02 Sep 2026');
+    expect(input).toHaveAccessibleDescription('dd Mon yyyy, for example 02 Sep 2026');
+    fireEvent.change(input, { target: { value: '14/9/2026' } });
+    expect(screen.getByTestId('value')).toHaveTextContent('2026-09-14');
+    fireEvent.blur(input);
+    expect(input.value).toBe('14 Sep 2026');
+    fireEvent.change(input, { target: { value: '31 Feb 2026' } });
+    expect(screen.getByTestId('value')).toHaveTextContent('31 Feb 2026');
+    fireEvent.blur(input);
+    expect(screen.getByRole('alert')).toHaveTextContent('Enter the date as dd Mon yyyy, for example 02 Sep 2026');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
   });
 });

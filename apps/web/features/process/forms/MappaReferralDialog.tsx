@@ -88,7 +88,7 @@ export function MappaReferralDialog({ open, onClose, process }: { open: boolean;
           <CheckboxField label="Imminent risk of serious harm (required for Level 3)" {...form.register('imminentRisk')} />
           {errors.imminentRisk ? <div role="alert" style={{ color: 'var(--color-risk-critical)', fontSize: 'var(--text-sm)' }}>{errors.imminentRisk.message}</div> : null}
           <TextareaField label="Victim considerations" required {...form.register('victimConsiderations')} error={errors.victimConsiderations?.message} hint="MAPPA information is not given to victims; the Victim Notification Scheme is separate." />
-          <MustNotReceiveFields parties={MAPPA_MUST_NOT_RECEIVE_PARTIES} relationshipHint="For example the victim's mother, or the offender's employer." />
+          <MustNotReceiveFields parties={MAPPA_MUST_NOT_RECEIVE_PARTIES} relationshipHint="For example the victim's mother." />
           <div className="cluster">
             <CheckboxField label="Accommodation issue (ERA needed)" {...form.register('accommodationIssue')} />
             <CheckboxField label="Disclosure to a third party considered" {...form.register('disclosureConsidered')} />

@@ -1,7 +1,7 @@
 'use client';
 
 import { capacityAssessmentFormSchema, type AwiProcess, type CapacityAssessmentForm } from '@mas/domain';
-import { Button, Dialog, RadioGroup, TextField, TextareaField, useToast } from '@mas/ui';
+import { Button, DateField, Dialog, RadioGroup, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
@@ -66,7 +66,7 @@ export function CapacityAssessmentDialog({ open, onClose, process }: { open: boo
         <p>Capacity is decision-specific and time-specific. Record the decision, the functional test item by item, the evidence, and the adult&apos;s past and present wishes.</p>
         <TextField label="The specific decision" required {...form.register('decision')} error={errors.decision?.message} />
         <div className="cluster" style={{ alignItems: 'flex-start' }}>
-          <TextField label="Date" type="date" required {...form.register('assessedAt')} error={errors.assessedAt?.message} />
+          <Controller control={form.control} name="assessedAt" render={({ field }) => <DateField label="Date" required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.assessedAt?.message} />} />
           <TextField label="Assessor" required {...form.register('assessorName')} error={errors.assessorName?.message} />
           <TextField label="Role" required {...form.register('assessorRole')} error={errors.assessorRole?.message} />
         </div>

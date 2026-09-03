@@ -32,7 +32,7 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 ### Design
 - No avatars or initials circles; identity is name, date of birth and reference (D-022). Pills are for process and stage only; agencies use marks with a glyph, a colour and a label (D-023).
 - Two agency colours were added for regulators and fire and rescue (D-021), and three text colours were darkened to pass 4.5:1 on every paper step (D-020).
-- Wide tables are labelled focusable regions so keyboards can scroll them (D-024).
+- Wide tables are labelled focusable regions so keyboards can scroll them (D-024). Dates are typed as dd Mon yyyy in a shared field rather than picked from the browser's locale-formatted control (D-049).
 
 ### Engineering
 - Static export plus a `pushState` router that prerenders every known path (D-004); the dataset is generated at start-up from a seeded PRNG, not committed JSON (D-005).

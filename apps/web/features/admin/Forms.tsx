@@ -1,10 +1,10 @@
 'use client';
 
 import { PROCESS_LABELS, formatDate, type Config } from '@mas/domain';
-import { Button, Dialog, ProcessMark, Table, TableWrap, TextField } from '@mas/ui';
+import { Button, DateField, Dialog, ProcessMark, Table, TableWrap, TextField } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import styles from './Forms.module.css';
 import { SectionHead } from './SectionHead';
@@ -58,7 +58,7 @@ function VersionDialog({ form: current, canEdit, onClose, onSave }: { form: Form
           Current: version {current.version}, effective from {formatDate(current.effectiveFrom)}. Source: {current.source}.
         </p>
         <TextField label="New version" required disabled={!canEdit} maxLength={20} placeholder="e.g. 2026.1" {...rhf.register('version')} error={errors.version?.message} />
-        <TextField label="Effective from" type="date" required disabled={!canEdit} {...rhf.register('effectiveFrom')} error={errors.effectiveFrom?.message} hint="Records created on or after this date use the new version." />
+        <Controller control={rhf.control} name="effectiveFrom" render={({ field }) => <DateField label="Effective from" required disabled={!canEdit} value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.effectiveFrom?.message} hint="Records created on or after this date use the new version. Type it as dd Mon yyyy." />} />
         <TextField label="Source" required disabled={!canEdit} maxLength={160} {...rhf.register('source')} error={errors.source?.message} />
         {saveErrors.length > 0 ? (
           <ul className={styles.errors} role="alert">

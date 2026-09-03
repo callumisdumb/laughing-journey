@@ -1,7 +1,7 @@
 'use client';
 
 import { AGENCIES, AGENCY_SHORT, DETAIL_LEVELS, DETAIL_LEVEL_LABELS, MEETING_TYPE_LABELS, PROCESS_SHORT, ROLE_DEFINITIONS, applyMeetingTransition, contextFor, formatDate, formatDateTime, formatTime, isExcludedParty, resolveNeedToKnow, type Action, type Agency, type DetailLevel, type LawfulBasisRecord, type Meeting, type SharingRecord } from '@mas/domain';
-import { AgencyMark, Button, CheckboxField, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
+import { AgencyMark, Button, CheckboxField, ClockNumeral, DateField, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
 import { CheckCircle2, Maximize2, Minimize2, Play, Printer, Send, UserPlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
@@ -312,7 +312,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   <div className="cluster" style={{ alignItems: 'flex-end' }}>
                     <SelectField label="Agency" value={requestForm.agency} onChange={(e) => setRequestForm({ ...requestForm, agency: e.target.value as Agency, to: '' })} options={AGENCIES.map((a) => ({ value: a, label: AGENCY_SHORT[a] }))} />
                     <SelectField label="To" value={requestForm.to} onChange={(e) => setRequestForm({ ...requestForm, to: e.target.value })} placeholder="Choose a person" options={personas.filter((u) => u.agency === requestForm.agency).map((u) => ({ value: u.id, label: `${userName(u)}, ${ROLE_DEFINITIONS[u.roleId].label}` }))} />
-                    <TextField label="Due" type="date" value={requestForm.due} onChange={(e) => setRequestForm({ ...requestForm, due: e.target.value })} />
+                    <DateField label="Due" value={requestForm.due} onChange={(due) => setRequestForm({ ...requestForm, due })} />
                     <Button variant="secondary" icon={<Send size={14} aria-hidden="true" />} onClick={sendRequest} disabled={!requestForm.due}>
                       Send request
                     </Button>
@@ -482,7 +482,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                       <TextField label="Action" value={actionForm.title} onChange={(e) => setActionForm({ ...actionForm, title: e.target.value })} placeholder="Say what will happen, by whom, by when" />
                     </div>
                     <SelectField label="Owner" value={actionForm.owner} onChange={(e) => setActionForm({ ...actionForm, owner: e.target.value })} placeholder="Choose an attendee" options={meeting.invitees.filter((i) => i.userId).map((i) => ({ value: i.userId!, label: `${i.name} (${AGENCY_SHORT[i.agency]})` }))} />
-                    <TextField label="Due" type="date" value={actionForm.due} onChange={(e) => setActionForm({ ...actionForm, due: e.target.value })} />
+                    <DateField label="Due" value={actionForm.due} onChange={(due) => setActionForm({ ...actionForm, due })} />
                     <Button variant="primary" onClick={addAction} disabled={!actionForm.owner || !actionForm.due || actionForm.title.trim().length < 5}>
                       Capture action
                     </Button>
@@ -514,7 +514,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                 </div>
                 <div className={styles.form} style={{ marginTop: 12 }}>
                   <div className="cluster" style={{ alignItems: 'flex-end' }}>
-                    <TextField label="Review date" type="date" value={reviewDate} onChange={(e) => setReviewDate(e.target.value)} />
+                    <DateField label="Review date" value={reviewDate} onChange={setReviewDate} />
                     <Button variant="secondary" onClick={() => { update({ reviewDate: reviewDate || undefined }); toast({ title: 'Review date set', text: reviewDate ? formatDate(reviewDate) : 'Cleared' }); }}>
                       Set review date
                     </Button>

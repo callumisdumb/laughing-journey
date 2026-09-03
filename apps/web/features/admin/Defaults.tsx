@@ -1,7 +1,7 @@
 'use client';
 
 import { formatDate } from '@mas/domain';
-import { Button, IconButton, RadioGroup, Sheet, SheetBody, SheetHead, TextField } from '@mas/ui';
+import { Button, DateField, IconButton, RadioGroup, Sheet, SheetBody, SheetHead, TextField } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, X } from 'lucide-react';
 import { useState } from 'react';
@@ -227,7 +227,7 @@ export function Defaults() {
             </ul>
             {canEdit ? (
               <div className={styles.addRow}>
-                <TextField label="Add a bank holiday" type="date" value={newHoliday} onChange={(e) => setNewHoliday(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addHoliday()} error={holidayError} />
+                <DateField label="Add a bank holiday" value={newHoliday} onChange={setNewHoliday} onKeyDown={(e) => e.key === 'Enter' && addHoliday()} error={holidayError} />
                 <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addHoliday}>
                   Add date
                 </Button>
@@ -256,7 +256,7 @@ export function Defaults() {
             </ul>
             {canEdit ? (
               <div className={styles.addRow}>
-                <TextField label="Add a council holiday" type="date" value={newCouncilHoliday} onChange={(e) => setNewCouncilHoliday(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addCouncilHoliday()} error={councilHolidayError} />
+                <DateField label="Add a council holiday" value={newCouncilHoliday} onChange={setNewCouncilHoliday} onKeyDown={(e) => e.key === 'Enter' && addCouncilHoliday()} error={councilHolidayError} />
                 <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addCouncilHoliday}>
                   Add date
                 </Button>

@@ -1,7 +1,7 @@
 'use client';
 
 import { HARM_TYPES, HARM_TYPE_LABELS, THREE_POINT_LIMBS, threePointTestFormSchema, type AspProcess, type ThreePointTestForm } from '@mas/domain';
-import { Button, CheckboxField, Dialog, RadioGroup, TextField, TextareaField, useToast } from '@mas/ui';
+import { Button, CheckboxField, DateField, Dialog, RadioGroup, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
@@ -55,7 +55,7 @@ export function ThreePointTestDialog({ open, onClose, process }: { open: boolean
     >
       <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
         <p>All three limbs must be met. Record your reasoning for each limb; the reasoning is what a reviewer or an inspector reads.</p>
-        <TextField label="Date of assessment" type="date" required {...form.register('assessedAt')} error={errors.assessedAt?.message} />
+        <Controller control={form.control} name="assessedAt" render={({ field }) => <DateField label="Date of assessment" required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.assessedAt?.message} />} />
         {(['a', 'b', 'c'] as const).map((k) => (
           <div key={k} className="stack" style={{ gap: 8 }}>
             <Controller control={form.control} name={`${k}.met`} render={({ field }) => <RadioGroup legend={`${THREE_POINT_LIMBS[k].label}. ${THREE_POINT_LIMBS[k].text}`} name={`${k}-met`} value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'yes', label: 'Met' }, { value: 'no', label: 'Not met' }, { value: 'unclear', label: 'Unclear' }]} />} />

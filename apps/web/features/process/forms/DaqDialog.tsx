@@ -1,7 +1,7 @@
 'use client';
 
 import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, MARAC_MUST_NOT_RECEIVE_PARTIES, daqFormSchema, registerUpdateLabel, withMustNotReceive, type DaqForm, type MaracProcess, type RiskAssessment } from '@mas/domain';
-import { Button, CheckboxField, Dialog, RadioGroup, TextField, TextareaField, useToast } from '@mas/ui';
+import { Button, CheckboxField, DateField, Dialog, RadioGroup, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
@@ -78,7 +78,7 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
       <FormProvider {...form}>
         <form className="stack" onSubmit={(e) => e.preventDefault()} noValidate>
           <Controller control={form.control} name="tool" render={({ field }) => <RadioGroup legend="Instrument" name="tool" value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'daq', label: 'Police Scotland DAQ (27 questions)' }, { value: 'dash', label: 'SafeLives DASH (24 questions)' }]} />} />
-          <TextField label="Date completed" type="date" required {...form.register('assessedAt')} error={errors.assessedAt?.message} />
+          <Controller control={form.control} name="assessedAt" render={({ field }) => <DateField label="Date completed" required value={field.value} onChange={field.onChange} onBlur={field.onBlur} name={field.name} error={errors.assessedAt?.message} />} />
           <p aria-live="polite" style={{ fontWeight: 700 }}>
             {yes} yes answers so far. {yes >= HIGH_RISK_THRESHOLD ? 'High risk: this meets the referral threshold.' : `${HIGH_RISK_THRESHOLD - yes} more for the high-risk threshold.`}
           </p>
@@ -89,7 +89,7 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
           </div>
           <CheckboxField label="Refer on professional judgement even if below 14" {...form.register('referBelowThreshold')} />
           <TextareaField label="Professional judgement" {...form.register('professionalJudgement')} error={errors.professionalJudgement?.message} hint="Required for a referral below the threshold. Why the score understates the risk." />
-          <MustNotReceiveFields parties={MARAC_MUST_NOT_RECEIVE_PARTIES} relationshipHint="For example the perpetrator's brother, or someone who lives with the perpetrator." />
+          <MustNotReceiveFields parties={MARAC_MUST_NOT_RECEIVE_PARTIES} relationshipHint="For example the perpetrator's brother." />
         </form>
       </FormProvider>
     </Dialog>
