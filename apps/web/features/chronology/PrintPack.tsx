@@ -1,14 +1,14 @@
 'use client';
 
-import { agencyShort, analysisKindLabel, classificationLabel, eventFamily, eventFamilyLabel, formatDate, formatDateTime, significanceLabel } from '@mas/domain';
+import { agencyShort, analysisKindLabel, marking as markingFor, classificationFor, eventFamily, eventFamilyLabel, formatDate, formatDateTime, significanceLabel } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
-import { Button, ClassificationBanner } from '@mas/ui';
+import { Button, ClassificationMarking } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
 import { useEffect } from 'react';
 import { useNavigate } from '@/lib/router';
 import { chronologyPath } from '@/lib/routes';
 import { currentAddress, fullName } from '@/lib/selectors';
-import { useAppStore, useData, useNow } from '@/lib/store';
+import { useAppStore, useConfig, useData, useNow } from '@/lib/store';
 import { useChronology } from './useChronology';
 import styles from './PrintPack.module.css';
 
@@ -21,6 +21,7 @@ const rich = (values: RichValues): RichValues => values;
 export function PrintPack({ personId }: { personId: string }) {
   const t = useT();
   const data = useData();
+  const config = useConfig();
   const now = useNow();
   const audit = useAppStore((s) => s.audit);
   const navigate = useNavigate();
@@ -38,7 +39,10 @@ export function PrintPack({ personId }: { personId: string }) {
   for (let i = 0; i < events.length; i += ROWS_PER_PAGE) pages.push(events.slice(i, i + ROWS_PER_PAGE));
   if (pages.length === 0) pages.push([]);
   const processes = model.processes.filter((p) => p.status === 'open');
-  const classification = processes.some((p) => p.classification === 'restricted') ? 'restricted' : 'official-sensitive';
+  // A chronology names a person and carries case detail, so it is Official-Sensitive; a restricted
+  // process among the open ones adds the distribution-list handling instruction.
+  const packClassification = classificationFor(config, processes.some((p) => p.classification === 'restricted') ? 'restricted' : 'official-sensitive');
+  const marking = markingFor(packClassification) ?? '';
   const reference = processes.map((p) => p.reference).join(', ') || t('print.chronology.noOpenProcess');
   const bases = data.lawfulBases.filter((b) => events.some((e) => e.lawfulBasisId === b.id));
   const totalPages = pages.length + 1;
@@ -46,7 +50,7 @@ export function PrintPack({ personId }: { personId: string }) {
 
   const head = (page: number) => (
     <div className={styles.head}>
-      <span>{t('print.common.runningHead', { classification: classificationLabel(classification), reference })}</span>
+      <span>{marking ? t('print.common.runningHead', { classification: marking, reference }) : reference}</span>
       <span>{t('print.common.subjectHead', { name: fullName(person), date: dateOfBirth })}</span>
       <span>{t('print.common.page', { page, total: totalPages })}</span>
     </div>
@@ -54,7 +58,7 @@ export function PrintPack({ personId }: { personId: string }) {
   const foot = (
     <div className={styles.foot}>
       <span>{t('print.common.printedFooter', { when: formatDateTime(now) })}</span>
-      <span>{classificationLabel(classification)}</span>
+      <span>{marking}</span>
     </div>
   );
 
@@ -68,7 +72,7 @@ export function PrintPack({ personId }: { personId: string }) {
           {t('print.common.print')}
         </Button>
       </div>
-      <ClassificationBanner level={classification} />
+      <ClassificationMarking classification={packClassification} />
       <section className={`${styles.page} print-page`}>
         {head(1)}
         <h1 className={styles.title}>{t('print.chronology.title', { name: fullName(person) })}</h1>

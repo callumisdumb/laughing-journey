@@ -105,25 +105,3 @@
   --risk-soft: var(--color-risk-unknown-soft);
 }
 
-.classification {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 12px;
-  font-size: var(--text-sm);
-  font-weight: 700;
-  letter-spacing: 0;
-  color: var(--color-on-accent);
-  background: var(--color-ink-1);
-}
-
-.classification[data-level='official'] {
-  color: var(--color-ink-1);
-  background: var(--color-paper-2);
-}
-
-.classification[data-level='official-sensitive'] {
-  color: var(--color-ink-1);
-  background: var(--color-risk-medium-soft);
-}

@@ -903,63 +903,114 @@
     },
     "markings": {
       "audit": {
-        "where": "Audit entry label when markings are saved; labels lists the marking texts"
+        "where": "Audit entry label when the markings section is saved; roles is the count of roles permitted to lower a classification"
       },
       "bannerPreview": {
-        "where": "Accessible name of the banner preview for a marking"
+        "where": "Accessible name of the marking preview on a classification sheet"
       },
       "errors": {
         "handlingMin": {
           "where": "Validation message when the handling instruction is too short"
-        },
-        "textMax": {
-          "where": "Validation message when the marking text is too long"
-        },
-        "textMin": {
-          "where": "Validation message when the marking text is too short"
         }
       },
       "handlingField": {
         "maxLength": 24,
         "where": "Field label for the handling instruction"
       },
+      "handlingHint": {
+        "where": "Hint under the handling instruction field"
+      },
+      "instructions": {
+        "legend": {
+          "where": "Legend of the appended handling instruction checkboxes"
+        },
+        "note": {
+          "where": "Note above the appended handling instruction checkboxes"
+        },
+        "officialNote": {
+          "where": "Note in place of the handling instruction checkboxes on the Official sheet"
+        }
+      },
       "lede": {
         "where": "Lede of the Markings section"
+      },
+      "lower": {
+        "count": {
+          "where": "Live count of the roles permitted to lower a classification"
+        },
+        "legend": {
+          "where": "Legend of the role checkboxes for lowering a classification"
+        },
+        "meta": {
+          "maxLength": 60,
+          "where": "Meta line under the lowering heading"
+        },
+        "note": {
+          "where": "Note above the role checkboxes for lowering a classification"
+        },
+        "title": {
+          "maxLength": 40,
+          "where": "Heading of the sheet listing who may lower a classification"
+        }
       },
       "official": {
         "title": {
           "maxLength": 24,
-          "where": "Heading of the Official marking sheet"
+          "where": "Heading of the Official classification sheet"
         },
         "use": {
-          "where": "Meta line under the Official marking heading"
+          "where": "Meta line under the Official heading"
         }
       },
       "officialSensitive": {
         "title": {
           "maxLength": 24,
-          "where": "Heading of the Official-sensitive marking sheet"
+          "where": "Heading of the Official-Sensitive classification sheet"
         },
         "use": {
-          "where": "Meta line under the Official-sensitive marking heading"
+          "where": "Meta line under the Official-Sensitive heading"
         }
       },
       "restricted": {
         "title": {
-          "maxLength": 24,
-          "where": "Heading of the Restricted marking sheet"
+          "maxLength": 48,
+          "where": "Heading of the distribution list classification sheet"
         },
         "use": {
-          "where": "Meta line under the Restricted marking heading"
+          "where": "Meta line under the distribution list heading"
+        }
+      },
+      "rules": {
+        "columnLevel": {
+          "maxLength": 16,
+          "where": "Column header: the classification level a rule yields"
+        },
+        "columnMarking": {
+          "maxLength": 16,
+          "where": "Column header: the marking a level carries"
+        },
+        "columnRule": {
+          "maxLength": 16,
+          "where": "Column header: the derivation rule"
+        },
+        "meta": {
+          "where": "Meta line citing Annex 2 under the rule table heading"
+        },
+        "noMarking": {
+          "maxLength": 24,
+          "where": "Cell and note text where Annex 2 requires no marking"
+        },
+        "readOnly": {
+          "where": "Note above the read-only derivation rule table"
+        },
+        "title": {
+          "maxLength": 40,
+          "where": "Heading of the read-only derivation rule table"
         }
       },
       "save": {
         "maxLength": 24,
         "where": "Primary button of the markings form"
-      },
-      "textField": {
-        "maxLength": 24,
-        "where": "Field label for the marking text"
       }
     },
     "nav": {

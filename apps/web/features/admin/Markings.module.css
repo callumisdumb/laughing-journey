@@ -1,26 +1,55 @@
-/* Mirrors the classification banner on the process screen: ink on paper, no decoration. */
+/* The print marking as it appears at the head of a page: ink on paper, uppercase, no decoration. */
 .banner {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
   padding: 6px 12px;
   font-size: var(--text-sm);
   font-weight: 700;
-  color: var(--color-on-accent);
-  background: var(--color-ink-1);
+  text-align: center;
+  color: var(--color-ink-1);
+  background: var(--color-risk-medium-soft);
   border-radius: var(--radius-md);
 }
 
-.banner[data-level='official'] {
-  color: var(--color-ink-1);
-  background: var(--color-paper-2);
+.note {
+  max-width: 68ch;
+  margin: 0 0 12px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
 }
 
-.banner[data-level='official-sensitive'] {
-  color: var(--color-ink-1);
-  background: var(--color-risk-medium-soft);
+.definitions {
+  display: grid;
+  gap: 4px;
+  max-width: 82ch;
+  margin: 16px 0 0;
+  font-size: var(--text-sm);
 }
+
+.definitions dt {
+  font-weight: 600;
+  color: var(--color-ink-1);
+}
+
+.definitions dd {
+  margin: 0 0 8px;
+  color: var(--color-ink-2);
+}
+
+.roles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 4px 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0 0 8px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-ink-1);
+}
+
 
 .fields {
   display: grid;
@@ -35,4 +64,16 @@
   color: var(--color-risk-critical);
   background: var(--color-risk-critical-soft);
   border-radius: var(--radius-md);
+}
+
+.instructions {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.instructions[disabled] {
+  opacity: 0.6;
 }

@@ -1,8 +1,8 @@
 'use client';
 
-import { classificationLabel, formatDateTime } from '@mas/domain';
+import { classificationFor, formatDateTime, marking as markingFor } from '@mas/domain';
 import { useT } from '@mas/messages';
-import { Button, ClassificationBanner } from '@mas/ui';
+import { Button, ClassificationMarking } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
 import { useEffect } from 'react';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
@@ -88,7 +88,9 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
   }
   if (current.length > 0) pages.push(current);
   const totalPages = pages.length + 1;
-  const marking = classificationLabel(model.classification);
+  // Aggregate counts are Official and take no marking; a report that names no one needs none.
+  const classification = classificationFor(config, model.classification);
+  const marking = markingFor(classification) ?? '';
   const back = `/reports/${kind}${setQuery(route.query, { print: null })}`;
 
   const head = (page: number) => (
@@ -115,7 +117,7 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
           {t('print.common.print')}
         </Button>
       </div>
-      <ClassificationBanner level={model.classification} />
+      <ClassificationMarking classification={classification} />
       <section className={`${styles.page} print-page`}>
         {head(1)}
         <h1 className={styles.title}>{model.title}</h1>

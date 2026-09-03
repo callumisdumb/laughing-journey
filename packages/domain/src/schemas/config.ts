@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { HANDLING_INSTRUCTIONS } from '../classification/classify';
 import { AGENCIES, ALL_STAGES, CHANNELS, CLASSIFICATIONS, DETAIL_LEVELS, EXCLUSION_PARTIES, PROCESS_TYPES, ROLES } from '../enums';
 
 export const clockRuleSchema = z.object({
@@ -61,10 +62,17 @@ export const exclusionSchema = z.object({
 });
 export type Exclusion = z.infer<typeof exclusionSchema>;
 
+/**
+ * A stored record classification and its local handling instruction. The marking itself is derived
+ * from Annex 2 (see classification/classify.ts), not configured: an area may say how a marked record
+ * is handled, but it cannot rename the marking or mark routine Official information.
+ */
 export const classificationMarkingSchema = z.object({
   id: z.enum(CLASSIFICATIONS),
-  label: z.string(),
+  /** The plain-language handling instruction, shown on a print pack cover and in the sharing preview. */
   handling: z.string(),
+  /** Short instructions appended after the marking itself, from the Annex 2 allowance. */
+  instructions: z.array(z.enum(HANDLING_INSTRUCTIONS)),
 });
 
 export const formVersionSchema = z.object({
@@ -92,6 +100,8 @@ export const configSchema = z.object({
   needToKnow: z.array(needToKnowRowSchema),
   exclusions: z.array(exclusionSchema),
   classificationMarkings: z.array(classificationMarkingSchema),
+  /** Roles permitted to lower a derived classification, Annex 2. A lower outside them is refused, not silent. */
+  classificationLowerableBy: z.array(z.enum(ROLES)),
   forms: z.array(formVersionSchema),
   defaults: z.object({
     theme: z.enum(['light', 'dark', 'system']),

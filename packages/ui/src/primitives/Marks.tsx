@@ -1,5 +1,4 @@
-import { agencyShort, classificationLabel, processShort, riskBandLabel, type Agency, type RecordClassification, type ProcessType, type RiskBand as Band } from '@mas/domain';
-import { useT } from '@mas/messages';
+import { agencyShort, processShort, riskBandLabel, type Agency, type ProcessType, type RiskBand as Band } from '@mas/domain';
 import { AlertOctagon, AlertTriangle, CheckCircle2, CircleDashed, Flag } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import { cn } from '../cn';
@@ -85,11 +84,3 @@ export function RiskBand({ band, label, size = 'sm', className }: RiskBandProps)
   );
 }
 
-export function ClassificationBanner({ level, className }: { level: RecordClassification; className?: string }) {
-  const t = useT();
-  return (
-    <div className={cn(styles.classification, className)} data-level={level} role="note" aria-label={t('common.marks.classification', { level: classificationLabel(level) })}>
-      {classificationLabel(level)}
-    </div>
-  );
-}

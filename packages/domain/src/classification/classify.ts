@@ -31,6 +31,18 @@ export type ClassificationLevel = (typeof CLASSIFICATION_LEVELS)[number];
 /** A short string appended after the marking. Local configuration: practice varies by organisation. */
 export type HandlingInstruction = string;
 
+/**
+ * The special handling instructions an area may append after an Official-Sensitive marking. Annex 2
+ * allows them "where the sensitivity of the information justifies strict restrictions on sharing";
+ * it does not enumerate them, so the list is ours and configurable per classification in Admin.
+ */
+export const HANDLING_INSTRUCTIONS = ['distribution-list-only', 'chair-approval-required', 'do-not-forward', 'not-for-subject-access', 'police-use-only'] as const;
+export type HandlingInstructionId = (typeof HANDLING_INSTRUCTIONS)[number];
+
+export function handlingInstructionLabel(id: HandlingInstructionId): string {
+  return tKey(`domain.handling.${id.replace(/-([a-z])/g, (_m, c: string) => c.toUpperCase())}`);
+}
+
 export type Classification = { level: 'official' } | { level: 'official-sensitive'; handling: HandlingInstruction[] };
 
 export const OFFICIAL: Classification = { level: 'official' };
@@ -101,6 +113,25 @@ export type ClassificationReason =
   | 'linked-record'
   | 'open-restricted-process'
   | 'routine-official';
+
+/**
+ * The derivation rules in the order `classify` checks them, so the Admin rule table and the tests
+ * read the same list the function does. A rule table that drifts from the function is worse than
+ * none, because it tells people the product does something it does not.
+ */
+export const CLASSIFICATION_RULES: readonly { reason: ClassificationReason; level: ClassificationLevel }[] = [
+  { reason: 'mappa-record', level: 'official-sensitive' },
+  { reason: 'marac-record', level: 'official-sensitive' },
+  { reason: 'names-perpetrator', level: 'official-sensitive' },
+  { reason: 'cp-record', level: 'official-sensitive' },
+  { reason: 'special-category-data', level: 'official-sensitive' },
+  { reason: 'criminal-offence-data', level: 'official-sensitive' },
+  { reason: 'asp-order-or-lsi', level: 'official-sensitive' },
+  { reason: 'security-information', level: 'official-sensitive' },
+  { reason: 'open-restricted-process', level: 'official-sensitive' },
+  { reason: 'linked-record', level: 'official-sensitive' },
+  { reason: 'routine-official', level: 'official' },
+];
 
 export interface ClassificationResult {
   classification: Classification;
@@ -201,6 +232,8 @@ export function applyOverride(
  */
 export function recordClassification(stored: 'official' | 'official-sensitive' | 'restricted', handling: HandlingInstruction[] = []): Classification {
   if (stored === 'official') return OFFICIAL;
-  if (stored === 'restricted') return officialSensitive([t('domain.handling.distributionListOnly'), ...handling]);
-  return officialSensitive(handling);
+  // The distribution list is what makes a restricted record restricted, so it holds whatever an area
+  // has configured. De-duplicated, because the area may have configured it explicitly as well.
+  if (stored === 'restricted') return officialSensitive([...new Set([t('domain.handling.distributionListOnly'), ...handling])]);
+  return officialSensitive([...new Set(handling)]);
 }

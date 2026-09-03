@@ -1,8 +1,8 @@
 'use client';
 
-import { AGENCIES, agencyLabel, agencyShort, classificationLabel, detailLevelLabel, dueDateFor, findClockRule, formatDate, formatDateTime, formatTime, localDateOf, meetingTypeLabel, processLabel, stageLabel, viewsKindLabel, type Action, type Dataset, type LawfulBasisRecord, type Meeting } from '@mas/domain';
+import { AGENCIES, agencyLabel, agencyShort, marking as markingFor, classificationFor, handlingNote, detailLevelLabel, dueDateFor, findClockRule, formatDate, formatDateTime, formatTime, localDateOf, meetingTypeLabel, processLabel, stageLabel, viewsKindLabel, type Action, type Dataset, type LawfulBasisRecord, type Meeting } from '@mas/domain';
 import { useT, type MessageKey, type RichValues, type Translator } from '@mas/messages';
-import { Button, ClassificationBanner, RestrictedState } from '@mas/ui';
+import { Button, ClassificationMarking, RestrictedState } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
@@ -126,7 +126,10 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
     );
   }
 
-  const marking = config.classificationMarkings.find((m) => m.id === process.classification) ?? { id: process.classification, label: classificationLabel(process.classification), handling: '' };
+  // Annex 2: the level is derived from the record, and the handling instruction is local configuration.
+  const classification = classificationFor(config, process.classification);
+  const handling = handlingNote(config, process.classification);
+  const marking = markingFor(classification) ?? '';
   const subjects = meeting.subjectIds.map((id) => personById(data, id)).filter((p) => p !== undefined);
   const views = data.viewsRecords.filter((v) => meeting.viewsRecordIds.includes(v.id));
   const actions = data.actions.filter((a) => a.meetingId === meeting.id || meeting.actionIds.includes(a.id));
@@ -219,7 +222,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
           ) : (
             <p className={styles.text}>{t.rich('print.minutes.purpose.noLawfulBasis', { ...STRONG })}</p>
           )}
-          <p className={styles.text}>{t('print.minutes.purpose.handling', { handling: marking.handling || t('print.minutes.purpose.asMarked') })}</p>
+          <p className={styles.text}>{t('print.minutes.purpose.handling', { handling: handling || t('print.minutes.purpose.asMarked') })}</p>
         </>
       ),
     },
@@ -417,7 +420,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
 
   const head = (page: number) => (
     <div className={styles.head}>
-      <span>{t('print.common.runningHead', { classification: marking.label, reference: process.reference })}</span>
+      <span>{marking ? t('print.common.runningHead', { classification: marking, reference: process.reference }) : process.reference}</span>
       <span>{t('print.minutes.head.title', { title: meeting.title })}</span>
       <span>{t('print.common.page', { page, total: totalPages })}</span>
     </div>
@@ -425,7 +428,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
   const foot = (
     <div className={styles.foot}>
       <span>{t('print.common.printedFooter', { when: formatDateTime(now) })}</span>
-      <span>{marking.label}</span>
+      <span>{marking}</span>
     </div>
   );
 
@@ -439,7 +442,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
           {t('print.common.print')}
         </Button>
       </div>
-      <ClassificationBanner level={process.classification} />
+      <ClassificationMarking classification={classification} />
       {pages.map((page, i) => (
         <section key={i} className={`${styles.page} print-page`}>
           {head(i + 1)}

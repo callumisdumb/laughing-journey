@@ -281,29 +281,48 @@
       "tableLabel": "Forms and versions"
     },
     "markings": {
-      "audit": "Classification markings: {labels}",
-      "bannerPreview": "Banner preview: {label}",
+      "audit": "Classification handling instructions and the {roles, plural, one {# role} other {# roles}} permitted to lower a classification",
+      "bannerPreview": "Marking preview: {label}",
       "errors": {
-        "handlingMin": "Say how records with this marking are handled",
-        "textMax": "Keep the marking under 60 characters",
-        "textMin": "Enter the marking text"
+        "handlingMin": "Say how records with this marking are handled"
       },
       "handlingField": "Handling instruction",
-      "lede": "Classification markings and their handling instructions. The banner preview is what practitioners see across the top of a restricted record.",
+      "handlingHint": "Shown on the print pack cover and in the sharing preview.",
+      "instructions": {
+        "legend": "Handling instructions appended after the marking",
+        "note": "Annex 2 allows special handling instructions where the sensitivity justifies strict restrictions on sharing. Each one you tick is appended after the marking, in the order below.",
+        "officialNote": "Official information carries no marking, so there is nothing to append to."
+      },
+      "lede": "How a classification is derived, what handling instruction each one carries, and who may lower one. The levels themselves come from Annex 2 of the MAPPA National Guidance and are not editable.",
+      "lower": {
+        "count": "{count, plural, =0 {No role may lower a classification, so every derived level stands.} one {# role may lower a classification.} other {# roles may lower a classification.}}",
+        "legend": "Roles permitted to lower a derived classification",
+        "meta": "A raise is always allowed and always carries a reason",
+        "note": "Anyone may raise a classification, giving a reason. Lowering one needs a named role, because the point of deriving the level is that it cannot be talked down quietly. Every raise and every lower is audited.",
+        "title": "Who may lower a classification"
+      },
       "official": {
         "title": "Official",
-        "use": "Routine business records with no case content."
+        "use": "Routine business records with no case content. Annex 2 requires no marking."
       },
       "officialSensitive": {
-        "title": "Official-sensitive",
-        "use": "Every person and process record by default."
+        "title": "Official-Sensitive",
+        "use": "Every person and process record that carries case content."
       },
       "restricted": {
-        "title": "Restricted",
-        "use": "MAPPA and other records on a distribution list. Shown as a banner on the process screen; every read is audited."
+        "title": "Official-Sensitive, distribution list only",
+        "use": "MAPPA and other records on a distribution list. Every read is audited, and break-glass requires a reason."
       },
-      "save": "Save markings",
-      "textField": "Marking text"
+      "rules": {
+        "columnLevel": "Level",
+        "columnMarking": "Marking",
+        "columnRule": "Rule",
+        "meta": "Annex 2 of the MAPPA National Guidance, 31 March 2022",
+        "noMarking": "No marking required",
+        "readOnly": "These rules are read-only. A classification is derived from what the record is about, in the order below, so that it cannot be chosen by whoever is printing. The first rule that applies decides the level, and a record is never classified lower than one it links to.",
+        "title": "How a classification is derived"
+      },
+      "save": "Save markings"
     },
     "nav": {
       "label": "Admin sections",

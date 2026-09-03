@@ -31,10 +31,17 @@ export const DEFAULT_CONFIG: Config = {
   needToKnow: NEED_TO_KNOW_ROWS,
   exclusions: EXCLUSIONS,
   classificationMarkings: [
-    { id: 'official', label: 'OFFICIAL', handling: 'Routine business information.' },
-    { id: 'official-sensitive', label: 'OFFICIAL-SENSITIVE', handling: 'Personal and case information. Share on a need-to-know basis with a recorded lawful basis.' },
-    { id: 'restricted', label: 'OFFICIAL-SENSITIVE: RESTRICTED', handling: 'MAPPA and other restricted records. Distribution list only. Every read is audited. Break-glass requires a reason.' },
+    { id: 'official', handling: 'Routine business information. No marking is required.', instructions: [] },
+    { id: 'official-sensitive', handling: 'Personal and case information. Share on a need-to-know basis with a recorded lawful basis.', instructions: ['do-not-forward'] },
+    {
+      id: 'restricted',
+      handling: 'MAPPA and other records on a distribution list. Every read is audited. Break-glass requires a reason.',
+      instructions: ['distribution-list-only', 'chair-approval-required', 'not-for-subject-access'],
+    },
   ],
+  // The Caldicott Guardian, the MAPPA co-ordinator and the CSWO. A practitioner cannot talk a
+  // derived classification down; the whole point of deriving it is that the decision is visible.
+  classificationLowerableBy: ['caldicott-guardian', 'mappa-coordinator', 'cswo'],
   forms: [
     { id: 'asp.three-point-test', label: 'ASP three-point test', process: 'asp', version: '2022.1', effectiveFrom: '2022-07-01', source: 'ASP Code of Practice July 2022' },
     { id: 'asp.adult-concern', label: 'Adult concern record', process: 'asp', version: '2025.2', effectiveFrom: '2025-04-01', source: 'Clydeshore ASP procedures' },

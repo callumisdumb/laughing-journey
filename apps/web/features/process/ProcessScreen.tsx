@@ -1,8 +1,8 @@
 'use client';
 
-import { STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, relativeDays, stageLabel, type Process } from '@mas/domain';
+import { STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, classificationFor, relativeDays, stageLabel, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
-import { AgencyMark, Button, ClassificationBanner, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
+import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { Lock, UserPlus } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
@@ -88,6 +88,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
           <Pill size="sm" tone={process.status === 'open' ? 'low' : 'outline'}>
             {processStatusLabel(process.status)}
           </Pill>
+          <ClassificationTag classification={classificationFor(config, process.classification)} />
         </div>
         <h1 className={styles.title}>{access.level === 'none' ? t('processes.head.restrictedTitle', { process: processLabel(process.type) }) : process.title}</h1>
         {access.level !== 'none' ? (
@@ -114,7 +115,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
 
   return (
     <div className="page">
-      {process.classification === 'restricted' ? <ClassificationBanner level="restricted" className={styles.banner} /> : null}
+
       {header}
       <ScreenState
         state={state}

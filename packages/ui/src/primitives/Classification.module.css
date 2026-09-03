@@ -1,0 +1,40 @@
+/*
+ * Government Security Classification markings. Neither of these renders at Official: the guidance
+ * requires no marking for routine information, and marking everything trains people to ignore it.
+ */
+
+/* The print marking: centred and uppercase, at the top and bottom of every page. */
+.print {
+  padding: 6px 12px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--color-ink-1);
+  background: var(--color-risk-medium-soft);
+}
+
+/*
+ * The screen marking: compact enough to sit beside the restricted indicator in a page header. The
+ * label text carries the meaning and the lock glyph reinforces it, so it never reads by colour alone.
+ */
+.tag {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--color-ink-1);
+  background: var(--color-risk-medium-soft);
+  border: 1px solid var(--color-risk-medium);
+  border-radius: var(--radius-sm);
+}
+
+@media print {
+  .tag {
+    border-color: var(--color-ink-1);
+  }
+}
