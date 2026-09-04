@@ -5974,6 +5974,17 @@
         "where": "Demo control panel, the heading above the persona list."
       }
     },
+    "recording": {
+      "hint": {
+        "where": "Demo control panel, under the recording preset switch."
+      },
+      "label": {
+        "where": "Demo control panel, the switch that turns the recording preset on."
+      },
+      "title": {
+        "where": "Demo control panel, the heading above the recording preset."
+      }
+    },
     "reset": {
       "confirmText": {
         "notes": "Names what goes and what stays, including the clock and any break-glass grant, because a grant left standing would make the next take look like access the reader simply had.",
@@ -18181,6 +18192,8 @@
           "where": "Heading of the rate per 1,000 section"
         },
         "rateNote": {
+          "notes": "The word \"placeholder\" is deliberate: the denominator is a fictional population and saying so is the honest thing to do with a figure a reader might otherwise take for a real one.",
+          "placeholderWord": true,
           "screenshot": "phase-5/report-cp-light-comfortable.png",
           "where": "Note under the rate section, saying the denominator is a placeholder"
         }
@@ -20085,6 +20098,13 @@
       "meta": {
         "screenshot": "phase-5/settings-light-comfortable.png",
         "where": "Meta line under the appearance heading"
+      },
+      "recording": {
+        "where": "Settings, appearance: the switch that turns the recording preset on."
+      },
+      "recordingHint": {
+        "notes": "Says what it changes and why, because a setting whose effect a reader cannot predict is one they will not use.",
+        "where": "Settings, appearance: under the recording switch."
       },
       "theme": {
         "dark": {

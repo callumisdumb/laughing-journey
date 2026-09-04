@@ -51,6 +51,8 @@ export function DemoPanel() {
   const deleteSnapshot = useAppStore((s) => s.deleteSnapshot);
   const setTheme = useAppearance((s) => s.setTheme);
   const setDensity = useAppearance((s) => s.setDensity);
+  const recording = useAppearance((s) => s.recording);
+  const setRecording = useAppearance((s) => s.setRecording);
   const [open, setOpen] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const [name, setName] = useState('');
@@ -177,6 +179,14 @@ export function DemoPanel() {
               {MOCK_ADAPTERS.map((adapter) => (
                 <Switch key={adapter.id} label={t('demo.connectors.outageLabel', { name: adapter.displayName })} checked={outages.includes(adapter.id)} onChange={(e) => toggleOutage(adapter.id, e.target.checked)} />
               ))}
+            </div>
+          </section>
+
+          <section className={styles.section} aria-label={t('demo.recording.title')}>
+            <h3 className={styles.sectionTitle}>{t('demo.recording.title')}</h3>
+            <div className={styles.resetRow}>
+              <Switch label={t('demo.recording.label')} checked={recording} onChange={(e) => { setRecording(e.target.checked); setOpen(false); }} data-testid="demo-recording" />
+              <span className={styles.hint}>{t('demo.recording.hint')}</span>
             </div>
           </section>
 

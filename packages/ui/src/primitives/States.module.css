@@ -92,6 +92,11 @@
   }
 }
 
+/* A looping shimmer is the first thing to go on a recording: it answers nothing and it compresses badly. */
+[data-recording='true'] .skeleton {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .skeleton {
     animation: none;

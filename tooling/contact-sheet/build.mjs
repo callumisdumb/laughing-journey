@@ -22,7 +22,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SHOTS = join(ROOT, 'docs', 'SCREENSHOTS');
 
 /** Capture rounds in the order they happened, so the sheet reads as a history rather than a listing. */
-const ORDER = ['phase-1', 'phase-2', 'phase-3', 'phase-4', 'phase-5', 'phase-6', 'classification', 'nmds', 'security', 'dialogs', 'layout', 'links', 'sign-in', 'clock', 'create', 'network', 'terminal', 'two-way', 'simulator', 'flows', 'search', 'demo', 'compare'];
+const ORDER = ['phase-1', 'phase-2', 'phase-3', 'phase-4', 'phase-5', 'phase-6', 'classification', 'nmds', 'security', 'dialogs', 'layout', 'links', 'sign-in', 'clock', 'create', 'network', 'terminal', 'two-way', 'simulator', 'flows', 'search', 'demo', 'compare', 'recording'];
 
 /** What each round was. A contact sheet with no captions is a wall of thumbnails. */
 const ROUND_NOTES = {
@@ -44,6 +44,7 @@ const ROUND_NOTES = {
   simulator: 'The other side of the connector: a deliberately plain mock of a partner system, so two-way integration can be filmed from both ends. Plainer, denser, older, with a neutral name and a banner saying it is simulated. The wiring is real: an episode created there arrives here as a proposal, and one edited there produces a divergence on the reconciliation screen.',
   'two-way': 'Connectors in both directions. The capability matrix that refuses to claim what is not realistic, the outbox with a delivery state a person can see, the payload preview in the target system\'s own field names, the echo defence that recognises our own write coming back, and the reconciliation screen almost no product demo has.',
   terminal: 'The other half of a records system: editing, correcting, closing, reopening, retiring and recording a death. Nothing here deletes. A closed case keeps its deadlines and can be reopened; a retired chronology entry is off the working list and still on the record; a corrected date of birth leaves the value it used to hold on screen with the reason it changed.',
+  recording: 'Every screen under the recording preset at 1920x1080: every type size a step larger, comfortable density, no looping animation. Video compression eats small text, and the audience for a recording is further from the screen than a practitioner ever is.',
   compare: 'Two people, one record, one window, at 1920x1080. The panels are the real screens rather than a summary of what the rules would say, and the third panel is the hosting provider: practitioner, partner agency and host in one frame.',
   demo: 'The demo control panel, which is not part of the product and says so. Hidden behind Control, Shift and D and absent from a production build. Twelve chapters that each set the persona, the route, the appearance and the clock in one click; persona switching without the account menu; the clock; saved states for a second take; connector outages; and the reset that takes the clock and any break-glass grant with it.',
   search: 'Search over the records the reader can open. The typeahead reaching past people and case references into meetings, actions and chronology entries; the results grouped by type; and the same query typed by somebody who holds no key for the case, which finds the reference, refuses the rest and says how many cases it could not search.',
@@ -93,12 +94,22 @@ function describe(file) {
  */
 const GALLERY_WIDTH = 1280;
 
+/**
+ * The size the single file has to stay under, and what to do when it does not.
+ *
+ * A guard rather than a comment, because the number was written down once and then twenty-five more
+ * captures arrived. When this fails the answer is one of three things, in order: drop the quality a
+ * few points, drop the width, or split the sheet by round. It is not to quietly stop capturing.
+ */
+const MAX_BYTES = 16 * 1024 * 1024;
+const QUALITY = 44;
+
 async function encode(path, width, quality) {
   const buffer = await sharp(path).resize({ width, withoutEnlargement: true }).webp({ quality }).toBuffer();
   return `data:image/webp;base64,${buffer.toString('base64')}`;
 }
 
-const gallery = (path) => encode(path, GALLERY_WIDTH, 50);
+const gallery = (path) => encode(path, GALLERY_WIDTH, QUALITY);
 
 function escapeHtml(text) {
   return text.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -452,4 +463,8 @@ ${sections.join('\n')}
 
 if (!existsSync(join(ROOT, 'docs'))) mkdirSync(join(ROOT, 'docs'));
 writeFileSync(join(ROOT, 'docs', 'CONTACT-SHEET.html'), html);
+if (Buffer.byteLength(html) > MAX_BYTES) {
+  console.error(`contact sheet is ${(Buffer.byteLength(html) / 1024 / 1024).toFixed(1)} MB, past the ${MAX_BYTES / 1024 / 1024} MB it has to fit in. Lower QUALITY, lower GALLERY_WIDTH, or split the sheet by round.`);
+  process.exit(1);
+}
 console.log(`contact sheet: ${total} screenshots in ${all.length} rounds, ${(Buffer.byteLength(html) / 1e6).toFixed(1)} MB (one ${GALLERY_WIDTH}px image per capture, shared by the grid and the viewer)`);

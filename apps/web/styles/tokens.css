@@ -142,6 +142,26 @@
   --focus-ring: 0 0 0 2px var(--color-paper-0), 0 0 0 4px var(--color-accent-1);
 }
 
+/*
+ * The recording preset (brief section G.4).
+ *
+ * Video compression eats small type: 14px reads on a monitor and turns to mush at 1080p through a
+ * codec, and the audience for a recording is further from the screen than a practitioner ever is.
+ * Every size moves up one step rather than the page being zoomed, so the layout stays the layout
+ * and only the reading gets easier. Density is forced comfortable by the setting itself.
+ */
+[data-recording='true'] {
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.875rem;
+  --text-3xl: 2.5rem;
+  --text-4xl: 3.25rem;
+}
+
 [data-density='compact'] {
   --density-row: 32px;
   --density-pad: 12px;

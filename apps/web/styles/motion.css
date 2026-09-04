@@ -26,6 +26,26 @@
   }
 }
 
+/*
+ * The recording preset stops the motion that answers nothing.
+ *
+ * A transition that follows a click is information: it says the click landed. A shimmer that loops
+ * while a viewer is being talked to is noise, and on video it is worse than noise because the codec
+ * spends its bitrate on it. So the durations go to zero and the one orchestrated moment stays: the
+ * chronology lanes settling is a thing worth filming.
+ */
+[data-recording='true'] {
+  --dur-fast: 0ms;
+  --dur-base: 0ms;
+  --dur-drawer: 0ms;
+}
+
+[data-recording='true'] *,
+[data-recording='true'] *::before,
+[data-recording='true'] *::after {
+  transition-duration: 0ms;
+}
+
 /* The one orchestrated moment: chronology lanes settle on the person record's first load. */
 .settle-in {
   animation: settle-in var(--dur-settle) var(--ease-standard) both;

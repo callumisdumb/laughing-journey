@@ -1926,6 +1926,11 @@
       "meta": "{role}, {agency}",
       "title": "Be somebody else"
     },
+    "recording": {
+      "hint": "Larger type, comfortable density, no looping animation.",
+      "label": "Recording preset",
+      "title": "For the camera"
+    },
     "reset": {
       "confirmText": "Every change made on this device goes: records, minutes, shares, promoted inbox items and the audit entries you added. The clock goes back to 02 Sep 2026, 09:00 and any break-glass grant is dropped. Your sign-in and appearance are kept, and your saved states are kept.",
       "confirmTitle": "Back to the seed?",
@@ -6515,6 +6520,8 @@
       },
       "densityLegend": "Density",
       "meta": "Both themes and both densities are designed. Pick what suits the room.",
+      "recording": "Recording preset",
+      "recordingHint": "Larger type, comfortable density and no looping animation, for filming. Video compression eats small text.",
       "theme": {
         "dark": "Dark",
         "light": "Light",

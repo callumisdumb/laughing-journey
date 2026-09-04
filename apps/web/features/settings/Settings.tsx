@@ -63,6 +63,8 @@ export function Settings() {
   const density = useAppearance((s) => s.density);
   const setTheme = useAppearance((s) => s.setTheme);
   const setDensity = useAppearance((s) => s.setDensity);
+  const recording = useAppearance((s) => s.recording);
+  const setRecording = useAppearance((s) => s.setRecording);
   const resetDemo = useAppStore((s) => s.resetDemo);
   const audit = useAppStore((s) => s.audit);
   const select = useSelection((s) => s.select);
@@ -130,6 +132,10 @@ export function Settings() {
                   { value: 'compact', label: t('settings.appearance.density.compact'), hint: t('settings.appearance.densityHint.compact') },
                 ]}
               />
+              <div className={styles.pref}>
+                <Switch label={t('settings.appearance.recording')} checked={recording} onChange={(e) => setRecording(e.target.checked)} data-testid="recording-preset" />
+                <span className={styles.prefHint}>{t('settings.appearance.recordingHint')}</span>
+              </div>
             </div>
           </SheetBody>
         </Sheet>
