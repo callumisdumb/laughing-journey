@@ -23,6 +23,7 @@ The hero screen is the **Person record**, which is deliberately not named after 
 pnpm install
 pnpm dev                 # Next dev server on http://localhost:3000
 pnpm build               # static export to apps/web/out
+pnpm build   # first, on a fresh clone: pnpm lint reads the compiled export
 pnpm typecheck && pnpm lint && pnpm test
 pnpm e2e                 # Playwright screenshots and axe against the export
 pnpm desktop:electron:build   # the demo build

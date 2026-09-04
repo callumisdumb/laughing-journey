@@ -10,8 +10,9 @@
  * So this reads the compiled CSS rather than the source, because the source is not where the
  * problem was, and asserts two things: that some rule sets `margin: auto` on the dialog class, and
  * that no rule after it in the cascade takes it away. Run as part of `pnpm lint`, after `pnpm build`
- * has produced the export; it says so and passes when there is nothing built to read, so a fresh
- * clone is not blocked by an ordering it cannot know about.
+ * has produced the export. With nothing built to read it fails and says what to run, because a
+ * guard that passes when it has checked nothing is the one thing a guard must not do: a fresh clone
+ * that passed `pnpm lint` without a build could not have caught the bug this exists for (D-203).
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -29,14 +30,16 @@ function cssFiles(dir) {
 }
 
 if (!existsSync(OUT)) {
-  console.log('dialog margin guard: no export to read; run pnpm build first');
-  process.exit(0);
+  console.error('dialog margin guard failed: there is no export at apps/web/out to read, so nothing has been checked.');
+  console.error('Run `pnpm build` first; `pnpm lint` reads the compiled CSS and cannot pass without it.');
+  process.exit(1);
 }
 
 const files = cssFiles(OUT);
 if (files.length === 0) {
-  console.log('dialog margin guard: no CSS in the export; run pnpm build first');
-  process.exit(0);
+  console.error('dialog margin guard failed: the export at apps/web/out has no CSS in it, so nothing has been checked.');
+  console.error('Run `pnpm build` again; `pnpm lint` reads the compiled CSS and cannot pass without it.');
+  process.exit(1);
 }
 
 const problems = [];

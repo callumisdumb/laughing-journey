@@ -328,13 +328,14 @@ Accessed 2026-09-03 (the demo clock reads 02 Sep 2026; this is the real date the
 - MAPPA level at the period end comes from the level history; an offender is treated as Level 1 until the first multi-agency level decision. Review timeliness uses the mappa.level2.review (12 weeks) and mappa.level3.review (6 weeks) clock rules and the report repeats "Review interval to verify against the current MAPPA National Guidance" beside the table.
 - MHO report timeliness uses the awi.mho.report rule (21 days from notice, s57(4)) and interim order age uses awi.interim.warning (3 months) and awi.interim.maximum (6 months). Where a rule is missing from Admin the report falls back to 21, 91 and 183 calendar days and says no rule is configured.
 - Fields the record store cannot answer (LGBT and disabled victims for MARAC) are shown as "Not recorded", never as zero.
+- MAPPA Annex 3 wording, provenance: the product owner supplied the titles, row labels and column headers of Tables 1 to 9 verbatim on 03 Sep 2026 from Annex 3 of the MAPPA National Guidance (2022 edition). They live in the catalogue under `reports.mappaAnnex3`, 125 keys, 114 of them the annex's own text and flagged `verbatim` in `en-GB.context.json`; the other eleven are the product's (the "Data not held" cell and the accessible heading a table's first column needs where the annex prints none). An editor may correct them against a newer edition and may not paraphrase them. Confidence: High.
 
 | Report | Verified from extracts | The product's own until the template is checked |
 |---|---|---|
 | ASP biennial figures | Biennial report duty and content expectation; every NMDS field set, read from the 2026-27 workbook itself (5.14) | Table layout only. The field sets are no longer to verify: they are the workbook's own |
 | CP register statistics | 31 July reference date; registrations, de-registrations, unborn share, two year re-registration line, concern categories, under 6 months band | Age bands, the other length bands |
 | MARAC SafeLives return | Meeting-level counts; cases, repeats, children, referral agency, disability, cases per 10,000 adult women; older victims from 61 | Exact agency list, LGBT and male victim definitions, new workbook data points |
-| MAPPA annual report counts | Tables 1 to 9 required; Table 1 rows; 31 March reference; categories, levels, breaches, returns to custody, disclosures, civil orders appear | Titles and rows of Tables 2 to 9 |
+| MAPPA annual report counts | Tables 1 to 9 required; Table 1 rows; 31 March reference; categories, levels, breaches, returns to custody, disclosures, civil orders appear; the titles, rows and column headers of all nine tables, supplied verbatim on 03 Sep 2026 (below) | Nothing. Table 8 and the figures the store cannot hold read "Data not held" by design (D-048) |
 | AWI timeliness | Welfare, financial and combined split; private against local authority; orders granted; duration bands; interim orders exist | Interim order counts, MHO timeliness and application-to-order days (local measures) |
 
 ### 5.13 Government Security Classification (MAPPA National Guidance, Annex 2)

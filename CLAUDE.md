@@ -48,7 +48,7 @@ The mockup is done when every screen in brief section 10 exists, all eight scena
 ```
 pnpm install
 pnpm dev                 # Next dev server on http://localhost:3000
-pnpm build               # static export to apps/web/out
+pnpm build               # static export to apps/web/out; run it before pnpm lint on a fresh clone, the dialog guard reads the export and fails without it
 pnpm typecheck && pnpm lint && pnpm test
 pnpm e2e                 # Playwright screenshots and axe against the export
 pnpm desktop:tauri:dev / pnpm desktop:tauri:build

@@ -28,7 +28,7 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - MAPPA records are restricted; non-members see presence only and Responsible Authority agencies can break glass with a reason for four hours, audited (D-044).
 - Statutory clocks carry a source and a confidence; Verify and Local rules are `TODO(verify)` in code and marked in the product (D-041). The IRD label and the ASP council officer eligibility are configuration (D-040, D-045).
 - An unborn baby is a Person with `lifeStage: 'unborn'` and an expected delivery date (D-046).
-- Exclusions are keyed on the case-role register (D-035); the MARAC DAQ and the MAPPA referral ask who else must not receive information and feed it (D-047). The MAPPA annual report is Annex 3 Tables 1 to 9 with the field set High and placeholder wording (D-048).
+- Exclusions are keyed on the case-role register (D-035); the MARAC DAQ and the MAPPA referral ask who else must not receive information and feed it (D-047). The MAPPA annual report is Annex 3 Tables 1 to 9 with the field set High and the annex's own wording, supplied verbatim (D-048, corrected 04 Sep 2026).
 - Facts and analysis are separate records; a fact that reads as opinion is rejected by the schema and analysis must cite a fact (D-020b).
 - Presence means a case exists, not who it is about. `identifiesSubject` in `packages/domain/src/permissions/access.ts` is the only answer to whether a reader may see whose case it is; four screens had each tested `level !== 'none'` and named the subject at presence level (D-170). The context drawer refuses in the same words as the record, keeping only what is about the reader (D-171).
 - Linked cases are shown on the case, with the access rules run per link rather than inherited from the case in hand (D-169). The MARAC and the child protection case are clickable end to end, and a reader on one and not the other is told the other exists and nothing more.
@@ -534,6 +534,11 @@ The working calendar behind every statutory clock: the national bank holiday lis
 Everything marked here is either configuration seeded from research rather than a primary source, or a deliberate limit of a mockup with no backend.
 
 ### Found by review on 04 Sep 2026, and corrected
+- **The person record header collapsed below 1280.** The identity column was `minmax(0, 1fr)` with the record actions row pinned to column 2, so at 1024 and 900 the name, address and CHI shared 60px and the register alert pill was sliced mid-word, and the layout suite passed because its truncation check skipped any element with children. Corrected: a 28ch floor on the identity column of both two-column headers, one column below compact with the actions row back in it, a wrapping pill that hides nothing, and an assertion on both headers and every pill and mark in them at all four widths (D-200).
+- **The nephew in scenario 1 carried the presenter's name.** Renamed to Duncan Fraser, the name is out of the forename pool, the seed is regenerated and every capture re-swept (D-201).
+- **The dialog margin guard passed on a fresh clone with nothing to check.** It read the compiled export and exited clean when there was none, so `pnpm lint` on a clean checkout could not fail on the bug it exists for. It fails now and says to run `pnpm build` first (D-203).
+- **Two documents said the Annex 3 wording was a placeholder.** It has been the annex's own since 03 Sep 2026; D-048, section 2 and the waiting list above said otherwise and are corrected.
+- **The gov.uk feed capture was outstanding.** It arrived and is committed byte for byte; the sync derived the fixture from it offline (D-202).
 - **The write pipeline was bypassed by the flows the script films.** D-110 and section 2 said every create and update went through `store.write()`. The pipeline existed and the new create paths used it, but `store.upsert` stayed public and eighteen call sites in the four statutory forms, the meeting workspace, the chronology, the person's own views, actions, the worklist, the inbox, sharing and the connector pull still wrote directly, skipping the audit entry, the classification check, the exclusion check, the rewrap, the clocks and the chronology milestone. The meeting workspace recomputed clocks by hand and wrote them back. Corrected in the same round: every one of those sites now goes through the pipeline, `upsert` is private to `store.ts`, `apps/web/lib/write.test.ts` walks every source file under `apps/web` and fails on a direct write, and the flows and phase 4 specs assert the milestone, the sharing record and the ledger lines the pipeline now writes. The pipeline was extended rather than the callers (D-198), and the connector delivery path is named as the one other writer (D-199).
 
 ### Statutory and local values to verify (also in `docs/RESEARCH.md` and Admin, Timescales)
@@ -547,7 +552,7 @@ Everything marked here is either configuration seeded from research rather than 
 - ASP: the field sets are now High. All nine were read from the supplied ASP data workbook 2026-27 (`docs/templates/`), which corrected nine of them; see `docs/RESEARCH.md` 5.14 and D-061. The four NMDS submission deadlines (`asp.nmds.q1` to `asp.nmds.q4`) are the only ASP item left to verify: the guidance says the current dates live on the ASP data collection web page rather than in the workbook, so they are seeded from the product owner and marked `confidence: 'verify'`.
 - Report field sets for the CP register, MARAC SafeLives return and AWI timeliness reports: the figures are computed from the dataset, but the column sets follow search extracts of the current templates because the source sites were unreachable through the session proxy. Each of those three says "Field set to verify against the current template" in its meta line; sources are in `docs/RESEARCH.md` section 5.
 - Government Security Classification: High. Annex 2 of the MAPPA National Guidance, supplied verbatim (`docs/RESEARCH.md` 5.13). The handling instruction descriptors are the one thing to check against the organisation's own information security policy, because descriptor practice varies; they are editable in Admin.
-- MAPPA annual report: the field set is High (Annex 3 Tables 1 to 9, year 1 April to 31 March, D-048). Only the label wording is a placeholder, in `apps/web/features/reports/mappaAnnex3.ts`, until the supplied Annex 3 text is pasted in (section 6.7).
+- MAPPA annual report: the field set is High (Annex 3 Tables 1 to 9, year 1 April to 31 March, D-048), and so is the wording: every title, row and column header is the annex's own, supplied verbatim by the product owner on 03 Sep 2026 from the 2022 guidance and held in the catalogue under `reports.mappaAnnex3` (125 keys, 114 of them flagged `verbatim` in the context file so an editor may correct them against a newer edition and may not paraphrase them). `apps/web/features/reports/mappaAnnex3.ts` holds the shape and cites `docs/RESEARCH.md` 5.12. Nothing about this report is waiting on anyone.
 
 ### Product limits by design
 - No backend, no real integrations, no authentication. Personas are a switcher; every switch is audited.
@@ -565,7 +570,6 @@ Everything marked here is either configuration seeded from research rather than 
 ### Waiting on the product owner
 - Ayrshire values for the four local clocks (ASP inquiry decision, ASP initial case conference, ASP plan review, MARAC research return): seeded values stay until then and are marked to verify.
 - Official report templates for the CP register, MARAC, MAPPA and AWI returns, in `docs/templates/` (see the README there); each is reconciled against its template when it arrives. The three ASP documents arrived on 03 Sep 2026 and are reconciled.
-- The supplied Annex 3 table text for the MAPPA annual report, to paste over the placeholder labels in `apps/web/features/reports/mappaAnnex3.ts` (the field set and the figures behind the nine tables are complete; only the wording waits).
 
 ### What the shooting script needs that the product cannot do
 
@@ -589,6 +593,7 @@ From the repository root (Node 22 or later, pnpm 10):
 ```
 pnpm install                       # once
 pnpm dev                           # Next.js dev server on http://localhost:3000
+pnpm build               # first, on a fresh clone: pnpm lint reads the compiled export and fails without it (D-203)
 pnpm typecheck && pnpm lint && pnpm test
 pnpm build                         # contrast check, then the static export to apps/web/out
 pnpm --filter @mas/web serve:out   # serve the export on http://localhost:3100 (what Playwright uses)
