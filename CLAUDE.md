@@ -55,4 +55,16 @@ pnpm desktop:tauri:dev / pnpm desktop:tauri:build
 pnpm desktop:electron:dev / pnpm desktop:electron:build
 pnpm seed:export         # write the generated seed to packages/mock-data/dist for inspection
 pnpm docs:data-model     # regenerate docs/DATA-MODEL.md from the Zod schemas
+pnpm contact-sheet       # regenerate docs/CONTACT-SHEET.md, the HTML gallery and HANDOVER section 5
+pnpm messages:merge <ns> # fold packages/messages/staging fragments into the catalogue
+pnpm demo:check          # the shooting script still fits its slots (also run by pnpm lint)
+pnpm holidays:sync       # refresh the bank holiday fixture from the gov.uk feed, at maintenance time only
 ```
+
+## Demo affordances
+
+Not part of the product, gated on `NEXT_PUBLIC_DEMO_TOOLS`, which a production build sets to `0`.
+
+- **Control, Shift and D** opens the demo control panel: the ten chapters of `docs/DEMO.md` as waypoints, persona switching, the demo clock, saved states, connector outages, the recording preset and reset to seed.
+- `/compare` is the two-persona view: one record, two readers, optionally the hosting provider as a third panel.
+- `/simulator` is the mock council social work system, which is the other end of the two-way connector.

@@ -418,3 +418,8 @@ What is right and stays: no credential field, because a password box that accept
 - The dry run corrected the script rather than the product, which is the order the brief asks for. Chapter 5 said "click through to the children's case" and the coordinator holds presence on it: she can see it exists and cannot open it. That is the better beat by some distance, because it is the model working along the chain rather than the chain being clickable, and I would not have written it without walking it.
 - Two smaller corrections came out of the same walk. The word "analysis" is in a hidden create-menu hint, so an assertion about the analysis lane had to say which one it meant, and the DAQ score is a number and a sentence in two elements rather than the one string the old script quoted.
 - Renaming the waypoints to the chapter ids is what makes the three things one thing: the panel's buttons, the script's headings and the test's walk are the same list, and changing one without the others fails.
+
+## Everything current (04 Sep 2026)
+
+- The handover's screenshot index had quietly drifted eleven rounds behind, which is the honest answer to "is this doc current": no, and it never would be while a person had to notice. Generating it from the folder is fifteen lines and it cannot drift again.
+- The gov.uk feed is blocked from this container through every route, so `bank-holidays.raw.json` is still outstanding and is written down as outstanding. It would take thirty seconds to fabricate a plausible one and the cost of that lands on whoever next runs `pnpm holidays:sync` and diffs against it, believing the diff.
