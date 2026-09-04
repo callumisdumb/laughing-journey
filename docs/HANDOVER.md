@@ -30,6 +30,8 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - An unborn baby is a Person with `lifeStage: 'unborn'` and an expected delivery date (D-046).
 - Exclusions are keyed on the case-role register (D-035); the MARAC DAQ and the MAPPA referral ask who else must not receive information and feed it (D-047). The MAPPA annual report is Annex 3 Tables 1 to 9 with the field set High and placeholder wording (D-048).
 - Facts and analysis are separate records; a fact that reads as opinion is rejected by the schema and analysis must cite a fact (D-020b).
+- Presence means a case exists, not who it is about. `identifiesSubject` in `packages/domain/src/permissions/access.ts` is the only answer to whether a reader may see whose case it is; four screens had each tested `level !== 'none'` and named the subject at presence level (D-170). The context drawer refuses in the same words as the record, keeping only what is about the reader (D-171).
+- Linked cases are shown on the case, with the access rules run per link rather than inherited from the case in hand (D-169). The MARAC and the child protection case are clickable end to end, and a reader on one and not the other is told the other exists and nothing more.
 
 ### Design
 - No avatars or initials circles; identity is name, date of birth and reference (D-022). Pills are for process and stage only; agencies use marks with a glyph, a colour and a label (D-023).
@@ -281,6 +283,24 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | audit-chain | light comfortable |
 | statutory-disclosure | light comfortable |
 | help-security | light comfortable |
+
+### flows
+
+The eight named flows, captured as they are walked by `apps/web/e2e/flows.spec.ts`.
+
+| Screen | Variants |
+|---|---|
+| asp-plan-milestone | light comfortable |
+| audit-after-write | light comfortable |
+| connector-inbox | light comfortable |
+| cp-ird | light comfortable |
+| marac-chain | light comfortable |
+| nmds-export | light comfortable |
+| persona-not-on-the-case | light comfortable |
+| report-asp | light comfortable |
+| report-mappa | light comfortable |
+| sharing-inbound | light comfortable |
+| sharing-outbound | light comfortable |
 
 ## 6. Known gaps and TODO(verify)
 

@@ -51,6 +51,26 @@ export async function signInAs(page: Page, userId: string): Promise<void> {
   }, userId);
 }
 
+/**
+ * Change who is signed in part-way through a test.
+ *
+ * `signInAs` deliberately seeds the session only when there is not one already, so calling it a
+ * second time does nothing and the page keeps the first persona. A test that walks one case past
+ * three readers needs the switch to happen, and needs it to look like the demo: same browser, same
+ * stored data, different person. The session is written as plaintext because the store accepts a
+ * plaintext session once and re-seals it (apps/web/lib/store.ts), which is the same door `signInAs`
+ * already uses.
+ *
+ * Break-glass grants are not carried over. That is the point of a persona switch: the next reader
+ * gets what their own role gives them and nothing the last one talked their way into.
+ */
+export async function switchUser(page: Page, userId: string): Promise<void> {
+  await page.evaluate((id) => {
+    window.localStorage.setItem('mas.session', JSON.stringify({ userId: id }));
+  }, userId);
+  await page.reload();
+}
+
 export async function expectNoAxeViolations(page: Page): Promise<void> {
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
   const serious = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical' || v.impact === 'moderate' || v.impact === 'minor');
