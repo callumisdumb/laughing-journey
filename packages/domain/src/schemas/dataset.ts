@@ -4,7 +4,7 @@ import { auditEntrySchema } from './audit';
 import { chronologyAnalysisSchema, chronologyEventSchema } from './chronology';
 import { connectorEventSchema } from './connector';
 import { meetingSchema } from './meeting';
-import { addressSchema, householdSchema, organisationSchema, personSchema, relationshipSchema, teamSchema } from './person';
+import { addressSchema, householdSchema, organisationSchema, personMergeSchema, personSchema, relationshipSchema, teamSchema } from './person';
 import { processSchema } from './process';
 import { informationRequestSchema, lawfulBasisRecordSchema, sharingRecordSchema } from './sharing';
 import { userSchema } from './user';
@@ -18,6 +18,7 @@ export const datasetSchema = z.object({
   addresses: z.array(addressSchema),
   people: z.array(personSchema),
   households: z.array(householdSchema),
+  personMerges: z.array(personMergeSchema),
   relationships: z.array(relationshipSchema),
   processes: z.array(processSchema),
   events: z.array(chronologyEventSchema),

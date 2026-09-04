@@ -1,0 +1,106 @@
+/*
+ * Choosing a person. The results carry the same reasons the create path shows, so the reader is
+ * deciding with the evidence in front of them rather than picking the first name that looks right.
+ */
+
+.picker {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-ink-2);
+}
+
+/* The chosen person, which replaces the search rather than sitting under it: the question has
+   been answered, and leaving the search open invites a second answer. */
+.chosen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content max-content;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--color-accent-soft);
+  border: 1px solid var(--color-accent-1);
+  border-radius: var(--radius-md);
+}
+
+.chosenName {
+  font-weight: 700;
+  color: var(--color-ink-1);
+}
+
+.chosenMeta {
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-3);
+}
+
+.results {
+  display: grid;
+  gap: 4px;
+  max-height: 15rem;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  grid-template-areas:
+    'name meta'
+    'reasons reasons';
+  gap: 2px 12px;
+  width: 100%;
+  padding: 8px 10px;
+  font: inherit;
+  text-align: start;
+  background: var(--color-paper-0);
+  border: 1px solid var(--color-line-1);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.result:hover {
+  background: var(--color-paper-1);
+  border-color: var(--color-line-2);
+}
+
+.result:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.resultName {
+  grid-area: name;
+  font-weight: 700;
+  color: var(--color-ink-1);
+}
+
+.resultMeta {
+  grid-area: meta;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-3);
+}
+
+.resultReasons {
+  display: flex;
+  flex-wrap: wrap;
+  grid-area: reasons;
+  gap: 4px;
+}
+
+.none {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}

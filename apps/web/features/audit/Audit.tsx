@@ -38,6 +38,8 @@ const ACT_TONES: Record<AuditAct, PillTone> = {
   'classification-lower': 'critical',
   'sign-in': 'low',
   create: 'low',
+  merge: 'medium',
+  unmerge: 'medium',
 };
 
 function targetHref(data: Dataset, a: AuditEntry): string | undefined {

@@ -136,6 +136,40 @@ Add a person is not a form with steps; it is a sequence that accumulates. The se
 
 The button that creates the record is not on the screen until the second one has been pressed. The assertion sits immediately above the button that makes it, because a claim that ends up on the record and in front of an inspector should be read before it is pressed rather than summarised afterwards in a toast.
 
+### 5.2 A destructive dialog that says what it will do
+
+```
++-- Merge another record into Aiden Boyle ----------------------+
+| Aiden Boyle is the record that survives. Everything on the    |
+| other record moves here, and the other record is retired.     |
+|                                                                |
+| The record to merge into this one                              |
+| [ Maisie                                          (search) ]   |
+| |  Maisie Boyle                       18 Apr 2023            | |
+| |  (Similar name) (Same current address)                     | |
+|                                                                |
+| What the surviving record will hold                            |
+| Field         | Aiden, kept | Maisie, retired | After          |
+| Name          | Aiden Boyle | Maisie Boyle    | Aiden Boyle    |
+| CHI number    | 140319..    | 180423..        | 140319..       |
+| Other names   | Not recorded| Not recorded    | Maisie Boyle < |
+|                                                                |
+| /!\ What this does                                             |
+|  - 26 references move to Aiden Boyle, across processes,        |
+|    chronology, meetings, plans and sharing.                    |
+|  - Maisie Boyle is kept as another name on the surviving       |
+|    record, so an old reference still finds them.               |
+|  - (Reversible) Both records can be put back exactly as they   |
+|    were.                                                       |
+|                                                                |
+| Why are these the same person?                                 |
+| [                                                            ] |
+|                    [Cancel]  [Merge the records]               |
++----------------------------------------------------------------+
+```
+
+The count is computed, not written. A warning triangle over "this affects many records" is true and useless; twenty-six is a number a practitioner can compare against what they expect. The comparison runs the real union function rather than describing what it will do, and a value the surviving record gains is marked with a rule as well as a tint.
+
 ## 6. Hero screen wireframes
 
 ### 6.1 Person record

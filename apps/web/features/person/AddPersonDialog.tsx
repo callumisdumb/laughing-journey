@@ -1,39 +1,17 @@
 'use client';
 
-import { LIFE_STAGES, canCreate, findDuplicateCandidates, lifeStageLabel, syntheticChi, type DuplicateCandidate, type MatchReason, type Person } from '@mas/domain';
-import { tKey, useT } from '@mas/messages';
+import { LIFE_STAGES, canCreate, findDuplicateCandidates, lifeStageLabel, syntheticChi, type DuplicateCandidate, type Person } from '@mas/domain';
+import { useT } from '@mas/messages';
 import { Button, CheckboxField, Dialog, Pill, RadioGroup, SelectField, TextField, TextareaField, DateField, useToast } from '@mas/ui';
 import { Search, ShieldAlert, UserSearch } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { PersonLink } from '@/components/EntityLink';
+import { reasonKey, reasonLabel } from './reasons';
 import { accessForUser, fullName, processesInvolving } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
 import { useWriteErrors } from '@/lib/writeErrors';
 import styles from './AddPersonDialog.module.css';
-
-const REASON_KEYS: Record<Exclude<MatchReason['kind'], 'alias' | 'address'>, string> = {
-  chi: 'chi',
-  name: 'name',
-  'name-transposed': 'nameTransposed',
-  'dob-exact': 'dobExact',
-  'dob-transposed': 'dobTransposed',
-  'dob-day-month-swapped': 'dobDayMonthSwapped',
-  'dob-year': 'dobYear',
-  'expected-delivery': 'expectedDelivery',
-};
-
-/** Why this candidate came back, in the practitioner's words rather than the matcher's. */
-function reasonLabel(reason: MatchReason): string {
-  if (reason.kind === 'alias') return tKey('person.create.reasons.alias', { alias: reason.alias });
-  if (reason.kind === 'address') return tKey(`person.create.reasons.${reason.current ? 'addressCurrent' : 'addressPrevious'}`);
-  return tKey(`person.create.reasons.${REASON_KEYS[reason.kind]}`);
-}
-
-/** A stable key for a reason chip, since the same kind never appears twice for one candidate. */
-function reasonKey(reason: MatchReason): string {
-  return reason.kind === 'alias' ? `alias:${reason.alias}` : reason.kind === 'address' ? `address:${String(reason.current)}` : reason.kind;
-}
 
 type Step = 'search' | 'candidates' | 'details';
 

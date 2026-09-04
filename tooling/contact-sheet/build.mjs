@@ -40,7 +40,7 @@ const ROUND_NOTES = {
   links: 'The product as a web of records: a practitioner card, the case-party register, an unentitled landing and where you have been.',
   'sign-in': 'Choosing who you are, rebuilt: one surface, the honest statement second, both questions at once and the keyboard first.',
   clock: 'The settable demo clock, which every statutory clock and every relative date in the product is computed against.',
-  create: 'Adding a person, which begins with looking for them: the search, the candidates with the reason each matched, the form that only opens once they have been dismissed, and the refusal for a role that does not hold cases.',
+  create: 'Adding a person, which begins with looking for them: the search, the candidates with the reason each matched, the form that only opens once they have been dismissed, the refusal for a role that does not hold cases, and the merge, which is destructive and therefore reversible.',
 };
 
 /** Rounds, each with its screenshots, newest round last. */

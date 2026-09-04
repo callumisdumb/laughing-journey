@@ -417,7 +417,7 @@ Variant 5
 | `sourceSystem` | enum (11 values) | yes |
 | `recordedByUserId` | string | no |
 | `recordedByName` | string | yes |
-| `eventType` | enum (55 values) | yes |
+| `eventType` | enum (57 values) | yes |
 | `title` | string | yes |
 | `detail` | string | yes |
 | `response` | string | no |

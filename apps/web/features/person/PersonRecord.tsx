@@ -1,9 +1,9 @@
 'use client';
 
-import { VIEWS_KINDS, ageLabel, agencyShort, detailLevelLabel, evidenceKindLabel, formatDate, formatDateTime, packItemKindLabel, planTypeLabel, processShort, processStatusLabel, roleLabel, shareStatusLabel, stageLabel, viewsKindLabel, type Person, type Process, type ViewsRecord } from '@mas/domain';
+import { VIEWS_KINDS, ageLabel, agencyShort, detailLevelLabel, evidenceKindLabel, formatDate, formatDateTime, packItemKindLabel, planTypeLabel, processShort, processStatusLabel, roleLabel, resolvePersonId, shareStatusLabel, stageLabel, standingMerges, viewsKindLabel, type Person, type Process, type ViewsRecord } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Tabs, Table, TableWrap, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
-import { AlertTriangle, ArrowUpRight, Flag, Languages, Lock, Plus, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, ArrowUpRight, Flag, Languages, Lock, Merge, Plus, RotateCcw, ShieldAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
@@ -18,6 +18,7 @@ import { LanesChart } from '@/features/chronology/LanesChart';
 import { useChronologyStore } from '@/features/chronology/state';
 import { useChronology } from '@/features/chronology/useChronology';
 import { NetworkGraph } from './NetworkGraph';
+import { MergeDialog, UnmergeDialog } from './MergeDialog';
 import styles from './PersonRecord.module.css';
 
 /** Argument bag for t.rich, typed so a React node (the bold lead-in of a header fact) can fill an argument. */
@@ -65,11 +66,31 @@ export function PersonRecord({ personId }: { personId: string }) {
   const [reasonCategory, setReasonCategory] = useState('');
   const [reason, setReason] = useState('');
   const [recording, setRecording] = useState(false);
+  const [merging, setMerging] = useState(false);
+  const [unmerging, setUnmerging] = useState<string | null>(null);
+  const standing = standingMerges(data, personId);
   const [voice, setVoice] = useState<{ kind: ViewsRecord['kind']; method: string; content: string }>(() => ({ kind: 'child-voice', method: t('person.recordViews.methodDefault'), content: '' }));
 
   const visit = useTrail((s) => s.visit);
   const tab = route.query.get('tab') ?? 'overview';
   const person = data.people.find((p) => p.id === personId);
+
+  /*
+   * A merged-away id does not stop existing the moment the merge happens. It is in somebody's
+   * bookmarks, in a printed pack, in a connector event queued before the merge and delivered after
+   * it. Following it to the surviving record is what docs/RECORDS.md means by an old reference still
+   * landing; the address becomes the survivor's and carries where it came from, so the record can
+   * say so rather than silently showing a different person.
+   */
+  const resolved = resolvePersonId(data, personId);
+  const followedFrom = route.query.get('from');
+  const followedMerge = followedFrom ? data.personMerges.find((m) => !m.undoneAt && m.mergedId === followedFrom) : undefined;
+
+  useEffect(() => {
+    if (resolved !== personId && data.people.some((p) => p.id === resolved)) {
+      navigate(`${personPath(resolved)}?from=${personId}`, { replace: true });
+    }
+  }, [resolved, personId, data.people, navigate]);
 
   useEffect(() => {
     select({ kind: 'person', id: personId });
@@ -196,6 +217,21 @@ export function PersonRecord({ personId }: { personId: string }) {
               </span>
             );
           })}
+        </div>
+        {followedMerge ? (
+          <p className={styles.followed} role="status" data-testid="followed-merge">
+            {t('person.merge.followed', { name: `${followedMerge.mergedPerson.givenName} ${followedMerge.mergedPerson.familyName}`, date: formatDate(followedMerge.at.slice(0, 10)) })}
+          </p>
+        ) : null}
+        <div className={styles.recordActions}>
+          <Button size="sm" variant="secondary" icon={<Merge size={14} aria-hidden="true" />} onClick={() => setMerging(true)} data-testid="merge-open">
+            {t('person.merge.open')}
+          </Button>
+          {standing.map((m) => (
+            <Button key={m.id} size="sm" variant="quiet" icon={<RotateCcw size={14} aria-hidden="true" />} onClick={() => setUnmerging(m.id)} data-testid="unmerge-open">
+              {t('person.merge.undo', { name: `${m.mergedPerson.givenName} ${m.mergedPerson.familyName}` })}
+            </Button>
+          ))}
         </div>
       </header>
 
@@ -497,6 +533,9 @@ export function PersonRecord({ personId }: { personId: string }) {
           <TextareaField label={t('person.recordViews.content')} required value={voice.content} onChange={(e) => setVoice({ ...voice, content: e.target.value })} />
         </div>
       </Dialog>
+
+      <MergeDialog person={person} open={merging} onClose={() => setMerging(false)} />
+      {unmerging ? <UnmergeDialog mergeId={unmerging} open onClose={() => setUnmerging(null)} /> : null}
     </div>
   );
 }

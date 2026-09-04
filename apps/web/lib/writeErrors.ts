@@ -25,6 +25,13 @@ const KEYS = [
   'expectedDeliveryPast',
   'searchRequired',
   'chiNeedsDateOfBirth',
+  'mergeSameRecord',
+  'mergeSurvivorMissing',
+  'mergeOtherMissing',
+  'mergeReasonRequired',
+  'unmergeMissing',
+  'unmergeAlreadyUndone',
+  'unmergeReasonRequired',
 ] as const;
 
 export type WriteErrorCode = (typeof KEYS)[number];

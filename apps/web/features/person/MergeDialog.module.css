@@ -1,0 +1,91 @@
+/* Merging two records. The comparison is the substance, so it gets the room. */
+
+.lede {
+  max-width: 68ch;
+  margin: 0;
+  color: var(--color-ink-2);
+}
+
+.compare {
+  width: 100%;
+  font-size: var(--text-sm);
+  border-collapse: collapse;
+}
+
+.caption {
+  padding-bottom: 6px;
+  font-weight: 700;
+  text-align: start;
+  color: var(--color-ink-2);
+}
+
+.compare th,
+.compare td {
+  padding: 6px 10px;
+  text-align: start;
+  border-bottom: 1px solid var(--color-line-1);
+  vertical-align: top;
+}
+
+.compare thead th {
+  color: var(--color-ink-3);
+  border-bottom: 2px solid var(--color-line-2);
+}
+
+.compare tbody th {
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--color-ink-2);
+}
+
+/* A value the surviving record did not have and will after the merge. Marked with a rule as well
+   as a background, so the change is not carried by colour alone. */
+.gained {
+  background: var(--color-accent-soft);
+  border-inline-start: 3px solid var(--color-accent-1);
+}
+
+.blank {
+  font-style: italic;
+  color: var(--color-ink-3);
+}
+
+.consequences {
+  padding: 10px 14px;
+  background: var(--color-risk-high-soft);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-md);
+}
+
+.consequencesTitle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 6px;
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-ink-1);
+}
+
+.consequencesTitle svg {
+  flex: none;
+  color: var(--color-risk-high);
+}
+
+.consequences ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  padding-inline-start: 18px;
+}
+
+.priorReason {
+  margin: 0;
+  padding: 8px 12px;
+  font-style: italic;
+  color: var(--color-ink-2);
+  background: var(--color-paper-1);
+  border-inline-start: 3px solid var(--color-line-2);
+}

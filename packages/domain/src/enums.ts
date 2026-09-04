@@ -251,6 +251,10 @@ export const EVENT_TYPES = [
   'process.mappa-level',
   'process.core-group',
   'process.referral',
+  // A merge and its undo are facts about the record rather than about a field, which is why
+  // docs/RECORDS.md puts a person merge on the significant-event list and a corrected typo not.
+  'record.merge',
+  'record.unmerge',
   'voice.adult',
   'voice.child',
   'voice.victim',
@@ -272,6 +276,7 @@ export const EVENT_FAMILIES = [
   'care',
   'legal',
   'process',
+  'record',
   'voice',
   'disclosure',
   'sharing',
@@ -392,6 +397,10 @@ export const AUDIT_ACTS = [
   // there, should not have to infer it from the earliest edit on a record that may have been edited
   // a hundred times since.
   'create',
+  // A merge is not an ordinary edit either. "Has this record been merged, and was that undone" is a
+  // question the ledger's act filter should answer directly rather than by reading reasons.
+  'merge',
+  'unmerge',
   // Government Security Classification, Annex 2. A raise is always allowed; a lower needs a named
   // role and is refused otherwise, so both are recorded exactly as break-glass is.
   'classify',

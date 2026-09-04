@@ -86,6 +86,31 @@ export const personSchema = z.object({
 });
 export type Person = z.infer<typeof personSchema>;
 
+/**
+ * A merge that happened, holding enough to take it back.
+ *
+ * Both records are kept whole rather than reconstructed on the way out, and every reference the
+ * merge repointed is listed as a dotted path into the dataset, so the unmerge sets exactly those
+ * back. A merge that has been undone keeps its record and gains `undoneAt`: the merge happened, and
+ * an audit trail that deletes its own evidence is not one.
+ */
+export const personMergeSchema = z.object({
+  id: idSchema,
+  synthetic: syntheticSchema,
+  survivorId: idSchema,
+  mergedId: idSchema,
+  mergedPerson: z.lazy(() => personSchema),
+  survivorBefore: z.lazy(() => personSchema),
+  repointed: z.array(z.string()),
+  at: isoDateTime,
+  byUserId: idSchema,
+  byName: z.string(),
+  reason: z.string().min(10),
+  undoneAt: isoDateTime.optional(),
+  undoneReason: z.string().optional(),
+});
+export type PersonMerge = z.infer<typeof personMergeSchema>;
+
 export const householdSchema = z.object({
   id: idSchema,
   synthetic: syntheticSchema,

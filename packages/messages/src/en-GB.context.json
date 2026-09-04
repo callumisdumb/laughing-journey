@@ -2813,6 +2813,9 @@
         "maxLength": 16,
         "where": "Act pill and act filter option on the Audit screen for an export"
       },
+      "merge": {
+        "where": "Audit ledger, act column and act filter"
+      },
       "personaSwitch": {
         "maxLength": 16,
         "where": "Act pill and act filter option on the Audit screen for a persona switch"
@@ -2837,6 +2840,9 @@
       "signIn": {
         "maxLength": 16,
         "where": "Act pill and act filter option on the Audit screen for a sign in"
+      },
+      "unmerge": {
+        "where": "Audit ledger, act column and act filter"
       }
     },
     "columns": {
@@ -6716,6 +6722,9 @@
         "maxLength": 24,
         "where": "Chronology event family in the chronology filters, lanes chart and event list"
       },
+      "record": {
+        "where": "Chronology filters and the event family label, wherever an event family is named"
+      },
       "sharing": {
         "maxLength": 24,
         "where": "Chronology event family in the chronology filters, lanes chart and event list"
@@ -8065,6 +8074,18 @@
       "expectedDeliveryPast": {
         "where": "Add a person dialog, refusal summary at the top of the body"
       },
+      "mergeOtherMissing": {
+        "where": "Merge dialog, refusal summary at the top of the body"
+      },
+      "mergeReasonRequired": {
+        "where": "Merge dialog, refusal summary at the top of the body"
+      },
+      "mergeSameRecord": {
+        "where": "Merge dialog, refusal summary at the top of the body"
+      },
+      "mergeSurvivorMissing": {
+        "where": "Merge dialog, refusal summary at the top of the body"
+      },
       "nameRequired": {
         "where": "Add a person dialog, refusal summary at the top of the body"
       },
@@ -8076,6 +8097,15 @@
       },
       "searchRequired": {
         "where": "Add a person dialog, refusal summary at the top of the body"
+      },
+      "unmergeAlreadyUndone": {
+        "where": "Unmerge dialog, refusal summary at the top of the body"
+      },
+      "unmergeMissing": {
+        "where": "Unmerge dialog, refusal summary at the top of the body"
+      },
+      "unmergeReasonRequired": {
+        "where": "Unmerge dialog, refusal summary at the top of the body"
       }
     }
   },
@@ -12818,6 +12848,150 @@
         "where": "Age cell of the people list for an unborn child with no expected delivery date"
       }
     },
+    "merge": {
+      "audit": {
+        "where": "Audit ledger, reason column, on a merge"
+      },
+      "blank": {
+        "where": "Merge dialog, comparison table cell where neither record holds a value"
+      },
+      "columns": {
+        "after": {
+          "where": "Merge dialog, comparison table column heading for the result"
+        },
+        "field": {
+          "where": "Merge dialog, comparison table column heading"
+        },
+        "merged": {
+          "where": "Merge dialog, comparison table column heading for the record that is retired"
+        },
+        "survivor": {
+          "where": "Merge dialog, comparison table column heading for the record that is kept"
+        }
+      },
+      "compareCaption": {
+        "where": "Merge dialog, caption on the comparison table"
+      },
+      "consequences": {
+        "alias": {
+          "where": "Merge dialog, consequences list"
+        },
+        "audit": {
+          "where": "Merge dialog, consequences list"
+        },
+        "chronology": {
+          "where": "Merge dialog, consequences list"
+        },
+        "references": {
+          "where": "Merge dialog, consequences list"
+        },
+        "reversible": {
+          "where": "Merge dialog, consequences list"
+        },
+        "reversibleTag": {
+          "where": "Merge dialog, pill on the reversibility line"
+        },
+        "title": {
+          "where": "Merge dialog, heading on the consequences block"
+        }
+      },
+      "done": {
+        "text": {
+          "where": "Toast after a merge"
+        },
+        "title": {
+          "where": "Toast after a merge"
+        }
+      },
+      "eventDetail": {
+        "where": "Chronology entry written on the surviving record by a merge"
+      },
+      "eventTitle": {
+        "where": "Chronology entry written on the surviving record by a merge"
+      },
+      "fields": {
+        "aliases": {
+          "where": "Merge dialog, comparison table row heading"
+        },
+        "chi": {
+          "where": "Merge dialog, comparison table row heading"
+        },
+        "dateOfBirth": {
+          "where": "Merge dialog, comparison table row heading"
+        },
+        "gpPractice": {
+          "where": "Merge dialog, comparison table row heading"
+        },
+        "name": {
+          "where": "Merge dialog, comparison table row heading"
+        },
+        "school": {
+          "where": "Merge dialog, comparison table row heading"
+        }
+      },
+      "followed": {
+        "where": "Person record, above the record actions, after arriving by a merged-away identifier"
+      },
+      "lede": {
+        "where": "Merge dialog, first line of the body"
+      },
+      "open": {
+        "where": "Person record, record actions under the process badges"
+      },
+      "otherHint": {
+        "where": "Merge dialog, hint under the person picker"
+      },
+      "otherLabel": {
+        "where": "Merge dialog, label on the person picker"
+      },
+      "reason": {
+        "where": "Merge dialog, reason field label"
+      },
+      "reasonHint": {
+        "where": "Merge dialog, hint under the reason field"
+      },
+      "submit": {
+        "where": "Merge dialog, the button that performs the merge"
+      },
+      "title": {
+        "where": "Merge dialog, title"
+      },
+      "undo": {
+        "where": "Person record, record actions, one per standing merge"
+      },
+      "undone": {
+        "text": {
+          "where": "Toast after an unmerge"
+        },
+        "title": {
+          "where": "Toast after an unmerge"
+        }
+      },
+      "unmergeAudit": {
+        "where": "Audit ledger, reason column, on an unmerge"
+      },
+      "unmergeEventDetail": {
+        "where": "Chronology entry written on the surviving record by an unmerge"
+      },
+      "unmergeEventTitle": {
+        "where": "Chronology entry written on the surviving record by an unmerge"
+      },
+      "unmergeLede": {
+        "where": "Unmerge dialog, first line of the body"
+      },
+      "unmergeReason": {
+        "where": "Unmerge dialog, reason field label"
+      },
+      "unmergeReasonHint": {
+        "where": "Unmerge dialog, hint under the reason field"
+      },
+      "unmergeSubmit": {
+        "where": "Unmerge dialog, the button that undoes the merge"
+      },
+      "unmergeTitle": {
+        "where": "Unmerge dialog, title"
+      }
+    },
     "network": {
       "inverse": {
         "attorneyFor": {
@@ -13153,6 +13327,26 @@
           "screenshot": "phase-2/person-360-light-comfortable.png",
           "where": "Title of the views and voice sheet on the Overview tab"
         }
+      }
+    },
+    "picker": {
+      "add": {
+        "where": "Person picker, the button that opens the create dialog nested"
+      },
+      "change": {
+        "where": "Person picker, the button that clears the chosen person"
+      },
+      "hint": {
+        "where": "Person picker, hint under the search field, wherever a form chooses a person"
+      },
+      "noDateOfBirth": {
+        "where": "Person picker, result row with no date of birth or expected delivery date"
+      },
+      "none": {
+        "where": "Person picker, shown when the search returns nothing"
+      },
+      "resultsLabel": {
+        "where": "Person picker, accessible name on the results list"
       }
     },
     "processes": {

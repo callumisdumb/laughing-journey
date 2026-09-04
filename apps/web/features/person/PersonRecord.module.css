@@ -186,3 +186,30 @@
     grid-template-columns: 1fr;
   }
 }
+
+/*
+ * Actions on the record itself, as against actions on a panel inside it. They sit under the process
+ * badges rather than beside the name, because a merge is rare and destructive and should not share
+ * a line with the person's name.
+ */
+.recordActions {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 2;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+/* You arrived here by following a reference to a record that was merged into this one. Said plainly,
+   because otherwise the reader is looking at a different name from the one they clicked. */
+.followed {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 6px 12px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  background: var(--color-accent-soft);
+  border-inline-start: 3px solid var(--color-accent-1);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}

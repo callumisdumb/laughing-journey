@@ -23,6 +23,7 @@ export function createContext(seed: string, nowIso: string): BuildContext {
     addresses: [],
     people: [],
     households: [],
+    personMerges: [],
     relationships: [],
     processes: [],
     events: [],

@@ -4,7 +4,8 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, isValidIso, parseDemoNow, roleLabel, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type Dataset, type User } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, isValidIso, mergePeople, mergeRefusals, parseDemoNow, roleLabel, unmergePeople, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type Dataset, type PersonMerge, type User } from '@mas/domain';
+import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
 import { isSealedBlob, openLocal, sealLocal } from '@/lib/localStore';
@@ -75,6 +76,17 @@ interface AppState {
    * rather than each call site reimplementing the consequences of a write and one of them forgetting.
    */
   write: <K extends Collection>(request: WriteRequest<K>) => WriteResult;
+  /**
+   * Merging two person records, and taking a merge back.
+   *
+   * These sit beside `write` rather than inside it because a merge is not a record write: it
+   * rewrites references across the whole dataset, and the pipeline's single-record shape cannot
+   * express that. What they do share is everything that makes a write accountable, so both refuse
+   * before they touch anything, both are audited, and both write to the surviving record's
+   * chronology.
+   */
+  mergePerson: (survivorId: string, mergedId: string, reason: string) => WriteResult;
+  unmergePerson: (mergeId: string, reason: string) => WriteResult;
 }
 
 const OVERLAY_KEY = 'mas.overlay.v1';
@@ -88,6 +100,7 @@ const EMPTY: Dataset = {
   addresses: [],
   people: [],
   households: [],
+  personMerges: [],
   relationships: [],
   processes: [],
   events: [],
@@ -103,6 +116,44 @@ const EMPTY: Dataset = {
   connectorEvents: [],
   audit: [],
 };
+
+/**
+ * The chronology entry a merge and an unmerge both write, on the surviving record.
+ *
+ * A merge is a fact about the person rather than an edit to a field, which is why it is on the list
+ * of significant events in `docs/RECORDS.md` and a corrected typo is not. The unmerge is equally a
+ * fact: the record was joined to another and then it was not, and a chronology that showed only the
+ * merge would leave a reader believing the join still stands.
+ */
+function mergeEvent(get: () => AppState, user: User, merge: PersonMerge, kind: 'merged' | 'unmerged'): ChronologyEvent {
+  const at = get().now().toISOString();
+  const byName = `${user.givenName} ${user.familyName}`;
+  const other = `${merge.mergedPerson.givenName} ${merge.mergedPerson.familyName}`;
+  const reason = kind === 'merged' ? merge.reason : (merge.undoneReason ?? '');
+  const title = kind === 'merged' ? t('person.merge.eventTitle', { name: other }) : t('person.merge.unmergeEventTitle', { name: other });
+  return {
+    id: get().newId('evt'),
+    synthetic: true,
+    subjectIds: [merge.survivorId],
+    linkedProcessIds: [],
+    occurredAt: at,
+    recordedAt: at,
+    recordedByUserId: user.id,
+    recordedByName: byName,
+    agency: user.agency,
+    hasTime: true,
+    approximate: false,
+    sourceSystem: 'manual',
+    eventType: kind === 'merged' ? 'record.merge' : 'record.unmerge',
+    title,
+    detail: kind === 'merged' ? t('person.merge.eventDetail', { reason, count: merge.repointed.length }) : t('person.merge.unmergeEventDetail', { reason, count: merge.repointed.length }),
+    significance: 'high',
+    linkedPersonIds: [],
+    evidenceRefs: [],
+    visibility: 'integrated',
+    versions: [{ at, byName, change: title }],
+  };
+}
 
 /**
  * The local store is encrypted at rest under a device key held in the OS keychain (see
@@ -143,6 +194,47 @@ function writeJson(key: string, value: unknown): void {
 
 let overlay: Overlay = {};
 let counter = 0;
+
+/**
+ * Persist a change that rewrote the dataset rather than one record.
+ *
+ * `upsert` and `remove` are the right shape for almost everything, because almost everything writes
+ * one record. A merge is not: it repoints references across processes, chronology, meetings, plans
+ * and sharing, and then removes a person. Reloading the page after one and finding the merge half
+ * undone would be worse than not persisting it at all.
+ *
+ * The diff is by object identity, which the merge's own walk makes reliable: it returns the same
+ * object wherever nothing changed, so this writes exactly the records that moved. A record that
+ * comes back after having been removed, which is what an unmerge does, is taken off the removed list
+ * as well as written, because `applyOverlay` removes after it upserts and would otherwise filter it
+ * straight back out.
+ */
+function persistDatasetChange(before: Dataset, after: Dataset): void {
+  const removed = { ...(overlay.removed ?? {}) };
+  for (const key of Object.keys(after) as Array<keyof Dataset>) {
+    if (key === 'meta') continue;
+    const collection: Collection = key;
+    const was = before[collection] as Array<{ id: string }>;
+    const now = after[collection] as Array<{ id: string }>;
+    if (was === now) continue;
+
+    const patch = { ...(overlay[collection] ?? {}) };
+    const nowIds = new Set<string>();
+    for (const record of now) {
+      nowIds.add(record.id);
+      const previous = was.find((r) => r.id === record.id);
+      if (previous !== record) patch[record.id] = record;
+    }
+    const gone = was.filter((r) => !nowIds.has(r.id)).map((r) => r.id);
+    if (gone.length > 0) removed[collection] = [...new Set([...(removed[collection] ?? []), ...gone])];
+    const back = (removed[collection] ?? []).filter((id) => !nowIds.has(id));
+    if (removed[collection] && back.length !== removed[collection].length) removed[collection] = back;
+
+    overlay = { ...overlay, [collection]: patch };
+  }
+  overlay = { ...overlay, removed };
+  writeJson(OVERLAY_KEY, overlay);
+}
 
 function applyOverlay(data: Dataset, ov: Overlay): Dataset {
   const out: Dataset = { ...data };
@@ -439,6 +531,62 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
 
     return { ok: true, errors: [], nearMatches, effects, audit };
+  },
+  mergePerson: (survivorId, mergedId, reason) => {
+    const { config, data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+
+    const errors = mergeRefusals(data, survivorId, mergedId, reason);
+    if (errors.length > 0) return { ok: false, errors, nearMatches: [], effects: [] };
+
+    const survivor = data.people.find((p) => p.id === survivorId)!;
+    const merged = data.people.find((p) => p.id === mergedId)!;
+    const at = get().now().toISOString();
+    const result = mergePeople(data, { id: get().newId('mrg'), survivorId, mergedId, at, byUserId: user.id, byName: `${user.givenName} ${user.familyName}`, reason });
+
+    const next = { ...result.data, personMerges: [...data.personMerges, result.merge] };
+    set({ data: next, vault: buildVault(next, config) });
+    persistDatasetChange(data, next);
+
+    const effects: WriteEffect[] = [{ kind: 'rewrap', detail: `${result.merge.repointed.length} references repointed` }];
+    const audit = get().audit({ act: 'merge', targetType: 'person', targetId: survivorId, targetLabel: `${survivor.givenName} ${survivor.familyName}`, reason: t('person.merge.audit', { name: `${merged.givenName} ${merged.familyName}`, reason }) });
+    if (audit) effects.push({ kind: 'audit', detail: audit.id });
+
+    // A merge is a fact about the person, so it goes on the chronology of the record that survived.
+    get().upsert('events', mergeEvent(get, user, result.merge, 'merged'));
+    effects.push({ kind: 'event', detail: result.merge.id });
+
+    return { ok: true, errors: [], nearMatches: [], effects, audit };
+  },
+  unmergePerson: (mergeId, reason) => {
+    const { config, data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+
+    const merge = data.personMerges.find((m) => m.id === mergeId);
+    if (!merge) return { ok: false, errors: ['unmergeMissing'], nearMatches: [], effects: [] };
+    if (merge.undoneAt) return { ok: false, errors: ['unmergeAlreadyUndone'], nearMatches: [], effects: [] };
+    if (reason.trim().length < 10) return { ok: false, errors: ['unmergeReasonRequired'], nearMatches: [], effects: [] };
+
+    const next = unmergePeople(data, merge, { at: get().now().toISOString(), reason });
+    set({ data: next, vault: buildVault(next, config) });
+    persistDatasetChange(data, next);
+
+    const effects: WriteEffect[] = [{ kind: 'rewrap', detail: `${merge.repointed.length} references restored` }];
+    const audit = get().audit({
+      act: 'unmerge',
+      targetType: 'person',
+      targetId: merge.survivorId,
+      targetLabel: `${merge.survivorBefore.givenName} ${merge.survivorBefore.familyName}`,
+      reason: t('person.merge.unmergeAudit', { name: `${merge.mergedPerson.givenName} ${merge.mergedPerson.familyName}`, reason }),
+    });
+    if (audit) effects.push({ kind: 'audit', detail: audit.id });
+
+    get().upsert('events', mergeEvent(get, user, merge, 'unmerged'));
+    effects.push({ kind: 'event', detail: merge.id });
+
+    return { ok: true, errors: [], nearMatches: [], effects, audit };
   },
   newId: (prefix) => {
     counter += 1;
