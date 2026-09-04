@@ -34,10 +34,20 @@ export async function setAppearance(page: Page, theme: Theme, density: Density):
   );
 }
 
-/** Sign in as a persona without going through the picker. */
+/**
+ * Sign in as a persona without going through the picker.
+ *
+ * Seeds the session only when there is not one already. The init script runs on every navigation, so
+ * writing unconditionally overwrote everything the application had put in the session since: a
+ * persona switched mid-test came back on the next `goto`, and the demo clock returned to the seeded
+ * instant the moment a test navigated after moving it. Seeding once is also what actually happens:
+ * a person signs in and the session is theirs until they change it.
+ */
 export async function signInAs(page: Page, userId: string): Promise<void> {
   await page.addInitScript((id) => {
-    window.localStorage.setItem('mas.session', JSON.stringify({ userId: id }));
+    if (!window.localStorage.getItem('mas.session')) {
+      window.localStorage.setItem('mas.session', JSON.stringify({ userId: id }));
+    }
   }, userId);
 }
 

@@ -1,13 +1,14 @@
 'use client';
 
-import { DEMO_NOW_ISO, agencyLabel, formatDateTime, roleLabel } from '@mas/domain';
-import { formatRich, useT, type MessageKey, type Translator } from '@mas/messages';
+import { agencyLabel, roleLabel } from '@mas/domain';
+import { useT, type MessageKey } from '@mas/messages';
 import { AgencyMark, Button, ConfirmDialog, KeyValue, RadioGroup, Sheet, SheetBody, SheetHead, Switch, useToast } from '@mas/ui';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppearance, type Density, type ThemePreference } from '@/lib/appearance';
 import { useSelection } from '@/lib/selection';
-import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useAppStore, useCurrentUser, useData } from '@/lib/store';
 import styles from './Settings.module.css';
+import { DemoClock } from '@/components/DemoClock';
 
 const NOTIFICATIONS_KEY = 'mas.notifications';
 
@@ -28,9 +29,6 @@ const PREF_ITEMS = [
 ] as const satisfies ReadonlyArray<{ key: keyof NotificationPrefs; label: MessageKey; hint: MessageKey }>;
 
 /** A message whose arguments are rendered elements (the bold date-times); the tag form waits on typed tag arguments. */
-function richLine(t: Translator, key: MessageKey, values: Record<string, ReactNode>): ReactNode {
-  return formatRich<ReactNode>(t.raw(key) ?? key, values).map((part, i) => (typeof part === 'string' ? part : <span key={i}>{part}</span>));
-}
 
 function readPrefs(): NotificationPrefs {
   if (typeof window === 'undefined') return DEFAULT_PREFS;
@@ -61,13 +59,10 @@ export function Settings() {
   const t = useT();
   const user = useCurrentUser();
   const data = useData();
-  const now = useNow();
   const theme = useAppearance((s) => s.theme);
   const density = useAppearance((s) => s.density);
   const setTheme = useAppearance((s) => s.setTheme);
   const setDensity = useAppearance((s) => s.setDensity);
-  const liveClock = useAppStore((s) => s.session.liveClock);
-  const setLiveClock = useAppStore((s) => s.setLiveClock);
   const resetDemo = useAppStore((s) => s.resetDemo);
   const audit = useAppStore((s) => s.audit);
   const select = useSelection((s) => s.select);
@@ -156,9 +151,7 @@ export function Settings() {
         <Sheet>
           <SheetHead title={t('settings.clock.title')} meta={t('settings.clock.meta')} divided />
           <SheetBody>
-            <Switch label={t('settings.clock.live')} checked={liveClock} onChange={(e) => setLiveClock(e.target.checked)} />
-            <p className={styles.clockNow}>{richLine(t, 'settings.clock.frozen', { frozen: <strong>{formatDateTime(DEMO_NOW_ISO)}</strong>, now: <strong>{formatDateTime(now)}</strong> })}</p>
-            <p className={styles.note}>{t('settings.clock.note')}</p>
+            <DemoClock />
           </SheetBody>
         </Sheet>
 

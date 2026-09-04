@@ -14,6 +14,24 @@ export function demoNow(): Date {
   return parseISO(DEMO_NOW_ISO);
 }
 
+/**
+ * The demo instant as set, falling back to the seeded one.
+ *
+ * The demo clock is settable so a statutory clock can be watched going overdue rather than described
+ * as being about to, and one bad value must not take every date on the screen with it. An
+ * unparseable string returns the seeded instant rather than an Invalid Date, because a screen full
+ * of "NaN days remaining" is a worse failure than a clock that did not move.
+ */
+export function isValidIso(iso: string): boolean {
+  return !Number.isNaN(parseISO(iso).getTime());
+}
+
+export function parseDemoNow(iso: string | undefined | null): Date {
+  if (!iso) return parseISO(DEMO_NOW_ISO);
+  const parsed = parseISO(iso);
+  return Number.isNaN(parsed.getTime()) ? parseISO(DEMO_NOW_ISO) : parsed;
+}
+
 export function formatDate(iso: string | Date): string {
   const d = typeof iso === 'string' ? parseISO(iso) : iso;
   return formatInTimeZone(d, TIME_ZONE, 'dd MMM yyyy');

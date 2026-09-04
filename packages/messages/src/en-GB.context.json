@@ -5217,6 +5217,67 @@
       }
     }
   },
+  "demoClock": {
+    "demoNow": {
+      "maxLength": 16,
+      "where": "Demo clock, label above the reading when the clock is the settable demo instant."
+    },
+    "jump": {
+      "day": {
+        "back": {
+          "maxLength": 14,
+          "where": "Demo clock, move back one day."
+        },
+        "on": {
+          "maxLength": 14,
+          "where": "Demo clock, move on one day."
+        }
+      },
+      "month": {
+        "back": {
+          "maxLength": 14,
+          "where": "Demo clock, move back 28 days."
+        },
+        "on": {
+          "maxLength": 14,
+          "where": "Demo clock, move on 28 days."
+        }
+      },
+      "week": {
+        "back": {
+          "maxLength": 14,
+          "where": "Demo clock, move back one week."
+        },
+        "on": {
+          "maxLength": 14,
+          "where": "Demo clock, move on one week."
+        }
+      }
+    },
+    "jumpsLabel": {
+      "where": "Demo clock, accessible name of the group of jump buttons."
+    },
+    "liveNow": {
+      "maxLength": 16,
+      "where": "Demo clock, label above the reading when the real clock is in use."
+    },
+    "movedNote": {
+      "where": "Demo clock, shown while the clock is away from the seeded instant, naming it."
+    },
+    "note": {
+      "where": "Demo clock, that one instant drives every date in the product."
+    },
+    "reset": {
+      "maxLength": 20,
+      "where": "Demo clock, return to the seeded instant."
+    },
+    "setHint": {
+      "where": "Demo clock, why the time of day does not change when a date is typed."
+    },
+    "setLabel": {
+      "where": "Demo clock, label of the typed date field."
+    }
+  },
   "desktop": {
     "about": {
       "credits": {

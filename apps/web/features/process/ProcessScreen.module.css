@@ -98,6 +98,23 @@
   min-width: 0;
 }
 
+/* A clock links to the timescale rule that sets it; the link must not repaint the numeral. */
+.clockLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius-md);
+}
+
+.clockLink:hover {
+  background: var(--color-paper-2);
+}
+
+.clockLink:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 2px;
+}
+
 .clockList {
   display: flex;
   flex-direction: column;

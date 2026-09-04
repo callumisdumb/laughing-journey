@@ -22,7 +22,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SHOTS = join(ROOT, 'docs', 'SCREENSHOTS');
 
 /** Capture rounds in the order they happened, so the sheet reads as a history rather than a listing. */
-const ORDER = ['phase-1', 'phase-2', 'phase-3', 'phase-4', 'phase-5', 'phase-6', 'classification', 'nmds', 'security', 'dialogs', 'layout', 'links', 'sign-in'];
+const ORDER = ['phase-1', 'phase-2', 'phase-3', 'phase-4', 'phase-5', 'phase-6', 'classification', 'nmds', 'security', 'dialogs', 'layout', 'links', 'sign-in', 'clock'];
 
 /** What each round was. A contact sheet with no captions is a wall of thumbnails. */
 const ROUND_NOTES = {
@@ -39,6 +39,7 @@ const ROUND_NOTES = {
   layout: 'The four layout modes: the same person record docked, compact and as panels.',
   links: 'The product as a web of records: a practitioner card, the case-party register, an unentitled landing and where you have been.',
   'sign-in': 'Choosing who you are, rebuilt: one surface, the honest statement second, both questions at once and the keyboard first.',
+  clock: 'The settable demo clock, which every statutory clock and every relative date in the product is computed against.',
 };
 
 /** Rounds, each with its screenshots, newest round last. */

@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, demoNow, roleLabel, type AuditEntry, type Config, type Dataset, type User } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, isValidIso, parseDemoNow, roleLabel, type AuditEntry, type Config, type Dataset, type User } from '@mas/domain';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
 import { isSealedBlob, openLocal, sealLocal } from '@/lib/localStore';
@@ -27,8 +27,18 @@ export interface BreakGlassGrant {
 export interface Session {
   userId: string | null;
   breakGlass: BreakGlassGrant[];
-  /** Use the real clock instead of the fixed demo instant. */
+  /** Use the real clock instead of the demo instant. */
   liveClock: boolean;
+  /**
+   * The demo instant, which every statutory clock and every relative date is computed against.
+   *
+   * Settable rather than fixed, because the clocks are the part of this product that is hardest to
+   * show standing still. "The inquiry decision is due in three days" is a number on a screen; moving
+   * the clock four days and watching it go overdue, the band change and the worklist reorder is the
+   * demonstration. It is one value, so nothing can be moved by half: a screen reading a different
+   * instant from the clock beside it would be worse than a frozen one.
+   */
+  nowIso: string;
 }
 
 interface AppState {
@@ -55,6 +65,8 @@ interface AppState {
   audit: (entry: Omit<AuditEntry, 'id' | 'synthetic' | 'at' | 'userId' | 'userName' | 'agency' | 'restricted'> & { restricted?: boolean }) => AuditEntry | undefined;
   grantBreakGlass: (processId: string, category: string, reason: string) => void;
   setLiveClock: (v: boolean) => void;
+  setDemoNow: (iso: string) => void;
+  resetDemoNow: () => void;
   resetDemo: () => void;
   newId: (prefix: string) => string;
 }
@@ -169,22 +181,22 @@ export const useAppStore = create<AppState>((set, get) => ({
   config: DEFAULT_CONFIG,
   vault: buildVault(EMPTY, DEFAULT_CONFIG),
   chain: emptyChain(),
-  session: { userId: null, breakGlass: [], liveClock: false },
+  session: { userId: null, breakGlass: [], liveClock: false, nowIso: DEMO_NOW_ISO },
   init: () => {
     if (get().ready) return;
     const seed = process.env.NEXT_PUBLIC_SEED ?? DEFAULT_SEED;
     const base = buildDataset({ seed });
     overlay = readJson<Overlay>(OVERLAY_KEY) ?? {};
     const data = applyOverlay(base, overlay);
-    const session = readJson<Session>(SESSION_KEY) ?? { userId: null, breakGlass: [], liveClock: false };
+    const session = readJson<Session>(SESSION_KEY) ?? { userId: null, breakGlass: [], liveClock: false, nowIso: DEMO_NOW_ISO };
     const nowIso = new Date().toISOString();
     session.breakGlass = (session.breakGlass ?? []).filter((g) => g.expiresAt > nowIso);
     // Older persisted overlays may predate new configuration keys; defaults fill the gaps.
     const config: Config = overlay.config ? { ...DEFAULT_CONFIG, ...overlay.config } : DEFAULT_CONFIG;
-    set({ data, config, vault: buildVault(data, config), session: { ...session, breakGlass: session.breakGlass, liveClock: session.liveClock ?? false }, ready: true });
+    set({ data, config, vault: buildVault(data, config), session: { ...session, breakGlass: session.breakGlass, liveClock: session.liveClock ?? false, nowIso: session.nowIso ?? DEMO_NOW_ISO }, ready: true });
     applyConfiguredAppearanceDefaults(config);
   },
-  now: () => (get().session.liveClock ? new Date() : demoNow()),
+  now: () => (get().session.liveClock ? new Date() : parseDemoNow(get().session.nowIso)),
   currentUser: () => {
     const id = get().session.userId;
     return id ? (get().data.users.find((u) => u.id === id) ?? null) : null;
@@ -283,6 +295,24 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ session });
     writeJson(SESSION_KEY, session);
   },
+  /**
+   * Move the demo clock. Absolute, so a jump forwards and a jump back are the same operation and
+   * there is no accumulated drift from repeated relative moves. Setting it turns the live clock off,
+   * because a demo instant that the real clock overwrites a second later is not a setting.
+   */
+  setDemoNow: (iso) => {
+    // Refused rather than silently falling back to the seeded instant, which would look like the
+    // control not working.
+    if (!isValidIso(iso)) return;
+    const session = { ...get().session, nowIso: iso, liveClock: false };
+    set({ session });
+    writeJson(SESSION_KEY, session);
+  },
+  resetDemoNow: () => {
+    const session = { ...get().session, nowIso: DEMO_NOW_ISO };
+    set({ session });
+    writeJson(SESSION_KEY, session);
+  },
   resetDemo: () => {
     overlay = {};
     try {
@@ -332,5 +362,6 @@ export function useCurrentUser(): User | null {
 
 export function useNow(): Date {
   const live = useAppStore((s) => s.session.liveClock);
-  return live ? new Date() : demoNow();
+  const nowIso = useAppStore((s) => s.session.nowIso);
+  return live ? new Date() : parseDemoNow(nowIso);
 }

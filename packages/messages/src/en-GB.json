@@ -1640,6 +1640,30 @@
       "title": "Pre-birth"
     }
   },
+  "demoClock": {
+    "demoNow": "Demo clock",
+    "jump": {
+      "day": {
+        "back": "Back a day",
+        "on": "On a day"
+      },
+      "month": {
+        "back": "Back 28 days",
+        "on": "On 28 days"
+      },
+      "week": {
+        "back": "Back a week",
+        "on": "On a week"
+      }
+    },
+    "jumpsLabel": "Move the demo clock",
+    "liveNow": "Live clock",
+    "movedNote": "The clock has been moved. The seeded instant is {seeded}.",
+    "note": "Every statutory clock, every countdown and every relative date on every screen is computed against this one instant. Nothing else in the product reads a different one.",
+    "reset": "Back to the seed",
+    "setHint": "The time of day stays at 09:00, which is when the seeded scenarios start.",
+    "setLabel": "Or set the date"
+  },
   "desktop": {
     "about": {
       "credits": "Multi-agency public protection platform (Scotland). Demonstration build with synthetic data only.",
