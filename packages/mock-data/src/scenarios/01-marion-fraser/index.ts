@@ -12,7 +12,7 @@ import { USR, userName } from '../../generator/organisations';
 
 export const MARION = {
   marion: 'per_marion_fraser',
-  callum: 'per_callum_fraser',
+  duncan: 'per_duncan_fraser',
   asp: 'prc_asp_marion',
   awi: 'prc_awi_marion',
   iad: 'mtg_marion_iad',
@@ -26,7 +26,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
 
   // Addresses.
   const shoreLoan = makeAddress(ctx, { id: 'adr_marion_home', line1: '14 Shore Loan', town: 'Portlennan', postcode: 'QX3 2LR' });
-  const callumFlat = makeAddress(ctx, { id: 'adr_callum_flat', line1: '8 Burnside Vennel', line2: 'Flat 1/2', town: 'Auchentorran', postcode: 'QX2 4EH' });
+  const duncanFlat = makeAddress(ctx, { id: 'adr_duncan_flat', line1: '8 Burnside Vennel', line2: 'Flat 1/2', town: 'Auchentorran', postcode: 'QX2 4EH' });
 
   const hh = 'hh_fraser';
   const marion = makePerson(ctx, {
@@ -43,22 +43,22 @@ export function seedMarionFraser(ctx: BuildContext): void {
     gpPractice: 'Portlennan Medical Practice',
     createdAt: at('2024-02-13', '10:00'),
   });
-  const callum = makePerson(ctx, {
-    id: MARION.callum,
-    givenName: 'Callum',
+  const duncan = makePerson(ctx, {
+    id: MARION.duncan,
+    givenName: 'Duncan',
     familyName: 'Fraser',
     sex: 'male',
     dateOfBirth: '1988-05-14',
     chi: syntheticChi(ctx, '1988-05-14', 'male'),
-    addressHistory: [{ addressId: callumFlat.id, from: '2021-10-01', note: 'Council tenancy; stays some nights at 14 Shore Loan since about June 2026' }],
+    addressHistory: [{ addressId: duncanFlat.id, from: '2021-10-01', note: 'Council tenancy; stays some nights at 14 Shore Loan since about June 2026' }],
     contact: { phone: '07700 900274' },
     gpPractice: 'Craiglarrick Health Centre',
     createdAt: at('2025-03-18', '10:00'),
   });
 
   makeHousehold(ctx, { id: hh, addressId: shoreLoan.id, from: '1971-08-14', memberIds: [marion.id], label: 'Fraser household, Portlennan' });
-  relate(ctx, callum.id, marion.id, 'nephew-or-niece-of', { notes: 'Son of her late brother. Visits several times a week; does her shopping; holds her bank card under an unregistered "arrangement"' });
-  relate(ctx, marion.id, callum.id, 'aunt-or-uncle-of');
+  relate(ctx, duncan.id, marion.id, 'nephew-or-niece-of', { notes: 'Son of her late brother. Visits several times a week; does her shopping; holds her bank card under an unregistered "arrangement"' });
+  relate(ctx, marion.id, duncan.id, 'aunt-or-uncle-of');
 
   const co = USR.moiraGilmour;
   const sw = USR.stuartBlair;
@@ -155,7 +155,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
         // Indicator 1 counts the act of the sender, so the source is the police who made the referral,
         // not the bank that raised it with them.
         referralSource: 'police',
-        summary: 'The bank reported 31 cash machine withdrawals totalling £2,410 between 8 Jun and 17 Aug 2026, most at Auchentorran and several late in the evening. Marion attended the branch on 18 Aug unsure why her balance was low and said her nephew Callum "keeps my card for me". She has a diagnosis of vascular dementia.',
+        summary: 'The bank reported 31 cash machine withdrawals totalling £2,410 between 8 Jun and 17 Aug 2026, most at Auchentorran and several late in the evening. Marion attended the branch on 18 Aug unsure why her balance was low and said her nephew Duncan "keeps my card for me". She has a diagnosis of vascular dementia.',
         harmTypes: ['financial', 'psychological'],
         locationOfHarm: 'own-home',
         immediateSafety: 'No immediate physical risk. Marion is at home with care at home visits twice a day. The bank has placed a temporary limit of £100 a day on cash withdrawals pending contact with the council.',
@@ -165,7 +165,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
         assessedAt: at('2026-08-21', '11:00'),
         byName: name(co),
         byUserId: co,
-        a: { met: 'yes', reasoning: 'Marion cannot check her statements, does not know how much has been withdrawn, and cannot recall what she agreed with Callum. She depends on him for shopping and has no other way to reach her money. She is unable to safeguard her property and financial interests without help.' },
+        a: { met: 'yes', reasoning: 'Marion cannot check her statements, does not know how much has been withdrawn, and cannot recall what she agreed with Duncan. She depends on him for shopping and has no other way to reach her money. She is unable to safeguard her property and financial interests without help.' },
         b: { met: 'yes', reasoning: 'Withdrawals of £2,410 in ten weeks that she cannot account for, an empty fridge on two care visits, and low mood "worried about money". The pattern is continuing.' },
         c: { met: 'yes', reasoning: 'Vascular dementia diagnosed November 2025 with fluctuating capacity. Her memory impairment makes her more vulnerable to financial harm than an adult who is not so affected.' },
         outcome: 'met',
@@ -181,17 +181,17 @@ export function seedMarionFraser(ctx: BuildContext): void {
         interAgencyDiscussionMeetingId: MARION.iad,
         agenciesContacted: ['police', 'health', 'social-work', 'regulator'],
         outcome: 'proceed-to-investigation',
-        rationale: 'Police confirm the withdrawal pattern from bank records. The GP confirms the diagnosis and that Marion was advised twice to grant a power of attorney and did not. Care at home logs place Callum in the house on the days of most withdrawals. An investigation with a s7 visit and s8 interview is needed to hear from Marion away from her nephew.',
+        rationale: 'Police confirm the withdrawal pattern from bank records. The GP confirms the diagnosis and that Marion was advised twice to grant a power of attorney and did not. Care at home logs place Duncan in the house on the days of most withdrawals. An investigation with a s7 visit and s8 interview is needed to hear from Marion away from her nephew.',
         decidedAt: at('2026-08-26', '15:00'),
       },
       investigation: {
         councilOfficerUserId: co,
         secondWorkerUserId: sw,
         visits: [
-          { at: at('2026-08-28', '10:30'), power: 's7', byNames: [name(co), name(sw), `${name(adv)} (advocate)`], note: 'Visit at 14 Shore Loan, morning slot. Callum present on arrival; asked to leave the room for the interview and agreed after some discussion. House warm and tidy; fridge stocked (Callum had shopped the day before). Bank card not in the house.' },
+          { at: at('2026-08-28', '10:30'), power: 's7', byNames: [name(co), name(sw), `${name(adv)} (advocate)`], note: 'Visit at 14 Shore Loan, morning slot. Duncan present on arrival; asked to leave the room for the interview and agreed after some discussion. House warm and tidy; fridge stocked (Duncan had shopped the day before). Bank card not in the house.' },
         ],
         interviews: [
-          { at: at('2026-08-28', '11:00'), power: 's8', withPersonId: marion.id, note: 'Interviewed alone with her advocate present. Marion was clear that Callum "does my messages" and keeps her card "so I do not lose it". She did not know the balance, could not say how often he withdraws cash, and became upset when told the amount. She wants her money back and her card in her own purse, and does not want Callum "in trouble".', adultDeclined: false },
+          { at: at('2026-08-28', '11:00'), power: 's8', withPersonId: marion.id, note: 'Interviewed alone with her advocate present. Marion was clear that Duncan "does my messages" and keeps her card "so I do not lose it". She did not know the balance, could not say how often he withdraws cash, and became upset when told the amount. She wants her money back and her card in her own purse, and does not want Duncan "in trouble".', adultDeclined: false },
         ],
         recordsRequests: [
           { requestedAt: at('2026-08-27', '16:00'), power: 's10', holder: 'Portlennan Medical Practice (Dr Amira Farouk)', holderAgency: 'health', status: 'received', note: 'Summary of consultations 2024 to 2026 and the memory clinic letter received 1 Sep. Records inspected by Dr Farouk on the council\'s behalf; only the summary was shared.' },
@@ -202,19 +202,19 @@ export function seedMarionFraser(ctx: BuildContext): void {
         },
         capacity: {
           assessed: true,
-          summary: 'Vascular dementia diagnosed November 2025. Marion can say what she wants (to stay at home, to have her money back) but cannot hold in mind how much has been withdrawn or what she agreed with Callum. A formal assessment of her capacity for financial decisions has been requested from Dr Farouk under the linked AWI process.',
+          summary: 'Vascular dementia diagnosed November 2025. Marion can say what she wants (to stay at home, to have her money back) but cannot hold in mind how much has been withdrawn or what she agreed with Duncan. A formal assessment of her capacity for financial decisions has been requested from Dr Farouk under the linked AWI process.',
           fluctuates: true,
           linkedAwiProcessId: MARION.awi,
         },
         unduePressure: {
           considered: true,
           found: true,
-          reasoning: 'Callum is present at most visits, answers for Marion, and told the bank he "manages everything". Marion was noticeably more anxious with him in the room and said she did not want him "in trouble". Undue pressure from a relative she depends on for shopping and company is likely, and would bear on any refusal she gives.',
+          reasoning: 'Duncan is present at most visits, answers for Marion, and told the bank he "manages everything". Marion was noticeably more anxious with him in the room and said she did not want him "in trouble". Undue pressure from a relative she depends on for shopping and company is likely, and would bear on any refusal she gives.',
         },
         advocacy: { offered: true, accepted: true, provider: 'Clydeshore Advocacy', advocateName: name(adv) },
       },
       ordersConsidered: [
-        { order: 'banning-order-s19', considered: true, decision: 'application-drafting', rationale: 'A banning order would keep Callum away from 14 Shore Loan while safeguards are put in place. Marion does not want him "in trouble" but does want her money back and to feel safe at home. An application is being drafted for the case conference to consider, with a temporary banning order as a fallback if the withdrawals continue before the hearing. Least restrictive alternatives (new account, card held by Marion, carers to prompt) are being tried first.' },
+        { order: 'banning-order-s19', considered: true, decision: 'application-drafting', rationale: 'A banning order would keep Duncan away from 14 Shore Loan while safeguards are put in place. Marion does not want him "in trouble" but does want her money back and to feel safe at home. An application is being drafted for the case conference to consider, with a temporary banning order as a fallback if the withdrawals continue before the hearing. Least restrictive alternatives (new account, card held by Marion, carers to prompt) are being tried first.' },
         { order: 'assessment-order-s11', considered: true, decision: 'not-required', rationale: 'Marion agreed to the s7 visit and s8 interview; there is no need for an order to assess her.' },
         { order: 'removal-order-s14', considered: true, decision: 'not-required', rationale: 'Marion is safe at home with care at home. Removal would be contrary to her clearly stated wish and is not the least restrictive option.' },
       ],
@@ -257,7 +257,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
         source: 'Council officer, ASP investigation ASP-2026-0217',
         sourceAgency: 'social-work',
         decisionInQuestion: 'Managing her finances and the arrangement with her nephew over her bank card',
-        summary: 'Marion has vascular dementia with fluctuating capacity. She cannot say how much has been withdrawn from her account or what she agreed with her nephew. Whether she can decide for herself about her money, and about any arrangement with Callum, needs a formal assessment before the case conference decides what protects her.',
+        summary: 'Marion has vascular dementia with fluctuating capacity. She cannot say how much has been withdrawn from her account or what she agreed with her nephew. Whether she can decide for herself about her money, and about any arrangement with Duncan, needs a formal assessment before the case conference decides what protects her.',
       },
       capacityAssessments: [
         {
@@ -275,11 +275,11 @@ export function seedMarionFraser(ctx: BuildContext): void {
         recordedAt: at('2026-08-28', '11:30'),
         byName: name(adv),
         pastWishes: 'Handled the household money herself after her husband Iain died in 2019 and was proud of it. Told her neighbour Cathy Sinclair she would "never be a burden" and would sooner "go without than owe anybody".',
-        presentWishes: 'To stay at home at Shore Loan. To have her own bank card in her own purse. For Callum to keep doing her shopping but not to keep her card or her money.',
+        presentWishes: 'To stay at home at Shore Loan. To have her own bank card in her own purse. For Duncan to keep doing her shopping but not to keep her card or her money.',
         communicationMethod: 'Spoken, mornings best; hearing aid in; one question at a time; advocate present; read back and agreed.',
         consultedOthers: [
-          { personId: callum.id, name: 'Callum Fraser', relationship: 'Nephew', view: 'Says he has a verbal arrangement to look after her money, that the withdrawals paid for shopping, fuel and "bits for the house", and that she "would never manage the bank". Declined to show receipts.' },
-          { name: 'Cathy Sinclair', relationship: 'Neighbour and friend', view: 'Marion was "always careful with money" and has been "different since the spring": asking to borrow for the milk, and anxious when Callum\'s car is outside.' },
+          { personId: duncan.id, name: 'Duncan Fraser', relationship: 'Nephew', view: 'Says he has a verbal arrangement to look after her money, that the withdrawals paid for shopping, fuel and "bits for the house", and that she "would never manage the bank". Declined to show receipts.' },
+          { name: 'Cathy Sinclair', relationship: 'Neighbour and friend', view: 'Marion was "always careful with money" and has been "different since the spring": asking to borrow for the milk, and anxious when Duncan\'s car is outside.' },
         ],
       },
       opgResult: {
@@ -306,13 +306,13 @@ export function seedMarionFraser(ctx: BuildContext): void {
     recordedByName: name(adv),
     recordedByAgency: 'third-sector',
     method: 'Recorded by her independent advocate straight after the s8 interview, at home, in her words, read back and agreed',
-    content: 'I want to stay in my own house. I have been here since 1971 and I am not going anywhere. Callum is a good lad, he does my messages, and I do not want him in any trouble. But that is my money and I want it back. I want my own card in my own purse.',
-    sharingPreference: 'Marion agreed her views can be read at the case conference. She does not want Callum told what she said about the money until the council officer has spoken to him herself.',
+    content: 'I want to stay in my own house. I have been here since 1971 and I am not going anywhere. Duncan is a good lad, he does my messages, and I do not want him in any trouble. But that is my money and I want it back. I want my own card in my own purse.',
+    sharingPreference: 'Marion agreed her views can be read at the case conference. She does not want Duncan told what she said about the money until the council officer has spoken to him herself.',
   });
 
   // ----- Actions -----
   const actions: Array<{ id: string; title: string; owner: string; agency: Agency; due: string; status: 'open' | 'in-progress' | 'complete'; completedAt?: string; evidence?: string; detail?: string }> = [
-    { id: 'act_marion_1', title: 'Obtain bank statements and cash machine footage for 1 Jun to 20 Aug; interview Callum Fraser under caution', owner: ds, agency: 'police', due: '2026-09-04', status: 'in-progress', evidence: 'Statements received 1 Sep; footage requested from two machines; interview arranged for 3 Sep' },
+    { id: 'act_marion_1', title: 'Obtain bank statements and cash machine footage for 1 Jun to 20 Aug; interview Duncan Fraser under caution', owner: ds, agency: 'police', due: '2026-09-04', status: 'in-progress', evidence: 'Statements received 1 Sep; footage requested from two machines; interview arranged for 3 Sep' },
     { id: 'act_marion_2', title: 's10 records request to Portlennan Medical Practice for consultations 2024 to 2026 and the memory clinic letter', owner: co, agency: 'social-work', due: '2026-09-01', status: 'complete', completedAt: at('2026-09-01', '10:00'), evidence: 'Summary received from Dr Farouk 1 Sep; filed to the investigation record' },
     { id: 'act_marion_3', title: 'Capacity assessment for financial decisions, at home, morning, advocate present', owner: gp, agency: 'health', due: '2026-09-04', status: 'open', detail: 'Feeds the linked AWI process and the case conference' },
     { id: 'act_marion_4', title: 'Council officer\'s report with integrated chronology for the case conference', owner: co, agency: 'social-work', due: '2026-09-08', status: 'in-progress', evidence: 'Chronology pack built; report drafted to section 4' },
@@ -352,14 +352,14 @@ export function seedMarionFraser(ctx: BuildContext): void {
       { id: 'ag_marion_iad_5', order: 5, title: 'Case conference date', status: 'done' },
     ],
     informationShared: [
-      { id: 'is_marion_iad_1', agency: 'police', byName: `DS ${name(ds)}`, byUserId: ds, at: at('2026-08-27', '10:05'), summary: 'Bank report: 31 withdrawals, £2,410, 8 Jun to 17 Aug, 19 from the Auchentorran machine near Callum Fraser\'s flat. Branch statement taken. No crime recorded yet.', relevance: 'Pattern and scale of the financial harm', linkedEventIds: [MARION.concernEvent] },
+      { id: 'is_marion_iad_1', agency: 'police', byName: `DS ${name(ds)}`, byUserId: ds, at: at('2026-08-27', '10:05'), summary: 'Bank report: 31 withdrawals, £2,410, 8 Jun to 17 Aug, 19 from the Auchentorran machine near Duncan Fraser\'s flat. Branch statement taken. No crime recorded yet.', relevance: 'Pattern and scale of the financial harm', linkedEventIds: [MARION.concernEvent] },
       { id: 'is_marion_iad_2', agency: 'health', byName: `Dr ${name(gp)}`, byUserId: gp, at: at('2026-08-27', '10:15'), summary: 'Vascular dementia diagnosed November 2025; capacity fluctuates, clearer in the mornings. Power of attorney recommended in March and November 2025; not taken up. Low mood in July, "worried about money".', relevance: 'Vulnerability and capacity', linkedEventIds: [] },
       { id: 'is_marion_iad_3', agency: 'regulator', byName: name(opg), byUserId: opg, at: at('2026-08-27', '10:25'), summary: 'Register check requested; result expected 28 Aug. If no power of attorney, the OPG can advise the bank on a Part 3 access to funds application or a third-party mandate limited to shopping.', relevance: 'Existing powers and banking safeguards', linkedEventIds: [] },
-      { id: 'is_marion_iad_4', agency: 'social-work', byName: name(sw), byUserId: sw, at: at('2026-08-27', '10:35'), summary: 'Care at home since April: two visits a day. Carers record Callum present at most morning visits since June, Marion without cash for the milkman in June, fridge nearly empty twice in August.', relevance: 'Corroboration from the care at home log', linkedEventIds: [] },
+      { id: 'is_marion_iad_4', agency: 'social-work', byName: name(sw), byUserId: sw, at: at('2026-08-27', '10:35'), summary: 'Care at home since April: two visits a day. Carers record Duncan present at most morning visits since June, Marion without cash for the milkman in June, fridge nearly empty twice in August.', relevance: 'Corroboration from the care at home log', linkedEventIds: [] },
     ],
     decisions: [
-      { id: 'dec_marion_iad_1', question: 'Investigation plan', decision: 's7 visit and s8 interview on 28 Aug, morning, council officer and second worker, advocate present, Callum asked to leave the room', rationale: 'Marion must be heard away from her nephew and at the time of day she is clearest', dissent: [], decidedByName: name(co), decidedByUserId: co, decidedAt: at('2026-08-27', '10:40') },
-      { id: 'dec_marion_iad_2', question: 'Records and police enquiries', decision: 's10 request to the GP; police to obtain statements and machine footage and interview Callum Fraser under caution', rationale: 'Establish the pattern and whether a crime has been committed', dissent: [], decidedByName: name(co), decidedByUserId: co, decidedAt: at('2026-08-27', '10:45') },
+      { id: 'dec_marion_iad_1', question: 'Investigation plan', decision: 's7 visit and s8 interview on 28 Aug, morning, council officer and second worker, advocate present, Duncan asked to leave the room', rationale: 'Marion must be heard away from her nephew and at the time of day she is clearest', dissent: [], decidedByName: name(co), decidedByUserId: co, decidedAt: at('2026-08-27', '10:40') },
+      { id: 'dec_marion_iad_2', question: 'Records and police enquiries', decision: 's10 request to the GP; police to obtain statements and machine footage and interview Duncan Fraser under caution', rationale: 'Establish the pattern and whether a crime has been committed', dissent: [], decidedByName: name(co), decidedByUserId: co, decidedAt: at('2026-08-27', '10:45') },
       { id: 'dec_marion_iad_3', question: 'Capacity', decision: 'Open a linked AWI process; ask Dr Farouk to assess capacity for financial decisions before the conference', rationale: 'The protective options depend on whether Marion can decide about her own money', dissent: [], decidedByName: name(co), decidedByUserId: co, decidedAt: at('2026-08-27', '10:50') },
       { id: 'dec_marion_iad_4', question: 'Immediate safeguards', decision: 'Keep the bank\'s £100 daily limit; second worker to arrange a new account with a card only to Marion, with her agreement', rationale: 'Least restrictive step that stops further loss', dissent: [{ byName: `DS ${name(ds)}`, byUserId: ds, agency: 'police', text: 'Police would prefer the card cancelled outright now; accepted the new account route so that Marion keeps access to her own money.' }], decidedByName: name(co), decidedByUserId: co, decidedAt: at('2026-08-27', '10:55') },
       { id: 'dec_marion_iad_5', question: 'Case conference', decision: 'Initial case conference 11 Sep, within the 21-day local timescale', rationale: 'Allows the capacity assessment and police interview to complete', dissent: [], decidedByName: name(co), decidedByUserId: co, decidedAt: at('2026-08-27', '10:58') },
@@ -425,7 +425,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
     minute: { status: 'not-started' },
     // Indicators 5 and 6: invited and, at a scheduled conference, not yet attended.
     aspAttendance: { adultInvited: true, adultAttended: false, advocateInvited: true, advocateAttended: false },
-    subjectAttendance: 'Marion will attend the first part with her advocate Tam Guthrie; a morning slot was chosen because she is clearer then. Callum Fraser is not invited: alleged perpetrator, chair\'s decision recorded 1 Sep; he will be told the outcome by the council officer.',
+    subjectAttendance: 'Marion will attend the first part with her advocate Tam Guthrie; a morning slot was chosen because she is clearer then. Duncan Fraser is not invited: alleged perpetrator, chair\'s decision recorded 1 Sep; he will be told the outcome by the council officer.',
   });
 
   // ----- Sharing records -----
@@ -446,29 +446,29 @@ export function seedMarionFraser(ctx: BuildContext): void {
   E({ occurredAt: at('2024-02-13', '10:20'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP consultation: memory concerns raised by Marion', detail: 'Marion reported forgetting appointments and twice leaving the cooker on. Blood tests arranged. Referred to the memory clinic.', significance: 'moderate' });
   E({ occurredAt: at('2024-05-20', '00:00'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.assessment', title: 'Memory clinic: mild cognitive impairment, review in 12 months', detail: 'Cognitive testing and CT scan. Mild cognitive impairment, vascular changes noted. Advice on driving and finances given in writing.', significance: 'moderate' });
   E({ occurredAt: at('2024-11-07', '11:00'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP: blood pressure review', detail: 'Attended alone by bus. Blood pressure controlled. No new concerns.', significance: 'low', visibility: 'agency-only', lawfulBasisId: undefined });
-  E({ occurredAt: at('2025-03-18', '09:40'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP: attended with nephew, who asked about "helping with her money"', detail: 'Callum Fraser accompanied Marion and asked whether she "should still be dealing with the bank". Dr Farouk advised that Marion could grant a power of attorney while she is able to decide, and gave a leaflet. Marion said she would "think about it".', significance: 'moderate', significanceReason: 'First record of the nephew involved in her finances', linkedPersonIds: [callum.id] });
-  E({ occurredAt: at('2025-11-12', '14:30'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.diagnosis', title: 'Vascular dementia diagnosed at the memory clinic; disclosed to Marion and her nephew', detail: 'Repeat cognitive testing and scan consistent with vascular dementia. Marion told with Callum present at her request. Capacity noted as fluctuating and better in the mornings. Power of attorney recommended again; letter copied to the GP.', significance: 'high', significanceReason: 'Diagnosis that makes her more vulnerable to harm (three-point test limb c)', linkedPersonIds: [callum.id] });
+  E({ occurredAt: at('2025-03-18', '09:40'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP: attended with nephew, who asked about "helping with her money"', detail: 'Duncan Fraser accompanied Marion and asked whether she "should still be dealing with the bank". Dr Farouk advised that Marion could grant a power of attorney while she is able to decide, and gave a leaflet. Marion said she would "think about it".', significance: 'moderate', significanceReason: 'First record of the nephew involved in her finances', linkedPersonIds: [duncan.id] });
+  E({ occurredAt: at('2025-11-12', '14:30'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.diagnosis', title: 'Vascular dementia diagnosed at the memory clinic; disclosed to Marion and her nephew', detail: 'Repeat cognitive testing and scan consistent with vascular dementia. Marion told with Duncan present at her request. Capacity noted as fluctuating and better in the mornings. Power of attorney recommended again; letter copied to the GP.', significance: 'high', significanceReason: 'Diagnosis that makes her more vulnerable to harm (three-point test limb c)', linkedPersonIds: [duncan.id] });
   E({ occurredAt: at('2026-01-20', '15:10'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP home visit: chest infection', detail: 'Antibiotics prescribed. Nephew present.', significance: 'low', visibility: 'agency-only', lawfulBasisId: undefined });
-  E({ occurredAt: at('2026-03-09', '02:15'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.admission', title: 'Admitted to Clydeshore Royal Infirmary after a fall at home', detail: 'Found on the kitchen floor by her nephew at about 01:30. Bruising to hip and shoulder, no fracture. Confused on admission; delirium settled by day 3. Five nights on ward 4.', significance: 'high', significanceReason: 'First admission; led to care at home', linkedPersonIds: [callum.id] });
+  E({ occurredAt: at('2026-03-09', '02:15'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.admission', title: 'Admitted to Clydeshore Royal Infirmary after a fall at home', detail: 'Found on the kitchen floor by her nephew at about 01:30. Bruising to hip and shoulder, no fracture. Confused on admission; delirium settled by day 3. Five nights on ward 4.', significance: 'high', significanceReason: 'First admission; led to care at home', linkedPersonIds: [duncan.id] });
   E({ occurredAt: at('2026-03-14', '00:00'), agency: 'health', sourceSystem: 'trakcare', recordedByName: 'TrakCare connector', eventType: 'health.discharge', title: 'Discharged home; care at home recommended', detail: 'Occupational therapy assessment: needs prompting with meals and medication, unsafe with the cooker unsupervised. Referred to Adult Services, Portlennan.', significance: 'moderate' });
   E({ occurredAt: at('2026-03-20', '00:00'), agency: 'social-work', sourceSystem: 'carefirst', recordedByName: 'CareFirst connector', eventType: 'social-work.assessment', title: 'Community care assessment: care at home twice a day', detail: 'Assessment by Stuart Blair. Marion wants to stay at home. Nephew described as main support. Care at home for morning and teatime visits; key safe fitted.', significance: 'moderate' });
   E({ occurredAt: at('2026-04-06', '00:00'), agency: 'social-work', sourceSystem: 'carefirst', recordedByName: 'CareFirst connector', eventType: 'care.service-start', title: 'Care at home started: morning and teatime visits', detail: 'Clydeshore Care at Home. Medication prompts, meals, welfare check. Carers to record who is in the house.', significance: 'low' });
-  E({ occurredAt: at('2026-06-01', '00:00'), approximate: true, agency: 'social-work', recordedByName: name(sw), recordedByUserId: sw, eventType: 'household.change', title: 'Nephew Callum Fraser began staying overnight in the spare room', detail: 'Date approximate, from the care at home log and Marion\'s account. Callum keeps his tenancy in Auchentorran and stays "three or four nights" a week. Carers record him present at most morning visits from June.', significance: 'moderate', significanceReason: 'Household change coinciding with the start of the withdrawals', linkedPersonIds: [callum.id] });
-  E({ occurredAt: at('2026-06-24', '08:20'), agency: 'social-work', sourceSystem: 'carefirst', recordedByName: 'CareFirst connector', eventType: 'care.provider-concern', title: 'Care at home: Marion had no cash for the milkman and said "Callum has my card"', detail: 'Carer note. Marion asked the carer to lend her £5. Said her nephew keeps her bank card "so I do not lose it". Coordinator informed.', significance: 'moderate', significanceReason: 'First record of the card being held by the nephew' });
-  E({ occurredAt: at('2026-07-15', '10:30'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP: low in mood, "worried about money"', detail: 'Attended with her nephew. Tearful, not sleeping, said she was "worried about money" but could not say why. Nephew said "she gets confused about the bank". Mood review in four weeks.', significance: 'moderate', linkedPersonIds: [callum.id] });
-  E({ occurredAt: at('2026-08-06', '17:15'), agency: 'social-work', sourceSystem: 'carefirst', recordedByName: 'CareFirst connector', eventType: 'care.provider-concern', title: 'Care at home: fridge nearly empty on two visits this week', detail: 'Carer note. Bread, margarine and one tin. Marion said Callum "would bring the messages". Carer bought milk and eggs from petty cash. Coordinator to raise with the family.', significance: 'moderate' });
+  E({ occurredAt: at('2026-06-01', '00:00'), approximate: true, agency: 'social-work', recordedByName: name(sw), recordedByUserId: sw, eventType: 'household.change', title: 'Nephew Duncan Fraser began staying overnight in the spare room', detail: 'Date approximate, from the care at home log and Marion\'s account. Duncan keeps his tenancy in Auchentorran and stays "three or four nights" a week. Carers record him present at most morning visits from June.', significance: 'moderate', significanceReason: 'Household change coinciding with the start of the withdrawals', linkedPersonIds: [duncan.id] });
+  E({ occurredAt: at('2026-06-24', '08:20'), agency: 'social-work', sourceSystem: 'carefirst', recordedByName: 'CareFirst connector', eventType: 'care.provider-concern', title: 'Care at home: Marion had no cash for the milkman and said "Duncan has my card"', detail: 'Carer note. Marion asked the carer to lend her £5. Said her nephew keeps her bank card "so I do not lose it". Coordinator informed.', significance: 'moderate', significanceReason: 'First record of the card being held by the nephew' });
+  E({ occurredAt: at('2026-07-15', '10:30'), agency: 'health', sourceSystem: 'emis-web', recordedByName: 'EMIS Web connector', eventType: 'health.consultation', title: 'GP: low in mood, "worried about money"', detail: 'Attended with her nephew. Tearful, not sleeping, said she was "worried about money" but could not say why. Nephew said "she gets confused about the bank". Mood review in four weeks.', significance: 'moderate', linkedPersonIds: [duncan.id] });
+  E({ occurredAt: at('2026-08-06', '17:15'), agency: 'social-work', sourceSystem: 'carefirst', recordedByName: 'CareFirst connector', eventType: 'care.provider-concern', title: 'Care at home: fridge nearly empty on two visits this week', detail: 'Carer note. Bread, margarine and one tin. Marion said Duncan "would bring the messages". Carer bought milk and eggs from petty cash. Coordinator to raise with the family.', significance: 'moderate' });
   E({ id: MARION.concernEvent, occurredAt: at('2026-08-20', '15:45'), agency: 'police', sourceSystem: 'ivpd', recordedByName: 'iVPD connector', eventType: 'police.concern-report', title: 'Adult Concern Report: bank raised concern about cash withdrawals', detail: 'Clydeshore Savings Bank reported 31 cash machine withdrawals totalling £2,410 between 8 Jun and 17 Aug, 19 at Auchentorran, several after 22:00. Marion attended the branch on 18 Aug unsure why her balance was low and said her nephew keeps her card.', response: 'Concern report shared with the council adult protection team. Bank placed a £100 daily withdrawal limit.', significance: 'high', significanceReason: 'Pattern of financial harm to an adult with dementia', evidenceRefs: [{ kind: 'connector', ref: 'cev_marion_acr', label: 'iVPD Adult Concern Report' }] });
   E({ occurredAt: at('2026-08-21', '09:30'), agency: 'social-work', recordedByName: name(co), recordedByUserId: co, eventType: 'process.referral', title: 'Adult concern received; three-point test met; inquiry opened', detail: 'Council officer allocated. Screening decision by the team leader: proceed to inquiry. Police, GP and OPG contacted the same day.', significance: 'high', significanceReason: 'ASP process started' });
-  E({ occurredAt: at('2026-08-22', '11:00'), agency: 'police', recordedByName: `DS ${name(ds)}`, recordedByUserId: ds, eventType: 'police.incident', title: 'PPU enquiry: branch statement taken; nephew checked on police systems', detail: 'Statement from the branch manager. Callum Fraser: no previous convictions; one 2023 intelligence entry for a dispute over a debt. Bank asked for statements and machine footage under s5.', significance: 'moderate', visibility: 'agency-only', lawfulBasisId: undefined, linkedPersonIds: [callum.id] });
-  E({ occurredAt: at('2026-08-25', '14:00'), agency: 'social-work', recordedByName: name(co), recordedByUserId: co, eventType: 'social-work.contact', title: 'Council officer spoke with the care at home coordinator', detail: 'Log of who was in the house at each visit since April obtained. Callum present at 41 of 58 morning visits since 1 Jun. Carers asked to record cash in the house and any distress.', significance: 'moderate', visibility: 'agency-only', lawfulBasisId: undefined });
+  E({ occurredAt: at('2026-08-22', '11:00'), agency: 'police', recordedByName: `DS ${name(ds)}`, recordedByUserId: ds, eventType: 'police.incident', title: 'PPU enquiry: branch statement taken; nephew checked on police systems', detail: 'Statement from the branch manager. Duncan Fraser: no previous convictions; one 2023 intelligence entry for a dispute over a debt. Bank asked for statements and machine footage under s5.', significance: 'moderate', visibility: 'agency-only', lawfulBasisId: undefined, linkedPersonIds: [duncan.id] });
+  E({ occurredAt: at('2026-08-25', '14:00'), agency: 'social-work', recordedByName: name(co), recordedByUserId: co, eventType: 'social-work.contact', title: 'Council officer spoke with the care at home coordinator', detail: 'Log of who was in the house at each visit since April obtained. Duncan present at 41 of 58 morning visits since 1 Jun. Carers asked to record cash in the house and any distress.', significance: 'moderate', visibility: 'agency-only', lawfulBasisId: undefined });
   E({ occurredAt: at('2026-08-26', '15:00'), agency: 'social-work', recordedByName: name(co), recordedByUserId: co, eventType: 'social-work.assessment', title: 'ASP inquiry decision: proceed to investigation', detail: 'Decision on working day 3. Council officer Moira Gilmour, second worker Stuart Blair. Inter-agency discussion arranged for 27 Aug to plan the investigation.', significance: 'high', significanceReason: 'Inquiry outcome' });
   E({ occurredAt: at('2026-08-27', '10:00'), agency: 'social-work', recordedByName: name(co), recordedByUserId: co, eventType: 'process.case-conference', title: 'ASP inter-agency discussion held: investigation planned', detail: 'Police, GP, OPG and social work. s7 visit and s8 interview 28 Aug with advocate; s10 request to GP; police to obtain records and interview the nephew; AWI process opened; case conference 11 Sep.', significance: 'high', significanceReason: 'Investigation plan agreed across agencies' });
   E({ occurredAt: at('2026-08-27', '14:00'), agency: 'social-work', recordedByName: name(co), recordedByUserId: co, eventType: 'social-work.referral', title: 'AWI process opened: capacity for financial decisions in question', detail: 'Linked to the ASP investigation. Capacity assessment requested from Dr Farouk; OPG register check requested; MHO advice sought on route.', significance: 'moderate', linkedProcessIds: [asp.id, awi.id] });
-  E({ occurredAt: at('2026-08-28', '10:30'), agency: 'social-work', recordedByName: name(co), recordedByUserId: co, eventType: 'social-work.visit', title: 's7 visit: council officer and second worker, with advocate', detail: 'Morning visit. Callum present on arrival and asked to leave the room; agreed after discussion. House warm and tidy; fridge stocked the day before. Bank card not in the house.', significance: 'high', significanceReason: 'Investigation visit', linkedPersonIds: [callum.id] });
-  E({ occurredAt: at('2026-08-28', '11:00'), agency: 'third-sector', recordedByName: name(adv), recordedByUserId: adv, eventType: 'voice.adult', title: 's8 interview: Marion interviewed alone; her views recorded by her advocate', detail: 'Wants to stay at home; fond of Callum and does not want him "in trouble"; wants her money back and her own card in her purse. Consent to the investigation confirmed in the morning.', significance: 'high', significanceReason: 'The adult\'s own account and wishes' });
+  E({ occurredAt: at('2026-08-28', '10:30'), agency: 'social-work', recordedByName: name(co), recordedByUserId: co, eventType: 'social-work.visit', title: 's7 visit: council officer and second worker, with advocate', detail: 'Morning visit. Duncan present on arrival and asked to leave the room; agreed after discussion. House warm and tidy; fridge stocked the day before. Bank card not in the house.', significance: 'high', significanceReason: 'Investigation visit', linkedPersonIds: [duncan.id] });
+  E({ occurredAt: at('2026-08-28', '11:00'), agency: 'third-sector', recordedByName: name(adv), recordedByUserId: adv, eventType: 'voice.adult', title: 's8 interview: Marion interviewed alone; her views recorded by her advocate', detail: 'Wants to stay at home; fond of Duncan and does not want him "in trouble"; wants her money back and her own card in her purse. Consent to the investigation confirmed in the morning.', significance: 'high', significanceReason: 'The adult\'s own account and wishes' });
   E({ occurredAt: at('2026-08-28', '15:30'), agency: 'regulator', sourceSystem: 'opg', recordedByName: 'OPG register connector', recordedByUserId: opg, eventType: 'other', title: 'OPG register check: no power of attorney, no guardianship', detail: 'Reference OPG-REG-2026-41877. No registered power of attorney, guardianship or intervention order for Marion Fraser. Nephew holds no formal authority over her funds.', significance: 'high', significanceReason: 'The "arrangement" has no legal basis', linkedProcessIds: [asp.id, awi.id] });
   E({ occurredAt: at('2026-09-01', '10:00'), agency: 'health', recordedByName: `Dr ${name(gp)}`, recordedByUserId: gp, eventType: 'sharing', title: 's10 records summary provided to the council officer', detail: 'Summary of consultations 2024 to 2026 and the memory clinic letters. Inspected by Dr Farouk; only the summary shared. Capacity assessment booked for 4 Sep.', significance: 'moderate' });
-  E({ occurredAt: at('2026-09-01', '16:20'), agency: 'police', recordedByName: `DS ${name(ds)}`, recordedByUserId: ds, eventType: 'police.incident', title: 'Bank statements received; Callum Fraser invited for interview under caution on 3 Sep', detail: 'Statements 1 Jun to 20 Aug confirm the withdrawal pattern. Footage requested from Auchentorran Station Brae and Portlennan Quay Wynd machines.', significance: 'moderate', visibility: 'agency-only', lawfulBasisId: undefined, linkedPersonIds: [callum.id] });
+  E({ occurredAt: at('2026-09-01', '16:20'), agency: 'police', recordedByName: `DS ${name(ds)}`, recordedByUserId: ds, eventType: 'police.incident', title: 'Bank statements received; Duncan Fraser invited for interview under caution on 3 Sep', detail: 'Statements 1 Jun to 20 Aug confirm the withdrawal pattern. Footage requested from Auchentorran Station Brae and Portlennan Quay Wynd machines.', significance: 'moderate', visibility: 'agency-only', lawfulBasisId: undefined, linkedPersonIds: [duncan.id] });
 
   // Analysis note, kept apart from the facts.
   const patternIds = ctx.data.events.filter((e) => e.subjectIds.includes(marion.id) && (e.eventType === 'household.change' || e.eventType === 'care.provider-concern' || e.id === MARION.concernEvent || (e.eventType === 'health.consultation' && e.occurredAt.startsWith('2026-07')))).map((e) => e.id);
@@ -483,7 +483,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
     recordedAt: at('2026-09-01', '17:30'),
     kind: 'pattern',
     title: 'Withdrawals align with the nephew\'s visits and overnight stays',
-    text: 'The bank\'s list of 31 withdrawals between 8 June and 17 August falls on days when the care at home log records Callum in the house, and 19 of them are from the Auchentorran machine near his flat rather than Portlennan. The pattern begins within a fortnight of him starting to stay overnight. Marion\'s low mood in July and the empty fridge in August follow the same weeks. This is a pattern for the case conference to weigh alongside the police interview; it is not a finding that Callum took the money.',
+    text: 'The bank\'s list of 31 withdrawals between 8 June and 17 August falls on days when the care at home log records Duncan in the house, and 19 of them are from the Auchentorran machine near his flat rather than Portlennan. The pattern begins within a fortnight of him starting to stay overnight. Marion\'s low mood in July and the empty fridge in August follow the same weeks. This is a pattern for the case conference to weigh alongside the police interview; it is not a finding that Duncan took the money.',
   });
 
   // Connector inbox: the promoted Adult Concern Report and one pending GP record.

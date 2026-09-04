@@ -40,8 +40,8 @@ test.describe('household and network', () => {
     await page.goto('/people/per_marion_fraser');
     await waitForData(page);
 
-    await expect(page.getByTestId('network-ties')).toContainText('Callum');
-    await expect(page.getByTestId('household-members')).not.toContainText('Callum');
+    await expect(page.getByTestId('network-ties')).toContainText('Duncan');
+    await expect(page.getByTestId('household-members')).not.toContainText('Duncan');
   });
 
   test('recording a relationship to the perpetrator says who it excludes, before the save button', async ({ page }) => {

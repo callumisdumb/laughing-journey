@@ -16,7 +16,7 @@ export const NAME_POOLS: NamePool[] = [
   {
     origin: 'scottish',
     female: ['Morag', 'Eilidh', 'Kirsty', 'Fiona', 'Isla', 'Shona', 'Catriona', 'Ailsa', 'Mhairi', 'Jean', 'Agnes', 'Senga', 'Lorna', 'Elspeth', 'Rhona', 'Kayleigh', 'Chloe', 'Lily', 'Marion', 'Ishbel', 'Nicola', 'Lauren', 'Erin', 'Skye', 'Iona', 'Freya', 'Ellie', 'Sophie', 'Ava', 'Jessica', 'Kirsten', 'Annette', 'Margaret', 'Elizabeth', 'Wilma', 'Sheila', 'Carol', 'Linda', 'Donna', 'Tracy'],
-    male: ['Callum', 'Ewan', 'Fraser', 'Hamish', 'Lachlan', 'Angus', 'Gregor', 'Alasdair', 'Ruaridh', 'Iain', 'Archie', 'Finlay', 'Rory', 'Kenny', 'Stewart', 'Ryan', 'Derek', 'Aiden', 'Mason', 'Logan', 'Jack', 'Lewis', 'Harris', 'Oliver', 'Brodie', 'Kyle', 'Craig', 'Scott', 'Gary', 'Tam', 'Willie', 'Jim', 'Robert', 'Douglas', 'Malcolm', 'Alan', 'Brian', 'Colin', 'Gordon', 'Neil'],
+    male: ['Ewan', 'Fraser', 'Hamish', 'Lachlan', 'Angus', 'Gregor', 'Alasdair', 'Ruaridh', 'Iain', 'Archie', 'Finlay', 'Rory', 'Kenny', 'Stewart', 'Ryan', 'Derek', 'Aiden', 'Mason', 'Logan', 'Jack', 'Lewis', 'Harris', 'Oliver', 'Brodie', 'Kyle', 'Craig', 'Scott', 'Gary', 'Tam', 'Willie', 'Jim', 'Robert', 'Douglas', 'Malcolm', 'Alan', 'Brian', 'Colin', 'Gordon', 'Neil'],
     family: ['Fraser', 'Docherty', 'Kerr', 'Muir', 'Boyle', 'Grant', 'Reid', 'MacLeod', 'Campbell', 'Stewart', 'Robertson', 'Wilson', 'Thomson', 'Anderson', 'Morrison', 'Buchanan', 'Gillespie', 'McIntyre', 'Cunningham', 'Wallace', 'Ferguson', 'Sinclair', 'Gunn', 'Munro', 'Baird', 'Drummond', 'Lennox', 'Kilgour', 'Paterson', 'McCulloch', 'Rennie', 'Sneddon', 'Torrance', 'Weir', 'Lindsay', 'Ogilvie', 'Rankin', 'Milne', 'Cairns', 'Duffy'],
     languages: [],
     weight: 62,
