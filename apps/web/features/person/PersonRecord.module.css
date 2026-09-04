@@ -231,3 +231,11 @@
   gap: var(--density-gap) var(--content-gutter);
   align-items: start;
 }
+
+/*
+ * A death, in the header facts rather than as a pill. It changes what every other fact on the line
+ * means, so it sits with them and reads as a sentence rather than as a badge to be scanned past.
+ */
+.died {
+  color: var(--color-risk-critical);
+}

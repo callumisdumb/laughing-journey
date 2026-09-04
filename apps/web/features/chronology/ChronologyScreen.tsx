@@ -4,9 +4,10 @@ import { EVENT_FAMILIES, LENS_IDS, agencyShort, analysisKindLabel, eventFamilyLa
 import { useT } from '@mas/messages';
 import { Button, EmptyState, RestrictedState } from '@mas/ui';
 import { subDays, subMonths, subYears } from 'date-fns';
-import { ArrowLeft, Inbox, Plus, Printer } from 'lucide-react';
+import { ArrowLeft, FileX, Inbox, Plus, Printer } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
+import { RecordedInErrorDialog } from '@/components/RecordedInErrorDialog';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { useNavigate, useRoute } from '@/lib/router';
 import { personPath } from '@/lib/routes';
@@ -47,6 +48,8 @@ export function ChronologyScreen({ personId }: { personId: string }) {
   const reset = useChronologyStore((s) => s.reset);
   const model = useChronology(personId);
   const [adding, setAdding] = useState(false);
+  const [retiring, setRetiring] = useState<string | null>(null);
+  const selectedEvent = model.events.find((e) => e.id === store.selectedEventId);
 
   useEffect(() => {
     reset(personId);
@@ -237,6 +240,18 @@ export function ChronologyScreen({ personId }: { personId: string }) {
         />
         <div className={styles.section}>
           <EventList events={model.events} selectedEventId={store.selectedEventId} highlighted={model.highlighted} onSelect={store.select} height={440} />
+          <div className={styles.listFoot}>
+            {model.retired.length > 0 ? (
+              <span className={styles.windowNote} data-testid="chronology-retired">
+                {t('chronology.retired.note', { count: model.retired.length })}
+              </span>
+            ) : null}
+            {selectedEvent ? (
+              <Button size="sm" variant="quiet" icon={<FileX size={14} aria-hidden="true" />} onClick={() => setRetiring(selectedEvent.id)} data-testid="retire-event">
+                {t('chronology.retired.action')}
+              </Button>
+            ) : null}
+          </div>
         </div>
         <div className={styles.section}>
           <h2>{t('chronology.analysis.title')}</h2>
@@ -254,6 +269,15 @@ export function ChronologyScreen({ personId }: { personId: string }) {
         </div>
       </ScreenState>
       <AddEventDialog open={adding} onClose={() => setAdding(false)} personId={personId} processIds={model.processes.filter((p) => p.status === 'open').map((p) => p.id)} recentEvents={model.visible} />
+      {retiring ? (
+        <RecordedInErrorDialog
+          collection="events"
+          id={retiring}
+          label={model.events.find((e) => e.id === retiring)?.title ?? retiring}
+          open
+          onClose={() => setRetiring(null)}
+        />
+      ) : null}
     </div>
   );
 }

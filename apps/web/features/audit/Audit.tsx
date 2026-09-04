@@ -40,6 +40,11 @@ const ACT_TONES: Record<AuditAct, PillTone> = {
   create: 'low',
   merge: 'medium',
   unmerge: 'medium',
+  // A closure and a reopening are ordinary casework acts. A recorded-in-error is not: it is the
+  // retirement of a record that should never have existed, and the ledger reads like it.
+  close: 'low',
+  reopen: 'medium',
+  'recorded-in-error': 'high',
 };
 
 function targetHref(data: Dataset, a: AuditEntry): string | undefined {

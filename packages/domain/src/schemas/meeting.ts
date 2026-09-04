@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { AGENCIES, DETAIL_LEVELS, MEETING_TYPES } from '../enums';
-import { idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
+import { correctable, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
 export const inviteeSchema = z.object({
   userId: idSchema.optional(),
@@ -140,5 +140,6 @@ export const meetingSchema = z.object({
       adultNotInvitedReason: z.string().optional(),
     })
     .optional(),
+  ...correctable,
 });
 export type Meeting = z.infer<typeof meetingSchema>;

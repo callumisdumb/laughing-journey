@@ -111,6 +111,8 @@ Generated on 2026-09-04 by `pnpm docs:data-model`. Do not edit below this line.
 | `line2` | string | no |
 | `town` | string | yes |
 | `postcode` | string | yes |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### Person
 
@@ -137,8 +139,11 @@ Generated on 2026-09-04 by `pnpm docs:data-model`. Do not edit below this line.
 | `gpPractice` | string | no |
 | `school` | string | no |
 | `deceased` | boolean | no |
+| `death` | object { at, recordedAt, byUserId, byName, source } | no |
 | `createdAt` | string (date-time) | yes |
 | `createdAfterReviewing` | integer | no |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### Household
 
@@ -149,6 +154,8 @@ Generated on 2026-09-04 by `pnpm docs:data-model`. Do not edit below this line.
 | `addressId` | string | yes |
 | `members` | array of object { personId, from, to, endedReason } | yes |
 | `label` | string | no |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### Relationship
 
@@ -162,6 +169,8 @@ Generated on 2026-09-04 by `pnpm docs:data-model`. Do not edit below this line.
 | `from` | string (date) | no |
 | `to` | string (date) | no |
 | `notes` | string | no |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### Process (discriminated by type)
 
@@ -186,13 +195,15 @@ Variant 1
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
 | `members` | array of object { userId, caseRole, agency, since, reason } | yes |
-| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note } | yes |
+| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note, stoppedByClosure } | yes |
 | `linkedProcessIds` | array of string | yes |
 | `viewsRecordIds` | array of string | yes |
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
 | `parties` | array of object { personId, userId, name, party, label, since, source, reason, stands, decidedAt, decidedByName, decisionReason } | yes |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 | `type` | literal "asp" | yes |
 | `detail` | object { concern, threePointTest, screening, inquiry, investigation, ordersConsidered, planId, closure, lsi } | yes |
 
@@ -217,13 +228,15 @@ Variant 2
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
 | `members` | array of object { userId, caseRole, agency, since, reason } | yes |
-| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note } | yes |
+| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note, stoppedByClosure } | yes |
 | `linkedProcessIds` | array of string | yes |
 | `viewsRecordIds` | array of string | yes |
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
 | `parties` | array of object { personId, userId, name, party, label, since, source, reason, stands, decidedAt, decidedByName, decisionReason } | yes |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 | `type` | literal "cp" | yes |
 | `detail` | object { concern, proceduresInitiatedAt, ird, investigation, cppm, register, coreGroup, childsPlanId, preBirth } | yes |
 
@@ -248,13 +261,15 @@ Variant 3
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
 | `members` | array of object { userId, caseRole, agency, since, reason } | yes |
-| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note } | yes |
+| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note, stoppedByClosure } | yes |
 | `linkedProcessIds` | array of string | yes |
 | `viewsRecordIds` | array of string | yes |
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
 | `parties` | array of object { personId, userId, name, party, label, since, source, reason, stands, decidedAt, decidedByName, decisionReason } | yes |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 | `type` | literal "marac" | yes |
 | `detail` | object { referral, researchRequests, meetingId, actionPlanId, idaa, idaaFeedback, flags, links, safeLivesReturn, transfer } | yes |
 
@@ -279,13 +294,15 @@ Variant 4
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
 | `members` | array of object { userId, caseRole, agency, since, reason } | yes |
-| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note } | yes |
+| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note, stoppedByClosure } | yes |
 | `linkedProcessIds` | array of string | yes |
 | `viewsRecordIds` | array of string | yes |
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
 | `parties` | array of object { personId, userId, name, party, label, since, source, reason, stands, decidedAt, decidedByName, decisionReason } | yes |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 | `type` | literal "mappa" | yes |
 | `detail` | object { category, level, levelHistory, leadResponsibleAuthority, visorReference, victimPersonIds, notification, referral, sonr, custody, licenceConditions, orders, riskAssessmentIds, rmp, era, disclosures, preMeetingReturns, reviewSchedule, exit, significantCaseReviewTrigger } | yes |
 
@@ -310,13 +327,15 @@ Variant 5
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
 | `members` | array of object { userId, caseRole, agency, since, reason } | yes |
-| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note } | yes |
+| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note, stoppedByClosure } | yes |
 | `linkedProcessIds` | array of string | yes |
 | `viewsRecordIds` | array of string | yes |
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
 | `parties` | array of object { personId, userId, name, party, label, since, source, reason, stands, decidedAt, decidedByName, decisionReason } | yes |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 | `type` | literal "awi" | yes |
 | `detail` | object { concern, capacityAssessments, willAndPreferences, opgResult, routeDecision, application, orders, supervisionVisits, investigations } | yes |
 
@@ -430,6 +449,7 @@ Variant 5
 | `visibility` | "agency-only" \| "integrated" \| "restricted" | yes |
 | `lawfulBasisId` | string | no |
 | `versions` | array of object { at, byUserId, byName, change } | yes |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### ChronologyAnalysis
 
@@ -447,6 +467,8 @@ Variant 5
 | `kind` | "pattern" \| "risk" \| "recommendation" | yes |
 | `title` | string | yes |
 | `text` | string | yes |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### Meeting
 
@@ -479,6 +501,8 @@ Variant 5
 | `reviewDate` | string (date) | no |
 | `subjectAttendance` | string | no |
 | `aspAttendance` | object { adultInvited, adultAttended, advocateInvited, advocateAttended, adultNotInvitedReason } | no |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### Decision
 
@@ -515,6 +539,8 @@ Variant 5
 | `escalatedToName` | string | no |
 | `createdAt` | string (date-time) | yes |
 | `createdByName` | string | yes |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### Plan
 
@@ -533,6 +559,8 @@ Variant 5
 | `status` | "draft" \| "active" \| "reviewed" \| "ended" | yes |
 | `consentNote` | string | no |
 | `noFurtherActionAgreed` | boolean | no |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### RiskAssessment
 
@@ -554,6 +582,8 @@ Variant 5
 | `items` | array of object { id, question, answer } | no |
 | `evidenceRefs` | array of object { kind, ref, label } | yes |
 | `judgementOverride` | object { band, reason, byName } | no |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### ViewsRecord
 
@@ -571,6 +601,8 @@ Variant 5
 | `method` | string | yes |
 | `content` | string | yes |
 | `sharingPreference` | string | no |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### LawfulBasisRecord
 
@@ -619,6 +651,8 @@ Variant 5
 | `createdByUserId` | string | no |
 | `createdByName` | string | yes |
 | `summary` | string | yes |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### InformationRequest
 
@@ -643,6 +677,8 @@ Variant 5
 | `createdAt` | string (date-time) | yes |
 | `dueAt` | string (date) | no |
 | `response` | object { at, byName, text, fieldsProvided } | no |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### ConnectorEvent
 
@@ -672,7 +708,7 @@ Variant 5
 | `userId` | string | yes |
 | `userName` | string | yes |
 | `agency` | enum (11 values) | yes |
-| `act` | enum (15 values) | yes |
+| `act` | enum (18 values) | yes |
 | `targetType` | enum (9 values) | yes |
 | `targetId` | string | yes |
 | `targetLabel` | string | yes |

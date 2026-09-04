@@ -51,3 +51,27 @@
     transform: translateY(0);
   }
 }
+
+/*
+ * The one action a toast may carry. Underlined rather than a button box, because a toast is a
+ * notice and a filled button in one reads as the primary action on the screen, which it is not.
+ */
+.toastAction {
+  min-height: 32px;
+  margin-top: 2px;
+  padding: 4px 0;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: underline;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-underline-offset: 3px;
+}
+
+.toastAction:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}

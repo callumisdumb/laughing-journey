@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, nextReference, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Person, type PersonMerge, type Process, type Relationship, type User } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, nextReference, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Person, type PersonMerge, type Process, type Relationship, type User } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -12,7 +12,7 @@ import { isSealedBlob, openLocal, sealLocal } from '@/lib/localStore';
 import { appendAudit, auditDetailKey, emptyChain, type AuditChain } from '@/lib/auditChain';
 import { buildVault, type Vault } from '@/lib/vault';
 import { create } from 'zustand';
-import { classificationRefusal, excludedRecipients, reasonRefusal, startedClocks, validateRecord, type WriteEffect, type WriteRequest, type WriteResult, type WriteShare } from '@/lib/write';
+import { classificationRefusal, excludedRecipients, reasonRefusal, startedClocks, validateRecord, versionFor, type WriteEffect, type WriteRequest, type WriteResult, type WriteShare } from '@/lib/write';
 
 export type Collection = Exclude<keyof Dataset, 'meta'>;
 type Overlay = Partial<Record<Collection, Record<string, unknown>>> & { config?: Config; removed?: Partial<Record<Collection, string[]>> };
@@ -115,6 +115,19 @@ interface AppState {
    * chronology milestone on every subject and the audit entry.
    */
   openProcess: (request: OpenProcessRequest) => WriteResult & { process?: Process };
+  /**
+   * The terminal states, which are the other half of a records system and the half products skip.
+   *
+   * Nothing here deletes. `closeProcess` stops the clocks and writes the coded reason the national
+   * return reads; `reopenProcess` resumes only the clocks the closure stopped; `recordInError` is
+   * the terminal state for a record that should never have existed, which hides it from working
+   * views and keeps it everywhere it has already been relied on; `recordDeath` is a flow with
+   * consequences across every open case rather than a tick box on the person.
+   */
+  closeProcess: (processId: string, input: Omit<CloseInput, 'at' | 'byName' | 'byUserId'>) => WriteResult & { stopped?: ClockTrigger[] };
+  reopenProcess: (processId: string, reason: string) => WriteResult & { resumed?: ClockTrigger[] };
+  recordInError: (collection: Collection, id: string, reason: string) => WriteResult;
+  recordDeath: (input: Omit<DeathInput, 'recordedAt' | 'byName' | 'byUserId'>) => WriteResult & { consequences?: DeathConsequence[] };
 }
 
 export interface OpenProcessRequest extends OpeningInput {
@@ -129,6 +142,37 @@ export interface PartyDecision {
   stands: boolean;
   reason: string;
 }
+
+/**
+ * What the audit ledger calls each collection.
+ *
+ * The ledger's `targetType` is a small, deliberate list rather than the collection name, because a
+ * reader filtering the ledger is asking "show me everything about a person" and not "show me the
+ * viewsRecords table". A collection with no natural heading files under `record`.
+ */
+const TARGET_TYPES: Record<Collection, AuditEntry['targetType']> = {
+  organisations: 'config',
+  teams: 'config',
+  users: 'config',
+  addresses: 'person',
+  people: 'person',
+  households: 'person',
+  personMerges: 'person',
+  relationships: 'person',
+  processes: 'process',
+  events: 'event',
+  analyses: 'event',
+  meetings: 'meeting',
+  actions: 'process',
+  plans: 'process',
+  riskAssessments: 'process',
+  viewsRecords: 'person',
+  lawfulBases: 'sharing',
+  sharingRecords: 'sharing',
+  informationRequests: 'sharing',
+  connectorEvents: 'inbox',
+  audit: 'config',
+};
 
 const OVERLAY_KEY = 'mas.overlay.v1';
 const SESSION_KEY = 'mas.session';
@@ -500,8 +544,20 @@ export const useAppStore = create<AppState>((set, get) => ({
 
     if (errors.length > 0) return { ok: false, errors, nearMatches, effects };
 
+    // 2b. The record's own version history, before it is written, so the entry describes this change
+    // rather than being appended to a record that has already moved on.
+    const version = versionFor(request.collection, existing, request.record, {
+      at: get().now().toISOString(),
+      byUserId: user.id,
+      byName: `${user.givenName} ${user.familyName}`,
+      reason: request.reason,
+      change: request.versionChange,
+      intent: request.intent,
+    });
+
     // 10. Persist. Everything below this line has already been allowed to happen.
-    get().upsert(request.collection, request.record);
+    get().upsert(request.collection, version ? withVersion(request.record as Correctable, version) as Dataset[typeof request.collection][number] : request.record);
+    if (version) effects.push({ kind: 'version', detail: version.change });
 
     // 2. The audit entry, which every write has before it is useful.
     const audit = get().audit({
@@ -859,6 +915,160 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
 
     return result.ok ? { ...result, process: withClocks } : result;
+  },
+  closeProcess: (processId, input) => {
+    const { config, data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+
+    const process = data.processes.find((p) => p.id === processId);
+    if (!process) return { ok: false, errors: ['processMissing'], nearMatches: [], effects: [] };
+
+    const at = get().now().toISOString();
+    const byName = `${user.givenName} ${user.familyName}`;
+    const full: CloseInput = { ...input, at, byUserId: user.id, byName };
+    const errors = closeRefusals(process, full);
+    if (errors.length > 0) return { ok: false, errors, nearMatches: [], effects: [] };
+
+    const { process: closed, stopped } = closeProcess(process, full);
+    const reason = closureReasonsFor(process.type).find((r) => r.id === input.reasonId);
+
+    const result = get().write({
+      collection: 'processes',
+      record: closed,
+      intent: 'close',
+      act: 'close',
+      targetType: 'process',
+      targetLabel: t('processes.close.audit', { reference: process.reference, reason: reason?.label ?? input.reasonId }),
+      processId: process.id,
+      reason: input.note,
+      versionChange: t('processes.close.version', { reason: reason?.label ?? input.reasonId }),
+      // Everybody the matrix entitles hears that the case has closed, at the level it names. A case
+      // that closes silently leaves four agencies still working to a plan nobody is coordinating.
+      shares: notifyShares(closed, config, t('processes.close.shareWhat')),
+      event: {
+        eventType: 'social-work.allocation',
+        significance: 'high',
+        visibility: 'integrated',
+        title: t('processes.close.eventTitle', { process: processLabel(process.type), reference: process.reference }),
+        detail: t('processes.close.eventDetail', { reason: reason?.label ?? input.reasonId, note: input.note.trim() }),
+        subjectIds: process.subjectIds,
+        occurredAt: at,
+        linkedProcessIds: [process.id],
+      },
+    });
+
+    return result.ok ? { ...result, stopped } : result;
+  },
+  reopenProcess: (processId, reason) => {
+    const { data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+
+    const process = data.processes.find((p) => p.id === processId);
+    if (!process) return { ok: false, errors: ['processMissing'], nearMatches: [], effects: [] };
+
+    const at = get().now().toISOString();
+    const byName = `${user.givenName} ${user.familyName}`;
+    const input = { reason, at, byUserId: user.id, byName };
+    const errors = reopenRefusals(process, input);
+    if (errors.length > 0) return { ok: false, errors, nearMatches: [], effects: [] };
+
+    const { process: reopened, resumed } = reopenProcess(process, input);
+
+    const result = get().write({
+      collection: 'processes',
+      record: reopened,
+      intent: 'reopen',
+      act: 'reopen',
+      targetType: 'process',
+      targetLabel: t('processes.reopen.audit', { reference: process.reference }),
+      processId: process.id,
+      reason,
+      versionChange: t('processes.reopen.version'),
+      event: {
+        eventType: 'social-work.allocation',
+        significance: 'high',
+        visibility: 'integrated',
+        title: t('processes.reopen.eventTitle', { process: processLabel(process.type), reference: process.reference }),
+        detail: reason.trim(),
+        subjectIds: process.subjectIds,
+        occurredAt: at,
+        linkedProcessIds: [process.id],
+      },
+    });
+
+    return result.ok ? { ...result, resumed } : result;
+  },
+  recordInError: (collection, id, reason) => {
+    const { data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+
+    const record = (data[collection] as Array<Correctable & { id: string }>).find((r) => r.id === id);
+    if (!record) return { ok: false, errors: ['recordMissing'], nearMatches: [], effects: [] };
+    if (record.recordedInError) return { ok: false, errors: ['alreadyRecordedInError'], nearMatches: [], effects: [] };
+    if (reason.trim().length < 5) return { ok: false, errors: ['reasonRequired'], nearMatches: [], effects: [] };
+
+    const at = get().now().toISOString();
+    const marked = withRecordedInError(record, { at, byUserId: user.id, byName: `${user.givenName} ${user.familyName}`, reason: reason.trim() });
+
+    return get().write({
+      collection,
+      record: marked as Dataset[typeof collection][number],
+      intent: 'recorded-in-error',
+      act: 'recorded-in-error',
+      targetType: TARGET_TYPES[collection],
+      targetLabel: t('common.recordedInError.audit', { collection }),
+      reason,
+      versionChange: t('common.recordedInError.version'),
+    });
+  },
+  recordDeath: (input) => {
+    const { data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+
+    const person = data.people.find((p) => p.id === input.personId);
+    const now = get().now();
+    const full: DeathInput = { ...input, recordedAt: now.toISOString(), byUserId: user.id, byName: `${user.givenName} ${user.familyName}` };
+    const errors = deathRefusals(person, full, now.toISOString().slice(0, 10));
+    if (errors.length > 0) return { ok: false, errors, nearMatches: [], effects: [] };
+
+    const result = applyDeath(data, full);
+    const name = `${result.person.givenName} ${result.person.familyName}`;
+
+    // The person first, then each case as its own write. One audit entry covering four closures
+    // would be a death nobody could trace through the cases it closed.
+    const wrote = get().write({
+      collection: 'people',
+      record: result.person,
+      intent: 'update',
+      act: 'edit',
+      targetType: 'person',
+      targetLabel: t('person.death.audit', { name, date: input.at }),
+      reason: input.note,
+      versionChange: t('person.death.version'),
+      event: {
+        eventType: 'family.death',
+        significance: 'high',
+        visibility: 'integrated',
+        title: t('person.death.eventTitle', { name }),
+        detail: input.note.trim(),
+        subjectIds: [input.personId],
+        occurredAt: `${input.at}T00:00:00Z`,
+      },
+    });
+    if (!wrote.ok) return wrote;
+
+    const effects = [...wrote.effects];
+    for (const closed of result.processes) {
+      const consequence = result.consequences.find((c) => c.processId === closed.id);
+      const one = get().closeProcess(closed.id, { reasonId: consequence?.reasonId ?? '', note: input.note });
+      effects.push(...one.effects);
+    }
+
+    return { ...wrote, effects, consequences: result.consequences };
   },
   newId: (prefix) => {
     counter += 1;

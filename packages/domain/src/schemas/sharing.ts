@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ACCESS_RESTRICTIONS, AGENCIES, ALL_STAGES, CHANNELS, CONSENT_STATUSES, DETAIL_LEVELS } from '../enums';
-import { classificationSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
+import { classificationSchema, correctable, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
 export const lawfulBasisRecordSchema = z.object({
   id: idSchema,
@@ -71,6 +71,7 @@ export const sharingRecordSchema = z.object({
   createdByUserId: idSchema.optional(),
   createdByName: z.string(),
   summary: z.string(),
+  ...correctable,
 });
 export type SharingRecord = z.infer<typeof sharingRecordSchema>;
 
@@ -95,5 +96,6 @@ export const informationRequestSchema = z.object({
   createdAt: isoDateTime,
   dueAt: isoDate.optional(),
   response: z.object({ at: isoDateTime, byName: z.string(), text: z.string(), fieldsProvided: z.array(z.string()) }).optional(),
+  ...correctable,
 });
 export type InformationRequest = z.infer<typeof informationRequestSchema>;

@@ -1,7 +1,7 @@
 import { t } from '@mas/messages';
 import { z } from 'zod';
 import { ACTION_STATUSES, AGENCIES, PLAN_TYPES, RISK_BANDS, RISK_TOOLS, VIEWS_KINDS } from '../enums';
-import { evidenceRefSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
+import { correctable, evidenceRefSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
 export const actionSchema = z.object({
   id: idSchema,
@@ -22,6 +22,7 @@ export const actionSchema = z.object({
   escalatedToName: z.string().optional(),
   createdAt: isoDateTime,
   createdByName: z.string(),
+  ...correctable,
 });
 export type Action = z.infer<typeof actionSchema>;
 
@@ -51,6 +52,7 @@ export const planSchema = z.object({
    * makes the review date conditional on this flag rather than optional in every case.
    */
   noFurtherActionAgreed: z.boolean().optional(),
+  ...correctable,
 }).refine((plan) => plan.type !== 'adult-protection' || Boolean(plan.reviewDate) || plan.noFurtherActionAgreed === true, {
   error: () => t('errors.schemas.aspPlanReviewDate'),
   path: ['reviewDate'],
@@ -80,6 +82,7 @@ export const riskAssessmentSchema = z.object({
   items: z.array(riskItemSchema).optional(),
   evidenceRefs: z.array(evidenceRefSchema),
   judgementOverride: z.object({ band: z.enum(RISK_BANDS), reason: z.string(), byName: z.string() }).optional(),
+  ...correctable,
 });
 export type RiskAssessment = z.infer<typeof riskAssessmentSchema>;
 
@@ -97,5 +100,6 @@ export const viewsRecordSchema = z.object({
   content: z.string(),
   /** How the person wants the view used. */
   sharingPreference: z.string().optional(),
+  ...correctable,
 });
 export type ViewsRecord = z.infer<typeof viewsRecordSchema>;

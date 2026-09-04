@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { AGENCIES, EVENT_TYPES, SIGNIFICANCES, SOURCE_SYSTEMS, VISIBILITIES } from '../enums';
-import { evidenceRefSchema, idSchema, isoDateTime, syntheticSchema } from './common';
+import { correctable, evidenceRefSchema, idSchema, isoDateTime, recordedInErrorSchema, syntheticSchema } from './common';
 
 export const eventVersionSchema = z.object({
   at: isoDateTime,
@@ -37,6 +37,8 @@ export const chronologyEventSchema = z.object({
   /** Lawful basis for inclusion in the integrated chronology, when visibility is integrated. */
   lawfulBasisId: idSchema.optional(),
   versions: z.array(eventVersionSchema),
+  /** Set where the event should never have been recorded. It stays; working views stop showing it. */
+  recordedInError: recordedInErrorSchema.optional(),
 });
 export type ChronologyEvent = z.infer<typeof chronologyEventSchema>;
 
@@ -54,5 +56,6 @@ export const chronologyAnalysisSchema = z.object({
   kind: z.enum(['pattern', 'risk', 'recommendation']),
   title: z.string().max(120),
   text: z.string().max(1200),
+  ...correctable,
 });
 export type ChronologyAnalysis = z.infer<typeof chronologyAnalysisSchema>;

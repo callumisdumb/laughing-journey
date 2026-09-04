@@ -20,7 +20,7 @@ import {
   TRAFFICKING_KINDS,
 } from '../enums';
 import { CLASSIFICATION_LEVELS } from '../classification/classify';
-import { classificationSchema, evidenceRefSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
+import { classificationSchema, correctable, evidenceRefSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
 export const stageEntrySchema = z.object({
   stage: z.enum(ALL_STAGES),
@@ -40,6 +40,15 @@ export const clockTriggerSchema = z.object({
   dueOverride: isoDate.optional(),
   overrideReason: z.string().optional(),
   note: z.string().optional(),
+  /**
+   * Set where `completedAt` was written by a closure rather than by the thing the clock counts to.
+   *
+   * A clock stopped because the case shut is a different fact from a clock stopped because the case
+   * conference happened, and only the first resumes when the case is reopened. Without the flag a
+   * reopen would either restart everything, including the deadlines that were genuinely met, or
+   * restart nothing, which is the deadline quietly disappearing.
+   */
+  stoppedByClosure: z.boolean().optional(),
 });
 export type ClockTrigger = z.infer<typeof clockTriggerSchema>;
 
@@ -549,6 +558,7 @@ const processBase = {
   flags: z.record(z.string(), z.boolean()),
   /** Case-role register: who holds an excluded party role on this process. See need-to-know/parties.ts. */
   parties: z.array(casePartySchema).default([]),
+  ...correctable,
 };
 
 export const processSchema = z.discriminatedUnion('type', [

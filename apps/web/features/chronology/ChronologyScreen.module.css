@@ -141,3 +141,17 @@
   font-size: var(--text-xs);
   color: var(--color-ink-3);
 }
+
+/*
+ * Below the list: what is not on it, and what can be done to the row that is selected. The count of
+ * retired entries lives here rather than in the list, because a row that is not shown cannot carry
+ * its own explanation.
+ */
+.listFoot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}

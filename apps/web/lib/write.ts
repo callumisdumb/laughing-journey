@@ -17,6 +17,7 @@ import {
   type Dataset,
   type Process,
 } from '@mas/domain';
+import { warrantsVersion, type RecordVersion } from '@mas/domain';
 import type { Collection } from '@/lib/store';
 
 /**
@@ -98,10 +99,19 @@ export interface WriteRequest<K extends Collection = Collection> {
   recipientProcess?: Process;
   /** Outbound connector proposals. The outbox and its authorisation are step 14 (D-113). */
   outbound?: WriteOutbound[];
+  /**
+   * What changed, in a phrase, for the record's own version history.
+   *
+   * Optional because the pipeline can work it out: it diffs the record against the one already held
+   * and names the fields that moved. A caller supplies one where the phrase a person would use is
+   * not that list, which is most of the time: "Case closed" reads better than "status, closedAt,
+   * closureReason, stage and clocks changed".
+   */
+  versionChange?: string;
 }
 
 export interface WriteEffect {
-  kind: 'audit' | 'clock' | 'event' | 'share' | 'rewrap' | 'classification' | 'outbound';
+  kind: 'audit' | 'clock' | 'event' | 'share' | 'rewrap' | 'classification' | 'outbound' | 'version';
   detail: string;
 }
 
@@ -206,6 +216,79 @@ export const REASON_REQUIRED: readonly WriteIntent[] = ['correct', 'close', 'rec
 export function reasonRefusal(intent: WriteIntent, reason: string | undefined): string | null {
   if (!REASON_REQUIRED.includes(intent)) return null;
   return (reason ?? '').trim().length >= 5 ? null : 'reasonRequired';
+}
+
+/**
+ * Step 2b. The record's own version history: who changed what, when, and why where one was needed.
+ *
+ * Computed here rather than at each call site for the reason the whole pipeline exists: a version
+ * list that some screens maintain and others forget is worse than none, because a reader cannot tell
+ * an unedited record from an unrecorded edit. The diff is over the record's own top-level fields, so
+ * a caller cannot leave a field out of the history by not mentioning it.
+ *
+ * `before` holds only the fields whose values a person can read back. A whole nested object printed
+ * into a history entry is not "what it was before", it is a wall of JSON, so those fields are named
+ * as changed and their old value is left to the record's own audit trail.
+ */
+const VERSION_IGNORED = new Set(['versions', 'recordedInError']);
+
+/** Collections whose records carry a version history. The rest say why not in docs/RECORDS.md. */
+export const VERSIONED: readonly Collection[] = [
+  'people',
+  'households',
+  'relationships',
+  'addresses',
+  'processes',
+  'events',
+  'analyses',
+  'meetings',
+  'actions',
+  'plans',
+  'riskAssessments',
+  'viewsRecords',
+  'sharingRecords',
+  'informationRequests',
+];
+
+export function versionFor(
+  collection: Collection,
+  before: unknown,
+  after: unknown,
+  input: { at: string; byUserId?: string; byName: string; reason?: string; change?: string; intent: WriteIntent },
+): RecordVersion | null {
+  if (!VERSIONED.includes(collection)) return null;
+  // A create has no history to record: the record itself is the first version, and the audit entry
+  // already says who made it and when.
+  if (input.intent === 'create' || !before || typeof before !== 'object' || !after || typeof after !== 'object') return null;
+
+  const was = before as Record<string, unknown>;
+  const now = after as Record<string, unknown>;
+  const fields: string[] = [];
+  const held: Record<string, string> = {};
+  for (const key of new Set([...Object.keys(was), ...Object.keys(now)])) {
+    if (VERSION_IGNORED.has(key)) continue;
+    if (was[key] === now[key]) continue;
+    if (JSON.stringify(was[key]) === JSON.stringify(now[key])) continue;
+    fields.push(key);
+    // Only values a person can read back go into `before`. A nested object printed into a history
+    // entry is not "what it was", it is a wall of JSON, so those fields are named as changed and
+    // their old value is left to the audit trail.
+    const old = was[key];
+    if (old === undefined || old === null) held[key] = '';
+    else if (typeof old === 'string') held[key] = old;
+    else if (typeof old === 'number' || typeof old === 'boolean' || typeof old === 'bigint') held[key] = String(old);
+  }
+
+  const changed = fields.map((field) => ({ field, from: held[field] ?? '', to: '' }));
+  if (!warrantsVersion(changed, input.reason)) return null;
+  return {
+    at: input.at,
+    byUserId: input.byUserId,
+    byName: input.byName,
+    change: input.change ?? fields.join(', '),
+    reason: input.reason,
+    before: Object.keys(held).length > 0 ? held : undefined,
+  };
 }
 
 export type { Classification };

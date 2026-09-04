@@ -64,6 +64,21 @@ const KEYS = [
   'investigationInFuture',
   'registerNameRequired',
   'registerReasonRequired',
+  'processMissing',
+  'processAlreadyClosed',
+  'processNotClosed',
+  'closureReasonRequired',
+  'closureNoteRequired',
+  'reopenReasonRequired',
+  'recordMissing',
+  'alreadyRecordedInError',
+  'personMissing',
+  'deathAlreadyRecorded',
+  'deathInFuture',
+  'deathBeforeBirth',
+  'deathNoteRequired',
+  'nothingChanged',
+  'identityReasonRequired',
 ] as const;
 
 export type WriteErrorCode = (typeof KEYS)[number];

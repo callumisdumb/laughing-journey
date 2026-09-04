@@ -5,6 +5,7 @@ import { SkeletonLines, ToastProvider } from '@mas/ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect, useMemo } from 'react';
 import { AppShell } from '@/components/shell/AppShell';
+import { RetireHost } from '@/components/RetireHost';
 import { Screen } from '@/components/Screen';
 import { useAppearance } from '@/lib/appearance';
 import { useDesktop } from '@/lib/desktop';
@@ -62,7 +63,14 @@ function Boot() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ToastProvider>{content}</ToastProvider>
+      <ToastProvider>
+        {content}
+        {/*
+          The retire dialog lives above the screens because a record can be sent to the correction
+          path from the toast that announced it, and by then the dialog that created it has closed.
+        */}
+        <RetireHost />
+      </ToastProvider>
     </QueryClientProvider>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { applyLens, eventFamily, type ChronologyAnalysis, type ChronologyEvent, type LensResult, type Person, type Process } from '@mas/domain';
+import { applyLens, eventFamily, live, type ChronologyAnalysis, type ChronologyEvent, type LensResult, type Person, type Process } from '@mas/domain';
 import { useMemo } from 'react';
 import { accessForUser, eventsForPerson, personById, processesForPerson } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
@@ -13,6 +13,15 @@ export interface ChronologyModel {
   visible: ChronologyEvent[];
   /** After filters and window. */
   events: ChronologyEvent[];
+  /**
+   * Entries recorded in error, which the working chronology does not show and does not hide.
+   *
+   * They are off the list because a chronology carrying entries somebody has retired misleads a
+   * reader who scrolls it. They are counted on screen because a chronology that quietly dropped
+   * entries would mislead them differently, and because "what has been retired on this record" is a
+   * question an inspector asks.
+   */
+  retired: ChronologyEvent[];
   analyses: ChronologyAnalysis[];
   lensResults: LensResult[];
   highlighted: Set<string>;
@@ -49,11 +58,12 @@ export function useChronology(personId: string): ChronologyModel {
       return e.visibility === 'integrated' || e.visibility === 'restricted' || e.agency === user.agency;
     });
 
-    const sortedAsc = [...visible].sort((a, b) => (a.occurredAt < b.occurredAt ? -1 : 1));
+    const retired = visible.filter((e) => e.recordedInError !== undefined);
+    const sortedAsc = [...live(visible)].sort((a, b) => (a.occurredAt < b.occurredAt ? -1 : 1));
     const first = sortedAsc[0]?.occurredAt ?? now.toISOString();
     const domain: Window = window ?? { from: first.slice(0, 10) < now.toISOString().slice(0, 10) ? first : now.toISOString(), to: now.toISOString() };
 
-    const events = visible.filter((e) => {
+    const events = live(visible).filter((e) => {
       if (filters.agencies.length && !filters.agencies.includes(e.agency)) return false;
       if (filters.families.length && !filters.families.includes(eventFamily(e.eventType))) return false;
       if (filters.significance.length && !filters.significance.includes(e.significance)) return false;
@@ -66,9 +76,9 @@ export function useChronology(personId: string): ChronologyModel {
     });
 
     const analyses = person ? data.analyses.filter((a) => a.subjectId === person.id && (view !== 'single' || a.agency === user?.agency)) : [];
-    const lensResults = lenses.map((id) => applyLens(id, visible, now));
+    const lensResults = lenses.map((id) => applyLens(id, live(visible), now));
     const highlighted = new Set(lensResults.flatMap((r) => r.eventIds));
     const agencies = [...new Set(visible.map((e) => e.agency))];
-    return { person, processes, visible, events, analyses, lensResults, highlighted, domain, agencies, canSeeIntegrated };
+    return { person, processes, visible, events, retired, analyses, lensResults, highlighted, domain, agencies, canSeeIntegrated };
   }, [data, config, user, grants, now, personId, view, window, filters, lenses]);
 }

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { LIFE_STAGES, RELATIONSHIP_TYPES } from '../enums';
-import { idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
+import { correctable, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
 export const addressSchema = z.object({
   id: idSchema,
@@ -10,6 +10,7 @@ export const addressSchema = z.object({
   town: z.string(),
   /** Postcodes use unallocated first letters Q, V or X only. */
   postcode: z.string().regex(/^[QVX][A-Z]?\d{1,2}[A-Z]? \d[A-Z]{2}$/),
+  ...correctable,
 });
 export type Address = z.infer<typeof addressSchema>;
 
@@ -74,6 +75,23 @@ export const personSchema = z.object({
   // protected characteristic gets populated later by somebody who does not know why it was empty.
   // See D-079. A test asserts it stays absent.
   deceased: z.boolean().optional(),
+  /**
+   * A death, which is a flow rather than a tick box (docs/RECORDS.md 6.4).
+   *
+   * `deceased` stays as the flag the seed writes and every list reads. This carries the date and who
+   * recorded it, which is what a chronology entry, a closure reason and a national return all need,
+   * and what a reader needs before deciding whether a case can still be open.
+   */
+  death: z
+    .object({
+      at: isoDate,
+      recordedAt: isoDateTime,
+      byUserId: idSchema.optional(),
+      byName: z.string(),
+      /** Where the product learned of it: a connector, a family member, a colleague. */
+      source: z.string().optional(),
+    })
+    .optional(),
   createdAt: isoDateTime,
   /**
    * How many possible duplicates were on screen when this record was created, and dismissed.
@@ -83,6 +101,7 @@ export const personSchema = z.object({
    * not. Absent on the seeded records, which predate the create path.
    */
   createdAfterReviewing: z.number().int().nonnegative().optional(),
+  ...correctable,
 });
 export type Person = z.infer<typeof personSchema>;
 
@@ -134,6 +153,7 @@ export const householdSchema = z.object({
   addressId: idSchema,
   members: z.array(householdMembershipSchema),
   label: z.string().optional(),
+  ...correctable,
 });
 export type Household = z.infer<typeof householdSchema>;
 
@@ -146,6 +166,7 @@ export const relationshipSchema = z.object({
   from: isoDate.optional(),
   to: isoDate.optional(),
   notes: z.string().optional(),
+  ...correctable,
 });
 export type Relationship = z.infer<typeof relationshipSchema>;
 

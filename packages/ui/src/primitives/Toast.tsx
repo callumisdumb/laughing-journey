@@ -9,6 +9,15 @@ export interface ToastItem {
   title: string;
   text?: string;
   tone?: 'info' | 'success' | 'error';
+  /**
+   * One action on the toast, for the short window in which a correction is a shortcut.
+   *
+   * Deliberately one, and deliberately not an undo that silently reverses the write. Nothing in
+   * casework is deleted, so what this offers is the correction path with a shortcut: it opens the
+   * dialog that records the thing as an error, with its reason, rather than making the record
+   * vanish because somebody moved fast.
+   */
+  action?: { label: string; onClick: () => void };
 }
 
 interface ToastApi {
@@ -54,6 +63,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             <div className={styles.toastText}>
               <div className={styles.toastTitle}>{item.title}</div>
               {item.text ? <div>{item.text}</div> : null}
+              {item.action ? (
+                <button
+                  type="button"
+                  className={styles.toastAction}
+                  onClick={() => {
+                    dismiss(item.id);
+                    item.action?.onClick();
+                  }}
+                >
+                  {item.action.label}
+                </button>
+              ) : null}
             </div>
             <IconButton aria-label={t('common.toast.dismiss')} size="sm" onClick={() => dismiss(item.id)}>
               <X size={16} aria-hidden="true" />

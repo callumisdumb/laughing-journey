@@ -4,7 +4,7 @@ import { exclusionPartyLabel, partyRegister, STAGES_BY_PROCESS, actionStatusLabe
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { Lock, Plus, ShieldCheck, UserPlus } from 'lucide-react';
+import { Archive, Lock, Plus, RotateCcw, ShieldCheck, UserPlus } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { PersonLink, PractitionerLink } from '@/components/EntityLink';
@@ -16,6 +16,7 @@ import { accessForUser, clocksForProcess, membersByAgency, personById, userName 
 import { useAppStore, useConfig, useCurrentUser, useData, useNow, useVault } from '@/lib/store';
 import { readProcessDetail } from '@/lib/vault';
 import { AddPlanDialog } from './AddPlanDialog';
+import { CloseProcessDialog, ReopenProcessDialog } from './CloseProcessDialog';
 import { RegisterEntryDialog } from './forms/RegisterEntryDialog';
 import { AspPanels } from './panels/AspPanels';
 import { AwiPanels } from './panels/AwiPanels';
@@ -44,6 +45,8 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const [classifyOpen, setClassifyOpen] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const [reopening, setReopening] = useState(false);
   const [classifySensitive, setClassifySensitive] = useState(true);
   const [classifyReason, setClassifyReason] = useState('');
   const upsert = useAppStore((s) => s.upsert);
@@ -118,7 +121,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
           <span>{t('processes.head.lead', { agency: agencyShort(process.leadAgency) })}</span>
           <span>{t('processes.head.opened', { date: formatDate(process.openedAt) })}</span>
           <Pill size="sm" tone={process.status === 'open' ? 'low' : 'outline'}>
-            {processStatusLabel(process.status)}
+            {process.status === 'closed' && process.closedAt ? t('processes.close.closedBadge', { date: formatDate(process.closedAt) }) : processStatusLabel(process.status)}
           </Pill>
           <ClassificationTag classification={classification} />
         </div>
@@ -162,6 +165,16 @@ export function ProcessScreen({ processId }: { processId: string }) {
             }}
           >
             {t('processes.classification.change')}
+          </Button>
+        ) : null}
+        {access.level === 'full' && process.status === 'open' ? (
+          <Button variant="secondary" icon={<Archive size={16} aria-hidden="true" />} onClick={() => setClosing(true)} data-testid="close-process">
+            {t('processes.close.action')}
+          </Button>
+        ) : null}
+        {access.level === 'full' && process.status === 'closed' ? (
+          <Button variant="secondary" icon={<RotateCcw size={16} aria-hidden="true" />} onClick={() => setReopening(true)} data-testid="reopen-process">
+            {t('processes.reopen.action')}
           </Button>
         ) : null}
       </div>
@@ -491,6 +504,8 @@ export function ProcessScreen({ processId }: { processId: string }) {
 
       {planOpen ? <AddPlanDialog process={process} open onClose={() => setPlanOpen(false)} /> : null}
       {registerOpen ? <RegisterEntryDialog process={process} open onClose={() => setRegisterOpen(false)} /> : null}
+      {closing ? <CloseProcessDialog process={process} open onClose={() => setClosing(false)} /> : null}
+      {reopening ? <ReopenProcessDialog process={process} open onClose={() => setReopening(false)} /> : null}
     </div>
   );
 }

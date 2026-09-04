@@ -897,6 +897,7 @@
       "classificationLower": "Classification lowered",
       "classificationRaise": "Classification raised",
       "classify": "Classify",
+      "close": "Closed",
       "create": "Create",
       "edit": "Edit",
       "export": "Export",
@@ -905,6 +906,8 @@
       "promote": "Promote",
       "read": "Read",
       "readRestricted": "Restricted read",
+      "recordedInError": "Recorded in error",
+      "reopen": "Reopened",
       "share": "Share",
       "signIn": "Sign in",
       "unmerge": "Merge undone"
@@ -1234,6 +1237,10 @@
       "group": "Pattern lenses",
       "label": "Lenses"
     },
+    "retired": {
+      "action": "Record the selected entry as an error",
+      "note": "{count, plural, one {# entry has been recorded in error and is not shown here} other {# entries have been recorded in error and are not shown here}}. They are still in the audit trail."
+    },
     "screen": {
       "addEvent": "Add event",
       "empty": {
@@ -1319,6 +1326,22 @@
       "ageNotRecorded": "Age not recorded",
       "family": "Family",
       "unborn": "Unborn"
+    },
+    "recordedInError": {
+      "action": "Record as an error",
+      "audit": "Recorded in error: {collection}",
+      "badge": "Recorded in error",
+      "by": "By {name}, {date}. {reason}",
+      "doneText": "It is off the working views. The audit trail still has it.",
+      "doneTitle": "Recorded in error",
+      "intro": "This is for a record that should never have existed. It is not a deletion, and there is no deletion in this product.",
+      "keeps": "The record stays, keeps its audit entries, and stays in any pack that has already gone out. What changes is that working views stop showing it, and every view that does show it says who decided and why.",
+      "reason": "What was wrong with it",
+      "reasonHint": "Written for somebody reading this in two years and asking why a record on their screen is marked retired.",
+      "submit": "Record as an error",
+      "title": "Record this as an error",
+      "undo": "Wrong record? Mark it as an error",
+      "version": "Recorded in error"
     },
     "table": {
       "region": "Table"
@@ -2290,6 +2313,15 @@
       "child": "Child",
       "unborn": "Unborn"
     },
+    "localClosureReasons": {
+      "declinedFurtherInvolvement": "Declined further involvement",
+      "otherReason": "Other reason",
+      "personDied": "Person died",
+      "personMovedAway": "Person moved away",
+      "riskReduced": "Risk reduced",
+      "supportInPlace": "Support in place",
+      "transferredToAnotherArea": "Transferred to another area"
+    },
     "lsiServiceTypes": {
       "careHome": "Care homes",
       "communityGroups": "Community groups (religious settings etc)",
@@ -2678,9 +2710,16 @@
       "alertEndsBeforeStart": "An alert cannot stop showing before it starts.",
       "alertScopeRequired": "Name at least one agency, or let anybody who can see the record see the alert.",
       "alertTextRequired": "Write the alert in a sentence. It is read by somebody about to knock on the door.",
+      "alreadyRecordedInError": "This has already been recorded in error.",
       "chiNeedsDateOfBirth": "A CHI number is built from the date of birth, so record that first.",
       "classificationDowngrade": "This record's classification cannot be lowered here. A deliberate lower needs a named role and a reason.",
+      "closureNoteRequired": "Say what happened in a sentence or two. It goes into the closure notice.",
+      "closureReasonRequired": "Choose a closure reason from the list.",
       "dateOfBirthFuture": "A date of birth cannot be in the future. Use the unborn life stage and an expected delivery date.",
+      "deathAlreadyRecorded": "A death is already recorded on this record.",
+      "deathBeforeBirth": "A date of death cannot be before the date of birth.",
+      "deathInFuture": "A date of death cannot be in the future.",
+      "deathNoteRequired": "Say what happened in a sentence. It goes on the chronology and on every case that closes.",
       "disclosureFactRequired": "List at least one fact. A disclosure with nothing listed cannot be limited to what was decided.",
       "disclosureRationaleRequired": "Say why this person needs to know, in a sentence.",
       "disclosureRecipientRequired": "Name who would be told.",
@@ -2691,6 +2730,7 @@
       "householdLabelRequired": "Give the household a name.",
       "householdMissing": "That household is no longer on the record.",
       "householdNotAMember": "They are not currently recorded as living there.",
+      "identityReasonRequired": "A change to a name, a date of birth or a CHI number needs a reason. Other agencies match on these.",
       "investigationInFuture": "An investigation cannot be opened on a future date.",
       "investigationSummaryRequired": "Say what is being investigated, in a sentence.",
       "mergeOtherMissing": "Choose the record to merge into this one.",
@@ -2698,15 +2738,21 @@
       "mergeSameRecord": "A record cannot be merged into itself.",
       "mergeSurvivorMissing": "The record that would survive no longer exists.",
       "nameRequired": "A given name and a family name are both needed.",
+      "nothingChanged": "Nothing has changed, so there is nothing to record.",
       "noUser": "Nobody is signed in, so this cannot be recorded against anyone.",
       "orderRationaleRequired": "Give the reasoning in a sentence. It is the part a sheriff would read.",
+      "personMissing": "That person record is no longer there.",
       "planOutcomeRequired": "A plan needs at least one outcome. The outcomes are the plan.",
       "planTitleRequired": "Give the plan a name.",
+      "processAlreadyClosed": "This case is already closed. Reopen it if it needs to be worked again.",
       "processAlreadyOpen": "An open case of this type already exists for this person. Open it, or say in a sentence why a second one needs to exist.",
+      "processMissing": "That case is no longer on the record.",
       "processNoSubject": "A process needs somebody it is about.",
+      "processNotClosed": "This case is open, so there is nothing to reopen.",
       "processNotEligible": "This person is not eligible for this process. The reason is above.",
       "processNotYourRole": "Your role does not open this process. The refusal above says who does.",
       "reasonRequired": "Say why in a sentence. A change made after the fact needs a reason on the record.",
+      "recordMissing": "That record is no longer there.",
       "registerNameRequired": "Give the name the entry is keyed on.",
       "registerReasonRequired": "Say why they must not receive information.",
       "relationshipDuplicate": "That relationship is already recorded between these two people.",
@@ -4263,6 +4309,29 @@
       "title": "Add a person",
       "unbornHint": "An unborn baby has an expected delivery date rather than a date of birth, and becomes a child at birth, which is an event and not an edit."
     },
+    "death": {
+      "action": "Record a death",
+      "audit": "Death recorded for {name}, {date}",
+      "badge": "Died {date}",
+      "closeLine": "Close {reference} ({type}) as {reason}",
+      "consequencesHead": "Recording this will:",
+      "consequencesNone": "This person has no open case. The record is marked and a chronology entry is written.",
+      "date": "Date of death",
+      "dateHint": "The date it happened, not the date you were told.",
+      "doneText": "{count, plural, =0 {No case needed closing.} one {One case closed.} other {# cases closed.}}",
+      "doneTitle": "Death recorded",
+      "eventTitle": "{name} died",
+      "intro": "This is a flow rather than a tick box. It closes the cases this person is a subject of, each with the reason that person's return uses, and it tells everybody entitled to know.",
+      "note": "What happened, in a sentence",
+      "noteHint": "It goes on the chronology and on every case that closes.",
+      "recordedBy": "Recorded by {name}",
+      "reviewLine": "Flag {reference} ({type}) for review. They are a party to it rather than its subject, so it is not closed.",
+      "source": "How you know",
+      "sourceHint": "Optional. The GP practice, a family member, a colleague, a notification from another system.",
+      "submit": "Record the death",
+      "title": "Record the death of {name}",
+      "version": "Death recorded"
+    },
     "documents": {
       "columns": {
         "date": "Date",
@@ -4275,6 +4344,30 @@
         "title": "No documents"
       },
       "source": "{agency} event: {title}"
+    },
+    "edit": {
+      "action": "Edit the record",
+      "detailHead": "Contact and needs",
+      "doneText": "{count, plural, one {One field changed.} other {# fields changed.}} The previous values are in the record's history.",
+      "doneTitle": "Record updated",
+      "fields": {
+        "chi": "CHI number",
+        "dateOfBirth": "Date of birth",
+        "email": "Email",
+        "familyName": "Family name",
+        "givenName": "Given name",
+        "gpPractice": "GP practice",
+        "phone": "Telephone",
+        "preferredName": "Known as",
+        "school": "School or nursery"
+      },
+      "identityHead": "Identity",
+      "identityNote": "A change to any of these needs a reason. They are what other agencies match on, so a name changed without one is a name nobody can account for.",
+      "noChange": "Nothing has changed yet.",
+      "reason": "Why these are changing",
+      "reasonHint": "For example: the date of birth on the referral was wrong, confirmed against the CHI record.",
+      "submit": "Save the changes",
+      "title": "Edit the record of {name}"
     },
     "header": {
       "ageBorn": "{age}, born {date}",
@@ -4293,6 +4386,17 @@
       "unborn": "Unborn",
       "unbornDue": "{unborn}, due {date}",
       "unbornDueUnknown": "{unborn}, due date not recorded"
+    },
+    "history": {
+      "empty": "Nothing has been changed on this record since it was created.",
+      "entry": "{change}",
+      "meta": "{count, plural, =0 {No recorded changes} one {One recorded change} other {# recorded changes}}",
+      "reason": "Reason: {reason}",
+      "title": "History of this record",
+      "was": "Was: {values}",
+      "wasBlank": "blank",
+      "wasField": "{field} {value}",
+      "who": "{name}, {date}"
     },
     "household": {
       "add": "Add someone to the household",
@@ -4910,6 +5014,30 @@
       "sub": "Due {date}. {source}{verify, select, yes { (local value, to verify)} other {}}{deferral, select, yes { {note}.} other {}}",
       "title": "Clocks"
     },
+    "close": {
+      "action": "Close the case",
+      "audit": "{reference} closed: {reason}",
+      "clockLine": "{label}, was due {date}",
+      "clocksHead": "Closing stops these clocks:",
+      "clocksNone": "No clock is running on this case.",
+      "closedBadge": "Closed {date}",
+      "doneText": "{count, plural, =0 {No clock was running.} one {One clock stopped.} other {# clocks stopped.}} The closure notice has gone out.",
+      "doneTitle": "Case closed",
+      "eventDetail": "{reason}. {note}",
+      "eventTitle": "{process} {reference} closed",
+      "localNote": "This partnership's own list. There is no national closure list for this process, so nothing here goes into a national return.",
+      "note": "What happened, in a sentence or two",
+      "noteHint": "It goes on the record and into the closure notice every agency receives.",
+      "reason": "Why the case is closing",
+      "reasonPlaceholder": "Choose a reason",
+      "shareWhat": "the case closing",
+      "statutoryNote": "These are the reasons the national return uses, so the coded value is what gets counted.",
+      "submit": "Close the case",
+      "tellHead": "Agencies told that the case has closed:",
+      "tellNone": "Nobody else is entitled to a closure notice on this case.",
+      "title": "Close {reference}",
+      "version": "Case closed: {reason}"
+    },
     "eligibility": {
       "aspTooYoung": "{name} is {age}. Adult support and protection applies from 16.",
       "aspUnborn": "An unborn baby is not an adult at risk.",
@@ -5129,6 +5257,22 @@
     },
     "presence": {
       "summary": "You can see that a {process} process exists at the {stage} stage, led by {agency}. {reason}"
+    },
+    "reopen": {
+      "action": "Reopen the case",
+      "audit": "{reference} reopened",
+      "clockLine": "{label}, due {date}",
+      "clocksHead": "Reopening resumes these clocks:",
+      "clocksNone": "No clock was stopped by the closure, so none resumes.",
+      "clocksNote": "They resume against the date they started, not today. The case was shut and the statutory period was running the whole time.",
+      "doneText": "{count, plural, =0 {No clock resumed.} one {One clock is running again.} other {# clocks are running again.}}",
+      "doneTitle": "Case reopened",
+      "eventTitle": "{process} {reference} reopened",
+      "reason": "Why it is being reopened",
+      "reasonHint": "The new information or the change in circumstances. It goes on the record and on the chronology.",
+      "submit": "Reopen the case",
+      "title": "Reopen {reference}",
+      "version": "Case reopened"
     },
     "sharing": {
       "item": "{reason} {date}.",

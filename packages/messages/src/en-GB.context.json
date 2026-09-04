@@ -2855,6 +2855,9 @@
         "maxLength": 24,
         "where": "Audit act label: a classification was assigned at the level it derives"
       },
+      "close": {
+        "where": "Act pill in the audit ledger, close"
+      },
       "create": {
         "where": "Audit ledger, act column and act filter"
       },
@@ -2885,6 +2888,12 @@
       "readRestricted": {
         "maxLength": 16,
         "where": "Act pill and act filter option on the Audit screen for a read of a restricted record"
+      },
+      "recordedInError": {
+        "where": "Act pill in the audit ledger, recordedInError"
+      },
+      "reopen": {
+        "where": "Act pill in the audit ledger, reopen"
       },
       "share": {
         "maxLength": 16,
@@ -4021,6 +4030,15 @@
         "where": "Label before the pattern lens chips"
       }
     },
+    "retired": {
+      "action": {
+        "maxLength": 40,
+        "where": "Button under the chronology list, acting on the selected row"
+      },
+      "note": {
+        "where": "Note under the chronology list, counting the entries that have been retired"
+      }
+    },
     "screen": {
       "addEvent": {
         "maxLength": 16,
@@ -4270,6 +4288,50 @@
       "unborn": {
         "maxLength": 16,
         "where": "Stands in for the age line in search suggestions and results when the person is an unborn child"
+      }
+    },
+    "recordedInError": {
+      "action": {
+        "where": "Record as an error dialog and the badge it leaves, action"
+      },
+      "audit": {
+        "where": "Record as an error dialog and the badge it leaves, audit"
+      },
+      "badge": {
+        "where": "Record as an error dialog and the badge it leaves, badge"
+      },
+      "by": {
+        "where": "Record as an error dialog and the badge it leaves, by"
+      },
+      "doneText": {
+        "where": "Record as an error dialog and the badge it leaves, doneText"
+      },
+      "doneTitle": {
+        "where": "Record as an error dialog and the badge it leaves, doneTitle"
+      },
+      "intro": {
+        "where": "Record as an error dialog and the badge it leaves, intro"
+      },
+      "keeps": {
+        "where": "Record as an error dialog and the badge it leaves, keeps"
+      },
+      "reason": {
+        "where": "Record as an error dialog and the badge it leaves, reason"
+      },
+      "reasonHint": {
+        "where": "Record as an error dialog and the badge it leaves, reasonHint"
+      },
+      "submit": {
+        "where": "Record as an error dialog and the badge it leaves, submit"
+      },
+      "title": {
+        "where": "Record as an error dialog and the badge it leaves, title"
+      },
+      "undo": {
+        "where": "Record as an error dialog and the badge it leaves, undo"
+      },
+      "version": {
+        "where": "Record as an error dialog and the badge it leaves, version"
       }
     },
     "table": {
@@ -7171,6 +7233,29 @@
         "where": "Life stage vocabulary, used wherever a life stage is named"
       }
     },
+    "localClosureReasons": {
+      "declinedFurtherInvolvement": {
+        "where": "Locally agreed closure reason, in the close a case dialog, declinedFurtherInvolvement"
+      },
+      "otherReason": {
+        "where": "Locally agreed closure reason, in the close a case dialog, otherReason"
+      },
+      "personDied": {
+        "where": "Locally agreed closure reason, in the close a case dialog, personDied"
+      },
+      "personMovedAway": {
+        "where": "Locally agreed closure reason, in the close a case dialog, personMovedAway"
+      },
+      "riskReduced": {
+        "where": "Locally agreed closure reason, in the close a case dialog, riskReduced"
+      },
+      "supportInPlace": {
+        "where": "Locally agreed closure reason, in the close a case dialog, supportInPlace"
+      },
+      "transferredToAnotherArea": {
+        "where": "Locally agreed closure reason, in the close a case dialog, transferredToAnotherArea"
+      }
+    },
     "lsiServiceTypes": {
       "careHome": {
         "verbatim": true,
@@ -8205,14 +8290,35 @@
       "alertTextRequired": {
         "where": "Refusal listed on the add an alert dialog"
       },
+      "alreadyRecordedInError": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
+      },
       "chiNeedsDateOfBirth": {
         "where": "Add a person dialog, refusal summary when the generate button is pressed with no date of birth"
       },
       "classificationDowngrade": {
         "where": "Any create or edit dialog, refusal summary at the top of the body"
       },
+      "closureNoteRequired": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
+      },
+      "closureReasonRequired": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
+      },
       "dateOfBirthFuture": {
         "where": "Add a person dialog, refusal summary at the top of the body"
+      },
+      "deathAlreadyRecorded": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
+      },
+      "deathBeforeBirth": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
+      },
+      "deathInFuture": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
+      },
+      "deathNoteRequired": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
       },
       "disclosureFactRequired": {
         "where": "Refusal listed on a record dialog"
@@ -8244,6 +8350,9 @@
       "householdNotAMember": {
         "where": "A create or edit dialog, refusal summary at the top of the body"
       },
+      "identityReasonRequired": {
+        "where": "Refusal listed on the edit a person record dialog"
+      },
       "investigationInFuture": {
         "where": "Refusal listed on a record dialog"
       },
@@ -8265,11 +8374,17 @@
       "nameRequired": {
         "where": "Add a person dialog, refusal summary at the top of the body"
       },
+      "nothingChanged": {
+        "where": "Refusal listed on the edit a person record dialog"
+      },
       "noUser": {
         "where": "Any create or edit dialog, refusal summary at the top of the body"
       },
       "orderRationaleRequired": {
         "where": "Refusal listed on a record dialog"
+      },
+      "personMissing": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
       },
       "planOutcomeRequired": {
         "where": "Refusal listed on the add a plan dialog"
@@ -8277,11 +8392,20 @@
       "planTitleRequired": {
         "where": "Refusal listed on the add a plan dialog"
       },
+      "processAlreadyClosed": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
+      },
       "processAlreadyOpen": {
         "where": "Start a process dialog, refusal summary at the top of the body"
       },
+      "processMissing": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
+      },
       "processNoSubject": {
         "where": "Start a process dialog, refusal summary at the top of the body"
+      },
+      "processNotClosed": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
       },
       "processNotEligible": {
         "where": "Start a process dialog, refusal summary at the top of the body"
@@ -8291,6 +8415,9 @@
       },
       "reasonRequired": {
         "where": "Any create or edit dialog, refusal summary at the top of the body"
+      },
+      "recordMissing": {
+        "where": "Refusal listed on a closure, reopening, death or retirement dialog"
       },
       "registerNameRequired": {
         "where": "Refusal listed on a record dialog"
@@ -13120,6 +13247,71 @@
         "where": "That an unborn baby has an expected delivery date and becomes a child at birth, which is an event."
       }
     },
+    "death": {
+      "action": {
+        "where": "Record a death dialog, action"
+      },
+      "audit": {
+        "where": "Record a death dialog, audit"
+      },
+      "badge": {
+        "where": "Record a death dialog, badge"
+      },
+      "closeLine": {
+        "where": "Record a death dialog, closeLine"
+      },
+      "consequencesHead": {
+        "where": "Record a death dialog, consequencesHead"
+      },
+      "consequencesNone": {
+        "where": "Record a death dialog, consequencesNone"
+      },
+      "date": {
+        "where": "Record a death dialog, date"
+      },
+      "dateHint": {
+        "where": "Record a death dialog, dateHint"
+      },
+      "doneText": {
+        "where": "Record a death dialog, doneText"
+      },
+      "doneTitle": {
+        "where": "Record a death dialog, doneTitle"
+      },
+      "eventTitle": {
+        "where": "Record a death dialog, eventTitle"
+      },
+      "intro": {
+        "where": "Record a death dialog, intro"
+      },
+      "note": {
+        "where": "Record a death dialog, note"
+      },
+      "noteHint": {
+        "where": "Record a death dialog, noteHint"
+      },
+      "recordedBy": {
+        "where": "Record a death dialog, recordedBy"
+      },
+      "reviewLine": {
+        "where": "Record a death dialog, reviewLine"
+      },
+      "source": {
+        "where": "Record a death dialog, source"
+      },
+      "sourceHint": {
+        "where": "Record a death dialog, sourceHint"
+      },
+      "submit": {
+        "where": "Record a death dialog, submit"
+      },
+      "title": {
+        "where": "Record a death dialog, title"
+      },
+      "version": {
+        "where": "Record a death dialog, version"
+      }
+    },
     "documents": {
       "columns": {
         "date": {
@@ -13157,6 +13349,79 @@
       "source": {
         "screenshot": "phase-2/person-360-light-comfortable.png",
         "where": "Source column of the documents table for an evidence reference: the agency and the event title"
+      }
+    },
+    "edit": {
+      "action": {
+        "where": "Edit a person record dialog, action"
+      },
+      "detailHead": {
+        "where": "Edit a person record dialog, detailHead"
+      },
+      "doneText": {
+        "where": "Edit a person record dialog, doneText"
+      },
+      "doneTitle": {
+        "where": "Edit a person record dialog, doneTitle"
+      },
+      "fields": {
+        "chi": {
+          "maxLength": 24,
+          "where": "Edit a person record dialog, chi field label"
+        },
+        "dateOfBirth": {
+          "maxLength": 24,
+          "where": "Edit a person record dialog, dateOfBirth field label"
+        },
+        "email": {
+          "maxLength": 24,
+          "where": "Edit a person record dialog, email field label"
+        },
+        "familyName": {
+          "maxLength": 24,
+          "where": "Edit a person record dialog, familyName field label"
+        },
+        "givenName": {
+          "maxLength": 24,
+          "where": "Edit a person record dialog, givenName field label"
+        },
+        "gpPractice": {
+          "maxLength": 24,
+          "where": "Edit a person record dialog, gpPractice field label"
+        },
+        "phone": {
+          "maxLength": 24,
+          "where": "Edit a person record dialog, phone field label"
+        },
+        "preferredName": {
+          "maxLength": 24,
+          "where": "Edit a person record dialog, preferredName field label"
+        },
+        "school": {
+          "maxLength": 24,
+          "where": "Edit a person record dialog, school field label"
+        }
+      },
+      "identityHead": {
+        "where": "Edit a person record dialog, identityHead"
+      },
+      "identityNote": {
+        "where": "Edit a person record dialog, identityNote"
+      },
+      "noChange": {
+        "where": "Edit a person record dialog, noChange"
+      },
+      "reason": {
+        "where": "Edit a person record dialog, reason"
+      },
+      "reasonHint": {
+        "where": "Edit a person record dialog, reasonHint"
+      },
+      "submit": {
+        "where": "Edit a person record dialog, submit"
+      },
+      "title": {
+        "where": "Edit a person record dialog, title"
       }
     },
     "header": {
@@ -13236,6 +13501,35 @@
       "unbornDueUnknown": {
         "screenshot": "phase-2/person-360-light-comfortable.png",
         "where": "Person 360 header fact for an unborn child with no expected delivery date: the bold unborn word, then the placeholder"
+      }
+    },
+    "history": {
+      "empty": {
+        "where": "The history panel on a record, empty"
+      },
+      "entry": {
+        "where": "The history panel on a record, entry"
+      },
+      "meta": {
+        "where": "The history panel on a record, meta"
+      },
+      "reason": {
+        "where": "The history panel on a record, reason"
+      },
+      "title": {
+        "where": "The history panel on a record, title"
+      },
+      "was": {
+        "where": "The history panel on a record, was"
+      },
+      "wasBlank": {
+        "where": "The history panel on a record, wasBlank"
+      },
+      "wasField": {
+        "where": "The history panel on a record, wasField"
+      },
+      "who": {
+        "where": "The history panel on a record, who"
       }
     },
     "household": {
@@ -15213,6 +15507,74 @@
         "where": "Sheet title of the statutory clocks card on the process screen"
       }
     },
+    "close": {
+      "action": {
+        "where": "Close a case dialog, action"
+      },
+      "audit": {
+        "where": "Close a case dialog, audit"
+      },
+      "clockLine": {
+        "where": "Close a case dialog, clockLine"
+      },
+      "clocksHead": {
+        "where": "Close a case dialog, clocksHead"
+      },
+      "clocksNone": {
+        "where": "Close a case dialog, clocksNone"
+      },
+      "closedBadge": {
+        "where": "Close a case dialog, closedBadge"
+      },
+      "doneText": {
+        "where": "Close a case dialog, doneText"
+      },
+      "doneTitle": {
+        "where": "Close a case dialog, doneTitle"
+      },
+      "eventDetail": {
+        "where": "Close a case dialog, eventDetail"
+      },
+      "eventTitle": {
+        "where": "Close a case dialog, eventTitle"
+      },
+      "localNote": {
+        "where": "Close a case dialog, localNote"
+      },
+      "note": {
+        "where": "Close a case dialog, note"
+      },
+      "noteHint": {
+        "where": "Close a case dialog, noteHint"
+      },
+      "reason": {
+        "where": "Close a case dialog, reason"
+      },
+      "reasonPlaceholder": {
+        "where": "Close a case dialog, reasonPlaceholder"
+      },
+      "shareWhat": {
+        "where": "Close a case dialog, shareWhat"
+      },
+      "statutoryNote": {
+        "where": "Close a case dialog, statutoryNote"
+      },
+      "submit": {
+        "where": "Close a case dialog, submit"
+      },
+      "tellHead": {
+        "where": "Close a case dialog, tellHead"
+      },
+      "tellNone": {
+        "where": "Close a case dialog, tellNone"
+      },
+      "title": {
+        "where": "Close a case dialog, title"
+      },
+      "version": {
+        "where": "Close a case dialog, version"
+      }
+    },
     "eligibility": {
       "aspTooYoung": {
         "where": "Start a process dialog, the eligibility answer beside each process"
@@ -15867,6 +16229,50 @@
     "presence": {
       "summary": {
         "where": "The only body text for a user with presence-level access to a process, with the need-to-know reason appended"
+      }
+    },
+    "reopen": {
+      "action": {
+        "where": "Reopen a case dialog, action"
+      },
+      "audit": {
+        "where": "Reopen a case dialog, audit"
+      },
+      "clockLine": {
+        "where": "Reopen a case dialog, clockLine"
+      },
+      "clocksHead": {
+        "where": "Reopen a case dialog, clocksHead"
+      },
+      "clocksNone": {
+        "where": "Reopen a case dialog, clocksNone"
+      },
+      "clocksNote": {
+        "where": "Reopen a case dialog, clocksNote"
+      },
+      "doneText": {
+        "where": "Reopen a case dialog, doneText"
+      },
+      "doneTitle": {
+        "where": "Reopen a case dialog, doneTitle"
+      },
+      "eventTitle": {
+        "where": "Reopen a case dialog, eventTitle"
+      },
+      "reason": {
+        "where": "Reopen a case dialog, reason"
+      },
+      "reasonHint": {
+        "where": "Reopen a case dialog, reasonHint"
+      },
+      "submit": {
+        "where": "Reopen a case dialog, submit"
+      },
+      "title": {
+        "where": "Reopen a case dialog, title"
+      },
+      "version": {
+        "where": "Reopen a case dialog, version"
       }
     },
     "sharing": {

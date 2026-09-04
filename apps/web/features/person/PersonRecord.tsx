@@ -3,9 +3,10 @@
 import { VIEWS_KINDS, ageLabel, agencyShort, detailLevelLabel, evidenceKindLabel, formatDate, formatDateTime, packItemKindLabel, planTypeLabel, processShort, processStatusLabel, roleLabel, resolvePersonId, shareStatusLabel, stageLabel, standingMerges, viewsKindLabel, type Person, type Process, type ViewsRecord } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Tabs, Table, TableWrap, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
-import { AlertTriangle, ArrowUpRight, Flag, FolderPlus, Languages, Lock, Merge, Plus, RotateCcw, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, ArrowUpRight, Flag, FolderPlus, HeartOff, Languages, Lock, Merge, Pencil, Plus, RotateCcw, ShieldAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
+import { RecordHistory } from '@/components/RecordHistory';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { chronologyPath, meetingPath, personPath, processPath } from '@/lib/routes';
@@ -21,6 +22,8 @@ import { HouseholdPanel } from './HouseholdPanel';
 import { NetworkGraph } from './NetworkGraph';
 import { NetworkPanel } from './NetworkPanel';
 import { AddAlertDialog } from './AddAlertDialog';
+import { EditPersonDialog } from './EditPersonDialog';
+import { RecordDeathDialog } from './RecordDeathDialog';
 import { MergeDialog, UnmergeDialog } from './MergeDialog';
 import { StartProcessDialog } from './StartProcessDialog';
 import styles from './PersonRecord.module.css';
@@ -73,6 +76,8 @@ export function PersonRecord({ personId }: { personId: string }) {
   const [merging, setMerging] = useState(false);
   const [starting, setStarting] = useState(false);
   const [alerting, setAlerting] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [recordingDeath, setRecordingDeath] = useState(false);
   const [unmerging, setUnmerging] = useState<string | null>(null);
   const standing = standingMerges(data, personId);
   const [voice, setVoice] = useState<{ kind: ViewsRecord['kind']; method: string; content: string }>(() => ({ kind: 'child-voice', method: t('person.recordViews.methodDefault'), content: '' }));
@@ -182,6 +187,11 @@ export function PersonRecord({ personId }: { personId: string }) {
               <strong>{address.line}</strong>
               {address.moves > 0 ? ` ${t('person.header.moves', { count: address.moves })}` : ''}
             </span>
+            {person.death ? (
+              <span className={styles.died} data-testid="died">
+                <strong>{t('person.death.badge', { date: formatDate(person.death.at) })}</strong> {t('person.death.recordedBy', { name: person.death.byName })}
+              </span>
+            ) : null}
             {person.chi ? <span>{t('person.header.chi', { chi: person.chi })}</span> : null}
             {person.communicationNeeds.interpreterLanguage || person.communicationNeeds.needs.length > 0 ? (
               <span>
@@ -233,9 +243,17 @@ export function PersonRecord({ personId }: { personId: string }) {
           <Button size="sm" variant="primary" icon={<FolderPlus size={14} aria-hidden="true" />} onClick={() => setStarting(true)} data-testid="start-process">
             {t('processes.open.open')}
           </Button>
+          <Button size="sm" variant="secondary" icon={<Pencil size={14} aria-hidden="true" />} onClick={() => setEditing(true)} data-testid="edit-person">
+            {t('person.edit.action')}
+          </Button>
           <Button size="sm" variant="secondary" icon={<ShieldAlert size={14} aria-hidden="true" />} onClick={() => setAlerting(true)} data-testid="add-alert">
             {t('person.alerts.add')}
           </Button>
+          {person.death ? null : (
+            <Button size="sm" variant="quiet" icon={<HeartOff size={14} aria-hidden="true" />} onClick={() => setRecordingDeath(true)} data-testid="record-death">
+              {t('person.death.action')}
+            </Button>
+          )}
           <Button size="sm" variant="secondary" icon={<Merge size={14} aria-hidden="true" />} onClick={() => setMerging(true)} data-testid="merge-open">
             {t('person.merge.open')}
           </Button>
@@ -280,6 +298,9 @@ export function PersonRecord({ personId }: { personId: string }) {
                 <NetworkGraph person={person} concernIds={concernIds} on={now.toISOString().slice(0, 10)} />
               </SheetBody>
             </Sheet>
+            <div className={styles.overviewWide}>
+              <RecordHistory record={person} retire={{ collection: 'people', id: person.id, label: fullName(person) }} />
+            </div>
             <Sheet tone="paper">
               <SheetHead title={t('person.overview.voice.title')} meta={latestVoice ? t('person.overview.voice.latestOf', { count: views.length }) : t('person.overview.voice.none')} actions={<Button size="sm" variant="quiet" onClick={() => setTab('voice')}>{t('person.overview.voice.all')}</Button>} />
               <SheetBody>
@@ -552,6 +573,8 @@ export function PersonRecord({ personId }: { personId: string }) {
 
       {starting ? <StartProcessDialog person={person} open onClose={() => setStarting(false)} /> : null}
       {alerting ? <AddAlertDialog person={person} open onClose={() => setAlerting(false)} /> : null}
+      {editing ? <EditPersonDialog person={person} open onClose={() => setEditing(false)} /> : null}
+      {recordingDeath ? <RecordDeathDialog person={person} open onClose={() => setRecordingDeath(false)} /> : null}
       {merging ? <MergeDialog person={person} open onClose={() => setMerging(false)} /> : null}
       {unmerging ? <UnmergeDialog mergeId={unmerging} open onClose={() => setUnmerging(null)} /> : null}
     </div>

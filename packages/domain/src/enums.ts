@@ -406,6 +406,12 @@ export const AUDIT_ACTS = [
   'classify',
   'classification-raise',
   'classification-lower',
+  // The terminal states. A closure, a reopening and a recorded-in-error are three different acts
+  // and none of them is an edit: "when did this case close, who closed it and why" and "what has
+  // been retired on this record" are questions the ledger's act filter should answer directly.
+  'close',
+  'reopen',
+  'recorded-in-error',
 ] as const;
 export type AuditAct = (typeof AUDIT_ACTS)[number];
 

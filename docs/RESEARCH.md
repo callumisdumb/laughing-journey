@@ -454,3 +454,17 @@ The proxy blocked www.legislation.gov.uk, www.gov.uk, www.gov.scot and www.mygov
 | 7 | RSOs managed under statutory conditions and/or notification requirements on 31 March | data | extract |
 | 8 | MAPPA offenders charged with a serious further offence in the year | not held | reconstructed |
 | 9 | RSOs in custody and returned to custody | data | reconstructed |
+
+## 7. Closure reasons (04 Sep 2026)
+
+Closing a case writes a coded reason, and a coded reason in a national return is counted. So each process type is closed on the list its own return uses, and where no such list exists the product says so rather than inventing one.
+
+| Process | List used | Source | Confidence |
+|---|---|---|---|
+| Child protection | The nine de-registration reasons, including "Child died" | Children's Social Work Statistics: Child Protection, de-registration reason breakdown. Already in the product as `CP_DEREGISTRATION_REASONS`, transcribed in an earlier round. | High |
+| Adult support and protection | The six actions-taken rows, including "Meets three-point criteria, no opportunity for further ASP intervention" | ASP data workbook 2026-27, `aspInquiryActions`, pinned to `packages/domain/src/nmds/workbook-2026-27.fields.json` and asserted by `fieldSets.test.ts`. See section 5.14. | High |
+| MAPPA | Level down, de-registration, transfer | Already in `mappaDetailSchema.exit.kind` from the Annex 3 work in an earlier round. | High |
+| MARAC | Locally agreed list, labelled as local in the interface | **No national coded closure list found.** SafeLives publishes a repeat-referral definition and case-closure practice guidance rather than a return with coded closure reasons, and the MARAC data set collected nationally counts referrals, repeats and cases heard rather than closures by reason. | `TODO(verify)` |
+| Adults with incapacity | Locally agreed list, labelled as local in the interface | **No national coded closure list found.** The AWI statistics published by the Office of the Public Guardian and the Mental Welfare Commission count orders granted, in force and expired rather than local authority case closures by reason. | `TODO(verify)` |
+
+The locally agreed list is `LOCAL_CLOSURE_REASONS` in `packages/domain/src/processes/close.ts`: risk reduced, support in place, person moved away, person died, declined further involvement, transferred to another area, other reason. The close dialog states on screen that the list is a partnership's own and that nothing chosen from it goes into a national return. Where a partnership has its own list, it belongs in configuration. A fabricated national-looking list would demonstrate better and be a lie about a counted figure, which is the one thing a returns-aware product must not do (D-150).

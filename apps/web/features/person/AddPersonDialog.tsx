@@ -10,6 +10,7 @@ import { PersonLink } from '@/components/EntityLink';
 import { reasonKey, reasonLabel } from './reasons';
 import { accessForUser, fullName, processesInvolving } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useRetire } from '@/lib/retire';
 import { useWriteErrors } from '@/lib/writeErrors';
 import styles from './AddPersonDialog.module.css';
 
@@ -65,6 +66,7 @@ export function AddPersonDialog({ open, onClose, onCreated }: { open: boolean; o
   const write = useAppStore((s) => s.write);
   const newId = useAppStore((s) => s.newId);
   const readErrors = useWriteErrors();
+  const retire = useRetire((s) => s.retire);
   const { toast } = useToast();
 
   const [query, setQuery] = useState<Query>(EMPTY_QUERY);
@@ -182,7 +184,15 @@ export function AddPersonDialog({ open, onClose, onCreated }: { open: boolean; o
       setErrors(result.errors);
       return;
     }
-    toast({ title: t('person.create.created.title'), text: t('person.create.created.text', { name, reviewed: t('person.create.reviewed', { count: candidates.length }) }), tone: 'success' });
+    // The one honest shortcut on a create: for the few seconds the toast is up, the record that was
+    // just made can be sent to the correction path. Not an undo, which would delete it. The dialog
+    // it opens still asks for the reason, because the reason is what makes it a correction.
+    toast({
+      title: t('person.create.created.title'),
+      text: t('person.create.created.text', { name, reviewed: t('person.create.reviewed', { count: candidates.length }) }),
+      tone: 'success',
+      action: { label: t('common.recordedInError.undo'), onClick: () => retire({ collection: 'people', id: person.id, label: name }) },
+    });
     onCreated?.(person);
     close();
   }

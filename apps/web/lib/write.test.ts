@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG, demoNow, type Person, type Process } from '@mas/domain';
 import { KAYLEIGH, buildDataset } from '@mas/mock-data';
 import { describe, expect, it } from 'vitest';
-import { REASON_REQUIRED, classificationRefusal, excludedRecipients, reasonRefusal, startedClocks, validateRecord } from './write';
+import { REASON_REQUIRED, classificationRefusal, excludedRecipients, reasonRefusal, startedClocks, validateRecord, versionFor } from './write';
 
 const data = buildDataset();
 const config = DEFAULT_CONFIG;
@@ -144,5 +144,53 @@ describe('classificationRefusal on records that carry no classification', () => 
     const high = { classification: { level: 'official', sensitive: true, handling: [] }, accessRestriction: 'restricted' } as unknown as Parameters<typeof classificationRefusal>[2];
     const low = { classification: { level: 'official', sensitive: false, handling: [] }, accessRestriction: 'none' } as unknown as Parameters<typeof classificationRefusal>[2];
     expect(classificationRefusal(DEFAULT_CONFIG, high, low)).toBe('classificationDowngrade');
+  });
+});
+
+describe('2b. the record\'s own version history', () => {
+  const WHO = { at: '2026-09-04T10:00:00+01:00', byUserId: 'usr_janet_kerr', byName: 'Janet Kerr', intent: 'update' as const };
+
+  it('names the fields that moved and keeps what they held', () => {
+    const before = { id: 'per_1', givenName: 'Aiden', familyName: 'Boyle', dateOfBirth: '2019-03-14' };
+    const after = { ...before, dateOfBirth: '2019-04-14' };
+    const entry = versionFor('people', before, after, { ...WHO, reason: 'The referral had the month wrong.' });
+    expect(entry?.change).toBe('dateOfBirth');
+    expect(entry?.before).toEqual({ dateOfBirth: '2019-03-14' });
+    expect(entry?.reason).toBe('The referral had the month wrong.');
+    expect(entry?.byName).toBe('Janet Kerr');
+  });
+
+  it('prefers the caller\'s phrase, because "Case closed" reads better than a list of fields', () => {
+    const before = { id: 'prc_1', status: 'open', closedAt: undefined };
+    const after = { id: 'prc_1', status: 'closed', closedAt: '2026-09-04T10:00:00+01:00' };
+    expect(versionFor('processes', before, after, { ...WHO, change: 'Case closed: Child died' })?.change).toBe('Case closed: Child died');
+  });
+
+  it('names a nested field as changed without printing it', () => {
+    const before = { id: 'per_1', contact: { phone: '01555 111111' } };
+    const after = { id: 'per_1', contact: { phone: '01555 222222' } };
+    const entry = versionFor('people', before, after, WHO);
+    expect(entry?.change).toBe('contact');
+    // The old value of an object is not a readable "what it was", so it is left to the audit trail.
+    expect(entry?.before).toBeUndefined();
+  });
+
+  it('writes nothing for a create, for an unchanged record, or for a collection with no history', () => {
+    const record = { id: 'per_1', givenName: 'Aiden' };
+    expect(versionFor('people', undefined, record, { ...WHO, intent: 'create' })).toBeNull();
+    expect(versionFor('people', record, record, WHO)).toBeNull();
+    // The audit ledger is append-only. A version entry on an audit entry would be a contradiction.
+    expect(versionFor('audit', record, { ...record, givenName: 'Aidy' }, WHO)).toBeNull();
+  });
+
+  it('ignores the version list itself, so an entry cannot beget another', () => {
+    const before = { id: 'per_1', givenName: 'Aiden', versions: [] };
+    const after = { id: 'per_1', givenName: 'Aiden', versions: [{ at: WHO.at, byName: 'Janet Kerr', change: 'something' }] };
+    expect(versionFor('people', before, after, WHO)).toBeNull();
+  });
+
+  it('always writes one for a correction, because the reason is the point', () => {
+    const record = { id: 'per_1', givenName: 'Aiden' };
+    expect(versionFor('people', record, record, { ...WHO, intent: 'correct', reason: 'Recorded against the wrong child.' })).not.toBeNull();
   });
 });
