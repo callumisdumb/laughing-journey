@@ -188,6 +188,34 @@ A row carries a mark where the person is themselves subject to a process the rea
 
 Every action opens a dialog that computes its consequences before the button: a household change lists the open cases it touches and offers to tell them, and a relationship change says who it will exclude from which case, in words, from the product's own rules.
 
+### 5.4 The global create action
+
+The top bar's answer to "there is no record yet", sitting next to search, which is its answer to "where is the record".
+
+```
++-- What would you like to record? -----------------------------------+
+| ABOUT A PERSON                                                       |
+| [+] A person record          [+] A case                              |
+|     Search first, then...        An ASP inquiry, a child...          |
+| [+] A chronology entry       [+] An alert on a person                |
+| [+] The person's own words                                           |
+|                                                                      |
+| ON A CASE                                                            |
+| [+] A plan                   [+] A case-role register entry          |
+| [+] A protection order       [+] A disclosure                        |
+| [+] A supervision visit      [+] An investigation                    |
+|                                                                      |
+| MADE ON THEIR OWN SCREEN                                             |
+| [+] A meeting                [+] An action        [+] A share        |
++----------------------------------------------------------- [Cancel] +
+```
+
+Choosing one replaces the list with the single thing that create needs, a person or a case, and Continue then opens the same dialog the record itself would have opened. There is no second implementation to drift from the first, which is the whole reason the menu is built this way rather than by navigating with a query parameter that a screen notices.
+
+The third group is the honest part. A meeting, an action and a share are made on screens that hold context the menu does not have, so the option says where it goes and goes there. A menu that opened a half-working meeting form would be worse than one that admits the limit.
+
+The case list offers only cases the reader can actually open. A case reference that leads to a restricted state is not a create path.
+
 ## 6. Hero screen wireframes
 
 ### 6.1 Person record

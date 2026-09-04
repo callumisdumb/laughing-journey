@@ -844,8 +844,26 @@
       "title": "Large Scale Investigation: {setting}"
     },
     "orders": {
+      "addTitle": "Record a protection order",
+      "audit": "{order}: {decision}",
+      "clockLine": "{label}, due {date}",
+      "clocksHead": "Recording this grant starts:",
+      "decision": "What was decided",
+      "done": {
+        "text": "The register of orders considered has been updated.",
+        "title": "Order recorded",
+        "withClocks": "{count, plural, one {One clock is} other {# clocks are}} now running. The first falls due on {date}."
+      },
       "empty": "No orders considered yet.",
+      "eventTitle": "{order}: {decision}",
+      "grantedAt": "Date granted",
+      "grantedAtHint": "The statutory duration runs from this date, so the clocks are computed from it and not from today.",
       "meta": "Assessment (s11), removal (s14), banning (s19), warrants for entry",
+      "order": "Which order",
+      "rationale": "Why, in a sentence",
+      "rationaleHint": "The reasoning a sheriff or an inspector would expect to find. Recorded whether the order was sought or ruled out.",
+      "record": "Record an order",
+      "submit": "Record the order",
       "title": "Protection orders considered"
     },
     "screening": {
@@ -1049,8 +1067,38 @@
     "supervision": {
       "empty": "Supervision starts once an order is granted (s10).",
       "investigation": "Opened {date}: {summary}",
+      "investigationAudit": "Investigation opened under {section}",
+      "investigationDone": {
+        "text": "Opened under {section} and shown on the record as open.",
+        "title": "Investigation recorded"
+      },
+      "investigationEventTitle": "Investigation opened under {section}",
+      "investigationOpened": "Date opened",
+      "investigationSubmit": "Record the investigation",
+      "investigationSummary": "What is being investigated",
+      "investigationSummaryHint": "What was reported and what the local authority is looking into. Written so a colleague picking this up next week knows where it stands.",
+      "investigationTitle": "Record an investigation",
+      "record": "Record a visit",
+      "recordInvestigation": "Record an investigation",
+      "section": {
+        "s10": "Section 10: a complaint about a guardian or attorney",
+        "s12": "Section 12: the welfare of the adult seems at risk"
+      },
+      "sectionLabel": "Under which section",
       "title": "Supervision visits and investigations",
-      "visit": "{name}: {summary}"
+      "visit": "{name}: {summary}",
+      "visitAudit": "Supervision visit recorded, {date}",
+      "visitBy": "Who visited",
+      "visitDate": "Date of the visit",
+      "visitDone": {
+        "text": "The visit of {date} is on the record and on the chronology.",
+        "title": "Visit recorded"
+      },
+      "visitEventTitle": "Supervision visit",
+      "visitSubmit": "Record the visit",
+      "visitSummary": "What happened",
+      "visitSummaryHint": "What was seen and what the adult said, in the order it happened. This is the record the Public Guardian may ask to see.",
+      "visitTitle": "Record a supervision visit"
     },
     "will": {
       "consulted": "Consulted",
@@ -2627,9 +2675,15 @@
       "reasoning": "Give the reasoning for this limb (at least {min} characters)"
     },
     "write": {
+      "alertEndsBeforeStart": "An alert cannot stop showing before it starts.",
+      "alertScopeRequired": "Name at least one agency, or let anybody who can see the record see the alert.",
+      "alertTextRequired": "Write the alert in a sentence. It is read by somebody about to knock on the door.",
       "chiNeedsDateOfBirth": "A CHI number is built from the date of birth, so record that first.",
       "classificationDowngrade": "This record's classification cannot be lowered here. A deliberate lower needs a named role and a reason.",
       "dateOfBirthFuture": "A date of birth cannot be in the future. Use the unborn life stage and an expected delivery date.",
+      "disclosureFactRequired": "List at least one fact. A disclosure with nothing listed cannot be limited to what was decided.",
+      "disclosureRationaleRequired": "Say why this person needs to know, in a sentence.",
+      "disclosureRecipientRequired": "Name who would be told.",
       "excluded": "{name} is on the exclusion register for this case and cannot be added.",
       "expectedDeliveryPast": "An expected delivery date in the past means the baby has been born. Record the birth rather than a due date.",
       "householdAlreadyMember": "They are already recorded as living there on that date.",
@@ -2637,17 +2691,24 @@
       "householdLabelRequired": "Give the household a name.",
       "householdMissing": "That household is no longer on the record.",
       "householdNotAMember": "They are not currently recorded as living there.",
+      "investigationInFuture": "An investigation cannot be opened on a future date.",
+      "investigationSummaryRequired": "Say what is being investigated, in a sentence.",
       "mergeOtherMissing": "Choose the record to merge into this one.",
       "mergeReasonRequired": "Say how you know these are the same person, in a sentence.",
       "mergeSameRecord": "A record cannot be merged into itself.",
       "mergeSurvivorMissing": "The record that would survive no longer exists.",
       "nameRequired": "A given name and a family name are both needed.",
       "noUser": "Nobody is signed in, so this cannot be recorded against anyone.",
+      "orderRationaleRequired": "Give the reasoning in a sentence. It is the part a sheriff would read.",
+      "planOutcomeRequired": "A plan needs at least one outcome. The outcomes are the plan.",
+      "planTitleRequired": "Give the plan a name.",
       "processAlreadyOpen": "An open case of this type already exists for this person. Open it, or say in a sentence why a second one needs to exist.",
       "processNoSubject": "A process needs somebody it is about.",
       "processNotEligible": "This person is not eligible for this process. The reason is above.",
       "processNotYourRole": "Your role does not open this process. The refusal above says who does.",
       "reasonRequired": "Say why in a sentence. A change made after the fact needs a reason on the record.",
+      "registerNameRequired": "Give the name the entry is keyed on.",
+      "registerReasonRequired": "Say why they must not receive information.",
       "relationshipDuplicate": "That relationship is already recorded between these two people.",
       "relationshipEndBeforeStart": "A relationship cannot end before it began.",
       "relationshipEndReasonRequired": "Say what happened in a sentence.",
@@ -2658,7 +2719,10 @@
       "searchRequired": "Search first. This product does not create a person record without one.",
       "unmergeAlreadyUndone": "That merge has already been undone.",
       "unmergeMissing": "That merge is no longer on the record.",
-      "unmergeReasonRequired": "Say what was wrong, in a sentence."
+      "unmergeReasonRequired": "Say what was wrong, in a sentence.",
+      "visitInFuture": "A visit cannot be recorded before it has happened.",
+      "visitSummaryRequired": "Say what happened on the visit, in a sentence.",
+      "visitVisitorRequired": "Name who visited."
     }
   },
   "forms": {
@@ -3423,7 +3487,10 @@
   "mappa": {
     "banner": "Restricted record. Distribution list only. Every read is audited. MAPPA information is not given to victims (the Victim Notification Scheme is a separate route), to employers, or to the public, except through a recorded disclosure decision.",
     "disclosures": {
+      "addFact": "Add another fact",
+      "addTitle": "Propose a disclosure",
       "approve": "Approve",
+      "audit": "Disclosure proposed to {recipient}",
       "columns": {
         "decision": "Decision",
         "facts": "Facts to disclose",
@@ -3437,8 +3504,31 @@
       },
       "decidedBy": "{name}, {date}",
       "decline": "Decline",
+      "done": {
+        "text": "{recipient}, {count, plural, one {# fact} other {# facts}}. It is pending a decision.",
+        "title": "Disclosure proposed"
+      },
       "empty": "No disclosure decisions.",
+      "eventTitle": "Disclosure proposed to {recipient}",
+      "factLabel": "Fact {number}",
+      "facts": "Facts to disclose",
+      "factsHint": "One fact per line. The disclosure is limited to what is listed here, so a line that is not on this list is not disclosed.",
       "meta": "Third parties receive specific facts only, by a recorded decision.",
+      "pendingNote": "This is recorded as pending. Somebody with the authority to decide approves or declines it on the register.",
+      "propose": "Propose a disclosure",
+      "rationale": "Why this person needs to know",
+      "rationaleHint": "The risk being managed and what the recipient is expected to do about it.",
+      "recipient": "Who would be told",
+      "recipientKind": {
+        "employer": "Employer",
+        "landlord": "Landlord",
+        "other": "Someone else",
+        "partner": "Partner",
+        "school": "School or nursery"
+      },
+      "recipientKindLabel": "In what capacity",
+      "removeFact": "Remove",
+      "submit": "Record the proposal",
       "title": "Disclosure decisions register"
     },
     "era": {
@@ -3780,6 +3870,60 @@
     }
   },
   "nav": {
+    "create": {
+      "action": "Create",
+      "back": "Back",
+      "caseOption": "{reference} {type}: {title}",
+      "casePlaceholder": "Choose a case",
+      "continue": "Continue",
+      "created": {
+        "text": "Taking you to the record of {name}.",
+        "title": "Record created"
+      },
+      "groups": {
+        "aboutAPerson": "About a person",
+        "elsewhere": "Made on their own screen",
+        "onACase": "On a case"
+      },
+      "hints": {
+        "action": "Made on the actions screen, against a plan, a meeting or on its own.",
+        "alert": "Staff safety, a MARAC flag, a MAPPA presence. You choose who can see it.",
+        "disclosure": "Facts a third party would be told, proposed for a decision.",
+        "event": "A fact that happened, or an analysis note against facts already recorded.",
+        "investigation": "Under section 10 or section 12 of the 2000 Act.",
+        "meeting": "Made on the meetings screen, where the invite list comes from need-to-know.",
+        "order": "Assessment, removal or banning, with the statutory clock it starts.",
+        "person": "Search first, then record who they are. The search is not optional.",
+        "plan": "Outcomes rather than prose, so a review can check them one at a time.",
+        "process": "An ASP inquiry, a child protection investigation, a MARAC, a MAPPA case or an AWI case.",
+        "register": "Somebody who must not receive information about a case, and why.",
+        "share": "Made on the sharing screen, where the lawful basis is chosen with it.",
+        "views": "The adult's views, a child's voice, what the victim wants, what the family said.",
+        "visit": "A visit on a welfare guardianship, with what was seen and what was said."
+      },
+      "labels": {
+        "action": "An action",
+        "alert": "An alert on a person",
+        "disclosure": "A disclosure",
+        "event": "A chronology entry",
+        "investigation": "An investigation",
+        "meeting": "A meeting",
+        "order": "A protection order",
+        "person": "A person record",
+        "plan": "A plan",
+        "process": "A case",
+        "register": "A case-role register entry",
+        "share": "A share",
+        "views": "The person's own words",
+        "visit": "A supervision visit"
+      },
+      "noCases": "There is no open case of the right type that you can read. Open one from the person record first.",
+      "title": "What would you like to record?",
+      "whichCase": "Which case?",
+      "whichCaseHint": "Only the open cases you can read are listed.",
+      "whichPerson": "Who is this about?",
+      "whichPersonHint": "Search by name, date of birth or CHI number. Create a record here if there is none."
+    },
     "drawer": {
       "access": {
         "basis": "Basis: {hints}",
@@ -3982,6 +4126,33 @@
   "person": {
     "address": {
       "none": "No address recorded"
+    },
+    "alerts": {
+      "add": "Add an alert",
+      "addTitle": "Add an alert to the record of {name}",
+      "doneText": "{kind}, from {from}.",
+      "doneTitle": "Alert added",
+      "eventTitle": "Alert added: {kind}",
+      "from": "Showing from",
+      "kind": {
+        "cpRegister": "On the child protection register",
+        "mappa": "MAPPA presence",
+        "maracFlag": "MARAC flag",
+        "missing": "Reported missing",
+        "other": "Other",
+        "staffSafety": "Staff safety"
+      },
+      "kindLabel": "Type of alert",
+      "scope": "Who can see this alert",
+      "scopeAgencies": "Only the agencies I name",
+      "scopeAgenciesHint": "For an alert that discloses something by existing at all. A MAPPA presence alert tells the reader that a MAPPA case exists, so it goes to the responsible authorities and no further.",
+      "scopeEverybody": "Anybody who can see this record",
+      "scopeEverybodyHint": "For an alert that keeps a visiting worker safe. A staff safety alert that only some agencies can see is not doing its job.",
+      "submit": "Add the alert",
+      "text": "What the alert says",
+      "textHint": "Written for somebody about to knock on the door, with no other context. Say what to do, not only what happened.",
+      "to": "Showing until",
+      "toHint": "Optional, but an alert with no end is one that is still telling a visiting worker something that stopped being true three years ago."
     },
     "audit": {
       "columns": {
@@ -4874,10 +5045,29 @@
       "title": "Participants and roles"
     },
     "parties": {
+      "add": "Add to the register",
+      "addTitle": "Add somebody to the case-role register",
+      "audit": "Case-role register: {name} recorded as {party}",
+      "consequence": "From now on this name is refused as a recipient on this case, and near matches are flagged before anything is sent.",
+      "done": {
+        "addedTitle": "Added to the register",
+        "text": "{name} will not receive information about this case.",
+        "updatedTitle": "Register entry replaced"
+      },
       "empty": "No case parties are recorded. The referral names nobody and no relationship implies one.",
+      "eventDetail": "{name} recorded as {party}. {reason}",
+      "eventTitle": "Case-role register updated",
       "meta": "{count, plural, =0 {Nobody recorded} one {One person} other {# people}} on the case-party register.",
+      "name": "Their name",
+      "party": "What they are to this case",
+      "reason": "Why they must not receive information",
+      "reasonHint": "The risk, in a sentence. It is what somebody reads when the refusal stops them sending an invitation.",
+      "relationship": "How they are connected",
+      "relationshipHint": "Optional. For example, the perpetrator's brother, or the victim's employer.",
       "role": "{party}. {label} Recorded from the {source}.",
-      "title": "Who this case is about"
+      "submit": "Add to the register",
+      "title": "Who this case is about",
+      "via": "the case-role register"
     },
     "permission": {
       "notYourRole": {
@@ -4902,6 +5092,9 @@
       }
     },
     "plans": {
+      "add": "Add a plan",
+      "addOutcome": "Add another outcome",
+      "addTitle": "Add a plan to {reference}",
       "columns": {
         "action": "Action",
         "due": "Due",
@@ -4909,12 +5102,30 @@
         "owner": "Owner",
         "status": "Status"
       },
+      "consent": "The adult's view on the plan",
+      "consentHint": "What the adult said about the plan, in their own words where you have them. Recorded whether or not they agreed with it.",
+      "doneText": "{title}, with {count, plural, one {# outcome} other {# outcomes}}.",
+      "doneTitle": "Plan recorded",
       "dueRelative": "{date} ({relative})",
       "empty": "No actions recorded yet.",
+      "eventDetail": "{title}, with {count, plural, one {# outcome} other {# outcomes}}.",
+      "eventTitle": "{type} agreed",
+      "name": "What the plan is called",
+      "noFurtherAction": "It has been agreed that no further action is required",
+      "noFurtherActionHint": "Only then may an adult protection plan be recorded without a review date.",
       "none": "No plan yet",
+      "outcomeLabel": "Outcome {number}",
+      "outcomes": "Outcomes",
+      "outcomesHint": "One line each, in words the person would recognise. Actions hang off outcomes and a review checks them one at a time, so a plan written as a single paragraph cannot be reviewed.",
       "overdue": "overdue",
       "plan": "{title} ({status})",
-      "title": "Plans and actions"
+      "removeOutcome": "Remove",
+      "reviewDate": "Review date",
+      "reviewDateHint": "An adult protection plan must carry a date for its review meeting.",
+      "reviewDateRequired": "Review date (required)",
+      "submit": "Record the plan",
+      "title": "Plans and actions",
+      "type": "Type of plan"
     },
     "presence": {
       "summary": "You can see that a {process} process exists at the {stage} stage, led by {agency}. {reason}"

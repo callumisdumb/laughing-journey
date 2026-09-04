@@ -41,7 +41,7 @@ const ROUND_NOTES = {
   'sign-in': 'Choosing who you are, rebuilt: one surface, the honest statement second, both questions at once and the keyboard first.',
   clock: 'The settable demo clock, which every statutory clock and every relative date in the product is computed against.',
   network: 'Starting a process behind two gates that explain themselves, and household and network kept apart, and what changing either one does: the open cases a household change touches, and the exclusion a relationship creates, both computed and shown before the button.',
-  create: 'Adding a person, which begins with looking for them: the search, the candidates with the reason each matched, the form that only opens once they have been dismissed, the refusal for a role that does not hold cases, and the merge, which is destructive and therefore reversible.',
+  create: 'Making a record. Adding a person begins with looking for them: the search, the candidates with the reason each matched, the form that only opens once they have been dismissed, the refusal for a role that does not hold cases, and the merge, which is destructive and therefore reversible. Then the rest of the create paths, each showing the consequence before the button: the outcomes that are the plan, the alert and who can see it, the clocks a granted protection order starts, the facts a disclosure is limited to, and the global create action that reaches them all from anywhere.',
 };
 
 /** Rounds, each with its screenshots, newest round last. */

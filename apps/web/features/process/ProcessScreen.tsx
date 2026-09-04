@@ -4,7 +4,7 @@ import { exclusionPartyLabel, partyRegister, STAGES_BY_PROCESS, actionStatusLabe
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { Lock, ShieldCheck, UserPlus } from 'lucide-react';
+import { Lock, Plus, ShieldCheck, UserPlus } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { PersonLink, PractitionerLink } from '@/components/EntityLink';
@@ -15,6 +15,8 @@ import { useTrail } from '@/lib/trail';
 import { accessForUser, clocksForProcess, membersByAgency, personById, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow, useVault } from '@/lib/store';
 import { readProcessDetail } from '@/lib/vault';
+import { AddPlanDialog } from './AddPlanDialog';
+import { RegisterEntryDialog } from './forms/RegisterEntryDialog';
 import { AspPanels } from './panels/AspPanels';
 import { AwiPanels } from './panels/AwiPanels';
 import { CpPanels } from './panels/CpPanels';
@@ -40,6 +42,8 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const [reason, setReason] = useState('');
   const [reasonCategory, setReasonCategory] = useState('');
   const [classifyOpen, setClassifyOpen] = useState(false);
+  const [planOpen, setPlanOpen] = useState(false);
+  const [registerOpen, setRegisterOpen] = useState(false);
   const [classifySensitive, setClassifySensitive] = useState(true);
   const [classifyReason, setClassifyReason] = useState('');
   const upsert = useAppStore((s) => s.upsert);
@@ -231,7 +235,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                   written by someone who has not read this comment.
                 */}
                 <Sheet>
-                  <SheetHead title={t('processes.parties.title')} meta={t('processes.parties.meta', { count: parties.length })} />
+                  <SheetHead title={t('processes.parties.title')} meta={t('processes.parties.meta', { count: parties.length })} actions={<Button size="sm" variant="secondary" icon={<UserPlus size={14} aria-hidden="true" />} onClick={() => setRegisterOpen(true)} data-testid="add-register-entry">{t('processes.parties.add')}</Button>} />
                   <SheetBody>
                     <div className={styles.members}>
                       {parties.length === 0 ? <span className={styles.memberMeta}>{t('processes.parties.empty')}</span> : null}
@@ -319,7 +323,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
               </div>
               <div className={styles.wide}>
                 <Sheet>
-                  <SheetHead title={t('processes.plans.title')} meta={plans.length === 0 ? t('processes.plans.none') : plans.map((p) => t('processes.plans.plan', { title: p.title, status: planStatusLabel(p.status) })).join('; ')} />
+                  <SheetHead title={t('processes.plans.title')} meta={plans.length === 0 ? t('processes.plans.none') : plans.map((p) => t('processes.plans.plan', { title: p.title, status: planStatusLabel(p.status) })).join('; ')} actions={<Button size="sm" variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={() => setPlanOpen(true)} data-testid="add-plan">{t('processes.plans.add')}</Button>} />
                   <SheetBody flush>
                     <TableWrap style={{ border: 0, borderRadius: 0 }} className={styles.actionsTable}>
                       <Table>
@@ -484,6 +488,9 @@ export function ProcessScreen({ processId }: { processId: string }) {
         />
         <TextareaField label={t('processes.classification.reason.label')} required value={classifyReason} onChange={(e) => setClassifyReason(e.target.value)} hint={t('processes.classification.reason.hint')} />
       </Dialog>
+
+      {planOpen ? <AddPlanDialog process={process} open onClose={() => setPlanOpen(false)} /> : null}
+      {registerOpen ? <RegisterEntryDialog process={process} open onClose={() => setRegisterOpen(false)} /> : null}
     </div>
   );
 }

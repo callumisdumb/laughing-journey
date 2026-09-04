@@ -48,6 +48,22 @@ const KEYS = [
   'processNoSubject',
   'processNotEligible',
   'processAlreadyOpen',
+  'planTitleRequired',
+  'planOutcomeRequired',
+  'alertTextRequired',
+  'alertScopeRequired',
+  'alertEndsBeforeStart',
+  'orderRationaleRequired',
+  'disclosureRecipientRequired',
+  'disclosureFactRequired',
+  'disclosureRationaleRequired',
+  'visitVisitorRequired',
+  'visitSummaryRequired',
+  'visitInFuture',
+  'investigationSummaryRequired',
+  'investigationInFuture',
+  'registerNameRequired',
+  'registerReasonRequired',
 ] as const;
 
 export type WriteErrorCode = (typeof KEYS)[number];

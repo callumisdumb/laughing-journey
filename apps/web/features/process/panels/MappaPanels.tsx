@@ -6,6 +6,7 @@ import { AgencyMark, Button, KeyValue, Pill, RiskBand, Sheet, SheetBody, SheetHe
 import { ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { DisclosureDecisionDialog } from '../forms/DisclosureDecisionDialog';
 import { MappaReferralDialog } from '../forms/MappaReferralDialog';
 import styles from './shared.module.css';
 
@@ -18,6 +19,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
   const audit = useAppStore((s) => s.audit);
   const { toast } = useToast();
   const [referralOpen, setReferralOpen] = useState(false);
+  const [disclosureOpen, setDisclosureOpen] = useState(false);
   const d = process.detail;
   const risks = data.riskAssessments.filter((r) => d.riskAssessmentIds.includes(r.id) || r.processId === process.id);
   const era = d.era;
@@ -177,7 +179,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
       </div>
 
       <Sheet>
-        <SheetHead title={t('mappa.disclosures.title')} meta={t('mappa.disclosures.meta')} />
+        <SheetHead title={t('mappa.disclosures.title')} meta={t('mappa.disclosures.meta')} actions={<Button size="sm" variant="secondary" onClick={() => setDisclosureOpen(true)} data-testid="propose-disclosure">{t('mappa.disclosures.propose')}</Button>} />
         <SheetBody flush>
           <TableWrap style={{ border: 0, borderRadius: 0 }}>
             <Table>
@@ -199,7 +201,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
                 {d.disclosures.map((x) => (
                   <tr key={x.id}>
                     <td>
-                      {x.recipient} <span className={styles.note}>({x.recipientKind})</span>
+                      {x.recipient} <span className={styles.note}>({t(`mappa.disclosures.recipientKind.${x.recipientKind}` as 'mappa.disclosures.recipientKind.other')})</span>
                     </td>
                     <td>{x.factsToDisclose.join('; ')}</td>
                     <td>{x.rationale}</td>
@@ -237,6 +239,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
       ) : null}
 
       <MappaReferralDialog open={referralOpen} onClose={() => setReferralOpen(false)} process={process} />
+      {disclosureOpen ? <DisclosureDecisionDialog process={process} open onClose={() => setDisclosureOpen(false)} /> : null}
     </>
   );
 }

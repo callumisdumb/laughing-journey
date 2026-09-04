@@ -8,6 +8,7 @@ import { AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import { userById, userName } from '@/lib/selectors';
 import { useConfig, useData, useNow } from '@/lib/store';
+import { InvestigationDialog, SupervisionVisitDialog } from '../forms/AwiRecordDialogs';
 import { CapacityAssessmentDialog } from '../forms/CapacityAssessmentDialog';
 import styles from './shared.module.css';
 
@@ -24,6 +25,8 @@ export function AwiPanels({ process }: { process: AwiProcess }) {
   const now = useNow();
   const d = process.detail;
   const [capOpen, setCapOpen] = useState(false);
+  const [visitOpen, setVisitOpen] = useState(false);
+  const [investigationOpen, setInvestigationOpen] = useState(false);
   const app = d.application;
   const mhoRule = findClockRule(config.clockRules, 'awi.mho.report');
   const mhoTrigger = process.clocks.find((c) => c.ruleId === 'awi.mho.report');
@@ -185,7 +188,19 @@ export function AwiPanels({ process }: { process: AwiProcess }) {
           </SheetBody>
         </Sheet>
         <Sheet>
-          <SheetHead title={t('awi.supervision.title')} />
+          <SheetHead
+            title={t('awi.supervision.title')}
+            actions={
+              <>
+                <Button size="sm" variant="secondary" onClick={() => setVisitOpen(true)} data-testid="record-visit">
+                  {t('awi.supervision.record')}
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => setInvestigationOpen(true)} data-testid="record-investigation">
+                  {t('awi.supervision.recordInvestigation')}
+                </Button>
+              </>
+            }
+          />
           <SheetBody>
             {d.supervisionVisits.length === 0 && d.investigations.length === 0 ? <p className={styles.note}>{t('awi.supervision.empty')}</p> : null}
             <ul className={styles.list}>
@@ -209,6 +224,8 @@ export function AwiPanels({ process }: { process: AwiProcess }) {
       </div>
 
       <CapacityAssessmentDialog open={capOpen} onClose={() => setCapOpen(false)} process={process} />
+      {visitOpen ? <SupervisionVisitDialog process={process} open onClose={() => setVisitOpen(false)} /> : null}
+      {investigationOpen ? <InvestigationDialog process={process} open onClose={() => setInvestigationOpen(false)} /> : null}
     </>
   );
 }

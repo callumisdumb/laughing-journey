@@ -1,10 +1,11 @@
 'use client';
 
 import { useT } from '@mas/messages';
-import { AlarmClock, Bell, ChevronDown, Menu, PanelRightOpen } from 'lucide-react';
+import { AlarmClock, Bell, ChevronDown, Menu, PanelRightOpen, Plus } from 'lucide-react';
 import { useState } from 'react';
-import { Badge, IconButton } from '@mas/ui';
+import { Badge, Button, IconButton } from '@mas/ui';
 import { AppLink } from '@/components/AppLink';
+import { CreateMenu } from '@/components/CreateMenu';
 import { PersonaSwitcher } from '@/components/shell/PersonaSwitcher';
 import { SearchBox } from '@/components/shell/SearchBox';
 import { DRAWER_STATE, RAIL_STATE, useChrome, useLayoutMode } from '@/lib/layout';
@@ -21,6 +22,7 @@ export function TopBar() {
   const config = useConfig();
   const now = useNow();
   const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
   const mode = useLayoutMode();
   const railOverlayOpen = useChrome((s) => s.railOverlayOpen);
   const drawerOverlayOpen = useChrome((s) => s.drawerOverlayOpen);
@@ -44,6 +46,14 @@ export function TopBar() {
         </IconButton>
       ) : null}
       <SearchBox />
+      {/*
+        The global create action. It sits next to search because the two answer the same question
+        from opposite ends: "where is the record" and "there is no record yet". Its accessible name
+        is the word and the noun, not the icon, so it reads as an action rather than a plus sign.
+      */}
+      <Button className={styles.create} variant="primary" icon={<Plus size={16} aria-hidden="true" />} onClick={() => setCreateOpen(true)} aria-haspopup="dialog" aria-expanded={createOpen} data-testid="global-create">
+        <span className={styles.createText}>{t('nav.create.action')}</span>
+      </Button>
       {/*
         Two forms of the same link. Below 1024 the sentence goes and the number stays, because the
         number is the thing a practitioner scans for and the sentence is what explains it the first
@@ -87,6 +97,7 @@ export function TopBar() {
         <ChevronDown size={14} aria-hidden="true" />
       </button>
       <PersonaSwitcher open={switcherOpen} onClose={() => setSwitcherOpen(false)} />
+      <CreateMenu open={createOpen} onClose={() => setCreateOpen(false)} />
     </header>
   );
 }

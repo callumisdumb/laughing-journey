@@ -107,6 +107,7 @@
 }
 
 :root[data-layout='narrow'] .clocksText,
+:root[data-layout='narrow'] .createText,
 :root[data-layout='narrow'] .personaName,
 :root[data-layout='narrow'] .demoTag {
   position: absolute;
@@ -126,4 +127,18 @@
 
 :root[data-layout='narrow'] .persona {
   padding: 0 6px;
+}
+
+/*
+ * The global create action. At narrow the word is hidden and the plus stays, the same trade the
+ * clocks link makes: the icon is recognisable, and the word stays in the accessibility tree so the
+ * button keeps its name rather than becoming an unlabelled plus sign.
+ */
+.create {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+:root[data-layout='narrow'] .create {
+  padding: 0 10px;
 }

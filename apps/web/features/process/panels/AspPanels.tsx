@@ -9,6 +9,7 @@ import { AppLink } from '@/components/AppLink';
 import { personPath } from '@/lib/routes';
 import { fullName, personById, userById, userName } from '@/lib/selectors';
 import { useData } from '@/lib/store';
+import { ProtectionOrderDialog } from '../forms/ProtectionOrderDialog';
 import { ThreePointTestDialog } from '../forms/ThreePointTestDialog';
 import styles from './shared.module.css';
 
@@ -26,6 +27,7 @@ export function AspPanels({ process }: { process: AspProcess }) {
   // The return counts one primary harm; where none is named the first recorded stands in.
   const primaryHarm = d.concern.primaryHarmType ?? d.concern.harmTypes[0];
   const [testOpen, setTestOpen] = useState(false);
+  const [orderOpen, setOrderOpen] = useState(false);
   const inv = d.investigation;
   const officer = inv ? userById(data, inv.councilOfficerUserId) : undefined;
   const second = inv?.secondWorkerUserId ? userById(data, inv.secondWorkerUserId) : undefined;
@@ -193,7 +195,7 @@ export function AspPanels({ process }: { process: AspProcess }) {
       ) : null}
 
       <Sheet>
-        <SheetHead title={t('asp.orders.title')} meta={t('asp.orders.meta')} />
+        <SheetHead title={t('asp.orders.title')} meta={t('asp.orders.meta')} actions={<Button size="sm" variant="secondary" onClick={() => setOrderOpen(true)} data-testid="record-order">{t('asp.orders.record')}</Button>} />
         <SheetBody>
           {d.ordersConsidered.length === 0 ? <p className={styles.note}>{t('asp.orders.empty')}</p> : null}
           <ul className={styles.list}>
@@ -218,6 +220,7 @@ export function AspPanels({ process }: { process: AspProcess }) {
       ) : null}
 
       <ThreePointTestDialog open={testOpen} onClose={() => setTestOpen(false)} process={process} />
+      {orderOpen ? <ProtectionOrderDialog process={process} open onClose={() => setOrderOpen(false)} /> : null}
     </>
   );
 }

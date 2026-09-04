@@ -20,6 +20,7 @@ import { useChronology } from '@/features/chronology/useChronology';
 import { HouseholdPanel } from './HouseholdPanel';
 import { NetworkGraph } from './NetworkGraph';
 import { NetworkPanel } from './NetworkPanel';
+import { AddAlertDialog } from './AddAlertDialog';
 import { MergeDialog, UnmergeDialog } from './MergeDialog';
 import { StartProcessDialog } from './StartProcessDialog';
 import styles from './PersonRecord.module.css';
@@ -71,6 +72,7 @@ export function PersonRecord({ personId }: { personId: string }) {
   const [recording, setRecording] = useState(false);
   const [merging, setMerging] = useState(false);
   const [starting, setStarting] = useState(false);
+  const [alerting, setAlerting] = useState(false);
   const [unmerging, setUnmerging] = useState<string | null>(null);
   const standing = standingMerges(data, personId);
   const [voice, setVoice] = useState<{ kind: ViewsRecord['kind']; method: string; content: string }>(() => ({ kind: 'child-voice', method: t('person.recordViews.methodDefault'), content: '' }));
@@ -230,6 +232,9 @@ export function PersonRecord({ personId }: { personId: string }) {
         <div className={styles.recordActions}>
           <Button size="sm" variant="primary" icon={<FolderPlus size={14} aria-hidden="true" />} onClick={() => setStarting(true)} data-testid="start-process">
             {t('processes.open.open')}
+          </Button>
+          <Button size="sm" variant="secondary" icon={<ShieldAlert size={14} aria-hidden="true" />} onClick={() => setAlerting(true)} data-testid="add-alert">
+            {t('person.alerts.add')}
           </Button>
           <Button size="sm" variant="secondary" icon={<Merge size={14} aria-hidden="true" />} onClick={() => setMerging(true)} data-testid="merge-open">
             {t('person.merge.open')}
@@ -546,6 +551,7 @@ export function PersonRecord({ personId }: { personId: string }) {
       </Dialog>
 
       {starting ? <StartProcessDialog person={person} open onClose={() => setStarting(false)} /> : null}
+      {alerting ? <AddAlertDialog person={person} open onClose={() => setAlerting(false)} /> : null}
       {merging ? <MergeDialog person={person} open onClose={() => setMerging(false)} /> : null}
       {unmerging ? <UnmergeDialog mergeId={unmerging} open onClose={() => setUnmerging(null)} /> : null}
     </div>

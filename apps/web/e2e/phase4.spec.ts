@@ -24,7 +24,10 @@ test.describe('meetings', () => {
     await expectNoAxeViolations(page);
     await capture(page, { phase: PHASE, screen: 'meeting-before', fullPage: true });
     await page.getByRole('button', { name: 'Generate from need-to-know' }).click();
-    await expect(page.getByText(/need-to-know/i).first()).toBeVisible();
+    // The invitees the resolver added carry the rule that put them there, which is the point of
+    // generating the list rather than typing it. Asserted on the rule reference rather than on the
+    // words "need to know" anywhere on the page, which any other copy on any screen could satisfy.
+    await expect(page.getByText(/\(rule cp\./).first()).toBeVisible();
   });
 
   test('during the meeting: agenda, decisions and chair mode', async ({ page }) => {
