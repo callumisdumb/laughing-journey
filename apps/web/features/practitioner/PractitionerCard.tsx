@@ -9,7 +9,7 @@ import { PersonLink, ProcessRef } from '@/components/EntityLink';
 import { accessForUser, fullName, personById, userById, userName } from '@/lib/selectors';
 import { practitionerPath } from '@/lib/routes';
 import { useTrail } from '@/lib/trail';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import styles from './PractitionerCard.module.css';
 
 /**
@@ -31,7 +31,7 @@ export function PractitionerCard({ userId }: { userId: string }) {
   const config = useConfig();
   const now = useNow();
   const viewer = useCurrentUser();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const visit = useTrail((s) => s.visit);
   const subject = userById(data, userId);
 

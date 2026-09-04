@@ -14,7 +14,7 @@ import { chronologyPath, meetingPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { useTrail } from '@/lib/trail';
 import { accessForUser, clocksForProcess, personById, userName } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import { MinutesPrintPack } from './MinutesPrintPack';
 import styles from './MeetingWorkspace.module.css';
 
@@ -31,7 +31,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   const navigate = useNavigate();
   const select = useSelection((s) => s.select);
   const visit = useTrail((s) => s.visit);
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const upsert = useAppStore((s) => s.upsert);
   const audit = useAppStore((s) => s.audit);
   const newId = useAppStore((s) => s.newId);

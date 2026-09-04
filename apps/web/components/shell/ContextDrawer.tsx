@@ -9,7 +9,7 @@ import { PractitionerLink } from '@/components/EntityLink';
 import { useAppearance } from '@/lib/appearance';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, fullName, membersByAgency, personById, processById, processesInvolving, userById, userName } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import styles from './ContextDrawer.module.css';
 
 /**
@@ -235,7 +235,7 @@ function YourAccess({ process }: { process: Process }) {
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const now = useNow();
   if (!user) return null;
   const access = accessForUser(data, config, user, process, grants, now);
@@ -269,7 +269,7 @@ function ProcessDrawer({ process }: { process: Process }) {
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const now = useNow();
   const level = user ? accessForUser(data, config, user, process, grants, now).level : 'none';
   return (

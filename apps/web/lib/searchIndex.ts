@@ -12,7 +12,7 @@
 import { type Dataset, type Person } from '@mas/domain';
 import { useMemo } from 'react';
 import { accessForUser, currentAddress, fullName } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow, useVault } from '@/lib/store';
+import { useConfig, useCurrentUser, useData, useGrants, useNow, useVault } from '@/lib/store';
 import { readProcessDetail } from '@/lib/vault';
 import type { SearchInput } from '@/lib/search';
 
@@ -31,7 +31,7 @@ export function useSearchInput(): SearchInput | null {
   const config = useConfig();
   const user = useCurrentUser();
   const vault = useVault();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const now = useNow();
   // A grant expires, so the set has to be rebuilt when it does. The demo clock is fixed unless the
   // presenter moves it, so in practice this is one build per sign-in.

@@ -13,7 +13,7 @@ import { chronologyPath, meetingPath, personPath, processPath } from '@/lib/rout
 import { useSelection } from '@/lib/selection';
 import { useTrail } from '@/lib/trail';
 import { accessForUser, clocksForProcess, currentAddress, fullName, membersByAgency, processesInvolving, userName } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import { EventList } from '@/features/chronology/EventList';
 import { LanesChart } from '@/features/chronology/LanesChart';
 import { useChronologyStore } from '@/features/chronology/state';
@@ -55,7 +55,7 @@ export function PersonRecord({ personId }: { personId: string }) {
   const route = useRoute();
   const navigate = useNavigate();
   const select = useSelection((s) => s.select);
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const audit = useAppStore((s) => s.audit);
   const grantBreakGlass = useAppStore((s) => s.grantBreakGlass);
   const upsert = useAppStore((s) => s.upsert);

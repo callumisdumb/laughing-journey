@@ -4377,6 +4377,54 @@
       }
     }
   },
+  "compare": {
+    "controls": {
+      "host": {
+        "where": "Two-persona view, the switch that adds the hosting provider as a third panel."
+      },
+      "left": {
+        "where": "Two-persona view, the persona chooser for the left panel."
+      },
+      "record": {
+        "where": "Two-persona view, the record chooser."
+      },
+      "right": {
+        "where": "Two-persona view, the persona chooser for the right panel."
+      }
+    },
+    "host": {
+      "bytes": {
+        "where": "Two-persona view, host panel: the size of the stored ciphertext."
+      },
+      "holders": {
+        "where": "Two-persona view, host panel: how many principals hold a key for the record."
+      },
+      "lede": {
+        "notes": "Says this is the whole of it, because a panel showing only ciphertext would be a lie and the leakage table is what makes it honest.",
+        "where": "Two-persona view, host panel, under its heading."
+      },
+      "missing": {
+        "where": "Two-persona view, host panel, when there is no stored record for the chosen case."
+      },
+      "title": {
+        "where": "Two-persona view, the heading on the third panel."
+      }
+    },
+    "lede": {
+      "where": "Two-persona view, under the title."
+    },
+    "panel": {
+      "access": {
+        "where": "Two-persona view, in each panel's header: the detail level that persona holds on this record."
+      },
+      "restricted": {
+        "where": "Two-persona view, in a panel header where the persona holds no access at all."
+      }
+    },
+    "title": {
+      "where": "Two-persona view, its heading."
+    }
+  },
   "connectors": {
     "adapters": {
       "carefirst": {
@@ -5983,6 +6031,9 @@
       },
       "chronology": {
         "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "compare": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md: the two-persona view."
       },
       "home": {
         "where": "Demo control panel, a chapter of docs/DEMO.md."
@@ -13328,6 +13379,9 @@
       "audit": {
         "maxLength": 24,
         "where": "Browser tab title while the audit ledger is open"
+      },
+      "compare": {
+        "where": "Browser tab title for the two-persona view."
       },
       "connectors": {
         "maxLength": 24,

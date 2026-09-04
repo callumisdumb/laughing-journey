@@ -12,7 +12,7 @@ import { useNavigate, useRoute, setQuery } from '@/lib/router';
 import { personPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, currentAddress, fullName, processesInvolving } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import { TOWNS } from '@mas/mock-data';
 import styles from './PeopleList.module.css';
 
@@ -36,7 +36,7 @@ export function PeopleList() {
   const now = useNow();
   const route = useRoute();
   const navigate = useNavigate();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const select = useSelection((s) => s.select);
   const dev = useDevState();
   const [text, setText] = useState(route.query.get('q') ?? '');

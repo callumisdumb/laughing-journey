@@ -73,6 +73,7 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - The idempotency key is built from what the write is about, which is what makes a retry a retry and what catches the echo when the far side pushes our own write back (D-161).
 - Conflicts go to a person, decided by a written-down authority table rather than by recency (D-162). The reconciliation screen is on each connector's own tab.
 - The outbound payload is composed in the browser and relayed as ciphertext, so the encryption claim survives the feature (D-163). `packages/connectors/src/gateway.test.ts` asserts it, mirroring the inbound test.
+- The two-persona view is at `/compare`, and is the most persuasive screen here: the same case drawn for two people in one window, with the hosting provider as an optional third panel. The panels are the real screens inside a `ViewAs` provider rather than a summary of what the rules would say (D-181), and a panel holds no break-glass grant unless it is set to the signed-in user (D-182). Built and tested at 1920x1080. `apps/web/features/compare/`.
 - The demo control panel is at Control, Shift and D on any screen, gated on `NEXT_PUBLIC_DEMO_TOOLS` like the simulator and labelled as not part of the product (D-177). Twelve waypoints, one per row of `docs/DEMO.md`, each setting persona, route, theme, density and clock in one action (D-178); persona switching; saved states for a second take (D-180); connector outage and speed; and reset to seed, which takes the clock and any break-glass grant with it (D-179). `apps/web/features/demo/`.
 - The source system simulator is at `/simulator`, reachable from the Connectors screen. It is a real second system rather than a screenshot: an episode created there arrives here as a proposal, and one edited there produces a divergence on the reconciliation screen (D-165). It is a demo affordance gated on `NEXT_PUBLIC_DEMO_TOOLS`, which a production build sets to `0` (D-166). It deliberately looks like a different product and carries a neutral name (D-167).
 
@@ -285,6 +286,13 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | audit-chain | light comfortable |
 | statutory-disclosure | light comfortable |
 | help-security | light comfortable |
+
+### compare
+
+| Screen | Variants |
+|---|---|
+| two-personas | light comfortable |
+| three-panels | light comfortable |
 
 ### demo
 

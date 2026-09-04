@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { Actions } from '@/features/actions/Actions';
 import { Admin } from '@/features/admin/Admin';
 import { Audit } from '@/features/audit/Audit';
+import { Compare } from '@/features/compare/Compare';
 import { Connectors } from '@/features/connectors/Connectors';
 import { Help } from '@/features/help/Help';
 import { ChronologyScreen } from '@/features/chronology/ChronologyScreen';
@@ -31,6 +32,7 @@ const TITLE_KEYS = {
   worklist: 'nav.titles.worklist',
   people: 'nav.titles.people',
   practitioners: 'nav.titles.practitioners',
+  compare: 'nav.titles.compare',
   search: 'nav.titles.search',
   inbox: 'nav.titles.inbox',
   processes: 'nav.titles.processes',
@@ -71,6 +73,8 @@ export function Screen() {
       return <PeopleList />;
     case 'practitioners':
       return id ? <PractitionerCard userId={id} /> : <Placeholder title={t('states.placeholder.notFound')} phase={0} />;
+    case 'compare':
+      return <Compare />;
     case 'search':
       return <Search />;
     case 'inbox':

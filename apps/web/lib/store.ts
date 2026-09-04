@@ -8,6 +8,7 @@ import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOp
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
+import { useViewAs } from '@/lib/viewAs';
 import { isSealedBlob, openLocal, sealLocal } from '@/lib/localStore';
 import { appendAudit, auditDetailKey, emptyChain, type AuditChain } from '@/lib/auditChain';
 import { buildVault, type Vault } from '@/lib/vault';
@@ -1477,11 +1478,37 @@ export function useConfig(): Config {
   return useAppStore((s) => s.config);
 }
 
+/**
+ * Who the screen is being drawn for.
+ *
+ * Usually the person signed in. Inside a two-persona panel it is that panel's persona, which is why
+ * every screen works there without knowing a panel exists (lib/viewAs.tsx).
+ */
 export function useCurrentUser(): User | null {
-  const id = useAppStore((s) => s.session.userId);
+  const viewAs = useViewAs();
+  const sessionId = useAppStore((s) => s.session.userId);
   const users = useAppStore((s) => s.data.users);
+  const id = viewAs ?? sessionId;
   return id ? (users.find((u) => u.id === id) ?? null) : null;
 }
+
+/**
+ * The break-glass grants that apply to this screen.
+ *
+ * A grant is recorded against a process and a moment, not against a user, because the session it
+ * belongs to is the only one that can hold it. That is fine until a screen is drawn for somebody
+ * else: a grant Moira took on the MAPPA would otherwise open the record for every persona a panel
+ * is set to, and the two-persona view would be demonstrating the opposite of what it claims. So a
+ * panel drawn for anybody but the signed-in user holds none.
+ */
+export function useGrants(): BreakGlassGrant[] {
+  const viewAs = useViewAs();
+  const userId = useAppStore((s) => s.session.userId);
+  const grants = useAppStore((s) => s.session.breakGlass);
+  return viewAs && viewAs !== userId ? EMPTY_GRANTS : grants;
+}
+
+const EMPTY_GRANTS: BreakGlassGrant[] = [];
 
 export function useNow(): Date {
   const live = useAppStore((s) => s.session.liveClock);

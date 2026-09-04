@@ -9,7 +9,7 @@ import { AppLink } from '@/components/AppLink';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { meetingPath } from '@/lib/routes';
 import { accessForUser, fullName, personById } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import styles from './MinutesPrintPack.module.css';
 
 type Attendance = Meeting['invitees'][number]['attendance'];
@@ -91,7 +91,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
   const now = useNow();
   const route = useRoute();
   const navigate = useNavigate();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const audit = useAppStore((s) => s.audit);
 
   const meeting = data.meetings.find((m) => m.id === meetingId);

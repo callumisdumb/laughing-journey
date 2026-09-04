@@ -5,7 +5,7 @@ import { useT } from '@mas/messages';
 import { Pill } from '@mas/ui';
 import { Ban, Eye } from 'lucide-react';
 import { accessForUser, processesInvolving } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 
 /**
  * Two marks a household or network row may carry, and neither of them leaks anything.
@@ -25,7 +25,7 @@ export function KnownElsewhere({ person }: { person: Person }) {
   const config = useConfig();
   const user = useCurrentUser();
   const now = useNow();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   if (!user) return null;
 
   const processes = processesInvolving(data, person.id);

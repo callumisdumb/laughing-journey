@@ -10,7 +10,7 @@ import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { meetingPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, fullName, personById } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 
 export function MeetingList() {
   const t = useT();
@@ -20,7 +20,7 @@ export function MeetingList() {
   const now = useNow();
   const route = useRoute();
   const navigate = useNavigate();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const select = useSelection((s) => s.select);
   const dev = useDevState();
   const typeFilter = route.query.get('type') ?? '';

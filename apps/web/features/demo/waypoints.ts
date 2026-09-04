@@ -31,6 +31,7 @@ export const WAYPOINTS: readonly Waypoint[] = [
   { id: 'maracMeeting', userId: 'usr_karen_findlay', path: '/meetings/mtg_docherty_marac', theme: 'light', density: 'comfortable' },
   { id: 'marion', userId: 'usr_moira_gilmour', path: '/processes/prc_asp_marion', theme: 'light', density: 'comfortable' },
   { id: 'restricted', userId: 'usr_moira_gilmour', path: '/processes/prc_mappa_derek', theme: 'light', density: 'comfortable' },
+  { id: 'compare', userId: 'usr_janet_kerr', path: '/compare?process=prc_marac_docherty&left=usr_karen_findlay&right=usr_graeme_dunlop&host=1', theme: 'light', density: 'comfortable' },
   { id: 'serverView', userId: 'usr_moira_gilmour', path: '/admin/server-view', theme: 'light', density: 'comfortable' },
   { id: 'whatWouldTheySee', userId: 'usr_janet_kerr', path: '/sharing?tab=preview', theme: 'light', density: 'comfortable' },
   { id: 'workbook', userId: 'usr_moira_gilmour', path: '/reports/asp?nmds=1', theme: 'light', density: 'comfortable' },

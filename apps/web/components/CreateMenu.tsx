@@ -9,7 +9,7 @@ import { PersonPicker } from '@/components/PersonPicker';
 import { useNavigate } from '@/lib/router';
 import { personPath } from '@/lib/routes';
 import { accessForUser, fullName } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import { AddAlertDialog } from '@/features/person/AddAlertDialog';
 import { AddPersonDialog } from '@/features/person/AddPersonDialog';
 import { StartProcessDialog } from '@/features/person/StartProcessDialog';
@@ -92,7 +92,7 @@ export function CreateMenu({ open, onClose }: { open: boolean; onClose: () => vo
   const user = useCurrentUser();
   const now = useNow();
   const navigate = useNavigate();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const { toast } = useToast();
 
   const [kind, setKind] = useState<Kind | null>(null);

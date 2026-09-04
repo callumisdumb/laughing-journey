@@ -11,7 +11,7 @@ import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, clocksForProcess, fullName, personById } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 
 export function ProcessList() {
   const t = useT();
@@ -21,7 +21,7 @@ export function ProcessList() {
   const now = useNow();
   const route = useRoute();
   const navigate = useNavigate();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const select = useSelection((s) => s.select);
   const dev = useDevState();
   const typeFilter = route.query.get('type') ?? '';

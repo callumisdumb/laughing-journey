@@ -13,7 +13,7 @@ import { searchAll, type SearchHit } from '@/lib/search';
 import { useSearchInput } from '@/lib/searchIndex';
 import { useSelection, type Selection } from '@/lib/selection';
 import { accessForUser, currentAddress, fullName, personById, processesInvolving, userName } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import styles from './Search.module.css';
 
 /**
@@ -62,7 +62,7 @@ function PersonBadges({ person }: { person: Person }) {
   const data = useData();
   const config = useConfig();
   const user = useCurrentUser();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const now = useNow();
   if (!user) return null;
   const processes = processesInvolving(data, person.id).filter((process) => process.status === 'open');

@@ -4,6 +4,21 @@
  * letters. A thin scrollbar rather than an overlay one, so the fact that there is more is visible
  * before anyone drags, and snapping so a step never comes to rest half off the edge.
  */
+
+/* The scroll container, which is the focusable region. The list inside it keeps its semantics. */
+.wrap {
+  min-width: 0;
+  overflow-x: auto;
+  scroll-snap-type: inline proximity;
+  scrollbar-width: thin;
+}
+
+.wrap:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 2px;
+}
+
 .stepper {
   --step-dot: 14px;
 
@@ -13,9 +28,6 @@
   min-width: 0;
   margin: 0;
   padding: 0 0 4px;
-  overflow-x: auto;
-  scroll-snap-type: inline proximity;
-  scrollbar-width: thin;
 }
 
 .step {

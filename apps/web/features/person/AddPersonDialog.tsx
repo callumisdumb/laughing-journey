@@ -9,7 +9,7 @@ import { AppLink } from '@/components/AppLink';
 import { PersonLink } from '@/components/EntityLink';
 import { reasonKey, reasonLabel } from './reasons';
 import { accessForUser, fullName, processesInvolving } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import { useRetire } from '@/lib/retire';
 import { useWriteErrors } from '@/lib/writeErrors';
 import styles from './AddPersonDialog.module.css';
@@ -62,7 +62,7 @@ export function AddPersonDialog({ open, onClose, onCreated }: { open: boolean; o
   const config = useConfig();
   const user = useCurrentUser();
   const now = useNow();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const write = useAppStore((s) => s.write);
   const newId = useAppStore((s) => s.newId);
   const readErrors = useWriteErrors();

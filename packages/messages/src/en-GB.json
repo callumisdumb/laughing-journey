@@ -1360,6 +1360,27 @@
       "recordedBy": "Recorded by {name}, {method}."
     }
   },
+  "compare": {
+    "controls": {
+      "host": "Show what the host can see",
+      "left": "Left panel",
+      "record": "Record",
+      "right": "Right panel"
+    },
+    "host": {
+      "bytes": "{count} bytes of ciphertext",
+      "holders": "{count, plural, one {# key holder} other {# key holders}}",
+      "lede": "The store as a hosting provider, a database administrator or anybody with storage access sees it. This is the whole of it.",
+      "missing": "No stored record for this case.",
+      "title": "The hosting provider"
+    },
+    "lede": "One record, two people, one window. Everything else about need-to-know is an assertion you are asked to take on trust. This is the demonstration.",
+    "panel": {
+      "access": "Access: {level}",
+      "restricted": "Restricted"
+    },
+    "title": "Two people, one record"
+  },
   "connectors": {
     "adapters": {
       "carefirst": {
@@ -1927,6 +1948,7 @@
     "waypoints": {
       "aiden": "Aiden Boyle, the child protection case",
       "chronology": "The integrated chronology",
+      "compare": "Two people, one record",
       "home": "Home, as the social worker sees it",
       "marac": "Kayleigh Docherty, the MARAC",
       "maracMeeting": "The MARAC on 09 September",
@@ -4366,6 +4388,7 @@
       "actions": "Actions",
       "admin": "Admin",
       "audit": "Audit",
+      "compare": "Two people, one record",
       "connectors": "Connectors",
       "help": "Help",
       "home": "Home",

@@ -8,6 +8,8 @@ export const STATIC_ROUTES = [
   'people',
   'practitioners',
   'search',
+  // The two-persona view, which is a demo affordance rather than a screen of the product.
+  'compare',
   'inbox',
   'processes',
   'meetings',

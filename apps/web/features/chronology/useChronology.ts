@@ -3,7 +3,7 @@
 import { applyLens, eventFamily, live, type ChronologyAnalysis, type ChronologyEvent, type LensResult, type Person, type Process } from '@mas/domain';
 import { useMemo } from 'react';
 import { accessForUser, eventsForPerson, personById, processesForPerson } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import { useChronologyStore, type Window } from './state';
 
 export interface ChronologyModel {
@@ -35,7 +35,7 @@ export function useChronology(personId: string): ChronologyModel {
   const config = useConfig();
   const user = useCurrentUser();
   const now = useNow();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const view = useChronologyStore((s) => s.view);
   const window = useChronologyStore((s) => s.window);
   const filters = useChronologyStore((s) => s.filters);

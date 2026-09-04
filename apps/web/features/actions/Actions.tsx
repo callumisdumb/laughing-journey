@@ -12,7 +12,7 @@ import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { meetingPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, personById } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import styles from './Actions.module.css';
 
 type View = 'mine' | 'team' | 'all';
@@ -29,7 +29,7 @@ export function Actions() {
   const now = useNow();
   const route = useRoute();
   const navigate = useNavigate();
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const upsert = useAppStore((s) => s.upsert);
   const audit = useAppStore((s) => s.audit);
   const select = useSelection((s) => s.select);

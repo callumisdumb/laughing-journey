@@ -13,7 +13,7 @@ import { meetingPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { useTrail } from '@/lib/trail';
 import { accessForUser, clocksForProcess, membersByAgency, personById, userName } from '@/lib/selectors';
-import { useAppStore, useConfig, useCurrentUser, useData, useNow, useVault } from '@/lib/store';
+import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow, useVault } from '@/lib/store';
 import { readProcessDetail } from '@/lib/vault';
 import { AddPlanDialog } from './AddPlanDialog';
 import { OutboundStatus } from './OutboundStatus';
@@ -35,7 +35,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const now = useNow();
   const select = useSelection((s) => s.select);
   const visit = useTrail((s) => s.visit);
-  const grants = useAppStore((s) => s.session.breakGlass);
+  const grants = useGrants();
   const audit = useAppStore((s) => s.audit);
   const grantBreakGlass = useAppStore((s) => s.grantBreakGlass);
   const { toast } = useToast();
