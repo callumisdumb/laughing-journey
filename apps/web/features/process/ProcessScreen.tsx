@@ -14,6 +14,7 @@ import { useSelection } from '@/lib/selection';
 import { useTrail } from '@/lib/trail';
 import { accessForUser, clocksForProcess, membersByAgency, personById, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow, useVault } from '@/lib/store';
+import { useWriteErrors } from '@/lib/writeErrors';
 import { readProcessDetail } from '@/lib/vault';
 import { AddPlanDialog } from './AddPlanDialog';
 import { OutboundStatus } from './OutboundStatus';
@@ -50,7 +51,9 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const [reopening, setReopening] = useState(false);
   const [classifySensitive, setClassifySensitive] = useState(true);
   const [classifyReason, setClassifyReason] = useState('');
-  const upsert = useAppStore((s) => s.upsert);
+  const write = useAppStore((s) => s.write);
+  const newId = useAppStore((s) => s.newId);
+  const readErrors = useWriteErrors();
 
   const process = data.processes.find((p) => p.id === processId);
 
@@ -501,28 +504,36 @@ export function ProcessScreen({ processId }: { processId: string }) {
                 }
                 const direction = overrideDirection(derived, proposed);
                 // The audit entry is the record of the act and the override field is the current
-                // state. The entry is written first so the record can cite its id.
-                const entry = audit({
+                // state. The record cites the entry's id, so the id is allocated here and the
+                // pipeline writes the entry under it (D-082).
+                const auditId = newId('aud');
+                const result = write({
+                  collection: 'processes',
+                  record: {
+                    ...process,
+                    classificationOverride: {
+                      ...proposed,
+                      direction,
+                      reason: classifyReason.trim(),
+                      byUserId: user.id,
+                      byName: userName(user),
+                      at: now.toISOString(),
+                      auditEntryId: auditId,
+                    },
+                  },
+                  intent: 'update',
                   act: direction === 'lowered' ? 'classification-lower' : 'classification-raise',
+                  auditId,
                   targetType: 'process',
-                  targetId: process.id,
                   targetLabel: t('processes.classification.audit', { reference: process.reference, level: classificationLabel(proposed) }),
                   processId: process.id,
                   reason: classifyReason.trim(),
-                  restricted: process.accessRestriction === 'restricted',
+                  versionChange: t('processes.classification.audit', { reference: process.reference, level: classificationLabel(proposed) }),
                 });
-                upsert('processes', {
-                  ...process,
-                  classificationOverride: {
-                    ...proposed,
-                    direction,
-                    reason: classifyReason.trim(),
-                    byUserId: user.id,
-                    byName: userName(user),
-                    at: now.toISOString(),
-                    auditEntryId: entry?.id ?? '',
-                  },
-                });
+                if (!result.ok) {
+                  toast({ title: t('processes.classification.refused.title'), text: readErrors(result.errors).join(' '), tone: 'error' });
+                  return;
+                }
                 setClassifyOpen(false);
                 toast({ title: t('processes.classification.saved.title'), text: t('processes.classification.saved.text', { marking: marking(proposed) ?? t('nav.drawer.fields.noMarking') }), tone: 'success' });
               }}

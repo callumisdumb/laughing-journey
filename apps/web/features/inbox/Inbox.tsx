@@ -1,6 +1,6 @@
 'use client';
 
-import { SIGNIFICANCES, agencyLabel, formatDate, formatDateTime, mostRestrictedAccess, mostSensitiveClassification, significanceLabel, type ChronologyEvent, type ConnectorEvent, type LawfulBasisRecord } from '@mas/domain';
+import { SIGNIFICANCES, agencyLabel, formatDate, formatDateTime, significanceLabel, type ChronologyEvent, type ConnectorEvent } from '@mas/domain';
 import { MOCK_ADAPTERS, type ExternalEvent } from '@mas/connectors';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, Dialog, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, useToast } from '@mas/ui';
@@ -14,15 +14,16 @@ import { personPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { fullName, inboxForUser, personById, processesForPerson } from '@/lib/selectors';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useWriteErrors } from '@/lib/writeErrors';
 import styles from './Inbox.module.css';
 
 function ConnectorPull({ adapterId, subjectIds }: { adapterId: string; subjectIds: string[] }) {
   const t = useT();
   const adapter = MOCK_ADAPTERS.find((a) => a.id === adapterId)!;
-  const upsert = useAppStore((s) => s.upsert);
+  const receive = useAppStore((s) => s.receive);
+  const audit = useAppStore((s) => s.audit);
   const newId = useAppStore((s) => s.newId);
   const now = useNow();
-  const data = useData();
   const { toast } = useToast();
   const health = useQuery({ queryKey: ['health', adapterId], queryFn: () => adapter.health(), refetchInterval: 30_000 });
   const pull = useMutation({
@@ -36,14 +37,17 @@ function ConnectorPull({ adapterId, subjectIds }: { adapterId: string; subjectId
     },
     onSuccess: (events) => {
       let added = 0;
+      // What arrives is what the source system said, delivered through the store's connector path
+      // rather than written as a person's record: it is de-duplicated on the far side's reference and
+      // waits for a person to promote or dismiss it, which is the write that gets the ledger line.
       for (const e of events) {
-        if (data.connectorEvents.some((c) => c.externalRef === e.externalRef)) continue;
         const subjectId = e.source.__subject ?? subjectIds[0] ?? '';
         const { __subject: _drop, ...sourcePayload } = e.source;
         const rec: ConnectorEvent = { id: newId('cev'), synthetic: true, connectorId: adapter.id, agency: adapter.agency, subjectId, receivedAt: now.toISOString(), externalRef: e.externalRef, sourcePayload, mapped: { eventType: e.mapped.eventType, title: e.mapped.title, detail: e.mapped.detail, occurredAt: e.occurredAt, hasTime: e.hasTime, significance: e.mapped.significance, mappingRule: e.mapped.mappingRule }, status: 'pending' };
-        upsert('connectorEvents', rec);
-        added += 1;
+        const delivered = receive(rec);
+        if (delivered.ok && !delivered.duplicate) added += 1;
       }
+      audit({ act: 'read', targetType: 'inbox', targetId: adapter.id, targetLabel: t('inbox.pull.audit', { connector: adapter.displayName }), reason: t('inbox.pull.auditReason', { pulled: events.length, added }) });
       toast({ title: t('inbox.pull.toast.title', { connector: adapter.displayName, count: added }), text: added === 0 ? t('inbox.pull.toast.nothingNew') : t('inbox.pull.toast.review'), tone: 'success' });
     },
     onError: (err: Error) => toast({ title: t('inbox.pull.toast.failed', { connector: adapter.displayName }), text: err.message, tone: 'error' }),
@@ -75,9 +79,9 @@ export function Inbox() {
   const now = useNow();
   const route = useRoute();
   const select = useSelection((s) => s.select);
-  const upsert = useAppStore((s) => s.upsert);
-  const audit = useAppStore((s) => s.audit);
+  const write = useAppStore((s) => s.write);
   const newId = useAppStore((s) => s.newId);
+  const readErrors = useWriteErrors();
   const { toast } = useToast();
   const dev = useDevState();
   const [edits, setEdits] = useState<Record<string, { title: string; significance: ChronologyEvent['significance'] }>>({});
@@ -111,12 +115,9 @@ export function Inbox() {
     const c = promote.event;
     const e = edited(c);
     const processes = processesForPerson(data, c.subjectId).filter((p) => p.status === 'open');
-    let lawfulBasisId: string | undefined;
-    if (promote.integrated) {
-      const lb: LawfulBasisRecord = { id: newId('lb'), synthetic: true, purpose, article6: '6(1)(e) public task', article9Condition: '9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)', article10Criminal: c.agency === 'police' ? 'DPA 2018 s10 and Sch 1' : 'not applicable', classification: mostSensitiveClassification(processes), accessRestriction: mostRestrictedAccess(processes), statutoryGateway: processes.map((p) => (p.type === 'cp' ? 'National Guidance for Child Protection in Scotland 2021' : p.type === 'asp' ? 'ASP (Scotland) Act 2007 s5' : p.type === 'mappa' ? 'Management of Offenders etc. (Scotland) Act 2005 s10' : p.type === 'marac' ? 'MARAC Operating Protocol' : 'AWI (Scotland) Act 2000')), necessityAndProportionality: necessity, consentStatus: 'not-required', authorisedByUserId: user.id, authorisedByName: `${user.givenName} ${user.familyName}`, createdAt: now.toISOString() };
-      upsert('lawfulBases', lb);
-      lawfulBasisId = lb.id;
-    }
+    // Promoted to the integrated view, the event rests on a lawful basis the pipeline writes from
+    // the purpose and necessity typed here; the event names it before either exists.
+    const lawfulBasisId = promote.integrated ? newId('lb') : undefined;
     const ev: ChronologyEvent = {
       id: newId('evt'),
       synthetic: true,
@@ -139,11 +140,16 @@ export function Inbox() {
       evidenceRefs: [{ kind: 'connector', ref: c.externalRef, label: `${c.connectorId} ${c.externalRef}` }],
       visibility: promote.integrated ? 'integrated' : 'agency-only',
       lawfulBasisId,
-      versions: [{ at: now.toISOString(), byUserId: user.id, byName: `${user.givenName} ${user.familyName}`, change: `Promoted from ${c.connectorId} inbox${promote.integrated ? ' to the integrated chronology' : ''}` }],
+      versions: [{ at: now.toISOString(), byUserId: user.id, byName: `${user.givenName} ${user.familyName}`, change: t('inbox.promote.version', { connector: c.connectorId, integrated: promote.integrated ? 'yes' : 'no' }) }],
     };
-    upsert('events', ev);
-    upsert('connectorEvents', { ...c, status: 'promoted', reviewedByUserId: user.id, reviewedAt: now.toISOString(), promotedEventId: ev.id });
-    audit({ act: 'promote', targetType: 'event', targetId: ev.id, targetLabel: ev.title, processId: processes[0]?.id });
+    // The event first, then the inbox item marked as promoted and citing it. Each is its own
+    // ledger line: what was written, and what was reviewed.
+    const promoted = write({ collection: 'events', record: ev, intent: 'create', act: 'promote', targetType: 'event', targetLabel: ev.title, processId: processes[0]?.id, lawfulBasis: lawfulBasisId ? { id: lawfulBasisId, purpose, necessity, processes, agency: c.agency } : undefined });
+    if (!promoted.ok) {
+      toast({ title: t('inbox.promote.refused'), text: readErrors(promoted.errors).join(' '), tone: 'error' });
+      return;
+    }
+    write({ collection: 'connectorEvents', record: { ...c, status: 'promoted', reviewedByUserId: user.id, reviewedAt: now.toISOString(), promotedEventId: ev.id }, intent: 'update', act: 'edit', targetType: 'inbox', targetLabel: t('inbox.promote.audit', { title: c.mapped.title }), processId: processes[0]?.id });
     setPromote(null);
     setPurpose('');
     setNecessity('');
@@ -152,8 +158,11 @@ export function Inbox() {
 
   function doDismiss() {
     if (!dismissing || !user) return;
-    upsert('connectorEvents', { ...dismissing, status: 'dismissed', reviewedByUserId: user.id, reviewedAt: now.toISOString() });
-    audit({ act: 'edit', targetType: 'inbox', targetId: dismissing.id, targetLabel: `Dismissed: ${dismissing.mapped.title}`, reason: dismissReason });
+    const result = write({ collection: 'connectorEvents', record: { ...dismissing, status: 'dismissed', reviewedByUserId: user.id, reviewedAt: now.toISOString() }, intent: 'update', act: 'edit', targetType: 'inbox', targetLabel: t('inbox.dismiss.audit', { title: dismissing.mapped.title }), reason: dismissReason });
+    if (!result.ok) {
+      toast({ title: t('inbox.dismiss.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
+      return;
+    }
     setDismissing(null);
     setDismissReason('');
     toast({ title: t('inbox.dismiss.toast.title'), text: t('inbox.dismiss.toast.text') });

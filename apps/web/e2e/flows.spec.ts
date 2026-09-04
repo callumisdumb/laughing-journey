@@ -36,6 +36,16 @@ test.describe('F.2.1 adult support and protection, concern to protection plan', 
     await expect(dialog.getByText(/unable to safeguard/i).first()).toBeVisible();
     await dialog.getByRole('button', { name: 'Record three-point test' }).click();
     await expect(toast(page).getByText('Three-point test recorded')).toBeVisible();
+
+    // The consequences the pipeline writes, which the form used to skip: a chronology milestone on
+    // the adult, and a ledger line naming the act. A form that saves and writes neither is the
+    // failure this assertion exists to catch.
+    await page.goto('/people/per_marion_fraser/chronology');
+    await waitForData(page);
+    await expect(page.getByRole('table').getByText('Three-point test recorded').first()).toBeVisible();
+    await page.goto('/audit');
+    await waitForData(page);
+    await expect(page.getByRole('table').getByText(/Three-point test recorded/).first()).toBeVisible();
   });
 
   test('the case conference clock is running and reaches Home', async ({ page }) => {

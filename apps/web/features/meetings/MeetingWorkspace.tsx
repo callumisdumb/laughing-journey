@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCIES, DETAIL_LEVELS, agencyShort, classificationOfShare, nearMatchesOnRegister, applyMeetingTransition, attendanceLabel, contextFor, detailLevelLabel, formatDate, formatDateTime, formatTime, isExcludedParty, meetingStatusLabel, meetingTypeLabel, minuteStatusLabel, packItemKindLabel, processShort, researchStatusLabel, resolveNeedToKnow, roleLabel, stageLabel, type Action, type Agency, type DetailLevel, type LawfulBasisRecord, type Meeting, type SharingRecord, type User } from '@mas/domain';
+import { AGENCIES, DETAIL_LEVELS, agencyShort, nearMatchesOnRegister, attendanceLabel, contextFor, detailLevelLabel, formatDate, formatDateTime, formatTime, isExcludedParty, meetingStatusLabel, meetingTypeLabel, minuteStatusLabel, packItemKindLabel, processShort, researchStatusLabel, resolveNeedToKnow, roleLabel, stageLabel, type Action, type Agency, type DetailLevel, type Meeting, type User } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, CheckboxField, ClockNumeral, DateField, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
 import { CheckCircle2, Maximize2, Minimize2, Play, Printer, Send, UserPlus } from 'lucide-react';
@@ -15,10 +15,14 @@ import { useSelection } from '@/lib/selection';
 import { useTrail } from '@/lib/trail';
 import { accessForUser, clocksForProcess, personById, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
+import type { WriteRequest } from '@/lib/write';
+import { useWriteErrors } from '@/lib/writeErrors';
 import { MinutesPrintPack } from './MinutesPrintPack';
 import styles from './MeetingWorkspace.module.css';
 
 type Phase = 'before' | 'during' | 'after';
+/** What changed on the meeting, for the ledger line and the version entry (meetings.audit.updated). */
+type MeetingChange = 'invites' | 'request' | 'returned' | 'shared' | 'decision' | 'action' | 'pack' | 'agenda' | 'views' | 'attendance' | 'minuteDraft' | 'minuteApproved' | 'reviewDate' | 'distribution' | 'distributionLevel' | 'held' | 'distributed';
 const ATTENDANCE: Meeting['invitees'][number]['attendance'][] = ['invited', 'accepted', 'declined', 'present', 'remote', 'apologies', 'absent'];
 
 export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
@@ -32,9 +36,10 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   const select = useSelection((s) => s.select);
   const visit = useTrail((s) => s.visit);
   const grants = useGrants();
-  const upsert = useAppStore((s) => s.upsert);
+  const write = useAppStore((s) => s.write);
   const audit = useAppStore((s) => s.audit);
   const newId = useAppStore((s) => s.newId);
+  const readErrors = useWriteErrors();
   const { toast } = useToast();
   const dev = useDevState();
 
@@ -85,7 +90,26 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
 
   const subjects = meeting.subjectIds.map((id) => personById(data, id)).filter(Boolean) as NonNullable<ReturnType<typeof personById>>[];
   const subject = subjects[0];
-  const update = (patch: Partial<Meeting>) => upsert('meetings', { ...meeting, ...patch });
+  /**
+   * Every change to the meeting is a pipeline write, named for the ledger. Small ones included: an
+   * attendance mark or an agenda item moved on is a change to a statutory record, and the version
+   * history and the audit ledger say so, where the old direct upsert said nothing.
+   */
+  const update = (what: MeetingChange, patch: Partial<Meeting>, extra: Partial<WriteRequest<'meetings'>> = {}) => {
+    const result = write({
+      collection: 'meetings',
+      record: { ...meeting, ...patch },
+      intent: 'update',
+      act: extra.act ?? 'edit',
+      targetType: 'meeting',
+      targetLabel: t('meetings.audit.updated', { what, title: meeting.title }),
+      processId: process.id,
+      versionChange: t('meetings.audit.updated', { what, title: meeting.title }),
+      ...extra,
+    });
+    if (!result.ok) toast({ title: t('meetings.audit.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
+    return result;
+  };
   const setPhase = (p: Phase) => navigate(`${route.path}${setQuery(route.query, { phase: p })}`, { replace: true });
   const toggleChair = () => navigate(`${route.path}${setQuery(route.query, { mode: chair ? null : 'chair', phase: chair ? null : 'during' })}`);
   const meetingActions = data.actions.filter((a) => a.meetingId === meeting.id || meeting.actionIds.includes(a.id));
@@ -154,11 +178,11 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
         additions.push({ userId: u.id, name: userName(u), agency: u.agency, role: roleLabel(u.roleId), required: true, attendance: 'invited', reason: `${r.label}: ${r.reason}`, needToKnowRowId: r.rowId });
       }
     }
-    update({ invitees: [...meeting!.invitees, ...additions] });
+    update('invites', { invitees: [...meeting!.invitees, ...additions] });
     const first = heldBack[0];
     if (first) {
       guardAdd(userName(first), 'invitees', () => {
-        update({ invitees: [...meeting!.invitees, ...additions, { userId: first.id, name: userName(first), agency: first.agency, role: roleLabel(first.roleId), required: true, attendance: 'invited', reason: t('meetings.before.invites.confirmedReason') }] });
+        update('invites', { invitees: [...meeting!.invitees, ...additions, { userId: first.id, name: userName(first), agency: first.agency, role: roleLabel(first.roleId), required: true, attendance: 'invited', reason: t('meetings.before.invites.confirmedReason') }] });
       });
     }
     toast({
@@ -173,7 +197,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
     const to = data.users.find((u) => u.id === requestForm.to);
     const toName = to ? userName(to) : agencyShort(requestForm.agency);
     guardAdd(toName, 'request', () => {
-      update({ preMeetingRequests: [...meeting!.preMeetingRequests, { id: newId('pmr'), agency: requestForm.agency, toName, toUserId: to?.id, sentAt: now.toISOString(), dueAt: requestForm.due, status: 'sent' }] });
+      update('request', { preMeetingRequests: [...meeting!.preMeetingRequests, { id: newId('pmr'), agency: requestForm.agency, toName, toUserId: to?.id, sentAt: now.toISOString(), dueAt: requestForm.due, status: 'sent' }] });
       setRequestForm({ agency: 'health', to: '', due: '' });
       toast({ title: t('meetings.before.requests.toastTitle'), text: t('meetings.before.requests.toastText', { name: toName }), tone: 'success' });
     });
@@ -181,21 +205,21 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
 
   function recordReturn() {
     if (!returning) return;
-    update({ preMeetingRequests: meeting!.preMeetingRequests.map((r) => (r.id === returning.id ? { ...r, status: 'returned', returnSummary: returning.summary, returnedAt: now.toISOString() } : r)), pack: [...meeting!.pack, { id: newId('pk'), kind: 'report', label: t('meetings.before.requests.packLabel', { agency: agencyShort(meeting!.preMeetingRequests.find((r) => r.id === returning.id)?.agency ?? 'health') }), ref: returning.id, included: true }] });
+    update('returned', { preMeetingRequests: meeting!.preMeetingRequests.map((r) => (r.id === returning.id ? { ...r, status: 'returned', returnSummary: returning.summary, returnedAt: now.toISOString() } : r)), pack: [...meeting!.pack, { id: newId('pk'), kind: 'report', label: t('meetings.before.requests.packLabel', { agency: agencyShort(meeting!.preMeetingRequests.find((r) => r.id === returning.id)?.agency ?? 'health') }), ref: returning.id, included: true }] });
     setReturning(null);
     toast({ title: t('meetings.before.requests.returnedToast'), tone: 'success' });
   }
 
   function addShared() {
     if (shareForm.summary.trim().length < 5) return;
-    update({ informationShared: [...meeting!.informationShared, { id: newId('is'), agency: user!.agency, byName: userName(user!), byUserId: user!.id, at: now.toISOString(), summary: shareForm.summary, relevance: shareForm.relevance, linkedEventIds: [] }] });
+    update('shared', { informationShared: [...meeting!.informationShared, { id: newId('is'), agency: user!.agency, byName: userName(user!), byUserId: user!.id, at: now.toISOString(), summary: shareForm.summary, relevance: shareForm.relevance, linkedEventIds: [] }] });
     setShareForm({ summary: '', relevance: '' });
   }
 
   function addDecision() {
     if (decisionForm.question.trim().length < 5 || decisionForm.decision.trim().length < 2) return;
     const dissentUser = data.users.find((u) => u.id === decisionForm.dissentBy);
-    update({ decisions: [...meeting!.decisions, { id: newId('dec'), question: decisionForm.question, decision: decisionForm.decision, rationale: decisionForm.rationale, dissent: dissentUser && decisionForm.dissentText ? [{ byName: userName(dissentUser), byUserId: dissentUser.id, agency: dissentUser.agency, text: decisionForm.dissentText }] : [], decidedByName: meeting!.chairName, decidedByUserId: meeting!.chairUserId, decidedAt: now.toISOString() }] });
+    update('decision', { decisions: [...meeting!.decisions, { id: newId('dec'), question: decisionForm.question, decision: decisionForm.decision, rationale: decisionForm.rationale, dissent: dissentUser && decisionForm.dissentText ? [{ byName: userName(dissentUser), byUserId: dissentUser.id, agency: dissentUser.agency, text: decisionForm.dissentText }] : [], decidedByName: meeting!.chairName, decidedByUserId: meeting!.chairUserId, decidedAt: now.toISOString() }] });
     setDecisionForm({ question: '', decision: '', rationale: '', dissentBy: '', dissentText: '' });
   }
 
@@ -203,18 +227,40 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
     const owner = data.users.find((u) => u.id === actionForm.owner);
     if (!owner || actionForm.title.trim().length < 5 || !actionForm.due) return;
     const a: Action = { id: newId('act'), synthetic: true, processId: process!.id, meetingId: meeting!.id, title: actionForm.title, ownerUserId: owner.id, ownerName: userName(owner), ownerAgency: owner.agency, due: actionForm.due, status: 'open', createdAt: now.toISOString(), createdByName: userName(user!) };
-    upsert('actions', a);
-    update({ actionIds: [...meeting!.actionIds, a.id] });
+    const created = write({ collection: 'actions', record: a, intent: 'create', act: 'create', targetType: 'process', targetLabel: t('meetings.audit.action', { title: a.title, owner: a.ownerName }), processId: process!.id });
+    if (!created.ok) {
+      toast({ title: t('meetings.audit.refused'), text: readErrors(created.errors).join(' '), tone: 'error' });
+      return;
+    }
+    update('action', { actionIds: [...meeting!.actionIds, a.id] });
     setActionForm({ title: '', owner: '', due: '' });
   }
 
   function closeMeeting() {
     const heldAt = now.toISOString();
-    const result = applyMeetingTransition(process!.clocks, meeting!.type, heldAt, newId);
-    upsert('processes', { ...process!, clocks: result.clocks });
-    update({ status: 'held', minute: meeting!.minute.status === 'not-started' ? { ...meeting!.minute, status: 'draft', draftedAt: heldAt } : meeting!.minute });
-    audit({ act: 'edit', targetType: 'meeting', targetId: meeting!.id, targetLabel: t('meetings.audit.held', { title: meeting!.title }), processId: process!.id });
-    toast({ title: t('meetings.close.toastTitle'), text: t('meetings.close.toastText', { completed: result.completed.join(', ') || t('common.values.none'), started: result.started.join(', ') || t('common.values.none') }), tone: 'success' });
+    // The transition table decides which clocks this meeting completes and starts; the pipeline
+    // applies it to the case and writes the milestone (docs/RECORDS.md section 3).
+    const result = update(
+      'held',
+      { status: 'held', minute: meeting!.minute.status === 'not-started' ? { ...meeting!.minute, status: 'draft', draftedAt: heldAt } : meeting!.minute },
+      {
+        targetLabel: t('meetings.audit.held', { title: meeting!.title }),
+        versionChange: t('meetings.audit.held', { title: meeting!.title }),
+        clockTransition: { meetingType: meeting!.type, at: heldAt },
+        event: {
+          eventType: meeting!.type === 'ird' ? 'process.ird' : meeting!.type === 'core-group' ? 'process.core-group' : meeting!.type === 'marac' ? 'process.marac' : meeting!.type.startsWith('mappa') ? 'process.mappa-level' : meeting!.type.startsWith('asp') ? 'process.case-conference' : 'process.cppm',
+          significance: 'high',
+          visibility: 'integrated',
+          title: t('meetings.audit.held', { title: meeting!.title }),
+          detail: t('meetings.audit.heldDetail', { type: meetingTypeLabel(meeting!.type), decisions: meeting!.decisions.length }),
+          subjectIds: meeting!.subjectIds,
+          occurredAt: heldAt,
+          linkedProcessIds: [process!.id],
+        },
+      },
+    );
+    if (!result.ok) return;
+    toast({ title: t('meetings.close.toastTitle'), text: t('meetings.close.toastText', { completed: result.clocks?.completed.join(', ') || t('common.values.none'), started: result.clocks?.started.join(', ') || t('common.values.none') }), tone: 'success' });
     setPhase('after');
   }
 
@@ -244,13 +290,13 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       if (!u || entries.some((e) => e.recipientUserId === u.id) || meeting!.distribution.some((e) => e.recipientUserId === u.id)) continue;
       entries.push({ id: newId('dist'), recipientName: userName(u), recipientUserId: u.id, agency: u.agency, role: roleLabel(u.roleId), detailLevel: r.detailLevel, fields: r.fields, reason: `${r.label}: ${r.reason}` });
     }
-    update({ distribution: [...meeting!.distribution, ...entries] });
+    update('distribution', { distribution: [...meeting!.distribution, ...entries] });
     const heldName = distributionHeldBack[0];
     if (heldName) {
       const invitee = meeting!.invitees.find((i) => i.name === heldName);
       if (invitee?.userId) {
         guardAdd(heldName, 'distribution', () => {
-          update({ distribution: [...meeting!.distribution, ...entries, { id: newId('dist'), recipientName: heldName, recipientUserId: invitee.userId, agency: invitee.agency, role: invitee.role, detailLevel: 'full', reason: t('meetings.after.distribution.attendeeReason') }] });
+          update('distribution', { distribution: [...meeting!.distribution, ...entries, { id: newId('dist'), recipientName: heldName, recipientUserId: invitee.userId, agency: invitee.agency, role: invitee.role, detailLevel: 'full', reason: t('meetings.after.distribution.attendeeReason') }] });
         });
       }
     }
@@ -262,15 +308,33 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   }
 
   function distribute() {
-    const lb: LawfulBasisRecord = { id: newId('lb'), synthetic: true, purpose: t('meetings.after.distribute.purpose', { title: meeting!.title }), article6: '6(1)(e) public task', article9Condition: '9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)', article10Criminal: process!.type === 'mappa' || process!.type === 'marac' ? 'DPA 2018 s10 and Sch 1' : 'not applicable', classification: process!.classification, accessRestriction: process!.accessRestriction, statutoryGateway: [process!.type === 'cp' ? 'National Guidance for Child Protection in Scotland 2021' : process!.type === 'asp' ? 'ASP (Scotland) Act 2007 s5' : process!.type === 'mappa' ? 'Management of Offenders etc. (Scotland) Act 2005 s10' : process!.type === 'marac' ? 'MARAC Operating Protocol' : 'AWI (Scotland) Act 2000'], necessityAndProportionality: t('meetings.after.distribute.necessity'), consentStatus: 'not-required', authorisedByUserId: user!.id, authorisedByName: userName(user!), createdAt: now.toISOString() };
-    upsert('lawfulBases', lb);
-    const shares: SharingRecord[] = meeting!.distribution.map((d) => ({ id: newId('shr'), synthetic: true, processId: process!.id, subjectId: meeting!.subjectIds[0] ?? '', stage: process!.stage, recipient: { userId: d.recipientUserId, name: d.recipientName, agency: d.agency, role: d.role }, detailLevel: d.detailLevel, fields: d.fields, lawfulBasisId: lb.id, channel: 'in-app' as const, status: 'sent' as const, ...classificationOfShare(process!), createdAt: now.toISOString(), sentAt: now.toISOString(), reason: d.reason, createdByUserId: user!.id, createdByName: userName(user!), summary: t('meetings.after.distribute.shareSummary', { title: meeting!.title, level: detailLevelLabel(d.detailLevel) }) }));
-    for (const s of shares) upsert('sharingRecords', s);
-    update({ minute: { ...meeting!.minute, status: 'distributed', distributedAt: now.toISOString() }, distribution: meeting!.distribution.map((d, i) => ({ ...d, sharingRecordId: shares[i]?.id })) });
-    const recordClocks = process!.clocks.map((c) => (c.ruleId === 'cp.cppm.record.distribute' && !c.completedAt ? { ...c, completedAt: now.toISOString(), note: t('meetings.after.distribute.clockNote') } : c));
-    if (recordClocks.some((c, i) => c !== process!.clocks[i])) upsert('processes', { ...process!, clocks: recordClocks });
-    audit({ act: 'share', targetType: 'meeting', targetId: meeting!.id, targetLabel: t('meetings.after.distribute.distributed', { count: shares.length }), processId: process!.id, restricted: process!.accessRestriction === 'restricted' });
-    toast({ title: t('meetings.after.distribute.distributed', { count: shares.length }), text: t('meetings.after.distribute.toastText'), tone: 'success' });
+    // One write: the minute moves to distributed, and the pipeline writes the lawful basis, one
+    // sharing record per recipient at their detail level, the record-distribution clock and the
+    // chronology entry. The share ids are allocated here so each distribution entry can cite its own.
+    const shareIds = meeting!.distribution.map(() => newId('shr'));
+    const result = update(
+      'distributed',
+      { minute: { ...meeting!.minute, status: 'distributed', distributedAt: now.toISOString() }, distribution: meeting!.distribution.map((d, i) => ({ ...d, sharingRecordId: shareIds[i] })) },
+      {
+        act: 'share',
+        targetLabel: t('meetings.after.distribute.distributed', { count: shareIds.length }),
+        versionChange: t('meetings.after.distribute.distributed', { count: shareIds.length }),
+        lawfulBasis: { id: newId('lb'), purpose: t('meetings.after.distribute.purpose', { title: meeting!.title }), necessity: t('meetings.after.distribute.necessity'), processes: [process!] },
+        sharingRecords: meeting!.distribution.map((d, i) => ({ id: shareIds[i], recipient: { userId: d.recipientUserId, name: d.recipientName, agency: d.agency, role: d.role }, detailLevel: d.detailLevel, fields: d.fields, reason: d.reason, summary: t('meetings.after.distribute.shareSummary', { title: meeting!.title, level: detailLevelLabel(d.detailLevel) }) })),
+        clockTransition: { completes: ['cp.cppm.record.distribute'], note: t('meetings.after.distribute.clockNote') },
+        event: {
+          eventType: 'sharing',
+          significance: 'moderate',
+          visibility: 'integrated',
+          title: t('meetings.after.distribute.eventTitle', { title: meeting!.title }),
+          detail: t('meetings.after.distribute.distributed', { count: shareIds.length }),
+          subjectIds: meeting!.subjectIds,
+          linkedProcessIds: [process!.id],
+        },
+      },
+    );
+    if (!result.ok) return;
+    toast({ title: t('meetings.after.distribute.distributed', { count: result.shares?.length ?? 0 }), text: t('meetings.after.distribute.toastText'), tone: 'success' });
   }
 
   const state = dev ?? 'ready';
@@ -396,7 +460,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                 {meeting.pack.length === 0 ? <p style={{ color: 'var(--color-ink-3)' }}>{t('meetings.before.pack.empty')}</p> : null}
                 {meeting.pack.map((pk) => (
                   <div key={pk.id} className={styles.packItem}>
-                    <CheckboxField label={pk.label} checked={pk.included} onChange={(e) => update({ pack: meeting.pack.map((x) => (x.id === pk.id ? { ...x, included: e.target.checked } : x)) })} />
+                    <CheckboxField label={pk.label} checked={pk.included} onChange={(e) => update('pack', { pack: meeting.pack.map((x) => (x.id === pk.id ? { ...x, included: e.target.checked } : x)) })} />
                     <span className={styles.packMeta}>
                       {t('meetings.before.pack.itemMeta', { kind: packItemKindLabel(pk.kind), hasWindow: pk.windowFrom ? 'yes' : 'no', from: pk.windowFrom ? formatDate(pk.windowFrom) : '', to: pk.windowTo ? formatDate(pk.windowTo) : t('meetings.before.pack.today'), hasRef: pk.ref ? 'yes' : 'no', ref: pk.ref ?? '' })}
                     </span>
@@ -419,7 +483,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                       <span>{a.title}</span>
                       <span className="cluster">
                         {a.status !== 'done' ? (
-                          <Button size="sm" variant={a.status === 'current' ? 'primary' : 'quiet'} icon={a.status === 'current' ? <CheckCircle2 size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />} onClick={() => update({ agenda: meeting.agenda.map((x) => (x.id === a.id ? { ...x, status: a.status === 'current' ? 'done' : 'current' } : x.status === 'current' && a.status !== 'current' ? { ...x, status: 'done' } : x)) })}>
+                          <Button size="sm" variant={a.status === 'current' ? 'primary' : 'quiet'} icon={a.status === 'current' ? <CheckCircle2 size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />} onClick={() => update('agenda', { agenda: meeting.agenda.map((x) => (x.id === a.id ? { ...x, status: a.status === 'current' ? 'done' : 'current' } : x.status === 'current' && a.status !== 'current' ? { ...x, status: 'done' } : x)) })}>
                             {a.status === 'current' ? t('meetings.during.agenda.done') : t('meetings.during.agenda.start')}
                           </Button>
                         ) : null}
@@ -440,7 +504,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                 </div>
                 {availableViews.length > 0 ? (
                   <div className={styles.form} style={{ marginTop: 12 }}>
-                    <SelectField label={t('meetings.during.views.readInto')} value="" onChange={(e) => e.target.value && update({ viewsRecordIds: [...meeting.viewsRecordIds, e.target.value] })} placeholder={t('meetings.during.views.placeholder')} options={availableViews.map((v) => ({ value: v.id, label: `${formatDate(v.recordedAt)}: ${v.content.slice(0, 60)}` }))} />
+                    <SelectField label={t('meetings.during.views.readInto')} value="" onChange={(e) => e.target.value && update('views', { viewsRecordIds: [...meeting.viewsRecordIds, e.target.value] })} placeholder={t('meetings.during.views.placeholder')} options={availableViews.map((v) => ({ value: v.id, label: `${formatDate(v.recordedAt)}: ${v.content.slice(0, 60)}` }))} />
                   </div>
                 ) : null}
               </SheetBody>
@@ -456,7 +520,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                       </span>
                       <label>
                         <span className="visually-hidden">{t('meetings.during.attendance.selectLabel', { name: i.name })}</span>
-                        <select className={styles.attendanceSelect} value={i.attendance} onChange={(e) => update({ invitees: meeting.invitees.map((x, j) => (j === idx ? { ...x, attendance: e.target.value as Meeting['invitees'][number]['attendance'] } : x)) })}>
+                        <select className={styles.attendanceSelect} value={i.attendance} onChange={(e) => update('attendance', { invitees: meeting.invitees.map((x, j) => (j === idx ? { ...x, attendance: e.target.value as Meeting['invitees'][number]['attendance'] } : x)) })}>
                           {ATTENDANCE.map((a) => (
                             <option key={a} value={a}>
                               {attendanceLabel(a)}
@@ -566,10 +630,10 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
               <SheetHead title={t('meetings.after.minute.title')} meta={t('meetings.after.minute.meta', { status: minuteStatusLabel(meeting.minute.status), hasApproved: meeting.minute.approvedAt ? 'yes' : 'no', approved: meeting.minute.approvedAt ? formatDateTime(meeting.minute.approvedAt) : '', hasDistributed: meeting.minute.distributedAt ? 'yes' : 'no', distributed: meeting.minute.distributedAt ? formatDateTime(meeting.minute.distributedAt) : '' })} />
               <SheetBody>
                 <div className={styles.minuteSteps}>
-                  <Button variant="secondary" disabled={meeting.minute.status !== 'not-started'} onClick={() => update({ minute: { ...meeting.minute, status: 'draft', draftedAt: now.toISOString() } })}>
+                  <Button variant="secondary" disabled={meeting.minute.status !== 'not-started'} onClick={() => update('minuteDraft', { minute: { ...meeting.minute, status: 'draft', draftedAt: now.toISOString() } })}>
                     {t('meetings.after.minute.markDraft')}
                   </Button>
-                  <Button variant="secondary" disabled={meeting.minute.status !== 'draft'} onClick={() => update({ minute: { ...meeting.minute, status: 'chair-approved', approvedAt: now.toISOString() } })}>
+                  <Button variant="secondary" disabled={meeting.minute.status !== 'draft'} onClick={() => update('minuteApproved', { minute: { ...meeting.minute, status: 'chair-approved', approvedAt: now.toISOString() } })}>
                     {t('meetings.after.minute.chairApproves')}
                   </Button>
                   <Button variant="primary" disabled={meeting.minute.status !== 'chair-approved' || meeting.distribution.length === 0} onClick={distribute}>
@@ -585,7 +649,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                     <Button
                       variant="secondary"
                       onClick={() => {
-                        update({ reviewDate: reviewDate || undefined });
+                        update('reviewDate', { reviewDate: reviewDate || undefined });
                         toast({ title: t('meetings.after.minute.reviewToast'), text: reviewDate ? formatDate(reviewDate) : t('meetings.after.minute.reviewCleared') });
                       }}
                     >
@@ -616,7 +680,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                       </span>
                       <label>
                         <span className="visually-hidden">{t('meetings.after.distribution.levelLabel', { name: d.recipientName })}</span>
-                        <select className={styles.attendanceSelect} value={d.detailLevel} disabled={meeting.minute.status === 'distributed'} onChange={(e) => update({ distribution: meeting.distribution.map((x) => (x.id === d.id ? { ...x, detailLevel: e.target.value as DetailLevel } : x)) })}>
+                        <select className={styles.attendanceSelect} value={d.detailLevel} disabled={meeting.minute.status === 'distributed'} onChange={(e) => update('distributionLevel', { distribution: meeting.distribution.map((x) => (x.id === d.id ? { ...x, detailLevel: e.target.value as DetailLevel } : x)) })}>
                           {DETAIL_LEVELS.map((l) => (
                             <option key={l} value={l}>
                               {detailLevelLabel(l)}

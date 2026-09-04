@@ -14,6 +14,7 @@ import { useSelection } from '@/lib/selection';
 import { useTrail } from '@/lib/trail';
 import { accessForUser, clocksForProcess, currentAddress, fullName, membersByAgency, processesInvolving, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
+import { useWriteErrors } from '@/lib/writeErrors';
 import { EventList } from '@/features/chronology/EventList';
 import { LanesChart } from '@/features/chronology/LanesChart';
 import { useChronologyStore } from '@/features/chronology/state';
@@ -58,8 +59,9 @@ export function PersonRecord({ personId }: { personId: string }) {
   const grants = useGrants();
   const audit = useAppStore((s) => s.audit);
   const grantBreakGlass = useAppStore((s) => s.grantBreakGlass);
-  const upsert = useAppStore((s) => s.upsert);
+  const write = useAppStore((s) => s.write);
   const newId = useAppStore((s) => s.newId);
+  const readErrors = useWriteErrors();
   const { toast } = useToast();
   const dev = useDevState();
   const chronoReset = useChronologyStore((s) => s.reset);
@@ -154,8 +156,30 @@ export function PersonRecord({ personId }: { personId: string }) {
 
   function recordViews() {
     const rec: ViewsRecord = { id: newId('vw'), synthetic: true, personId: person!.id, processId: open[0]?.id, kind: voice.kind, recordedAt: now.toISOString(), recordedByUserId: user!.id, recordedByName: userName(user!), recordedByAgency: user!.agency, method: voice.method, content: voice.content };
-    upsert('viewsRecords', rec);
-    audit({ act: 'edit', targetType: 'person', targetId: person!.id, targetLabel: `Views recorded: ${viewsKindLabel(voice.kind)}`, processId: open[0]?.id });
+    // A views record is a chronology event in its own right (docs/RECORDS.md section 3): the
+    // person's own words, dated, on the integrated view rather than filed under a tab.
+    const result = write({
+      collection: 'viewsRecords',
+      record: rec,
+      intent: 'create',
+      act: 'create',
+      targetType: 'person',
+      targetLabel: t('person.recordViews.audit', { kind: viewsKindLabel(voice.kind) }),
+      processId: open[0]?.id,
+      event: {
+        eventType: voice.kind === 'child-voice' ? 'voice.child' : voice.kind === 'family-views' ? 'voice.family' : voice.kind === 'victim-wishes' ? 'voice.victim' : 'voice.adult',
+        significance: 'high',
+        visibility: 'integrated',
+        title: t('person.recordViews.audit', { kind: viewsKindLabel(voice.kind) }),
+        detail: voice.content,
+        subjectIds: [person!.id],
+        linkedProcessIds: open[0] ? [open[0].id] : [],
+      },
+    });
+    if (!result.ok) {
+      toast({ title: t('person.recordViews.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
+      return;
+    }
     setRecording(false);
     setVoice({ kind: 'child-voice', method: t('person.recordViews.methodDefault'), content: '' });
     toast({ title: t('person.recordViews.toast.title'), text: t('person.recordViews.toast.text'), tone: 'success' });

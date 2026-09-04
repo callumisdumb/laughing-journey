@@ -12,6 +12,7 @@ import { processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, fullName, personById, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
+import { useWriteErrors } from '@/lib/writeErrors';
 import styles from './Sharing.module.css';
 
 /** Renders the <b> tag of a catalogue message as <strong>, for the bold lead-ins on a request. */
@@ -39,8 +40,8 @@ export function Sharing() {
   const route = useRoute();
   const navigate = useNavigate();
   const grants = useGrants();
-  const upsert = useAppStore((s) => s.upsert);
-  const audit = useAppStore((s) => s.audit);
+  const write = useAppStore((s) => s.write);
+  const readErrors = useWriteErrors();
   const select = useSelection((s) => s.select);
   const { toast } = useToast();
   const dev = useDevState();
@@ -74,22 +75,29 @@ export function Sharing() {
   function markSent(id: string) {
     const s = data.sharingRecords.find((x) => x.id === id);
     if (!s) return;
-    upsert('sharingRecords', { ...s, status: 'sent', sentAt: now.toISOString() });
-    audit({ act: 'share', targetType: 'sharing', targetId: s.id, targetLabel: t('sharing.audit.sent', { level: detailLevelLabel(s.detailLevel), name: s.recipient.name }), processId: s.processId });
+    const label = t('sharing.audit.sent', { level: detailLevelLabel(s.detailLevel), name: s.recipient.name });
+    const result = write({ collection: 'sharingRecords', record: { ...s, status: 'sent', sentAt: now.toISOString() }, intent: 'update', act: 'share', targetType: 'sharing', targetLabel: label, processId: s.processId, versionChange: label });
+    if (!result.ok) {
+      toast({ title: t('sharing.outbound.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
+      return;
+    }
     toast({ title: t('sharing.outbound.sentToastTitle'), text: t('sharing.outbound.sentToastText', { name: s.recipient.name }), tone: 'success' });
   }
 
   function markRead(id: string) {
     const s = data.sharingRecords.find((x) => x.id === id);
     if (!s) return;
-    upsert('sharingRecords', { ...s, status: 'read', readAt: now.toISOString() });
-    audit({ act: 'read', targetType: 'sharing', targetId: s.id, targetLabel: s.summary, processId: s.processId });
+    write({ collection: 'sharingRecords', record: { ...s, status: 'read', readAt: now.toISOString() }, intent: 'update', act: 'read', targetType: 'sharing', targetLabel: s.summary, processId: s.processId, versionChange: t('sharing.audit.read') });
   }
 
   function respond() {
     if (!responding) return;
-    upsert('informationRequests', { ...responding, status: 'responded', response: { at: now.toISOString(), byName: userName(user!), text: responseText, fieldsProvided } });
-    audit({ act: 'share', targetType: 'sharing', targetId: responding.id, targetLabel: t('sharing.audit.responded', { name: responding.fromName, count: fieldsProvided.length }), processId: responding.processId });
+    const label = t('sharing.audit.responded', { name: responding.fromName, count: fieldsProvided.length });
+    const result = write({ collection: 'informationRequests', record: { ...responding, status: 'responded', response: { at: now.toISOString(), byName: userName(user!), text: responseText, fieldsProvided } }, intent: 'update', act: 'share', targetType: 'sharing', targetLabel: label, processId: responding.processId, versionChange: label });
+    if (!result.ok) {
+      toast({ title: t('sharing.respondDialog.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
+      return;
+    }
     toast({ title: t('sharing.respondDialog.toastTitle'), text: t('sharing.respondDialog.toastText'), tone: 'success' });
     setResponding(null);
     setResponseText('');

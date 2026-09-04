@@ -4,9 +4,11 @@ import { capacityAssessmentFormSchema, capacityOutcomeLabel, type AwiProcess, ty
 import { useT } from '@mas/messages';
 import { Button, DateField, Dialog, RadioGroup, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
 import { formErrorSummary } from '@/lib/formErrors';
+import { useWriteErrors } from '@/lib/writeErrors';
 
 /** The functional test items, in order; each has a legend under forms.capacity.functional. */
 const FUNCTIONAL = ['understands', 'retains', 'weighs', 'communicates', 'acts'] as const;
@@ -15,10 +17,11 @@ export function CapacityAssessmentDialog({ open, onClose, process }: { open: boo
   const t = useT();
   const user = useCurrentUser();
   const now = useNow();
-  const upsert = useAppStore((s) => s.upsert);
-  const audit = useAppStore((s) => s.audit);
+  const write = useAppStore((s) => s.write);
   const newId = useAppStore((s) => s.newId);
+  const readErrors = useWriteErrors();
   const { toast } = useToast();
+  const [refusals, setRefusals] = useState<string[]>([]);
   const form = useForm<CapacityAssessmentForm>({
     resolver: zodResolver(capacityAssessmentFormSchema),
     defaultValues: { decision: process.detail.concern.decisionInQuestion, assessedAt: now.toISOString().slice(0, 10), assessorName: user ? `${user.givenName} ${user.familyName}` : '', assessorRole: user?.jobTitle ?? '', understands: 'partly', retains: 'partly', weighs: 'partly', communicates: 'yes', acts: 'partly', evidence: '', outcome: 'fluctuating', wishesConsidered: process.detail.willAndPreferences?.presentWishes ?? '' },
@@ -28,27 +31,54 @@ export function CapacityAssessmentDialog({ open, onClose, process }: { open: boo
   function submit(values: CapacityAssessmentForm) {
     if (!user) return;
     const v = capacityAssessmentFormSchema.parse(values);
-    upsert('processes', {
-      ...process,
-      detail: {
-        ...process.detail,
-        capacityAssessments: [
-          ...process.detail.capacityAssessments,
-          {
-            id: newId('cap'),
-            decision: v.decision,
-            assessedAt: `${v.assessedAt}T${now.toISOString().slice(11, 19)}+01:00`,
-            assessorName: v.assessorName,
-            assessorRole: v.assessorRole,
-            outcome: v.outcome,
-            evidence: t('forms.capacity.evidenceRecord', { evidence: v.evidence, understands: v.understands, retains: v.retains, weighs: v.weighs, communicates: v.communicates, acts: v.acts, wishes: v.wishesConsidered }),
-            communicationSupport: v.communicationSupport || undefined,
-          },
-        ],
+    const assessedAt = `${v.assessedAt}T${now.toISOString().slice(11, 19)}+01:00`;
+    const outcome = capacityOutcomeLabel(v.outcome);
+    // A capacity assessment is a risk assessment in the records matrix, so the pipeline writes the
+    // chronology milestone beside the case (docs/RECORDS.md section 3).
+    const result = write({
+      collection: 'processes',
+      record: {
+        ...process,
+        detail: {
+          ...process.detail,
+          capacityAssessments: [
+            ...process.detail.capacityAssessments,
+            {
+              id: newId('cap'),
+              decision: v.decision,
+              assessedAt,
+              assessorName: v.assessorName,
+              assessorRole: v.assessorRole,
+              outcome: v.outcome,
+              evidence: t('forms.capacity.evidenceRecord', { evidence: v.evidence, understands: v.understands, retains: v.retains, weighs: v.weighs, communicates: v.communicates, acts: v.acts, wishes: v.wishesConsidered }),
+              communicationSupport: v.communicationSupport || undefined,
+            },
+          ],
+        },
+      },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'process',
+      targetLabel: t('forms.capacity.audit', { outcome }),
+      processId: process.id,
+      versionChange: t('forms.capacity.audit', { outcome }),
+      event: {
+        eventType: 'health.assessment',
+        significance: 'high',
+        visibility: 'integrated',
+        title: t('forms.capacity.event.title'),
+        detail: t('forms.capacity.event.detail', { decision: v.decision, outcome, assessor: v.assessorName }),
+        subjectIds: process.subjectIds,
+        occurredAt: assessedAt,
+        linkedProcessIds: [process.id],
       },
     });
-    audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `Capacity assessment recorded: ${capacityOutcomeLabel(v.outcome)}`, processId: process.id });
-    toast({ title: t('forms.capacity.recorded.title'), text: t('forms.capacity.recorded.text', { decision: v.decision, outcome: capacityOutcomeLabel(v.outcome) }), tone: 'success' });
+    if (!result.ok) {
+      setRefusals(result.errors);
+      return;
+    }
+    setRefusals([]);
+    toast({ title: t('forms.capacity.recorded.title'), text: t('forms.capacity.recorded.text', { decision: v.decision, outcome }), tone: 'success' });
     onClose();
   }
 
@@ -58,7 +88,7 @@ export function CapacityAssessmentDialog({ open, onClose, process }: { open: boo
       onClose={onClose}
       title={t('forms.capacity.title')}
       size="lg"
-      errors={formErrorSummary(errors)}
+      errors={[...readErrors(refusals), ...formErrorSummary(errors)]}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>

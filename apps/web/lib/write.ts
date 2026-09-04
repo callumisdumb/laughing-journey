@@ -1,6 +1,6 @@
 'use client';
 
-import { classificationFor, classificationRank, computeClock, datasetSchema, findClockRule, isExcludedParty, nearMatchesOnRegister, workingCalendarFrom, type AuditEntry, type Classification, type ClassifiedRecord, type ChronologyEvent, type ClockTrigger, type Config, type Dataset, type Process } from '@mas/domain';
+import { MEETING_TRANSITIONS, classificationFor, classificationRank, computeClock, datasetSchema, findClockRule, isExcludedParty, mostRestrictedAccess, mostSensitiveClassification, nearMatchesOnList, nearMatchesOnRegister, normalisePartyName, workingCalendarFrom, type Agency, type AuditEntry, type CaseParty, type Classification, type ClassifiedRecord, type ChronologyEvent, type ClockTrigger, type Config, type Dataset, type DetailLevel, type LawfulBasisRecord, type MeetingType, type Process, type ProcessType, type SharingRecord, type User } from '@mas/domain';
 import { warrantsVersion, type ConnectorId, type OutboundIntent, type PayloadField, type RecordVersion } from '@mas/domain';
 import type { Collection } from '@/lib/store';
 
@@ -97,10 +97,73 @@ export interface WriteRequest<K extends Collection = Collection> {
    * closureReason, stage and clocks changed".
    */
   versionChange?: string;
+  /**
+   * Whether the audit entry is a restricted one. Left unset, the pipeline reads it off the process
+   * the write belongs to, which is what every caller was computing by hand.
+   */
+  restricted?: boolean;
+  /**
+   * The id the audit entry will carry, allocated by the caller with `newId('aud')`.
+   *
+   * For the one case where the record has to cite its own audit entry: a classification override
+   * keeps the id of the entry that authorised it (D-082). The entry is written after the record, so
+   * the caller cannot learn the id from the result; it names it instead.
+   */
+  auditId?: string;
+  /**
+   * A lawful basis to write beside the record, for a share or for a chronology entry raised to the
+   * integrated view. Built here from the purpose and the necessity a person typed, so the article
+   * 6, 9 and 10 conditions and the statutory gateway come from one rule rather than three copies.
+   */
+  lawfulBasis?: LawfulBasisInput;
+  /**
+   * Sharing records to write, each at a recipient's detail level, resting on `lawfulBasis`. The
+   * classification is captured from the process at the moment of the share (D-085), the author and
+   * the time from the session, and nothing here can be written without a basis to rest on.
+   */
+  sharingRecords?: SharingInput[];
+  /**
+   * Clocks this write completes or starts on the process, beyond the triggers in `clocks`. A meeting
+   * held names its type and the transition table decides; a distributed minute names the rule it
+   * completes. Applied here so a screen never recomputes a clock list and writes it back.
+   */
+  clockTransition?: ClockTransition;
 }
 
+/** What a lawful basis record is built from. Everything else follows from the processes it covers. */
+export interface LawfulBasisInput {
+  /** Allocated by the caller, so the record resting on it can name it before either is written. */
+  id: string;
+  purpose: string;
+  necessity: string;
+  /** The processes the information belongs to. Decides the gateway, the classification and article 10. */
+  processes: readonly Process[];
+  /** The agency whose information it is, where that is not the author's own. */
+  agency?: Agency;
+}
+
+/** A share the pipeline writes, at the recipient's detail level, resting on the request's lawful basis. */
+export interface SharingInput {
+  /** Allocated by the caller where another record has to cite it, such as a distribution entry. */
+  id?: string;
+  recipient: SharingRecord['recipient'];
+  detailLevel: DetailLevel;
+  fields?: string[];
+  reason: string;
+  summary: string;
+  /** Sent at once, or queued for a person to send. Defaults to sent. */
+  status?: 'queued' | 'sent';
+  needToKnowRowId?: string;
+}
+
+/**
+ * Either a meeting type, which the transition table turns into the clocks it completes and starts,
+ * or the rule ids named directly.
+ */
+export type ClockTransition = { meetingType: MeetingType; at: string } | { completes?: string[]; starts?: string[]; at?: string; note?: string };
+
 export interface WriteEffect {
-  kind: 'audit' | 'clock' | 'event' | 'share' | 'rewrap' | 'classification' | 'outbound' | 'version';
+  kind: 'audit' | 'clock' | 'event' | 'share' | 'rewrap' | 'classification' | 'outbound' | 'version' | 'register' | 'nearMatch';
   detail: string;
 }
 
@@ -113,6 +176,10 @@ export interface WriteResult {
   /** What the pipeline did, in the order it did it, for the toast and for the tests. */
   effects: WriteEffect[];
   audit?: AuditEntry;
+  /** The clock rules a transition completed and started, by rule id, for the toast that names them. */
+  clocks?: { completed: string[]; started: string[] };
+  /** The sharing records written, in the order requested. */
+  shares?: SharingRecord[];
 }
 
 /**
@@ -278,6 +345,138 @@ export function versionFor(
     reason: input.reason,
     before: Object.keys(held).length > 0 ? held : undefined,
   };
+}
+
+/**
+ * Step 8, first half. The lawful basis, built from what a person typed and the processes it covers.
+ *
+ * Three screens each carried their own copy of the article 6, 9 and 10 conditions and their own
+ * mapping from process type to statutory gateway, and the copies had already drifted: one decided
+ * article 10 from the author's agency, another from the process type. One rule now: article 10 is
+ * engaged where the information is police information or where the case is a MAPPA or MARAC one,
+ * because those are the cases that carry offending data whoever recorded it.
+ */
+const STATUTORY_GATEWAY: Record<ProcessType, string> = {
+  cp: 'National Guidance for Child Protection in Scotland 2021',
+  asp: 'ASP (Scotland) Act 2007 s5',
+  mappa: 'Management of Offenders etc. (Scotland) Act 2005 s10',
+  marac: 'MARAC Operating Protocol',
+  awi: 'AWI (Scotland) Act 2000',
+};
+
+export function lawfulBasisFor(input: LawfulBasisInput, author: User, at: string): LawfulBasisRecord {
+  const agency = input.agency ?? author.agency;
+  const criminal = agency === 'police' || input.processes.some((p) => p.type === 'mappa' || p.type === 'marac');
+  const gateways = [...new Set(input.processes.map((p) => STATUTORY_GATEWAY[p.type]))];
+  return {
+    id: input.id,
+    synthetic: true,
+    purpose: input.purpose,
+    article6: '6(1)(e) public task',
+    article9Condition: '9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)',
+    article10Criminal: criminal ? 'DPA 2018 s10 and Sch 1' : 'not applicable',
+    classification: mostSensitiveClassification(input.processes),
+    accessRestriction: mostRestrictedAccess(input.processes),
+    statutoryGateway: gateways.length > 0 ? gateways : ['Recorded at event entry'],
+    necessityAndProportionality: input.necessity,
+    consentStatus: 'not-required',
+    authorisedByUserId: author.id,
+    authorisedByName: `${author.givenName} ${author.familyName}`,
+    createdAt: at,
+  };
+}
+
+/**
+ * Step 8, second half. A sharing record, carrying the classification the process has at this
+ * moment rather than a reference to it, so a later change to the case cannot rewrite what was sent.
+ */
+export function sharingRecordFor(input: SharingInput, process: Process, lawfulBasisId: string, author: User, at: string, id: string): SharingRecord {
+  const status = input.status ?? 'sent';
+  return {
+    id,
+    synthetic: true,
+    processId: process.id,
+    subjectId: process.subjectIds[0] ?? '',
+    stage: process.stage,
+    recipient: input.recipient,
+    detailLevel: input.detailLevel,
+    fields: input.fields,
+    lawfulBasisId,
+    channel: 'in-app',
+    status,
+    classification: { ...process.classification, handling: [...process.classification.handling] },
+    accessRestriction: process.accessRestriction,
+    createdAt: at,
+    sentAt: status === 'sent' ? at : undefined,
+    reason: input.reason,
+    needToKnowRowId: input.needToKnowRowId,
+    createdByUserId: author.id,
+    createdByName: `${author.givenName} ${author.familyName}`,
+    summary: input.summary,
+  };
+}
+
+/**
+ * Step 6, the other direction. A write can complete clocks as well as start them: a meeting held
+ * completes the clock that was counting down to it and starts the next, and a distributed minute
+ * completes the record clock. The meeting table is configuration (`MEETING_TRANSITIONS`), so a
+ * caller names the meeting type and never the rule ids.
+ */
+export function applyClockTransition(clocks: ClockTrigger[], transition: ClockTransition, now: string, newId: (prefix: string) => string): { clocks: ClockTrigger[]; completed: string[]; started: string[] } {
+  const at = transition.at ?? now;
+  const table = 'meetingType' in transition ? MEETING_TRANSITIONS[transition.meetingType] : { completes: transition.completes ?? [], starts: transition.starts ?? [] };
+  const by = 'meetingType' in transition ? transition.meetingType : (transition.note ?? 'this record');
+  const completed: string[] = [];
+  const next = clocks.map((c) => {
+    if (!c.completedAt && table.completes.includes(c.ruleId)) {
+      completed.push(c.ruleId);
+      return { ...c, completedAt: at, note: `${c.note ? `${c.note}. ` : ''}Completed by ${by} on ${at.slice(0, 10)}` };
+    }
+    return c;
+  });
+  const started: string[] = [];
+  for (const ruleId of table.starts) {
+    if (next.some((c) => c.ruleId === ruleId && !c.completedAt)) continue;
+    next.push({ id: newId('clk'), ruleId, triggeredAt: at, note: `Started by ${by}` });
+    started.push(ruleId);
+  }
+  return { clocks: next, completed, started };
+}
+
+/**
+ * Step 5, in reverse. What a write to a process did to its hand-recorded register entries.
+ *
+ * The forward check asks whether a recipient being added resembles somebody on the register. This
+ * asks the opposite: a register entry being added or changed, does it resemble somebody already on a
+ * list for this case? An exclusion often arrives after the sharing has started (D-084), and the two
+ * forms that recorded one each carried a copy of this check. The pipeline notices the entries move
+ * and runs it, so a third form cannot leave it out.
+ */
+export function registerChanges(before: readonly CaseParty[] | undefined, after: readonly CaseParty[]): { added: number; updated: number; entries: CaseParty[] } {
+  const key = (p: CaseParty) => `${p.party}:${normalisePartyName(p.name ?? '')}`;
+  const was = new Map((before ?? []).filter((p) => p.source === 'manual').map((p) => [key(p), p]));
+  let added = 0;
+  let updated = 0;
+  const entries: CaseParty[] = [];
+  for (const party of after) {
+    if (party.source !== 'manual' || !party.name) continue;
+    const previous = was.get(key(party));
+    if (!previous) added += 1;
+    else if (JSON.stringify(previous) !== JSON.stringify(party)) updated += 1;
+    else continue;
+    entries.push(party);
+  }
+  return { added, updated, entries };
+}
+
+export function reverseNearMatches(entries: readonly CaseParty[], listed: readonly string[]): Array<{ entry: CaseParty; names: string[] }> {
+  const out: Array<{ entry: CaseParty; names: string[] }> = [];
+  for (const entry of entries) {
+    if (!entry.name) continue;
+    const similar = nearMatchesOnList(entry.name, listed).map((m) => m.name);
+    if (similar.length > 0) out.push({ entry, names: similar });
+  }
+  return out;
 }
 
 export type { Classification };

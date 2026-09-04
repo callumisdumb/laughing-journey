@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, nextReference, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Agency, type ConnectorId, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type User } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Agency, type ConnectorId, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -15,7 +15,8 @@ import { buildVault, type Vault } from '@/lib/vault';
 import { encryptForGateway, platformViewOutbound } from '@mas/connectors';
 import { generateKeyPair, type PublicKey } from '@mas/crypto';
 import { create } from 'zustand';
-import { classificationRefusal, excludedRecipients, reasonRefusal, startedClocks, validateRecord, versionFor, type WriteEffect, type WriteRequest, type WriteResult, type WriteShare } from '@/lib/write';
+import { listedNames } from '@/lib/selectors';
+import { applyClockTransition, classificationRefusal, excludedRecipients, lawfulBasisFor, reasonRefusal, registerChanges, reverseNearMatches, sharingRecordFor, startedClocks, validateRecord, versionFor, type WriteEffect, type WriteRequest, type WriteResult, type WriteShare } from '@/lib/write';
 
 export type Collection = Exclude<keyof Dataset, 'meta'>;
 type Overlay = Partial<Record<Collection, Record<string, unknown>>> & { config?: Config; removed?: Partial<Record<Collection, string[]>> };
@@ -83,11 +84,9 @@ interface AppState {
   currentUser: () => User | null;
   signIn: (userId: string, viaSwitch?: boolean) => void;
   signOut: () => void;
-  upsert: <K extends Collection>(collection: K, record: Dataset[K][number]) => void;
-  remove: (collection: Collection, id: string) => void;
   setConfig: (config: Config) => void;
   /** Writes the ledger entry and the chained copy, and returns it so a caller can cite its id. */
-  audit: (entry: Omit<AuditEntry, 'id' | 'synthetic' | 'at' | 'userId' | 'userName' | 'agency' | 'restricted'> & { restricted?: boolean }) => AuditEntry | undefined;
+  audit: (entry: Omit<AuditEntry, 'id' | 'synthetic' | 'at' | 'userId' | 'userName' | 'agency' | 'restricted'> & { id?: string; restricted?: boolean }) => AuditEntry | undefined;
   grantBreakGlass: (processId: string, category: string, reason: string) => void;
   setLiveClock: (v: boolean) => void;
   setDemoNow: (iso: string) => void;
@@ -102,8 +101,20 @@ interface AppState {
   /**
    * The one write pipeline (docs/RECORDS.md section 7). Every create and update goes through it,
    * rather than each call site reimplementing the consequences of a write and one of them forgetting.
+   *
+   * It is also the only way a record reaches the store from a screen. The raw `upsert` is private to
+   * this module, and `apps/web/lib/write.test.ts` walks every source file to make sure it stays so.
    */
   write: <K extends Collection>(request: WriteRequest<K>) => WriteResult;
+  /**
+   * The other writer: a connector delivering what a source system said.
+   *
+   * A connector event or an inbound change is not a person's write, so it does not carry a person's
+   * audit entry, a version, a clock or a chronology milestone: those belong to the review that
+   * promotes, accepts or dismisses it, which is a `write`. What it does carry is the schema check and
+   * the de-duplication on the far side's own reference, because a feed that replays is a feed.
+   */
+  receive: (record: Dataset['connectorEvents'][number] | Dataset['inbound'][number]) => { ok: boolean; errors: string[]; duplicate: boolean };
   /**
    * Merging two person records, and taking a merge back.
    *
@@ -444,6 +455,33 @@ function applyConfiguredAppearanceDefaults(config: Config): void {
   if (appearance.density !== config.defaults.density) appearance.setDensity(config.defaults.density);
 }
 
+type Setter = (partial: Partial<AppState>) => void;
+
+/**
+ * The raw persist, private to this module on purpose.
+ *
+ * It used to be public, and eighteen screens called it directly while the handover said every write
+ * went through the pipeline. A write that reaches here without going through `write` skips the audit
+ * entry, the classification check, the exclusion check, the rewrap, the clocks and the chronology,
+ * and nothing on the screen looks any different. So the only callers are the pipeline, the audit
+ * ledger, the merge and the connector delivery path below, and `write.test.ts` walks every source
+ * file to keep it that way.
+ *
+ * Nothing removes. A casework record is retired (D-148) or recorded in error (D-153), never deleted,
+ * and the one whole-dataset change that does drop records, a person merge, goes through
+ * `persistDatasetChange` so the overlay records what went and can put it back.
+ */
+function upsert<K extends Collection>(get: () => AppState, set: Setter, collection: K, record: Dataset[K][number]): void {
+  const data = get().data;
+  const list = [...(data[collection] as Array<{ id: string }>)];
+  const i = list.findIndex((r) => r.id === (record as { id: string }).id);
+  if (i >= 0) list[i] = record;
+  else list.unshift(record);
+  set({ data: { ...data, [collection]: list } });
+  overlay = { ...overlay, [collection]: { ...(overlay[collection] ?? {}), [(record as { id: string }).id]: record } };
+  writeJson(OVERLAY_KEY, overlay);
+}
+
 export const useAppStore = create<AppState>((set, get) => ({
   ready: false,
   data: EMPTY,
@@ -497,33 +535,12 @@ export const useAppStore = create<AppState>((set, get) => ({
       targetLabel: viaSwitch && previous ? `Switched from ${previous.givenName} ${previous.familyName} (demo)` : `${roleLabel(next.roleId)} signed in (mock SSO)`,
       restricted: false,
     };
-    get().upsert('audit', entry);
+    upsert(get, set, 'audit', entry);
   },
   signOut: () => {
     const session = { ...get().session, userId: null, breakGlass: [] };
     set({ session });
     writeJson(SESSION_KEY, session);
-  },
-  upsert: (collection, record) => {
-    const data = get().data;
-    const list = [...(data[collection] as Array<{ id: string }>)];
-    const i = list.findIndex((r) => r.id === (record as { id: string }).id);
-    if (i >= 0) list[i] = record;
-    else list.unshift(record);
-    set({ data: { ...data, [collection]: list } });
-    overlay = { ...overlay, [collection]: { ...(overlay[collection] ?? {}), [(record as { id: string }).id]: record } };
-    writeJson(OVERLAY_KEY, overlay);
-  },
-  remove: (collection, id) => {
-    const data = get().data;
-    const list = (data[collection] as Array<{ id: string }>).filter((r) => r.id !== id);
-    set({ data: { ...data, [collection]: list } });
-    const removed = { ...(overlay.removed ?? {}) };
-    removed[collection] = [...(removed[collection] ?? []), id];
-    const col = { ...(overlay[collection] ?? {}) };
-    delete col[id];
-    overlay = { ...overlay, [collection]: col, removed };
-    writeJson(OVERLAY_KEY, overlay);
   },
   setConfig: (config) => {
     set({ config });
@@ -534,7 +551,6 @@ export const useAppStore = create<AppState>((set, get) => ({
     const u = get().currentUser();
     if (!u) return undefined;
     const rec: AuditEntry = {
-      id: get().newId('aud'),
       synthetic: true,
       at: get().now().toISOString(),
       userId: u.id,
@@ -542,8 +558,9 @@ export const useAppStore = create<AppState>((set, get) => ({
       agency: u.agency,
       restricted: entry.restricted ?? false,
       ...entry,
+      id: entry.id ?? get().newId('aud'),
     };
-    get().upsert('audit', rec);
+    upsert(get, set, 'audit', rec);
     // The signed, append-only chain runs beside the ledger: every entry carries the hash of its
     // predecessor and is signed by the actor's device key, so an entry cannot be edited or removed
     // without the Admin verification screen finding it (lib/auditChain.ts).
@@ -655,9 +672,11 @@ export const useAppStore = create<AppState>((set, get) => ({
     const reasonError = reasonRefusal(request.intent, request.reason);
     if (reasonError) errors.push(reasonError);
 
-    // 3. Classification, which may be raised and never quietly lowered.
+    // 3. Classification, which may be raised and never quietly lowered. The one deliberate lower is
+    // the override a named role records with a reason (D-082): it arrives under its own act, having
+    // already passed `overrideDecision`, and is the only write this check lets through.
     const existing = (data[request.collection] as Array<{ id: string }>).find((r) => r.id === (request.record as { id: string }).id);
-    const downgrade = classificationRefusal(config, existing as ClassifiedRecord | undefined, request.record as ClassifiedRecord);
+    const downgrade = request.act === 'classification-lower' ? null : classificationRefusal(config, existing as ClassifiedRecord | undefined, request.record as ClassifiedRecord);
     if (downgrade) errors.push(downgrade);
 
     // 5. The exclusion register, before any recipient is added rather than after.
@@ -668,31 +687,47 @@ export const useAppStore = create<AppState>((set, get) => ({
       nearMatches = check.nearMatches;
     }
 
+    // 8, checked early. A share has to rest on a lawful basis and belong to a case, and a request
+    // that cannot satisfy both is refused whole rather than leaving a share with nothing under it.
+    const processId = request.processId ?? (request.collection === 'processes' ? (request.record as { id: string }).id : undefined);
+    const processBefore = processId ? data.processes.find((p) => p.id === processId) : undefined;
+    if ((request.sharingRecords ?? []).length > 0) {
+      if (!request.lawfulBasis) errors.push('sharesNeedLawfulBasis');
+      if (!processBefore && request.collection !== 'processes') errors.push('sharesNeedProcess');
+    }
+
     if (errors.length > 0) return { ok: false, errors, nearMatches, effects };
+
+    const at = get().now().toISOString();
+    const byName = `${user.givenName} ${user.familyName}`;
 
     // 2b. The record's own version history, before it is written, so the entry describes this change
     // rather than being appended to a record that has already moved on.
     const version = versionFor(request.collection, existing, request.record, {
-      at: get().now().toISOString(),
+      at,
       byUserId: user.id,
-      byName: `${user.givenName} ${user.familyName}`,
+      byName,
       reason: request.reason,
       change: request.versionChange,
       intent: request.intent,
     });
 
     // 10. Persist. Everything below this line has already been allowed to happen.
-    get().upsert(request.collection, version ? withVersion(request.record as Correctable, version) as Dataset[typeof request.collection][number] : request.record);
+    upsert(get, set, request.collection, version ? withVersion(request.record as Correctable, version) as Dataset[typeof request.collection][number] : request.record);
     if (version) effects.push({ kind: 'version', detail: version.change });
 
-    // 2. The audit entry, which every write has before it is useful.
+    // 2. The audit entry, which every write has before it is useful. Restricted where the case is,
+    // unless the caller says otherwise, so a MAPPA write is never ledgered in the open by omission.
+    const restricted = request.restricted ?? processBefore?.accessRestriction === 'restricted';
     const audit = get().audit({
+      id: request.auditId,
       act: request.act,
       targetType: request.targetType,
       targetId: (request.record as { id: string }).id,
       targetLabel: request.targetLabel,
       processId: request.processId,
       reason: request.reason,
+      restricted,
     });
     if (audit) effects.push({ kind: 'audit', detail: audit.id });
 
@@ -702,14 +737,47 @@ export const useAppStore = create<AppState>((set, get) => ({
       effects.push({ kind: 'rewrap', detail: (request.record as { id: string }).id });
     }
 
-    // 6. Clocks.
+    // 5, in reverse. A hand-recorded register entry added by this write is checked against every
+    // name already on a list for the case, and both the update and any resemblance are ledgered.
+    if (request.collection === 'processes') {
+      const process = request.record as Process;
+      const changes = registerChanges((existing as Process | undefined)?.parties, process.parties);
+      if (changes.added + changes.updated > 0) {
+        const label = registerUpdateLabel({ parties: process.parties, added: changes.added, updated: changes.updated }, request.targetLabel);
+        get().audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: label, processId: process.id, restricted });
+        effects.push({ kind: 'register', detail: String(changes.added + changes.updated) });
+        for (const match of reverseNearMatches(changes.entries, listedNames(get().data, process.id))) {
+          get().audit({
+            act: 'edit',
+            targetType: 'process',
+            targetId: process.id,
+            targetLabel: t('sharing.nearMatch.audit.reverse', { entry: match.entry.name ?? '', count: match.names.length }),
+            processId: process.id,
+            reason: match.entry.reason ?? '',
+            restricted,
+          });
+          effects.push({ kind: 'nearMatch', detail: match.names.join('; ') });
+        }
+      }
+    }
+
+    // 6. Clocks: the triggers this write starts, and the transition it applies.
     effects.push(...startedClocks(config, request.clocks ?? [], get().now()));
-    const clocksOn = request.clocksOn ?? request.processId;
-    if (clocksOn && (request.clocks ?? []).length > 0) {
+    const clocksOn = request.clocksOn ?? processId;
+    let clocks: WriteResult['clocks'];
+    if (clocksOn && ((request.clocks ?? []).length > 0 || request.clockTransition)) {
       const process = get().data.processes.find((p) => p.id === clocksOn);
       if (process) {
         const fresh = (request.clocks ?? []).filter((t) => !process.clocks.some((c) => c.id === t.id));
-        if (fresh.length > 0) get().upsert('processes', { ...process, clocks: [...process.clocks, ...fresh] });
+        let next = [...process.clocks, ...fresh];
+        if (request.clockTransition) {
+          const applied = applyClockTransition(next, request.clockTransition, at, get().newId);
+          next = applied.clocks;
+          clocks = { completed: applied.completed, started: applied.started };
+          for (const ruleId of applied.completed) effects.push({ kind: 'clock', detail: t('processes.clocks.effectCompleted', { rule: clockRuleLabel(ruleId) }) });
+          for (const ruleId of applied.started) effects.push({ kind: 'clock', detail: t('processes.clocks.effectStarted', { rule: clockRuleLabel(ruleId) }) });
+        }
+        if (next.length !== process.clocks.length || next.some((c, i) => c !== process.clocks[i])) upsert(get, set, 'processes', { ...process, clocks: next });
       }
     }
 
@@ -737,11 +805,27 @@ export const useAppStore = create<AppState>((set, get) => ({
         visibility: request.event.visibility ?? 'agency-only',
         versions: [{ at: get().now().toISOString(), byName: `${user.givenName} ${user.familyName}`, change: request.targetLabel }],
       };
-      get().upsert('events', event);
+      upsert(get, set, 'events', event);
       effects.push({ kind: 'event', detail: event.id });
     }
 
-    // 8. The sharing the matrix requires, each already carrying its lawful basis.
+    // 8. The sharing the matrix requires, each already carrying its lawful basis. The basis is
+    // written first, because a share with nothing under it is the thing the matrix exists to stop;
+    // the notifications the resolver names are reported beside them.
+    let shares: SharingRecord[] | undefined;
+    if (request.lawfulBasis) {
+      upsert(get, set, 'lawfulBases', lawfulBasisFor(request.lawfulBasis, user, at));
+    }
+    const shareOn = request.collection === 'processes' ? (request.record as Process) : processBefore;
+    if (request.lawfulBasis && shareOn && (request.sharingRecords ?? []).length > 0) {
+      shares = [];
+      for (const input of request.sharingRecords ?? []) {
+        const share = sharingRecordFor(input, shareOn, request.lawfulBasis.id, user, at, input.id ?? get().newId('shr'));
+        upsert(get, set, 'sharingRecords', share);
+        shares.push(share);
+        effects.push({ kind: 'share', detail: `${share.recipient.name}: ${share.reason}` });
+      }
+    }
     for (const share of request.shares ?? []) {
       effects.push({ kind: 'share', detail: `${share.recipientName}: ${share.reason}` });
     }
@@ -772,11 +856,22 @@ export const useAppStore = create<AppState>((set, get) => ({
       // The same logical write proposed twice replaces rather than duplicates, which is what the
       // idempotency key is for and the first place it earns its keep.
       const held = get().data.outbox.find((w) => w.idempotencyKey === proposal.idempotencyKey && w.state === 'proposed');
-      get().upsert('outbox', held ? { ...proposal, id: held.id } : proposal);
+      upsert(get, set, 'outbox', held ? { ...proposal, id: held.id } : proposal);
       effects.push({ kind: 'outbound', detail: `${out.connectorId}: ${out.summary}` });
     }
 
-    return { ok: true, errors: [], nearMatches, effects, audit };
+    return { ok: true, errors: [], nearMatches, effects, audit, clocks, shares };
+  },
+  receive: (record) => {
+    const collection: Collection = 'kind' in record ? 'inbound' : 'connectorEvents';
+    const errors = validateRecord(collection, record);
+    if (errors.length > 0) return { ok: false, errors, duplicate: false };
+    // The far side's own reference is the identity. A feed that replays delivers the same change
+    // twice, and the second copy is not a second change.
+    const held = (get().data[collection] as Array<{ id: string; externalRef: string; connectorId: string }>).find((r) => r.id !== record.id && r.externalRef === record.externalRef && r.connectorId === record.connectorId);
+    if (held) return { ok: true, errors: [], duplicate: true };
+    upsert(get, set, collection, record);
+    return { ok: true, errors: [], duplicate: false };
   },
   mergePerson: (survivorId, mergedId, reason) => {
     const { config, data } = get();
@@ -800,7 +895,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (audit) effects.push({ kind: 'audit', detail: audit.id });
 
     // A merge is a fact about the person, so it goes on the chronology of the record that survived.
-    get().upsert('events', mergeEvent(get, user, result.merge, 'merged'));
+    upsert(get, set, 'events', mergeEvent(get, user, result.merge, 'merged'));
     effects.push({ kind: 'event', detail: result.merge.id });
 
     return { ok: true, errors: [], nearMatches: [], effects, audit };
@@ -829,7 +924,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
     if (audit) effects.push({ kind: 'audit', detail: audit.id });
 
-    get().upsert('events', mergeEvent(get, user, merge, 'unmerged'));
+    upsert(get, set, 'events', mergeEvent(get, user, merge, 'unmerged'));
     effects.push({ kind: 'event', detail: merge.id });
 
     return { ok: true, errors: [], nearMatches: [], effects, audit };
@@ -871,7 +966,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!result.ok) return result;
 
     // The person's own record follows the household, and the address history keeps the move.
-    get().upsert('people', {
+    upsert(get, set, 'people', {
       ...person,
       householdId,
       addressHistory: person.addressHistory.some((a) => a.addressId === household.addressId && a.from === from) ? person.addressHistory : [{ addressId: household.addressId, from }, ...person.addressHistory],
@@ -911,7 +1006,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!result.ok) return result;
 
     // The membership ended, so the person's own address period ends with it and the link is cleared.
-    get().upsert('people', {
+    upsert(get, set, 'people', {
       ...person,
       householdId: undefined,
       addressHistory: person.addressHistory.map((a) => (a.addressId === household.addressId && !a.to ? { ...a, to } : a)),
@@ -954,7 +1049,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       rules: [],
     });
     if (!result.ok) return result;
-    applyDecisions(get, decisions);
+    applyDecisions(get, set, decisions);
     return result;
   },
   endRelationship: (relationshipId, to, reason, decisions) => {
@@ -973,7 +1068,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const resting = exclusionsRestingOn(data, get().config, relationshipId);
     const undecided = resting.filter((change) => !decisions.some((d) => d.processId === change.process.id && d.personId === change.personId));
     if (undecided.length > 0) return { ok: false, errors: ['relationshipExclusionUndecided'], nearMatches: [], effects: [] };
-    applyDecisions(get, decisions);
+    applyDecisions(get, set, decisions);
 
     return get().write({
       collection: 'relationships',
@@ -1428,7 +1523,7 @@ function notifyShares(process: Process, config: Config, what: string): WriteShar
  * whatever happens to the relationship next. A decision that it does not stand suppresses the
  * derived entry, and it is the only thing that does.
  */
-function applyDecisions(get: () => AppState, decisions: PartyDecision[]): void {
+function applyDecisions(get: () => AppState, set: Setter, decisions: PartyDecision[]): void {
   const user = get().currentUser();
   if (!user || decisions.length === 0) return;
   const byName = `${user.givenName} ${user.familyName}`;
@@ -1442,7 +1537,7 @@ function applyDecisions(get: () => AppState, decisions: PartyDecision[]): void {
     const entry = decision.stands
       ? { ...existing, source: 'manual' as const, stands: true, decidedAt: `${on}T00:00:00Z`, decidedByName: byName, decisionReason: decision.reason }
       : { ...existing, source: 'manual' as const, stands: false, decidedAt: `${on}T00:00:00Z`, decidedByName: byName, decisionReason: decision.reason };
-    get().upsert('processes', { ...process, parties: withPartyEntry(process.parties, entry) });
+    upsert(get, set, 'processes', { ...process, parties: withPartyEntry(process.parties, entry) });
     get().audit({
       act: 'edit',
       targetType: 'process',

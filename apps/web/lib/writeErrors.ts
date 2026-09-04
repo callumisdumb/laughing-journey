@@ -91,6 +91,8 @@ const KEYS = [
   'inboundDeclineReasonRequired',
   'inboundNoSubject',
   'inboundNoType',
+  'sharesNeedLawfulBasis',
+  'sharesNeedProcess',
 ] as const;
 
 export type WriteErrorCode = (typeof KEYS)[number];

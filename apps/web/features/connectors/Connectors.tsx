@@ -163,9 +163,8 @@ interface DetailProps {
 
 function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded, onOutage, onDegraded, tab, onTab }: DetailProps) {
   const t = useT();
-  const data = useData();
   const now = useNow();
-  const upsert = useAppStore((s) => s.upsert);
+  const receive = useAppStore((s) => s.receive);
   const audit = useAppStore((s) => s.audit);
   const newId = useAppStore((s) => s.newId);
   const { toast } = useToast();
@@ -182,8 +181,9 @@ function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded,
     },
     onSuccess: ({ health: h, events, durationMs }) => {
       let added = 0;
+      // Delivered through the store's connector path, which de-duplicates on the far side's own
+      // reference: what arrives is what the source system said, and the review is the person's write.
       for (const e of events) {
-        if (data.connectorEvents.some((c) => c.externalRef === e.externalRef)) continue;
         const rec: ConnectorEvent = {
           id: newId('cev'),
           synthetic: true,
@@ -196,8 +196,8 @@ function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded,
           mapped: { eventType: e.mapped.eventType, title: e.mapped.title, detail: e.mapped.detail, occurredAt: e.occurredAt, hasTime: e.hasTime, significance: e.mapped.significance, mappingRule: e.mapped.mappingRule },
           status: 'pending',
         };
-        upsert('connectorEvents', rec);
-        added += 1;
+        const delivered = receive(rec);
+        if (delivered.ok && !delivered.duplicate) added += 1;
       }
       const outcome: SyncRow['outcome'] = h.status === 'degraded' ? 'degraded' : 'ok';
       const message = events.length === 0 ? t('connectors.sync.nothingNew') : added === 0 ? t('connectors.sync.alreadyKnown', { count: events.length }) : t('connectors.sync.newEvents', { count: added });

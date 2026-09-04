@@ -1,23 +1,26 @@
 'use client';
 
-import { MAPPA_MUST_NOT_RECEIVE_PARTIES, formatDate, mappaReferralFormSchema, nearMatchesOnList, registerUpdateLabel, riskToolLabel, withMustNotReceive, type MappaProcess, type MappaReferralForm } from '@mas/domain';
+import { MAPPA_MUST_NOT_RECEIVE_PARTIES, formatDate, mappaReferralFormSchema, riskToolLabel, withMustNotReceive, type MappaProcess, type MappaReferralForm } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, CheckboxField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
 import { formErrorSummary } from '@/lib/formErrors';
-import { listedNames } from '@/lib/selectors';
+import { useWriteErrors } from '@/lib/writeErrors';
 import { MustNotReceiveFields } from './MustNotReceiveFields';
+import { toastRegisterEffects } from './registerEffects';
 
 export function MappaReferralDialog({ open, onClose, process }: { open: boolean; onClose: () => void; process: MappaProcess }) {
   const t = useT();
   const data = useData();
   const user = useCurrentUser();
   const now = useNow();
-  const upsert = useAppStore((s) => s.upsert);
-  const audit = useAppStore((s) => s.audit);
+  const write = useAppStore((s) => s.write);
+  const readErrors = useWriteErrors();
   const { toast } = useToast();
+  const [refusals, setRefusals] = useState<string[]>([]);
   const d = process.detail;
   const risks = data.riskAssessments.filter((r) => d.riskAssessmentIds.includes(r.id) || r.processId === process.id);
   const form = useForm<MappaReferralForm>({
@@ -31,45 +34,44 @@ export function MappaReferralDialog({ open, onClose, process }: { open: boolean;
     const v = mappaReferralFormSchema.parse(values);
     const by = `${user.givenName} ${user.familyName}`;
     // Anyone named as "must not receive" joins the case-role register as a manual entry from today.
-    const register = withMustNotReceive(process.parties, v.mustNotReceive, now.toISOString().slice(0, 10), 'the MAPPA referral');
-    upsert('processes', {
-      ...process,
-      parties: register.parties,
-      detail: {
-        ...d,
-        level: v.levelSought,
-        levelHistory: [...d.levelHistory, { level: v.levelSought, at: now.toISOString().slice(0, 10), reason: t('forms.mappaReferral.historyReason', { name: by, reason: v.reason }) }],
-        referral: { at: now.toISOString(), byName: by, riskAssessmentIds: v.riskAssessmentIds, reason: v.reason },
+    // The pipeline notices the entries move: it ledgers the register change and runs the check in
+    // reverse against every name already on a list for the case, and reports both as effects.
+    const register = withMustNotReceive(process.parties, v.mustNotReceive, now.toISOString().slice(0, 10), t('forms.mappaReferral.via'));
+    const result = write({
+      collection: 'processes',
+      record: {
+        ...process,
+        parties: register.parties,
+        detail: {
+          ...d,
+          level: v.levelSought,
+          levelHistory: [...d.levelHistory, { level: v.levelSought, at: now.toISOString().slice(0, 10), reason: t('forms.mappaReferral.historyReason', { name: by, reason: v.reason }) }],
+          referral: { at: now.toISOString(), byName: by, riskAssessmentIds: v.riskAssessmentIds, reason: v.reason },
+        },
+      },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'process',
+      targetLabel: t('forms.mappaReferral.audit', { level: v.levelSought }),
+      processId: process.id,
+      versionChange: t('forms.mappaReferral.audit', { level: v.levelSought }),
+      event: {
+        eventType: 'process.mappa-level',
+        significance: 'high',
+        visibility: 'agency-only',
+        title: t('forms.mappaReferral.event.title', { level: v.levelSought }),
+        detail: v.reason,
+        subjectIds: process.subjectIds,
+        linkedProcessIds: [process.id],
       },
     });
-    audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `MAPPA referral to Level ${v.levelSought}`, processId: process.id, restricted: true });
-    toast({ title: t('forms.mappaReferral.referred.title', { level: v.levelSought }), text: t('forms.mappaReferral.referred.text'), tone: 'success' });
-    const recorded = register.added + register.updated;
-    if (recorded > 0) {
-      audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: registerUpdateLabel(register, 'the MAPPA referral'), processId: process.id, restricted: true });
-      toast({ title: t('forms.mustNotReceive.registerUpdated.title'), text: t('forms.mustNotReceive.registerUpdated.text', { count: recorded }), tone: 'success' });
-      // The check in reverse. An exclusion often arrives after the sharing has started, and nothing
-      // else in the product would notice that somebody with a similar name is already on a list.
-      const onLists = listedNames(data, process.id);
-      for (const entry of register.parties.filter((party) => party.source === 'manual' && party.name)) {
-        const similar = nearMatchesOnList(entry.name!, onLists);
-        if (similar.length === 0) continue;
-        audit({
-          act: 'edit',
-          targetType: 'process',
-          targetId: process.id,
-          targetLabel: t('sharing.nearMatch.audit.reverse', { entry: entry.name!, count: similar.length }),
-          processId: process.id,
-          reason: entry.reason ?? '',
-          restricted: true,
-        });
-        toast({
-          title: t('sharing.nearMatch.reverseTitle'),
-          text: t('sharing.nearMatch.reverseText', { count: similar.length, names: similar.map((m) => m.name).join('; ') }),
-          tone: 'error',
-        });
-      }
+    if (!result.ok) {
+      setRefusals(result.errors);
+      return;
     }
+    setRefusals([]);
+    toast({ title: t('forms.mappaReferral.referred.title', { level: v.levelSought }), text: t('forms.mappaReferral.referred.text'), tone: 'success' });
+    toastRegisterEffects(result.effects, t, toast);
     onClose();
   }
 
@@ -79,7 +81,7 @@ export function MappaReferralDialog({ open, onClose, process }: { open: boolean;
       onClose={onClose}
       title={t('forms.mappaReferral.title')}
       size="lg"
-      errors={formErrorSummary(errors)}
+      errors={[...readErrors(refusals), ...formErrorSummary(errors)]}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>

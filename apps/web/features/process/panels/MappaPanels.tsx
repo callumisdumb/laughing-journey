@@ -6,6 +6,7 @@ import { AgencyMark, Button, KeyValue, Pill, RiskBand, Sheet, SheetBody, SheetHe
 import { ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useWriteErrors } from '@/lib/writeErrors';
 import { DisclosureDecisionDialog } from '../forms/DisclosureDecisionDialog';
 import { MappaReferralDialog } from '../forms/MappaReferralDialog';
 import styles from './shared.module.css';
@@ -15,8 +16,8 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
   const data = useData();
   const now = useNow();
   const user = useCurrentUser();
-  const upsert = useAppStore((s) => s.upsert);
-  const audit = useAppStore((s) => s.audit);
+  const write = useAppStore((s) => s.write);
+  const readErrors = useWriteErrors();
   const { toast } = useToast();
   const [referralOpen, setReferralOpen] = useState(false);
   const [disclosureOpen, setDisclosureOpen] = useState(false);
@@ -28,8 +29,25 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
   function decideDisclosure(id: string, status: 'approved' | 'declined') {
     if (!user) return;
     const next = { ...d, disclosures: d.disclosures.map((x) => (x.id === id ? { ...x, status, decidedByName: `${user.givenName} ${user.familyName}`, decidedAt: now.toISOString() } : x)) };
-    upsert('processes', { ...process, detail: next });
-    audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `Disclosure ${disclosureStatusLabel(status)}: ${d.disclosures.find((x) => x.id === id)?.recipient ?? id}`, processId: process.id, restricted: true });
+    const recipient = d.disclosures.find((x) => x.id === id)?.recipient ?? id;
+    const label = t('mappa.disclosures.decidedAudit', { status: disclosureStatusLabel(status), recipient });
+    // A disclosure decision is a chronology event in its own right (docs/RECORDS.md section 3),
+    // agency-only like the proposal, because it names a third party.
+    const result = write({
+      collection: 'processes',
+      record: { ...process, detail: next },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'process',
+      targetLabel: label,
+      processId: process.id,
+      versionChange: label,
+      event: { eventType: 'disclosure', significance: 'high', visibility: 'agency-only', title: label, detail: d.disclosures.find((x) => x.id === id)?.rationale ?? '', subjectIds: process.subjectIds, linkedProcessIds: [process.id] },
+    });
+    if (!result.ok) {
+      toast({ title: t('mappa.disclosures.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
+      return;
+    }
     toast({ title: t('mappa.disclosures.decided.title', { status }), text: t('mappa.disclosures.decided.text', { status }), tone: 'success' });
   }
 

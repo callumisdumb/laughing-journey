@@ -13,6 +13,7 @@ import { meetingPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, personById } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
+import { useWriteErrors } from '@/lib/writeErrors';
 import styles from './Actions.module.css';
 
 type View = 'mine' | 'team' | 'all';
@@ -30,8 +31,8 @@ export function Actions() {
   const route = useRoute();
   const navigate = useNavigate();
   const grants = useGrants();
-  const upsert = useAppStore((s) => s.upsert);
-  const audit = useAppStore((s) => s.audit);
+  const write = useAppStore((s) => s.write);
+  const readErrors = useWriteErrors();
   const select = useSelection((s) => s.select);
   const { toast } = useToast();
   const dev = useDevState();
@@ -81,8 +82,12 @@ export function Actions() {
 
   function complete() {
     if (!completing) return;
-    upsert('actions', { ...completing, status: 'complete', completedAt: now.toISOString(), evidence });
-    audit({ act: 'edit', targetType: 'process', targetId: completing.processId, targetLabel: t('actions.audit.complete', { title: completing.title }), processId: completing.processId });
+    const label = t('actions.audit.complete', { title: completing.title });
+    const result = write({ collection: 'actions', record: { ...completing, status: 'complete', completedAt: now.toISOString(), evidence }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: label, processId: completing.processId, versionChange: label });
+    if (!result.ok) {
+      toast({ title: t('actions.completeDialog.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
+      return;
+    }
     toast({ title: t('actions.completeDialog.toastTitle'), text: t('actions.completeDialog.toastText'), tone: 'success' });
     setCompleting(null);
     setEvidence('');
@@ -90,8 +95,12 @@ export function Actions() {
 
   function escalate() {
     if (!escalating) return;
-    upsert('actions', { ...escalating, escalatedAt: now.toISOString(), escalatedToName: escalateTo });
-    audit({ act: 'edit', targetType: 'process', targetId: escalating.processId, targetLabel: t('actions.audit.escalated', { name: escalateTo, title: escalating.title }), processId: escalating.processId });
+    const label = t('actions.audit.escalated', { name: escalateTo, title: escalating.title });
+    const result = write({ collection: 'actions', record: { ...escalating, escalatedAt: now.toISOString(), escalatedToName: escalateTo }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: label, processId: escalating.processId, versionChange: label });
+    if (!result.ok) {
+      toast({ title: t('actions.escalateDialog.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
+      return;
+    }
     toast({ title: t('actions.escalateDialog.toastTitle', { name: escalateTo }), text: t('actions.escalateDialog.toastText'), tone: 'info' });
     setEscalating(null);
     setEscalateTo('');

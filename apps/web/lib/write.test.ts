@@ -1,7 +1,9 @@
-import { DEFAULT_CONFIG, demoNow, type Person, type Process } from '@mas/domain';
+import { DEFAULT_CONFIG, demoNow, withMustNotReceive, type Person, type Process } from '@mas/domain';
+import { readFileSync, readdirSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { KAYLEIGH, buildDataset } from '@mas/mock-data';
 import { describe, expect, it } from 'vitest';
-import { REASON_REQUIRED, classificationRefusal, excludedRecipients, reasonRefusal, startedClocks, validateRecord, versionFor } from './write';
+import { REASON_REQUIRED, applyClockTransition, classificationRefusal, excludedRecipients, lawfulBasisFor, reasonRefusal, registerChanges, reverseNearMatches, sharingRecordFor, startedClocks, validateRecord, versionFor } from './write';
 
 const data = buildDataset();
 const config = DEFAULT_CONFIG;
@@ -192,5 +194,130 @@ describe('2b. the record\'s own version history', () => {
   it('always writes one for a correction, because the reason is the point', () => {
     const record = { id: 'per_1', givenName: 'Aiden' };
     expect(versionFor('people', record, record, { ...WHO, intent: 'correct', reason: 'Recorded against the wrong child.' })).not.toBeNull();
+  });
+});
+
+describe('8. the lawful basis and the shares, built by the pipeline', () => {
+  const author = data.users.find((u) => u.agency === 'social-work')!;
+  const officer = data.users.find((u) => u.agency === 'police')!;
+  const cp = data.processes.find((p) => p.type === 'cp')!;
+
+  it('derives the gateway, the classification and article 10 from the processes it covers', () => {
+    const basis = lawfulBasisFor({ id: 'lb_test', purpose: 'Distribution of the minute', necessity: 'Each recipient is on the list', processes: [cp] }, author, now.toISOString());
+    expect(basis.id).toBe('lb_test');
+    expect(basis.statutoryGateway).toEqual(['National Guidance for Child Protection in Scotland 2021']);
+    expect(basis.article10Criminal).toBe('not applicable');
+    expect(basis.authorisedByUserId).toBe(author.id);
+    expect(basis.classification).toEqual(cp.classification);
+  });
+
+  it('engages article 10 for police information and for a MARAC or MAPPA case, whoever recorded it', () => {
+    const police = lawfulBasisFor({ id: 'lb_a', purpose: 'p', necessity: 'n', processes: [cp] }, officer, now.toISOString());
+    expect(police.article10Criminal).toBe('DPA 2018 s10 and Sch 1');
+    const domestic = lawfulBasisFor({ id: 'lb_b', purpose: 'p', necessity: 'n', processes: [marac] }, author, now.toISOString());
+    expect(domestic.article10Criminal).toBe('DPA 2018 s10 and Sch 1');
+  });
+
+  it('falls back to the event-entry gateway where no case is named', () => {
+    const basis = lawfulBasisFor({ id: 'lb_c', purpose: 'p', necessity: 'n', processes: [] }, author, now.toISOString());
+    expect(basis.statutoryGateway).toEqual(['Recorded at event entry']);
+  });
+
+  it('captures the classification the case has at the moment of the share, as a copy', () => {
+    const share = sharingRecordFor({ recipient: { name: 'Somebody', agency: 'health', role: 'Nurse' }, detailLevel: 'summary', reason: 'On the list', summary: 'Minute' }, marac, 'lb_test', author, now.toISOString(), 'shr_test');
+    expect(share.lawfulBasisId).toBe('lb_test');
+    expect(share.processId).toBe(marac.id);
+    expect(share.stage).toBe(marac.stage);
+    expect(share.status).toBe('sent');
+    expect(share.sentAt).toBe(now.toISOString());
+    expect(share.classification).toEqual(marac.classification);
+    expect(share.classification.handling).not.toBe(marac.classification.handling);
+    expect(share.createdByName).toBe(`${author.givenName} ${author.familyName}`);
+  });
+
+  it('queues a share that is not sent at once, with no sent time', () => {
+    const share = sharingRecordFor({ recipient: { name: 'Somebody', agency: 'health', role: 'Nurse' }, detailLevel: 'full', reason: 'r', summary: 's', status: 'queued' }, marac, 'lb', author, now.toISOString(), 'shr');
+    expect(share.status).toBe('queued');
+    expect(share.sentAt).toBeUndefined();
+  });
+});
+
+describe('6. a write can complete clocks as well as start them', () => {
+  let counter = 0;
+  const newId = (prefix: string) => `${prefix}_${(counter += 1)}`;
+
+  it('applies the meeting transition table for a meeting type', () => {
+    const clocks = [{ id: 'clk_1', ruleId: 'cp.cppm.initial', triggeredAt: '2026-08-01T09:00:00Z' }];
+    const result = applyClockTransition(clocks, { meetingType: 'cppm', at: '2026-08-20T10:00:00Z' }, now.toISOString(), newId);
+    expect(result.completed).toEqual(['cp.cppm.initial']);
+    expect(result.started).toEqual(['cp.coregroup.first', 'cp.cppm.review.first', 'cp.cppm.record.distribute']);
+    expect(result.clocks.find((c) => c.id === 'clk_1')?.completedAt).toBe('2026-08-20T10:00:00Z');
+    expect(result.clocks.filter((c) => !c.completedAt)).toHaveLength(3);
+  });
+
+  it('completes the rules named directly, with the caller\'s note, and leaves the rest alone', () => {
+    const clocks = [
+      { id: 'clk_1', ruleId: 'cp.cppm.record.distribute', triggeredAt: '2026-08-20T10:00:00Z' },
+      { id: 'clk_2', ruleId: 'cp.coregroup.first', triggeredAt: '2026-08-20T10:00:00Z' },
+    ];
+    const result = applyClockTransition(clocks, { completes: ['cp.cppm.record.distribute'], note: 'the distribution' }, '2026-08-25T10:00:00Z', newId);
+    expect(result.completed).toEqual(['cp.cppm.record.distribute']);
+    expect(result.started).toEqual([]);
+    expect(result.clocks[0]?.completedAt).toBe('2026-08-25T10:00:00Z');
+    expect(result.clocks[0]?.note).toContain('the distribution');
+    expect(result.clocks[1]?.completedAt).toBeUndefined();
+  });
+
+  it('does not start a clock that is already running', () => {
+    const clocks = [{ id: 'clk_1', ruleId: 'cp.coregroup.first', triggeredAt: '2026-08-01T09:00:00Z' }];
+    const result = applyClockTransition(clocks, { starts: ['cp.coregroup.first'] }, now.toISOString(), newId);
+    expect(result.started).toEqual([]);
+    expect(result.clocks).toHaveLength(1);
+  });
+});
+
+describe('5, in reverse: a register entry added by a write', () => {
+  it('counts the hand-recorded entries a write adds or changes, and nothing derived', () => {
+    const before = marac.parties;
+    const after = withMustNotReceive(before, [{ name: 'Tommy Boyle', party: 'perpetrator-associates', reason: 'Named on the DAQ' }], '2026-09-01', 'the DAQ').parties;
+    const changes = registerChanges(before, after);
+    expect(changes.added).toBe(1);
+    expect(changes.updated).toBe(0);
+    expect(changes.entries.map((e) => e.name)).toEqual(['Tommy Boyle']);
+    expect(registerChanges(after, after)).toEqual({ added: 0, updated: 0, entries: [] });
+  });
+
+  it('finds the names already on a list that an entry resembles, and passes over the rest', () => {
+    const entries = withMustNotReceive([], [{ name: 'Alison Reid', party: 'perpetrator-associates', reason: 'r' }], '2026-09-01', 'the DAQ').parties;
+    expect(reverseNearMatches(entries, ['Alison Reid', 'Someone Else'])).toEqual([{ entry: entries[0], names: ['Alison Reid'] }]);
+    expect(reverseNearMatches(entries, ['Nobody Similar'])).toEqual([]);
+  });
+});
+
+describe('the direct path is gone', () => {
+  it('has no screen writing to the store except through the pipeline', () => {
+    // The raw upsert was public, and eighteen screens called it while the handover said every write
+    // went through the pipeline. It is private to store.ts now, and this is what stops a nineteenth:
+    // TypeScript would refuse the call, and this refuses the source before TypeScript is asked.
+    const root = resolve(import.meta.dirname, '../../..');
+    const files: string[] = [];
+    const walk = (dir: string) => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const full = resolve(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (entry.name === 'node_modules' || entry.name === '.next' || entry.name === 'out' || entry.name === '.git') continue;
+          walk(full);
+        } else if (/\.(ts|tsx)$/.test(entry.name)) {
+          files.push(full);
+        }
+      }
+    };
+    walk(resolve(root, 'apps/web'));
+    const offenders = files.filter((file) => {
+      if (file.endsWith('/lib/store.ts') || file.endsWith('.test.ts')) return false;
+      const code = readFileSync(file, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+      return /\b(?:s|getState\(\))\.(?:upsert|remove)\b/.test(code) || /\buseAppStore\.getState\(\)\.(?:upsert|remove)\b/.test(code);
+    });
+    expect(offenders).toEqual([]);
   });
 });

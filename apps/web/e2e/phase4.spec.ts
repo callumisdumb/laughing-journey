@@ -60,6 +60,17 @@ test.describe('meetings', () => {
     await capture(page, { phase: PHASE, screen: 'meeting-after', fullPage: true });
     await page.getByRole('button', { name: 'Close meeting and update clocks' }).click();
     await expect(page.getByText('Meeting closed')).toBeVisible();
+
+    // What the pipeline wrote on the way: one sharing record per recipient, each resting on the
+    // lawful basis written beside it, on the sharing screen where the sender sees them go out.
+    await page.goto('/sharing');
+    await waitForData(page);
+    await expect(page.getByRole('table').getByText(/^Minute of /).first()).toBeVisible();
+    // And the ledger carries the meeting's closure and its distribution as separate acts.
+    await page.goto('/audit');
+    await waitForData(page);
+    await expect(page.getByRole('table').getByText(/Minute distributed to \d+ recipients/).first()).toBeVisible();
+    await expect(page.getByRole('table').getByText(/ held$/).first()).toBeVisible();
   });
 
   test('minutes print pack carries the classification marking and paginates', async ({ page }) => {

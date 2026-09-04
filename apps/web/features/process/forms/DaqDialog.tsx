@@ -1,24 +1,26 @@
 'use client';
 
-import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, MARAC_MUST_NOT_RECEIVE_PARTIES, daqFormSchema, daqQuestionText, nearMatchesOnList, registerUpdateLabel, riskToolLabel, withMustNotReceive, type DaqForm, type MaracProcess, type RiskAssessment } from '@mas/domain';
+import { DAQ_QUESTIONS, DASH_QUESTIONS, HIGH_RISK_THRESHOLD, MARAC_MUST_NOT_RECEIVE_PARTIES, daqFormSchema, daqQuestionText, riskToolLabel, withMustNotReceive, type DaqForm, type MaracProcess, type RiskAssessment } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
 import { formErrorSummary } from '@/lib/formErrors';
-import { listedNames } from '@/lib/selectors';
+import { useWriteErrors } from '@/lib/writeErrors';
 import { MustNotReceiveFields } from './MustNotReceiveFields';
+import { toastRegisterEffects } from './registerEffects';
 
 export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: () => void; process: MaracProcess }) {
   const t = useT();
   const user = useCurrentUser();
-  const data = useData();
   const now = useNow();
-  const upsert = useAppStore((s) => s.upsert);
-  const audit = useAppStore((s) => s.audit);
+  const write = useAppStore((s) => s.write);
   const newId = useAppStore((s) => s.newId);
+  const readErrors = useWriteErrors();
   const { toast } = useToast();
+  const [refusals, setRefusals] = useState<string[]>([]);
   const form = useForm<DaqForm>({ resolver: zodResolver(daqFormSchema), defaultValues: { tool: 'daq', assessedAt: now.toISOString().slice(0, 10), answers: {}, referBelowThreshold: false, professionalJudgement: '', mustNotReceive: [] } });
   const tool = form.watch('tool');
   const answers = form.watch('answers');
@@ -30,13 +32,14 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
     if (!user) return;
     const r = daqFormSchema.parse(values);
     const by = `${user.givenName} ${user.familyName}`;
+    const assessedAt = `${r.assessedAt}T${now.toISOString().slice(11, 19)}+01:00`;
     const ra: RiskAssessment = {
       id: newId('ra'),
       synthetic: true,
       processId: process.id,
       subjectId: process.detail.referral.victimPersonId,
       tool: r.tool,
-      assessedAt: `${r.assessedAt}T${now.toISOString().slice(11, 19)}+01:00`,
+      assessedAt,
       assessorUserId: user.id,
       assessorName: by,
       assessorAgency: user.agency,
@@ -48,37 +51,53 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
       evidenceRefs: [],
       judgementOverride: !r.highRisk && r.refer ? { band: 'high', reason: r.professionalJudgement ?? '', byName: by } : undefined,
     };
-    // Anyone named as "must not receive" joins the case-role register as a manual entry from today.
-    const register = withMustNotReceive(process.parties, r.mustNotReceive, now.toISOString().slice(0, 10), 'the DAQ');
-    upsert('riskAssessments', ra);
-    upsert('processes', { ...process, riskAssessmentIds: [...process.riskAssessmentIds, ra.id], parties: register.parties, detail: { ...process.detail, referral: { ...process.detail.referral, riskAssessmentId: ra.id, professionalJudgementReferral: !r.highRisk && r.refer } } });
-    audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `${riskToolLabel(r.tool)} recorded: ${r.score} of ${r.maxScore}`, processId: process.id });
-    toast({ title: t('forms.daq.recorded.title', { tool: riskToolLabel(r.tool), count: r.score }), text: t('forms.daq.recorded.text', { outcome: r.highRisk ? 'high' : r.refer ? 'referred' : 'none' }), tone: 'success' });
-    const recorded = register.added + register.updated;
-    if (recorded > 0) {
-      audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: registerUpdateLabel(register, 'the DAQ'), processId: process.id });
-      toast({ title: t('forms.mustNotReceive.registerUpdated.title'), text: t('forms.mustNotReceive.registerUpdated.text', { count: recorded }), tone: 'success' });
-      // The check in reverse. An exclusion often arrives after the sharing has started, and nothing
-      // else in the product would notice that somebody with a similar name is already on a list.
-      const onLists = listedNames(data, process.id);
-      for (const entry of register.parties.filter((party) => party.source === 'manual' && party.name)) {
-        const similar = nearMatchesOnList(entry.name!, onLists);
-        if (similar.length === 0) continue;
-        audit({
-          act: 'edit',
-          targetType: 'process',
-          targetId: process.id,
-          targetLabel: t('sharing.nearMatch.audit.reverse', { entry: entry.name!, count: similar.length }),
-          processId: process.id,
-          reason: entry.reason ?? '',
-        });
-        toast({
-          title: t('sharing.nearMatch.reverseTitle'),
-          text: t('sharing.nearMatch.reverseText', { count: similar.length, names: similar.map((m) => m.name).join('; ') }),
-          tone: 'error',
-        });
-      }
+    const label = t('forms.daq.audit', { tool: riskToolLabel(r.tool), score: r.score, max: r.maxScore });
+    // The assessment first, as its own record with the chronology milestone a risk assessment
+    // carries (docs/RECORDS.md section 3). Refused, nothing else is written.
+    const recorded = write({
+      collection: 'riskAssessments',
+      record: ra,
+      intent: 'create',
+      act: 'create',
+      targetType: 'process',
+      targetLabel: label,
+      processId: process.id,
+      event: {
+        eventType: 'social-work.assessment',
+        significance: 'high',
+        visibility: 'integrated',
+        title: t('forms.daq.event.title', { tool: riskToolLabel(r.tool) }),
+        detail: t('forms.daq.event.detail', { score: r.score, max: r.maxScore, outcome: r.highRisk ? 'high' : r.refer ? 'referred' : 'none' }),
+        subjectIds: [ra.subjectId],
+        occurredAt: assessedAt,
+        linkedProcessIds: [process.id],
+      },
+    });
+    if (!recorded.ok) {
+      setRefusals(recorded.errors);
+      return;
     }
+    // Then the case, which now cites it. Anyone named as "must not receive" joins the case-role
+    // register as a manual entry from today; the pipeline ledgers the change and runs the check in
+    // reverse against every name already on a list, and reports both as effects.
+    const register = withMustNotReceive(process.parties, r.mustNotReceive, now.toISOString().slice(0, 10), t('forms.daq.via'));
+    const attached = write({
+      collection: 'processes',
+      record: { ...process, riskAssessmentIds: [...process.riskAssessmentIds, ra.id], parties: register.parties, detail: { ...process.detail, referral: { ...process.detail.referral, riskAssessmentId: ra.id, professionalJudgementReferral: !r.highRisk && r.refer } } },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'process',
+      targetLabel: t('forms.daq.attached', { tool: riskToolLabel(r.tool) }),
+      processId: process.id,
+      versionChange: label,
+    });
+    if (!attached.ok) {
+      setRefusals(attached.errors);
+      return;
+    }
+    setRefusals([]);
+    toast({ title: t('forms.daq.recorded.title', { tool: riskToolLabel(r.tool), count: r.score }), text: t('forms.daq.recorded.text', { outcome: r.highRisk ? 'high' : r.refer ? 'referred' : 'none' }), tone: 'success' });
+    toastRegisterEffects(attached.effects, t, toast);
     form.reset();
     onClose();
   }
@@ -89,7 +108,7 @@ export function DaqDialog({ open, onClose, process }: { open: boolean; onClose: 
       onClose={onClose}
       title={t('forms.daq.title')}
       size="lg"
-      errors={formErrorSummary(errors)}
+      errors={[...readErrors(refusals), ...formErrorSummary(errors)]}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>

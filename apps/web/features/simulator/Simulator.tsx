@@ -37,7 +37,7 @@ export function Simulator() {
   const save = useSimulator((s) => s.save);
   const add = useSimulator((s) => s.add);
   const reset = useSimulator((s) => s.reset);
-  const upsert = useAppStore((s) => s.upsert);
+  const receive = useAppStore((s) => s.receive);
   const newId = useAppStore((s) => s.newId);
 
   const [selected, setSelected] = useState<string | null>(null);
@@ -90,7 +90,9 @@ export function Simulator() {
       ...(person.dateOfBirth ? { 'Client.DateOfBirth': person.dateOfBirth } : {}),
     };
     add({ id: newId('sim'), connectorId: 'eclipse', personId, displayName, reference, fields, fromPlatform: false, sentAt: now.toISOString() });
-    upsert('inbound', {
+    // The platform's side of this is the connector delivery path, not a person's write: the change
+    // is what this system said, and it waits for somebody over there to accept or decline it.
+    receive({
       id: newId('inb'),
       synthetic: true,
       connectorId: 'eclipse',

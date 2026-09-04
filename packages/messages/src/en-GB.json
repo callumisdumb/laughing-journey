@@ -8,12 +8,14 @@
       "confirm": "Mark complete",
       "evidence": "Evidence of completion",
       "evidenceHint": "What was done, when, and how you know. Inspectors read this.",
+      "refused": "The action was not completed",
       "title": "Record completion",
       "toastText": "Evidence of completion is recorded against the plan.",
       "toastTitle": "Action complete"
     },
     "escalateDialog": {
       "confirm": "Escalate",
+      "refused": "The action was not escalated",
       "title": "Escalate an overdue action",
       "to": "Escalate to",
       "toastText": "The escalation is visible on the process and the audit log.",
@@ -1162,6 +1164,10 @@
         "kindRisk": "Risk judgement",
         "text": "Your judgement and what it rests on",
         "title": "Title"
+      },
+      "audit": {
+        "analysis": "Analysis note: {title}",
+        "recorded": "Recorded"
       },
       "errors": {
         "date": "Enter a date",
@@ -3065,6 +3071,8 @@
       "relationshipPersonMissing": "One of the two records is no longer there.",
       "relationshipSelf": "A person cannot be related to themselves.",
       "searchRequired": "Search first. This product does not create a person record without one.",
+      "sharesNeedLawfulBasis": "A share cannot be written without a lawful basis under it.",
+      "sharesNeedProcess": "A share has to belong to a case.",
       "unmergeAlreadyUndone": "That merge has already been undone.",
       "unmergeMissing": "That merge is no longer on the record.",
       "unmergeReasonRequired": "Say what was wrong, in a sentence.",
@@ -3081,6 +3089,7 @@
       "assessor": {
         "label": "Assessor"
       },
+      "audit": "Capacity assessment recorded: {outcome}",
       "communication": {
         "hint": "Interpreter, communication aid, best time of day.",
         "label": "Communication support used"
@@ -3090,6 +3099,10 @@
       },
       "decision": {
         "label": "The specific decision"
+      },
+      "event": {
+        "detail": "Decision in question: {decision}. Outcome: {outcome}. Assessor: {assessor}.",
+        "title": "Capacity assessment recorded"
       },
       "evidence": {
         "label": "Evidence for the conclusion"
@@ -3123,12 +3136,18 @@
       }
     },
     "daq": {
+      "attached": "{tool} attached to the case",
+      "audit": "{tool} recorded: {score} of {max}",
       "band": {
         "below": "Below threshold ({score} of {max})",
         "high": "High risk ({threshold} or more)"
       },
       "date": {
         "label": "Date completed"
+      },
+      "event": {
+        "detail": "Score {score} of {max}. {outcome, select, high {High risk: referred to MARAC.} referred {Below the threshold, referred on professional judgement.} other {Below the threshold, not referred.}}",
+        "title": "{tool} completed"
       },
       "instrument": {
         "daq": "Police Scotland DAQ ({count} questions)",
@@ -3178,12 +3197,14 @@
       "relationshipHint": "For example the perpetrator's brother.",
       "submit": "Record and score",
       "tally": "{count, plural, one {# yes answer} other {# yes answers}} so far. {high, select, yes {High risk: this meets the referral threshold.} other {{remaining} more for the high-risk threshold.}}",
-      "title": "Domestic abuse risk checklist"
+      "title": "Domestic abuse risk checklist",
+      "via": "the DAQ"
     },
     "mappaReferral": {
       "accommodation": {
         "label": "Accommodation issue (ERA needed)"
       },
+      "audit": "MAPPA referral to Level {level}",
       "category": {
         "legend": "Category",
         "one": "1: registered sex offender",
@@ -3192,6 +3213,9 @@
       },
       "disclosure": {
         "label": "Disclosure to a third party considered"
+      },
+      "event": {
+        "title": "Referred to MAPPA Level {level}"
       },
       "historyReason": "Referral by {name}: {reason}",
       "imminent": {
@@ -3224,6 +3248,7 @@
       },
       "submit": "Send referral",
       "title": "MAPPA referral (Level 2 or 3)",
+      "via": "the MAPPA referral",
       "victim": {
         "hint": "MAPPA information is not given to victims; the Victim Notification Scheme is separate.",
         "label": "Victim considerations"
@@ -3259,8 +3284,13 @@
       "removeLabel": "Remove person {n}"
     },
     "threePointTest": {
+      "audit": "Three-point test recorded: {outcome, select, met {met} notMet {not met} other {unclear}}",
       "date": {
         "label": "Date of assessment"
+      },
+      "event": {
+        "detail": "Outcome: {outcome, select, met {all three limbs met} notMet {not met} other {unclear}}. Harm types: {harm}.",
+        "title": "Three-point test recorded"
       },
       "harm": {
         "legend": "Types of harm (all harm counts)"
@@ -3770,8 +3800,10 @@
   },
   "inbox": {
     "dismiss": {
+      "audit": "Dismissed: {title}",
       "reason": "Reason",
       "reasonHint": "Recorded in the audit log. The connector record itself is not changed.",
+      "refused": "The item was not dismissed",
       "submit": "Dismiss with reason",
       "title": "Dismiss this event",
       "toast": {
@@ -3797,12 +3829,14 @@
     },
     "lede": "Events from your agency's systems wait here until a practitioner reads them, rewrites the title in plain language, sets the significance and promotes them. Nothing reaches a chronology on its own.",
     "promote": {
+      "audit": "Promoted: {title}",
       "basisNote": "Article 6(1)(e) public task and Article 9(2)(g) with DPA 2018 Schedule 1 Part 2 paragraph 18 will be recorded, with the statutory gateway for each open process.",
       "intro": "Sharing into the integrated chronology is a disclosure to the other agencies on the case. Record why it is necessary and proportionate for a legitimate aim (Human Rights Act 1998, Article 8).",
       "necessity": "Necessity and proportionality",
       "necessityHint": "Why the other agencies need this event to protect the person, and why nothing less would do.",
       "purpose": "Purpose",
       "purposePlaceholder": "e.g. Child protection planning for Aiden Boyle",
+      "refused": "The event was not promoted",
       "singleNote": "The event joins your agency's chronology and is visible to your agency only. You can promote it to the integrated chronology later with a lawful basis.",
       "submitIntegrated": "Record lawful basis and promote",
       "submitSingle": "Promote",
@@ -3811,9 +3845,12 @@
       "toast": {
         "integrated": "Promoted to the integrated chronology",
         "single": "Added to your single-agency chronology"
-      }
+      },
+      "version": "Promoted from the {connector} inbox{integrated, select, yes { to the integrated chronology} other {}}"
     },
     "pull": {
+      "audit": "Pulled events from {connector}",
+      "auditReason": "{pulled, plural, one {# event} other {# events}} pulled, {added} new",
       "button": "Pull from {connector}",
       "checking": "checking",
       "latency": "{ms} ms",
@@ -3850,6 +3887,7 @@
         "text": "{status, select, approved {Only the recorded facts are disclosed, by the decision maker, and the recipient is told the limits.} other {No disclosure. The rationale is recorded.}}",
         "title": "{status, select, approved {Disclosure approved} other {Disclosure declined}}"
       },
+      "decidedAudit": "Disclosure {status}: {recipient}",
       "decidedBy": "{name}, {date}",
       "decline": "Decline",
       "done": {
@@ -3875,6 +3913,7 @@
         "school": "School or nursery"
       },
       "recipientKindLabel": "In what capacity",
+      "refused": "The decision was not recorded",
       "removeFact": "Remove",
       "submit": "Record the proposal",
       "title": "Disclosure decisions register"
@@ -4035,6 +4074,7 @@
       "distribute": {
         "clockNote": "Record distributed from the meeting workspace",
         "distributed": "Minute distributed to {count} recipients",
+        "eventTitle": "Minute of {title} distributed",
         "necessity": "Each recipient is on the need-to-know list for this stage and receives only the detail level the rules allow.",
         "purpose": "Distribution of the minute of {title}",
         "shareSummary": "Minute of {title} ({level})",
@@ -4064,8 +4104,12 @@
       }
     },
     "audit": {
+      "action": "Action added: {title}, for {owner}",
       "held": "{title} held",
-      "minutesPack": "Minutes pack: {title}"
+      "heldDetail": "{type} held. {decisions, plural, =0 {No decisions recorded.} one {# decision recorded.} other {# decisions recorded.}}",
+      "minutesPack": "Minutes pack: {title}",
+      "refused": "The change was not saved",
+      "updated": "{title}: {what, select, invites {invite list generated} request {information request sent} returned {information returned to the pack} shared {information shared} decision {decision recorded} action {action added} pack {minutes pack changed} agenda {agenda moved on} views {views read into the meeting} attendance {attendance marked} minuteDraft {minute drafted} minuteApproved {minute approved by the chair} reviewDate {review date set} distribution {distribution list generated} distributionLevel {distribution detail level changed} held {held} distributed {minute distributed} other {updated}}"
     },
     "before": {
       "invites": {
@@ -5006,10 +5050,12 @@
       "statusOpen": "Open"
     },
     "recordViews": {
+      "audit": "Views recorded: {kind}",
       "content": "In their words",
       "method": "How the views were sought",
       "methodDefault": "In person",
       "methodHint": "For example: in person after school with drawing; via the IDAA; with a Polish interpreter.",
+      "refused": "The views were not recorded",
       "title": "Record the views of {name}",
       "toast": {
         "text": "They appear at the top of the person's record and in every process view.",
@@ -5313,6 +5359,8 @@
       "title": "Classification of this record"
     },
     "clocks": {
+      "effectCompleted": "Completed: {rule}",
+      "effectStarted": "Started: {rule}",
       "none": "No clock running",
       "ruleLink": "Open the timescale rule behind this clock",
       "running": "{count} running",
@@ -6625,6 +6673,7 @@
   },
   "sharing": {
     "audit": {
+      "read": "Marked as read",
       "responded": "Responded to {name}: {count} fields",
       "sent": "{level} to {name}"
     },
@@ -6685,6 +6734,7 @@
         "text": "Shares are created when a meeting minute is distributed, an event is promoted to the integrated chronology, or a notification rule fires.",
         "title": "No shares yet"
       },
+      "refused": "The share was not sent",
       "send": "Send",
       "sentToastText": "{name} will see why they received it and under what lawful basis.",
       "sentToastTitle": "Sent"
@@ -6728,6 +6778,7 @@
       "confirm": "Send response",
       "fieldsLegend": "Fields you are providing",
       "intro": "{name} asked for: {fields}. Purpose: {purpose}. Provide only what is necessary and proportionate for that purpose.",
+      "refused": "The response was not recorded",
       "response": "Response",
       "responseHint": "Facts only. Anything you decline to share, say why.",
       "title": "Respond to the request",

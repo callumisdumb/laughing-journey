@@ -1,14 +1,15 @@
 'use client';
 
-import { EVENT_TYPES, SIGNIFICANCES, mostRestrictedAccess, mostSensitiveClassification, significanceLabel, type ChronologyAnalysis, type ChronologyEvent, type LawfulBasisRecord } from '@mas/domain';
+import { EVENT_TYPES, SIGNIFICANCES, significanceLabel, type ChronologyAnalysis, type ChronologyEvent } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
 import { formErrorSummary } from '@/lib/formErrors';
+import { useWriteErrors } from '@/lib/writeErrors';
 
 /** Built with the translator so every validation message comes from the catalogue and follows an Admin override. */
 function buildSchema(t: Translator) {
@@ -65,10 +66,11 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
   const user = useCurrentUser();
   const now = useNow();
   const data = useData();
-  const upsert = useAppStore((s) => s.upsert);
-  const audit = useAppStore((s) => s.audit);
+  const write = useAppStore((s) => s.write);
   const newId = useAppStore((s) => s.newId);
+  const readErrors = useWriteErrors();
   const { toast } = useToast();
+  const [refusals, setRefusals] = useState<string[]>([]);
   const schema = useMemo(() => buildSchema(t), [t]);
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -84,22 +86,35 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
     const by = `${user.givenName} ${user.familyName}`;
     if (values.kind === 'analysis') {
       const a: ChronologyAnalysis = { id: newId('ana'), synthetic: true, subjectId: personId, processId: processIds[0], eventIds: values.eventIds, authorUserId: user.id, authorName: by, agency: user.agency, recordedAt: now.toISOString(), kind: values.analysisKind, title: values.title, text: values.text };
-      upsert('analyses', a);
-      audit({ act: 'edit', targetType: 'event', targetId: a.id, targetLabel: `Analysis note: ${a.title}`, processId: processIds[0] });
+      const result = write({ collection: 'analyses', record: a, intent: 'create', act: 'create', targetType: 'event', targetLabel: t('chronology.addEvent.audit.analysis', { title: a.title }), processId: processIds[0] });
+      if (!result.ok) {
+        setRefusals(result.errors);
+        return;
+      }
       toast({ title: t('chronology.addEvent.toast.analysisTitle'), text: t('chronology.addEvent.toast.analysisText'), tone: 'success' });
     } else {
-      let lawfulBasisId: string | undefined;
-      if (values.visibility === 'integrated') {
-        const lb: LawfulBasisRecord = { id: newId('lb'), synthetic: true, purpose: values.purpose ?? '', article6: '6(1)(e) public task', article9Condition: '9(2)(g) substantial public interest, DPA 2018 Sch 1 Pt 2 para 18 (safeguarding)', article10Criminal: user.agency === 'police' ? 'DPA 2018 s10 and Sch 1' : 'not applicable', classification: mostSensitiveClassification(data.processes.filter((p) => processIds.includes(p.id))), accessRestriction: mostRestrictedAccess(data.processes.filter((p) => processIds.includes(p.id))), statutoryGateway: ['Recorded at event entry'], necessityAndProportionality: values.necessity ?? '', consentStatus: 'not-required', authorisedByUserId: user.id, authorisedByName: by, createdAt: now.toISOString() };
-        upsert('lawfulBases', lb);
-        lawfulBasisId = lb.id;
-      }
+      // An event raised to the integrated view rests on a lawful basis. The pipeline writes it from
+      // the purpose and the necessity typed here; the event names it before either exists.
+      const lawfulBasisId = values.visibility === 'integrated' ? newId('lb') : undefined;
       const occurredAt = values.occurredTime ? `${values.occurredDate}T${values.occurredTime}:00+01:00` : `${values.occurredDate}T00:00:00+01:00`;
-      const ev: ChronologyEvent = { id: newId('evt'), synthetic: true, subjectIds: [personId], occurredAt, hasTime: Boolean(values.occurredTime), approximate: values.approximate, recordedAt: now.toISOString(), agency: user.agency, sourceSystem: 'manual', recordedByUserId: user.id, recordedByName: by, eventType: values.eventType, title: values.title, detail: values.detail, response: values.response || undefined, outcome: values.outcome || undefined, significance: values.significance, significanceReason: values.significanceReason || undefined, linkedPersonIds: [], linkedProcessIds: processIds, evidenceRefs: [], visibility: values.visibility, lawfulBasisId, versions: [{ at: now.toISOString(), byUserId: user.id, byName: by, change: 'Recorded' }] };
-      upsert('events', ev);
-      audit({ act: 'edit', targetType: 'event', targetId: ev.id, targetLabel: ev.title, processId: processIds[0] });
+      const ev: ChronologyEvent = { id: newId('evt'), synthetic: true, subjectIds: [personId], occurredAt, hasTime: Boolean(values.occurredTime), approximate: values.approximate, recordedAt: now.toISOString(), agency: user.agency, sourceSystem: 'manual', recordedByUserId: user.id, recordedByName: by, eventType: values.eventType, title: values.title, detail: values.detail, response: values.response || undefined, outcome: values.outcome || undefined, significance: values.significance, significanceReason: values.significanceReason || undefined, linkedPersonIds: [], linkedProcessIds: processIds, evidenceRefs: [], visibility: values.visibility, lawfulBasisId, versions: [{ at: now.toISOString(), byUserId: user.id, byName: by, change: t('chronology.addEvent.audit.recorded') }] };
+      const result = write({
+        collection: 'events',
+        record: ev,
+        intent: 'create',
+        act: 'create',
+        targetType: 'event',
+        targetLabel: ev.title,
+        processId: processIds[0],
+        lawfulBasis: lawfulBasisId ? { id: lawfulBasisId, purpose: values.purpose ?? '', necessity: values.necessity ?? '', processes: data.processes.filter((p) => processIds.includes(p.id)) } : undefined,
+      });
+      if (!result.ok) {
+        setRefusals(result.errors);
+        return;
+      }
       toast({ title: t('chronology.addEvent.toast.factTitle'), text: values.visibility === 'integrated' ? t('chronology.addEvent.toast.factIntegrated') : t('chronology.addEvent.toast.factAgency'), tone: 'success' });
     }
+    setRefusals([]);
     form.reset();
     onClose();
   }
@@ -110,7 +125,7 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
       onClose={onClose}
       title={t('chronology.addEvent.title')}
       size="lg"
-      errors={formErrorSummary(errors)}
+      errors={[...readErrors(refusals), ...formErrorSummary(errors)]}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>

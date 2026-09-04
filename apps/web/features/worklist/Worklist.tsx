@@ -72,7 +72,7 @@ export function Worklist() {
   const route = useRoute();
   const navigate = useNavigate();
   const select = useSelection((s) => s.select);
-  const upsert = useAppStore((s) => s.upsert);
+  const write = useAppStore((s) => s.write);
   const { toast } = useToast();
   const dev = useDevState();
   const view = (route.query.get('view') as View | null) ?? 'mine';
@@ -106,10 +106,12 @@ export function Worklist() {
     let n = 0;
     for (const key of checked) {
       const a = data.actions.find((x) => x.id === key);
-      if (a) {
-        upsert('actions', { ...a, status: 'complete', completedAt: now.toISOString(), evidence: a.evidence ?? t('worklist.bulk.evidence') });
-        n += 1;
-      }
+      if (!a) continue;
+      // Each completion is its own write, so each carries its own ledger line and version entry. A
+      // bulk tick used to write nothing to the ledger at all.
+      const label = t('actions.audit.complete', { title: a.title });
+      const result = write({ collection: 'actions', record: { ...a, status: 'complete', completedAt: now.toISOString(), evidence: a.evidence ?? t('worklist.bulk.evidence') }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: label, processId: a.processId, versionChange: label });
+      if (result.ok) n += 1;
     }
     setChecked(new Set());
     toast(n === 0 ? { title: t('worklist.bulk.toastNone.title'), text: t('worklist.bulk.toastNone.text'), tone: 'info' } : { title: t('worklist.bulk.toastDone.title', { count: n }), text: t('worklist.bulk.toastDone.text'), tone: 'success' });

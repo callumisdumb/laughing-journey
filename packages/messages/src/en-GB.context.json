@@ -23,6 +23,9 @@
         "screenshot": "phase-4/actions-complete-light-comfortable.png",
         "where": "Hint under the evidence textarea in the record completion dialog"
       },
+      "refused": {
+        "where": "Actions screen, error toast title when the pipeline refuses to complete an action"
+      },
       "title": {
         "maxLength": 24,
         "screenshot": "phase-4/actions-complete-light-comfortable.png",
@@ -40,6 +43,9 @@
       "confirm": {
         "maxLength": 12,
         "where": "Danger button of the escalate dialog"
+      },
+      "refused": {
+        "where": "Actions screen, error toast title when the pipeline refuses to escalate an action"
       },
       "title": {
         "maxLength": 32,
@@ -3688,6 +3694,14 @@
           "maxLength": 16,
           "screenshot": "phase-2/chronology-add-event-validation-light-comfortable.png",
           "where": "Label of the title field in the analysis half of the add event dialog"
+        }
+      },
+      "audit": {
+        "analysis": {
+          "where": "Audit ledger line for a new analysis note, with its title"
+        },
+        "recorded": {
+          "where": "First version entry on a chronology event recorded by hand"
         }
       },
       "errors": {
@@ -9219,6 +9233,12 @@
       "searchRequired": {
         "where": "Add a person dialog, refusal summary at the top of the body"
       },
+      "sharesNeedLawfulBasis": {
+        "where": "Refusal summary when a write asks for sharing records without a lawful basis"
+      },
+      "sharesNeedProcess": {
+        "where": "Refusal summary when a write asks for sharing records with no case to attach them to"
+      },
       "unmergeAlreadyUndone": {
         "where": "Unmerge dialog, refusal summary at the top of the body"
       },
@@ -9255,6 +9275,9 @@
           "where": "Label of the assessor name field on the capacity assessment form"
         }
       },
+      "audit": {
+        "where": "Audit ledger line and version entry after a capacity assessment, with the outcome label"
+      },
       "communication": {
         "hint": {
           "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
@@ -9278,6 +9301,14 @@
           "maxLength": 30,
           "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
           "where": "Label of the decision field on the capacity assessment form"
+        }
+      },
+      "event": {
+        "detail": {
+          "where": "Chronology event body written by a capacity assessment"
+        },
+        "title": {
+          "where": "Chronology event title written by a capacity assessment"
         }
       },
       "evidence": {
@@ -9373,6 +9404,12 @@
       }
     },
     "daq": {
+      "attached": {
+        "where": "Audit ledger line when the case is updated to cite a new DAQ or DASH assessment"
+      },
+      "audit": {
+        "where": "Audit ledger line for a DAQ or DASH assessment, with the tool and the score"
+      },
       "band": {
         "below": {
           "maxLength": 30,
@@ -9389,6 +9426,14 @@
           "maxLength": 20,
           "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
           "where": "Label of the date field on the DAQ and DASH form"
+        }
+      },
+      "event": {
+        "detail": {
+          "where": "Chronology event body written by a DAQ or DASH assessment: the score and what followed"
+        },
+        "title": {
+          "where": "Chronology event title written by a DAQ or DASH assessment, with the tool name"
         }
       },
       "instrument": {
@@ -9535,6 +9580,9 @@
         "maxLength": 40,
         "screenshot": "phase-3/process-marac-daq-form-light-comfortable.png",
         "where": "Title of the DAQ and DASH dialog"
+      },
+      "via": {
+        "where": "Where a must-not-receive entry was recorded, in the case-role register label: named on the DAQ"
       }
     },
     "mappaReferral": {
@@ -9543,6 +9591,9 @@
           "maxLength": 40,
           "where": "Checkbox on the MAPPA referral form"
         }
+      },
+      "audit": {
+        "where": "Audit ledger line and version entry for a MAPPA referral, with the level sought"
       },
       "category": {
         "legend": {
@@ -9566,6 +9617,11 @@
         "label": {
           "maxLength": 40,
           "where": "Checkbox on the MAPPA referral form"
+        }
+      },
+      "event": {
+        "title": {
+          "where": "Chronology event title written by a MAPPA referral, with the level"
         }
       },
       "historyReason": {
@@ -9652,6 +9708,9 @@
         "maxLength": 40,
         "where": "Title of the MAPPA referral dialog"
       },
+      "via": {
+        "where": "Where a must-not-receive entry was recorded, in the case-role register label: named on the MAPPA referral"
+      },
       "victim": {
         "hint": {
           "where": "Hint under the victim considerations field on the MAPPA referral form"
@@ -9732,11 +9791,22 @@
       }
     },
     "threePointTest": {
+      "audit": {
+        "where": "Audit ledger line and version entry after a three-point test, with the outcome"
+      },
       "date": {
         "label": {
           "maxLength": 24,
           "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
           "where": "Label of the date field on the three-point test form"
+        }
+      },
+      "event": {
+        "detail": {
+          "where": "Chronology event body written by a three-point test: the outcome and the harm types"
+        },
+        "title": {
+          "where": "Chronology event title written by a three-point test"
         }
       },
       "harm": {
@@ -11227,6 +11297,9 @@
   },
   "inbox": {
     "dismiss": {
+      "audit": {
+        "where": "Audit ledger line when an inbox item is dismissed, with its title"
+      },
       "reason": {
         "maxLength": 20,
         "screenshot": "phase-2/inbox-light-comfortable.png",
@@ -11235,6 +11308,9 @@
       "reasonHint": {
         "screenshot": "phase-2/inbox-light-comfortable.png",
         "where": "Hint under the reason field in the dismiss event dialog"
+      },
+      "refused": {
+        "where": "Inbox, error toast title when the pipeline refuses a dismissal"
       },
       "submit": {
         "maxLength": 24,
@@ -11323,6 +11399,9 @@
       "where": "Lede under the connector inbox heading"
     },
     "promote": {
+      "audit": {
+        "where": "Audit ledger line on the inbox item once its event has been promoted"
+      },
       "basisNote": {
         "screenshot": "phase-2/inbox-promote-light-comfortable.png",
         "where": "Small print at the foot of the integrated promote dialog naming the articles that will be recorded"
@@ -11348,6 +11427,9 @@
       "purposePlaceholder": {
         "screenshot": "phase-2/inbox-promote-light-comfortable.png",
         "where": "Placeholder in the purpose field of the integrated promote dialog"
+      },
+      "refused": {
+        "where": "Inbox, error toast title when the pipeline refuses a promotion"
       },
       "singleNote": {
         "screenshot": "phase-2/inbox-light-comfortable.png",
@@ -11384,9 +11466,18 @@
           "screenshot": "phase-2/inbox-light-comfortable.png",
           "where": "Toast title after an event is added to the single-agency chronology; the event title is the toast text"
         }
+      },
+      "version": {
+        "where": "First version entry on an event promoted from the inbox, naming the connector"
       }
     },
     "pull": {
+      "audit": {
+        "where": "Audit ledger line when the inbox pull button fetches from a connector"
+      },
+      "auditReason": {
+        "where": "Reason on the inbox pull audit line: how many arrived and how many were new"
+      },
       "button": {
         "maxLength": 30,
         "screenshot": "phase-2/inbox-light-comfortable.png",
@@ -11495,6 +11586,9 @@
           "where": "Toast title after a disclosure decision, by outcome"
         }
       },
+      "decidedAudit": {
+        "where": "Audit ledger line and chronology title when a disclosure is approved or declined"
+      },
       "decidedBy": {
         "maxLength": 40,
         "where": "Under the status of a decided disclosure: who decided and when"
@@ -11573,6 +11667,9 @@
       },
       "recipientKindLabel": {
         "where": "Propose a disclosure dialog, recipientKindLabel"
+      },
+      "refused": {
+        "where": "MAPPA disclosure register, error toast title when the pipeline refuses the decision"
       },
       "removeFact": {
         "where": "Propose a disclosure dialog, removeFact"
@@ -12138,6 +12235,9 @@
         "distributed": {
           "where": "Toast title and audit entry when the minute is distributed, with the recipient count"
         },
+        "eventTitle": {
+          "where": "Chronology event title when a minute is distributed"
+        },
         "necessity": {
           "where": "Necessity and proportionality note on the lawful basis record created when the minute is distributed; shows in the context panel"
         },
@@ -12236,11 +12336,23 @@
       }
     },
     "audit": {
+      "action": {
+        "where": "Audit ledger line when an action is added from the meeting workspace"
+      },
       "held": {
         "where": "Audit entry when a meeting is closed, with the meeting title"
       },
+      "heldDetail": {
+        "where": "Chronology event body when a meeting is closed: the type and how many decisions"
+      },
       "minutesPack": {
         "where": "Audit entry when the minutes print pack is opened, with the meeting title"
+      },
+      "refused": {
+        "where": "Meeting workspace, error toast title when the pipeline refuses a change"
+      },
+      "updated": {
+        "where": "Audit ledger line and version entry for every change made in the meeting workspace, naming what changed"
       }
     },
     "before": {
@@ -15300,6 +15412,9 @@
       }
     },
     "recordViews": {
+      "audit": {
+        "where": "Audit ledger line and chronology title when views are recorded, with the kind of views"
+      },
       "content": {
         "maxLength": 20,
         "screenshot": "phase-2/person-360-voice-light-comfortable.png",
@@ -15318,6 +15433,9 @@
       "methodHint": {
         "screenshot": "phase-2/person-360-voice-light-comfortable.png",
         "where": "Hint under the method field in the record views dialog"
+      },
+      "refused": {
+        "where": "Person record, error toast title when the pipeline refuses a views record"
       },
       "title": {
         "maxLength": 48,
@@ -16259,6 +16377,12 @@
       }
     },
     "clocks": {
+      "effectCompleted": {
+        "where": "Pipeline effect line when a write completes a clock, with the rule label"
+      },
+      "effectStarted": {
+        "where": "Pipeline effect line when a write starts a clock, with the rule label"
+      },
       "none": {
         "maxLength": 24,
         "where": "Meta of the clocks card when the process has no clock"
@@ -20389,6 +20513,9 @@
   },
   "sharing": {
     "audit": {
+      "read": {
+        "where": "Version entry on a share when the recipient marks it read"
+      },
       "responded": {
         "where": "Audit entry when a request for information is answered: who asked and how many fields were provided"
       },
@@ -20581,6 +20708,9 @@
           "where": "Empty state title of the outbound queue"
         }
       },
+      "refused": {
+        "where": "Sharing screen, error toast title when the pipeline refuses to send a share"
+      },
       "send": {
         "maxLength": 8,
         "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
@@ -20750,6 +20880,9 @@
       },
       "intro": {
         "where": "Opening paragraph of the respond dialog: who asked, for what and why"
+      },
+      "refused": {
+        "where": "Sharing screen, error toast title when the pipeline refuses a response to an information request"
       },
       "response": {
         "maxLength": 12,

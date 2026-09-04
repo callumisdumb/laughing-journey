@@ -4,17 +4,20 @@ import { HARM_TYPES, THREE_POINT_LIMBS, harmTypeLabel, threePointTestFormSchema,
 import { useT } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
 import { formErrorSummary } from '@/lib/formErrors';
+import { useWriteErrors } from '@/lib/writeErrors';
 
 export function ThreePointTestDialog({ open, onClose, process }: { open: boolean; onClose: () => void; process: AspProcess }) {
   const t = useT();
   const user = useCurrentUser();
   const now = useNow();
-  const upsert = useAppStore((s) => s.upsert);
-  const audit = useAppStore((s) => s.audit);
+  const write = useAppStore((s) => s.write);
+  const readErrors = useWriteErrors();
   const { toast } = useToast();
+  const [refusals, setRefusals] = useState<string[]>([]);
   const current = process.detail.threePointTest;
   const form = useForm<ThreePointTestForm>({
     resolver: zodResolver(threePointTestFormSchema),
@@ -26,16 +29,42 @@ export function ThreePointTestDialog({ open, onClose, process }: { open: boolean
     if (!user) return;
     const parsed = threePointTestFormSchema.parse(values);
     const by = `${user.givenName} ${user.familyName}`;
-    upsert('processes', {
-      ...process,
-      detail: {
-        ...process.detail,
-        threePointTest: { assessedAt: `${parsed.assessedAt}T${now.toISOString().slice(11, 19)}+01:00`, byName: by, byUserId: user.id, a: parsed.a, b: parsed.b, c: parsed.c, outcome: parsed.outcome },
-        concern: { ...process.detail.concern, harmTypes: parsed.harmTypes, immediateSafety: parsed.immediateSafety },
+    const outcome = parsed.outcome === 'not-met' ? 'notMet' : parsed.outcome;
+    // A three-point test is a risk assessment in the records matrix, so it is a chronology
+    // milestone as well as a change to the case (docs/RECORDS.md section 3).
+    const result = write({
+      collection: 'processes',
+      record: {
+        ...process,
+        detail: {
+          ...process.detail,
+          threePointTest: { assessedAt: `${parsed.assessedAt}T${now.toISOString().slice(11, 19)}+01:00`, byName: by, byUserId: user.id, a: parsed.a, b: parsed.b, c: parsed.c, outcome: parsed.outcome },
+          concern: { ...process.detail.concern, harmTypes: parsed.harmTypes, immediateSafety: parsed.immediateSafety },
+        },
+      },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'process',
+      targetLabel: t('forms.threePointTest.audit', { outcome }),
+      processId: process.id,
+      versionChange: t('forms.threePointTest.audit', { outcome }),
+      event: {
+        eventType: 'social-work.assessment',
+        significance: 'high',
+        visibility: 'integrated',
+        title: t('forms.threePointTest.event.title'),
+        detail: t('forms.threePointTest.event.detail', { outcome, harm: parsed.harmTypes.map((h) => harmTypeLabel(h)).join(', ') }),
+        subjectIds: process.subjectIds,
+        occurredAt: `${parsed.assessedAt}T${now.toISOString().slice(11, 19)}+01:00`,
+        linkedProcessIds: [process.id],
       },
     });
-    audit({ act: 'edit', targetType: 'process', targetId: process.id, targetLabel: `Three-point test recorded: ${parsed.outcome}`, processId: process.id });
-    toast({ title: t('forms.threePointTest.recorded.title'), text: t('forms.threePointTest.recorded.text', { outcome: parsed.outcome === 'not-met' ? 'notMet' : parsed.outcome }), tone: 'success' });
+    if (!result.ok) {
+      setRefusals(result.errors);
+      return;
+    }
+    setRefusals([]);
+    toast({ title: t('forms.threePointTest.recorded.title'), text: t('forms.threePointTest.recorded.text', { outcome }), tone: 'success' });
     onClose();
   }
 
@@ -45,7 +74,7 @@ export function ThreePointTestDialog({ open, onClose, process }: { open: boolean
       onClose={onClose}
       title={t('forms.threePointTest.title')}
       size="lg"
-      errors={formErrorSummary(errors)}
+      errors={[...readErrors(refusals), ...formErrorSummary(errors)]}
       actions={
         <>
           <Button variant="quiet" onClick={onClose}>
