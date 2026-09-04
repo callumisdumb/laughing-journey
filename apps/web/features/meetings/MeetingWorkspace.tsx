@@ -7,11 +7,13 @@ import { CheckCircle2, Maximize2, Minimize2, Play, Printer, Send, UserPlus } fro
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { NearMatchDialog, type NearMatchList, type PendingNearMatch } from '@/components/NearMatchDialog';
+import { PersonLink, PractitionerLink } from '@/components/EntityLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
-import { chronologyPath, personPath, processPath } from '@/lib/routes';
+import { chronologyPath, meetingPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
-import { accessForUser, clocksForProcess, fullName, personById, userName } from '@/lib/selectors';
+import { useTrail } from '@/lib/trail';
+import { accessForUser, clocksForProcess, personById, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
 import { MinutesPrintPack } from './MinutesPrintPack';
 import styles from './MeetingWorkspace.module.css';
@@ -28,6 +30,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   const route = useRoute();
   const navigate = useNavigate();
   const select = useSelection((s) => s.select);
+  const visit = useTrail((s) => s.visit);
   const grants = useAppStore((s) => s.session.breakGlass);
   const upsert = useAppStore((s) => s.upsert);
   const audit = useAppStore((s) => s.audit);
@@ -51,6 +54,10 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   useEffect(() => {
     select({ kind: 'meeting', id: meetingId });
   }, [meetingId, select]);
+
+  useEffect(() => {
+    if (meeting) visit({ kind: 'meeting', id: meeting.id, label: meeting.title, path: meetingPath(meeting.id) });
+  }, [meeting, visit]);
 
   useEffect(() => {
     if (meeting && process) audit({ act: process.accessRestriction === 'restricted' ? 'read-restricted' : 'read', targetType: 'meeting', targetId: meeting.id, targetLabel: meeting.title, processId: process.id, restricted: process.accessRestriction === 'restricted' });
@@ -312,9 +319,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
             <span>{t('meetings.head.chair', { name: meeting.chairName })}</span>
             {meeting.minuteTakerName ? <span>{t('meetings.head.minutes', { name: meeting.minuteTakerName })}</span> : null}
             {subjects.map((s) => (
-              <AppLink key={s.id} href={personPath(s.id)}>
-                {fullName(s)}
-              </AppLink>
+              <PersonLink key={s.id} person={s} process={process} />
             ))}
           </div>
         </div>
@@ -447,7 +452,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   {meeting.invitees.map((i, idx) => (
                     <div key={`${i.name}-${idx}`} className={styles.invitee}>
                       <span className={styles.inviteeName}>
-                        <AgencyMark agency={i.agency} hideLabel /> {i.name}
+                        <AgencyMark agency={i.agency} hideLabel /> <PractitionerLink userId={i.userId}>{i.name}</PractitionerLink>
                       </span>
                       <label>
                         <span className="visually-hidden">{t('meetings.during.attendance.selectLabel', { name: i.name })}</span>
@@ -472,7 +477,8 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   {meeting.informationShared.map((s) => (
                     <div key={s.id} className={styles.sharedItem}>
                       <span className={styles.sharedHead}>
-                        <AgencyMark agency={s.agency} /> {s.byName} <span className={styles.sharedMeta}>{formatDateTime(s.at)}</span>
+                        <AgencyMark agency={s.agency} /> <PractitionerLink userId={s.byUserId}>{s.byName}</PractitionerLink>{' '}
+                        <span className={styles.sharedMeta}>{formatDateTime(s.at)}</span>
                       </span>
                       <span>{s.summary}</span>
                       <span className={styles.sharedMeta}>{t('meetings.during.shared.relevance', { relevance: s.relevance })}</span>
@@ -529,7 +535,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                     <div key={a.id} className={styles.liveAction}>
                       <span>{a.title}</span>
                       <span>
-                        {a.ownerName} ({agencyShort(a.ownerAgency)})
+                        <PractitionerLink userId={a.ownerUserId}>{a.ownerName}</PractitionerLink> ({agencyShort(a.ownerAgency)})
                       </span>
                       <Pill size="sm" tone={a.status === 'complete' ? 'low' : a.due < now.toISOString().slice(0, 10) ? 'critical' : 'outline'}>
                         {a.status === 'complete' ? t('meetings.during.actions.complete') : t('meetings.during.actions.due', { date: formatDate(a.due) })}
@@ -606,7 +612,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   {meeting.distribution.map((d) => (
                     <div key={d.id} className={styles.invitee}>
                       <span className={styles.inviteeName}>
-                        <AgencyMark agency={d.agency} hideLabel /> {d.recipientName}, {d.role}
+                        <AgencyMark agency={d.agency} hideLabel /> <PractitionerLink userId={d.recipientUserId}>{d.recipientName}</PractitionerLink>, {d.role}
                       </span>
                       <label>
                         <span className="visually-hidden">{t('meetings.after.distribution.levelLabel', { name: d.recipientName })}</span>

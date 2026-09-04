@@ -11,6 +11,7 @@ import { SectionHead } from './SectionHead';
 import styles from './Timescales.module.css';
 import { sectionLabel } from './sections';
 import { useAdminConfig } from './useAdminConfig';
+import { setQuery, useNavigate, useRoute } from '@/lib/router';
 
 const UNITS = ['hours', 'calendar-days', 'working-days', 'weeks', 'months'] as const;
 const UNIT_KEYS: Record<ClockRule['unit'], string> = { hours: 'hours', 'calendar-days': 'calendarDays', 'working-days': 'workingDays', weeks: 'weeks', months: 'months' };
@@ -119,8 +120,30 @@ function RuleDialog({ rule, canEdit, onClose, onSave }: { rule: ClockRule; canEd
 
 export function Timescales() {
   const t = useT();
+  const route = useRoute();
+  const navigate = useNavigate();
   const { config, canEdit, save } = useAdminConfig();
   const [editing, setEditing] = useState<ClockRule | null>(null);
+
+  /*
+   * A clock anywhere in the product links here with its rule named, so "why is this five working
+   * days" is one click from the number rather than a search through twenty-nine rows. It opens the
+   * rule rather than only scrolling to it, because the source and the confidence are what the
+   * question is really about, and those are in the dialog.
+   *
+   * Derived from the address rather than copied into state by an effect. An effect that calls
+   * setState on mount is a second render for no reason, and it also makes the address and the screen
+   * disagree the moment anyone presses back. So the query decides, the local state handles the rows
+   * clicked directly, and closing a rule that came from the address clears it from the address.
+   */
+  const asked = route.query.get('rule');
+  const askedRule = asked ? (config.clockRules.find((r) => r.id === asked) ?? null) : null;
+  const openRule = editing ?? askedRule;
+
+  function closeRule() {
+    setEditing(null);
+    if (asked) navigate(`${route.path}${setQuery(route.query, { rule: null })}`, { replace: true });
+  }
   const groups = PROCESS_TYPES.map((p) => ({ process: p, rules: config.clockRules.filter((r) => r.process === p) })).filter((g) => g.rules.length > 0);
   const toVerify = config.clockRules.filter(needsVerify).length;
 
@@ -190,7 +213,7 @@ export function Timescales() {
           </Sheet>
         ))}
       </div>
-      {editing ? <RuleDialog rule={editing} canEdit={canEdit} onClose={() => setEditing(null)} onSave={saveRule} /> : null}
+      {openRule ? <RuleDialog key={openRule.id} rule={openRule} canEdit={canEdit} onClose={closeRule} onSave={saveRule} /> : null}
     </>
   );
 }

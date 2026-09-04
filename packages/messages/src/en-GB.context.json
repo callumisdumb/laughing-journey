@@ -9782,6 +9782,18 @@
         "where": "Home, waiting on you: title of an inbox event, with the connector name and the event title"
       }
     },
+    "recent": {
+      "count": {
+        "where": "Home, count beside the recently viewed heading."
+      },
+      "kind": {
+        "maxLength": 12,
+        "where": "Home, the kind of record on a recently viewed chip. Keys are camelCase because ICU select keys cannot carry a hyphen."
+      },
+      "title": {
+        "where": "Home, heading of the recently viewed records list. Session only and not persisted."
+      }
+    },
     "signIn": {
       "badges": {
         "audited": {
@@ -10133,6 +10145,16 @@
       "maxLength": 24,
       "screenshot": "phase-2/inbox-light-comfortable.png",
       "where": "Page heading of the connector inbox"
+    }
+  },
+  "links": {
+    "excluded": {
+      "readAfterName": {
+        "where": "Read after the name by a screen reader, where a person is an excluded party on the case being read."
+      },
+      "title": {
+        "where": "Tooltip on a person's name where the exclusion register says they must not receive information about the case being read. Their name is not a link."
+      }
     }
   },
   "mappa": {
@@ -11947,6 +11969,9 @@
         "maxLength": 24,
         "where": "Browser tab title while a people screen is open"
       },
+      "practitioners": {
+        "where": "Browser tab title for a practitioner card."
+      },
       "processes": {
         "maxLength": 24,
         "where": "Browser tab title while a process screen is open"
@@ -12008,6 +12033,11 @@
         "maxLength": 16,
         "screenshot": "phase-1/home-light-comfortable.png",
         "where": "Label after the count in the unread badge on the bell, read by screen readers as a number then this"
+      }
+    },
+    "trail": {
+      "label": {
+        "where": "Accessible name of the row of records showing how the reader reached the current one."
       }
     }
   },
@@ -12976,6 +13006,82 @@
       }
     }
   },
+  "practitioner": {
+    "cases": {
+      "empty": {
+        "where": "Practitioner card, shared cases panel, when the reader can see none of them."
+      },
+      "limited": {
+        "maxLength": 16,
+        "where": "Marker on a shared case the reader sees at summary level only."
+      },
+      "meta": {
+        "where": "Count of cases both the reader and the practitioner can see."
+      },
+      "metaWithheld": {
+        "where": "Count of shared cases, plus how many of the practitioner's cases the reader has no access to."
+      },
+      "title": {
+        "where": "Practitioner card, shared cases panel heading. Named for the reader's access, not the practitioner's."
+      }
+    },
+    "contact": {
+      "meta": {
+        "where": "Practitioner card, contact panel: meta."
+      },
+      "title": {
+        "where": "Practitioner card, contact panel: title."
+      }
+    },
+    "eyebrow": {
+      "where": "Small label above the name on a practitioner card, saying what kind of record this is."
+    },
+    "fields": {
+      "agency": {
+        "where": "Practitioner card field label: agency."
+      },
+      "base": {
+        "where": "Practitioner card field label: base."
+      },
+      "email": {
+        "where": "Practitioner card field label: email."
+      },
+      "jobTitle": {
+        "where": "Practitioner card field label: jobTitle."
+      },
+      "organisation": {
+        "where": "Practitioner card field label: organisation."
+      },
+      "phone": {
+        "where": "Practitioner card field label: phone."
+      },
+      "role": {
+        "where": "Practitioner card field label: role."
+      },
+      "team": {
+        "where": "Practitioner card field label: team."
+      }
+    },
+    "notFound": {
+      "back": {
+        "where": "Practitioner card, no such account: back."
+      },
+      "text": {
+        "where": "Practitioner card, no such account: text."
+      },
+      "title": {
+        "where": "Practitioner card, no such account: title."
+      }
+    },
+    "who": {
+      "meta": {
+        "where": "Practitioner card, who they are panel: meta."
+      },
+      "title": {
+        "where": "Practitioner card, who they are panel: title."
+      }
+    }
+  },
   "print": {
     "chronology": {
       "analysis": {
@@ -13712,6 +13818,9 @@
         "maxLength": 24,
         "where": "Meta of the clocks card when the process has no clock"
       },
+      "ruleLink": {
+        "where": "Tooltip on a clock on the process record, which links to the timescale rule that defines it in Admin."
+      },
       "running": {
         "maxLength": 20,
         "screenshot": "phase-3/process-cp-light-comfortable.png",
@@ -13927,6 +14036,20 @@
         "maxLength": 30,
         "screenshot": "phase-3/process-cp-light-comfortable.png",
         "where": "Sheet title of the case membership card on the process screen"
+      }
+    },
+    "parties": {
+      "empty": {
+        "where": "Process record, case-party register with nothing in it."
+      },
+      "meta": {
+        "where": "Process record, count beside the case-party register heading."
+      },
+      "role": {
+        "where": "Process record, one line under a case party's name: their party role, the label recorded against them and where the entry came from."
+      },
+      "title": {
+        "where": "Process record, heading of the case-party register panel: the people the case concerns, as against the practitioners working it."
       }
     },
     "plans": {

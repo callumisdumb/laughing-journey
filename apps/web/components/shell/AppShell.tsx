@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, type ReactNode } from 'react';
+import { Trail } from '@/components/Trail';
 import { useAppearance } from '@/lib/appearance';
 import { DRAWER_STATE, RAIL_STATE, applyLayoutMode, useChrome, useLayoutMode } from '@/lib/layout';
 import { useRoute } from '@/lib/router';
@@ -48,6 +49,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       {RAIL_STATE[mode] === 'overlay' ? null : <Rail />}
       <TopBar />
       <main id="main" className="app-content" tabIndex={-1}>
+        <div className="page-trail">
+          <Trail />
+        </div>
         {children}
       </main>
       {DRAWER_STATE[mode] === 'docked' && chromeMode === undefined ? <ContextDrawer /> : null}

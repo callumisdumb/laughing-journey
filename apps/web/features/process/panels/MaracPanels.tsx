@@ -11,6 +11,7 @@ import { fullName, personById } from '@/lib/selectors';
 import { useData } from '@/lib/store';
 import { DaqDialog } from '../forms/DaqDialog';
 import styles from './shared.module.css';
+import { PersonLink } from '@/components/EntityLink';
 
 export function MaracPanels({ process }: { process: MaracProcess }) {
   const t = useT();
@@ -48,7 +49,11 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
             items={[
               { key: t('marac.referral.victim'), value: victim ? <AppLink href={personPath(victim.id)}>{fullName(victim)}</AppLink> : d.referral.victimPersonId },
               { key: t('marac.referral.children'), value: d.referral.childPersonIds.length === 0 ? t('common.keyValue.none') : d.referral.childPersonIds.map((id) => { const p = personById(data, id); return p ? <AppLink key={id} href={personPath(id)} style={{ marginRight: 8 }}>{fullName(p)}</AppLink> : id; }) },
-              { key: t('marac.referral.perpetrator'), value: <span>{perpetrator ? <AppLink href={personPath(perpetrator.id)}>{fullName(perpetrator)}</AppLink> : d.referral.perpetratorPersonId} <Pill size="sm" tone="restricted" icon={<Ban size={12} aria-hidden="true" />}>{t('marac.referral.mustNotReceive')}</Pill></span> },
+              // Named, and never a link: the referral says he must not receive anything about this
+              // case, and a route into his record from beside that sentence is the same offer in
+              // different clothing. `PersonLink` reads the exclusion register rather than this
+              // panel deciding for itself.
+              { key: t('marac.referral.perpetrator'), value: <span>{perpetrator ? <PersonLink person={perpetrator} process={process} /> : d.referral.perpetratorPersonId} <Pill size="sm" tone="restricted" icon={<Ban size={12} aria-hidden="true" />}>{t('marac.referral.mustNotReceive')}</Pill></span> },
               { key: t('marac.referral.idaa'), value: t('marac.referral.idaaValue', { name: d.idaa.name, organisation: d.idaa.organisation }) },
             ]}
           />

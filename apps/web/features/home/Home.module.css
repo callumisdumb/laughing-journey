@@ -181,3 +181,42 @@
     grid-template-columns: 1fr;
   }
 }
+
+.recentList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+}
+
+.recentItem {
+  display: inline-flex;
+  gap: 8px;
+  align-items: baseline;
+  max-width: 100%;
+  padding: 5px 12px;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-1);
+  border-radius: var(--radius-pill);
+}
+
+.recentItem:hover {
+  border-color: var(--color-ink-3);
+}
+
+.recentKind {
+  flex-shrink: 0;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.recentLabel {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-ink-1);
+}

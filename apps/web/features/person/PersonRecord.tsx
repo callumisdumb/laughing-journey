@@ -8,8 +8,9 @@ import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
-import { chronologyPath, meetingPath, processPath } from '@/lib/routes';
+import { chronologyPath, meetingPath, personPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
+import { useTrail } from '@/lib/trail';
 import { accessForUser, clocksForProcess, currentAddress, fullName, membersByAgency, processesInvolving, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
 import { EventList } from '@/features/chronology/EventList';
@@ -66,6 +67,7 @@ export function PersonRecord({ personId }: { personId: string }) {
   const [recording, setRecording] = useState(false);
   const [voice, setVoice] = useState<{ kind: ViewsRecord['kind']; method: string; content: string }>(() => ({ kind: 'child-voice', method: t('person.recordViews.methodDefault'), content: '' }));
 
+  const visit = useTrail((s) => s.visit);
   const tab = route.query.get('tab') ?? 'overview';
   const person = data.people.find((p) => p.id === personId);
 
@@ -78,6 +80,10 @@ export function PersonRecord({ personId }: { personId: string }) {
     if (person) audit({ act: 'read', targetType: 'person', targetId: personId, targetLabel: fullName(person) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [personId]);
+
+  useEffect(() => {
+    if (person) visit({ kind: 'person', id: person.id, label: fullName(person), path: personPath(person.id) });
+  }, [person, visit]);
 
   if (!user) return null;
   if (!person) {

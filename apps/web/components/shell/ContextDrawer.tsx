@@ -5,6 +5,7 @@ import { useT, type Translator } from '@mas/messages';
 import { AgencyMark, Dialog, IconButton, Pill, RiskBand } from '@mas/ui';
 import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, ShieldCheck, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { PractitionerLink } from '@/components/EntityLink';
 import { useAppearance } from '@/lib/appearance';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, fullName, membersByAgency, personById, processById, processesInvolving, userById, userName } from '@/lib/selectors';
@@ -36,7 +37,7 @@ function WhoIsInvolved({ processes }: { processes: Process[] }) {
   const data = useData();
   if (processes.length === 0) return <p className={styles.empty}>{t('nav.drawer.involved.empty')}</p>;
   const seen = new Set<string>();
-  const groups = new Map<string, Array<{ name: string; role: string; caseRole: string; contact: string; agency: Process['members'][number]['agency'] }>>();
+  const groups = new Map<string, Array<{ userId: string; name: string; role: string; caseRole: string; contact: string; agency: Process['members'][number]['agency'] }>>();
   for (const p of processes) {
     for (const g of membersByAgency(data, p)) {
       for (const m of g.members) {
@@ -44,7 +45,7 @@ function WhoIsInvolved({ processes }: { processes: Process[] }) {
         if (seen.has(key)) continue;
         seen.add(key);
         const list = groups.get(g.agency) ?? [];
-        list.push({ agency: g.agency, name: m.user ? userName(m.user) : m.membership.userId, role: m.user ? roleLabel(m.user.roleId) : '', caseRole: m.membership.caseRole, contact: m.user ? m.user.phone : '' });
+        list.push({ agency: g.agency, userId: m.membership.userId, name: m.user ? userName(m.user) : m.membership.userId, role: m.user ? roleLabel(m.user.roleId) : '', caseRole: m.membership.caseRole, contact: m.user ? m.user.phone : '' });
         groups.set(g.agency, list);
       }
     }
@@ -56,7 +57,9 @@ function WhoIsInvolved({ processes }: { processes: Process[] }) {
           <AgencyMark agency={agency as Process['members'][number]['agency']} />
           {members.map((m) => (
             <div key={m.name + m.caseRole} className={styles.member}>
-              <span className={styles.memberName}>{m.name}</span>
+              <span className={styles.memberName}>
+                <PractitionerLink userId={m.userId}>{m.name}</PractitionerLink>
+              </span>
               <span className={styles.memberMeta}>
                 {m.caseRole}
                 {m.contact ? `, ${m.contact}` : ''}

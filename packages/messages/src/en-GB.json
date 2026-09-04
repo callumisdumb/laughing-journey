@@ -3234,6 +3234,11 @@
       "researchReturn": "MARAC research return: {subject}",
       "reviewEvent": "Review {connector} event: {title}"
     },
+    "recent": {
+      "count": "{count, plural, one {one record} other {# records}}",
+      "kind": "{kind, select, person {Person} process {Case} meeting {Meeting} practitioner {Colleague} other {Record}}",
+      "title": "Where you have been"
+    },
     "signIn": {
       "badges": {
         "audited": "Every restricted read audited",
@@ -3331,6 +3336,12 @@
       }
     },
     "title": "Connector inbox"
+  },
+  "links": {
+    "excluded": {
+      "readAfterName": "excluded from this case as the {party}",
+      "title": "Excluded from this case as the {party}. {reason}"
+    }
   },
   "mappa": {
     "banner": "Restricted record. Distribution list only. Every read is audited. MAPPA information is not given to victims (the Victim Notification Scheme is a separate route), to employers, or to the public, except through a recorded disclosure decision.",
@@ -3854,6 +3865,7 @@
       "inbox": "Inbox",
       "meetings": "Meetings",
       "people": "People",
+      "practitioners": "Practitioner",
       "processes": "Processes",
       "reports": "Reports",
       "search": "Search",
@@ -3871,6 +3883,9 @@
       "personaLabel": "{name}, {demo}. Switch persona",
       "signIn": "Sign in",
       "unread": "unread"
+    },
+    "trail": {
+      "label": "How you got here"
     }
   },
   "person": {
@@ -4135,6 +4150,39 @@
       "record": "Record views"
     }
   },
+  "practitioner": {
+    "cases": {
+      "empty": "You have no access to any case this practitioner is on. That is need-to-know working, not an error.",
+      "limited": "Summary only",
+      "meta": "{count, plural, =0 {No shared cases} one {One shared case} other {# shared cases}}.",
+      "metaWithheld": "{count, plural, =0 {No shared cases} one {One shared case} other {# shared cases}}. {withheld, plural, one {One further case is not shown, because you have no access to it} other {# further cases are not shown, because you have no access to them}}.",
+      "title": "Cases you can both see"
+    },
+    "contact": {
+      "meta": "Synthetic contact details for the demonstration.",
+      "title": "How to reach them"
+    },
+    "eyebrow": "Practitioner",
+    "fields": {
+      "agency": "Agency",
+      "base": "Based at",
+      "email": "Email",
+      "jobTitle": "Job title",
+      "organisation": "Organisation",
+      "phone": "Telephone",
+      "role": "Role",
+      "team": "Team"
+    },
+    "notFound": {
+      "back": "Back to People",
+      "text": "This account does not exist, or the id in the address is wrong.",
+      "title": "No such practitioner"
+    },
+    "who": {
+      "meta": "Role, agency and where they are based.",
+      "title": "Who they are"
+    }
+  },
   "print": {
     "chronology": {
       "analysis": {
@@ -4366,6 +4414,7 @@
     },
     "clocks": {
       "none": "No clock running",
+      "ruleLink": "Open the timescale rule behind this clock",
       "running": "{count} running",
       "sub": "Due {date}. {source}{verify, select, yes { (local value, to verify)} other {}}{deferral, select, yes { {note}.} other {}}",
       "title": "Clocks"
@@ -4430,6 +4479,12 @@
       "member": "{role}. Since {date}. {reason}",
       "meta": "{count} on the case",
       "title": "Participants and roles"
+    },
+    "parties": {
+      "empty": "No case parties are recorded. The referral names nobody and no relationship implies one.",
+      "meta": "{count, plural, =0 {Nobody recorded} one {One person} other {# people}} on the case-party register.",
+      "role": "{party}. {label} Recorded from the {source}.",
+      "title": "Who this case is about"
     },
     "plans": {
       "columns": {

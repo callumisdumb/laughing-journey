@@ -13,6 +13,7 @@ import { useSelection } from '@/lib/selection';
 import { actionsForUser, clocksForUser, fullName, inboxForUser, meetingsForUser, personById, preMeetingRequestsForUser, researchRequestsForUser } from '@/lib/selectors';
 import { useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
 import styles from './Home.module.css';
+import { useTrail } from '@/lib/trail';
 
 interface WorkItem {
   key: string;
@@ -40,6 +41,8 @@ export function Home() {
   const now = useNow();
   const select = useSelection((s) => s.select);
   const dev = useDevState();
+
+  const recent = useTrail((s) => s.recent);
 
   useEffect(() => {
     select(null);
@@ -107,6 +110,30 @@ export function Home() {
               ))}
             </div>
           </section>
+          {/*
+            What you were last working on, in view order.
+
+            The product became a web of records this round: a name on a minute reaches a person, a
+            reference reaches a case, a colleague reaches their card. That is the right shape and it
+            is also how people lose the thread, so the way back is offered rather than remembered.
+            Session only, and not persisted: a list of the people whose records this account opened
+            is not something to leave on a shared council laptop for whoever signs in next.
+          */}
+          {recent.length > 0 ? (
+            <section className={styles.region} aria-labelledby="home-recent">
+              <h2 className={styles.regionTitle} id="home-recent">
+                {t('home.recent.title')} <span className={styles.regionCount}>{t('home.recent.count', { count: recent.length })}</span>
+              </h2>
+              <div className={styles.recentList}>
+                {recent.map((r) => (
+                  <AppLink key={`${r.kind}:${r.id}`} href={r.path} className={styles.recentItem}>
+                    <span className={styles.recentKind}>{t('home.recent.kind', { kind: r.kind })}</span>
+                    <span className={styles.recentLabel}>{r.label}</span>
+                  </AppLink>
+                ))}
+              </div>
+            </section>
+          ) : null}
           <section className={styles.region} aria-labelledby="home-worklist">
             <h2 className={styles.regionTitle} id="home-worklist">
               {t('home.waiting.title')} <span className={styles.regionCount}>{t('home.waiting.count', { count: items.length })}</span>

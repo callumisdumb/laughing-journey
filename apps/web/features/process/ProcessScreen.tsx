@@ -1,16 +1,18 @@
 'use client';
 
-import { STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, OFFICIAL, canLower, classificationFor, classificationLabel, effectiveClassification, marking, officialSensitive, overrideDecision, overrideDirection, relativeDays, stageLabel, type Classification, type Process } from '@mas/domain';
+import { exclusionPartyLabel, partyRegister, STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, OFFICIAL, canLower, classificationFor, classificationLabel, effectiveClassification, marking, officialSensitive, overrideDecision, overrideDirection, relativeDays, stageLabel, type Classification, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { Lock, ShieldCheck, UserPlus } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
+import { PersonLink, PractitionerLink } from '@/components/EntityLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
-import { meetingPath, personPath } from '@/lib/routes';
+import { meetingPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
-import { accessForUser, clocksForProcess, fullName, membersByAgency, personById, userName } from '@/lib/selectors';
+import { useTrail } from '@/lib/trail';
+import { accessForUser, clocksForProcess, membersByAgency, personById, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow, useVault } from '@/lib/store';
 import { readProcessDetail } from '@/lib/vault';
 import { AspPanels } from './panels/AspPanels';
@@ -28,6 +30,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const user = useCurrentUser();
   const now = useNow();
   const select = useSelection((s) => s.select);
+  const visit = useTrail((s) => s.visit);
   const grants = useAppStore((s) => s.session.breakGlass);
   const audit = useAppStore((s) => s.audit);
   const grantBreakGlass = useAppStore((s) => s.grantBreakGlass);
@@ -46,6 +49,13 @@ export function ProcessScreen({ processId }: { processId: string }) {
   useEffect(() => {
     select({ kind: 'process', id: processId });
   }, [processId, select]);
+
+  useEffect(() => {
+    if (process) visit({ kind: 'process', id: process.id, label: process.reference, path: processPath(process.id) });
+  }, [process, visit]);
+
+  // Who the case is about: the referral's own parties plus the ones derived from relationships.
+  const parties = process ? partyRegister(process, data.relationships) : [];
 
   useEffect(() => {
     if (process) audit({ act: process.accessRestriction === 'restricted' ? 'read-restricted' : 'read', targetType: 'process', targetId: process.id, targetLabel: `${process.reference}: ${process.title}`, processId: process.id, restricted: process.accessRestriction === 'restricted' });
@@ -123,7 +133,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
           <div className={styles.subjects}>
             {subjects.map((s) => (
               <span key={s.id}>
-                <AppLink href={personPath(s.id)}>{fullName(s)}</AppLink>
+                <PersonLink person={s} process={process} />
                 {s.dateOfBirth ? `, ${t('processes.head.born', { date: formatDate(s.dateOfBirth) })}` : s.lifeStage === 'unborn' ? `, ${t('processes.head.unborn')}` : ''}
               </span>
             ))}
@@ -200,8 +210,44 @@ export function ProcessScreen({ processId }: { processId: string }) {
                   <SheetBody>
                     <div className={styles.clockList}>
                       {clocks.map((c) => (
-                        <ClockNumeral key={c.triggerId} daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={t('processes.clocks.sub', { date: formatDate(c.dueAt), source: (c.overridden ? c.overrideReason : c.sourceRef) ?? '', verify: c.todoVerify ? 'yes' : 'no', deferral: c.deferrable && c.deferralNote ? 'yes' : 'no', note: c.deferralNote ?? '' })} size="sm" />
+                        <AppLink key={c.triggerId} href={`/admin/timescales?rule=${c.ruleId}`} className={styles.clockLink} title={t('processes.clocks.ruleLink')}>
+                          <ClockNumeral daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={t('processes.clocks.sub', { date: formatDate(c.dueAt), source: (c.overridden ? c.overrideReason : c.sourceRef) ?? '', verify: c.todoVerify ? 'yes' : 'no', deferral: c.deferrable && c.deferralNote ? 'yes' : 'no', note: c.deferralNote ?? '' })} size="sm" />
+                        </AppLink>
                       ))}
+                    </div>
+                  </SheetBody>
+                </Sheet>
+                {/*
+                  Who this case is about, as against who is working it. The two were conflated: the
+                  participants panel lists practitioners, and the people the case actually concerns
+                  were only ever visible in the drawer's need-to-know section, so a reader looking at
+                  a MARAC record could not see the perpetrator's name without opening a panel about
+                  something else.
+
+                  Every name here is a link to that person's record, except one: a party the
+                  exclusion register names for this case and stage renders marked and not clickable.
+                  `PersonLink` decides that from the register rather than each screen deciding for
+                  itself, which is the only version of this rule that holds when a new screen is
+                  written by someone who has not read this comment.
+                */}
+                <Sheet>
+                  <SheetHead title={t('processes.parties.title')} meta={t('processes.parties.meta', { count: parties.length })} />
+                  <SheetBody>
+                    <div className={styles.members}>
+                      {parties.length === 0 ? <span className={styles.memberMeta}>{t('processes.parties.empty')}</span> : null}
+                      {parties.map((party) => {
+                        const person = party.personId ? personById(data, party.personId) : undefined;
+                        return (
+                          <div key={`${party.party}:${party.personId ?? party.userId ?? party.name ?? party.label}`} className={styles.member}>
+                            <span className={styles.memberName}>
+                              {person ? <PersonLink person={person} process={process} /> : (party.name ?? party.label)}
+                            </span>
+                            <span className={styles.memberMeta}>
+                              {t('processes.parties.role', { party: exclusionPartyLabel(party.party), label: party.label, source: party.source })}
+                            </span>
+                          </div>
+                        );
+                      })}
                     </div>
                   </SheetBody>
                 </Sheet>
@@ -214,7 +260,9 @@ export function ProcessScreen({ processId }: { processId: string }) {
                           <AgencyMark agency={g.agency} />
                           {g.members.map((m) => (
                             <div key={m.membership.userId} className={styles.member} style={{ marginTop: 4, paddingLeft: 22 }}>
-                              <span className={styles.memberName}>{m.user ? userName(m.user) : m.membership.userId}</span>
+                              <span className={styles.memberName}>
+                                <PractitionerLink userId={m.membership.userId}>{m.user ? userName(m.user) : m.membership.userId}</PractitionerLink>
+                              </span>
                               <span className={styles.memberMeta}>{t('processes.participants.member', { role: m.membership.caseRole, date: formatDate(m.membership.since), reason: m.membership.reason })}</span>
                             </div>
                           ))}

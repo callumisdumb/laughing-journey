@@ -14,6 +14,7 @@ import { MeetingList } from '@/features/meetings/MeetingList';
 import { MeetingWorkspace } from '@/features/meetings/MeetingWorkspace';
 import { PeopleList } from '@/features/people/PeopleList';
 import { PersonRecord } from '@/features/person/PersonRecord';
+import { PractitionerCard } from '@/features/practitioner/PractitionerCard';
 import { Placeholder } from '@/features/placeholder/Placeholder';
 import { ProcessList } from '@/features/process/ProcessList';
 import { ProcessScreen } from '@/features/process/ProcessScreen';
@@ -29,6 +30,7 @@ const TITLE_KEYS = {
   '': 'nav.titles.home',
   worklist: 'nav.titles.worklist',
   people: 'nav.titles.people',
+  practitioners: 'nav.titles.practitioners',
   search: 'nav.titles.search',
   inbox: 'nav.titles.inbox',
   processes: 'nav.titles.processes',
@@ -67,6 +69,8 @@ export function Screen() {
       if (id && sub === 'chronology') return <ChronologyScreen personId={id} />;
       if (id) return <PersonRecord personId={id} />;
       return <PeopleList />;
+    case 'practitioners':
+      return id ? <PractitionerCard userId={id} /> : <Placeholder title={t('states.placeholder.notFound')} phase={0} />;
     case 'search':
       return <Search />;
     case 'inbox':

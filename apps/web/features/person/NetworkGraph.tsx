@@ -5,6 +5,7 @@ import { hasMessage, tKey, useT } from '@mas/messages';
 import { fullName } from '@/lib/selectors';
 import { useData } from '@/lib/store';
 import styles from './NetworkGraph.module.css';
+import { PersonLink } from '@/components/EntityLink';
 
 /** Relationship types are kebab-case enum values; their catalogue keys are the camelCase form. */
 function relationSegment(type: Relationship['type']): string {
@@ -55,11 +56,11 @@ export function NetworkGraph({ person, concernIds = [] }: NetworkGraphProps) {
       return { ...n, x: cx + Math.cos(angle) * radius * 0.7, y: cy + Math.sin(angle) * radius * 0.78 };
     });
   const placed = [...place(inner, 120, -Math.PI / 2), ...place(outer, 210, -Math.PI / 2 + Math.PI / 5)];
-  const summary = list.map((n) => t('person.network.member', { name: fullName(n.person), relation: n.relation, household: n.household ? 'yes' : 'no' })).join('; ');
 
   return (
     <div className={styles.graph}>
-      <svg className={styles.svg} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('person.network.summary', { name: fullName(person), list: summary || t('person.network.noRelationships') })}>
+      {/* Decorative now: everything it says is in the list below it, as text and as links. */}
+      <svg className={styles.svg} viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
         {placed.map((n) => (
           <line key={`e-${n.person.id}`} className={styles.edge} data-household={n.household ? 'true' : undefined} x1={cx} y1={cy} x2={n.x} y2={n.y} />
         ))}
@@ -98,9 +99,21 @@ export function NetworkGraph({ person, concernIds = [] }: NetworkGraphProps) {
           </span>
         ) : null}
       </div>
-      <ul className="visually-hidden">
+      {/*
+        The list is the navigation and the diagram is the picture.
+        
+        It used to be visually hidden, an accessible alternative to an `img`-role SVG. That was
+        correct as far as it went and it meant the one place in the product that shows who is around
+        a person offered no way to reach any of them: a name in an SVG `text` element cannot be a
+        link, and a sighted reader who wanted the sister's record went back to search and typed it.
+        Now everyone gets the same list, and the diagram is decoration.
+      */}
+      <ul className={styles.people}>
         {list.map((n) => (
-          <li key={n.person.id}>{t('person.network.listItem', { name: fullName(n.person), relation: n.relation, household: n.household ? 'yes' : 'no' })}</li>
+          <li key={n.person.id} className={styles.person} data-household={n.household ? 'true' : undefined}>
+            <PersonLink person={n.person} />
+            <span className={styles.personRelation}>{t('person.network.listItem', { name: '', relation: n.relation, household: n.household ? 'yes' : 'no' }).trim()}</span>
+          </li>
         ))}
       </ul>
     </div>

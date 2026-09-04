@@ -153,3 +153,19 @@
   grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
+
+/*
+ * The trail sits above the record rather than inside each screen, because every screen would
+ * otherwise have to remember to render it and one of them would not. Same gutters as the page, and
+ * no vertical space at all when the trail has nothing to show.
+ */
+.page-trail:not(:empty) {
+  width: 100%;
+  max-width: calc(var(--content-max) + var(--content-gutter) * 2);
+  margin: 0 auto;
+  padding: var(--density-pad) var(--content-gutter) 0;
+}
+
+.page-trail:not(:empty) + .page {
+  padding-top: 8px;
+}

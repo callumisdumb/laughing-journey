@@ -13,6 +13,7 @@ export function generateStaticParams(): Array<{ slug: string[] }> {
     ...data.people.flatMap((p) => [['people', p.id], ['people', p.id, 'chronology']]),
     ...data.processes.map((p) => ['processes', p.id]),
     ...data.meetings.map((m) => ['meetings', m.id]),
+    ...data.users.map((u) => ['practitioners', u.id]),
   ];
   return slugs.map((slug) => ({ slug }));
 }

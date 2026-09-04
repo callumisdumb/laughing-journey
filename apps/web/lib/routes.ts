@@ -6,6 +6,7 @@ export const STATIC_ROUTES = [
   'sign-in',
   'worklist',
   'people',
+  'practitioners',
   'search',
   'inbox',
   'processes',
@@ -44,4 +45,7 @@ export function processPath(id: string): string {
 }
 export function meetingPath(id: string): string {
   return `/meetings/${id}`;
+}
+export function practitionerPath(id: string): string {
+  return `/practitioners/${id}`;
 }

@@ -6,11 +6,12 @@ import { AgencyMark, Button, Dialog, Pill, ProcessMark, SelectField, Table, Tabl
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
+import { PersonLink, PractitionerLink } from '@/components/EntityLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { meetingPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
-import { accessForUser, fullName, personById } from '@/lib/selectors';
+import { accessForUser, personById } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
 import styles from './Actions.module.css';
 
@@ -151,13 +152,13 @@ export function Actions() {
                         <td>
                           <span className={styles.title}>{a.title}</span>
                           <span className={styles.meta}>
-                            {process ? <AppLink href={processPath(process.id)}><ProcessMark type={process.type} /></AppLink> : null} {subject ? fullName(subject) : ''}
+                            {process ? <AppLink href={processPath(process.id)}><ProcessMark type={process.type} /></AppLink> : null} {subject ? <PersonLink person={subject} process={process} /> : ''}
                             {a.meetingId ? <> {t.rich('actions.list.fromMeeting', { ...linkTo(meetingPath(a.meetingId)), title: data.meetings.find((m) => m.id === a.meetingId)?.title ?? t('actions.list.meetingFallback') })}</> : ''}
                             {a.escalatedAt ? <> {t('actions.list.escalatedNote', { name: a.escalatedToName ?? '', date: formatDate(a.escalatedAt) })}</> : ''}
                           </span>
                         </td>
                         <td>
-                          <AgencyMark agency={a.ownerAgency} hideLabel /> {a.ownerName}
+                          <AgencyMark agency={a.ownerAgency} hideLabel /> <PractitionerLink userId={a.ownerUserId}>{a.ownerName}</PractitionerLink>
                         </td>
                         <td className={overdue ? styles.overdue : undefined} style={{ whiteSpace: 'nowrap' }}>
                           {formatDate(a.due)}
