@@ -8107,6 +8107,18 @@
       "noUser": {
         "where": "Any create or edit dialog, refusal summary at the top of the body"
       },
+      "processAlreadyOpen": {
+        "where": "Start a process dialog, refusal summary at the top of the body"
+      },
+      "processNoSubject": {
+        "where": "Start a process dialog, refusal summary at the top of the body"
+      },
+      "processNotEligible": {
+        "where": "Start a process dialog, refusal summary at the top of the body"
+      },
+      "processNotYourRole": {
+        "where": "Start a process dialog, refusal summary at the top of the body"
+      },
       "reasonRequired": {
         "where": "Any create or edit dialog, refusal summary at the top of the body"
       },
@@ -14686,6 +14698,74 @@
         "where": "Sheet title of the statutory clocks card on the process screen"
       }
     },
+    "eligibility": {
+      "aspTooYoung": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "aspUnborn": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "aspYes": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "awiTooYoung": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "awiUnborn": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "awiYes": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "bothAvailable": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "cpTooOld": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "cpUnborn": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "cpYes": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "mappaNoAge": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "mappaNoAgeWarning": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "mappaUnborn": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "mappaUnder18": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "mappaYes": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "maracTooYoung": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "maracUnborn": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "maracYes": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "noDateOfBirth": {
+        "where": "Start a process dialog, the eligibility answer beside each process"
+      },
+      "routeAdultProtection": {
+        "where": "Start a process dialog, the route offered where the person is not eligible"
+      },
+      "routeChildProtection": {
+        "where": "Start a process dialog, the route offered where the person is not eligible"
+      },
+      "routeRecordDateOfBirth": {
+        "where": "Start a process dialog, the route offered where the person is not eligible"
+      }
+    },
     "encrypted": {
       "reason": {
         "where": "Explanation on the restricted state shown when the record's key does not unwrap for this user"
@@ -14872,6 +14952,137 @@
         "where": "Empty state title when the process id in the address does not exist"
       }
     },
+    "open": {
+      "caseTitle": {
+        "where": "The title of a newly opened case, shown wherever a process is named"
+      },
+      "chooseType": {
+        "where": "Start a process dialog"
+      },
+      "consequences": {
+        "audit": {
+          "where": "Start a process dialog, the consequences block above the button"
+        },
+        "chronology": {
+          "where": "Start a process dialog, the consequences block above the button"
+        },
+        "classification": {
+          "where": "Start a process dialog, the consequences block above the button"
+        },
+        "clocks": {
+          "where": "Start a process dialog, the consequences block above the button"
+        },
+        "reference": {
+          "where": "Start a process dialog, the consequences block above the button"
+        },
+        "sharing": {
+          "where": "Start a process dialog, the consequences block above the button"
+        },
+        "title": {
+          "where": "Start a process dialog, the consequences block above the button"
+        }
+      },
+      "createAnyway": {
+        "where": "Start a process dialog, where a second case of the same type is being opened"
+      },
+      "createAnywayReason": {
+        "where": "Start a process dialog, where a second case of the same type is being opened"
+      },
+      "createAnywayReasonHint": {
+        "where": "Start a process dialog, where a second case of the same type is being opened"
+      },
+      "decisionNotStated": {
+        "where": "AWI detail, the decision in question before it is recorded"
+      },
+      "done": {
+        "text": {
+          "where": "Toast after a process is opened"
+        },
+        "title": {
+          "where": "Toast after a process is opened"
+        }
+      },
+      "eligible": {
+        "where": "Start a process dialog"
+      },
+      "eventTitle": {
+        "where": "Chronology milestone written when a case is opened"
+      },
+      "existingLede": {
+        "where": "Start a process dialog, where an open case of the same type exists"
+      },
+      "existingTitle": {
+        "where": "Start a process dialog, where an open case of the same type exists"
+      },
+      "leadReason": {
+        "where": "Context drawer, why the opener is on the case"
+      },
+      "needsPermission": {
+        "where": "Start a process dialog"
+      },
+      "notEligible": {
+        "where": "Start a process dialog"
+      },
+      "notYetAssessed": {
+        "where": "Process detail, an assessment field an opening cannot yet fill"
+      },
+      "open": {
+        "where": "Start a process dialog"
+      },
+      "openExisting": {
+        "where": "Start a process dialog"
+      },
+      "repeatLede": {
+        "where": "Start a process dialog, the MARAC repeat warning"
+      },
+      "repeatTitle": {
+        "where": "Start a process dialog, the MARAC repeat warning"
+      },
+      "shareReason": {
+        "where": "Sharing record written when a case is opened"
+      },
+      "source": {
+        "where": "Start a process dialog"
+      },
+      "sourceAgency": {
+        "where": "Start a process dialog"
+      },
+      "sourceHint": {
+        "where": "Start a process dialog"
+      },
+      "sourceReference": {
+        "where": "Start a process dialog"
+      },
+      "started": {
+        "where": "Start a process dialog"
+      },
+      "submit": {
+        "where": "Start a process dialog"
+      },
+      "summary": {
+        "where": "Start a process dialog"
+      },
+      "summaryHint": {
+        "where": "Start a process dialog"
+      },
+      "title": {
+        "where": "Start a process dialog"
+      },
+      "waitsFor": {
+        "awi": {
+          "where": "Start a process dialog, shown where an opening starts no statutory clock"
+        },
+        "cp": {
+          "where": "Start a process dialog, shown where an opening starts no statutory clock"
+        },
+        "mappa": {
+          "where": "Start a process dialog, shown where an opening starts no statutory clock"
+        },
+        "marac": {
+          "where": "Start a process dialog, shown where an opening starts no statutory clock"
+        }
+      }
+    },
     "participants": {
       "member": {
         "screenshot": "phase-3/process-cp-light-comfortable.png",
@@ -14900,6 +15111,56 @@
       },
       "title": {
         "where": "Process record, heading of the case-party register panel: the people the case concerns, as against the practitioners working it."
+      }
+    },
+    "permission": {
+      "notYourRole": {
+        "asp": {
+          "where": "Start a process dialog, the permission refusal"
+        },
+        "awi": {
+          "where": "Start a process dialog, the permission refusal"
+        },
+        "cp": {
+          "where": "Start a process dialog, the permission refusal"
+        },
+        "mappa": {
+          "where": "Start a process dialog, the permission refusal"
+        },
+        "marac": {
+          "where": "Start a process dialog, the permission refusal"
+        }
+      },
+      "oversight": {
+        "admin": {
+          "where": "Start a process dialog, the permission refusal for an oversight role"
+        },
+        "audit": {
+          "where": "Start a process dialog, the permission refusal for an oversight role"
+        },
+        "readOnly": {
+          "where": "Start a process dialog, the permission refusal for an oversight role"
+        },
+        "redacted": {
+          "where": "Start a process dialog, the permission refusal for an oversight role"
+        }
+      },
+      "route": {
+        "asp": {
+          "where": "Start a process dialog, the route offered where the role cannot open it"
+        },
+        "awi": {
+          "where": "Start a process dialog, the route offered where the role cannot open it"
+        },
+        "cp": {
+          "where": "Start a process dialog, the route offered where the role cannot open it"
+        },
+        "mappa": {
+          "where": "Start a process dialog, the route offered where the role cannot open it"
+        },
+        "marac": {
+          "where": "Start a process dialog, the route offered where the role cannot open it"
+        }
       }
     },
     "plans": {

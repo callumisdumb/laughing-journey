@@ -2643,6 +2643,10 @@
       "mergeSurvivorMissing": "The record that would survive no longer exists.",
       "nameRequired": "A given name and a family name are both needed.",
       "noUser": "Nobody is signed in, so this cannot be recorded against anyone.",
+      "processAlreadyOpen": "An open case of this type already exists for this person. Open it, or say in a sentence why a second one needs to exist.",
+      "processNoSubject": "A process needs somebody it is about.",
+      "processNotEligible": "This person is not eligible for this process. The reason is above.",
+      "processNotYourRole": "Your role does not open this process. The refusal above says who does.",
       "reasonRequired": "Say why in a sentence. A change made after the fact needs a reason on the record.",
       "relationshipDuplicate": "That relationship is already recorded between these two people.",
       "relationshipEndBeforeStart": "A relationship cannot end before it began.",
@@ -4735,6 +4739,30 @@
       "sub": "Due {date}. {source}{verify, select, yes { (local value, to verify)} other {}}{deferral, select, yes { {note}.} other {}}",
       "title": "Clocks"
     },
+    "eligibility": {
+      "aspTooYoung": "{name} is {age}. Adult support and protection applies from 16.",
+      "aspUnborn": "An unborn baby is not an adult at risk.",
+      "aspYes": "{name} is {age} and an adult for the purposes of the Adult Support and Protection (Scotland) Act 2007, which applies from 16.",
+      "awiTooYoung": "{name} is {age}. Adults with Incapacity applies from 16.",
+      "awiUnborn": "An unborn baby is not an adult with incapacity.",
+      "awiYes": "{name} is {age} and an adult for the purposes of the Adults with Incapacity (Scotland) Act 2000, which applies from 16.",
+      "bothAvailable": "{name} is {age}, so adult support and protection and child protection are both open to them. The national minimum dataset keeps a separate age category for 16 and 17 year olds precisely so it can be known which route was taken, so choose deliberately rather than by habit.",
+      "cpTooOld": "{name} is {age}. Child protection is for children, which means under 18.",
+      "cpUnborn": "{name} is an unborn baby, and unborn babies are within child protection: a pre-birth child protection planning meeting is the route.",
+      "cpYes": "{name} is {age} and a child, which for child protection means under 18.",
+      "mappaNoAge": "MAPPA is decided by the offence and the risk rather than by age, and no date of birth is recorded for {name}.",
+      "mappaNoAgeWarning": "Record the date of birth. With none, the Annex 3 age band cannot be reported and the Children (Care and Justice) (Scotland) Act 2024 question cannot be answered.",
+      "mappaUnborn": "An unborn baby cannot be a MAPPA subject.",
+      "mappaUnder18": "{name} is {age}. MAPPA has no lower age limit, and Annex 3 Table 6 of the national guidance carries an Under 18 band for registered sex offenders. Under the Children (Care and Justice) (Scotland) Act 2024, under-18s are treated as children across justice processes, which changes how the case is run rather than whether it can be opened.",
+      "mappaYes": "MAPPA is decided by the offence and the risk rather than by age, so {name} is not ruled out on age.",
+      "maracTooYoung": "{name} is {age}. MARAC is an adult victim process, and under-16s route through child protection.",
+      "maracUnborn": "An unborn baby cannot be a MARAC victim.",
+      "maracYes": "{name} is {age}. MARAC is an adult victim process.",
+      "noDateOfBirth": "No date of birth is recorded for {name}, so their age cannot be checked.",
+      "routeAdultProtection": "Open an adult support and protection concern instead.",
+      "routeChildProtection": "Open a child protection concern instead.",
+      "routeRecordDateOfBirth": "Record the date of birth on the person record first."
+    },
     "encrypted": {
       "reason": "This record's content is encrypted to the people the need-to-know rules entitle, and your keys do not open it. This is not a setting someone can change for you: there is no copy of the key held for you to be given. If you need to be on this case, ask the lead to add you, which wraps the key to you from that point on.",
       "title": "You hold no key for this record"
@@ -4791,6 +4819,55 @@
       "text": "This process does not exist in the demo dataset.",
       "title": "Process not found"
     },
+    "open": {
+      "caseTitle": "{process}: {name}",
+      "chooseType": "Which process?",
+      "consequences": {
+        "audit": "The opening is audited with your name.",
+        "chronology": "A process milestone is written to the chronology of everybody the case is about.",
+        "classification": "It is classified {classification} from the derivation rules, not from a picker.",
+        "clocks": "{count, plural, =0 {No statutory clock starts here} one {One statutory clock starts and appears on Home immediately} other {# statutory clocks start and appear on Home immediately}}.",
+        "reference": "The case gets the reference {reference}, opening at the {stage} stage, led by {agency}.",
+        "sharing": "{count, plural, =0 {Nobody is notified at this stage} one {One person is notified, with the lawful basis the matrix names} other {# people are notified, each with the lawful basis the matrix names}}.",
+        "title": "What opening this does"
+      },
+      "createAnyway": "Start a second case anyway",
+      "createAnywayReason": "Why does a second case need to exist?",
+      "createAnywayReasonHint": "A sentence. It is recorded on the new case and in the audit ledger.",
+      "decisionNotStated": "Not yet stated. Record the decision the person may lack capacity for.",
+      "done": {
+        "text": "{reference} is open. {clocks}",
+        "title": "Case opened"
+      },
+      "eligible": "Available",
+      "eventTitle": "{process} case opened, {reference}",
+      "existingLede": "Open the case that exists rather than starting a second one. A second case for the same person is the commonest bad create after a duplicate person record.",
+      "existingTitle": "{name} is already on an open {process} case",
+      "leadReason": "Opened the case and is the lead worker on it.",
+      "needsPermission": "Not your role",
+      "notEligible": "Not available",
+      "notYetAssessed": "Not yet assessed. Recorded when the concern was opened.",
+      "open": "Start a process",
+      "openExisting": "Open {reference}",
+      "repeatLede": "A further MARAC referral within twelve months of the last is a repeat, which is a SafeLives measure this product reports. The previous referral was received on {date}. The flag is set on the new referral; you do not need to remember it.",
+      "repeatTitle": "This is a repeat referral",
+      "shareReason": "{reference} was opened. Shared because the need-to-know matrix entitles this recipient at the opening stage of a {process} case.",
+      "source": "Where did the concern come from?",
+      "sourceAgency": "Which agency?",
+      "sourceHint": "The person or the report, in their own words: Police Scotland adult concern report, a call from the day centre, a neighbour.",
+      "sourceReference": "Their reference, if there is one",
+      "started": "{count, plural, =0 {No clock starts here} one {One clock has started} other {# clocks have started}}",
+      "submit": "Open the case",
+      "summary": "What is the concern?",
+      "summaryHint": "What happened and why it needs a protection process. This is the first thing anybody reads on the case.",
+      "title": "Start a process for {name}",
+      "waitsFor": {
+        "awi": "No statutory clock starts at a capacity concern. The Mental Health Officer report clock runs from notification of a guardianship application.",
+        "cp": "No statutory clock starts at a concern. The 28 day clock to the initial child protection planning meeting starts when the inter-agency referral discussion decides to investigate.",
+        "mappa": "No statutory clock starts at a notification. The review clocks run from the Level 2 or Level 3 meeting being held.",
+        "marac": "No statutory clock starts at a referral. The repeat window and the agency flag expiry both run from the case being heard at MARAC."
+      }
+    },
     "participants": {
       "member": "{role}. Since {date}. {reason}",
       "meta": "{count} on the case",
@@ -4801,6 +4878,28 @@
       "meta": "{count, plural, =0 {Nobody recorded} one {One person} other {# people}} on the case-party register.",
       "role": "{party}. {label} Recorded from the {source}.",
       "title": "Who this case is about"
+    },
+    "permission": {
+      "notYourRole": {
+        "asp": "An adult support and protection inquiry is opened by the council officer, not by your role.",
+        "awi": "An adults with incapacity concern is opened by the Mental Health Officer or adult social work, not by your role.",
+        "cp": "A child protection concern is opened by children and families social work, not by your role.",
+        "mappa": "A MAPPA case is opened by the responsible authorities: police, justice social work or the Scottish Prison Service.",
+        "marac": "A MARAC referral comes from a protocol agency, and your role is not one of them."
+      },
+      "oversight": {
+        "admin": "The system administrator account configures the product and holds no case content, so it does not open processes.",
+        "audit": "Your role reads the audit ledger and does not hold cases, so it does not open processes.",
+        "readOnly": "Your role reads across cases for oversight and does not hold them, so it does not open processes.",
+        "redacted": "Your role sees presence-level information only, so it does not open processes."
+      },
+      "route": {
+        "asp": "Send an adult concern to the council's adult protection team, who will open the inquiry and tell you the reference.",
+        "awi": "Send the concern to the Mental Health Officer service, who will open it and tell you the reference.",
+        "cp": "Send a child concern to children and families social work, who will open it and tell you the reference.",
+        "mappa": "Send the information to the MAPPA coordinator, who will decide whether the person is a MAPPA subject.",
+        "marac": "Ask your agency's MARAC representative to make the referral, or send the concern to the MARAC coordinator."
+      }
     },
     "plans": {
       "columns": {

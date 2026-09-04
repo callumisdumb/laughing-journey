@@ -32,6 +32,22 @@ const KEYS = [
   'unmergeMissing',
   'unmergeAlreadyUndone',
   'unmergeReasonRequired',
+  'householdMissing',
+  'householdAlreadyMember',
+  'householdNotAMember',
+  'householdEndReasonRequired',
+  'householdLabelRequired',
+  'relationshipSelf',
+  'relationshipPersonMissing',
+  'relationshipDuplicate',
+  'relationshipMissing',
+  'relationshipEndReasonRequired',
+  'relationshipEndBeforeStart',
+  'relationshipExclusionUndecided',
+  'processNotYourRole',
+  'processNoSubject',
+  'processNotEligible',
+  'processAlreadyOpen',
 ] as const;
 
 export type WriteErrorCode = (typeof KEYS)[number];

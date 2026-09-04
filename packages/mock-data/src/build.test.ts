@@ -1,4 +1,4 @@
-import { classificationOfShare, datasetSchema, shareIsNoWeakerThanSource } from '@mas/domain';
+import { ageAt, classificationOfShare, datasetSchema, eligibilityFor, shareIsNoWeakerThanSource } from '@mas/domain';
 import { describe, expect, it } from 'vitest';
 import { buildDataset } from './generator/build';
 import { AIDEN } from './scenarios/04-aiden-boyle';
@@ -97,5 +97,26 @@ describe('buildDataset', () => {
         if (age < 4) expect(p.school).toBeUndefined();
       }
     }
+  });
+});
+
+describe('the eligibility cases the demonstration has to be able to show', () => {
+  const data = buildDataset();
+  const now = new Date(data.meta.now);
+
+  it('holds at least one 16 or 17 year old, who is eligible for adult and child protection at once', () => {
+    const young = data.people.filter((p) => p.dateOfBirth && [16, 17].includes(ageAt(p.dateOfBirth, now)));
+    expect(young.length).toBeGreaterThan(0);
+    for (const person of young.slice(0, 3)) {
+      expect(eligibilityFor('asp', person, now).eligible).toBe(true);
+      expect(eligibilityFor('cp', person, now).eligible).toBe(true);
+    }
+  });
+
+  it('holds an unborn baby, who is within child protection and not within adult protection', () => {
+    const unborn = data.people.find((p) => p.lifeStage === 'unborn');
+    expect(unborn).toBeDefined();
+    expect(eligibilityFor('cp', unborn!, now).eligible).toBe(true);
+    expect(eligibilityFor('asp', unborn!, now).eligible).toBe(false);
   });
 });

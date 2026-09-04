@@ -1,0 +1,178 @@
+/*
+ * Starting a process. The choices are the substance, so they get the room: every process is listed
+ * with its answer, including the ones that are not available, because a greyed option that explains
+ * itself teaches the product and a missing one confuses.
+ */
+
+.legend {
+  margin-bottom: 8px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-ink-2);
+}
+
+.choices {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.choice {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 4px 10px;
+  padding: 10px 12px;
+  background: var(--color-paper-0);
+  border: 1px solid var(--color-line-1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.choice:hover {
+  border-color: var(--color-line-2);
+}
+
+.choice:has(input:checked) {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent-1);
+}
+
+.choice:has(input:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+/*
+ * Not available, and saying so. Marked with a dashed border as well as a lighter ground, so the
+ * difference is not carried by colour alone, and never hidden: the reason is the point.
+ */
+.choice[data-blocked='true'] {
+  background: var(--color-paper-2);
+  cursor: default;
+  border-style: dashed;
+}
+
+.choiceBody {
+  display: grid;
+  gap: 2px;
+}
+
+.choiceHead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.choiceReason {
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.choiceWarning {
+  font-size: var(--text-sm);
+  color: var(--color-ink-1);
+  border-inline-start: 3px solid var(--color-risk-high);
+  padding-inline-start: 8px;
+}
+
+.choiceRoute {
+  font-size: var(--text-sm);
+  font-style: italic;
+  color: var(--color-ink-3);
+}
+
+/* The 16 or 17 year old, named at the top rather than left to be inferred from two ticks. */
+.youngAdult {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin: 0;
+  padding: 10px 14px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-1);
+  background: var(--color-risk-medium-soft);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-inline-start: 3px solid var(--color-risk-medium);
+}
+
+.youngAdult svg {
+  flex: none;
+  color: var(--color-risk-medium);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: 12px 16px;
+  align-items: start;
+}
+
+.existing,
+.repeat {
+  padding: 10px 14px;
+  background: var(--color-risk-high-soft);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-md);
+}
+
+.existingTitle {
+  margin: 0 0 4px;
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.existing ul,
+.repeat p {
+  margin: 6px 0;
+  font-size: var(--text-sm);
+  padding-inline-start: 18px;
+}
+
+.repeat p {
+  padding-inline-start: 0;
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+/* What opening does, computed rather than described, immediately above the button that does it. */
+.consequences {
+  padding: 10px 14px;
+  background: var(--color-accent-soft);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-inline-start: 3px solid var(--color-accent-1);
+}
+
+.consequencesTitle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 4px;
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.consequencesTitle svg {
+  flex: none;
+  color: var(--color-accent-1);
+}
+
+.consequences ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  padding-inline-start: 18px;
+}
+
+.clockList {
+  display: block;
+  font-style: italic;
+  color: var(--color-ink-3);
+}

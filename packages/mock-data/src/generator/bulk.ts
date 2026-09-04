@@ -88,12 +88,22 @@ export function seedBulkPopulation(ctx: BuildContext, householdCount: number): B
       members.push(p);
       return p;
     };
-    const addChild = (parent: Person, familyName: string): Person => {
+    /*
+     * `minAge` exists for one reason: the 16 and 17 year old.
+     *
+     * A person of that age is eligible for adult support and protection and for child protection at
+     * the same time, and the ASP national minimum dataset keeps a distinct age category so it can be
+     * known which route they took. It is the most interesting eligibility case the product has, and
+     * a uniform draw over 0 to 17 across 58 households happened to produce none at all, so the
+     * demonstration could not show it. Every fourth family household now has one deliberately
+     * (D-138).
+     */
+    const addChild = (parent: Person, familyName: string, minAge = 0): Person => {
       const parentAge = differenceInYears(ctx.now, parseISO(parent.dateOfBirth ?? '1980-01-01'));
       const maxAge = Math.min(17, parentAge - 18);
-      if (maxAge < 0) return parent;
+      if (maxAge < minAge) return parent;
       const sex = ctx.rng.chance(0.5) ? 'female' : 'male';
-      const dob = randomDob(ctx, 0, maxAge);
+      const dob = randomDob(ctx, minAge, maxAge);
       const p = makePerson(ctx, {
         givenName: ctx.rng.pick(sex === 'female' ? pool.female : pool.male),
         familyName,
@@ -122,13 +132,16 @@ export function seedBulkPopulation(ctx: BuildContext, householdCount: number): B
         break;
       }
       case 'family': {
-        const mother = addAdult('female', 24, 48);
+        // The parents are old enough for a 16 or 17 year old where one is wanted, so the floor is
+        // reachable rather than silently dropped by the `maxAge < minAge` guard.
+        const wantsYoungAdult = h % 4 === 0;
+        const mother = addAdult('female', wantsYoungAdult ? 34 : 24, 48);
         const father = addAdult('male', 25, 52);
         relate(ctx, mother.id, father.id, 'partner-of');
         const n = ctx.rng.int(1, 3);
         const kids: Person[] = [];
         for (let i = 0; i < n; i += 1) {
-          const c = addChild(mother, family);
+          const c = addChild(mother, family, wantsYoungAdult && i === 0 ? 16 : 0);
           if (c !== mother) {
             relate(ctx, father.id, c.id, 'father-of');
             kids.push(c);

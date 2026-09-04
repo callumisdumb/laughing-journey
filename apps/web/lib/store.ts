@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, contextFor, detailLevelLabel, exclusionsRestingOn, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type Dataset, type PersonMerge, type Process, type Relationship, type User } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, nextReference, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Person, type PersonMerge, type Process, type Relationship, type User } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -106,6 +106,20 @@ interface AppState {
    */
   saveRelationship: (relationship: Relationship, decisions?: PartyDecision[]) => WriteResult;
   endRelationship: (relationshipId: string, to: string, reason: string, decisions: PartyDecision[]) => WriteResult;
+  /**
+   * Opening a process, which is the moment the product's central promise either happens or does not.
+   *
+   * Everything in `docs/RECORDS.md` section 4.4 or the create fails cleanly: the reference, the
+   * opening stage and its history entry, the clocks the trigger starts, the classification from the
+   * derivation rules, the case-role register, the notifications with their lawful basis, a
+   * chronology milestone on every subject and the audit entry.
+   */
+  openProcess: (request: OpenProcessRequest) => WriteResult & { process?: Process };
+}
+
+export interface OpenProcessRequest extends OpeningInput {
+  /** Set where an open case of the same type already exists and a second is being opened anyway. */
+  secondCaseReason?: string;
 }
 
 /** A decision about whether an exclusion the change touches still stands, and why. */
@@ -765,6 +779,86 @@ export const useAppStore = create<AppState>((set, get) => ({
       targetLabel: label,
       reason,
     });
+  },
+  openProcess: (request) => {
+    const { config, data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+
+    const decision = canOpenProcess(user.roleId, request.type);
+    if (!decision.allowed) return { ok: false, errors: ['processNotYourRole'], nearMatches: [], effects: [] };
+
+    const subjects = request.subjectIds.map((id) => data.people.find((p) => p.id === id)).filter((p): p is Person => p !== undefined);
+    if (subjects.length === 0) return { ok: false, errors: ['processNoSubject'], nearMatches: [], effects: [] };
+
+    const now = get().now();
+    for (const subject of subjects) {
+      if (!eligibilityFor(request.type, subject, now).eligible) return { ok: false, errors: ['processNotEligible'], nearMatches: [], effects: [] };
+    }
+
+    // A second open case of the same type is possible and takes an explicit reason, because it is
+    // the commonest bad create after a duplicate person record.
+    const existing = request.subjectIds.flatMap((id) => openProcessesOfType(data, id, request.type));
+    if (existing.length > 0 && (request.secondCaseReason ?? '').trim().length < 10) {
+      return { ok: false, errors: ['processAlreadyOpen'], nearMatches: [], effects: [] };
+    }
+
+    const at = request.at || now.toISOString();
+    const byName = `${user.givenName} ${user.familyName}`;
+    const reference = nextReference(data.processes, request.type, now);
+    const { classification, restricted } = openingClassification(request.type);
+    const subjectNames = subjects.map((p) => `${p.givenName} ${p.familyName}`).join(', ');
+
+    // The clocks the trigger starts, built before the record so a refused write leaves nothing
+    // counting down against a case that does not exist.
+    const clocks: ClockTrigger[] = openingClockRuleIds(request).map((ruleId) => ({ id: get().newId('clk'), ruleId, triggeredAt: at }));
+
+    const withClocks = buildOpeningProcess(
+      {
+        id: get().newId('prc'),
+        reference,
+        title: t('processes.open.caseTitle', { process: processLabel(request.type), name: subjectNames }),
+        subjectIds: request.subjectIds,
+        leadAgency: user.agency,
+        leadUserId: user.id,
+        stage: OPENING_STAGE[request.type],
+        stageHistory: [{ stage: OPENING_STAGE[request.type], at, byUserId: user.id, byName, note: request.summary }],
+        classification,
+        accessRestriction: restricted ? 'restricted' : 'none',
+        members: [{ userId: user.id, caseRole: roleLabel(user.roleId), agency: user.agency, since: at.slice(0, 10), reason: t('processes.open.leadReason') }],
+        clocks,
+        openedAt: at,
+      },
+      { ...request, at, byName, byUserId: user.id },
+    );
+
+    const shares = notifyShares(withClocks, config, t('processes.open.shareReason', { reference, process: processLabel(request.type) }));
+
+    const result = get().write({
+      collection: 'processes',
+      record: withClocks,
+      intent: 'create',
+      act: 'create',
+      targetType: 'process',
+      targetLabel: reference,
+      processId: withClocks.id,
+      reason: request.secondCaseReason,
+      clocks,
+      clocksOn: withClocks.id,
+      shares,
+      event: {
+        eventType: 'process.referral',
+        significance: 'high',
+        visibility: 'integrated',
+        title: t('processes.open.eventTitle', { process: processLabel(request.type), reference }),
+        detail: request.summary,
+        subjectIds: request.subjectIds,
+        occurredAt: at,
+        linkedProcessIds: [withClocks.id],
+      },
+    });
+
+    return result.ok ? { ...result, process: withClocks } : result;
   },
   newId: (prefix) => {
     counter += 1;

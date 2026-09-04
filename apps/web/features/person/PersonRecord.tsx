@@ -3,7 +3,7 @@
 import { VIEWS_KINDS, ageLabel, agencyShort, detailLevelLabel, evidenceKindLabel, formatDate, formatDateTime, packItemKindLabel, planTypeLabel, processShort, processStatusLabel, roleLabel, resolvePersonId, shareStatusLabel, stageLabel, standingMerges, viewsKindLabel, type Person, type Process, type ViewsRecord } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Tabs, Table, TableWrap, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
-import { AlertTriangle, ArrowUpRight, Flag, Languages, Lock, Merge, Plus, RotateCcw, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, ArrowUpRight, Flag, FolderPlus, Languages, Lock, Merge, Plus, RotateCcw, ShieldAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
@@ -21,6 +21,7 @@ import { HouseholdPanel } from './HouseholdPanel';
 import { NetworkGraph } from './NetworkGraph';
 import { NetworkPanel } from './NetworkPanel';
 import { MergeDialog, UnmergeDialog } from './MergeDialog';
+import { StartProcessDialog } from './StartProcessDialog';
 import styles from './PersonRecord.module.css';
 
 /** Argument bag for t.rich, typed so a React node (the bold lead-in of a header fact) can fill an argument. */
@@ -69,6 +70,7 @@ export function PersonRecord({ personId }: { personId: string }) {
   const [reason, setReason] = useState('');
   const [recording, setRecording] = useState(false);
   const [merging, setMerging] = useState(false);
+  const [starting, setStarting] = useState(false);
   const [unmerging, setUnmerging] = useState<string | null>(null);
   const standing = standingMerges(data, personId);
   const [voice, setVoice] = useState<{ kind: ViewsRecord['kind']; method: string; content: string }>(() => ({ kind: 'child-voice', method: t('person.recordViews.methodDefault'), content: '' }));
@@ -226,6 +228,9 @@ export function PersonRecord({ personId }: { personId: string }) {
           </p>
         ) : null}
         <div className={styles.recordActions}>
+          <Button size="sm" variant="primary" icon={<FolderPlus size={14} aria-hidden="true" />} onClick={() => setStarting(true)} data-testid="start-process">
+            {t('processes.open.open')}
+          </Button>
           <Button size="sm" variant="secondary" icon={<Merge size={14} aria-hidden="true" />} onClick={() => setMerging(true)} data-testid="merge-open">
             {t('person.merge.open')}
           </Button>
@@ -540,6 +545,7 @@ export function PersonRecord({ personId }: { personId: string }) {
         </div>
       </Dialog>
 
+      {starting ? <StartProcessDialog person={person} open onClose={() => setStarting(false)} /> : null}
       {merging ? <MergeDialog person={person} open onClose={() => setMerging(false)} /> : null}
       {unmerging ? <UnmergeDialog mergeId={unmerging} open onClose={() => setUnmerging(null)} /> : null}
     </div>
