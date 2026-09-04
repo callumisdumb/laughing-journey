@@ -34,7 +34,7 @@ test.describe('the working calendar', () => {
     const list = page.getByRole('list', { name: /National bank holidays for 2026/ });
     // Scotland has these and England and Wales does not.
     await expect(list.getByText('2nd January')).toBeVisible();
-    await expect(list.getByText("St Andrew's Day")).toBeVisible();
+    await expect(list.getByText(/St Andrew.s Day/)).toBeVisible();
     await expect(list.getByText('World Cup bank holiday')).toBeVisible();
     // The summer holiday is the first Monday in August, not the last.
     await expect(list.getByText('03 Aug 2026')).toBeVisible();
@@ -101,7 +101,7 @@ test.describe('the working calendar', () => {
 
     await page.getByTestId('calendar-year').selectOption('2026');
     // Scoped to the national list: the twelve month view names the same holiday.
-    const row = page.getByRole('list', { name: /National bank holidays for 2026/ }).getByRole('listitem').filter({ hasText: "St Andrew's Day" });
+    const row = page.getByRole('list', { name: /National bank holidays for 2026/ }).getByRole('listitem').filter({ hasText: /St Andrew.s Day/ });
     await row.getByRole('switch').uncheck();
     // With it unobserved, the same count lands on the Monday.
     await expect(page.getByTestId('calculator-answer')).toContainText('30 Nov 2026');

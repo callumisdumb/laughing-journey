@@ -58,7 +58,7 @@ describe('a working day is four things at once', () => {
 
   it('is not a national holiday the organisation observes', () => {
     expect(isWorkingDay('2026-11-30', calendar)).toBe(false);
-    expect(dayVerdict('2026-11-30', calendar).title).toBe("St Andrew's Day");
+    expect(dayVerdict('2026-11-30', calendar).title).toBe('St Andrew’s Day');
   });
 
   it('is a national holiday the organisation does not observe', () => {
@@ -168,11 +168,17 @@ describe('the calendar knows its own bounds', () => {
   });
 
   it('refuses the day before coverage starts rather than guessing', () => {
-    expect(() => dayVerdict('2024-12-31', calendar)).toThrow(CalendarCoverageError);
+    // The feed as captured on 03 Sep 2026 starts at 2019, so New Year's Eve 2018 is the first day
+    // the calendar will not answer for.
+    expect(() => dayVerdict('2018-12-31', calendar)).toThrow(CalendarCoverageError);
+    expect(dayVerdict('2019-01-01', calendar).working).toBe(false);
   });
 
   it('refuses the day after coverage ends rather than guessing', () => {
-    expect(() => dayVerdict('2028-12-27', calendar)).toThrow(CalendarCoverageError);
+    // Coverage is the span of years the feed publishes, not the span of holidays: the last week of
+    // December 2028 has no holiday after Boxing Day and is an ordinary set of working days.
+    expect(dayVerdict('2028-12-27', calendar).working).toBe(true);
+    expect(() => dayVerdict('2029-01-01', calendar)).toThrow(CalendarCoverageError);
   });
 
   it('refuses a count that walks out of coverage, rather than answering weekends only', () => {

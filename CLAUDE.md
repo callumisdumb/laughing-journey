@@ -58,7 +58,7 @@ pnpm docs:data-model     # regenerate docs/DATA-MODEL.md from the Zod schemas
 pnpm contact-sheet       # regenerate docs/CONTACT-SHEET.md, the HTML gallery and HANDOVER section 5
 pnpm messages:merge <ns> # fold packages/messages/staging fragments into the catalogue
 pnpm demo:check          # the shooting script still fits its slots (also run by pnpm lint)
-pnpm holidays:sync       # refresh the bank holiday fixture from the gov.uk feed, at maintenance time only
+pnpm holidays:sync       # refresh the bank holiday fixture from the gov.uk feed, at maintenance time only; --from <path> derives from a captured response instead of fetching
 ```
 
 ## Demo affordances
