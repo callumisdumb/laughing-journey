@@ -63,6 +63,14 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - A reason is required on a name, a date of birth or a CHI number and not on a telephone number, because those are what other agencies match on (D-154).
 - A death is a flow with named consequences, computed by the function that performs them: each case the person is a subject of closes with its own return's reason, and a case they are only a party to is flagged for review rather than shut (D-155). `packages/domain/src/people/death.ts`.
 
+### Connectors, in both directions
+- The write capability matrix is per connector and deliberately asymmetric (D-157). ECLIPSE is full two-way, CareFirst is batch, SEEMIS is a flag and an alert, EMIS Web is a coded flag after accreditation and marked unverified, iVPD is notify-only, ViSOR is never. It is on each connector card. `packages/domain/src/connectors/write.ts`.
+- Every outbound write goes through an outbox with a visible delivery state (D-159). Sent is not acknowledged, a failure is surfaced rather than retried into silence, and the attempt count survives a retry. `packages/domain/src/connectors/outbox.ts`.
+- Nothing writes automatically. A person authorises, with a purpose and a lawful basis, having seen the payload in the target system's own field names (D-160).
+- The idempotency key is built from what the write is about, which is what makes a retry a retry and what catches the echo when the far side pushes our own write back (D-161).
+- Conflicts go to a person, decided by a written-down authority table rather than by recency (D-162). The reconciliation screen is on each connector's own tab.
+- The outbound payload is composed in the browser and relayed as ciphertext, so the encryption claim survives the feature (D-163). `packages/connectors/src/gateway.test.ts` asserts it, mirroring the inbound test.
+
 ### Security
 - The claim is exact and the product never exceeds it: record content is end to end encrypted, the product as a whole is not, and every record is encrypted to exactly the principals the need-to-know rules entitle rather than to one organisational key (D-065). `docs/THREAT-MODEL.md` ranks the adversaries and `docs/SECURITY.md` section 10 is the rule that no screen may claim more.
 - Entitlement is a key, not a boolean: the resolver returns a wrapping list, `canSee` was deleted, and a test walks every source file to make sure nothing reintroduces a content gate (D-066).

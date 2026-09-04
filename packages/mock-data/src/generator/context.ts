@@ -37,6 +37,8 @@ export function createContext(seed: string, nowIso: string): BuildContext {
     sharingRecords: [],
     informationRequests: [],
     connectorEvents: [],
+    outbox: [],
+    inbound: [],
     audit: [],
   };
   return {

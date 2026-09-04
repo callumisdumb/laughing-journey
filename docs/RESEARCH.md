@@ -468,3 +468,23 @@ Closing a case writes a coded reason, and a coded reason in a national return is
 | Adults with incapacity | Locally agreed list, labelled as local in the interface | **No national coded closure list found.** The AWI statistics published by the Office of the Public Guardian and the Mental Welfare Commission count orders granted, in force and expired rather than local authority case closures by reason. | `TODO(verify)` |
 
 The locally agreed list is `LOCAL_CLOSURE_REASONS` in `packages/domain/src/processes/close.ts`: risk reduced, support in place, person moved away, person died, declined further involvement, transferred to another area, other reason. The close dialog states on screen that the list is a partnership's own and that nothing chosen from it goes into a national return. Where a partnership has its own list, it belongs in configuration. A fabricated national-looking list would demonstrate better and be a lie about a counted figure, which is the one thing a returns-aware product must not do (D-150).
+
+## 8. Writing into partner systems (04 Sep 2026)
+
+Reading a source system and writing to one are different questions with different answers, and the second answer is usually "less than you think". The ceilings below are what a third party product would realistically be permitted to write, which is not the same as what the vendor's API technically exposes.
+
+| System | Write ceiling | Basis | Confidence |
+|---|---|---|---|
+| ECLIPSE (Civica), Mosaic, Liquidlogic, Swift | Full two-way | Same data controller as the platform's host: the council. Episode creation, stage change, allocation, closure. | High |
+| CareFirst (OLM) | Batch only | Legacy and no longer under active development. A scheduled file exchange is what a partnership would actually get. | Medium |
+| SEEMIS | Wellbeing flag and named-person alert | Education management information system. Writing narrative into a pupil record from outside is not a realistic ask. | Medium |
+| EMIS Web | Coded flag plus a task or document, **after accreditation** | The EMIS Partner Programme and its transaction interface do permit writes, gated behind accreditation covering security, privacy and clinical safety, with a named Clinical Safety Officer, a hazard log, penetration testing and information governance sign-off. Never free clinical narrative authored by a non-clinician. | `TODO(verify)` |
+| TrakCare, Morse | Alert only | | Medium |
+| iVPD | **Notify only, not write** | Police Scotland internal system. A third party product writing into a vulnerable persons database is not something a police information governance lead would agree to. Outbound is modelled as a notification into a police queue carrying a reference. | High |
+| ViSOR, MAPPS | **Never** | The reference is held and read. Nothing is written. | High |
+| OPG | None | Lookup only in both directions. | High |
+| SCRA | Referral submission | A referral to the Reporter is a legitimate outbound artefact with its own form. | Medium |
+
+**The EMIS route is the one marked for verification and it matters which way.** The NHS England IM1 pairing route is an England programme with its own commercial and technical framework. The Scottish route runs through the EMIS Partner Programme and national contracting arrangements, and this project has not confirmed its current shape. The product therefore states the ceiling as unverified on the connector card rather than asserting a route. Nothing in the product depends on the answer: the ceiling is configuration, and a partnership that has the accreditation raises it (D-157).
+
+The wider point is a commercial one. Anybody who has run an integration programme has watched a supplier claim everything writes and then discover, eighteen months in, that the police system was never going to accept a write. Saying iVPD is notify-only in the first minute buys more credibility than it costs.

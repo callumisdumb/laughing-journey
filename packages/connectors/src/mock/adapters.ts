@@ -1,5 +1,5 @@
 import { t } from '@mas/messages';
-import { AIDEN } from '@mas/mock-data';
+import { AIDEN, MARION } from '@mas/mock-data';
 import { MockAdapter, type MockAdapterSpec } from './base';
 
 const aiden = { personId: AIDEN.aiden, displayName: 'BOYLE, Aiden', dateOfBirth: '2019-03-14' };
@@ -42,6 +42,25 @@ const specs: MockAdapterSpec[] = [
     events: [],
     matches: [{ ...aiden, externalId: 'ECL-119203', address: '12 Brae Wynd, Craiglarrick QX5 3RT', confidence: 'exact', source: { 'Client ref': 'ECL-119203', 'Team': 'Children and Families, Ardvale' } }],
     registers: () => ({ register: t('connectors.registers.eclipse.name'), checkedAt: new Date().toISOString(), found: true, entries: [{ label: t('connectors.registers.eclipse.status'), value: 'Registered 12 Jun 2026' }, { label: t('connectors.registers.eclipse.categories'), value: 'Emotional abuse; physical abuse' }, { label: t('connectors.registers.eclipse.leadProfessional'), value: 'Janet Kerr, 01000 456789' }] }),
+    /*
+     * What the council system says it holds, which deliberately does not match what we last wrote.
+     *
+     * A reconciliation screen with nothing to reconcile demonstrates nothing, and the divergences
+     * here are the three kinds that actually occur: a name the source has updated and we have not
+     * (theirs to keep), a stage we have moved and the source has not (ours to write out), and an
+     * allocated worker both sides have changed, which is the one a person has to decide.
+     */
+    held: {
+      [MARION.marion]: {
+        'Client.Name': 'Marion Fraser',
+        'Client.DateOfBirth': '1947-02-19',
+        'Episode.Type': 'ASP',
+        'Episode.OpenedDate': '2026-08-21',
+        'Episode.Stage': 'inquiry',
+        'Episode.AllocatedWorker': 'Duty team, Portlennan',
+        'Episode.CaseReference': 'ASP-2026-0217',
+      },
+    },
   },
   {
     id: 'carefirst',

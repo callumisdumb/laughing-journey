@@ -16,6 +16,7 @@ import { accessForUser, clocksForProcess, membersByAgency, personById, userName 
 import { useAppStore, useConfig, useCurrentUser, useData, useNow, useVault } from '@/lib/store';
 import { readProcessDetail } from '@/lib/vault';
 import { AddPlanDialog } from './AddPlanDialog';
+import { OutboundStatus } from './OutboundStatus';
 import { CloseProcessDialog, ReopenProcessDialog } from './CloseProcessDialog';
 import { RegisterEntryDialog } from './forms/RegisterEntryDialog';
 import { AspPanels } from './panels/AspPanels';
@@ -136,6 +137,14 @@ export function ProcessScreen({ processId }: { processId: string }) {
           </p>
         ) : null}
         <h1 className={styles.title}>{access.level === 'none' ? t('processes.head.restrictedTitle', { process: processLabel(process.type) }) : process.title}</h1>
+        {/*
+          Whether the other agency actually has this.
+          "Written to the council social work system, acknowledged 14:32, reference CF-2026-8871" is
+          the line that convinces a social work team leader. Its opposite matters more: a record
+          whose write has not been acknowledged says so, in plain words, rather than looking exactly
+          like one that has.
+        */}
+        {access.level === 'full' ? <OutboundStatus processId={process.id} /> : null}
         {access.level !== 'none' ? (
           <div className={styles.subjects}>
             {subjects.map((s) => (

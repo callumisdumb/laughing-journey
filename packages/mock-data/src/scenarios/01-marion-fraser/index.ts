@@ -7,7 +7,7 @@ import { officialSensitive } from '@mas/domain';
  */
 import type { Agency, Process } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
-import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeHousehold, makeLawfulBasis, makeMeeting, makePerson, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
+import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeInbound, makeOutbound, makeHousehold, makeLawfulBasis, makeMeeting, makePerson, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
 
 export const MARION = {
@@ -510,5 +510,111 @@ export function seedMarionFraser(ctx: BuildContext): void {
     externalRef: 'EMIS-OOH-2026-08-30-4471',
     sourcePayload: { patient: 'FRASER, Marion', practice: 'Portlennan Medical Practice', source: 'Out-of-hours encounter report filed to the practice record', clinician: 'OOH GP (telephone)', code: 'Telephone consultation: anxiety', note: 'Phoned NHS 24 at 18:50 distressed; says nephew took her card "for safe keeping" and she has no money for the weekend; no physical complaint; advice given; practice to follow up Monday' },
     mapped: { eventType: 'health.consultation', title: 'Out-of-hours GP telephone consultation: distressed, "no money for the weekend"', detail: 'Marion phoned NHS 24 at 18:50, distressed, saying her nephew had taken her card "for safe keeping" and she had no money for the weekend. No physical complaint. Advice given; practice asked to follow up on Monday.', occurredAt: at('2026-08-30', '19:05'), hasTime: true, significance: 'high', mappingRule: 'emis.consultation.safeguarding-context' },
+  });
+
+  /*
+   * The outbox, carrying one of each state that matters.
+   *
+   * A product that only ever shows the happy path is a product nobody believes about the unhappy
+   * one, and the unhappy path is the whole reason the outbox exists: if Person360 believes the
+   * inquiry is open in the council's system and the write failed, a worker looking only at that
+   * system sees nothing.
+   */
+  makeOutbound(ctx, {
+    id: 'out_marion_episode',
+    connectorId: 'eclipse',
+    intent: 'open-process',
+    idempotencyKey: 'eclipse:open-process:prc_asp_marion',
+    subjectPersonId: marion.id,
+    processId: MARION.asp,
+    payload: [
+      { field: 'Episode.Type', value: 'ASP', from: 'process.type' },
+      { field: 'Episode.OpenedDate', value: '2026-08-21', from: 'process.openedAt' },
+      { field: 'Episode.Stage', value: 'inquiry', from: 'process.stage' },
+      { field: 'Episode.AllocatedWorker', value: name(co), from: 'process.leadUserId' },
+      { field: 'Episode.CaseReference', value: 'ASP-2026-0217', from: 'process.reference' },
+    ],
+    state: 'acknowledged',
+    proposedAt: at('2026-08-21', '10:12'),
+    proposedByName: name(co),
+    authorisation: { at: at('2026-08-21', '10:14'), byUserId: co, byName: name(co), purpose: 'So the inquiry exists in the council record and the duty team is not asked to enter it a second time.', lawfulBasisId: 'lb_asp_duty' },
+    sentAt: at('2026-08-21', '10:14'),
+    acknowledgedAt: at('2026-08-21', '10:15'),
+    externalRef: 'ECLIPSE-RION',
+    relayedBytes: 604,
+  });
+  makeOutbound(ctx, {
+    id: 'out_marion_stage',
+    connectorId: 'eclipse',
+    intent: 'stage-change',
+    idempotencyKey: 'eclipse:stage-change:prc_asp_marion',
+    subjectPersonId: marion.id,
+    processId: MARION.asp,
+    payload: [
+      { field: 'Episode.CaseReference', value: 'ASP-2026-0217', from: 'process.reference' },
+      { field: 'Episode.Stage', value: 'investigation', from: 'process.stage' },
+    ],
+    state: 'proposed',
+    proposedAt: at('2026-09-01', '09:20'),
+    proposedByName: name(co),
+  });
+  // The failure. A GP practice flag that did not land, so nobody at the practice has been told.
+  makeOutbound(ctx, {
+    id: 'out_marion_gp_flag',
+    connectorId: 'emis-web',
+    intent: 'flag',
+    idempotencyKey: 'emis-web:flag:per_marion_fraser',
+    subjectPersonId: marion.id,
+    processId: MARION.asp,
+    payload: [
+      { field: 'Problem.Code', value: 'Adult support and protection inquiry open (fictional code 9998004)', from: 'process.type' },
+      { field: 'Task.Assignee', value: 'Portlennan Medical Practice, practice safeguarding lead', from: 'connector.route' },
+      { field: 'Task.Summary', value: 'ASP inquiry open. Records request under section 10 to follow.', from: 'process.reference' },
+    ],
+    state: 'failed',
+    proposedAt: at('2026-08-21', '10:20'),
+    proposedByName: name(co),
+    authorisation: { at: at('2026-08-21', '10:22'), byUserId: co, byName: name(co), purpose: 'So the practice knows an inquiry is open before the records request arrives.', lawfulBasisId: 'lb_asp_duty' },
+    sentAt: at('2026-08-21', '10:22'),
+    failure: { at: at('2026-08-21', '10:23'), reason: 'Gateway rejected: practice not yet enrolled in the partner programme for write-back.' },
+    attempts: 2,
+    relayedBytes: 512,
+  });
+
+  /*
+   * Inbound: a case opened in the council system that has not been raised here, and our own episode
+   * write coming back on the same feed. The second one is the echo, and it is in the seed precisely
+   * so the defence against it is demonstrable rather than described.
+   */
+  makeInbound(ctx, {
+    id: 'inb_eclipse_new',
+    connectorId: 'eclipse',
+    kind: 'process-proposal',
+    receivedAt: at('2026-09-03', '08:40'),
+    externalRef: 'ECL-EP-2026-4471',
+    subjectHint: { displayName: 'FRASER, Marion', dateOfBirth: '1947-02-19', externalId: 'ECL-119203' },
+    subjectPersonId: marion.id,
+    payload: [
+      { field: 'Episode.Type', value: 'ASP', from: 'ECLIPSE' },
+      { field: 'Episode.OpenedDate', value: '2026-09-03', from: 'ECLIPSE' },
+      { field: 'Episode.Stage', value: 'inquiry', from: 'ECLIPSE' },
+      { field: 'Episode.AllocatedWorker', value: 'Duty team, Portlennan', from: 'ECLIPSE' },
+    ],
+  });
+  makeInbound(ctx, {
+    id: 'inb_eclipse_echo',
+    connectorId: 'eclipse',
+    kind: 'echo',
+    receivedAt: at('2026-08-21', '10:31'),
+    externalRef: 'ECLIPSE-RION',
+    echoOf: 'eclipse:open-process:prc_asp_marion',
+    subjectHint: { displayName: 'FRASER, Marion', dateOfBirth: '1947-02-19', externalId: 'ECL-119203' },
+    subjectPersonId: marion.id,
+    payload: [
+      { field: 'Episode.CaseReference', value: 'ASP-2026-0217', from: 'ECLIPSE' },
+      { field: 'Episode.Stage', value: 'inquiry', from: 'ECLIPSE' },
+    ],
+    status: 'reconciled',
+    processId: MARION.asp,
   });
 }

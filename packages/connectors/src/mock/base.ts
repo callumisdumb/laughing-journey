@@ -1,6 +1,6 @@
-import type { Agency, ConnectorHealth, ConnectorId, EventType, Significance } from '@mas/domain';
+import { acceptsIntent, proposalRefusals, reconcile, WRITE_CAPABILITIES, type Agency, type ConnectorHealth, type ConnectorId, type EventType, type OutboundIntent, type PayloadField, type ReconciliationReport, type Significance } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
-import type { ConnectorAdapter, ConnectorCapability, ConnectorNarrative, DateWindow, ExternalEvent, ExternalPersonMatch, PersonQuery, ProcessOutcome, PushReceipt, RecordFlag, RegisterResult, SubjectRef } from '../adapter';
+import type { AuthorisedWrite, ConnectorAdapter, ConnectorCapability, ConnectorNarrative, DateWindow, ExternalEvent, ExternalPersonMatch, PersonQuery, ProcessOutcome, PushReceipt, RecordFlag, RegisterResult, SubjectRef, WriteProposal, WriteReceipt } from '../adapter';
 import { guard, healthFor, markSynced, simulateLatency } from './simulation';
 
 /** One row of a source-to-platform mapping table. Rendered on the Connectors screen and in mapping.md. */
@@ -47,6 +47,14 @@ export interface MockAdapterSpec {
   events: FixtureEvent[];
   matches: FixtureMatch[];
   registers?: (subject: SubjectRef) => RegisterResult;
+  /**
+   * What this source system says it holds for a subject, in its own field names.
+   *
+   * The reconciliation screen compares this against what Person360 believes the source holds, so the
+   * fixture is deliberately allowed to disagree: a reconciliation screen with nothing to reconcile
+   * demonstrates nothing, and every real two-way integration lives or dies on this screen.
+   */
+  held?: Record<string, Record<string, string>>;
 }
 
 /** `emis-web` to `emisWeb`, `emis.consultation.safeguarding-context` to `emisConsultationSafeguardingContext`: a catalogue key segment from an id. */
@@ -146,6 +154,56 @@ export class MockAdapter implements ConnectorAdapter {
     guard(this.id);
     await simulateLatency(`${this.id}:register:${subject.personId}`);
     return this.spec.registers(subject);
+  }
+
+  /**
+   * What would be written, mapped, with the refusals a person needs to see before authorising.
+   *
+   * The adapter refuses rather than the screen, because the ceiling is a fact about the far side and
+   * a screen that decided for itself would be a second answer to the same question.
+   */
+  async proposeWrite(intent: OutboundIntent, payload: PayloadField[]): Promise<WriteProposal> {
+    guard(this.id);
+    await simulateLatency(`${this.id}:propose:${intent}`);
+    return { connector: this.id, intent, payload, refusals: proposalRefusals({ connectorId: this.id, intent, payload }) };
+  }
+
+  /**
+   * Submit an authorised write. What arrives here is a byte count, not a payload.
+   *
+   * That is the encryption boundary holding in the outbound direction: the payload was composed in
+   * the entitled user's browser and encrypted to this gateway's key before the platform saw it, so
+   * the mock API is handed ciphertext and a length. `adapters.test.ts` asserts it.
+   */
+  async submitWrite(authorised: AuthorisedWrite): Promise<WriteReceipt> {
+    guard(this.id);
+    if (!acceptsIntent(this.id, authorised.write.intent)) {
+      return { accepted: false, at: new Date().toISOString(), reason: t('connectors.write.refused', { system: this.systemName, ceiling: WRITE_CAPABILITIES[this.id].ceiling }) };
+    }
+    await simulateLatency(`${this.id}:submit:${authorised.write.idempotencyKey}`);
+    // The far side's own identifier, derived from the idempotency key so the same logical write
+    // returns the same reference. That is what makes a retry a retry rather than a second episode.
+    const suffix = authorised.write.idempotencyKey.split(':').at(-1)?.slice(-4).toUpperCase() ?? '0000';
+    return { accepted: true, at: new Date().toISOString(), externalRef: `${this.id.toUpperCase()}-${suffix}` };
+  }
+
+  /** What the source says it holds, against what we believe it holds. */
+  async reconcile(subject: SubjectRef): Promise<ReconciliationReport> {
+    guard(this.id);
+    await simulateLatency(`${this.id}:reconcile:${subject.personId}`);
+    return reconcile({
+      connectorId: this.id,
+      subjectPersonId: subject.personId,
+      externalRef: subject.externalId,
+      checkedAt: new Date().toISOString(),
+      ours: {},
+      theirs: this.spec.held?.[subject.personId] ?? {},
+    });
+  }
+
+  /** What this source system says it holds, for the reconciliation screen to compare against. */
+  held(subject: SubjectRef): Record<string, string> {
+    return this.spec.held?.[subject.personId] ?? {};
   }
 
   async flagRecord(subject: SubjectRef, flag: RecordFlag): Promise<PushReceipt> {

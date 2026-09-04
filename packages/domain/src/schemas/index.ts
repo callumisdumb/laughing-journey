@@ -8,5 +8,6 @@ export * from './action-plan';
 export * from './sharing';
 export * from './audit';
 export * from './connector';
+export * from './outbox';
 export * from './config';
 export * from './dataset';

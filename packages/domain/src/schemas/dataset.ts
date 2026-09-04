@@ -3,6 +3,7 @@ import { actionSchema, planSchema, riskAssessmentSchema, viewsRecordSchema } fro
 import { auditEntrySchema } from './audit';
 import { chronologyAnalysisSchema, chronologyEventSchema } from './chronology';
 import { connectorEventSchema } from './connector';
+import { inboundChangeSchema, outboundWriteSchema } from './outbox';
 import { meetingSchema } from './meeting';
 import { addressSchema, householdSchema, organisationSchema, personMergeSchema, personSchema, relationshipSchema, teamSchema } from './person';
 import { processSchema } from './process';
@@ -32,6 +33,14 @@ export const datasetSchema = z.object({
   sharingRecords: z.array(sharingRecordSchema),
   informationRequests: z.array(informationRequestSchema),
   connectorEvents: z.array(connectorEventSchema),
+  /**
+   * Outbound writes awaiting authorisation, in flight, acknowledged or failed. Persisted rather
+   * than held in memory, because a write whose state is lost on a reload is a write nobody can be
+   * sure went out, and that is the failure mode this whole mechanism exists to prevent.
+   */
+  outbox: z.array(outboundWriteSchema),
+  /** Changes arriving from a source system's own feed, before anybody has accepted or declined one. */
+  inbound: z.array(inboundChangeSchema),
   audit: z.array(auditEntrySchema),
 });
 export type Dataset = z.infer<typeof datasetSchema>;

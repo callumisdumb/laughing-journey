@@ -17,7 +17,7 @@ import {
   type Dataset,
   type Process,
 } from '@mas/domain';
-import { warrantsVersion, type RecordVersion } from '@mas/domain';
+import { warrantsVersion, type ConnectorId, type OutboundIntent, type PayloadField, type RecordVersion } from '@mas/domain';
 import type { Collection } from '@/lib/store';
 
 /**
@@ -67,9 +67,14 @@ export interface WriteShare {
 }
 
 export interface WriteOutbound {
-  connectorId: string;
-  /** What is proposed, in the source system's terms. Delivery and authorisation are step 14. */
+  connectorId: ConnectorId;
+  intent: OutboundIntent;
+  /** The payload in the target system's own field names, already mapped. */
+  payload: PayloadField[];
+  /** What is proposed, in one line, for the effect list and the audit entry. */
   summary: string;
+  /** Distinguishes two writes of the same intent about the same record, for the idempotency key. */
+  discriminator?: string;
 }
 
 export interface WriteRequest<K extends Collection = Collection> {

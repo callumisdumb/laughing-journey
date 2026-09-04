@@ -698,6 +698,50 @@ Variant 5
 | `reviewedAt` | string (date-time) | no |
 | `promotedEventId` | string | no |
 
+### OutboundWrite
+
+| Field | Type | Required |
+|---|---|---|
+| `id` | string | yes |
+| `synthetic` | literal true | yes |
+| `connectorId` | enum (10 values) | yes |
+| `intent` | enum (7 values) | yes |
+| `idempotencyKey` | string | yes |
+| `origin` | literal "person360" | yes |
+| `subjectPersonId` | string | yes |
+| `processId` | string | no |
+| `payload` | array of object { field, value, from } | yes |
+| `state` | enum (7 values) | yes |
+| `proposedAt` | string (date-time) | yes |
+| `proposedByName` | string | yes |
+| `authorisation` | object { at, byUserId, byName, purpose, lawfulBasisId } | no |
+| `sentAt` | string (date-time) | no |
+| `acknowledgedAt` | string (date-time) | no |
+| `externalRef` | string | no |
+| `failure` | object { at, reason } | no |
+| `attempts` | integer | yes |
+| `relayedBytes` | integer | no |
+
+### InboundChange
+
+| Field | Type | Required |
+|---|---|---|
+| `id` | string | yes |
+| `synthetic` | literal true | yes |
+| `connectorId` | enum (10 values) | yes |
+| `kind` | "process-proposal" \| "stage-change" \| "closure" \| "echo" | yes |
+| `receivedAt` | string (date-time) | yes |
+| `externalRef` | string | yes |
+| `echoOf` | string | no |
+| `subjectPersonId` | string | no |
+| `subjectHint` | object { displayName, dateOfBirth, externalId } | yes |
+| `payload` | array of object { field, value, from } | yes |
+| `status` | "pending" \| "accepted" \| "declined" \| "reconciled" | yes |
+| `reviewedAt` | string (date-time) | no |
+| `reviewedByName` | string | no |
+| `declineReason` | string | no |
+| `processId` | string | no |
+
 ### AuditEntry
 
 | Field | Type | Required |

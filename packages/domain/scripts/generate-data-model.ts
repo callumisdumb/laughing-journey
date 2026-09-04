@@ -68,6 +68,8 @@ const entities: Array<[string, z.ZodType]> = [
   ['SharingRecord', schemas.sharingRecordSchema],
   ['InformationRequest', schemas.informationRequestSchema],
   ['ConnectorEvent', schemas.connectorEventSchema],
+  ['OutboundWrite', schemas.outboundWriteSchema],
+  ['InboundChange', schemas.inboundChangeSchema],
   ['AuditEntry', schemas.auditEntrySchema],
   ['ClockRule', schemas.clockRuleSchema],
   ['NeedToKnowRow', schemas.needToKnowRowSchema],

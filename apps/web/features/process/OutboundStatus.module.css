@@ -1,0 +1,36 @@
+/*
+ * What the other agency has actually been told. One line per write, and the tone carries the
+ * difference: acknowledged is the only state that justifies believing they know.
+ */
+
+.lines {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.line[data-state='failed'],
+.line[data-state='dead-letter'] {
+  color: var(--color-risk-critical);
+}
+
+.line[data-state='proposed'],
+.line[data-state='authorised'],
+.line[data-state='sent'] {
+  color: var(--color-ink-3);
+}
+
+.link {
+  font-size: var(--text-sm);
+}

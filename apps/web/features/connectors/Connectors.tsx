@@ -1,6 +1,6 @@
 'use client';
 
-import { agencyShort, formatDateTime, type ConnectorEvent, type ConnectorHealth } from '@mas/domain';
+import { WRITE_CAPABILITIES, agencyShort, formatDateTime, needsAttention, writeCeilingLabel, writeCeilingReason, type ConnectorEvent, type ConnectorHealth } from '@mas/domain';
 import { MOCK_ADAPTERS, setDegraded, setLatencyScale, setOutage, simulation, type ConnectorCapability, type ConnectorNarrative, type MockAdapter } from '@mas/connectors';
 import { tKey, useT, type Translator } from '@mas/messages';
 import { AgencyMark, Button, EmptyState, KeyValue, Pill, SelectField, Sheet, SheetBody, SheetHead, Switch, TabPanel, Table, TableWrap, Tabs, useToast, type PillTone } from '@mas/ui';
@@ -8,6 +8,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, CloudOff, Loader2, RefreshCw } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
+import { InboundPanel } from './Inbound';
+import { OutboxPanel } from './Outbox';
+import { ReconcilePanel } from './Reconcile';
+import { AuthorityTable, WriteMatrix } from './WriteMatrix';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { useSelection } from '@/lib/selection';
@@ -35,8 +39,8 @@ const LATENCY_CHOICES: LatencyChoice[] = ['realistic', 'fast', 'instant'];
 const LATENCY_SCALES: Record<LatencyChoice, number> = { realistic: 1, fast: 0.25, instant: 0 };
 const latencyChoiceLabel = (choice: LatencyChoice) => tKey(`connectors.speed.${choice}`);
 
-type TabId = 'sync' | 'mapping' | 'real';
-const TAB_IDS: TabId[] = ['sync', 'mapping', 'real'];
+type TabId = 'sync' | 'mapping' | 'outbox' | 'reconcile' | 'inbound' | 'real';
+const TAB_IDS: TabId[] = ['sync', 'mapping', 'outbox', 'reconcile', 'inbound', 'real'];
 const tabLabel = (id: TabId) => tKey(`connectors.tabs.${id}`);
 
 interface SyncRow {
@@ -304,6 +308,15 @@ function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded,
             </Table>
           </TableWrap>
         </TabPanel>
+        <TabPanel id="outbox" active={tab === 'outbox'} idPrefix="connector">
+          <OutboxPanel connectorId={adapter.id} systemName={adapter.systemName} />
+        </TabPanel>
+        <TabPanel id="reconcile" active={tab === 'reconcile'} idPrefix="connector">
+          <ReconcilePanel adapter={adapter} />
+        </TabPanel>
+        <TabPanel id="inbound" active={tab === 'inbound'} idPrefix="connector">
+          <InboundPanel connectorId={adapter.id} systemName={adapter.systemName} />
+        </TabPanel>
         <TabPanel id="real" active={tab === 'real'} idPrefix="connector">
           <p className={styles.panelIntro}>{t('connectors.real.intro', { system: adapter.systemName })}</p>
           <KeyValue
@@ -312,8 +325,17 @@ function Detail({ adapter, subjectId, pending, history, onRow, outage, degraded,
               { key: t('connectors.real.direction'), value: directionLabel(adapter.narrative.direction) },
               { key: t('connectors.real.cadence'), value: adapter.narrative.cadence },
               { key: t('connectors.real.boundary'), value: adapter.narrative.notes },
+              // Read is one question and write is another. Saying so on the card is the point: a
+              // supplier who says iVPD is notify-only is trusted more than one who claims
+              // everything writes, and the ceiling is a fact about the far side rather than a
+              // limitation of this product.
+              { key: t('connectors.write.matrixTitle'), value: writeCeilingLabel(WRITE_CAPABILITIES[adapter.id].ceiling) },
+              { key: t('connectors.write.columns.why'), value: writeCeilingReason(WRITE_CAPABILITIES[adapter.id].ceiling) },
+              ...(WRITE_CAPABILITIES[adapter.id].todoVerify ? [{ key: t('connectors.write.unverified'), value: t('connectors.write.unverifiedNote') }] : []),
             ]}
           />
+          <WriteMatrix />
+          <AuthorityTable adapter={adapter} />
         </TabPanel>
       </SheetBody>
     </Sheet>
@@ -410,6 +432,12 @@ export function Connectors() {
           <span>{t.rich('connectors.summary.connectors', { count: MOCK_ADAPTERS.length, b: bold })}</span>
           <span>{t.rich('connectors.summary.outages', { count: outages.length, b: bold })}</span>
           <span>{t.rich('connectors.summary.pending', { count: pendingTotal, b: bold })}</span>
+          {/*
+            Writes waiting on somebody, across every connector. A proposal nobody authorises and a
+            failure nobody looks at are the two ways a two-way integration quietly stops being one,
+            and both are counted here rather than left inside a connector nobody opened today.
+          */}
+          <span>{t.rich('connectors.summary.outbound', { count: data.outbox.filter(needsAttention).length, b: bold })}</span>
         </div>
         <ul className={styles.cards} aria-label={t('connectors.page.cardsLabel')}>
           {MOCK_ADAPTERS.map((a) => {

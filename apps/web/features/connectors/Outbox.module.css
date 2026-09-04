@@ -1,0 +1,108 @@
+/* The outbox: a delivery state per row, with everything a person needs to decide about a failure. */
+
+.pad {
+  padding: 16px;
+}
+
+.state {
+  display: grid;
+  gap: 3px;
+  align-items: start;
+}
+
+.meta {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.failure {
+  font-size: var(--text-sm);
+  color: var(--color-risk-critical);
+}
+
+.reference {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--font-mono, inherit);
+  font-size: var(--text-sm);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ceiling {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  background: var(--color-paper-1);
+  border-left: 3px solid var(--color-accent-1);
+  border-radius: var(--radius-sm);
+}
+
+.previewHead {
+  margin: 0 0 2px;
+  font-size: var(--text-base);
+}
+
+.field {
+  font-family: var(--font-mono, inherit);
+  font-size: var(--text-sm);
+}
+
+/* One subject's reconciliation, on the connector's own tab. */
+.subject {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-line-2);
+}
+
+.subject:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* Inbound proposals: one block per change, with the source system's own payload under it. */
+.inboundList {
+  display: grid;
+  gap: 14px;
+}
+
+.inbound {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-md);
+}
+
+.inboundHead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: baseline;
+}
+
+.inboundName {
+  font-weight: 700;
+}
+
+.payload {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: 4px 16px;
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.payload dt {
+  color: var(--color-ink-3);
+}
+
+.payload dd {
+  margin: 0 0 4px;
+}

@@ -119,7 +119,6 @@ export function CreateMenu({ open, onClose }: { open: boolean; onClose: () => vo
    */
   useEffect(() => {
     if (open) reset();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   function reset() {

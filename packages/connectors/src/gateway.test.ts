@@ -9,7 +9,7 @@
 import { CryptoError, generateKeyPair, openRecord, toBase64Url } from '@mas/crypto';
 import { describe, expect, it } from 'vitest';
 import type { ExternalEvent } from './adapter';
-import { GATEWAY_DEPLOYMENT, encryptAtGateway, platformView, type Gateway } from './gateway';
+import { GATEWAY_DEPLOYMENT, OUTBOUND_DEPLOYMENT, encryptAtGateway, encryptForGateway, platformView, platformViewOutbound, type Gateway } from './gateway';
 
 const health = generateKeyPair('agency', 'p:agy:health');
 const practitioner = generateKeyPair('user', 'p:usr:janet');
@@ -66,5 +66,57 @@ describe('the connector gateway', () => {
     const platformSteps = GATEWAY_DEPLOYMENT.filter((note) => note.runsAt === 'platform');
     expect(platformSteps.some((note) => note.what.includes('credentials'))).toBe(false);
     expect(GATEWAY_DEPLOYMENT.some((note) => note.runsAt === 'gateway' && note.what.includes('never leave the agency network'))).toBe(true);
+  });
+});
+
+/**
+ * The same boundary, outbound, which is where bidirectionality usually becomes the hole in the
+ * story.
+ *
+ * If the outbound payload were composed platform-side, the platform would hold plaintext for exactly
+ * the records it claims never to see, and everything the inbound test proves would be undone by the
+ * feature that came after it. So the payload is composed in the entitled user's browser, encrypted
+ * to the target gateway's key, and relayed as ciphertext. This asserts it, mirroring the inbound one.
+ */
+describe('the gateway boundary, outbound', () => {
+  const council = generateKeyPair('agency', 'p:agy:social-work');
+  const payload = JSON.stringify([
+    { field: 'Episode.Type', value: 'ASP', from: 'process.type' },
+    { field: 'Episode.CaseReference', value: 'ASP-2026-0217', from: 'process.reference' },
+    { field: 'Episode.AllocatedWorker', value: 'Moira Gilmour', from: 'process.leadUserId' },
+  ]);
+  const envelope = encryptForGateway(
+    { agency: 'social-work', agencyKey: council.publicKey },
+    'eclipse',
+    { id: 'out_1', idempotencyKey: 'eclipse:open-process:prc_asp_marion', payload, submittedAt: '2026-09-04T10:05:00+01:00' },
+  );
+
+  it('relays ciphertext, so the platform never sees the payload it is carrying', () => {
+    const dump = JSON.stringify(envelope, (_key: string, value: unknown) => (value instanceof Uint8Array ? toBase64Url(value) : value));
+    expect(dump).not.toContain('ASP-2026-0217');
+    expect(dump).not.toContain('Moira Gilmour');
+    expect(dump).not.toContain('Episode.AllocatedWorker');
+  });
+
+  it('opens for the gateway that will write it, and for nobody else', () => {
+    expect(openRecord(envelope.record, council.privateKey, council.publicKey)).toBe(payload);
+    expect(() => openRecord(envelope.record, platform.privateKey, platform.publicKey)).toThrow(CryptoError);
+    // Not even the health gateway, which is a different agency holding a different key.
+    expect(() => openRecord(envelope.record, health.privateKey, health.publicKey)).toThrow(CryptoError);
+  });
+
+  it('keeps the idempotency key outside the ciphertext, and nothing else with it', () => {
+    // The platform has to match an acknowledgement, and a duplicate suppressed only at the far side
+    // is a duplicate that has already been written. The key names no person and describes no event.
+    const view = platformViewOutbound(envelope);
+    expect(Object.keys(view).sort()).toEqual(['agency', 'ciphertextBytes', 'connector', 'idempotencyKey', 'submittedOn']);
+    expect(view.idempotencyKey).toBe('eclipse:open-process:prc_asp_marion');
+    expect(view.submittedOn).toBe('2026-09-04');
+  });
+
+  it('says where each half of the outbound path runs', () => {
+    // The composition and the encryption happen before the platform; the write happens after it.
+    expect(OUTBOUND_DEPLOYMENT.filter((n) => n.runsAt === 'gateway')).toHaveLength(2);
+    expect(OUTBOUND_DEPLOYMENT.some((n) => n.what.includes("agency's own credentials"))).toBe(true);
   });
 });

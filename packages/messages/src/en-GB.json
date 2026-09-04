@@ -1433,6 +1433,25 @@
         "systemName": "ViSOR (MAPPS from 2028)"
       }
     },
+    "authorise": {
+      "basisOption": "{purpose} ({article})",
+      "ceilingNote": "{system} accepts {ceiling}. Anything beyond that is refused by the connector, not by this screen.",
+      "columns": {
+        "field": "Their field",
+        "from": "From",
+        "value": "Value"
+      },
+      "doneText": "Sent to {system}. It is not confirmed until they acknowledge it.",
+      "doneTitle": "Authorised",
+      "intro": "This writes into another organisation's record. It is a disclosure, so it carries a purpose and a lawful basis exactly as a share does.",
+      "lawfulBasis": "Lawful basis",
+      "previewHead": "What lands in {system}",
+      "previewMeta": "The payload in that system's own field names, with the value it came from.",
+      "purpose": "Why this is being written",
+      "purposeHint": "The reason a person there would need. It goes on the record and into the audit ledger.",
+      "submit": "Authorise and send",
+      "title": "Authorise a write to {system}"
+    },
     "capabilities": {
       "flagRecord": "Place flags",
       "lookupPerson": "Look up a person",
@@ -1502,6 +1521,41 @@
       "seededCompleted": "Completed.",
       "seededSlow": "Source system slow to respond; the pull completed."
     },
+    "inbound": {
+      "accept": "Accept and open the case",
+      "acceptAudit": "Accepted from a source system: {reference}",
+      "acceptedText": "{reference} is open here and linked to {external} in {system}.",
+      "acceptedTitle": "Case opened",
+      "acceptVersion": "Accepted, and a case opened",
+      "decline": "Decline",
+      "declineAudit": "Declined from a source system: {reference}",
+      "declinedText": "The reason is on the record and has gone back to {system}.",
+      "declinedTitle": "Declined",
+      "declineHint": "It is audited and, where the connector supports it, written back so the sender knows.",
+      "declineReason": "Why it is being declined",
+      "declineSubmit": "Decline it",
+      "declineTitle": "Decline this",
+      "declineVersion": "Declined",
+      "echoAudit": "Recognised as our own write returning: {reference}",
+      "echoBadge": "Our own write",
+      "echoText": "Recognised by the key we issued, so it has been reconciled against the record that produced it rather than opened as a second case.",
+      "echoTitle": "This is our own write coming back",
+      "echoVersion": "Reconciled as an echo",
+      "empty": "Nothing has arrived from a source system.",
+      "from": "{system}, {when}",
+      "lede": "A case opened in a partner system, waiting to be accepted here. Accepting it creates the matching process, linked by the source system's own reference.",
+      "openSummary": "Opened in {system} and accepted here. Their reference is {reference}.",
+      "reference": "Their reference {reference}",
+      "secondCaseReason": "A case for the same person is already open here. This one arrived from a source system under reference {reference} and has been accepted so the two records can be reconciled.",
+      "source": "{system}, through the connector",
+      "statuses": {
+        "accepted": "Accepted",
+        "declined": "Declined",
+        "pending": "Waiting",
+        "reconciled": "Reconciled"
+      },
+      "title": "Arrived from a source system"
+    },
     "latency": {
       "measuring": "measuring",
       "milliseconds": "{ms} ms"
@@ -1516,6 +1570,52 @@
       },
       "intro": "How {system} vocabulary becomes platform events. The rule sets the event type and a starting significance; the practitioner can change the significance at review."
     },
+    "outbox": {
+      "attempts": "{count, plural, one {# attempt} other {# attempts}}",
+      "audit": "Write to {connector} authorised: {intent}",
+      "authorise": "Authorise",
+      "cancel": "Cancel the proposal",
+      "cancelledAudit": "Proposed write to {connector} cancelled",
+      "cancelledVersion": "Cancelled",
+      "columns": {
+        "connector": "Connector",
+        "reference": "Their reference",
+        "state": "State",
+        "subject": "About",
+        "what": "What",
+        "when": "Proposed"
+      },
+      "confirmed": "Written to {system}, acknowledged {time}, reference {reference}",
+      "deadLetterMeta": "Failures somebody has looked at and decided not to retry. A decision, rather than a queue that grew.",
+      "deadLetterTitle": "Parked",
+      "empty": "Nothing has been proposed for this connector yet.",
+      "emptyAll": "Nothing has been proposed for any connector yet.",
+      "failedLine": "The write to {system} failed: {reason}. Nobody there has been told.",
+      "lede": "Every write this product proposes into another agency's system, with the state it is actually in. Nothing goes out without a named person authorising it, and a failure is shown to somebody rather than retried into silence.",
+      "needsAttention": "{count, plural, =0 {Nothing needs attention} one {One write needs attention} other {# writes need attention}}",
+      "notProposed": "{connector} would not take this write: {reason}",
+      "notSent": "Not yet written to {system}.",
+      "park": "Park it",
+      "parkedAudit": "Write to {connector} parked after a failure",
+      "parkedVersion": "Parked",
+      "proposedClosure": "Close the episode for {reference}",
+      "proposedEpisode": "Open the episode for {reference}",
+      "purposeLine": "{name}, {date}. {purpose}",
+      "relayed": "{bytes} bytes of ciphertext relayed. The platform cannot read the payload.",
+      "retry": "Authorise again",
+      "sentNotConfirmed": "Sent to {system} and not yet confirmed. Do not assume the other agency has it.",
+      "states": {
+        "acknowledged": "Acknowledged",
+        "authorised": "Authorised",
+        "cancelled": "Cancelled",
+        "deadLetter": "Parked",
+        "failed": "Failed",
+        "proposed": "Proposed",
+        "sent": "Sent"
+      },
+      "title": "Outbox",
+      "version": "Write authorised and sent"
+    },
     "page": {
       "cardsLabel": "Connector health",
       "emptyText": "Add an adapter in Admin to see its health here.",
@@ -1529,6 +1629,27 @@
       "cadence": "Cadence",
       "direction": "Direction",
       "intro": "If {system} were live, this is how it would connect. Nothing here is built: the adapter behind this screen is a mock behind the same interface a real one would implement."
+    },
+    "reconcile": {
+      "agree": "Agrees on every field checked.",
+      "audit": "Reconciliation: {field} set to {value} against {connector}",
+      "blank": "not held",
+      "checked": "Checked {when}",
+      "columns": {
+        "field": "Field",
+        "ours": "{product} holds",
+        "owner": "Owner",
+        "theirs": "The source holds"
+      },
+      "conflict": "Both sides have changed this. Somebody has to choose.",
+      "conflicts": "{count, plural, =0 {nothing to decide} one {# to decide} other {# to decide}}",
+      "divergences": "{count, plural, =0 {No divergence} one {One divergence} other {# divergences}}",
+      "keepOurs": "Keep ours and write it out",
+      "lede": "What this product believes each source system holds, against what the source says. Every real two-way integration lives or dies on this screen.",
+      "resolvedText": "{field} set to {value}, and the decision is in the audit ledger.",
+      "resolvedTitle": "Conflict resolved",
+      "takeTheirs": "Take the source's value",
+      "title": "Reconciliation"
     },
     "registers": {
       "eclipse": {
@@ -1604,6 +1725,7 @@
     "summary": {
       "connectors": "{count, plural, one {<b>#</b> connector} other {<b>#</b> connectors}}",
       "outages": "{count, plural, one {<b>#</b> simulated outage} other {<b>#</b> simulated outages}}",
+      "outbound": "<b>{count, plural, =0 {No outbound write} one {# outbound write} other {# outbound writes}}</b> {count, plural, one {needs} other {need}} somebody",
       "pending": "{count, plural, one {<b>#</b> event waiting in the inbox across every connector} other {<b>#</b> events waiting in the inbox across every connector}}"
     },
     "sync": {
@@ -1623,9 +1745,64 @@
       "ok": "Completed"
     },
     "tabs": {
+      "inbound": "Arriving",
       "mapping": "Mapping preview",
+      "outbox": "Outbox",
       "real": "How this would connect for real",
+      "reconcile": "Reconciliation",
       "sync": "Sync history"
+    },
+    "write": {
+      "authority": {
+        "either": "Either side may change this field",
+        "person360": "{product} owns this field",
+        "source": "The source system owns this field"
+      },
+      "authorityMeta": "Never last-write-wins. In safeguarding that means the most recent click beats the more informed one.",
+      "authorityTitle": "Who owns which field",
+      "ceilingLabels": {
+        "alert": "Alert only",
+        "batch": "Batch only",
+        "codedFlagAccredited": "Coded flag, after accreditation",
+        "flagAndAlert": "Flag and alert only",
+        "full": "Full two-way",
+        "none": "Never",
+        "notify": "Notify only, not write",
+        "referral": "Referral submission"
+      },
+      "ceilingWhy": {
+        "alert": "An alert on the record and nothing else.",
+        "batch": "Legacy and no longer developed. Modelled as a scheduled file exchange rather than a live API, because that is what it would be.",
+        "codedFlagAccredited": "Writing to a GP record is available through the EMIS Partner Programme and only after accreditation covering security, privacy and clinical safety, with a named Clinical Safety Officer, a hazard log, penetration testing and information governance sign-off. Never free clinical narrative authored by a non-clinician.",
+        "flagAndAlert": "An education management system. A wellbeing flag and a named-person alert, never narrative.",
+        "full": "Same data controller, the council. Episode creation, stage changes, allocated worker, case reference and closure all go both ways.",
+        "none": "The reference is held and read. Nothing is written.",
+        "notify": "Police Scotland internal. A third party product writing into a vulnerable persons database is not a realistic ask, so outbound is a notification into a police queue carrying a reference.",
+        "referral": "A referral to the Reporter is a legitimate outbound artefact with its own form."
+      },
+      "columns": {
+        "connector": "Connector",
+        "read": "Read",
+        "why": "Ceiling, and why",
+        "write": "Write"
+      },
+      "intents": {
+        "alert": "Place an alert",
+        "closeProcess": "Close the episode",
+        "flag": "Place a flag",
+        "notify": "Send a notification",
+        "openProcess": "Open an episode",
+        "referral": "Submit a referral",
+        "stageChange": "Change the stage"
+      },
+      "matrixMeta": "Read is one question and write is another. This table answers the second honestly.",
+      "matrixTitle": "What this connector can write",
+      "readFull": "Full",
+      "readLookup": "Lookup only",
+      "readReference": "Reference only",
+      "refused": "{system} would not accept this. Its ceiling is {ceiling}.",
+      "unverified": "Not verified by this project",
+      "unverifiedNote": "The route to writing into a Scottish GP record runs through the EMIS Partner Programme and national contracting arrangements. This project has not confirmed it, so it is stated as unverified rather than claimed."
     }
   },
   "cp": {
@@ -2715,6 +2892,7 @@
       "classificationDowngrade": "This record's classification cannot be lowered here. A deliberate lower needs a named role and a reason.",
       "closureNoteRequired": "Say what happened in a sentence or two. It goes into the closure notice.",
       "closureReasonRequired": "Choose a closure reason from the list.",
+      "connectorRefusesIntent": "This connector will not accept that kind of write. Its ceiling is on the connector card.",
       "dateOfBirthFuture": "A date of birth cannot be in the future. Use the unborn life stage and an expected delivery date.",
       "deathAlreadyRecorded": "A death is already recorded on this record.",
       "deathBeforeBirth": "A date of death cannot be before the date of birth.",
@@ -2731,6 +2909,11 @@
       "householdMissing": "That household is no longer on the record.",
       "householdNotAMember": "They are not currently recorded as living there.",
       "identityReasonRequired": "A change to a name, a date of birth or a CHI number needs a reason. Other agencies match on these.",
+      "inboundAlreadyReviewed": "Somebody has already accepted or declined this.",
+      "inboundDeclineReasonRequired": "Say why in a sentence. It is audited and sent back.",
+      "inboundMissing": "That change is no longer waiting.",
+      "inboundNoSubject": "Nobody here matches the person the source system named. Find or create the record first.",
+      "inboundNoType": "The change does not say what kind of case it is, so there is nothing to open.",
       "investigationInFuture": "An investigation cannot be opened on a future date.",
       "investigationSummaryRequired": "Say what is being investigated, in a sentence.",
       "mergeOtherMissing": "Choose the record to merge into this one.",
@@ -2741,6 +2924,12 @@
       "nothingChanged": "Nothing has changed, so there is nothing to record.",
       "noUser": "Nobody is signed in, so this cannot be recorded against anyone.",
       "orderRationaleRequired": "Give the reasoning in a sentence. It is the part a sheriff would read.",
+      "outboxLawfulBasisRequired": "Choose the lawful basis this write rests on.",
+      "outboxMissing": "That write is no longer in the outbox.",
+      "outboxNotAuthorisable": "This write is not in a state that can be authorised.",
+      "outboxPurposeRequired": "Say why this is being written, in a sentence. It is a disclosure into another organisation's record.",
+      "payloadEmpty": "There is nothing to write.",
+      "payloadUnknownField": "The payload names a field the target system does not have. That is a mapping error, and a mapping error found at the gateway is a failed write nobody can explain.",
       "personMissing": "That person record is no longer there.",
       "planOutcomeRequired": "A plan needs at least one outcome. The outcomes are the plan.",
       "planTitleRequired": "Give the plan a name.",

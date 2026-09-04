@@ -4560,6 +4560,55 @@
         }
       }
     },
+    "authorise": {
+      "basisOption": {
+        "where": "Two-way connectors: connectors.authorise.basisOption"
+      },
+      "ceilingNote": {
+        "where": "Two-way connectors: connectors.authorise.ceilingNote"
+      },
+      "columns": {
+        "field": {
+          "where": "Two-way connectors: connectors.authorise.columns.field"
+        },
+        "from": {
+          "where": "Two-way connectors: connectors.authorise.columns.from"
+        },
+        "value": {
+          "where": "Two-way connectors: connectors.authorise.columns.value"
+        }
+      },
+      "doneText": {
+        "where": "Two-way connectors: connectors.authorise.doneText"
+      },
+      "doneTitle": {
+        "where": "Two-way connectors: connectors.authorise.doneTitle"
+      },
+      "intro": {
+        "where": "Two-way connectors: connectors.authorise.intro"
+      },
+      "lawfulBasis": {
+        "where": "Two-way connectors: connectors.authorise.lawfulBasis"
+      },
+      "previewHead": {
+        "where": "Two-way connectors: connectors.authorise.previewHead"
+      },
+      "previewMeta": {
+        "where": "Two-way connectors: connectors.authorise.previewMeta"
+      },
+      "purpose": {
+        "where": "Two-way connectors: connectors.authorise.purpose"
+      },
+      "purposeHint": {
+        "where": "Two-way connectors: connectors.authorise.purposeHint"
+      },
+      "submit": {
+        "where": "Two-way connectors: connectors.authorise.submit"
+      },
+      "title": {
+        "where": "Two-way connectors: connectors.authorise.title"
+      }
+    },
     "capabilities": {
       "flagRecord": {
         "maxLength": 20,
@@ -4756,6 +4805,103 @@
         "where": "Note beside the outcome pill on a seeded sync row that was slow"
       }
     },
+    "inbound": {
+      "accept": {
+        "where": "Two-way connectors: connectors.inbound.accept"
+      },
+      "acceptAudit": {
+        "where": "Two-way connectors: connectors.inbound.acceptAudit"
+      },
+      "acceptedText": {
+        "where": "Two-way connectors: connectors.inbound.acceptedText"
+      },
+      "acceptedTitle": {
+        "where": "Two-way connectors: connectors.inbound.acceptedTitle"
+      },
+      "acceptVersion": {
+        "where": "Two-way connectors: connectors.inbound.acceptVersion"
+      },
+      "decline": {
+        "where": "Two-way connectors: connectors.inbound.decline"
+      },
+      "declineAudit": {
+        "where": "Two-way connectors: connectors.inbound.declineAudit"
+      },
+      "declinedText": {
+        "where": "Two-way connectors: connectors.inbound.declinedText"
+      },
+      "declinedTitle": {
+        "where": "Two-way connectors: connectors.inbound.declinedTitle"
+      },
+      "declineHint": {
+        "where": "Two-way connectors: connectors.inbound.declineHint"
+      },
+      "declineReason": {
+        "where": "Two-way connectors: connectors.inbound.declineReason"
+      },
+      "declineSubmit": {
+        "where": "Two-way connectors: connectors.inbound.declineSubmit"
+      },
+      "declineTitle": {
+        "where": "Two-way connectors: connectors.inbound.declineTitle"
+      },
+      "declineVersion": {
+        "where": "Two-way connectors: connectors.inbound.declineVersion"
+      },
+      "echoAudit": {
+        "where": "Two-way connectors: connectors.inbound.echoAudit"
+      },
+      "echoBadge": {
+        "where": "Two-way connectors: connectors.inbound.echoBadge"
+      },
+      "echoText": {
+        "where": "Two-way connectors: connectors.inbound.echoText"
+      },
+      "echoTitle": {
+        "where": "Two-way connectors: connectors.inbound.echoTitle"
+      },
+      "echoVersion": {
+        "where": "Two-way connectors: connectors.inbound.echoVersion"
+      },
+      "empty": {
+        "where": "Two-way connectors: connectors.inbound.empty"
+      },
+      "from": {
+        "where": "Two-way connectors: connectors.inbound.from"
+      },
+      "lede": {
+        "where": "Two-way connectors: connectors.inbound.lede"
+      },
+      "openSummary": {
+        "where": "Two-way connectors: connectors.inbound.openSummary"
+      },
+      "reference": {
+        "where": "Two-way connectors: connectors.inbound.reference"
+      },
+      "secondCaseReason": {
+        "where": "Two-way connectors: connectors.inbound.secondCaseReason"
+      },
+      "source": {
+        "where": "Two-way connectors: connectors.inbound.source"
+      },
+      "statuses": {
+        "accepted": {
+          "where": "Two-way connectors: connectors.inbound.statuses.accepted"
+        },
+        "declined": {
+          "where": "Two-way connectors: connectors.inbound.statuses.declined"
+        },
+        "pending": {
+          "where": "Two-way connectors: connectors.inbound.statuses.pending"
+        },
+        "reconciled": {
+          "where": "Two-way connectors: connectors.inbound.statuses.reconciled"
+        }
+      },
+      "title": {
+        "where": "Two-way connectors: connectors.inbound.title"
+      }
+    },
     "latency": {
       "measuring": {
         "maxLength": 12,
@@ -4790,6 +4936,132 @@
       },
       "intro": {
         "where": "Intro paragraph on the mapping preview tab, with the source system name"
+      }
+    },
+    "outbox": {
+      "attempts": {
+        "where": "Two-way connectors: connectors.outbox.attempts"
+      },
+      "audit": {
+        "where": "Two-way connectors: connectors.outbox.audit"
+      },
+      "authorise": {
+        "where": "Two-way connectors: connectors.outbox.authorise"
+      },
+      "cancel": {
+        "where": "Two-way connectors: connectors.outbox.cancel"
+      },
+      "cancelledAudit": {
+        "where": "Two-way connectors: connectors.outbox.cancelledAudit"
+      },
+      "cancelledVersion": {
+        "where": "Two-way connectors: connectors.outbox.cancelledVersion"
+      },
+      "columns": {
+        "connector": {
+          "where": "Two-way connectors: connectors.outbox.columns.connector"
+        },
+        "reference": {
+          "where": "Two-way connectors: connectors.outbox.columns.reference"
+        },
+        "state": {
+          "where": "Two-way connectors: connectors.outbox.columns.state"
+        },
+        "subject": {
+          "where": "Two-way connectors: connectors.outbox.columns.subject"
+        },
+        "what": {
+          "where": "Two-way connectors: connectors.outbox.columns.what"
+        },
+        "when": {
+          "where": "Two-way connectors: connectors.outbox.columns.when"
+        }
+      },
+      "confirmed": {
+        "where": "Two-way connectors: connectors.outbox.confirmed"
+      },
+      "deadLetterMeta": {
+        "where": "Two-way connectors: connectors.outbox.deadLetterMeta"
+      },
+      "deadLetterTitle": {
+        "where": "Two-way connectors: connectors.outbox.deadLetterTitle"
+      },
+      "empty": {
+        "where": "Two-way connectors: connectors.outbox.empty"
+      },
+      "emptyAll": {
+        "where": "Two-way connectors: connectors.outbox.emptyAll"
+      },
+      "failedLine": {
+        "where": "Two-way connectors: connectors.outbox.failedLine"
+      },
+      "lede": {
+        "where": "Two-way connectors: connectors.outbox.lede"
+      },
+      "needsAttention": {
+        "where": "Two-way connectors: connectors.outbox.needsAttention"
+      },
+      "notProposed": {
+        "where": "Two-way connectors: connectors.outbox.notProposed"
+      },
+      "notSent": {
+        "where": "Two-way connectors: connectors.outbox.notSent"
+      },
+      "park": {
+        "where": "Two-way connectors: connectors.outbox.park"
+      },
+      "parkedAudit": {
+        "where": "Two-way connectors: connectors.outbox.parkedAudit"
+      },
+      "parkedVersion": {
+        "where": "Two-way connectors: connectors.outbox.parkedVersion"
+      },
+      "proposedClosure": {
+        "where": "Two-way connectors: connectors.outbox.proposedClosure"
+      },
+      "proposedEpisode": {
+        "where": "Two-way connectors: connectors.outbox.proposedEpisode"
+      },
+      "purposeLine": {
+        "where": "Two-way connectors: connectors.outbox.purposeLine"
+      },
+      "relayed": {
+        "where": "Two-way connectors: connectors.outbox.relayed"
+      },
+      "retry": {
+        "where": "Two-way connectors: connectors.outbox.retry"
+      },
+      "sentNotConfirmed": {
+        "where": "Two-way connectors: connectors.outbox.sentNotConfirmed"
+      },
+      "states": {
+        "acknowledged": {
+          "where": "Two-way connectors: connectors.outbox.states.acknowledged"
+        },
+        "authorised": {
+          "where": "Two-way connectors: connectors.outbox.states.authorised"
+        },
+        "cancelled": {
+          "where": "Two-way connectors: connectors.outbox.states.cancelled"
+        },
+        "deadLetter": {
+          "where": "Two-way connectors: connectors.outbox.states.deadLetter"
+        },
+        "failed": {
+          "where": "Two-way connectors: connectors.outbox.states.failed"
+        },
+        "proposed": {
+          "where": "Two-way connectors: connectors.outbox.states.proposed"
+        },
+        "sent": {
+          "where": "Two-way connectors: connectors.outbox.states.sent"
+        }
+      },
+      "title": {
+        "where": "Two-way connectors: connectors.outbox.title"
+      },
+      "version": {
+        "where": "Two-way connectors: connectors.outbox.version"
       }
     },
     "page": {
@@ -4833,6 +5105,61 @@
       },
       "intro": {
         "where": "Intro paragraph on the How this would connect for real tab, with the source system name"
+      }
+    },
+    "reconcile": {
+      "agree": {
+        "where": "Two-way connectors: connectors.reconcile.agree"
+      },
+      "audit": {
+        "where": "Two-way connectors: connectors.reconcile.audit"
+      },
+      "blank": {
+        "where": "Two-way connectors: connectors.reconcile.blank"
+      },
+      "checked": {
+        "where": "Two-way connectors: connectors.reconcile.checked"
+      },
+      "columns": {
+        "field": {
+          "where": "Two-way connectors: connectors.reconcile.columns.field"
+        },
+        "ours": {
+          "where": "Two-way connectors: connectors.reconcile.columns.ours"
+        },
+        "owner": {
+          "where": "Two-way connectors: connectors.reconcile.columns.owner"
+        },
+        "theirs": {
+          "where": "Two-way connectors: connectors.reconcile.columns.theirs"
+        }
+      },
+      "conflict": {
+        "where": "Two-way connectors: connectors.reconcile.conflict"
+      },
+      "conflicts": {
+        "where": "Two-way connectors: connectors.reconcile.conflicts"
+      },
+      "divergences": {
+        "where": "Two-way connectors: connectors.reconcile.divergences"
+      },
+      "keepOurs": {
+        "where": "Two-way connectors: connectors.reconcile.keepOurs"
+      },
+      "lede": {
+        "where": "Two-way connectors: connectors.reconcile.lede"
+      },
+      "resolvedText": {
+        "where": "Two-way connectors: connectors.reconcile.resolvedText"
+      },
+      "resolvedTitle": {
+        "where": "Two-way connectors: connectors.reconcile.resolvedTitle"
+      },
+      "takeTheirs": {
+        "where": "Two-way connectors: connectors.reconcile.takeTheirs"
+      },
+      "title": {
+        "where": "Two-way connectors: connectors.reconcile.title"
       }
     },
     "registers": {
@@ -5044,6 +5371,9 @@
       "outages": {
         "where": "Second item in the summary strip: how many outages are being simulated; the b tag sets the number in bold"
       },
+      "outbound": {
+        "where": "Two-way connectors: connectors.summary.outbound"
+      },
       "pending": {
         "where": "Third item in the summary strip: events waiting in the inbox across every connector; the b tag sets the number in bold"
       }
@@ -5092,18 +5422,159 @@
       }
     },
     "tabs": {
+      "inbound": {
+        "where": "Two-way connectors: connectors.tabs.inbound"
+      },
       "mapping": {
         "maxLength": 20,
         "where": "Tab in the connector detail and accessible name of its table: the mapping preview"
+      },
+      "outbox": {
+        "where": "Two-way connectors: connectors.tabs.outbox"
       },
       "real": {
         "maxLength": 36,
         "where": "Tab in the connector detail: how this would connect for real"
       },
+      "reconcile": {
+        "where": "Two-way connectors: connectors.tabs.reconcile"
+      },
       "sync": {
         "maxLength": 20,
         "screenshot": "phase-5/connectors-light-comfortable.png",
         "where": "Tab in the connector detail and accessible name of its table: the sync history"
+      }
+    },
+    "write": {
+      "authority": {
+        "either": {
+          "where": "Two-way connectors: connectors.write.authority.either"
+        },
+        "person360": {
+          "where": "Two-way connectors: connectors.write.authority.person360"
+        },
+        "source": {
+          "where": "Two-way connectors: connectors.write.authority.source"
+        }
+      },
+      "authorityMeta": {
+        "where": "Two-way connectors: connectors.write.authorityMeta"
+      },
+      "authorityTitle": {
+        "where": "Two-way connectors: connectors.write.authorityTitle"
+      },
+      "ceilingLabels": {
+        "alert": {
+          "where": "Two-way connectors: connectors.write.ceilings.alert.label"
+        },
+        "batch": {
+          "where": "Two-way connectors: connectors.write.ceilings.batch.label"
+        },
+        "codedFlagAccredited": {
+          "where": "Two-way connectors: connectors.write.ceilings.codedFlagAccredited.label"
+        },
+        "flagAndAlert": {
+          "where": "Two-way connectors: connectors.write.ceilings.flagAndAlert.label"
+        },
+        "full": {
+          "where": "Two-way connectors: connectors.write.ceilings.full.label"
+        },
+        "none": {
+          "where": "Two-way connectors: connectors.write.ceilings.none.label"
+        },
+        "notify": {
+          "where": "Two-way connectors: connectors.write.ceilings.notify.label"
+        },
+        "referral": {
+          "where": "Two-way connectors: connectors.write.ceilings.referral.label"
+        }
+      },
+      "ceilingWhy": {
+        "alert": {
+          "where": "Two-way connectors: connectors.write.ceilings.alert.why"
+        },
+        "batch": {
+          "where": "Two-way connectors: connectors.write.ceilings.batch.why"
+        },
+        "codedFlagAccredited": {
+          "where": "Two-way connectors: connectors.write.ceilings.codedFlagAccredited.why"
+        },
+        "flagAndAlert": {
+          "where": "Two-way connectors: connectors.write.ceilings.flagAndAlert.why"
+        },
+        "full": {
+          "where": "Two-way connectors: connectors.write.ceilings.full.why"
+        },
+        "none": {
+          "where": "Two-way connectors: connectors.write.ceilings.none.why"
+        },
+        "notify": {
+          "where": "Two-way connectors: connectors.write.ceilings.notify.why"
+        },
+        "referral": {
+          "where": "Two-way connectors: connectors.write.ceilings.referral.why"
+        }
+      },
+      "columns": {
+        "connector": {
+          "where": "Two-way connectors: connectors.write.columns.connector"
+        },
+        "read": {
+          "where": "Two-way connectors: connectors.write.columns.read"
+        },
+        "why": {
+          "where": "Two-way connectors: connectors.write.columns.why"
+        },
+        "write": {
+          "where": "Two-way connectors: connectors.write.columns.write"
+        }
+      },
+      "intents": {
+        "alert": {
+          "where": "Two-way connectors: connectors.write.intents.alert"
+        },
+        "closeProcess": {
+          "where": "Two-way connectors: connectors.write.intents.closeProcess"
+        },
+        "flag": {
+          "where": "Two-way connectors: connectors.write.intents.flag"
+        },
+        "notify": {
+          "where": "Two-way connectors: connectors.write.intents.notify"
+        },
+        "openProcess": {
+          "where": "Two-way connectors: connectors.write.intents.openProcess"
+        },
+        "referral": {
+          "where": "Two-way connectors: connectors.write.intents.referral"
+        },
+        "stageChange": {
+          "where": "Two-way connectors: connectors.write.intents.stageChange"
+        }
+      },
+      "matrixMeta": {
+        "where": "Two-way connectors: connectors.write.matrixMeta"
+      },
+      "matrixTitle": {
+        "where": "Two-way connectors: connectors.write.matrixTitle"
+      },
+      "readFull": {
+        "where": "Two-way connectors: connectors.write.readFull"
+      },
+      "readLookup": {
+        "where": "Two-way connectors: connectors.write.readLookup"
+      },
+      "readReference": {
+        "where": "Two-way connectors: connectors.write.readReference"
+      },
+      "refused": {
+        "where": "Two-way connectors: connectors.write.refused"
+      },
+      "unverified": {
+        "where": "Two-way connectors: connectors.write.unverified"
+      },
+      "unverifiedNote": {
+        "where": "Two-way connectors: connectors.write.unverifiedNote"
       }
     }
   },
@@ -8305,6 +8776,9 @@
       "closureReasonRequired": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"
       },
+      "connectorRefusesIntent": {
+        "where": "Two-way connectors: errors.write.connectorRefusesIntent"
+      },
       "dateOfBirthFuture": {
         "where": "Add a person dialog, refusal summary at the top of the body"
       },
@@ -8353,6 +8827,21 @@
       "identityReasonRequired": {
         "where": "Refusal listed on the edit a person record dialog"
       },
+      "inboundAlreadyReviewed": {
+        "where": "Two-way connectors: errors.write.inboundAlreadyReviewed"
+      },
+      "inboundDeclineReasonRequired": {
+        "where": "Two-way connectors: errors.write.inboundDeclineReasonRequired"
+      },
+      "inboundMissing": {
+        "where": "Two-way connectors: errors.write.inboundMissing"
+      },
+      "inboundNoSubject": {
+        "where": "Two-way connectors: errors.write.inboundNoSubject"
+      },
+      "inboundNoType": {
+        "where": "Two-way connectors: errors.write.inboundNoType"
+      },
       "investigationInFuture": {
         "where": "Refusal listed on a record dialog"
       },
@@ -8382,6 +8871,24 @@
       },
       "orderRationaleRequired": {
         "where": "Refusal listed on a record dialog"
+      },
+      "outboxLawfulBasisRequired": {
+        "where": "Two-way connectors: errors.write.outboxLawfulBasisRequired"
+      },
+      "outboxMissing": {
+        "where": "Two-way connectors: errors.write.outboxMissing"
+      },
+      "outboxNotAuthorisable": {
+        "where": "Two-way connectors: errors.write.outboxNotAuthorisable"
+      },
+      "outboxPurposeRequired": {
+        "where": "Two-way connectors: errors.write.outboxPurposeRequired"
+      },
+      "payloadEmpty": {
+        "where": "Two-way connectors: errors.write.payloadEmpty"
+      },
+      "payloadUnknownField": {
+        "where": "Two-way connectors: errors.write.payloadUnknownField"
       },
       "personMissing": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"

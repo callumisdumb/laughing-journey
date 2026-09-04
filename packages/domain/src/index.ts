@@ -20,3 +20,5 @@ export * from './nmds/cellMap';
 export * from './processes/close';
 export * from './records/correct';
 export * from './people/death';
+export * from './connectors/write';
+export * from './connectors/outbox';

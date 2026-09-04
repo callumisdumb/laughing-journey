@@ -12,7 +12,9 @@ import type {
   ConnectorEvent,
   EventType,
   Household,
+  InboundChange,
   LawfulBasisRecord,
+  OutboundWrite,
   Meeting,
   Person,
   Plan,
@@ -226,6 +228,40 @@ export function makeShare(ctx: BuildContext, s: Partialish<SharingRecord, 'id' |
 export function makeConnectorEvent(ctx: BuildContext, c: Partialish<ConnectorEvent, 'id' | 'status'>): ConnectorEvent {
   const rec: ConnectorEvent = { ...c, id: c.id ?? ctx.ids.next('cev'), synthetic: true, status: c.status ?? 'pending' };
   ctx.data.connectorEvents.push(rec);
+  return rec;
+}
+
+/**
+ * An outbound write, at whatever delivery state the scenario needs it in.
+ *
+ * The seed carries one of each interesting state on purpose: an acknowledged write, so the
+ * confirmation line has something to say; one waiting for authorisation, because that is the state
+ * the demo authorises; and a failure, because a product that only ever shows the happy path is a
+ * product nobody believes about the unhappy one.
+ */
+export function makeOutbound(ctx: BuildContext, o: Partialish<OutboundWrite, 'id' | 'synthetic' | 'origin' | 'attempts' | 'proposedAt'>): OutboundWrite {
+  const rec: OutboundWrite = {
+    ...o,
+    id: o.id ?? ctx.ids.next('out'),
+    synthetic: true,
+    origin: 'person360',
+    attempts: o.attempts ?? 0,
+    proposedAt: o.proposedAt ?? ctx.nowIso,
+  };
+  ctx.data.outbox.push(rec);
+  return rec;
+}
+
+/** A change waiting in the inbound queue: a case opened in a partner system, or our own write back. */
+export function makeInbound(ctx: BuildContext, c: Partialish<InboundChange, 'id' | 'synthetic' | 'status' | 'receivedAt'>): InboundChange {
+  const rec: InboundChange = {
+    ...c,
+    id: c.id ?? ctx.ids.next('inb'),
+    synthetic: true,
+    status: c.status ?? 'pending',
+    receivedAt: c.receivedAt ?? ctx.nowIso,
+  };
+  ctx.data.inbound.push(rec);
   return rec;
 }
 

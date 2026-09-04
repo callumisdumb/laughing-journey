@@ -79,6 +79,18 @@ const KEYS = [
   'deathNoteRequired',
   'nothingChanged',
   'identityReasonRequired',
+  'connectorRefusesIntent',
+  'payloadEmpty',
+  'payloadUnknownField',
+  'outboxNotAuthorisable',
+  'outboxPurposeRequired',
+  'outboxLawfulBasisRequired',
+  'outboxMissing',
+  'inboundMissing',
+  'inboundAlreadyReviewed',
+  'inboundDeclineReasonRequired',
+  'inboundNoSubject',
+  'inboundNoType',
 ] as const;
 
 export type WriteErrorCode = (typeof KEYS)[number];

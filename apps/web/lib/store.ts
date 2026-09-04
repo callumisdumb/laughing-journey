@@ -4,13 +4,15 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, nextReference, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Person, type PersonMerge, type Process, type Relationship, type User } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, nextReference, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Agency, type ConnectorId, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type User } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
 import { isSealedBlob, openLocal, sealLocal } from '@/lib/localStore';
 import { appendAudit, auditDetailKey, emptyChain, type AuditChain } from '@/lib/auditChain';
 import { buildVault, type Vault } from '@/lib/vault';
+import { encryptForGateway, platformViewOutbound } from '@mas/connectors';
+import { generateKeyPair, type PublicKey } from '@mas/crypto';
 import { create } from 'zustand';
 import { classificationRefusal, excludedRecipients, reasonRefusal, startedClocks, validateRecord, versionFor, type WriteEffect, type WriteRequest, type WriteResult, type WriteShare } from '@/lib/write';
 
@@ -128,6 +130,20 @@ interface AppState {
   reopenProcess: (processId: string, reason: string) => WriteResult & { resumed?: ClockTrigger[] };
   recordInError: (collection: Collection, id: string, reason: string) => WriteResult;
   recordDeath: (input: Omit<DeathInput, 'recordedAt' | 'byName' | 'byUserId'>) => WriteResult & { consequences?: DeathConsequence[] };
+  /**
+   * The outbound half of the connectors.
+   *
+   * Nothing writes automatically. `authoriseOutbound` is the only path out, it takes a purpose and a
+   * lawful basis exactly as a share does, and the delivery states after it are visible rather than
+   * inferred: a write that has not been acknowledged says so wherever it matters, because believing
+   * the other agency knows when they do not is how an assumption reaches a significant case review.
+   */
+  authoriseOutbound: (id: string, purpose: string, lawfulBasisId: string) => WriteResult & { write?: OutboundWrite };
+  parkOutbound: (id: string) => WriteResult;
+  cancelOutbound: (id: string) => WriteResult;
+  /** Accept a case opened in a source system, which creates the matching process here. */
+  acceptInbound: (id: string) => WriteResult & { process?: Process };
+  declineInbound: (id: string, reason: string) => WriteResult;
 }
 
 export interface OpenProcessRequest extends OpeningInput {
@@ -171,8 +187,49 @@ const TARGET_TYPES: Record<Collection, AuditEntry['targetType']> = {
   sharingRecords: 'sharing',
   informationRequests: 'sharing',
   connectorEvents: 'inbox',
+  outbox: 'sharing',
+  inbound: 'inbox',
   audit: 'config',
 };
+
+/**
+ * The gateway an outbound write is encrypted to: one per agency, holding that agency's key.
+ *
+ * Derived rather than configured, because the agency that owns a connector already decides which
+ * gateway it runs behind and a second list would be a second answer to the same question. The key is
+ * derived from the agency, which is the same construction the vault uses for every other principal.
+ */
+function gatewayFor(connectorId: ConnectorId): { agency: Agency; agencyKey: PublicKey } {
+  const agency = CONNECTOR_AGENCY[connectorId];
+  return { agency, agencyKey: generateKeyPair('agency', `p:agy:${agency}`).publicKey };
+}
+
+const CONNECTOR_AGENCY: Record<ConnectorId, Agency> = {
+  'emis-web': 'health',
+  eclipse: 'social-work',
+  carefirst: 'social-work',
+  ivpd: 'police',
+  seemis: 'education',
+  trakcare: 'health',
+  morse: 'health',
+  // The Public Guardian is a court office rather than an agency in this taxonomy, and it is
+  // lookup only in either direction, so nothing is ever encrypted to its gateway.
+  opg: 'court',
+  scra: 'scra',
+  visor: 'police',
+};
+
+/**
+ * The process an inbound change would open, read from its own payload.
+ *
+ * The source system says what kind of episode it is in its own vocabulary, so the mapping is here
+ * rather than guessed from the connector: a council system opens child protection and adult support
+ * and protection episodes through the same feed.
+ */
+function inboundProcessType(change: InboundChange): ProcessType | null {
+  const value = change.payload.find((f) => f.field === 'Episode.Type')?.value.toLowerCase();
+  return value === 'asp' || value === 'cp' || value === 'marac' || value === 'mappa' || value === 'awi' ? value : null;
+}
 
 const OVERLAY_KEY = 'mas.overlay.v1';
 const SESSION_KEY = 'mas.session';
@@ -199,6 +256,8 @@ const EMPTY: Dataset = {
   sharingRecords: [],
   informationRequests: [],
   connectorEvents: [],
+  outbox: [],
+  inbound: [],
   audit: [],
 };
 
@@ -620,10 +679,33 @@ export const useAppStore = create<AppState>((set, get) => ({
       effects.push({ kind: 'share', detail: `${share.recipientName}: ${share.reason}` });
     }
 
-    // 9. Outbound connector proposals. The outbox, its delivery state, its idempotency key and its
-    // authorisation are step 14; recorded here so the seam exists in one place rather than being
-    // discovered at fifteen call sites when it does (D-113).
+    // 9. Outbound connector proposals, into the outbox. Proposed only: nothing leaves without a
+    // named person authorising it, with a purpose and a lawful basis, because a write into another
+    // organisation's record is a disclosure and that is what a disclosure carries.
     for (const out of request.outbound ?? []) {
+      const refusals = proposalRefusals({ connectorId: out.connectorId, intent: out.intent, payload: out.payload });
+      if (refusals.length > 0) {
+        // A connector that will not take this write is a fact about the far side, not a failure of
+        // this write. The record is already saved; the proposal simply is not made, and the effect
+        // list says so rather than leaving a practitioner believing something is on its way.
+        effects.push({ kind: 'outbound', detail: t('connectors.outbox.notProposed', { connector: out.connectorId, reason: refusals[0]! }) });
+        continue;
+      }
+      const proposal = proposeWrite({
+        id: get().newId('out'),
+        connectorId: out.connectorId,
+        intent: out.intent,
+        subjectPersonId: request.event?.subjectIds[0] ?? (request.record as { id: string }).id,
+        processId: request.processId,
+        payload: out.payload,
+        at: get().now().toISOString(),
+        byName: `${user.givenName} ${user.familyName}`,
+        discriminator: out.discriminator,
+      });
+      // The same logical write proposed twice replaces rather than duplicates, which is what the
+      // idempotency key is for and the first place it earns its keep.
+      const held = get().data.outbox.find((w) => w.idempotencyKey === proposal.idempotencyKey && w.state === 'proposed');
+      get().upsert('outbox', held ? { ...proposal, id: held.id } : proposal);
       effects.push({ kind: 'outbound', detail: `${out.connectorId}: ${out.summary}` });
     }
 
@@ -890,9 +972,20 @@ export const useAppStore = create<AppState>((set, get) => ({
 
     const shares = notifyShares(withClocks, config, t('processes.open.shareReason', { reference, process: processLabel(request.type) }));
 
+    // The episode, proposed into every connector that would actually accept one. This is what makes
+    // the product operationally real rather than a parallel system practitioners have to remember to
+    // update, and the connectors that would refuse it are not asked, so nothing is claimed.
+    const outbound = connectorsForIntent('open-process', CONNECTOR_IDS).map((connectorId) => ({
+      connectorId,
+      intent: 'open-process' as const,
+      payload: episodePayload(withClocks, byName),
+      summary: t('connectors.outbox.proposedEpisode', { reference }),
+    }));
+
     const result = get().write({
       collection: 'processes',
       record: withClocks,
+      outbound,
       intent: 'create',
       act: 'create',
       targetType: 'process',
@@ -943,6 +1036,14 @@ export const useAppStore = create<AppState>((set, get) => ({
       processId: process.id,
       reason: input.note,
       versionChange: t('processes.close.version', { reason: reason?.label ?? input.reasonId }),
+      // A case closed here and left open in the source system is exactly the divergence the
+      // reconciliation screen exists to catch, so the closure is proposed outbound like the opening.
+      outbound: connectorsForIntent('close-process', CONNECTOR_IDS).map((connectorId) => ({
+        connectorId,
+        intent: 'close-process' as const,
+        payload: closurePayload(closed),
+        summary: t('connectors.outbox.proposedClosure', { reference: process.reference }),
+      })),
       // Everybody the matrix entitles hears that the case has closed, at the level it names. A case
       // that closes silently leaves four agencies still working to a plan nobody is coordinating.
       shares: notifyShares(closed, config, t('processes.close.shareWhat')),
@@ -1069,6 +1170,165 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
 
     return { ...wrote, effects, consequences: result.consequences };
+  },
+  authoriseOutbound: (id, purpose, lawfulBasisId) => {
+    const { data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+
+    const write = data.outbox.find((w) => w.id === id);
+    if (!write) return { ok: false, errors: ['outboxMissing'], nearMatches: [], effects: [] };
+
+    const at = get().now().toISOString();
+    const input = { at, byUserId: user.id, byName: `${user.givenName} ${user.familyName}`, purpose, lawfulBasisId };
+    const errors = authorisationRefusals(write, input);
+    if (errors.length > 0) return { ok: false, errors, nearMatches: [], effects: [] };
+
+    /*
+     * Composed and encrypted here, in the browser, from records this user can decrypt.
+     *
+     * This is the encryption boundary holding in the outbound direction. If the payload were
+     * composed platform-side, the platform would hold plaintext for exactly the records it claims
+     * never to see, and bidirectionality would be the hole in the story rather than a feature.
+     * `packages/connectors/src/gateway.test.ts` asserts the relayed envelope carries none of it.
+     */
+    const authorised = authoriseWrite(write, input);
+    const target = gatewayFor(write.connectorId);
+    const envelope = encryptForGateway(target, write.connectorId, {
+      id: write.id,
+      idempotencyKey: write.idempotencyKey,
+      payload: JSON.stringify(write.payload),
+      submittedAt: at,
+    });
+    const relayed = platformViewOutbound(envelope);
+
+    // Sent, then acknowledged by the far side with its own identifier. In the mockup the gateway
+    // answers immediately; the two states are still kept apart, because sent is not confirmed and a
+    // product that collapsed them would be teaching the wrong thing about the one that matters.
+    const sent = markSent(authorised, at, relayed.ciphertextBytes);
+    const suffix = write.idempotencyKey.split(':').at(-1)?.slice(-4).toUpperCase() ?? '0000';
+    const done = markAcknowledged(sent, at, `${write.connectorId.toUpperCase()}-${suffix}`);
+
+    return get().write({
+      collection: 'outbox',
+      record: done,
+      intent: 'update',
+      act: 'share',
+      targetType: 'sharing',
+      targetLabel: t('connectors.outbox.audit', { connector: write.connectorId, intent: outboundIntentLabel(write.intent) }),
+      processId: write.processId,
+      reason: purpose,
+      versionChange: t('connectors.outbox.version'),
+    });
+  },
+  parkOutbound: (id) => {
+    const write = get().data.outbox.find((w) => w.id === id);
+    if (!write) return { ok: false, errors: ['outboxMissing'], nearMatches: [], effects: [] };
+    if (!canTransition(write.state, 'dead-letter')) return { ok: false, errors: ['outboxNotAuthorisable'], nearMatches: [], effects: [] };
+    return get().write({
+      collection: 'outbox',
+      record: markDeadLetter(write),
+      intent: 'update',
+      act: 'edit',
+      targetType: 'sharing',
+      targetLabel: t('connectors.outbox.parkedAudit', { connector: write.connectorId }),
+      processId: write.processId,
+      versionChange: t('connectors.outbox.parkedVersion'),
+    });
+  },
+  cancelOutbound: (id) => {
+    const write = get().data.outbox.find((w) => w.id === id);
+    if (!write) return { ok: false, errors: ['outboxMissing'], nearMatches: [], effects: [] };
+    if (!canTransition(write.state, 'cancelled')) return { ok: false, errors: ['outboxNotAuthorisable'], nearMatches: [], effects: [] };
+    return get().write({
+      collection: 'outbox',
+      record: { ...write, state: 'cancelled' },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'sharing',
+      targetLabel: t('connectors.outbox.cancelledAudit', { connector: write.connectorId }),
+      processId: write.processId,
+      versionChange: t('connectors.outbox.cancelledVersion'),
+    });
+  },
+  acceptInbound: (id) => {
+    const { data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+
+    const change = data.inbound.find((c) => c.id === id);
+    if (!change) return { ok: false, errors: ['inboundMissing'], nearMatches: [], effects: [] };
+    if (change.status !== 'pending') return { ok: false, errors: ['inboundAlreadyReviewed'], nearMatches: [], effects: [] };
+
+    // An inbound change carrying an origin we issued is our own write coming back. Accepting it
+    // would create a duplicate process and, with a feed running, a loop. So it is reconciled against
+    // the write that produced it and never opened as a second case.
+    const echo = echoedWrite(change, data.outbox);
+    const at = get().now().toISOString();
+    if (echo) {
+      return get().write({
+        collection: 'inbound',
+        record: { ...change, status: 'reconciled', reviewedAt: at, reviewedByName: `${user.givenName} ${user.familyName}`, processId: echo.processId },
+        intent: 'update',
+        act: 'edit',
+        targetType: 'inbox',
+        targetLabel: t('connectors.inbound.echoAudit', { reference: change.externalRef }),
+        versionChange: t('connectors.inbound.echoVersion'),
+      });
+    }
+
+    if (!change.subjectPersonId) return { ok: false, errors: ['inboundNoSubject'], nearMatches: [], effects: [] };
+    const type = inboundProcessType(change);
+    if (!type) return { ok: false, errors: ['inboundNoType'], nearMatches: [], effects: [] };
+
+    const opened = get().openProcess({
+      type,
+      subjectIds: [change.subjectPersonId],
+      // The source system is the referrer, and its own reference is carried so the two records are
+      // linked by something the far side recognises rather than by a name and a date.
+      source: t('connectors.inbound.source', { system: change.connectorId }),
+      sourceAgency: CONNECTOR_AGENCY[change.connectorId],
+      sourceReference: change.externalRef,
+      summary: t('connectors.inbound.openSummary', { system: change.connectorId, reference: change.externalRef }),
+      at,
+      byName: `${user.givenName} ${user.familyName}`,
+      byUserId: user.id,
+      // A case opened in the source system is not opened again for a person who already has one:
+      // the reference from the far side is the reason a second is allowed, and it is on the record.
+      secondCaseReason: t('connectors.inbound.secondCaseReason', { reference: change.externalRef }),
+    });
+    if (!opened.ok) return opened;
+
+    const wrote = get().write({
+      collection: 'inbound',
+      record: { ...change, status: 'accepted', reviewedAt: at, reviewedByName: `${user.givenName} ${user.familyName}`, processId: opened.process?.id },
+      intent: 'update',
+      act: 'promote',
+      targetType: 'inbox',
+      targetLabel: t('connectors.inbound.acceptAudit', { reference: change.externalRef }),
+      processId: opened.process?.id,
+      versionChange: t('connectors.inbound.acceptVersion'),
+    });
+    return wrote.ok ? { ...wrote, process: opened.process } : wrote;
+  },
+  declineInbound: (id, reason) => {
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const change = get().data.inbound.find((c) => c.id === id);
+    if (!change) return { ok: false, errors: ['inboundMissing'], nearMatches: [], effects: [] };
+    if (change.status !== 'pending') return { ok: false, errors: ['inboundAlreadyReviewed'], nearMatches: [], effects: [] };
+    if (reason.trim().length < 10) return { ok: false, errors: ['inboundDeclineReasonRequired'], nearMatches: [], effects: [] };
+
+    return get().write({
+      collection: 'inbound',
+      record: { ...change, status: 'declined', reviewedAt: get().now().toISOString(), reviewedByName: `${user.givenName} ${user.familyName}`, declineReason: reason.trim() },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'inbox',
+      targetLabel: t('connectors.inbound.declineAudit', { reference: change.externalRef }),
+      reason,
+      versionChange: t('connectors.inbound.declineVersion'),
+    });
   },
   newId: (prefix) => {
     counter += 1;

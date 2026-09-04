@@ -125,3 +125,96 @@ export const GATEWAY_DEPLOYMENT: DeploymentNote[] = [
   { runsAt: 'platform', what: 'Stores the envelope and routes it to the right inboxes from the wrapped key list.' },
   { runsAt: 'platform', what: 'Cannot read the event: it holds no key that opens one.' },
 ];
+
+/* ---------- Outbound: the same boundary, in the other direction ---------- */
+
+/**
+ * An outbound write as it crosses the boundary: ciphertext, plus the little the platform needs to
+ * route it.
+ *
+ * Bidirectionality must not become the hole in the encryption story. The inbound design has the
+ * agency gateway encrypting before anything reaches the platform; if the outbound path composed its
+ * payload platform-side, the platform would hold plaintext for exactly the records it claims never
+ * to see. So the payload is composed client-side by the entitled user, encrypted to the target
+ * gateway's public key, and relayed by the platform as ciphertext. The gateway decrypts and writes.
+ *
+ * The platform can route it and cannot read it, which is the same sentence as the inbound side and
+ * is what makes the claim survive the feature.
+ */
+export interface OutboundEnvelope {
+  /** Which gateway it is for, so the platform can route it. */
+  agency: Agency;
+  connector: ConnectorId;
+  /** The encrypted payload. The platform holds no key that opens it. */
+  record: EncryptedRecord;
+  /**
+   * The idempotency key, deliberately outside the ciphertext.
+   *
+   * The platform has to be able to match an acknowledgement, and a duplicate suppressed only at the
+   * far side is a duplicate that has already been written. The key names no person and describes no
+   * event: it is a connector, an intent and a record id, which the platform already holds.
+   */
+  idempotencyKey: string;
+  /** Bucketed to the day, as inbound is. The platform must know roughly when, not exactly when. */
+  submittedOn: string;
+}
+
+/**
+ * Compose and encrypt an outbound write, client-side.
+ *
+ * `payload` is a JSON string the caller has already built from records it can read, which is the
+ * point: the caller is the entitled user's browser, holding keys the platform does not have. This
+ * function is the last place the payload exists in the clear.
+ */
+export function encryptForGateway(
+  target: { agency: Agency; agencyKey: PublicKey },
+  connector: ConnectorId,
+  input: { id: string; idempotencyKey: string; payload: string; submittedAt: string },
+): OutboundEnvelope {
+  return {
+    agency: target.agency,
+    connector,
+    idempotencyKey: input.idempotencyKey,
+    record: encryptRecord(
+      {
+        id: input.id,
+        // Coarse, as inbound is: "outbound-write", never the intent's own subject or its fields.
+        type: 'outbound-write',
+        classification: classificationTag(officialSensitive(), false),
+        generation: 1,
+        updatedAt: input.submittedAt.slice(0, 10),
+        linkedIds: [],
+      },
+      input.payload,
+      [target.agencyKey],
+    ),
+    submittedOn: input.submittedAt.slice(0, 10),
+  };
+}
+
+/** What the platform can see of an outbound envelope. As with inbound, the leakage is stated. */
+export interface PlatformViewOfOutbound {
+  agency: Agency;
+  connector: ConnectorId;
+  submittedOn: string;
+  idempotencyKey: string;
+  ciphertextBytes: number;
+}
+
+export function platformViewOutbound(envelope: OutboundEnvelope): PlatformViewOfOutbound {
+  return {
+    agency: envelope.agency,
+    connector: envelope.connector,
+    submittedOn: envelope.submittedOn,
+    idempotencyKey: envelope.idempotencyKey,
+    ciphertextBytes: envelope.record.sealed.ciphertext.length,
+  };
+}
+
+export const OUTBOUND_DEPLOYMENT: DeploymentNote[] = [
+  { runsAt: 'platform', what: "The payload is composed in the entitled user's browser, from records only they can decrypt." },
+  { runsAt: 'platform', what: "It is encrypted to the target gateway's public key before it leaves the browser." },
+  { runsAt: 'platform', what: 'The platform relays the ciphertext and records the delivery state. It cannot read the payload.' },
+  { runsAt: 'gateway', what: 'The gateway decrypts with the agency key and writes to the source system with the agency\'s own credentials.' },
+  { runsAt: 'gateway', what: "It returns the source system's own identifier, which is what the platform records as an acknowledgement." },
+];
