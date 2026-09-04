@@ -39,5 +39,13 @@ module.exports = {
   overrides: [
     { files: ['**/utilities.css'], rules: { 'declaration-no-important': null } },
     { files: ['**/tokens.css'], rules: { 'color-no-hex': null } },
+    /*
+     * The source system simulator is a second product's palette, deliberately not the platform's.
+     * Its colours are declared once at the top of its own module as `--sim-*` custom properties and
+     * used through those, which is the same discipline the token file follows; the exception is that
+     * the declarations live beside the component rather than in the shared token sheet, because
+     * nothing else may use them. A blanket inline disable would have hidden a real drift.
+     */
+    { files: ['**/features/simulator/*.module.css'], rules: { 'color-no-hex': null } },
   ],
 };

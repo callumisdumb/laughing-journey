@@ -5,6 +5,7 @@ import { useT } from '@mas/messages';
 import { Button, EmptyState, Pill, Sheet, SheetBody, SheetHead, Table, TableWrap, useToast } from '@mas/ui';
 import type { MockAdapter } from '@mas/connectors';
 import { fullName, personById } from '@/lib/selectors';
+import { useSimulator } from '@/lib/simulator';
 import { useAppStore, useData, useNow } from '@/lib/store';
 import styles from './Outbox.module.css';
 
@@ -25,6 +26,10 @@ export function ReconcilePanel({ adapter }: { adapter: MockAdapter }) {
   const data = useData();
   const now = useNow();
   const audit = useAppStore((s) => s.audit);
+  // Subscribed to the episodes themselves rather than to the store's `held` selector. The selector
+  // is a stable function reference, so a component that watched it never re-rendered when the
+  // simulator changed, and an edit over there produced no divergence over here.
+  const episodes = useSimulator((s) => s.episodes);
   const { toast } = useToast();
 
   // The subjects this connector has anything to say about: the ones it has already sent us an
@@ -45,7 +50,11 @@ export function ReconcilePanel({ adapter }: { adapter: MockAdapter }) {
       if (person.dateOfBirth) ours['Client.DateOfBirth'] = person.dateOfBirth;
     }
     if (process) ours['Episode.Stage'] = process.stage;
-    const theirs = adapter.held({ personId });
+    // What the source holds comes from the simulator rather than the adapter fixture, so editing an
+    // episode over there produces a divergence over here. Falling back to the fixture keeps the
+    // screen working in a build with the demo tools off.
+    const fromSimulator = episodes.find((e) => e.connectorId === adapter.id && e.personId === personId)?.fields ?? {};
+    const theirs = Object.keys(fromSimulator).length > 0 ? fromSimulator : adapter.held({ personId });
     return {
       personId,
       name: person ? fullName(person) : personId,

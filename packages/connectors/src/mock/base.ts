@@ -206,6 +206,11 @@ export class MockAdapter implements ConnectorAdapter {
     return this.spec.held?.[subject.personId] ?? {};
   }
 
+  /** Every subject this system holds something for, which is what the simulator seeds itself from. */
+  heldAll(): Record<string, Record<string, string>> {
+    return this.spec.held ?? {};
+  }
+
   async flagRecord(subject: SubjectRef, flag: RecordFlag): Promise<PushReceipt> {
     if (!this.capabilities.includes('flagRecord')) throw new Error(`${this.id} cannot hold flags`);
     guard(this.id);

@@ -30,6 +30,10 @@ export const STATIC_ROUTES = [
   'admin/defaults',
   'settings',
   'help',
+  // The source system simulator, which is a demo affordance rather than part of the product. It is
+  // prerendered like everything else because the export has no other mode; the build flag is what
+  // takes it out (D-166).
+  'simulator',
 ] as const;
 
 export const REPORT_KINDS = ['asp', 'cp', 'marac', 'mappa', 'awi'] as const;

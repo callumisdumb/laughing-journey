@@ -5080,6 +5080,10 @@
         "screenshot": "phase-5/connectors-light-comfortable.png",
         "where": "Lede under the Connectors page title; the link tag opens the connector inbox"
       },
+      "openSimulator": {
+        "maxLength": 30,
+        "where": "Connectors screen, button opening the source system simulator"
+      },
       "title": {
         "maxLength": 16,
         "screenshot": "phase-5/connectors-light-comfortable.png",
@@ -20408,6 +20412,107 @@
       "maxLength": 32,
       "screenshot": "phase-4/sharing-outbound-light-comfortable.png",
       "where": "Page title of the sharing page"
+    }
+  },
+  "simulator": {
+    "back": {
+      "where": "Source system simulator: simulator.back"
+    },
+    "banner": {
+      "where": "Source system simulator: simulator.banner"
+    },
+    "columns": {
+      "client": {
+        "where": "Source system simulator: simulator.columns.client"
+      },
+      "opened": {
+        "where": "Source system simulator: simulator.columns.opened"
+      },
+      "origin": {
+        "where": "Source system simulator: simulator.columns.origin"
+      },
+      "reference": {
+        "where": "Source system simulator: simulator.columns.reference"
+      },
+      "stage": {
+        "where": "Source system simulator: simulator.columns.stage"
+      },
+      "type": {
+        "where": "Source system simulator: simulator.columns.type"
+      }
+    },
+    "connected": {
+      "where": "Source system simulator: simulator.connected"
+    },
+    "created": {
+      "where": "Source system simulator: simulator.created"
+    },
+    "createHelp": {
+      "where": "Source system simulator: simulator.createHelp"
+    },
+    "dutyTeam": {
+      "where": "Source system simulator: simulator.dutyTeam"
+    },
+    "episodes": {
+      "where": "Source system simulator: simulator.episodes"
+    },
+    "menu": {
+      "edit": {
+        "where": "Source system simulator: simulator.menu.edit"
+      },
+      "file": {
+        "where": "Source system simulator: simulator.menu.file"
+      },
+      "help": {
+        "where": "Source system simulator: simulator.menu.help"
+      },
+      "view": {
+        "where": "Source system simulator: simulator.menu.view"
+      }
+    },
+    "name": {
+      "where": "Source system simulator: simulator.name"
+    },
+    "newEpisode": {
+      "where": "Source system simulator: simulator.newEpisode"
+    },
+    "noEpisodes": {
+      "where": "Source system simulator: simulator.noEpisodes"
+    },
+    "nothingSelected": {
+      "where": "Source system simulator: simulator.nothingSelected"
+    },
+    "notInThisBuild": {
+      "where": "Source system simulator: simulator.notInThisBuild"
+    },
+    "origin": {
+      "local": {
+        "where": "Source system simulator: simulator.origin.local"
+      },
+      "platform": {
+        "where": "Source system simulator: simulator.origin.platform"
+      }
+    },
+    "ready": {
+      "where": "Source system simulator: simulator.ready"
+    },
+    "record": {
+      "where": "Source system simulator: simulator.record"
+    },
+    "reset": {
+      "where": "Source system simulator: simulator.reset"
+    },
+    "resetAction": {
+      "where": "Source system simulator: simulator.resetAction"
+    },
+    "save": {
+      "where": "Source system simulator: simulator.save"
+    },
+    "saved": {
+      "where": "Source system simulator: simulator.saved"
+    },
+    "selectHelp": {
+      "where": "Source system simulator: simulator.selectHelp"
     }
   },
   "states": {

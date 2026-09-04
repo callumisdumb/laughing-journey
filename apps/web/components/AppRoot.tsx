@@ -10,10 +10,12 @@ import { Screen } from '@/components/Screen';
 import { useAppearance } from '@/lib/appearance';
 import { useDesktop } from '@/lib/desktop';
 import { messagesStore } from '@/lib/messages-store';
+import { useSimulator } from '@/lib/simulator';
 import { primeDeviceKey } from '@/lib/localStore';
 import { useRoute, useRouterStore } from '@/lib/router';
 import { useAppStore } from '@/lib/store';
 import { SignIn } from '@/features/sign-in/SignIn';
+import { Simulator } from '@/features/simulator/Simulator';
 
 /** The single client entry: boots messages, appearance, router and data, then renders the route. */
 export function AppRoot() {
@@ -30,6 +32,7 @@ function Boot() {
   const init = useAppStore((s) => s.init);
   const userId = useAppStore((s) => s.session.userId);
   const hydrate = useAppearance((s) => s.hydrate);
+  const hydrateSimulator = useSimulator((s) => s.hydrate);
   const sync = useRouterStore((s) => s.sync);
   const route = useRoute();
   const queryClient = useMemo(() => new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 30_000 } } }), []);
@@ -37,6 +40,11 @@ function Boot() {
 
   useEffect(() => {
     hydrate();
+    // The simulator's state is read by the reconciliation screen as well as by the simulator itself,
+    // and every navigation here is a full page load, so it is hydrated at boot rather than by the
+    // screen that happens to own it. Without this an edit made in the simulator was invisible on the
+    // platform: the reconciliation panel was reading the seed.
+    hydrateSimulator();
     sync();
     // The device key comes from the OS keychain, which is asynchronous, and everything the store
     // persists is encrypted under a key derived from it. Priming it first means nothing is ever
@@ -45,7 +53,7 @@ function Boot() {
     void primeDeviceKey().then(() => {
       init();
     });
-  }, [hydrate, sync, init]);
+  }, [hydrate, hydrateSimulator, sync, init]);
 
   if (!ready || !route.ready) {
     return (
@@ -55,11 +63,19 @@ function Boot() {
     );
   }
 
-  const content = !userId || route.path === '/sign-in' ? <SignIn /> : (
-    <AppShell>
-      <Screen />
-    </AppShell>
-  );
+  // The simulator owns the whole window rather than sitting inside the shell. A viewer must never
+  // be confused about which of the two systems they are looking at, and the product's own chrome
+  // around a screen pretending to be a different product would be exactly that confusion.
+  const content =
+    !userId || route.path === '/sign-in' ? (
+      <SignIn />
+    ) : route.path === '/simulator' ? (
+      <Simulator />
+    ) : (
+      <AppShell>
+        <Screen />
+      </AppShell>
+    );
 
   return (
     <QueryClientProvider client={queryClient}>

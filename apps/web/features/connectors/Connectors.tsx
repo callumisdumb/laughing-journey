@@ -5,7 +5,7 @@ import { MOCK_ADAPTERS, setDegraded, setLatencyScale, setOutage, simulation, typ
 import { tKey, useT, type Translator } from '@mas/messages';
 import { AgencyMark, Button, EmptyState, KeyValue, Pill, SelectField, Sheet, SheetBody, SheetHead, Switch, TabPanel, Table, TableWrap, Tabs, useToast, type PillTone } from '@mas/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle, CheckCircle2, CloudOff, Loader2, RefreshCw } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, CloudOff, Loader2, MonitorCog, RefreshCw } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { InboundPanel } from './Inbound';
@@ -14,6 +14,7 @@ import { ReconcilePanel } from './Reconcile';
 import { AuthorityTable, WriteMatrix } from './WriteMatrix';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
+import { DEMO_TOOLS } from '@/lib/simulator';
 import { useSelection } from '@/lib/selection';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
 import styles from './Connectors.module.css';
@@ -425,6 +426,16 @@ export function Connectors() {
         </div>
         <div className={styles.headControls}>
           <SelectField label={t('connectors.speed.label')} value={latency} onChange={(e) => changeLatency(e.target.value as LatencyChoice)} options={LATENCY_CHOICES.map((choice) => ({ value: choice, label: latencyChoiceLabel(choice) }))} />
+          {/*
+            The other side of the connector. You cannot film two-way integration without showing it,
+            and it is a demonstration tool, so the link says so rather than pretending to be a part
+            of the product.
+          */}
+          {DEMO_TOOLS ? (
+            <Button variant="secondary" icon={<MonitorCog size={16} aria-hidden="true" />} onClick={() => navigate('/simulator')} data-testid="open-simulator">
+              {t('connectors.page.openSimulator')}
+            </Button>
+          ) : null}
         </div>
       </div>
       <ScreenState state={dev ?? 'ready'} empty={{ title: t('connectors.page.emptyTitle'), text: t('connectors.page.emptyText') }}>

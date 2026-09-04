@@ -70,6 +70,7 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - The idempotency key is built from what the write is about, which is what makes a retry a retry and what catches the echo when the far side pushes our own write back (D-161).
 - Conflicts go to a person, decided by a written-down authority table rather than by recency (D-162). The reconciliation screen is on each connector's own tab.
 - The outbound payload is composed in the browser and relayed as ciphertext, so the encryption claim survives the feature (D-163). `packages/connectors/src/gateway.test.ts` asserts it, mirroring the inbound test.
+- The source system simulator is at `/simulator`, reachable from the Connectors screen. It is a real second system rather than a screenshot: an episode created there arrives here as a proposal, and one edited there produces a divergence on the reconciliation screen (D-165). It is a demo affordance gated on `NEXT_PUBLIC_DEMO_TOOLS`, which a production build sets to `0` (D-166). It deliberately looks like a different product and carries a neutral name (D-167).
 
 ### Security
 - The claim is exact and the product never exceeds it: record content is end to end encrypted, the product as a whole is not, and every record is encrypted to exactly the principals the need-to-know rules entitle rather than to one organisational key (D-065). `docs/THREAT-MODEL.md` ranks the adversaries and `docs/SECURITY.md` section 10 is the rule that no screen may claim more.

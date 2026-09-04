@@ -22,7 +22,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SHOTS = join(ROOT, 'docs', 'SCREENSHOTS');
 
 /** Capture rounds in the order they happened, so the sheet reads as a history rather than a listing. */
-const ORDER = ['phase-1', 'phase-2', 'phase-3', 'phase-4', 'phase-5', 'phase-6', 'classification', 'nmds', 'security', 'dialogs', 'layout', 'links', 'sign-in', 'clock', 'create', 'network', 'terminal', 'two-way'];
+const ORDER = ['phase-1', 'phase-2', 'phase-3', 'phase-4', 'phase-5', 'phase-6', 'classification', 'nmds', 'security', 'dialogs', 'layout', 'links', 'sign-in', 'clock', 'create', 'network', 'terminal', 'two-way', 'simulator'];
 
 /** What each round was. A contact sheet with no captions is a wall of thumbnails. */
 const ROUND_NOTES = {
@@ -41,6 +41,7 @@ const ROUND_NOTES = {
   'sign-in': 'Choosing who you are, rebuilt: one surface, the honest statement second, both questions at once and the keyboard first.',
   clock: 'The settable demo clock, which every statutory clock and every relative date in the product is computed against.',
   network: 'Starting a process behind two gates that explain themselves, and household and network kept apart, and what changing either one does: the open cases a household change touches, and the exclusion a relationship creates, both computed and shown before the button.',
+  simulator: 'The other side of the connector: a deliberately plain mock of a partner system, so two-way integration can be filmed from both ends. Plainer, denser, older, with a neutral name and a banner saying it is simulated. The wiring is real: an episode created there arrives here as a proposal, and one edited there produces a divergence on the reconciliation screen.',
   'two-way': 'Connectors in both directions. The capability matrix that refuses to claim what is not realistic, the outbox with a delivery state a person can see, the payload preview in the target system\'s own field names, the echo defence that recognises our own write coming back, and the reconciliation screen almost no product demo has.',
   terminal: 'The other half of a records system: editing, correcting, closing, reopening, retiring and recording a death. Nothing here deletes. A closed case keeps its deadlines and can be reopened; a retired chronology entry is off the working list and still on the record; a corrected date of birth leaves the value it used to hold on screen with the reason it changed.',
   create: 'Making a record. Adding a person begins with looking for them: the search, the candidates with the reason each matched, the form that only opens once they have been dismissed, the refusal for a role that does not hold cases, and the merge, which is destructive and therefore reversible. Then the rest of the create paths, each showing the consequence before the button: the outcomes that are the plan, the alert and who can see it, the clocks a granted protection order starts, the facts a disclosure is limited to, and the global create action that reaches them all from anywhere.',

@@ -1621,6 +1621,7 @@
       "emptyText": "Add an adapter in Admin to see its health here.",
       "emptyTitle": "No connectors configured",
       "lede": "Ten mock adapters behind the real connector interface. Everything they pull lands in the <link>connector inbox</link> for a practitioner to read, retitle and promote. Nothing goes straight into a chronology.",
+      "openSimulator": "Open the source system",
       "title": "Connectors"
     },
     "real": {
@@ -6582,6 +6583,45 @@
       "preview": "What would X see"
     },
     "title": "Sharing and notifications"
+  },
+  "simulator": {
+    "back": "Back to the platform",
+    "banner": "Simulated system. This is not a real product and holds no real data. It exists so the two-way connector can be shown from both sides.",
+    "columns": {
+      "client": "Client",
+      "opened": "Opened",
+      "origin": "Origin",
+      "reference": "Reference",
+      "stage": "Stage",
+      "type": "Type"
+    },
+    "connected": "Connected: {system}",
+    "created": "Episode {reference} created and sent to the platform.",
+    "createHelp": "Choose the client the episode is about. It will be sent to the platform as a proposal, which somebody there accepts or declines.",
+    "dutyTeam": "Duty team, Portlennan",
+    "episodes": "Episode list",
+    "menu": {
+      "edit": "Edit",
+      "file": "File",
+      "help": "Help",
+      "view": "View"
+    },
+    "name": "Council social work system",
+    "newEpisode": "New episode",
+    "noEpisodes": "No episodes.",
+    "nothingSelected": "No episode selected",
+    "notInThisBuild": "The source system simulator is a demonstration tool and is not included in this build.",
+    "origin": {
+      "local": "Entered here",
+      "platform": "From the platform"
+    },
+    "ready": "Ready",
+    "record": "Episode {reference}",
+    "reset": "Episode list reset to its starting state.",
+    "resetAction": "Reset",
+    "save": "Save",
+    "saved": "Episode {reference} saved. The platform will show the divergence on its reconciliation screen.",
+    "selectHelp": "Choose an episode from the list to view or edit it."
   },
   "states": {
     "clock": {

@@ -180,5 +180,8 @@ export function authorityFor(connectorId: ConnectorId, field: string): Authority
 }
 
 export function authorityLabel(authority: Authority): string {
-  return tKey(`connectors.write.authority.${keySegment(authority)}`);
+  // The product name is a catalogue entry, so a rebrand is one edit. Reading it here means the
+  // label says "Person360 owns this field" rather than printing the placeholder, which is what a
+  // key read with no arguments does and what the reconciliation screen was showing.
+  return tKey(`connectors.write.authority.${keySegment(authority)}`, { product: tKey('product.name') });
 }
