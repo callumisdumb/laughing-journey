@@ -25,9 +25,9 @@ import styles from './DemoClock.module.css';
  * later is not a setting.
  */
 const JUMPS = [
-  { days: 1, key: 'demoClock.jump.day' },
-  { days: 7, key: 'demoClock.jump.week' },
-  { days: 28, key: 'demoClock.jump.month' },
+  { days: 1, back: 'demoClock.jump.day.back', on: 'demoClock.jump.day.on' },
+  { days: 7, back: 'demoClock.jump.week.back', on: 'demoClock.jump.week.on' },
+  { days: 28, back: 'demoClock.jump.month.back', on: 'demoClock.jump.month.on' },
 ] as const;
 
 function shift(from: Date, days: number): string {
@@ -54,14 +54,14 @@ export function DemoClock({ compact = false }: { compact?: boolean }) {
       </p>
 
       <div className={styles.jumps} role="group" aria-label={t('demoClock.jumpsLabel')}>
-        {JUMPS.map(({ days, key }) => (
-          <Button key={`back-${days}`} size="sm" variant="quiet" onClick={() => setDemoNow(shift(now, -days))}>
-            {t(`${key}.back` as 'demoClock.jump.day.back')}
+        {JUMPS.map((jump) => (
+          <Button key={`back-${jump.days}`} size="sm" variant="quiet" onClick={() => setDemoNow(shift(now, -jump.days))}>
+            {t(jump.back)}
           </Button>
         ))}
-        {JUMPS.map(({ days, key }) => (
-          <Button key={`on-${days}`} size="sm" variant="secondary" onClick={() => setDemoNow(shift(now, days))}>
-            {t(`${key}.on` as 'demoClock.jump.day.on')}
+        {JUMPS.map((jump) => (
+          <Button key={`on-${jump.days}`} size="sm" variant="secondary" onClick={() => setDemoNow(shift(now, jump.days))}>
+            {t(jump.on)}
           </Button>
         ))}
       </div>

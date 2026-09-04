@@ -2,10 +2,11 @@
 
 import { AGENCIES, PROCESS_TYPES, ageLabel, agencyShort, formatDate, processLabel, stageLabel, type Agency, type Person } from '@mas/domain';
 import { useT } from '@mas/messages';
-import { AgencyMark, Pill, ProcessMark, SelectField, Table, TableWrap, TextField, tableStyles } from '@mas/ui';
-import { Lock, UserX } from 'lucide-react';
+import { AgencyMark, Button, Pill, ProcessMark, SelectField, Table, TableWrap, TextField, tableStyles } from '@mas/ui';
+import { Lock, UserPlus, UserX } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
+import { AddPersonDialog } from '@/features/person/AddPersonDialog';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { useNavigate, useRoute, setQuery } from '@/lib/router';
 import { personPath } from '@/lib/routes';
@@ -39,6 +40,7 @@ export function PeopleList() {
   const select = useSelection((s) => s.select);
   const dev = useDevState();
   const [text, setText] = useState(route.query.get('q') ?? '');
+  const [adding, setAdding] = useState(false);
 
   const processFilter = route.query.get('process') ?? '';
   const agencyFilter = route.query.get('agency') ?? '';
@@ -92,7 +94,12 @@ export function PeopleList() {
           <h1>{t('person.list.title')}</h1>
           <p className="page-lede">{t('person.list.lede')}</p>
         </div>
-        <span className={styles.count}>{t('person.list.count', { shown: rows.length, total: data.people.length })}</span>
+        <div className={styles.headActions}>
+          <span className={styles.count}>{t('person.list.count', { shown: rows.length, total: data.people.length })}</span>
+          <Button variant="primary" icon={<UserPlus size={16} aria-hidden="true" />} onClick={() => setAdding(true)} data-testid="add-person">
+            {t('person.create.open')}
+          </Button>
+        </div>
       </div>
       <div className={styles.filters}>
         <div className={styles.filterSearch}>
@@ -180,6 +187,7 @@ export function PeopleList() {
           </Table>
         </TableWrap>
       </ScreenState>
+      <AddPersonDialog open={adding} onClose={() => setAdding(false)} onCreated={(person) => navigate(personPath(person.id))} />
     </div>
   );
 }

@@ -173,6 +173,10 @@ export function isAccessRestricted(record: { accessRestriction: AccessRestrictio
 export const LIFE_STAGES = ['unborn', 'child', 'adult'] as const;
 export type LifeStage = (typeof LIFE_STAGES)[number];
 
+export function lifeStageLabel(stage: LifeStage): string {
+  return tKey(`domain.lifeStages.${keySegment(stage)}`);
+}
+
 export const CHANNELS = ['in-app', 'secure-email-digest', 'connector-push'] as const;
 export type Channel = (typeof CHANNELS)[number];
 
@@ -384,6 +388,10 @@ export const AUDIT_ACTS = [
   'edit',
   'promote',
   'sign-in',
+  // A create is not an edit. An inspector asking when a record came into existence, and who put it
+  // there, should not have to infer it from the earliest edit on a record that may have been edited
+  // a hundred times since.
+  'create',
   // Government Security Classification, Annex 2. A raise is always allowed; a lower needs a named
   // role and is refused otherwise, so both are recorded exactly as break-glass is.
   'classify',

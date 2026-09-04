@@ -106,6 +106,36 @@ Button (primary, secondary, quiet, danger; sizes md 40px and lg 44px), IconButto
 
 Every one has a `.module.css` and `data-state` attributes. No component depends on Tailwind for its identity.
 
+### 5.1 A dialog that is a sequence
+
+Add a person is not a form with steps; it is a sequence that accumulates. The search stays on screen when the candidates appear beneath it, and both stay on screen when the details form appears beneath those. Nothing is replaced.
+
+```
++-- Add a person -----------------------------------------------+
+| (!) Everything you enter here is demonstration data.          |
+|                                                                |
+| Find them first                                                |
+| Two records for one person is how information stops joining up.|
+| [Given name    ] [Family name  ] [Date of birth]               |
+| [CHI number    ] [Address, town or postcode    ]               |
+|                                                                |
+| Two people may match                                           |
+| |  Aiden Boyle                        14 Mar 2019             ||
+| |  (Similar name) (Same date of birth)                        ||
+| |: Derek Muir                         08 Jun 1974             ||  <- dashed edge
+| |  (Same current address)                                     ||
+| |  This person may already be known to another agency.        ||
+| |  You cannot see their record. Ask for access.               ||
+|                                                                |
+| > Say so explicitly and the create form opens. The number of   |
+|   candidates you reviewed is recorded on the new record.       |
+|                                                                |
+|                    [Cancel]  [None of these is the person]     |
++----------------------------------------------------------------+
+```
+
+The button that creates the record is not on the screen until the second one has been pressed. The assertion sits immediately above the button that makes it, because a claim that ends up on the record and in front of an inspector should be read before it is pressed rather than summarised afterwards in a toast.
+
 ## 6. Hero screen wireframes
 
 ### 6.1 Person record

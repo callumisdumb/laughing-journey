@@ -49,11 +49,19 @@ for (const file of files) {
   // block that also carries the fixed position and the zero inset, which is the shape we wrote.
   if (/margin:auto/.test(css) && /position:fixed/.test(css) && /inset:0/.test(css)) sawAuto = true;
 
-  // Anything that names the dialog element or a dialog class and zeroes the margin. The universal
-  // preflight selector is allowed: it is what we are defending against, and our own rule outranks
-  // it. What is not allowed is a later, more specific rule undoing the fix.
-  for (const match of css.matchAll(/([^{}]*dialog[^{}]*)\{([^{}]*)\}/gi)) {
+  // Anything that targets the dialog box itself and zeroes its margin. The universal preflight
+  // selector is allowed: it is what we are defending against, and our own rule outranks it. What is
+  // not allowed is a later, more specific rule undoing the fix.
+  //
+  // "The dialog box itself" is the `dialog` element or the `.dialog` class a CSS module compiled to
+  // a hashed name ending `__dialog`. Matching the word anywhere in a selector was too broad: a
+  // stylesheet named after a dialog compiles every one of its classes to a name containing
+  // "dialog", so a paragraph inside a dialog body resetting its own margin failed the guard, which
+  // is a false alarm that trains people to ignore a real one.
+  for (const match of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const [, selector, body] = match;
+    const targetsBox = /(^|[\s,>+~([])dialog\b/i.test(selector) || /__dialog(?![A-Za-z0-9])/.test(selector);
+    if (!targetsBox) continue;
     if (/(^|;)\s*margin:\s*0(px)?\s*(;|$)/.test(body)) {
       problems.push(`${file.replace(process.cwd() + '/', '')}: ${selector.trim()} sets margin: 0`);
     }

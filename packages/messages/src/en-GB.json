@@ -879,6 +879,7 @@
       "classificationLower": "Classification lowered",
       "classificationRaise": "Classification raised",
       "classify": "Classify",
+      "create": "Create",
       "edit": "Edit",
       "export": "Export",
       "personaSwitch": "Persona switch",
@@ -2233,6 +2234,11 @@
       "breached": "Breached",
       "ended": "Ended"
     },
+    "lifeStages": {
+      "adult": "Adult",
+      "child": "Child",
+      "unborn": "Unborn"
+    },
     "lsiServiceTypes": {
       "careHome": "Care homes",
       "communityGroups": "Community groups (religious settings etc)",
@@ -2616,6 +2622,17 @@
       "harmTypes": "Record at least one type of harm",
       "immediateSafety": "Say what is in place for immediate safety",
       "reasoning": "Give the reasoning for this limb (at least {min} characters)"
+    },
+    "write": {
+      "chiNeedsDateOfBirth": "A CHI number is built from the date of birth, so record that first.",
+      "classificationDowngrade": "This record's classification cannot be lowered here. A deliberate lower needs a named role and a reason.",
+      "dateOfBirthFuture": "A date of birth cannot be in the future. Use the unborn life stage and an expected delivery date.",
+      "excluded": "{name} is on the exclusion register for this case and cannot be added.",
+      "expectedDeliveryPast": "An expected delivery date in the past means the baby has been born. Record the birth rather than a due date.",
+      "nameRequired": "A given name and a family name are both needed.",
+      "noUser": "Nobody is signed in, so this cannot be recorded against anyone.",
+      "reasonRequired": "Say why in a sentence. A change made after the fact needs a reason on the record.",
+      "searchRequired": "Search first. This product does not create a person record without one."
     }
   },
   "forms": {
@@ -3264,23 +3281,15 @@
       "title": "Where you have been"
     },
     "signIn": {
-      "badges": {
-        "audited": "Every restricted read audited",
-        "needToKnow": "Need-to-know by design",
-        "offline": "Runs offline"
-      },
       "chooseHint": "Use the arrow keys to move through the list and Enter to choose.",
-      "demoNote": "This is a demonstration build. Every person, case, address and number is synthetic. Sign-in is a persona picker in place of your organisation's single sign-on.",
       "demoSignIn": "There is no sign-in to do. In the product your organisation's single sign-on decides who you are; here you choose, because who you are is what the demonstration is about.",
       "demoStatement": "This is a demonstration. Every person, case, address, postcode and number in it is invented, and none of it connects to a live system.",
       "filter": {
-        "clear": "Clear",
         "label": "Find an organisation or a person",
         "placeholder": "Type a name, a role or an agency",
         "results": "{count, plural, =0 {Nothing matches} one {One match} other {# matches}}"
       },
       "headline": "One person. Many processes. One shared picture.",
-      "lastTime": "Last time",
       "lede": "Adult support and protection, child protection, MARAC, MAPPA and Adults with Incapacity, run by the agencies who share the risk, with the person present in their own record.",
       "orgKinds": {
         "council": "Council",
@@ -3930,6 +3939,20 @@
       "label": "How you got here"
     }
   },
+  "permissions": {
+    "create": {
+      "administrator": "The system administrator account configures the product and holds no case content, so it does not create records.",
+      "oversight": {
+        "audit": "Your role reads the audit ledger and does not hold cases, so it does not create records here.",
+        "readOnly": "Your role reads across cases for oversight and does not hold them, so it does not create records here.",
+        "redacted": "Your role sees presence-level information only, so it does not create records here."
+      },
+      "routeAskAdmin": "Ask a system administrator to check your role.",
+      "routeAskPractitioner": "Ask the allocated practitioner to create it.",
+      "routeReferral": "Send a referral to the council's social work service, who will create the record and tell you the reference.",
+      "unknownRole": "Your role is not recognised, so the product cannot decide what you may create."
+    }
+  },
   "person": {
     "address": {
       "none": "No address recorded"
@@ -3960,6 +3983,88 @@
     },
     "chronology": {
       "openWide": "Open wide"
+    },
+    "create": {
+      "address": "Address",
+      "addressHint": "Addresses already in the demonstration data. A new address is recorded on the person record afterwards.",
+      "addressNotKnown": "Not known",
+      "aliases": "Other names they are recorded under",
+      "aliasesHint": "One per line. These are what the duplicate search runs against.",
+      "candidates": {
+        "hint": "Open a candidate to check before you create a second record.",
+        "noDateOfBirth": "No date of birth recorded",
+        "none": "Nothing matched what you typed. Check the spelling and any name they may be recorded under, then create the record below.",
+        "presenceOnly": "This person may already be known to another agency. You cannot see their record. Ask for access rather than creating a second one.",
+        "requestAccess": "Ask for access",
+        "title": "{count, plural, =0 {Nobody matches} one {One person may match} other {# people may match}}"
+      },
+      "chi": "CHI number",
+      "chiHint": "Leave blank if you do not have it. Every number this product holds is synthetic.",
+      "created": {
+        "text": "{name} has a record. {reviewed}",
+        "title": "Record created"
+      },
+      "detailsStep": "The person",
+      "expectedDeliveryDate": "Expected delivery date",
+      "fields": {
+        "address": "Address, town or postcode",
+        "addressHint": "A line, a town or a postcode. A shared address is one of the strongest signs of a duplicate.",
+        "chi": "CHI number",
+        "chiHint": "Ten digits. Partial numbers are searched too.",
+        "dateOfBirth": "Date of birth",
+        "dateOfBirthHint": "A year on its own is fine if that is all you know.",
+        "familyName": "Family name",
+        "givenName": "Given name"
+      },
+      "gated": {
+        "noUser": "Nobody is signed in, so there is no role to check.",
+        "signIn": "Sign in and try again.",
+        "title": "You cannot create a person record"
+      },
+      "generateChi": "Generate a synthetic number",
+      "interpreter": "Interpreter language",
+      "interpreterHint": "The language an interpreter would be booked in, if one is needed.",
+      "lifeStage": "Life stage",
+      "noFixedAddress": "No fixed address",
+      "noFixedAddressHint": "A person can exist here without one. Record the locality in the notes if that is all there is.",
+      "noneFoundHint": "Nothing matched, and that is recorded on the new record as searched and found nothing.",
+      "noneMatch": "None of these is the person",
+      "noneMatchHint": "Say so explicitly and the create form opens. The number of candidates you reviewed is recorded on the new record.",
+      "open": "Add a person",
+      "precision": {
+        "estimated": "Estimated from an age",
+        "exact": "Exact, from a document",
+        "hint": "A fabricated 1 January is not the same claim as a date somebody has seen, and reports computed from the two are not the same either.",
+        "label": "How well is the date known?",
+        "year": "The year only"
+      },
+      "reasons": {
+        "addressCurrent": "Same current address",
+        "addressPrevious": "Same previous address",
+        "alias": "Recorded as {alias}",
+        "chi": "Same CHI number",
+        "dobDayMonthSwapped": "Date of birth with the day and month swapped",
+        "dobExact": "Same date of birth",
+        "dobTransposed": "Date of birth with two digits transposed",
+        "dobYear": "Born the same year",
+        "expectedDelivery": "Same expected delivery date",
+        "name": "Similar name",
+        "nameTransposed": "Same names, in the other order"
+      },
+      "reviewed": "Created after reviewing {count, plural, =0 {no candidates} one {one candidate} other {# candidates}}.",
+      "search": "Search",
+      "searchLede": "Two records for one person is how information stops joining up. Search before you create, every time.",
+      "searchStep": "Find them first",
+      "sex": "Sex",
+      "sexOptions": {
+        "female": "Female",
+        "male": "Male",
+        "notRecorded": "Not recorded"
+      },
+      "submit": "Create the record",
+      "syntheticWarning": "Everything you enter here is demonstration data. Do not type a real person's details into this product.",
+      "title": "Add a person",
+      "unbornHint": "An unborn baby has an expected delivery date rather than a date of birth, and becomes a child at birth, which is an event and not an edit."
     },
     "documents": {
       "columns": {
@@ -4059,8 +4164,6 @@
         "wider": "Wider network"
       },
       "listItem": "{name}: {relation}{household, select, yes {, same household} other {}}",
-      "member": "{name}, {relation}{household, select, yes {, same household} other {}}",
-      "noRelationships": "no relationships recorded",
       "relation": {
         "associateOf": "associate",
         "attorneyFor": "attorney",
@@ -4083,8 +4186,7 @@
         "siblingOf": "sibling",
         "stepParentOf": "step-parent",
         "unbornChildOf": "unborn child"
-      },
-      "summary": "Network of {name}: {list}"
+      }
     },
     "notFound": {
       "back": "Back to people",
@@ -5497,10 +5599,8 @@
       "title": "Appearance"
     },
     "clock": {
-      "frozen": "The demo is frozen at {frozen} unless the live clock is on. Right now the product thinks it is {now}.",
       "live": "Live clock",
       "meta": "Every clock, due date and overdue marker is calculated from this instant.",
-      "note": "Turn the live clock on to watch clocks tick over in a long demo. Turn it off to get the scenarios back to their designed state.",
       "title": "Demo clock"
     },
     "demoData": {

@@ -59,7 +59,7 @@ Outline written in Phase 0. From Phase 1 the entity tables below are regenerated
 
 ## Generated tables
 
-Generated on 2026-09-03 by `pnpm docs:data-model`. Do not edit below this line.
+Generated on 2026-09-04 by `pnpm docs:data-model`. Do not edit below this line.
 
 ### Organisation
 
@@ -125,6 +125,7 @@ Generated on 2026-09-03 by `pnpm docs:data-model`. Do not edit below this line.
 | `pronouns` | string | no |
 | `lifeStage` | "unborn" \| "child" \| "adult" | yes |
 | `dateOfBirth` | string (date) | no |
+| `dateOfBirthPrecision` | "exact" \| "year" \| "estimated" | no |
 | `expectedDeliveryDate` | string (date) | no |
 | `sex` | "female" \| "male" \| "not-recorded" | yes |
 | `chi` | string | no |
@@ -137,6 +138,7 @@ Generated on 2026-09-03 by `pnpm docs:data-model`. Do not edit below this line.
 | `school` | string | no |
 | `deceased` | boolean | no |
 | `createdAt` | string (date-time) | yes |
+| `createdAfterReviewing` | integer | no |
 
 ### Household
 
@@ -670,7 +672,7 @@ Variant 5
 | `userId` | string | yes |
 | `userName` | string | yes |
 | `agency` | enum (11 values) | yes |
-| `act` | enum (12 values) | yes |
+| `act` | enum (13 values) | yes |
 | `targetType` | enum (9 values) | yes |
 | `targetId` | string | yes |
 | `targetLabel` | string | yes |

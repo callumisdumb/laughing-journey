@@ -37,6 +37,7 @@ const ACT_TONES: Record<AuditAct, PillTone> = {
   'classification-raise': 'high',
   'classification-lower': 'critical',
   'sign-in': 'low',
+  create: 'low',
 };
 
 function targetHref(data: Dataset, a: AuditEntry): string | undefined {

@@ -48,6 +48,16 @@ export const personSchema = z.object({
   pronouns: z.string().optional(),
   lifeStage: z.enum(LIFE_STAGES),
   dateOfBirth: isoDate.optional(),
+  /**
+   * How well the date of birth is actually known.
+   *
+   * `exact` is a date somebody has seen on a document. `year` is a year with a fabricated 1 January
+   * behind it, which is what half of these records really are. `estimated` is an age converted to a
+   * date. The distinction has to be stored, because an age band report computed from a fabricated
+   * day and one computed from a known date are different claims, and a product that cannot tell them
+   * apart will state the first with the confidence of the second.
+   */
+  dateOfBirthPrecision: z.enum(['exact', 'year', 'estimated']).optional(),
   expectedDeliveryDate: isoDate.optional(),
   sex: z.enum(['female', 'male', 'not-recorded']),
   /** Synthetic CHI number: 10 digits, ddmmyy plus four. Never a real number. */
@@ -65,6 +75,14 @@ export const personSchema = z.object({
   // See D-079. A test asserts it stays absent.
   deceased: z.boolean().optional(),
   createdAt: isoDateTime,
+  /**
+   * How many possible duplicates were on screen when this record was created, and dismissed.
+   *
+   * The assertion is recorded rather than assumed: "created after reviewing 3 candidates" is a thing
+   * an inspector can ask about and a practitioner can be held to, where "the search was shown" is
+   * not. Absent on the seeded records, which predate the create path.
+   */
+  createdAfterReviewing: z.number().int().nonnegative().optional(),
 });
 export type Person = z.infer<typeof personSchema>;
 

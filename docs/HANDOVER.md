@@ -47,6 +47,12 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - Every screen accepts `?state=` for designed states (D-012). Telemetry is off at the build level (D-018).
 - Electron is the demo build and Tauri stays configured (D-032); the Linux build container has no GTK or WebKitGTK, so the Tauri binary is not built here (D-007). See section 4.
 
+### Records management
+- Every create and update goes through one pipeline, `store.write()`, which runs the ten steps of `docs/RECORDS.md` section 7 in order (D-110). Refusals are total and come first, so a refused write leaves no half-record, no orphan audit entry and no clock counting against something that does not exist (D-111). It returns codes; `apps/web/lib/writeErrors.ts` does the wording (D-119).
+- A person is never created directly. The path is search, review candidates, then create only if nothing matches, and the count of candidates dismissed is recorded on the record (D-114). Candidates the reader cannot open are shown rather than hidden, because the invisible record is the one that produces the duplicate (D-115), and every candidate says why it matched rather than carrying a score (D-116).
+- Permission to create is checked at the action, and the refusal names a route (D-117). `canCreate` in `packages/domain/src/permissions/create.ts` keys on the role's oversight kind, not on a list of role names.
+- Generated CHI numbers are deliberately invalid: the right shape, no check digit (D-118).
+
 ### Security
 - The claim is exact and the product never exceeds it: record content is end to end encrypted, the product as a whole is not, and every record is encrypted to exactly the principals the need-to-know rules entitle rather than to one organisational key (D-065). `docs/THREAT-MODEL.md` ranks the adversaries and `docs/SECURITY.md` section 10 is the rule that no screen may claim more.
 - Entitlement is a key, not a boolean: the resolver returns a wrapping list, `canSee` was deleted, and a test walks every source file to make sure nothing reintroduces a content gate (D-066).

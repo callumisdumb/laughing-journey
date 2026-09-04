@@ -2802,6 +2802,9 @@
         "maxLength": 24,
         "where": "Audit act label: a classification was assigned at the level it derives"
       },
+      "create": {
+        "where": "Audit ledger, act column and act filter"
+      },
       "edit": {
         "maxLength": 16,
         "where": "Act pill and act filter option on the Audit screen for an edit"
@@ -7011,6 +7014,17 @@
         "where": "Licence condition status in the MAPPA panel"
       }
     },
+    "lifeStages": {
+      "adult": {
+        "where": "Life stage vocabulary, used wherever a life stage is named"
+      },
+      "child": {
+        "where": "Life stage vocabulary, used wherever a life stage is named"
+      },
+      "unborn": {
+        "where": "Life stage vocabulary, used wherever a life stage is named"
+      }
+    },
     "lsiServiceTypes": {
       "careHome": {
         "verbatim": true,
@@ -8033,6 +8047,35 @@
       "reasoning": {
         "screenshot": "phase-3/process-asp-three-point-form-light-comfortable.png",
         "where": "Validation message under the reasoning for a limb on the three-point test form"
+      }
+    },
+    "write": {
+      "chiNeedsDateOfBirth": {
+        "where": "Add a person dialog, refusal summary when the generate button is pressed with no date of birth"
+      },
+      "classificationDowngrade": {
+        "where": "Any create or edit dialog, refusal summary at the top of the body"
+      },
+      "dateOfBirthFuture": {
+        "where": "Add a person dialog, refusal summary at the top of the body"
+      },
+      "excluded": {
+        "where": "Any dialog adding a recipient, refusal summary at the top of the body"
+      },
+      "expectedDeliveryPast": {
+        "where": "Add a person dialog, refusal summary at the top of the body"
+      },
+      "nameRequired": {
+        "where": "Add a person dialog, refusal summary at the top of the body"
+      },
+      "noUser": {
+        "where": "Any create or edit dialog, refusal summary at the top of the body"
+      },
+      "reasonRequired": {
+        "where": "Any create or edit dialog, refusal summary at the top of the body"
+      },
+      "searchRequired": {
+        "where": "Add a person dialog, refusal summary at the top of the body"
       }
     }
   },
@@ -9856,29 +9899,8 @@
       }
     },
     "signIn": {
-      "badges": {
-        "audited": {
-          "maxLength": 32,
-          "screenshot": "phase-1/sign-in-light-comfortable.png",
-          "where": "Sign-in, second pill under the lede"
-        },
-        "needToKnow": {
-          "maxLength": 32,
-          "screenshot": "phase-1/sign-in-light-comfortable.png",
-          "where": "Sign-in, first pill under the lede"
-        },
-        "offline": {
-          "maxLength": 32,
-          "screenshot": "phase-1/sign-in-light-comfortable.png",
-          "where": "Sign-in, third pill under the lede"
-        }
-      },
       "chooseHint": {
         "where": "Sign-in, how to move through the organisation list with the keyboard."
-      },
-      "demoNote": {
-        "screenshot": "phase-1/sign-in-light-comfortable.png",
-        "where": "Sign-in, note at the foot of the introduction explaining the demonstration build"
       },
       "demoSignIn": {
         "where": "Sign-in, why there is no password field. Stated rather than apologised for."
@@ -9887,10 +9909,6 @@
         "where": "Sign-in, the honest statement at the top of the choosing column. The first thing read after the headline."
       },
       "filter": {
-        "clear": {
-          "maxLength": 10,
-          "where": "Sign-in, button clearing the filter."
-        },
         "label": {
           "where": "Sign-in, label of the single field that filters organisations and people together."
         },
@@ -9905,11 +9923,6 @@
         "maxLength": 60,
         "screenshot": "phase-1/sign-in-light-comfortable.png",
         "where": "Sign-in, headline"
-      },
-      "lastTime": {
-        "maxLength": 12,
-        "screenshot": "phase-1/sign-in-light-comfortable.png",
-        "where": "Sign-in, tag on the persona chosen last time"
       },
       "lede": {
         "screenshot": "phase-1/sign-in-light-comfortable.png",
@@ -12150,6 +12163,36 @@
       }
     }
   },
+  "permissions": {
+    "create": {
+      "administrator": {
+        "where": "Refusal shown to the system administrator, who configures the product and holds no case content."
+      },
+      "oversight": {
+        "audit": {
+          "where": "Refusal shown to an oversight role with audit oversight, which reads across cases and does not hold them."
+        },
+        "readOnly": {
+          "where": "Refusal shown to an oversight role with readOnly oversight, which reads across cases and does not hold them."
+        },
+        "redacted": {
+          "where": "Refusal shown to an oversight role with redacted oversight, which reads across cases and does not hold them."
+        }
+      },
+      "routeAskAdmin": {
+        "where": "What to do instead, where the role is unrecognised."
+      },
+      "routeAskPractitioner": {
+        "where": "What to do instead, where the role is the system administrator."
+      },
+      "routeReferral": {
+        "where": "What to do instead, where the role is oversight: send a referral."
+      },
+      "unknownRole": {
+        "where": "Refusal shown where a role is not in the definitions table."
+      }
+    }
+  },
   "person": {
     "address": {
       "none": {
@@ -12247,6 +12290,241 @@
         "maxLength": 16,
         "screenshot": "phase-2/person-360-chronology-light-comfortable.png",
         "where": "Primary button on the Chronology tab that opens the full chronology screen"
+      }
+    },
+    "create": {
+      "address": {
+        "where": "Add a person dialog, details step, field label"
+      },
+      "addressHint": {
+        "where": "Add a person dialog, details step, under the address select"
+      },
+      "addressNotKnown": {
+        "where": "Add a person dialog, details step, address select placeholder"
+      },
+      "aliases": {
+        "where": "Add a person, other recorded names."
+      },
+      "aliasesHint": {
+        "where": "That aliases are what the duplicate search runs against."
+      },
+      "candidates": {
+        "hint": {
+          "where": "Encourages opening a candidate before creating a second record."
+        },
+        "noDateOfBirth": {
+          "where": "Add a person dialog, candidate row, where the candidate has neither a date of birth nor an expected delivery date"
+        },
+        "none": {
+          "where": "Shown where the search matched nobody."
+        },
+        "presenceOnly": {
+          "where": "Shown against a candidate the searcher has no access to. This is the case that creates most duplicates."
+        },
+        "requestAccess": {
+          "maxLength": 20,
+          "where": "Offers the access request route instead of a parallel record."
+        },
+        "title": {
+          "where": "Heading over the candidate list, with the count."
+        }
+      },
+      "chi": {
+        "where": "Add a person dialog, details step, field label"
+      },
+      "chiHint": {
+        "where": "Add a person dialog, details step, under the CHI field"
+      },
+      "created": {
+        "text": {
+          "where": "Toast body after creating a person, naming them and the candidates reviewed."
+        },
+        "title": {
+          "maxLength": 24,
+          "where": "Toast title after creating a person."
+        }
+      },
+      "detailsStep": {
+        "where": "Heading of the second step, the person's details."
+      },
+      "expectedDeliveryDate": {
+        "where": "Add a person, expected delivery date for an unborn baby."
+      },
+      "fields": {
+        "address": {
+          "where": "Add a person, search field: address."
+        },
+        "addressHint": {
+          "where": "Add a person dialog, search step, under the address field"
+        },
+        "chi": {
+          "where": "Add a person, search field: chi."
+        },
+        "chiHint": {
+          "where": "Add a person dialog, search step, under the CHI field"
+        },
+        "dateOfBirth": {
+          "where": "Add a person, search field: dateOfBirth."
+        },
+        "dateOfBirthHint": {
+          "where": "Add a person, search field: dateOfBirthHint."
+        },
+        "familyName": {
+          "where": "Add a person, search field: familyName."
+        },
+        "givenName": {
+          "where": "Add a person, search field: givenName."
+        }
+      },
+      "gated": {
+        "noUser": {
+          "where": "Add a person dialog, refusal state, when no persona is chosen"
+        },
+        "signIn": {
+          "where": "Add a person dialog, refusal state, the route offered"
+        },
+        "title": {
+          "where": "Heading shown in place of the form where the role may not create a person."
+        }
+      },
+      "generateChi": {
+        "where": "Add a person dialog, details step, button beside the CHI field"
+      },
+      "interpreter": {
+        "where": "Add a person, interpreter language."
+      },
+      "interpreterHint": {
+        "where": "Add a person dialog, details step, under the interpreter field"
+      },
+      "lifeStage": {
+        "where": "Add a person, life stage field."
+      },
+      "noFixedAddress": {
+        "maxLength": 24,
+        "where": "Add a person, no fixed address."
+      },
+      "noFixedAddressHint": {
+        "where": "That a person can exist without an address."
+      },
+      "noneFoundHint": {
+        "where": "Add a person dialog, candidate step, shown instead of noneMatchHint when the search returned nothing"
+      },
+      "noneMatch": {
+        "maxLength": 36,
+        "where": "The explicit assertion that opens the create form."
+      },
+      "noneMatchHint": {
+        "where": "That the number of candidates reviewed is recorded on the new record."
+      },
+      "open": {
+        "maxLength": 20,
+        "where": "Button on the People list that starts the add-a-person path."
+      },
+      "precision": {
+        "estimated": {
+          "maxLength": 28,
+          "where": "Date of birth precision: estimated from an age."
+        },
+        "exact": {
+          "maxLength": 28,
+          "where": "Date of birth precision: from a document."
+        },
+        "hint": {
+          "where": "Add a person dialog, details step, under the date of birth precision radios"
+        },
+        "label": {
+          "where": "Add a person, how well the date of birth is known."
+        },
+        "year": {
+          "maxLength": 28,
+          "where": "Date of birth precision: year only."
+        }
+      },
+      "reasons": {
+        "addressCurrent": {
+          "maxLength": 44,
+          "where": "Why a candidate matched: addressCurrent."
+        },
+        "addressPrevious": {
+          "maxLength": 44,
+          "where": "Why a candidate matched: addressPrevious."
+        },
+        "alias": {
+          "maxLength": 44,
+          "where": "Why a candidate matched: alias."
+        },
+        "chi": {
+          "maxLength": 44,
+          "where": "Why a candidate matched: chi."
+        },
+        "dobDayMonthSwapped": {
+          "maxLength": 44,
+          "where": "Why a candidate matched: dobDayMonthSwapped."
+        },
+        "dobExact": {
+          "maxLength": 44,
+          "where": "Why a candidate matched: dobExact."
+        },
+        "dobTransposed": {
+          "maxLength": 44,
+          "where": "Why a candidate matched: dobTransposed."
+        },
+        "dobYear": {
+          "maxLength": 44,
+          "where": "Why a candidate matched: dobYear."
+        },
+        "expectedDelivery": {
+          "maxLength": 44,
+          "where": "Why a candidate matched: expectedDelivery."
+        },
+        "name": {
+          "maxLength": 44,
+          "where": "Why a candidate matched: name."
+        },
+        "nameTransposed": {
+          "maxLength": 44,
+          "where": "Why a candidate matched: nameTransposed."
+        }
+      },
+      "reviewed": {
+        "where": "Recorded on the new record and shown in the toast."
+      },
+      "search": {
+        "maxLength": 12,
+        "where": "Button that runs the duplicate search."
+      },
+      "searchLede": {
+        "where": "Why the search comes first: two records for one person is how information stops joining up."
+      },
+      "searchStep": {
+        "where": "Heading of the first step, which is a search and not a form."
+      },
+      "sex": {
+        "where": "Add a person dialog, details step, field label"
+      },
+      "sexOptions": {
+        "female": {
+          "where": "Add a person dialog, details step, sex select option"
+        },
+        "male": {
+          "where": "Add a person dialog, details step, sex select option"
+        },
+        "notRecorded": {
+          "where": "Add a person dialog, details step, sex select option"
+        }
+      },
+      "submit": {
+        "maxLength": 24,
+        "where": "Add a person, the create button."
+      },
+      "syntheticWarning": {
+        "where": "Permanent line on the create form telling the user not to type real personal data. Not decoration: somebody will be tempted."
+      },
+      "title": {
+        "where": "Title of the add-a-person dialog."
+      },
+      "unbornHint": {
+        "where": "That an unborn baby has an expected delivery date and becomes a child at birth, which is an event."
       }
     },
     "documents": {
@@ -12639,15 +12917,6 @@
         "screenshot": "phase-2/person-360-light-comfortable.png",
         "where": "One entry in the visually hidden list that mirrors the network graph for screen readers"
       },
-      "member": {
-        "screenshot": "phase-2/person-360-light-comfortable.png",
-        "where": "One person in the network graph accessible summary, joined with semicolons"
-      },
-      "noRelationships": {
-        "maxLength": 32,
-        "screenshot": "phase-2/person-360-light-comfortable.png",
-        "where": "Network graph accessible summary when the person has no recorded relationships"
-      },
       "relation": {
         "associateOf": {
           "maxLength": 24,
@@ -12754,10 +13023,6 @@
           "screenshot": "phase-2/person-360-light-comfortable.png",
           "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the unborn-child-of relationship type"
         }
-      },
-      "summary": {
-        "screenshot": "phase-2/person-360-light-comfortable.png",
-        "where": "Accessible label of the household and network graph, with the subject name and the member list"
       }
     },
     "notFound": {
@@ -17281,10 +17546,6 @@
       }
     },
     "clock": {
-      "frozen": {
-        "screenshot": "phase-5/settings-light-comfortable.png",
-        "where": "Sentence under the live clock switch; frozen and now are formatted date-times shown in bold"
-      },
       "live": {
         "maxLength": 24,
         "screenshot": "phase-5/settings-light-comfortable.png",
@@ -17293,10 +17554,6 @@
       "meta": {
         "screenshot": "phase-5/settings-light-comfortable.png",
         "where": "Meta line under the demo clock heading"
-      },
-      "note": {
-        "screenshot": "phase-5/settings-light-comfortable.png",
-        "where": "Note at the foot of the demo clock sheet"
       },
       "title": {
         "maxLength": 24,
