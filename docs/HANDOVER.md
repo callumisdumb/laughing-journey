@@ -555,6 +555,16 @@ Everything marked here is either configuration seeded from research rather than 
 - The supplied Annex 3 table text for the MAPPA annual report, to paste over the placeholder labels in `apps/web/features/reports/mappaAnnex3.ts` (the field set and the figures behind the nine tables are complete; only the wording waits).
 - The gov.uk bank holidays feed response, verbatim, to commit as `packages/domain/src/config/bank-holidays.raw.json`. `www.gov.uk` is blocked by this container's egress policy through every route tried, so the raw response has not been captured here and will not be invented: a fabricated feed fixture is worse than an absent one, because the next person to run `pnpm holidays:sync` would diff against it and trust the result. The Scotland-only fixture the product actually reads (`bank-holidays.json`, 2025 to 2027, including the one-off 15 June 2026) is complete and cited in `docs/RESEARCH.md` 6.2; only the raw capture waits.
 
+### What the shooting script needs that the product cannot do
+
+`docs/DEMO.md` was dry-run against the built product by `apps/web/e2e/demo-script.spec.ts`, which walks all ten chapters from their own waypoints. Three things the script asks for happen outside the product, and none of them is a gap the product could close:
+
+- Chapter 4 writes into a simulated council social work system, not a real one. Every adapter is a mock with fictional fixtures and each connector card says so; the capability matrix states each system's true write ceiling, with ViSOR (MAPPS from 2028) stating never and iVPD stating notify only.
+- Chapter 9 opens the populated ASP workbook in Excel. The export is real and writes into the published workbook's own cells; the spreadsheet application is not part of this.
+- Chapter 6 moves the demo clock. In a deployment that control does not exist, because the clock is the real one.
+
+Everything else the script names, the product does, and the walk asserts it. Where the dry run and the product disagreed, the script was corrected: chapter 5 now shows the MARAC coordinator refused on the linked child protection case, because she holds presence on it, which is a better beat than the one first written.
+
 ### Grep points
 - `TODO(verify)` in code marks the two configuration points above; every clock rule with `todoVerify: true` is listed in section 3.
 - `docs/DECISIONS.md` D-041 to D-046 and D-026 carry the domain and layout choices most likely to be questioned.

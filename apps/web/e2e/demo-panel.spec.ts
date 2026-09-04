@@ -107,6 +107,11 @@ test.describe('the demo control panel', () => {
     await page.getByRole('dialog', { name: 'Back to the seed?' }).getByRole('button', { name: 'Reset demo data' }).click();
     await waitForData(page);
 
+    // Nothing is overlaid on the seed any more, which is what "back to the seed" has to mean: the
+    // dataset is a pure function of the seed and the overlay, so an absent overlay is a byte for
+    // byte identical dataset and the next take starts where the last one did.
+    expect(await page.evaluate(() => window.localStorage.getItem('mas.overlay.v1'))).toBeNull();
+
     // The grant is gone, so the record refuses again, and the clock is back at the seeded instant.
     await page.goto('/processes/prc_mappa_derek');
     await waitForData(page);
