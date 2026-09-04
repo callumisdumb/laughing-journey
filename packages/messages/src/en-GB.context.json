@@ -16206,6 +16206,23 @@
         "where": "After a subject name in the process header, following a comma, when the child is unborn"
       }
     },
+    "linked": {
+      "item": {
+        "where": "Connected cases panel on the process screen: item"
+      },
+      "meta": {
+        "where": "Connected cases panel on the process screen: meta"
+      },
+      "reference": {
+        "where": "Connected cases panel on the process screen: reference"
+      },
+      "restricted": {
+        "where": "Connected cases panel on the process screen: restricted"
+      },
+      "title": {
+        "where": "Connected cases panel on the process screen: title"
+      }
+    },
     "list": {
       "clockRemaining": {
         "screenshot": "phase-3/processes-light-comfortable.png",

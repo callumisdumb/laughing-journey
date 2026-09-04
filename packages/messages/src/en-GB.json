@@ -5269,6 +5269,13 @@
       "restrictedTitle": "{process} (restricted)",
       "unborn": "unborn"
     },
+    "linked": {
+      "item": "{stage}. Led by {agency}. {status}.",
+      "meta": "{count, plural, one {One other case} other {# other cases}} joined to this one. A connection recorded here is the one an audience has watched break between agencies.",
+      "reference": "{reference} ({process})",
+      "restricted": "A connected {process} case you cannot open",
+      "title": "Connected cases"
+    },
     "list": {
       "clockRemaining": "{label}: {overdue, select, yes {{days, plural, one {# day overdue} other {# days overdue}}} other {{days, plural, one {# day} other {# days}}}}",
       "columns": {

@@ -90,7 +90,10 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const derived = effective.derived;
   const classification = effective.classification;
   // The inheritance rule's floor: a classification is never lower than one it links to.
-  const linkedRecords = data.processes.filter((p) => process.linkedProcessIds.includes(p.id)).map((p) => ({ classification: classificationFor(config, p) }));
+  const linkedProcesses = data.processes.filter((p) => process.linkedProcessIds.includes(p.id) || p.linkedProcessIds.includes(process.id));
+  const linkedRecords = linkedProcesses.map((p) => ({ classification: classificationFor(config, p) }));
+  // The reader's access to each linked case, so one they cannot open is marked rather than dropped.
+  const linked = linkedProcesses.map((p) => ({ process: p, access: accessForUser(data, config, user, p, grants, now) }));
   const mayLower = canLower(user.roleId, config.classificationLowerableBy);
   const subjects = process.subjectIds.map((id) => personById(data, id)).filter(Boolean) as NonNullable<ReturnType<typeof personById>>[];
   const clocks = clocksForProcess(data, config, process, now);
@@ -256,6 +259,43 @@ export function ProcessScreen({ processId }: { processId: string }) {
                   itself, which is the only version of this rule that holds when a new screen is
                   written by someone who has not read this comment.
                 */}
+                {/*
+                  The cases this one is joined to, and the only place the join is visible.
+
+                  A MARAC that produced a child protection concern for a child in the same household
+                  is the chain a multi-agency audience has spent careers watching break between
+                  agencies. The link was already in the data and was read only by the classification
+                  floor, which meant the product held the connection and never showed it. It shows
+                  it now, and a linked case the reader cannot open says so rather than vanishing:
+                  knowing that a connected case exists is itself the point.
+                */}
+                {linked.length > 0 ? (
+                  <Sheet tone="accent">
+                    <SheetHead title={t('processes.linked.title')} meta={t('processes.linked.meta', { count: linked.length })} />
+                    <SheetBody>
+                      <div className={styles.members}>
+                        {linked.map(({ process: other, access: otherAccess }) => (
+                          <div key={other.id} className={styles.member} data-testid={`linked-${other.reference}`}>
+                            <span className={styles.memberName}>
+                              {otherAccess.level === 'none' ? (
+                                <span>
+                                  <Lock size={14} aria-hidden="true" style={{ verticalAlign: '-2px' }} /> {t('processes.linked.restricted', { process: processLabel(other.type) })}
+                                </span>
+                              ) : (
+                                <AppLink href={processPath(other.id)}>{t('processes.linked.reference', { reference: other.reference, process: processLabel(other.type) })}</AppLink>
+                              )}
+                            </span>
+                            <span className={styles.memberMeta}>
+                              {otherAccess.level === 'none'
+                                ? otherAccess.reason
+                                : t('processes.linked.item', { stage: stageLabel(other.type, other.stage), agency: agencyShort(other.leadAgency), status: processStatusLabel(other.status) })}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </SheetBody>
+                  </Sheet>
+                ) : null}
                 <Sheet>
                   <SheetHead title={t('processes.parties.title')} meta={t('processes.parties.meta', { count: parties.length })} actions={<Button size="sm" variant="secondary" icon={<UserPlus size={14} aria-hidden="true" />} onClick={() => setRegisterOpen(true)} data-testid="add-register-entry">{t('processes.parties.add')}</Button>} />
                   <SheetBody>
