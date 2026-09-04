@@ -21,6 +21,7 @@ export const STATIC_ROUTES = [
   'admin',
   'admin/labels',
   'admin/timescales',
+  'admin/calendar',
   'admin/forms',
   'admin/need-to-know',
   'admin/server-view',

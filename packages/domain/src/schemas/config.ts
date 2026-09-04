@@ -2,6 +2,29 @@ import { z } from 'zod';
 import { HANDLING_INSTRUCTIONS, MARKING_PROFILES } from '../classification/classify';
 import { AGENCIES, ALL_STAGES, CHANNELS, DETAIL_LEVELS, EXCLUSION_PARTIES, PROCESS_TYPES, ROLES } from '../enums';
 
+/** One national bank holiday, as the gov.uk feed gives it. `bunting` is dropped; `notes` is not. */
+export const bankHolidaySchema = z.object({ date: z.string(), title: z.string(), notes: z.string() });
+
+/** A council's own local holiday. Never mixed with the national list. */
+export const councilHolidaySchema = z.object({ date: z.string(), title: z.string() });
+
+/** Whether an organisation observes a national holiday. `organisationId` absent means the partnership. */
+export const holidayObservanceSchema = z.object({
+  date: z.string(),
+  organisationId: z.string().optional(),
+  observed: z.boolean(),
+  reason: z.string().optional(),
+});
+
+/** Where the national list came from, and the range it covers. */
+export const calendarProvenanceSchema = z.object({
+  source: z.string(),
+  division: z.string(),
+  fetchedAt: z.string(),
+  coversFrom: z.string(),
+  coversTo: z.string(),
+});
+
 export const clockRuleSchema = z.object({
   id: z.string(),
   process: z.enum(PROCESS_TYPES),
@@ -17,6 +40,12 @@ export const clockRuleSchema = z.object({
   confidence: z.enum(['high', 'verify', 'local', 'advisory']),
   /** Optional local override note, e.g. "Clydeshore procedures 2025". */
   localNote: z.string().optional(),
+  /**
+   * Whose working calendar the rule is counted against. The council's unless a rule says otherwise:
+   * `marac.research.return` crosses agencies that include Police Scotland, which operates every day
+   * of the year, so the shape is here even though nothing populates it yet (D-194).
+   */
+  calendar: z.enum(['council', 'health', 'everyDay']).optional(),
   /** Where the value is unverified in a primary source; surfaces a marker in Admin. */
   todoVerify: z.boolean().optional(),
   /** The rule may be deferred on professional judgement (recorded as a due date override with a reason). */
@@ -122,10 +151,22 @@ export const configSchema = z.object({
   }),
   /** ASP s52 council officer eligibility, configurable per council. TODO(verify) against local rule. */
   aspCouncilOfficerEligibility: z.array(z.string()),
-  /** Scottish bank holidays used by working-day clocks (ISO dates), from the gov.uk feed. */
-  bankHolidays: z.array(z.string()),
-  /** Council local holidays (ISO dates), kept separately from the national list; working-day clocks skip both. */
-  councilHolidays: z.array(z.string()),
+  /**
+   * The national list, Scotland division, from the committed gov.uk fixture. Titles and notes are
+   * kept: "Substitute day" is the answer to why 28 December 2026 is a holiday and it belongs on
+   * screen rather than buried. The application never fetches the feed (D-192).
+   */
+  bankHolidays: z.array(bankHolidaySchema),
+  /** Where the national list came from, shown on the Admin calendar. */
+  bankHolidayProvenance: calendarProvenanceSchema,
+  /**
+   * Which national holidays an organisation does not observe. Absent means observed, because that
+   * is the ordinary case. Councils and health boards do not universally close on every bank holiday
+   * and some substitute local days for them.
+   */
+  holidayObservance: z.array(holidayObservanceSchema),
+  /** Council local holidays, kept entirely separate from the national list in the data, on the Admin screen and in the calculation. */
+  councilHolidays: z.array(councilHolidaySchema),
   /** Break-glass window in hours. */
   breakGlassHours: z.number().int().positive(),
   /** Reason categories offered in the break-glass dialog; the free-text reason is recorded alongside. */

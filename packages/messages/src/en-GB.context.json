@@ -299,6 +299,135 @@
         "where": "Accessible name of each organisation's team table"
       }
     },
+    "calendar": {
+      "calculator": {
+        "amount": {
+          "where": "Admin, Calendar: the number of working days to count."
+        },
+        "answer": {
+          "where": "Admin, Calendar: the calculator's result."
+        },
+        "backwards": {
+          "where": "Admin, Calendar: the backwards option on the calculator."
+        },
+        "direction": {
+          "where": "Admin, Calendar: forwards or backwards."
+        },
+        "forwards": {
+          "where": "Admin, Calendar: the forwards option on the calculator."
+        },
+        "from": {
+          "where": "Admin, Calendar: the date the calculator counts from."
+        },
+        "meta": {
+          "notes": "Says it is the same function the clocks use, because a calculator that agreed with nothing would be worse than none.",
+          "where": "Admin, Calendar: under the calculator heading."
+        },
+        "outside": {
+          "where": "Admin, Calendar: when the calculation runs past the committed calendar."
+        },
+        "skipped": {
+          "where": "Admin, Calendar: the heading above the days the calculation skipped."
+        },
+        "skippedRow": {
+          "where": "Admin, Calendar: one skipped day and why it was skipped."
+        },
+        "title": {
+          "notes": "The screen a sceptical practitioner uses to test whether the product agrees with them.",
+          "where": "Admin, Calendar: the working day calculator heading."
+        }
+      },
+      "combined": {
+        "empty": {
+          "where": "Admin, Calendar: when the twelve month view has nothing in it."
+        },
+        "meta": {
+          "where": "Admin, Calendar: under the twelve month heading."
+        },
+        "title": {
+          "where": "Admin, Calendar: the combined twelve month view heading."
+        }
+      },
+      "council": {
+        "add": {
+          "where": "Admin, Calendar: the date field for a new council local holiday."
+        },
+        "addButton": {
+          "where": "Admin, Calendar: the button that adds a council local holiday."
+        },
+        "empty": {
+          "where": "Admin, Calendar: when the council has no local holidays recorded."
+        },
+        "listLabel": {
+          "where": "Admin, Calendar: the accessible name of the council holiday list."
+        },
+        "meta": {
+          "notes": "Says it is fictional and to verify, because the Clydeshore list is invented.",
+          "where": "Admin, Calendar: under the council holiday heading."
+        },
+        "remove": {
+          "where": "Admin, Calendar: the button that removes a council local holiday."
+        },
+        "title": {
+          "where": "Admin, Calendar: the council local holiday heading."
+        },
+        "titleLabel": {
+          "where": "Admin, Calendar: the name field for a new council local holiday."
+        }
+      },
+      "national": {
+        "listLabel": {
+          "where": "Admin, Calendar: the accessible name of the national holiday table."
+        },
+        "meta": {
+          "where": "Admin, Calendar: under the national holiday heading."
+        },
+        "notObserved": {
+          "where": "Admin, Calendar: the state of a national holiday the organisation does not close for."
+        },
+        "observed": {
+          "where": "Admin, Calendar: the observed toggle on a national holiday."
+        },
+        "observedHint": {
+          "where": "Admin, Calendar: why the observed toggle exists."
+        },
+        "title": {
+          "where": "Admin, Calendar: the national holiday heading."
+        },
+        "year": {
+          "where": "Admin, Calendar: the year chooser above the national list."
+        }
+      },
+      "provenance": {
+        "coverage": {
+          "where": "Admin, Calendar: the range the committed list covers."
+        },
+        "fetched": {
+          "where": "Admin, Calendar: when the list was last refreshed and by what."
+        },
+        "neverFetched": {
+          "notes": "Brief section 2: no network calls at runtime. A working-day clock that degraded because a health board's proxy blocked gov.uk would be a statutory deadline computed wrongly.",
+          "where": "Admin, Calendar: the sentence that answers the obvious question."
+        },
+        "title": {
+          "where": "Admin, Calendar: the provenance heading."
+        }
+      },
+      "reason": {
+        "council": {
+          "where": "Admin, Calendar: why a day is not a working day, when it is a council local holiday."
+        },
+        "national": {
+          "where": "Admin, Calendar: why a day is not a working day, when it is a national holiday."
+        },
+        "weekend": {
+          "where": "Admin, Calendar: why a day is not a working day, when it is a weekend."
+        }
+      },
+      "saved": {
+        "where": "Admin, Calendar: the toast after the calendar is saved."
+      }
+    },
     "chain": {
       "broken": {
         "where": "Audit chain verification screen: broken"
@@ -671,34 +800,8 @@
         }
       },
       "audit": {
-        "where": "Audit entry label when defaults are saved"
-      },
-      "bankHolidays": {
-        "add": {
-          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
-          "where": "Label of the add bank holiday date field"
-        },
-        "addButton": {
-          "maxLength": 16,
-          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
-          "where": "Button that adds the typed bank holiday"
-        },
-        "listLabel": {
-          "maxLength": 24,
-          "where": "Accessible name of the bank holidays list"
-        },
-        "meta": {
-          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
-          "where": "Meta line under the bank holidays heading"
-        },
-        "remove": {
-          "where": "Accessible name of the remove button on a bank holiday; date is formatted"
-        },
-        "title": {
-          "maxLength": 24,
-          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
-          "where": "Heading of the bank holidays sheet"
-        }
+        "notes": "The holiday lists moved to the Calendar screen, so they are no longer counted here.",
+        "where": "Admin, Defaults: the audit reason recorded when the defaults are saved."
       },
       "breakGlass": {
         "hours": {
@@ -718,36 +821,6 @@
           "maxLength": 24,
           "screenshot": "phase-5/admin-defaults-light-comfortable.png",
           "where": "Heading of the break-glass sheet"
-        }
-      },
-      "councilHolidays": {
-        "add": {
-          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
-          "where": "Label of the add council holiday date field"
-        },
-        "addButton": {
-          "maxLength": 16,
-          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
-          "where": "Button that adds the typed council holiday"
-        },
-        "empty": {
-          "where": "List item shown when there are no council holidays"
-        },
-        "listLabel": {
-          "maxLength": 32,
-          "where": "Accessible name of the council holidays list"
-        },
-        "meta": {
-          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
-          "where": "Meta line under the council holidays heading"
-        },
-        "remove": {
-          "where": "Accessible name of the remove button on a council holiday; date is formatted"
-        },
-        "title": {
-          "maxLength": 32,
-          "screenshot": "phase-5/admin-defaults-light-comfortable.png",
-          "where": "Heading of the council holidays sheet"
         }
       },
       "density": {
@@ -1859,9 +1932,12 @@
         "auditChain": {
           "where": "Count line on the Admin overview card for the audit chain section"
         },
+        "calendar": {
+          "where": "Admin overview, the count on the Calendar card."
+        },
         "defaults": {
-          "screenshot": "phase-5/admin-light-comfortable.png",
-          "where": "Count line on the Defaults overview card; theme and density are the configured values"
+          "notes": "The holiday counts moved to the Calendar card.",
+          "where": "Admin overview, the count on the Defaults card."
         },
         "disclosure": {
           "where": "Count line on the Admin overview card for the statutory disclosure section"
@@ -1940,6 +2016,14 @@
         "label": {
           "maxLength": 40,
           "where": "Admin section label: auditChain"
+        }
+      },
+      "calendar": {
+        "description": {
+          "where": "Admin overview card for the Calendar section."
+        },
+        "label": {
+          "where": "Admin sub-navigation and section heading for the Calendar section."
         }
       },
       "defaults": {
@@ -16188,8 +16272,8 @@
         "where": "Meta of the clocks card: how many clocks have not completed"
       },
       "sub": {
-        "screenshot": "phase-3/process-cp-light-comfortable.png",
-        "where": "Line under each clock numeral: due date, the rule source or override reason, a to-verify note and any deferral note"
+        "notes": "The unverified branch fires when the working-day count ran past the committed holiday calendar. A weekends-only fallback looks exactly like a correct answer, so the countdown says it is not one.",
+        "where": "Process record, under each clock: the due date, its source and any caveat."
       },
       "title": {
         "maxLength": 20,

@@ -776,6 +776,7 @@ Variant 5
 | `sourceRef` | string | no |
 | `confidence` | "high" \| "verify" \| "local" \| "advisory" | yes |
 | `localNote` | string | no |
+| `calendar` | "council" \| "health" \| "everyDay" | no |
 | `todoVerify` | boolean | no |
 | `deferrable` | boolean | no |
 | `deferralNote` | string | no |
@@ -813,7 +814,7 @@ Variant 5
 | Field | Type | Required |
 |---|---|---|
 | `area` | object { councilName, hscpName, healthBoardName, policeDivision, ppuBase, maracArea, sheriffCourt } | yes |
-| `clockRules` | array of object { id, process, unit, amount, kind, direction, warnDays, source, sourceRef, confidence, localNote, todoVerify, deferrable, deferralNote } | yes |
+| `clockRules` | array of object { id, process, unit, amount, kind, direction, warnDays, source, sourceRef, confidence, localNote, calendar, todoVerify, deferrable, deferralNote } | yes |
 | `needToKnow` | array of object { id, process, stage, audience, detailLevel, fields, channel, trigger, condition, conditionLabel, lawfulBasisHint } | yes |
 | `exclusions` | array of object { id, process, stage, party, label, reason, liftableBy } | yes |
 | `classificationMarkings` | array of object { id, handling, instructions } | yes |
@@ -822,8 +823,10 @@ Variant 5
 | `forms` | array of object { id, label, process, version, effectiveFrom, source } | yes |
 | `defaults` | object { theme, density } | yes |
 | `aspCouncilOfficerEligibility` | array of string | yes |
-| `bankHolidays` | array of string | yes |
-| `councilHolidays` | array of string | yes |
+| `bankHolidays` | array of object { date, title, notes } | yes |
+| `bankHolidayProvenance` | object { source, division, fetchedAt, coversFrom, coversTo } | yes |
+| `holidayObservance` | array of object { date, organisationId, observed, reason } | yes |
+| `councilHolidays` | array of object { date, title } | yes |
 | `breakGlassHours` | integer | yes |
 | `breakGlassReasons` | array of string | yes |
 | `guidanceEditions` | array of object { id, label, edition } | yes |

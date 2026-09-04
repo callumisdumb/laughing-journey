@@ -8,6 +8,7 @@ import { tKey } from '@mas/messages';
 export const ADMIN_SECTIONS = [
   { id: 'labels', key: 'labels' },
   { id: 'timescales', key: 'timescales' },
+  { id: 'calendar', key: 'calendar' },
   { id: 'forms', key: 'forms' },
   { id: 'need-to-know', key: 'needToKnow' },
   { id: 'agencies', key: 'agencies' },

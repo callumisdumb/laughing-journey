@@ -1,5 +1,6 @@
 import { clockRuleLabel } from './rules';
-import { addDays, addHours, addMonths, addWeeks, differenceInCalendarDays, isSaturday, isSunday, parseISO, startOfDay } from 'date-fns';
+import { addDays, addHours, addMonths, addWeeks, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
+import { CalendarCoverageError, addWorkingDays as addWorkingDaysOn, type WorkingCalendar } from '../calendar/calendar';
 import type { RiskBand } from '../enums';
 import type { ClockRule } from '../schemas/config';
 import type { ClockTrigger } from '../schemas/process';
@@ -24,34 +25,31 @@ export interface ClockResult {
   /** The rule allows a professional-judgement deferral, recorded as an override with a reason. */
   deferrable: boolean;
   deferralNote?: string;
+  /**
+   * The working-day count ran past the committed calendar, so the due date is an approximation.
+   *
+   * A weekends-only fallback looks exactly like a correct answer, so the calendar refuses outside
+   * its range and the consequence surfaces here: the countdown is shown with a note saying the
+   * calendar does not cover the period and the date is unverified. A practitioner should never see
+   * a confident countdown computed from data that does not exist.
+   */
+  unverified?: boolean;
 }
 
 export interface ClockOptions {
-  bankHolidays?: string[];
-  /** Council local holidays, kept separately in configuration; working-day clocks skip both lists. */
-  councilHolidays?: string[];
-}
-
-function isWorkingDay(date: Date, holidays: Set<string>): boolean {
-  if (isSaturday(date) || isSunday(date)) return false;
-  return !holidays.has(localDateOf(date));
-}
-
-export function addWorkingDays(start: Date, amount: number, holidays: Set<string>): Date {
-  let d = start;
-  let remaining = Math.abs(amount);
-  const step = amount < 0 ? -1 : 1;
-  while (remaining > 0) {
-    d = addDays(d, step);
-    if (isWorkingDay(d, holidays)) remaining -= 1;
-  }
-  return d;
+  /**
+   * The working calendar: the national list, what the organisation observes and the council's own
+   * local days, composed in `packages/domain/src/calendar`. There is no second implementation of
+   * "is this a working day" and this is how the one implementation gets here.
+   */
+  calendar?: WorkingCalendar;
+  /** Which organisation's observed set applies, where one differs from the partnership's. */
+  organisationId?: string;
 }
 
 /** Due date for a rule from a trigger instant, as a local calendar date. */
 export function dueDateFor(rule: ClockRule, triggeredAt: string, options: ClockOptions = {}): Date {
   const start = startOfDay(toLocal(triggeredAt));
-  const holidays = new Set([...(options.bankHolidays ?? []), ...(options.councilHolidays ?? [])]);
   // A 'before' rule counts back from its anchor (for a notice rule the trigger instant is the meeting date).
   const amount = rule.direction === 'before' ? -rule.amount : rule.amount;
   switch (rule.unit) {
@@ -61,8 +59,11 @@ export function dueDateFor(rule: ClockRule, triggeredAt: string, options: ClockO
       return startOfDay(addHours(toLocal(triggeredAt), amount));
     case 'calendar-days':
       return addDays(start, amount);
-    case 'working-days':
-      return addWorkingDays(start, amount, holidays);
+    case 'working-days': {
+      if (!options.calendar) throw new Error(`${rule.id} counts working days and no calendar was supplied`);
+      const result = addWorkingDaysOn(localDateOf(start), amount, options.calendar, { calendarId: rule.calendar ?? 'council', organisationId: options.organisationId });
+      return startOfDay(toLocal(`${result.date}T00:00:00`));
+    }
     case 'weeks':
       return addWeeks(start, amount);
     case 'months':
@@ -89,7 +90,20 @@ export function computeClock(
   options: ClockOptions = {},
 ): ClockResult {
   const overridden = Boolean(trigger.dueOverride);
-  const due = trigger.dueOverride ? parseISO(trigger.dueOverride) : dueDateFor(rule, trigger.triggeredAt, options);
+  let unverified = false;
+  let due: Date;
+  if (trigger.dueOverride) due = parseISO(trigger.dueOverride);
+  else {
+    try {
+      due = dueDateFor(rule, trigger.triggeredAt, options);
+    } catch (error) {
+      if (!(error instanceof CalendarCoverageError)) throw error;
+      // Outside the calendar, count weekends only and say so. The saying so is the point: without
+      // the flag this line would be the silent degradation the calendar exists to prevent.
+      unverified = true;
+      due = approximateWorkingDays(startOfDay(toLocal(trigger.triggeredAt)), rule.direction === 'before' ? -rule.amount : rule.amount);
+    }
+  }
   const today = startOfDay(toLocal(now));
   const daysRemaining = differenceInCalendarDays(due, today);
   const complete = Boolean(trigger.completedAt);
@@ -111,7 +125,25 @@ export function computeClock(
     todoVerify: rule.todoVerify ?? false,
     deferrable: rule.deferrable ?? false,
     deferralNote: rule.deferralNote,
+    unverified: unverified || undefined,
   };
+}
+
+/**
+ * Weekdays only, used once: when the real calendar has refused because the date is outside the
+ * committed range. It is never the silent fallback, because every result computed this way carries
+ * `unverified` and the interface says so on the countdown.
+ */
+function approximateWorkingDays(start: Date, amount: number): Date {
+  let date = start;
+  let remaining = Math.abs(amount);
+  const step = amount < 0 ? -1 : 1;
+  while (remaining > 0) {
+    date = addDays(date, step);
+    const day = date.getDay();
+    if (day !== 0 && day !== 6) remaining -= 1;
+  }
+  return date;
 }
 
 /** Sort running clocks by urgency: overdue first, then fewest days remaining, complete last. */

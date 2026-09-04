@@ -1,6 +1,6 @@
 'use client';
 
-import { agencyShort, awiOrderKindLabel, capacityOutcomeLabel, computeClock, findClockRule, formatDate, formatDateTime, medicalReportKindLabel, mhoReportStatusLabel, poaKindLabel, requestStatusLabel, type AwiProcess } from '@mas/domain';
+import { agencyShort, awiOrderKindLabel, capacityOutcomeLabel, computeClock, findClockRule, formatDate, formatDateTime, medicalReportKindLabel, mhoReportStatusLabel, poaKindLabel, requestStatusLabel, workingCalendarFrom, type AwiProcess } from '@mas/domain';
 import { hasMessage, tKey, useT } from '@mas/messages';
 import { Button, ClockNumeral, KeyValue, Pill, Sheet, SheetBody, SheetHead, Table, TableWrap } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -30,7 +30,7 @@ export function AwiPanels({ process }: { process: AwiProcess }) {
   const app = d.application;
   const mhoRule = findClockRule(config.clockRules, 'awi.mho.report');
   const mhoTrigger = process.clocks.find((c) => c.ruleId === 'awi.mho.report');
-  const mhoClock = mhoRule && mhoTrigger ? computeClock(mhoTrigger, mhoRule, now, { bankHolidays: config.bankHolidays, councilHolidays: config.councilHolidays }) : null;
+  const mhoClock = mhoRule && mhoTrigger ? computeClock(mhoTrigger, mhoRule, now, { calendar: workingCalendarFrom(config) }) : null;
   const mho = app?.mhoUserId ? userById(data, app.mhoUserId) : undefined;
   const interim = app?.interimOrder;
   const interimDays = interim?.grantedAt ? differenceInCalendarDays(now, parseISO(interim.grantedAt)) : null;

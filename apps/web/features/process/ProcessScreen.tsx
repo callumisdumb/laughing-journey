@@ -245,7 +245,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                     <div className={styles.clockList}>
                       {clocks.map((c) => (
                         <AppLink key={c.triggerId} href={`/admin/timescales?rule=${c.ruleId}`} className={styles.clockLink} title={t('processes.clocks.ruleLink')}>
-                          <ClockNumeral daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={t('processes.clocks.sub', { date: formatDate(c.dueAt), source: (c.overridden ? c.overrideReason : c.sourceRef) ?? '', verify: c.todoVerify ? 'yes' : 'no', deferral: c.deferrable && c.deferralNote ? 'yes' : 'no', note: c.deferralNote ?? '' })} size="sm" />
+                          <ClockNumeral daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={t('processes.clocks.sub', { date: formatDate(c.dueAt), source: (c.overridden ? c.overrideReason : c.sourceRef) ?? '', verify: c.todoVerify ? 'yes' : 'no', unverified: c.unverified ? 'yes' : 'no', deferral: c.deferrable && c.deferralNote ? 'yes' : 'no', note: c.deferralNote ?? '' })} size="sm" />
                         </AppLink>
                       ))}
                     </div>

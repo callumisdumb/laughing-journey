@@ -1,8 +1,8 @@
 'use client';
 
-import { formatDate } from '@mas/domain';
+import {  } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
-import { Button, DateField, IconButton, RadioGroup, Sheet, SheetBody, SheetHead, TextField } from '@mas/ui';
+import { Button, IconButton, RadioGroup, Sheet, SheetBody, SheetHead, TextField } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -21,20 +21,13 @@ function defaultsSchema(t: Translator) {
   });
 }
 type DefaultsValues = z.infer<ReturnType<typeof defaultsSchema>>;
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 export function Defaults() {
   const t = useT();
   const { config, canEdit, save } = useAdminConfig();
   const schema = useMemo(() => defaultsSchema(t), [t]);
   const form = useForm<DefaultsValues>({ resolver: zodResolver(schema), defaultValues: { theme: config.defaults.theme, density: config.defaults.density, breakGlassHours: config.breakGlassHours } });
-  const [holidays, setHolidays] = useState<string[]>(config.bankHolidays);
-  const [newHoliday, setNewHoliday] = useState('');
-  const [holidayError, setHolidayError] = useState<string | null>(null);
   const [rules, setRules] = useState<string[]>(config.aspCouncilOfficerEligibility);
-  const [councilHolidays, setCouncilHolidays] = useState<string[]>(config.councilHolidays);
-  const [newCouncilHoliday, setNewCouncilHoliday] = useState('');
-  const [councilHolidayError, setCouncilHolidayError] = useState<string | null>(null);
   const [reasons, setReasons] = useState<string[]>(config.breakGlassReasons);
   const [newReason, setNewReason] = useState('');
   const [newRule, setNewRule] = useState('');
@@ -44,46 +37,8 @@ export function Defaults() {
   const errors = form.formState.errors;
   const dirty = form.formState.isDirty || listsDirty;
 
-  function addHoliday() {
-    const v = newHoliday.trim();
-    if (!ISO_DATE.test(v)) {
-      setHolidayError(t('admin.defaults.errors.date'));
-      return;
-    }
-    if (holidays.includes(v)) {
-      setHolidayError(t('admin.defaults.errors.dateDuplicate', { date: formatDate(v) }));
-      return;
-    }
-    setHolidays([...holidays, v].sort());
-    setNewHoliday('');
-    setHolidayError(null);
-    setListsDirty(true);
-  }
-  function removeHoliday(d: string) {
-    setHolidays(holidays.filter((x) => x !== d));
-    setListsDirty(true);
-  }
 
-  function addCouncilHoliday() {
-    const v = newCouncilHoliday.trim();
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) {
-      setCouncilHolidayError(t('admin.defaults.errors.date'));
-      return;
-    }
-    if (councilHolidays.includes(v)) {
-      setCouncilHolidayError(t('admin.defaults.errors.dateDuplicate', { date: formatDate(v) }));
-      return;
-    }
-    setCouncilHolidays([...councilHolidays, v].sort());
-    setNewCouncilHoliday('');
-    setCouncilHolidayError(null);
-    setListsDirty(true);
-  }
 
-  function removeCouncilHoliday(d: string) {
-    setCouncilHolidays(councilHolidays.filter((x) => x !== d));
-    setListsDirty(true);
-  }
 
   function addReason() {
     const v = newReason.trim();
@@ -119,9 +74,9 @@ export function Defaults() {
   }
   function submit(values: DefaultsValues) {
     const result = save(
-      { ...config, defaults: { theme: values.theme, density: values.density }, breakGlassHours: values.breakGlassHours, bankHolidays: holidays, councilHolidays, breakGlassReasons: reasons, aspCouncilOfficerEligibility: rules },
+      { ...config, defaults: { theme: values.theme, density: values.density }, breakGlassHours: values.breakGlassHours, breakGlassReasons: reasons, aspCouncilOfficerEligibility: rules },
       'defaults',
-      t('admin.defaults.audit', { theme: values.theme, density: values.density, hours: values.breakGlassHours, bankHolidays: holidays.length, councilHolidays: councilHolidays.length, reasons: reasons.length, rules: rules.length }),
+      t('admin.defaults.audit', { theme: values.theme, density: values.density, hours: values.breakGlassHours, reasons: reasons.length, rules: rules.length }),
     );
     setSaveErrors(result.errors);
     if (result.ok) {
@@ -131,16 +86,10 @@ export function Defaults() {
   }
   function discard() {
     form.reset({ theme: config.defaults.theme, density: config.defaults.density, breakGlassHours: config.breakGlassHours });
-    setHolidays(config.bankHolidays);
-    setCouncilHolidays(config.councilHolidays);
-    setNewCouncilHoliday('');
-    setCouncilHolidayError(null);
     setReasons(config.breakGlassReasons);
     setNewReason('');
     setRules(config.aspCouncilOfficerEligibility);
-    setNewHoliday('');
     setNewRule('');
-    setHolidayError(null);
     setRuleError(null);
     setListsDirty(false);
     setSaveErrors([]);
@@ -213,63 +162,7 @@ export function Defaults() {
           </SheetBody>
         </Sheet>
 
-        <Sheet>
-          <SheetHead title={t('admin.defaults.bankHolidays.title')} meta={t('admin.defaults.bankHolidays.meta')} />
-          <SheetBody>
-            <ul className={styles.list} aria-label={t('admin.defaults.bankHolidays.listLabel')}>
-              {holidays.map((d) => (
-                <li key={d} className={styles.listItem}>
-                  <span>
-                    {formatDate(d)}
-                    <span className={styles.iso}>{d}</span>
-                  </span>
-                  {canEdit ? (
-                    <IconButton size="sm" aria-label={t('admin.defaults.bankHolidays.remove', { date: formatDate(d) })} onClick={() => removeHoliday(d)}>
-                      <X size={14} aria-hidden="true" />
-                    </IconButton>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-            {canEdit ? (
-              <div className={styles.addRow}>
-                <DateField label={t('admin.defaults.bankHolidays.add')} hint={null} value={newHoliday} onChange={setNewHoliday} onKeyDown={(e) => e.key === 'Enter' && addHoliday()} error={holidayError} />
-                <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addHoliday}>
-                  {t('admin.defaults.bankHolidays.addButton')}
-                </Button>
-              </div>
-            ) : null}
-          </SheetBody>
-        </Sheet>
 
-        <Sheet>
-          <SheetHead title={t('admin.defaults.councilHolidays.title')} meta={t('admin.defaults.councilHolidays.meta')} />
-          <SheetBody>
-            <ul className={styles.list} aria-label={t('admin.defaults.councilHolidays.listLabel')}>
-              {councilHolidays.map((d) => (
-                <li key={d} className={styles.listItem}>
-                  <span>
-                    {formatDate(d)} <span className={styles.muted}>{d}</span>
-                  </span>
-                  {canEdit ? (
-                    <IconButton size="sm" aria-label={t('admin.defaults.councilHolidays.remove', { date: formatDate(d) })} onClick={() => removeCouncilHoliday(d)}>
-                      <X size={14} aria-hidden="true" />
-                    </IconButton>
-                  ) : null}
-                </li>
-              ))}
-              {councilHolidays.length === 0 ? <li className={styles.muted}>{t('admin.defaults.councilHolidays.empty')}</li> : null}
-            </ul>
-            {canEdit ? (
-              <div className={styles.addRow}>
-                <DateField label={t('admin.defaults.councilHolidays.add')} hint={null} value={newCouncilHoliday} onChange={setNewCouncilHoliday} onKeyDown={(e) => e.key === 'Enter' && addCouncilHoliday()} error={councilHolidayError} />
-                <Button variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={addCouncilHoliday}>
-                  {t('admin.defaults.councilHolidays.addButton')}
-                </Button>
-              </div>
-            ) : null}
-          </SheetBody>
-        </Sheet>
 
         <Sheet>
           <SheetHead title={t('admin.defaults.eligibility.title')} meta={t('admin.defaults.eligibility.meta')} />

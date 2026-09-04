@@ -85,12 +85,13 @@ test.describe('admin', () => {
     await expect(page.getByRole('heading', { name: /Good morning, Janet/ })).toBeVisible();
   });
 
-  test('defaults: theme, density, break-glass window, bank holidays and eligibility', async ({ page }) => {
+  test('defaults: theme, density, break-glass window and eligibility', async ({ page }) => {
     await signInAs(page, ADMIN);
     await page.goto('/admin/defaults');
     await waitForData(page);
     await expect(page.getByRole('heading', { name: 'Defaults', level: 1 })).toBeVisible();
-    await expect(page.getByText('Scottish bank holidays, to verify against the current list')).toBeVisible();
+    // The holiday lists moved to their own Calendar section, which has its own spec.
+    await expect(page.getByText(/bank holidays/i)).toHaveCount(0);
     await expect(page.getByLabel('Hours')).toHaveValue('4');
     await expectNoAxeViolations(page);
     await capture(page, { phase: PHASE, screen: 'admin-defaults', fullPage: true });

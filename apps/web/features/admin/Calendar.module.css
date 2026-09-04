@@ -1,0 +1,121 @@
+/*
+ * The calendar screen.
+ *
+ * The national list and the council's own list are visually distinct on purpose. They compose in
+ * the calculation and they must never read as one list, because a national holiday and a local one
+ * are different facts with different owners, and a screen that blurred them would teach a reader to
+ * blur them too.
+ */
+.grid {
+  display: grid;
+  gap: var(--density-gap);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.provenance {
+  display: grid;
+  gap: 4px;
+  padding: 12px 16px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  background: var(--color-paper-2);
+  border-left: 3px solid var(--color-accent-1);
+  border-radius: var(--radius-sm);
+}
+
+.provenanceSource {
+  font-family: var(--font-mono);
+  word-break: break-all;
+}
+
+.neverFetched {
+  font-weight: 700;
+  color: var(--color-ink-1);
+}
+
+/* The council's own days, marked as a different kind of thing from the national list. */
+.local {
+  border-left: 3px solid var(--color-agency-social-work);
+}
+
+.rows {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.row:nth-child(odd) {
+  background: var(--color-paper-1);
+}
+
+.rowDate {
+  min-width: 8.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.rowTitle {
+  flex: 1 1 12rem;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.rowNote {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+
+.calculator {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.answer {
+  margin: 12px 0 0;
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.working {
+  margin: 8px 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.outside {
+  margin: 12px 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-risk-high);
+}
+
+.muted {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}

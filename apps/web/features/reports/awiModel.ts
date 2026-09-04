@@ -2,7 +2,7 @@
  * AWI application timeliness: route and applicant, the MHO report against the 21 day rule in
  * section 57(4), interim orders against the statutory maximum, and days from application to order.
  */
-import { type AwiProcess, type ClockRule, clockRuleLabel, type Config, type Dataset, daysBetween, dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, OFFICIAL } from '@mas/domain';
+import { clockRuleLabel, daysBetween, dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, OFFICIAL, workingCalendarFrom, type AwiProcess, type ClockRule, type Config, type Dataset, type WorkingCalendar } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
 import { addDays, format, parseISO } from 'date-fns';
 import { countBy, median, messageSegment, scaleColour, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
@@ -28,8 +28,8 @@ function applicationRoute(p: AwiProcess): ApplicationRoute | undefined {
   return r && (APPLICATION_ROUTES as readonly string[]).includes(r) ? (r as ApplicationRoute) : undefined;
 }
 
-function dueFrom(rule: ClockRule | undefined, triggeredAt: string, fallbackDays: number, bankHolidays: string[]): string {
-  if (rule) return localDateOf(dueDateFor(rule, triggeredAt, { bankHolidays }));
+function dueFrom(rule: ClockRule | undefined, triggeredAt: string, fallbackDays: number, calendar: WorkingCalendar): string {
+  if (rule) return localDateOf(dueDateFor(rule, triggeredAt, { calendar }));
   return format(addDays(parseISO(triggeredAt), fallbackDays), 'yyyy-MM-dd');
 }
 
@@ -41,6 +41,7 @@ export function awiModel(data: Dataset, config: Config, now: Date, period: Perio
   const decisions = awis.filter((p) => p.detail.routeDecision && inPeriod(p.detail.routeDecision.decidedAt, period));
   const assessments = awis.flatMap((p) => p.detail.capacityAssessments).filter((a) => inPeriod(a.assessedAt, period));
   const opgChecks = awis.filter((p) => p.detail.opgResult && inPeriod(p.detail.opgResult.checkedAt, period)).length;
+  const calendar = workingCalendarFrom(config);
   const mhoRule = findClockRule(config.clockRules, 'awi.mho.report');
   const maxRule = findClockRule(config.clockRules, 'awi.interim.maximum');
   const warnRule = findClockRule(config.clockRules, 'awi.interim.warning');
@@ -66,7 +67,7 @@ export function awiModel(data: Dataset, config: Config, now: Date, period: Perio
   const mhoRows = applications.flatMap((p) => {
     const a = p.detail.application;
     if (!a) return [];
-    const due = dueFrom(mhoRule, a.mhoNotifiedAt, 21, config.bankHolidays);
+    const due = dueFrom(mhoRule, a.mhoNotifiedAt, 21, calendar);
     const submitted = a.mhoReport.submittedAt ? localDateOf(a.mhoReport.submittedAt) : undefined;
     let status: 'on-time' | 'late' | 'running' | 'overdue';
     let text: string;
@@ -98,8 +99,8 @@ export function awiModel(data: Dataset, config: Config, now: Date, period: Perio
     let text: string;
     if (io.grantedAt) {
       const age = daysBetween(io.grantedAt, today);
-      const maximum = dueFrom(maxRule, io.grantedAt, 183, config.bankHolidays);
-      const warning = dueFrom(warnRule, io.grantedAt, 91, config.bankHolidays);
+      const maximum = dueFrom(maxRule, io.grantedAt, 183, calendar);
+      const warning = dueFrom(warnRule, io.grantedAt, 91, calendar);
       text = t('reports.awi.interim.granted', { age, maximum: formatDate(maximum), warning: today >= warning ? 'past' : 'within', renewals: io.renewals });
     } else {
       const hearing = p.detail.application?.court.hearingAt;

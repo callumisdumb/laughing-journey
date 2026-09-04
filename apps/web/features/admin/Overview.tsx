@@ -44,6 +44,7 @@ function sectionCounts(config: Config, data: Dataset, t: Translator): Record<Adm
   return {
     labels: t('admin.copy.overviewCount', { total: MESSAGE_KEYS.length, changed: Object.keys(sessionOverrides()).length }),
     timescales: t('admin.overview.counts.timescales', { count: config.clockRules.length, toVerify }),
+    calendar: t('admin.overview.counts.calendar', { national: config.bankHolidays.length, council: config.councilHolidays.length, from: config.bankHolidayProvenance.coversFrom.slice(0, 4), to: config.bankHolidayProvenance.coversTo.slice(0, 4) }),
     forms: t('admin.overview.counts.forms', { count: config.forms.length, processes }),
     'need-to-know': t('admin.overview.counts.needToKnow', { rows: config.needToKnow.length, exclusions: config.exclusions.length }),
     agencies: t('admin.overview.counts.agencies', { organisations: data.organisations.length, teams: data.teams.length }),
@@ -52,7 +53,7 @@ function sectionCounts(config: Config, data: Dataset, t: Translator): Record<Adm
     'server-view': t('admin.overview.counts.serverView', { records: data.processes.length }),
     'audit-chain': t('admin.overview.counts.auditChain', { entries: data.audit.length }),
     disclosure: t('admin.overview.counts.disclosure', { threshold: 2, holders: 5 }),
-    defaults: t('admin.overview.counts.defaults', { theme: config.defaults.theme, density: config.defaults.density, hours: config.breakGlassHours, bankHolidays: config.bankHolidays.length }),
+    defaults: t('admin.overview.counts.defaults', { theme: config.defaults.theme, density: config.defaults.density, hours: config.breakGlassHours }),
   };
 }
 

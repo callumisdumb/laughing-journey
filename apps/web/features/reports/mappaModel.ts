@@ -5,7 +5,7 @@
  * lives in the catalogue under reports.mappaAnnex3 (see mappaAnnex3.ts); every figure here is
  * keyed on a row id, never on the label.
  */
-import { ageAt, type ClockRule, type Config, type Dataset, dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, type MappaProcess, OFFICIAL } from '@mas/domain';
+import { ageAt, dueDateFor, findClockRule, formatDate, formatDateTime, localDateOf, OFFICIAL, workingCalendarFrom, type ClockRule, type Config, type Dataset, type MappaProcess } from '@mas/domain';
 import { t, tKey } from '@mas/messages';
 import { ETHNICITY_NOT_HELD_ROW, MAPPA_ANNEX3_TABLES, annexColumns, annexRowLabel, annexTitle, dataNotHeld, type AnnexTable } from './mappaAnnex3';
 import { messageSegment, scaleColour, sum, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
@@ -96,7 +96,7 @@ export function mappaModel(data: Dataset, config: Config, now: Date, period: Per
   for (const m of heldIn) {
     const rule = rules[m.type === 'mappa-level2' ? 2 : 3];
     if (!rule) continue;
-    const due = localDateOf(dueDateFor(rule, m.scheduledAt, { bankHolidays: config.bankHolidays }));
+    const due = localDateOf(dueDateFor(rule, m.scheduledAt, { calendar: workingCalendarFrom(config) }));
     const next = meetings.filter((x) => x.processId === m.processId && x.status === 'held' && x.scheduledAt > m.scheduledAt).sort((a, b) => (a.scheduledAt < b.scheduledAt ? -1 : 1))[0];
     const onTime = Boolean(next && localDateOf(next.scheduledAt) <= due);
     if (!onTime && due < today) lateReviews += 1;

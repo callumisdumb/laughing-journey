@@ -423,3 +423,12 @@ What is right and stays: no credential field, because a password box that accept
 
 - The handover's screenshot index had quietly drifted eleven rounds behind, which is the honest answer to "is this doc current": no, and it never would be while a person had to notice. Generating it from the folder is fifteen lines and it cannot drift again.
 - The gov.uk feed is blocked from this container through every route, so `bank-holidays.raw.json` is still outstanding and is written down as outstanding. It would take thirty seconds to fabricate a plausible one and the cost of that lands on whoever next runs `pnpm holidays:sync` and diffs against it, believing the diff.
+
+## Working days, which are not bank holidays (04 Sep 2026)
+
+- The sentence that organised the whole thing: a working day is not a Saturday, not a Sunday, not a national holiday the organisation observes, and not a council local holiday. Four clauses, one function, and every clock calls it.
+- Keeping the three lists apart in the data was the decision that made the Admin screen easy. The first sketch merged them into one Set at load, which is smaller code and means the screen cannot say whether 21 September is a national day or Clydeshore's own, and that is exactly the question a team leader asks.
+- The bounds behaviour is the one I expect to be argued with. Refusing outside the committed range feels unhelpful until you notice that the alternative, weekends only, looks exactly like a correct answer. So the calendar refuses and the clock says the date is unverified, which is the only honest thing on screen.
+- Backwards counting got its own tests because it is where the off-by-one lives, and the case that matters is five working days back from Monday 5 January 2026: over a weekend, then 2 January, then 1 January, both holidays. The answer is 23 December and it is not the answer you get by subtracting seven days.
+- The calculator is the smallest thing here and the one I would keep if I had to cut the screen to one panel. It shows its working, so a practitioner can disagree with it precisely.
+- The raw feed capture is still outstanding and still refused rather than invented. Thirty seconds to fabricate; the cost lands on whoever next runs the sync and diffs against it.

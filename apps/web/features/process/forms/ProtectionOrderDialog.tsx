@@ -1,6 +1,6 @@
 'use client';
 
-import { aspOrderDecisionLabel, aspOrderLabel, computeClock, findClockRule, formatDate, type AspDetail, type AspProcess, type ClockTrigger } from '@mas/domain';
+import { aspOrderDecisionLabel, aspOrderLabel, computeClock, findClockRule, formatDate, workingCalendarFrom, type AspDetail, type AspProcess, type ClockTrigger } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, DateField, Dialog, SelectField, TextareaField, useToast } from '@mas/ui';
 import { useState } from 'react';
@@ -59,7 +59,7 @@ export function ProtectionOrderDialog({ process, open, onClose }: { process: Asp
     const rule = findClockRule(config.clockRules, ruleId);
     if (!rule) return [];
     const trigger: ClockTrigger = { id: 'preview', ruleId, triggeredAt: `${grantedAt}T${now.toISOString().slice(11, 19)}Z` };
-    const clock = computeClock(trigger, rule, now, { bankHolidays: config.bankHolidays, councilHolidays: config.councilHolidays });
+    const clock = computeClock(trigger, rule, now, { calendar: workingCalendarFrom(config) });
     return [{ ruleId, label: clock.label, dueAt: clock.dueAt }];
   });
 

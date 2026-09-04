@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { parseISO } from 'date-fns';
-import { addWorkingDays, bandFor, computeClock, dueDateFor, sortByUrgency } from './compute';
+import { bandFor, computeClock, dueDateFor, sortByUrgency } from './compute';
+import { DEFAULT_CONFIG, workingCalendarFrom } from '../config/default-config';
+import type { WorkingCalendar } from '../calendar/calendar';
 import { CLOCK_RULES, findClockRule } from './rules';
 import type { ClockRule } from '../schemas/config';
 import { clockRuleSchema } from '../schemas/config';
 
 const now = parseISO('2026-09-02T09:00:00+01:00');
-const holidays = ['2026-09-07'];
+const calendar: WorkingCalendar = workingCalendarFrom(DEFAULT_CONFIG);
+/** The same calendar with one extra national day, for the assertion that an added holiday moves a due date. */
+const withExtra: WorkingCalendar = { ...calendar, national: [...calendar.national, { date: '2026-09-07', title: 'Test holiday', notes: '' }] };
 
 function rule(id: string): ClockRule {
   const r = findClockRule(CLOCK_RULES, id);
@@ -43,16 +47,15 @@ describe('dueDateFor', () => {
     expect(due.getMonth()).toBe(8);
   });
   it('adds working days skipping weekends and bank holidays', () => {
-    const due = dueDateFor(rule('asp.inquiry.decision'), '2026-09-04T10:00:00+01:00', { bankHolidays: holidays });
+    const due = dueDateFor(rule('asp.inquiry.decision'), '2026-09-04T10:00:00+01:00', { calendar: withExtra });
     expect(due.getDate()).toBe(14);
   });
   it('adds weeks and months', () => {
     expect(dueDateFor(rule('mappa.level2.review'), '2026-07-22T10:00:00+01:00').getMonth()).toBe(9);
     expect(dueDateFor(rule('cp.cppm.review.first'), '2026-03-31T10:00:00+01:00').getMonth()).toBe(8);
   });
-  it('adds zero working days', () => {
-    const d = addWorkingDays(parseISO('2026-09-02T00:00:00'), 0, new Set());
-    expect(d.getDate()).toBe(2);
+  it('refuses a working-day rule with no calendar rather than counting weekends and calling it a deadline', () => {
+    expect(() => dueDateFor(rule('asp.inquiry.decision'), '2026-09-04T10:00:00+01:00')).toThrow(/calendar/);
   });
 });
 
@@ -123,8 +126,9 @@ describe('notice and holiday handling', () => {
   });
   it('skips council holidays as well as bank holidays for working-day rules', () => {
     const r = rule('asp.inquiry.decision');
-    const plain = dueDateFor(r, '2026-09-18T10:00:00+01:00');
-    const withCouncil = dueDateFor(r, '2026-09-18T10:00:00+01:00', { councilHolidays: ['2026-09-21'] });
-    expect(withCouncil.getTime()).toBeGreaterThan(plain.getTime());
+    const withoutLocal = dueDateFor(r, '2026-09-18T10:00:00+01:00', { calendar: { ...calendar, councilHolidays: [] } });
+    const withLocal = dueDateFor(r, '2026-09-18T10:00:00+01:00', { calendar });
+    // 21 September is a Clydeshore local holiday, so the five working days land a day later.
+    expect(withLocal.getTime()).toBeGreaterThan(withoutLocal.getTime());
   });
 });

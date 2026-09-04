@@ -1,21 +1,37 @@
 import { CLOCK_RULES } from '../clocks/rules';
-import bankHolidayFeed from './bank-holidays.json';
+import bankHolidayFixture from './bank-holidays.json';
 import { EXCLUSIONS } from '../need-to-know/exclusions';
 import { NEED_TO_KNOW_ROWS } from '../need-to-know/resolve';
 import type { Config } from '../schemas/config';
+import type { BankHoliday, CalendarProvenance, WorkingCalendar } from '../calendar/calendar';
 
 /**
- * Scottish bank holidays used by working-day clocks.
- * TODO(verify): confirm against the Scottish Government published list each year. Admin can edit.
+ * The national list: the gov.uk bank holidays feed, Scotland division, committed as a fixture and
+ * refreshed by a maintainer with `pnpm holidays:sync`. The application never fetches it (D-192).
+ *
+ * Scotland, not England and Wales, and the difference is not cosmetic: for 2026 alone the two lists
+ * disagree on five days, including the August holiday, which Scotland takes on the first Monday and
+ * England and Wales on the last. A five working day clock started on 30 July computed against the
+ * wrong list is wrong in both directions.
  */
-/**
- * Scottish bank holidays from the gov.uk bank holidays feed (https://www.gov.uk/bank-holidays.json),
- * committed as a fixture (bank-holidays.json, "scotland" division only) and refreshed with
- * `pnpm holidays:sync`. Verified against the feed on 03 Sep 2026, including the one-off 15 June 2026.
- */
-export const BANK_HOLIDAYS: string[] = bankHolidayFeed.scotland.events.map((e) => e.date);
-/** @deprecated use BANK_HOLIDAYS */
-export const BANK_HOLIDAYS_2026_2027 = BANK_HOLIDAYS;
+export const BANK_HOLIDAYS: BankHoliday[] = bankHolidayFixture.holidays;
+export const BANK_HOLIDAY_PROVENANCE: CalendarProvenance = {
+  source: bankHolidayFixture.source,
+  division: bankHolidayFixture.division,
+  fetchedAt: bankHolidayFixture.fetchedAt,
+  coversFrom: bankHolidayFixture.coversFrom,
+  coversTo: bankHolidayFixture.coversTo,
+};
+
+/** The calendar the domain reads, assembled once from the fixture and the configured lists. */
+export function workingCalendarFrom(config: Pick<Config, 'bankHolidays' | 'bankHolidayProvenance' | 'holidayObservance' | 'councilHolidays'>): WorkingCalendar {
+  return {
+    provenance: config.bankHolidayProvenance,
+    national: config.bankHolidays,
+    observance: config.holidayObservance,
+    councilHolidays: config.councilHolidays,
+  };
+}
 
 export const DEFAULT_CONFIG: Config = {
   area: {
@@ -66,8 +82,20 @@ export const DEFAULT_CONFIG: Config = {
     'Source: the Adult Support and Protection (Scotland) Act 2007 (Restriction on the Authorisation of Council Officers) Order 2008 (SSI 2008/306), in force 29 October 2008; wording to verify against the Order and any later amendment',
   ],
   bankHolidays: BANK_HOLIDAYS,
-  /** Clydeshore local holidays (fictional): a spring and a September Monday, as Ayrshire councils commonly take. Editable in Admin. */
-  councilHolidays: ['2026-04-13', '2026-09-21', '2027-04-12', '2027-09-20'],
+  bankHolidayProvenance: BANK_HOLIDAY_PROVENANCE,
+  /**
+   * Empty, and deliberately so: Clydeshore observes every national holiday. The list exists because
+   * councils and health boards do not universally close on all of them, and a product that assumed
+   * they did would compute deadlines a practitioner knows are wrong. Editable in Admin.
+   */
+  holidayObservance: [],
+  /** Clydeshore local holidays (fictional): a spring and a September Monday, as Ayrshire councils commonly take. Editable in Admin. TODO(verify). */
+  councilHolidays: [
+    { date: '2026-04-13', title: 'Clydeshore spring holiday' },
+    { date: '2026-09-21', title: 'Clydeshore September holiday' },
+    { date: '2027-04-12', title: 'Clydeshore spring holiday' },
+    { date: '2027-09-20', title: 'Clydeshore September holiday' },
+  ],
   breakGlassHours: 4,
   breakGlassReasons: ['Immediate risk to a child', 'Immediate risk to an adult', 'Court, hearing or panel deadline today', 'Request from the coordinator or chair', 'Other (state why)'],
   guidanceEditions: [

@@ -8,6 +8,7 @@ import { useSelection } from '@/lib/selection';
 import { useCurrentUser } from '@/lib/store';
 import styles from './Admin.module.css';
 import { Agencies } from './Agencies';
+import { Calendar } from './Calendar';
 import { Copy } from './Copy';
 import { Defaults } from './Defaults';
 import { Forms } from './Forms';
@@ -55,6 +56,9 @@ export function Admin({ section }: AdminProps) {
         break;
       case 'timescales':
         body = <Timescales />;
+        break;
+      case 'calendar':
+        body = <Calendar />;
         break;
       case 'forms':
         body = <Forms />;

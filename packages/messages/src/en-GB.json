@@ -94,6 +94,57 @@
       "orgMeta": "{kind}. {teams, plural, one {# team} other {# teams}}, {members, plural, one {# persona} other {# personas}}. Short name: {shortName}.",
       "tableLabel": "{shortName} teams"
     },
+    "calendar": {
+      "calculator": {
+        "amount": "Working days",
+        "answer": "{from} {direction, select, back {minus} other {plus}} {count, plural, one {# working day} other {# working days}} is {to}.",
+        "backwards": "Backwards",
+        "direction": "Direction",
+        "forwards": "Forwards",
+        "from": "From",
+        "meta": "The same function every clock uses. Nothing here is a second implementation.",
+        "outside": "That count runs past the calendar, which covers {from} to {to}. It is not answered rather than answered from nothing.",
+        "skipped": "{count, plural, one {One day was skipped} other {# days were skipped}}",
+        "skippedRow": "{date}: {reason}",
+        "title": "Working day calculator"
+      },
+      "combined": {
+        "empty": "No non-working days in the next twelve months, which would be a surprise.",
+        "meta": "From the demo clock, {from} to {to}. National and local together, which is what a team leader actually wants to see.",
+        "title": "The next twelve months"
+      },
+      "council": {
+        "add": "Add a local holiday",
+        "addButton": "Add",
+        "empty": "No council local holidays recorded.",
+        "listLabel": "Council local holidays",
+        "meta": "Set by the council, and different from the neighbouring authority's. Fictional for Clydeshore and to verify.",
+        "remove": "Remove {date}",
+        "title": "Council local holidays",
+        "titleLabel": "Name"
+      },
+      "national": {
+        "listLabel": "National bank holidays for {year}",
+        "meta": "{count, plural, one {# holiday} other {# holidays}} in {year}, Scotland division.",
+        "notObserved": "Not observed",
+        "observed": "Observed",
+        "observedHint": "Councils and health boards do not universally close on every bank holiday, and some substitute a local day.",
+        "title": "National bank holidays",
+        "year": "Year"
+      },
+      "provenance": {
+        "coverage": "Covers {from} to {to}",
+        "fetched": "Fetched {date} by a maintainer running pnpm holidays:sync",
+        "neverFetched": "The application never fetches this. It reads a committed file, in every environment, offline.",
+        "title": "Where this list comes from"
+      },
+      "reason": {
+        "council": "Council local holiday: {title}",
+        "national": "{title}{notes, select, none {} other { ({notes})}}",
+        "weekend": "Weekend"
+      },
+      "saved": "Calendar saved"
+    },
     "chain": {
       "broken": "Broken",
       "brokenText": "Broken at entry {at} of {count}. {reason}",
@@ -210,29 +261,12 @@
         "themeLegend": "Theme",
         "title": "Appearance"
       },
-      "audit": "Defaults: theme {theme}, density {density}, break-glass {hours, plural, one {# hour} other {# hours}}, {bankHolidays, plural, one {# bank holiday} other {# bank holidays}}, {councilHolidays, plural, one {# council holiday} other {# council holidays}}, {reasons, plural, one {# break-glass reason category} other {# break-glass reason categories}}, {rules, plural, one {# eligibility rule} other {# eligibility rules}}",
-      "bankHolidays": {
-        "add": "Add a bank holiday (dd Mon yyyy)",
-        "addButton": "Add date",
-        "listLabel": "Bank holidays",
-        "meta": "Scottish bank holidays, to verify against the current list. Working-day clocks skip these dates and weekends.",
-        "remove": "Remove {date}",
-        "title": "Bank holidays"
-      },
+      "audit": "Theme {theme}, density {density}, break-glass {hours} hours, {reasons} reason categories, {rules} eligibility rules",
       "breakGlass": {
         "hours": "Hours",
         "hoursHint": "Between 1 and 24. Every read within the window is audited.",
         "meta": "How long access to a restricted record lasts after someone opens it with a recorded reason.",
         "title": "Break-glass window"
-      },
-      "councilHolidays": {
-        "add": "Add a council holiday (dd Mon yyyy)",
-        "addButton": "Add date",
-        "empty": "No council holidays. Only the national list applies.",
-        "listLabel": "Council local holidays",
-        "meta": "Clydeshore's own holidays, kept apart from the national list. Working-day clocks skip these dates too. Fictional dates, to verify against the council calendar.",
-        "remove": "Remove council holiday {date}",
-        "title": "Council local holidays"
       },
       "density": {
         "comfortable": "Comfortable",
@@ -580,7 +614,8 @@
       "counts": {
         "agencies": "{organisations, plural, one {# organisation} other {# organisations}}, {teams, plural, one {# team} other {# teams}}",
         "auditChain": "{entries, plural, one {# ledger entry} other {# ledger entries}}, signed and chained",
-        "defaults": "Theme {theme}, density {density}, break-glass {hours, plural, one {# hour} other {# hours}}, {bankHolidays, plural, one {# bank holiday} other {# bank holidays}}",
+        "calendar": "{national} national holidays and {council} council local, {from} to {to}",
+        "defaults": "Theme {theme}, density {density}, break-glass {hours} hours",
         "disclosure": "{threshold} of {holders} holders, in different organisations",
         "forms": "{count, plural, one {# form} other {# forms}} across {processes, plural, one {# process} other {# processes}}",
         "markings": "{count, plural, one {# marking} other {# markings}}",
@@ -609,6 +644,10 @@
       "auditChain": {
         "description": "Verify the signed, append-only audit chain and see a tampered copy fail.",
         "label": "Audit chain"
+      },
+      "calendar": {
+        "description": "The national bank holiday list, the council's own local days, what the organisation observes, and a calculator that shows its working.",
+        "label": "Calendar"
       },
       "defaults": {
         "description": "Theme, density, break-glass window, bank holidays and ASP eligibility.",
@@ -5277,7 +5316,7 @@
       "none": "No clock running",
       "ruleLink": "Open the timescale rule behind this clock",
       "running": "{count} running",
-      "sub": "Due {date}. {source}{verify, select, yes { (local value, to verify)} other {}}{deferral, select, yes { {note}.} other {}}",
+      "sub": "Due {date}. {source}{verify, select, yes { (local value, to verify)} other {}}{unverified, select, yes { The holiday calendar does not cover this period, so the date is unverified.} other {}}{deferral, select, yes { {note}.} other {}}",
       "title": "Clocks"
     },
     "close": {

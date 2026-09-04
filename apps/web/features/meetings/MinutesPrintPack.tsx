@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCIES, agencyLabel, agencyShort, marking as markingFor, classificationFor, handlingNote, detailLevelLabel, dueDateFor, findClockRule, formatDate, formatDateTime, formatTime, localDateOf, meetingTypeLabel, processLabel, stageLabel, viewsKindLabel, type Action, type Dataset, type LawfulBasisRecord, type Meeting } from '@mas/domain';
+import { AGENCIES, agencyLabel, agencyShort, classificationFor, detailLevelLabel, dueDateFor, findClockRule, formatDate, formatDateTime, formatTime, handlingNote, localDateOf, marking as markingFor, meetingTypeLabel, processLabel, stageLabel, viewsKindLabel, workingCalendarFrom, type Action, type Dataset, type LawfulBasisRecord, type Meeting } from '@mas/domain';
 import { useT, type MessageKey, type RichValues, type Translator } from '@mas/messages';
 import { Button, ClassificationMarking, RestrictedState } from '@mas/ui';
 import { ArrowLeft, Printer } from 'lucide-react';
@@ -413,7 +413,7 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
   const recordTrigger = process.clocks.find((c) => c.ruleId === 'cp.cppm.record.distribute' && !c.completedAt);
   const recordDeadline =
     recordRule && recordTrigger
-      ? t('print.minutes.cover.recordDueDate', { date: formatDate(localDateOf(dueDateFor(recordRule, recordTrigger.triggeredAt, { bankHolidays: config.bankHolidays, councilHolidays: config.councilHolidays }))) })
+      ? t('print.minutes.cover.recordDueDate', { date: formatDate(localDateOf(dueDateFor(recordRule, recordTrigger.triggeredAt, { calendar: workingCalendarFrom(config) }))) })
       : recordRule && process.clocks.some((c) => c.ruleId === 'cp.cppm.record.distribute' && c.completedAt)
         ? t('print.minutes.cover.recordDistributed')
         : null;

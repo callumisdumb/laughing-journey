@@ -1,25 +1,7 @@
 /**
  * Pure selectors over the dataset. No React here.
  */
-import {
-  accessFor,
-  agencyShort,
-  computeClock,
-  findClockRule,
-  sortByUrgency,
-  type Action,
-  type Agency,
-  type ChronologyEvent,
-  type ClockResult,
-  type Config,
-  type Dataset,
-  type Meeting,
-  type Membership,
-  type Person,
-  type Process,
-  type User,
-  type AccessResult,
-} from '@mas/domain';
+import { accessFor, agencyShort, computeClock, findClockRule, sortByUrgency, workingCalendarFrom, type Action, type Agency, type ChronologyEvent, type ClockResult, type Config, type Dataset, type Meeting, type Membership, type Person, type Process, type User, type AccessResult } from '@mas/domain';
 import { t } from '@mas/messages';
 import type { BreakGlassGrant } from './store';
 
@@ -70,7 +52,7 @@ export function clocksForProcess(data: Dataset, config: Config, process: Process
   for (const t of process.clocks) {
     const rule = findClockRule(config.clockRules, t.ruleId);
     if (!rule) continue;
-    out.push(computeClock(t, rule, now, { bankHolidays: config.bankHolidays, councilHolidays: config.councilHolidays }));
+    out.push(computeClock(t, rule, now, { calendar: workingCalendarFrom(config) }));
   }
   return sortByUrgency(out);
 }

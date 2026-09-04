@@ -1,6 +1,6 @@
 'use client';
 
-import { closureReasonsFor, computeClock, contextFor, findClockRule, formatDate, resolveNeedToKnow, runningClocks, type Process } from '@mas/domain';
+import { closureReasonsFor, computeClock, contextFor, findClockRule, formatDate, resolveNeedToKnow, runningClocks, workingCalendarFrom, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, Dialog, SelectField, TextareaField, useToast } from '@mas/ui';
 import { useState } from 'react';
@@ -35,7 +35,7 @@ export function CloseProcessDialog({ process, open, onClose }: { process: Proces
   const stopping = running.flatMap((trigger) => {
     const rule = findClockRule(config.clockRules, trigger.ruleId);
     if (!rule) return [];
-    const clock = computeClock(trigger, rule, now, { bankHolidays: config.bankHolidays, councilHolidays: config.councilHolidays });
+    const clock = computeClock(trigger, rule, now, { calendar: workingCalendarFrom(config) });
     return [{ id: trigger.id, label: clock.label, dueAt: clock.dueAt }];
   });
 
@@ -126,7 +126,7 @@ export function ReopenProcessDialog({ process, open, onClose }: { process: Proce
     .flatMap((trigger) => {
       const rule = findClockRule(config.clockRules, trigger.ruleId);
       if (!rule) return [];
-      const clock = computeClock({ ...trigger, completedAt: undefined }, rule, now, { bankHolidays: config.bankHolidays, councilHolidays: config.councilHolidays });
+      const clock = computeClock({ ...trigger, completedAt: undefined }, rule, now, { calendar: workingCalendarFrom(config) });
       return [{ id: trigger.id, label: clock.label, dueAt: clock.dueAt }];
     });
 

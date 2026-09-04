@@ -1,22 +1,6 @@
 'use client';
 
-import {
-  classificationFor,
-  classificationRank,
-  computeClock,
-  datasetSchema,
-  findClockRule,
-  isExcludedParty,
-  nearMatchesOnRegister,
-  type AuditEntry,
-  type Classification,
-  type ClassifiedRecord,
-  type ChronologyEvent,
-  type ClockTrigger,
-  type Config,
-  type Dataset,
-  type Process,
-} from '@mas/domain';
+import { classificationFor, classificationRank, computeClock, datasetSchema, findClockRule, isExcludedParty, nearMatchesOnRegister, workingCalendarFrom, type AuditEntry, type Classification, type ClassifiedRecord, type ChronologyEvent, type ClockTrigger, type Config, type Dataset, type Process } from '@mas/domain';
 import { warrantsVersion, type ConnectorId, type OutboundIntent, type PayloadField, type RecordVersion } from '@mas/domain';
 import type { Collection } from '@/lib/store';
 
@@ -209,7 +193,7 @@ export function startedClocks(config: Config, triggers: ClockTrigger[], now: Dat
   for (const trigger of triggers) {
     const rule = findClockRule(config.clockRules, trigger.ruleId);
     if (!rule) continue;
-    const clock = computeClock(trigger, rule, now, { bankHolidays: config.bankHolidays, councilHolidays: config.councilHolidays });
+    const clock = computeClock(trigger, rule, now, { calendar: workingCalendarFrom(config) });
     out.push({ kind: 'clock', detail: `${clock.label}: ${clock.dueAt}` });
   }
   return out;
