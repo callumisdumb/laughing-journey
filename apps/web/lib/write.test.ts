@@ -1,0 +1,121 @@
+import { DEFAULT_CONFIG, demoNow, type Person, type Process } from '@mas/domain';
+import { KAYLEIGH, buildDataset } from '@mas/mock-data';
+import { describe, expect, it } from 'vitest';
+import { REASON_REQUIRED, classificationRefusal, excludedRecipients, reasonRefusal, startedClocks, validateRecord } from './write';
+
+const data = buildDataset();
+const config = DEFAULT_CONFIG;
+const now = demoNow();
+
+const marac = data.processes.find((p) => p.id === KAYLEIGH.marac)!;
+const kayleigh = data.people.find((p) => p.id === KAYLEIGH.kayleigh)!;
+const ryan = data.people.find((p) => p.id === KAYLEIGH.ryan)!;
+
+describe('the write pipeline, step by step', () => {
+  describe('1. the schema, which is the source of truth', () => {
+    it('passes a record the schema accepts', () => {
+      expect(validateRecord('people', kayleigh)).toEqual([]);
+    });
+
+    it('refuses a record the schema does not, and says which field', () => {
+      const broken = { ...kayleigh, givenName: 42 } as unknown as Person;
+      const errors = validateRecord('people', broken);
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors.join(' ')).toContain('givenName');
+    });
+
+    it('refuses a record missing a required field rather than writing a half one', () => {
+      const { id: _id, ...rest } = kayleigh;
+      expect(validateRecord('people', rest).length).toBeGreaterThan(0);
+    });
+
+    it('says nothing about a collection with no element schema, rather than refusing everything', () => {
+      expect(validateRecord('audit', data.audit[0]!)).toEqual([]);
+    });
+  });
+
+  describe('3. a classification may be raised and never quietly lowered', () => {
+    it('allows a write that does not change the classification', () => {
+      expect(classificationRefusal(config, marac, marac)).toBeNull();
+    });
+
+    it('allows a raise', () => {
+      const raised: Process = { ...marac, accessRestriction: 'restricted' };
+      expect(classificationRefusal(config, marac, raised)).toBeNull();
+    });
+
+    it('refuses a lower, which is what overrideDecision exists for', () => {
+      const strong: Process = { ...marac, classification: { level: 'official', sensitive: true, handling: [] }, accessRestriction: 'restricted' };
+      const weak: Process = { ...strong, classification: { level: 'official', sensitive: false, handling: [] }, accessRestriction: 'none', classificationOverride: undefined };
+      expect(classificationRefusal(config, strong, weak)).toBe('classificationDowngrade');
+    });
+
+    it('has nothing to compare against on a create, so it does not refuse one', () => {
+      expect(classificationRefusal(config, undefined, marac)).toBeNull();
+    });
+  });
+
+  describe('5. the exclusion register, checked before a recipient is added', () => {
+    it('refuses the perpetrator named on the MARAC referral', () => {
+      const check = excludedRecipients(marac, [{ personId: ryan.id }], config, data.relationships);
+      expect(check.refused).toHaveLength(1);
+    });
+
+    it('lets through somebody the register does not name', () => {
+      const check = excludedRecipients(marac, [{ personId: kayleigh.id }], config, data.relationships);
+      expect(check.refused).toEqual([]);
+    });
+
+    it('warns rather than refuses on a name resembling a hand-recorded register entry', () => {
+      // The near-match layer only has something to compare against where the register holds a name
+      // somebody typed. "Ryan James Kerr" is not "Ryan Kerr" to an exact match, which is the gap
+      // D-084 describes, and the answer is a confirmation quoting the entry rather than a silent
+      // fuzzy exclusion of possibly the wrong person.
+      const handwritten: Process = { ...marac, parties: [{ name: 'Ryan Kerr', party: 'perpetrator', label: 'Perpetrator (named on the referral form)', since: '2026-08-24', source: 'referral', reason: 'Named in the police MARAC referral' }] };
+      const check = excludedRecipients(handwritten, [{ name: 'Ryan James Kerr' }], config, []);
+      expect(check.refused).toEqual([]);
+      expect(check.nearMatches).toEqual(['Ryan Kerr']);
+    });
+
+    it('has nothing to near-match against where the register names a person by record', () => {
+      // The seeded MARAC register holds Ryan by `personId`, not by a typed name, so there is no
+      // written-down string to compare with and the exact check is the only one that fires. Worth
+      // pinning down: it is the difference between the two halves of D-084 and it looks like a gap
+      // until you know the register entry has no name in it.
+      const check = excludedRecipients(marac, [{ name: 'Ryan James Kerr' }], config, data.relationships);
+      expect(check.refused).toEqual([]);
+      expect(check.nearMatches).toEqual([]);
+      expect(excludedRecipients(marac, [{ personId: ryan.id }], config, data.relationships).refused).toHaveLength(1);
+    });
+  });
+
+  describe('6. clocks start against the demo instant', () => {
+    it('computes a due date for a trigger whose rule exists', () => {
+      const effects = startedClocks(config, [{ id: 'clk_test', ruleId: 'asp.inquiry.decision', triggeredAt: now.toISOString() }], now);
+      expect(effects).toHaveLength(1);
+      expect(effects[0]!.kind).toBe('clock');
+      expect(effects[0]!.detail).toMatch(/\d{4}-\d{2}-\d{2}/);
+    });
+
+    it('skips a trigger whose rule has been removed from the configuration rather than throwing', () => {
+      expect(startedClocks(config, [{ id: 'clk_test', ruleId: 'no.such.rule', triggeredAt: now.toISOString() }], now)).toEqual([]);
+    });
+  });
+
+  describe('the reason a change after the fact has to carry', () => {
+    it('requires one for a correction, a closure and a recorded-in-error', () => {
+      for (const intent of REASON_REQUIRED) {
+        expect(reasonRefusal(intent, undefined)).toBe('reasonRequired');
+        expect(reasonRefusal(intent, '   ')).toBe('reasonRequired');
+        expect(reasonRefusal(intent, 'typo')).toBe('reasonRequired');
+        expect(reasonRefusal(intent, 'Wrong date of birth, corrected from the referral')).toBeNull();
+      }
+    });
+
+    it('does not require one for a create or an ordinary update', () => {
+      expect(reasonRefusal('create', undefined)).toBeNull();
+      expect(reasonRefusal('update', undefined)).toBeNull();
+      expect(reasonRefusal('reopen', undefined)).toBeNull();
+    });
+  });
+});

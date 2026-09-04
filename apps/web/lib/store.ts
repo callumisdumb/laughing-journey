@@ -4,13 +4,14 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, isValidIso, parseDemoNow, roleLabel, type AuditEntry, type Config, type Dataset, type User } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, isValidIso, parseDemoNow, roleLabel, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type Dataset, type User } from '@mas/domain';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
 import { isSealedBlob, openLocal, sealLocal } from '@/lib/localStore';
 import { appendAudit, auditDetailKey, emptyChain, type AuditChain } from '@/lib/auditChain';
 import { buildVault, type Vault } from '@/lib/vault';
 import { create } from 'zustand';
+import { classificationRefusal, excludedRecipients, reasonRefusal, startedClocks, validateRecord, type WriteEffect, type WriteRequest, type WriteResult } from '@/lib/write';
 
 export type Collection = Exclude<keyof Dataset, 'meta'>;
 type Overlay = Partial<Record<Collection, Record<string, unknown>>> & { config?: Config; removed?: Partial<Record<Collection, string[]>> };
@@ -69,6 +70,11 @@ interface AppState {
   resetDemoNow: () => void;
   resetDemo: () => void;
   newId: (prefix: string) => string;
+  /**
+   * The one write pipeline (docs/RECORDS.md section 7). Every create and update goes through it,
+   * rather than each call site reimplementing the consequences of a write and one of them forgetting.
+   */
+  write: <K extends Collection>(request: WriteRequest<K>) => WriteResult;
 }
 
 const OVERLAY_KEY = 'mas.overlay.v1';
@@ -323,6 +329,116 @@ export const useAppStore = create<AppState>((set, get) => ({
     const seed = process.env.NEXT_PUBLIC_SEED ?? DEFAULT_SEED;
     const rebuilt = buildDataset({ seed });
     set({ data: rebuilt, config: DEFAULT_CONFIG, vault: buildVault(rebuilt, DEFAULT_CONFIG) });
+  },
+  /**
+   * The write pipeline, in the order docs/RECORDS.md section 7 sets out.
+   *
+   * Refusals come first and are total: nothing is written until every check has passed, so a failed
+   * write leaves no half-record, no orphan audit entry and no clock counting down against something
+   * that does not exist. Everything the pipeline then does is collected into the result, so the
+   * screen can tell the practitioner what happened rather than each screen knowing in advance.
+   */
+  write: (request) => {
+    const effects: WriteEffect[] = [];
+    const errors: string[] = [];
+    const { config, data } = get();
+    const user = get().currentUser();
+
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects };
+
+    // 1. The schema, then the rules the schema cannot express, then the reason a correction needs.
+    errors.push(...validateRecord(request.collection, request.record));
+    errors.push(...(request.rules ?? []));
+    const reasonError = reasonRefusal(request.intent, request.reason);
+    if (reasonError) errors.push(reasonError);
+
+    // 3. Classification, which may be raised and never quietly lowered.
+    const existing = (data[request.collection] as Array<{ id: string }>).find((r) => r.id === (request.record as { id: string }).id);
+    const downgrade = classificationRefusal(config, existing as ClassifiedRecord | undefined, request.record as ClassifiedRecord);
+    if (downgrade) errors.push(downgrade);
+
+    // 5. The exclusion register, before any recipient is added rather than after.
+    let nearMatches: string[] = [];
+    if (request.recipients && request.recipients.length > 0 && request.recipientProcess) {
+      const check = excludedRecipients(request.recipientProcess, request.recipients, config, data.relationships);
+      for (const name of check.refused) errors.push(`excluded:${name}`);
+      nearMatches = check.nearMatches;
+    }
+
+    if (errors.length > 0) return { ok: false, errors, nearMatches, effects };
+
+    // 10. Persist. Everything below this line has already been allowed to happen.
+    get().upsert(request.collection, request.record);
+
+    // 2. The audit entry, which every write has before it is useful.
+    const audit = get().audit({
+      act: request.act,
+      targetType: request.targetType,
+      targetId: (request.record as { id: string }).id,
+      targetLabel: request.targetLabel,
+      processId: request.processId,
+      reason: request.reason,
+    });
+    if (audit) effects.push({ kind: 'audit', detail: audit.id });
+
+    // 4. The wrap list, rebuilt where a process changed, because the entitled set can move with it.
+    if (request.collection === 'processes') {
+      set({ vault: buildVault(get().data, config) });
+      effects.push({ kind: 'rewrap', detail: (request.record as { id: string }).id });
+    }
+
+    // 6. Clocks.
+    effects.push(...startedClocks(config, request.clocks ?? [], get().now()));
+    const clocksOn = request.clocksOn ?? request.processId;
+    if (clocksOn && (request.clocks ?? []).length > 0) {
+      const process = get().data.processes.find((p) => p.id === clocksOn);
+      if (process) {
+        const fresh = (request.clocks ?? []).filter((t) => !process.clocks.some((c) => c.id === t.id));
+        if (fresh.length > 0) get().upsert('processes', { ...process, clocks: [...process.clocks, ...fresh] });
+      }
+    }
+
+    // 7. A chronology event, where the change is a significant one and not otherwise.
+    if (request.event) {
+      const event: ChronologyEvent = {
+        id: get().newId('evt'),
+        synthetic: true,
+        subjectIds: request.event.subjectIds,
+        linkedProcessIds: request.event.linkedProcessIds ?? (request.processId ? [request.processId] : []),
+        occurredAt: request.event.occurredAt ?? get().now().toISOString(),
+        recordedAt: get().now().toISOString(),
+        recordedByUserId: user.id,
+        recordedByName: `${user.givenName} ${user.familyName}`,
+        agency: user.agency,
+        hasTime: true,
+        approximate: false,
+        sourceSystem: 'manual',
+        eventType: request.event.eventType,
+        title: request.event.title,
+        detail: request.event.detail,
+        significance: request.event.significance,
+        linkedPersonIds: [],
+        evidenceRefs: [],
+        visibility: request.event.visibility ?? 'agency-only',
+        versions: [{ at: get().now().toISOString(), byName: `${user.givenName} ${user.familyName}`, change: request.targetLabel }],
+      };
+      get().upsert('events', event);
+      effects.push({ kind: 'event', detail: event.id });
+    }
+
+    // 8. The sharing the matrix requires, each already carrying its lawful basis.
+    for (const share of request.shares ?? []) {
+      effects.push({ kind: 'share', detail: `${share.recipientName}: ${share.reason}` });
+    }
+
+    // 9. Outbound connector proposals. The outbox, its delivery state, its idempotency key and its
+    // authorisation are step 14; recorded here so the seam exists in one place rather than being
+    // discovered at fifteen call sites when it does (D-113).
+    for (const out of request.outbound ?? []) {
+      effects.push({ kind: 'outbound', detail: `${out.connectorId}: ${out.summary}` });
+    }
+
+    return { ok: true, errors: [], nearMatches, effects, audit };
   },
   newId: (prefix) => {
     counter += 1;
