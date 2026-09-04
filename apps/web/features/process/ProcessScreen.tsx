@@ -1,6 +1,6 @@
 'use client';
 
-import { exclusionPartyLabel, partyRegister, STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, OFFICIAL, canLower, classificationFor, classificationLabel, effectiveClassification, marking, officialSensitive, overrideDecision, overrideDirection, relativeDays, stageLabel, type Classification, type Process } from '@mas/domain';
+import { exclusionPartyLabel, identifiesSubject, partyRegister, STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, OFFICIAL, canLower, classificationFor, classificationLabel, effectiveClassification, marking, officialSensitive, overrideDecision, overrideDirection, relativeDays, stageLabel, type Classification, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -139,7 +139,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
             {t('processes.classification.override.reason', { reason: effective.override.reason })}
           </p>
         ) : null}
-        <h1 className={styles.title}>{access.level === 'none' ? t('processes.head.restrictedTitle', { process: processLabel(process.type) }) : process.title}</h1>
+        <h1 className={styles.title}>{identifiesSubject(access.level) ? process.title : t('processes.head.restrictedTitle', { process: processLabel(process.type) })}</h1>
         {/*
           Whether the other agency actually has this.
           "Written to the council social work system, acknowledged 14:32, reference CF-2026-8871" is
@@ -148,7 +148,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
           like one that has.
         */}
         {access.level === 'full' ? <OutboundStatus processId={process.id} /> : null}
-        {access.level !== 'none' ? (
+        {identifiesSubject(access.level) ? (
           <div className={styles.subjects}>
             {subjects.map((s) => (
               <span key={s.id}>
@@ -160,7 +160,12 @@ export function ProcessScreen({ processId }: { processId: string }) {
         ) : null}
       </div>
       <div className={styles.headActions}>
-        {nextMeeting && access.level !== 'none' ? <AppLink href={meetingPath(nextMeeting.id)}>{t('processes.head.nextMeeting', { title: nextMeeting.title, date: formatDate(nextMeeting.scheduledAt) })}</AppLink> : null}
+        {/*
+          The meeting title carries the subject's name, so this link is on the same predicate as the
+          heading rather than on `!== 'none'`. A header that refused to name the case and then said
+          "Next: MARAC: Kayleigh Docherty (repeat)" two lines below would have refused nothing.
+        */}
+        {nextMeeting && identifiesSubject(access.level) ? <AppLink href={meetingPath(nextMeeting.id)}>{t('processes.head.nextMeeting', { title: nextMeeting.title, date: formatDate(nextMeeting.scheduledAt) })}</AppLink> : null}
         {access.level === 'presence' ? (
           <Button variant="secondary" icon={<UserPlus size={16} aria-hidden="true" />} onClick={() => toast({ title: t('processes.head.requestSent.title'), text: t('processes.head.requestSent.text', { hasLead: lead ? 'yes' : 'no', name: lead ? userName(lead) : '' }) })}>
             {t('processes.head.askToBeInvolved')}

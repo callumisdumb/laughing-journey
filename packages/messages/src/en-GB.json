@@ -4240,6 +4240,9 @@
         "stage": "Stage: {stage}. Default is deny; these audiences are told."
       },
       "open": "Open context panel",
+      "process": {
+        "withheld": "The rest of this panel is withheld. You can see that this case exists. You cannot see who it is about, who is on it, or what has been shared."
+      },
       "section": {
         "action": "Action",
         "audit": "Audit",

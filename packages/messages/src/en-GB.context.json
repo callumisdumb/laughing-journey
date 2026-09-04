@@ -12942,6 +12942,12 @@
         "maxLength": 24,
         "where": "Button that opens the collapsed context panel, read by screen readers"
       },
+      "process": {
+        "withheld": {
+          "notes": "Says what is withheld and why in the reader's terms. Refusing visibly beats hiding, so the panel does not simply end.",
+          "where": "Context drawer, process selected, when the reader holds presence only. Replaces the who is involved, need to know, lawful basis and audit sections."
+        }
+      },
       "section": {
         "action": {
           "maxLength": 32,

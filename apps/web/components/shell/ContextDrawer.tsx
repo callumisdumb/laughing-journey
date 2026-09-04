@@ -1,6 +1,6 @@
 'use client';
 
-import { accessRestrictionLabel, actionStatusLabel, agencyShort, classificationLabel, effectiveClassification, formatDate, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, recipientView, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type ClassifiedRecord, type Process } from '@mas/domain';
+import { accessRestrictionLabel, actionStatusLabel, identifiesSubject, agencyShort, classificationLabel, effectiveClassification, formatDate, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, recipientView, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type ClassifiedRecord, type Process } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { AgencyMark, Dialog, IconButton, Pill, RiskBand } from '@mas/ui';
 import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, ShieldCheck, Users } from 'lucide-react';
@@ -254,6 +254,55 @@ function YourAccess({ process }: { process: Process }) {
 }
 
 /**
+ * The process panel, gated on the same predicate the record itself is.
+ *
+ * Two sections are about the reader rather than about the case: what level they hold and why, and
+ * the marking that governs how they may pass it on. Everything below those is written about the
+ * case, and on a MARAC that is the whole difficulty. The purpose sentence names the victim. The
+ * exclusion list names the person who must not receive it, which is worse. The reads name the
+ * practitioners who are on it. A drawer that showed those beside a header that had just refused to
+ * name the case would have refused nothing, and the drawer is the screen a reader trusts for the
+ * need-to-know answer, so getting it wrong here is worse than getting it wrong anywhere else.
+ */
+function ProcessDrawer({ process }: { process: Process }) {
+  const t = useT();
+  const data = useData();
+  const config = useConfig();
+  const user = useCurrentUser();
+  const grants = useAppStore((s) => s.session.breakGlass);
+  const now = useNow();
+  const level = user ? accessForUser(data, config, user, process, grants, now).level : 'none';
+  return (
+    <>
+      <Section title={t('nav.drawer.section.yourAccess')} icon={<Eye size={14} aria-hidden="true" />}>
+        <YourAccess process={process} />
+      </Section>
+      <Section title={t('nav.drawer.section.classification')} icon={<ShieldCheck size={14} aria-hidden="true" />}>
+        <ProcessClassification process={process} />
+      </Section>
+      {identifiesSubject(level) ? (
+        <>
+          <Section title={t('nav.drawer.section.whoIsInvolved')} icon={<Users size={14} aria-hidden="true" />}>
+            <WhoIsInvolved processes={[process]} />
+          </Section>
+          <Section title={t('nav.drawer.section.needToKnowStage')} icon={<FileCheck2 size={14} aria-hidden="true" />}>
+            <NeedToKnow process={process} />
+          </Section>
+          <Section title={t('nav.drawer.section.lawfulBasis')} icon={<Scale size={14} aria-hidden="true" />}>
+            <LawfulBasis process={process} />
+          </Section>
+          <Section title={t('nav.drawer.section.audit')} icon={<Scale size={14} aria-hidden="true" />}>
+            <AuditTrail processIds={[process.id]} />
+          </Section>
+        </>
+      ) : (
+        <p className={styles.withheld}>{t('nav.drawer.process.withheld')}</p>
+      )}
+    </>
+  );
+}
+
+/**
  * What the drawer is showing, built once and used by both shapes it takes.
  *
  * The drawer is a docked third column while there is room for one and a panel over the record when
@@ -295,28 +344,7 @@ function useDrawerContent(): { title: string; body: ReactNode } {
   } else if (selection?.kind === 'process') {
     const process = processById(data, selection.id);
     title = process ? process.reference : t('nav.drawer.title.process');
-    body = process ? (
-      <>
-        <Section title={t('nav.drawer.section.yourAccess')} icon={<Eye size={14} aria-hidden="true" />}>
-          <YourAccess process={process} />
-        </Section>
-        <Section title={t('nav.drawer.section.whoIsInvolved')} icon={<Users size={14} aria-hidden="true" />}>
-          <WhoIsInvolved processes={[process]} />
-        </Section>
-        <Section title={t('nav.drawer.section.classification')} icon={<ShieldCheck size={14} aria-hidden="true" />}>
-          <ProcessClassification process={process} />
-        </Section>
-        <Section title={t('nav.drawer.section.needToKnowStage')} icon={<FileCheck2 size={14} aria-hidden="true" />}>
-          <NeedToKnow process={process} />
-        </Section>
-        <Section title={t('nav.drawer.section.lawfulBasis')} icon={<Scale size={14} aria-hidden="true" />}>
-          <LawfulBasis process={process} />
-        </Section>
-        <Section title={t('nav.drawer.section.audit')} icon={<Scale size={14} aria-hidden="true" />}>
-          <AuditTrail processIds={[process.id]} />
-        </Section>
-      </>
-    ) : null;
+    body = process ? <ProcessDrawer process={process} /> : null;
   } else if (selection?.kind === 'event') {
     const ev = data.events.find((e) => e.id === selection.id);
     const basis = ev?.lawfulBasisId ? data.lawfulBases.find((b) => b.id === ev.lawfulBasisId) : undefined;

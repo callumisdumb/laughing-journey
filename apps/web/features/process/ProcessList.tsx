@@ -1,6 +1,6 @@
 'use client';
 
-import { PROCESS_TYPES, agencyShort, detailLevelLabel, formatDate, processLabel, stageLabel } from '@mas/domain';
+import { PROCESS_TYPES, agencyShort, detailLevelLabel, formatDate, identifiesSubject, processLabel, stageLabel } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Pill, ProcessMark, RiskBand, SelectField, Switch, Table, TableWrap } from '@mas/ui';
 import { Lock } from 'lucide-react';
@@ -84,7 +84,7 @@ export function ProcessList() {
                     <ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.accessRestriction === 'restricted'} />
                   </td>
                   <td>
-                    {access.level === 'none' ? (
+                    {!identifiesSubject(access.level) ? (
                       <Pill tone="restricted" size="sm" icon={<Lock size={12} aria-hidden="true" />}>
                         {t('common.labels.restricted')}
                       </Pill>

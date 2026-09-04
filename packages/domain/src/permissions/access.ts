@@ -10,6 +10,21 @@ import type { Exclusion, NeedToKnowRow } from '../schemas/config';
 
 export type AccessLevel = 'none' | DetailLevel;
 
+/**
+ * Whether this level may see who the case is about.
+ *
+ * `presence` means what its own copy says: you can see that a process exists. It does not mean you
+ * can see whose it is, and on a MARAC the victim's name is precisely the thing that must not reach
+ * somebody who is not on the case. The product was showing it in two places, on the case list and in
+ * the case header, because both tested `level !== 'none'` and presence is not none.
+ *
+ * One function answers it, so a third screen written by somebody who has not read this cannot get it
+ * wrong in a third way.
+ */
+export function identifiesSubject(level: AccessLevel): boolean {
+  return level === 'full' || level === 'summary' || level === 'fields';
+}
+
 export interface AccessResult {
   level: AccessLevel;
   /** Plain-language reason shown in the drawer and on restricted states. */

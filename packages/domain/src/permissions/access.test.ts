@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { officialSensitive } from '../classification/classify';
 import type { Process } from '../schemas/process';
 import type { User } from '../schemas/user';
-import { accessFor, accessRank, contextFor } from './access';
+import { accessFor, accessRank, contextFor, identifiesSubject } from './access';
 
 function user(over: Partial<User>): User {
   return {
@@ -179,5 +179,21 @@ describe('accessRank', () => {
     expect(accessRank('summary')).toBeGreaterThan(accessRank('presence'));
     expect(accessRank('presence')).toBeGreaterThan(accessRank('none'));
     expect(accessRank('none')).toBe(0);
+  });
+});
+
+describe('presence means existence, not identity', () => {
+  /**
+   * The bug this pins: two screens tested `level !== 'none'` and showed the subject's name at
+   * presence level, because presence is not none. On a MARAC the victim's name is exactly the thing
+   * that must not reach somebody who is not on the case, and the product's own copy for presence
+   * says "you can see that a process exists".
+   */
+  it('names the subject only at the levels that carry the record', () => {
+    expect(identifiesSubject('full')).toBe(true);
+    expect(identifiesSubject('summary')).toBe(true);
+    expect(identifiesSubject('fields')).toBe(true);
+    expect(identifiesSubject('presence')).toBe(false);
+    expect(identifiesSubject('none')).toBe(false);
   });
 });
