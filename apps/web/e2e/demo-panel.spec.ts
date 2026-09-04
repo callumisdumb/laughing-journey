@@ -40,9 +40,9 @@ test.describe('the demo control panel', () => {
     await waitForData(page);
     await openPanel(page);
 
-    await page.getByTestId('waypoint-marac').click();
+    await page.getByTestId('waypoint-chain').click();
     await waitForData(page);
-    // The route, and the person: the MARAC is Karen Findlay's case and it opens as her.
+    // The route, and the person: chapter 5 is Karen Findlay's case and it opens as her.
     await expect(page).toHaveURL(/\/processes\/prc_marac_docherty/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Kayleigh Docherty');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');

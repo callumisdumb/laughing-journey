@@ -1951,20 +1951,18 @@
     "subtitle": "Not part of the product. Hidden unless you know the shortcut, and gone from a production build.",
     "title": "Demo controls",
     "waypoints": {
-      "aiden": "Aiden Boyle, the child protection case",
-      "chronology": "The integrated chronology",
-      "compare": "Two people, one record",
-      "home": "Home, as the social worker sees it",
-      "marac": "Kayleigh Docherty, the MARAC",
-      "maracMeeting": "The MARAC on 09 September",
-      "marion": "Marion Fraser, adult support and protection",
-      "meeting": "The review CPPM on 14 September",
-      "restricted": "The restricted MAPPA record",
-      "serverView": "What the host can see",
-      "simulator": "The council social work system",
+      "chain": "5. A live multi-agency chain",
+      "chronology": "2. The integrated chronology",
+      "clocks": "6. Clocks under pressure",
+      "close": "10. Close",
+      "host": "8. What the host can see",
+      "meeting": "7. A meeting, run in the product",
+      "needToKnow": "3. Need-to-know, demonstrated",
+      "noDoubleEntry": "4. No double entry",
+      "problem": "1. The problem",
+      "simulator": "4a. The council social work system",
       "title": "Chapters",
-      "whatWouldTheySee": "What would they see",
-      "workbook": "The ASP data workbook return"
+      "workbook": "9. The return that writes itself"
     }
   },
   "demoClock": {

@@ -23,7 +23,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "holidays:sync": "node tooling/holidays/sync.mjs",
-    "lint": "pnpm -r --workspace-concurrency=2 lint && pnpm lint:css && pnpm contrast && pnpm lint:dashes && pnpm lint:placeholders && pnpm messages:check && pnpm lint:crypto && pnpm crypto:inventory:check && pnpm lint:dialog",
+    "lint": "pnpm -r --workspace-concurrency=2 lint && pnpm lint:css && pnpm contrast && pnpm lint:dashes && pnpm lint:placeholders && pnpm demo:check && pnpm messages:check && pnpm lint:crypto && pnpm crypto:inventory:check && pnpm lint:dialog",
     "lint:crypto": "node tooling/no-weak-crypto.mjs",
     "lint:css": "stylelint \"apps/web/**/*.css\" \"packages/ui/**/*.css\" --ignore-path .gitignore && node tooling/stylelint-config/unused-custom-properties.mjs",
     "lint:dashes": "node tooling/no-em-dash.mjs",
@@ -35,7 +35,8 @@
     "seed:export": "pnpm --filter @mas/mock-data seed:export",
     "test": "pnpm -r --workspace-concurrency=2 test",
     "typecheck": "pnpm -r --workspace-concurrency=2 typecheck",
-    "lint:placeholders": "node tooling/no-placeholder-copy.mjs"
+    "lint:placeholders": "node tooling/no-placeholder-copy.mjs",
+    "demo:check": "node tooling/demo-script/check.mjs"
   },
   "devDependencies": {
     "prettier": "3.9.6",

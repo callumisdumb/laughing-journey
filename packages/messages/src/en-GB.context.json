@@ -6037,47 +6037,41 @@
       "where": "Demo control panel, its title."
     },
     "waypoints": {
-      "aiden": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      "chain": {
+        "where": "Demo control panel, chapter 5 of docs/DEMO.md."
       },
       "chronology": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
+        "where": "Demo control panel, chapter 2 of docs/DEMO.md."
       },
-      "compare": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md: the two-persona view."
+      "clocks": {
+        "where": "Demo control panel, chapter 6 of docs/DEMO.md."
       },
-      "home": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      "close": {
+        "where": "Demo control panel, chapter 10 of docs/DEMO.md."
       },
-      "marac": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
-      },
-      "maracMeeting": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
-      },
-      "marion": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      "host": {
+        "where": "Demo control panel, chapter 8 of docs/DEMO.md."
       },
       "meeting": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
+        "where": "Demo control panel, chapter 7 of docs/DEMO.md."
       },
-      "restricted": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      "needToKnow": {
+        "where": "Demo control panel, chapter 3 of docs/DEMO.md."
       },
-      "serverView": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      "noDoubleEntry": {
+        "where": "Demo control panel, chapter 4 of docs/DEMO.md."
+      },
+      "problem": {
+        "where": "Demo control panel, chapter 1 of docs/DEMO.md."
       },
       "simulator": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
+        "where": "Demo control panel, the other side of chapter 4: the simulated council system."
       },
       "title": {
         "where": "Demo control panel, the heading above the waypoint list."
       },
-      "whatWouldTheySee": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
-      },
       "workbook": {
-        "where": "Demo control panel, a chapter of docs/DEMO.md."
+        "where": "Demo control panel, chapter 9 of docs/DEMO.md."
       }
     }
   },
