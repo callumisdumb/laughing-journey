@@ -9812,9 +9812,33 @@
           "where": "Sign-in, third pill under the lede"
         }
       },
+      "chooseHint": {
+        "where": "Sign-in, how to move through the organisation list with the keyboard."
+      },
       "demoNote": {
         "screenshot": "phase-1/sign-in-light-comfortable.png",
         "where": "Sign-in, note at the foot of the introduction explaining the demonstration build"
+      },
+      "demoSignIn": {
+        "where": "Sign-in, why there is no password field. Stated rather than apologised for."
+      },
+      "demoStatement": {
+        "where": "Sign-in, the honest statement at the top of the choosing column. The first thing read after the headline."
+      },
+      "filter": {
+        "clear": {
+          "maxLength": 10,
+          "where": "Sign-in, button clearing the filter."
+        },
+        "label": {
+          "where": "Sign-in, label of the single field that filters organisations and people together."
+        },
+        "placeholder": {
+          "where": "Sign-in, placeholder of the filter field."
+        },
+        "results": {
+          "where": "Sign-in, live count of what the filter matched, announced politely."
+        }
       },
       "headline": {
         "maxLength": 60,
@@ -9887,15 +9911,39 @@
         "screenshot": "phase-1/sign-in-light-comfortable.png",
         "where": "Sign-in, heading of step 1, the organisation picker"
       },
+      "orgStepMeta": {
+        "where": "Sign-in, count under the organisation step heading."
+      },
       "personaStep": {
         "maxLength": 32,
         "screenshot": "phase-1/sign-in-light-comfortable.png",
         "where": "Sign-in, heading of step 2, the persona picker"
       },
+      "personaStepMeta": {
+        "where": "Sign-in, count under the persona step heading, naming the chosen organisation."
+      },
+      "personaStepWaiting": {
+        "where": "Sign-in, the persona column before an organisation has been chosen."
+      },
       "pickerLabel": {
         "maxLength": 40,
         "screenshot": "phase-1/sign-in-light-comfortable.png",
         "where": "Sign-in, accessible name of the picker section"
+      },
+      "resume": {
+        "action": {
+          "maxLength": 12,
+          "where": "Sign-in, the button on the remembered persona card."
+        },
+        "meta": {
+          "where": "Sign-in, the remembered persona's name, role and organisation."
+        },
+        "title": {
+          "where": "Sign-in, heading of the card offering the persona used last time, shown before any choice is made."
+        }
+      },
+      "signedInAs": {
+        "where": "Sign-in, what choosing a persona means: reads are recorded against them."
       }
     },
     "today": {

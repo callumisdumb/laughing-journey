@@ -3245,7 +3245,16 @@
         "needToKnow": "Need-to-know by design",
         "offline": "Runs offline"
       },
+      "chooseHint": "Use the arrow keys to move through the list and Enter to choose.",
       "demoNote": "This is a demonstration build. Every person, case, address and number is synthetic. Sign-in is a persona picker in place of your organisation's single sign-on.",
+      "demoSignIn": "There is no sign-in to do. In the product your organisation's single sign-on decides who you are; here you choose, because who you are is what the demonstration is about.",
+      "demoStatement": "This is a demonstration. Every person, case, address, postcode and number in it is invented, and none of it connects to a live system.",
+      "filter": {
+        "clear": "Clear",
+        "label": "Find an organisation or a person",
+        "placeholder": "Type a name, a role or an agency",
+        "results": "{count, plural, =0 {Nothing matches} one {One match} other {# matches}}"
+      },
       "headline": "One person. Many processes. One shared picture.",
       "lastTime": "Last time",
       "lede": "Adult support and protection, child protection, MARAC, MAPPA and Adults with Incapacity, run by the agencies who share the risk, with the person present in their own record.",
@@ -3262,8 +3271,17 @@
         "thirdSector": "Third sector"
       },
       "orgStep": "Your organisation",
+      "orgStepMeta": "{count, plural, one {one organisation} other {# organisations}} on this partnership.",
       "personaStep": "Who are you today",
-      "pickerLabel": "Choose organisation and persona"
+      "personaStepMeta": "{count, plural, =0 {Nobody} one {One person} other {# people}} in {organisation}.",
+      "personaStepWaiting": "Choose an organisation and the people in it appear here.",
+      "pickerLabel": "Choose organisation and persona",
+      "resume": {
+        "action": "Continue",
+        "meta": "{name}, {role}, {organisation}",
+        "title": "Carry on as before"
+      },
+      "signedInAs": "You will be signed in as this person until you switch, and every read you make is recorded against them."
     },
     "today": {
       "count": "{count} scheduled",

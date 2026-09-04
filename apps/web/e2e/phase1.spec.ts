@@ -4,7 +4,10 @@ import { capture, expectNoAxeViolations, setAppearance, signInAs, waitForData } 
 const PHASE = 'phase-1';
 
 test.describe('sign in', () => {
-  test('organisation then persona, remembered next time', async ({ page }) => {
+  // The screen's own behaviour lives in `sign-in.spec.ts`, which was written with the rebuild. This
+  // keeps phase-1's capture, because the screenshot path is cited in the handover index and in the
+  // message catalogue's context entries, and asserts only that the round's foundation still stands.
+  test('organisation then persona', async ({ page }) => {
     await page.goto('/sign-in');
     await waitForData(page);
     await expect(page.getByRole('heading', { name: /One person/ })).toBeVisible();
@@ -13,9 +16,6 @@ test.describe('sign in', () => {
     await page.getByRole('button', { name: /Clydeshore Council/ }).click();
     await page.getByRole('button', { name: /Janet Kerr/ }).click();
     await expect(page.getByRole('heading', { name: /Good morning, Janet/ })).toBeVisible();
-    await page.goto('/sign-in');
-    await waitForData(page);
-    await expect(page.getByText('Last time')).toBeVisible();
   });
 });
 
