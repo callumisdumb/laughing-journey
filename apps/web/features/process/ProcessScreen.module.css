@@ -1,9 +1,15 @@
 .head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+
+  /* The same two-column header as the person record, and the same floor on the identity column (D-200). */
+  grid-template-columns: minmax(min(28ch, 100%), 1fr) auto;
   gap: 10px var(--content-gutter);
   align-items: start;
   margin-bottom: var(--density-gap);
+}
+
+:root[data-layout='narrow'] .head {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .ref {

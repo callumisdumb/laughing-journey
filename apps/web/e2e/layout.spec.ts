@@ -177,6 +177,86 @@ test.describe('truncation', () => {
   }
 });
 
+/**
+ * The header holds its width, and the pills in it are never sliced.
+ *
+ * The truncation check above looks at leaf elements, and a pill with an icon is not a leaf: the
+ * person record's register alert was rendering "On t / Child / Prote / Regis" in a 100px column at
+ * 1024 and 900 and the suite passed. The identity column had collapsed to its longest word while the
+ * badge column took what its next-date text asked for. So this asserts the two things that failure
+ * needs: a grid child narrower than 20ch carrying wrapped text, and a pill or badge whose text
+ * reaches past its own box. At all four widths, on both two-column headers.
+ */
+test.describe('the header holds its width', () => {
+  const HEADERS = [
+    { name: 'person', user: 'usr_janet_kerr', path: '/people/per_aiden_boyle', header: 'person-header' },
+    { name: 'process', user: 'usr_moira_gilmour', path: '/processes/prc_asp_marion', header: 'process-header' },
+  ] as const;
+
+  for (const { w, h } of [MODES[2], MODES[3], MODES[5], MODES[6]] as const) {
+    for (const screen of HEADERS) {
+      test(`${screen.name} header at ${w}: the identity column keeps 28ch and nothing in a pill is sliced`, async ({ page }) => {
+        await page.setViewportSize({ width: w, height: h });
+        await open(page, screen);
+        const result = await page.evaluate((testId) => {
+          const header = document.querySelector<HTMLElement>(`[data-testid="${testId}"]`)!;
+          const identity = header.firstElementChild as HTMLElement;
+          // `ch` measured in the header's own font rather than assumed: a probe of twenty zeros.
+          const chars = (el: HTMLElement, n: number) => {
+            const probe = document.createElement('span');
+            probe.textContent = '0'.repeat(n);
+            probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap';
+            el.appendChild(probe);
+            const width = probe.getBoundingClientRect().width;
+            probe.remove();
+            return width;
+          };
+          const headerWidth = header.getBoundingClientRect().width;
+          const identityWidth = identity.getBoundingClientRect().width;
+          const floor = Math.min(chars(identity, 28), headerWidth);
+
+          // A grid child narrower than 20ch whose text has wrapped is the collapse, whatever its
+          // scrollWidth says: wrapped text never overflows sideways, it just becomes unreadable.
+          const squeezed: string[] = [];
+          for (const child of Array.from(header.children) as HTMLElement[]) {
+            const box = child.getBoundingClientRect();
+            if (box.width === 0 || (child.textContent ?? '').trim().length === 0) continue;
+            const lineHeight = parseFloat(getComputedStyle(child).lineHeight) || parseFloat(getComputedStyle(child).fontSize) * 1.4;
+            if (box.width < chars(child, 20) && child.scrollHeight > lineHeight * 2) squeezed.push(`${child.tagName}.${String(child.className).split(' ')[0]} at ${Math.round(box.width)}px`);
+          }
+
+          // Every pill and every process mark in the header: no text past the box, in either axis.
+          const sliced: string[] = [];
+          for (const el of Array.from(header.querySelectorAll<HTMLElement>('span[data-tone][data-size], [data-mark="process"]'))) {
+            const box = el.getBoundingClientRect();
+            if (box.width === 0) continue;
+            if (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1) {
+              sliced.push(`${(el.textContent ?? '').trim().slice(0, 40)} (overflows its box)`);
+              continue;
+            }
+            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+            let node = walker.nextNode();
+            while (node) {
+              const range = document.createRange();
+              range.selectNodeContents(node);
+              for (const rect of Array.from(range.getClientRects())) {
+                if (rect.width === 0) continue;
+                if (rect.right > box.right + 1 || rect.left < box.left - 1) sliced.push(`${(node.textContent ?? '').trim().slice(0, 40)} (text outside the pill)`);
+              }
+              node = walker.nextNode();
+            }
+          }
+          return { headerWidth, identityWidth, floor, squeezed, sliced: [...new Set(sliced)] };
+        }, screen.header);
+
+        expect(result.identityWidth, `the identity column is ${Math.round(result.identityWidth)}px in a ${Math.round(result.headerWidth)}px header`).toBeGreaterThanOrEqual(result.floor - 1);
+        expect(result.squeezed, 'a header column narrower than 20ch with its text wrapped inside it').toEqual([]);
+        expect(result.sliced, 'a pill or badge whose text is cut off by its own box').toEqual([]);
+      });
+    }
+  }
+});
+
 test.describe('the chrome as panels', () => {
   test.use({ viewport: { width: 900, height: 700 } });
 

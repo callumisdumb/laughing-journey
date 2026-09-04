@@ -120,7 +120,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const state = dev ?? (access.level === 'none' ? 'restricted' : 'ready');
 
   const header = (
-    <header className={styles.head}>
+    <header className={styles.head} data-testid="process-header">
       <div>
         <div className={styles.ref}>
           <ProcessMark type={process.type} stage={stageLabel(process.type, process.stage)} restricted={process.accessRestriction === 'restricted'} />

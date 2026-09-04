@@ -26,14 +26,22 @@
   border-radius: var(--radius-pill);
 }
 
-/* A sentence in a pill: wraps, grows, and keeps its icon beside the first line. */
+/*
+ * A sentence in a pill: wraps, grows, and keeps its icon beside the first line. Once it can wrap it
+ * is a block rather than a chip: nothing is clipped, a word wider than the box breaks rather than
+ * escaping, and the corners soften so two lines read as a notice and not a squashed label.
+ */
 .pill[data-wrap='true'] {
   align-items: flex-start;
   height: auto;
   min-height: var(--pill-height);
   padding-block: 3px;
+  overflow: visible;
   text-align: start;
+  text-overflow: clip;
   white-space: normal;
+  border-radius: var(--radius-md);
+  overflow-wrap: anywhere;
 }
 
 .pill[data-wrap='true'] > svg {

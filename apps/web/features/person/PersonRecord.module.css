@@ -2,7 +2,15 @@
   --header-gap: 12px;
 
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+
+  /*
+   * The identity column holds at least 28ch. With `minmax(0, 1fr)` it could shrink to the longest
+   * unbreakable word while the second column took what its widest occupant asked for, and the
+   * widest occupant was the record actions row pinned to column 2: five buttons at their full width
+   * left a 60px identity column reading "communication" one word per line, with the rest of the
+   * header empty. Below compact the header stacks and the actions row comes back to column 1 (D-200).
+   */
+  grid-template-columns: minmax(min(28ch, 100%), 1fr) auto;
   gap: var(--header-gap) var(--content-gutter);
   align-items: start;
   margin-bottom: var(--density-gap);
@@ -65,6 +73,29 @@
   flex-direction: column;
   gap: 6px;
   align-items: flex-end;
+}
+
+.badge {
+  text-align: right;
+}
+
+:root[data-layout='narrow'] .header {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+:root[data-layout='narrow'] .badges {
+  gap: 8px 18px;
+  align-items: flex-start;
+  flex-flow: row wrap;
+}
+
+:root[data-layout='narrow'] .badge {
+  text-align: left;
+}
+
+:root[data-layout='narrow'] .recordActions {
+  grid-column: 1;
+  justify-content: flex-start;
 }
 
 .badgeNext {

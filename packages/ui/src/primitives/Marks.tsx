@@ -51,7 +51,7 @@ export interface ProcessMarkProps {
 export function ProcessMark({ type, stage, restricted = false, className, glyphSize = 16 }: ProcessMarkProps) {
   const GlyphComponent = PROCESS_GLYPHS[type];
   return (
-    <span className={cn(styles.process, className)} data-restricted={restricted ? 'true' : undefined}>
+    <span className={cn(styles.process, className)} data-mark="process" data-restricted={restricted ? 'true' : undefined}>
       <GlyphComponent size={glyphSize} variant="filled" />
       <span>{processShort(type)}</span>
       {stage ? <span className={styles.processStage}>{stage}</span> : null}

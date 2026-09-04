@@ -189,8 +189,8 @@ export function PersonRecord({ personId }: { personId: string }) {
 
   return (
     <div className="page">
-      <header className={styles.header}>
-        <div>
+      <header className={styles.header} data-testid="person-header">
+        <div data-testid="person-identity">
           <p className={styles.kicker}>{t('person.screenName')}</p>
           <div className={styles.nameRow}>
             <h1 className={styles.name}>{fullName(person)}</h1>
@@ -249,7 +249,7 @@ export function PersonRecord({ personId }: { personId: string }) {
                 </Pill>
               );
             return (
-              <span key={p.id} style={{ textAlign: 'right' }}>
+              <span key={p.id} className={styles.badge}>
                 <AppLink href={processPath(p.id)} style={{ textDecoration: 'none' }}>
                   <ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.accessRestriction === 'restricted'} />
                 </AppLink>
