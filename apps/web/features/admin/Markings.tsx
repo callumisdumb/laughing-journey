@@ -24,7 +24,7 @@ import { tKey, useT, type Translator } from '@mas/messages';
 import { Button, CheckboxField, Sheet, SheetBody, SheetHead, Table, TableWrap, TextareaField } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Fragment, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import styles from './Markings.module.css';
 import { SectionHead } from './SectionHead';
@@ -61,8 +61,8 @@ export function Markings() {
     resolver: zodResolver(schema),
     defaultValues: { markings: config.classificationMarkings, lowerableBy: config.classificationLowerableBy },
   });
-  const lowerableBy = form.watch('lowerableBy');
-  const markings = form.watch('markings');
+  const lowerableBy = useWatch({ control: form.control, name: 'lowerableBy' });
+  const markings = useWatch({ control: form.control, name: 'markings' });
   const errors = form.formState.errors;
 
   function submit(values: MarkingsValues) {

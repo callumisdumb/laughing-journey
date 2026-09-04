@@ -3772,7 +3772,7 @@
         "thirdSector": "Third sector"
       },
       "orgStep": "Your organisation",
-      "orgStepMeta": "{count, plural, one {one organisation} other {# organisations}} on this partnership.",
+      "orgStepMeta": "{count, plural, one {one organisation} other {# organisations}} in this partnership.",
       "personaStep": "Who are you today",
       "personaStepMeta": "{count, plural, =0 {Nobody} one {One person} other {# people}} in {organisation}.",
       "personaStepWaiting": "Choose an organisation and the people in it appear here.",

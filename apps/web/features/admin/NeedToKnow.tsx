@@ -32,7 +32,7 @@ import { AGENCY_GLYPHS, Button, CheckboxField, Dialog, EmptyState, IconButton, S
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, Lock, Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { useAppStore } from '@/lib/store';
@@ -132,7 +132,7 @@ function AudienceDialog({ process, target, canEdit, onClose, onSave, onRemove }:
     },
   });
   const errors = form.formState.errors;
-  const detailLevel = form.watch('detailLevel');
+  const detailLevel = useWatch({ control: form.control, name: 'detailLevel' });
   const roleOptions =
     target.agency === 'referrer'
       ? [{ value: 'any', label: t('admin.needToKnow.audience.anyRoleReferrer') }]

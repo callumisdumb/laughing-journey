@@ -32,9 +32,15 @@ const COLUMNS = [
 
 /** Virtualised, keyboard-navigable chronology table. Newest first. */
 export function EventList({ events, selectedEventId, highlighted, onSelect, height = 480 }: EventListProps) {
+  // TanStack Virtual hands back functions the React Compiler cannot memoise safely, and it said so
+  // on every lint. Opting this component out is the documented answer; the rule still reports the
+  // call, so the one line is excused where it stands, and the warning count stays at zero so a real
+  // one is visible when it arrives (D-204).
+  'use no memo';
   const t = useT();
   const parentRef = useRef<HTMLDivElement>(null);
   const rowHeight = typeof document !== 'undefined' && document.documentElement.dataset.density === 'compact' ? 32 : 40;
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({ count: events.length, getScrollElement: () => parentRef.current, estimateSize: () => rowHeight, overscan: 12 });
 
   useEffect(() => {

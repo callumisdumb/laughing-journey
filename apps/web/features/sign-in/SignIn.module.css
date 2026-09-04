@@ -160,7 +160,12 @@
   pointer-events: none;
 }
 
-.filterField input {
+/*
+ * The class lands on the input itself (TextField spreads it onto the control), so the old
+ * `.filterField input` matched nothing and the glyph sat over the placeholder. The element
+ * selector keeps this rule ahead of the primitive's own padding.
+ */
+input.filterField {
   padding-left: 36px;
 }
 

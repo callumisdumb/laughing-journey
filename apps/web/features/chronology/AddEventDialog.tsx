@@ -5,7 +5,7 @@ import { useT, type Translator } from '@mas/messages';
 import { Button, CheckboxField, DateField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
 import { formErrorSummary } from '@/lib/formErrors';
@@ -76,9 +76,9 @@ export function AddEventDialog({ open, onClose, personId, processIds, recentEven
     resolver: zodResolver(schema),
     defaultValues: { kind: 'fact', occurredDate: now.toISOString().slice(0, 10), approximate: false, eventType: 'social-work.visit', title: '', detail: '', significance: 'moderate', visibility: 'agency-only' },
   });
-  const kind = form.watch('kind');
-  const significance = form.watch('significance');
-  const visibility = form.watch('visibility');
+  const kind = useWatch({ control: form.control, name: 'kind' });
+  const significance = useWatch({ control: form.control, name: 'significance' });
+  const visibility = useWatch({ control: form.control, name: 'visibility' });
   const errors = form.formState.errors;
 
   function submit(values: FormValues) {

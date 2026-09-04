@@ -1,6 +1,6 @@
-# Shooting script: eleven minutes forty-five, in ten chapters
+# Shooting script: eleven minutes fifteen, in ten chapters
 
-Person360, filmed. Ten chapters, each a clip that stands on its own, because a ten minute video is watched once and a ninety second clip gets forwarded to whoever decides. Total runtime 11:45.
+Person360, filmed. Ten chapters, each a clip that stands on its own, because a full-length video is watched once and a ninety second clip gets forwarded to whoever decides. Total runtime 11:15.
 
 Audience: chief officers (council, health board, police), the CSWO, the Child and Adult Protection Committee chairs, and the information governance lead who will ask the hardest question.
 
@@ -12,6 +12,7 @@ Everything on screen is fictional. Postcodes start with Q, V or X, CHI numbers a
 2. Open the demo panel with **Control, Shift and D**. Turn on the **recording preset**: larger type, comfortable density, no looping animation.
 3. Press **Back to the seed**. That returns the records, the clock (02 Sep 2026, 09:00) and any break-glass grant. Do this between takes, every time.
 4. Each chapter below names its **waypoint**. Open the panel, click the waypoint, and the persona, the route, the theme, the density and the clock are all set in one action. Close the panel with the same shortcut.
+5. Before chapter 4, create the council episode off camera: waypoint **4a. The council social work system**, **New episode** for Marion Fraser, then back to the seed is not pressed until after the take. The chapter opens on an episode that already exists over there, which is thirty seconds the audience does not need to watch being typed.
 
 The narration is written to be read at about 150 words a minute. `pnpm demo:check` fails if a chapter's script no longer fits its slot.
 
@@ -44,14 +45,13 @@ The narration is written to be read at about 150 words a minute. `pnpm demo:chec
 | 3.3 | Say the sentence that lands it. | "These are not three descriptions of the rules. They are three renderings of the same record by the same code, and the difference between them is the rules running." | The panels together. |
 
 ## Chapter 4. No double entry
-**Waypoint:** 4. No double entry · **Persona:** Moira Gilmour, council officer, adult protection · **Duration:** 1:30
+**Waypoint:** 4. No double entry · **Persona:** Moira Gilmour, council officer, adult protection · **Duration:** 1:00
 
 | Beat | Do | Say | Look at |
 |---|---|---|---|
-| 4.1 | Land on Connectors. Open the ECLIPSE card. | "The first question any practitioner asks is whether this is a second place to type everything. It is not. Where a partner system can take a write, this writes to it." | The capability matrix, and the row that says ViSOR is never. |
-| 4.2 | Point at the honest rows. | "And where it cannot, we say so. iVPD is notify-only, because a third party writing into a police vulnerable persons database is not a realistic ask. EMIS Web needs an accreditation nobody here has yet, and it is marked unverified rather than claimed." | The ceilings, and the unverified marking. |
-| 4.3 | Open the outbox and authorise one write. | "Nothing writes on its own. A person authorises it, with a purpose and a lawful basis, having seen the payload in the other system's own field names. It is a disclosure into another organisation's record, so it is recorded like one." | The payload preview beside the mapped-from values. |
-| 4.4 | Switch to the waypoint "4a. The council social work system". | "That is the other side. A different product, deliberately: this is what the council's system looks like. The episode we just wrote is here, with our reference on it. Change something here and the reconciliation screen over there will say the two sides disagree, and which of them owns the field." | The plainer chrome, and the reference. |
+| 4.1 | Land on Connectors. Open the ECLIPSE card. | "Is this a second place to type everything? No. Where a partner system can take a write, this writes to it. Where it cannot, we say so: iVPD is notify-only, and EMIS Web is marked unverified rather than claimed." | The capability matrix: ViSOR never, iVPD notify-only, EMIS Web unverified. |
+| 4.2 | Open the outbox and authorise one write. | "Nothing writes on its own. A person authorises it, with a purpose and a lawful basis, having seen the payload in the other system's own field names." | The payload preview beside the mapped-from values. |
+| 4.3 | Switch to the waypoint "4a. The council social work system". | "The other side, deliberately a different product. The episode is here with our reference on it. Change it here and the reconciliation screen over there says the two sides disagree, and which owns the field." | The plainer chrome, and the reference. |
 
 ## Chapter 5. A live multi-agency chain
 **Waypoint:** 5. A live multi-agency chain · **Persona:** Karen Findlay, MARAC coordinator · **Duration:** 2:00
@@ -114,14 +114,14 @@ The narration is written to be read at about 150 words a minute. `pnpm demo:chec
 | 1. The problem | 0:30 |
 | 2. The integrated chronology | 1:30 |
 | 3. Need-to-know, demonstrated | 1:30 |
-| 4. No double entry | 1:30 |
+| 4. No double entry | 1:00 |
 | 5. A live multi-agency chain | 2:00 |
 | 6. Clocks under pressure | 0:45 |
 | 7. A meeting, run in the product | 1:30 |
 | 8. What the host can see | 1:00 |
 | 9. The return that writes itself | 1:00 |
 | 10. Close | 0:30 |
-| **Total** | **11:45** |
+| **Total** | **11:15** |
 
 ## If there is time
 
