@@ -5900,6 +5900,125 @@
       }
     }
   },
+  "demo": {
+    "clock": {
+      "title": {
+        "where": "Demo control panel, the heading above the demo clock."
+      }
+    },
+    "connectors": {
+      "latency": {
+        "where": "Demo control panel, the label on the connector speed control."
+      },
+      "outageLabel": {
+        "where": "Demo control panel, the switch that takes one connector down."
+      },
+      "title": {
+        "where": "Demo control panel, the heading above the connector controls."
+      }
+    },
+    "personas": {
+      "meta": {
+        "where": "Demo control panel, under each persona: their job title and agency."
+      },
+      "title": {
+        "notes": "Persona switching without going through the account menu, which is one click too many mid sentence.",
+        "where": "Demo control panel, the heading above the persona list."
+      }
+    },
+    "reset": {
+      "confirmText": {
+        "notes": "Names what goes and what stays, including the clock and any break-glass grant, because a grant left standing would make the next take look like access the reader simply had.",
+        "where": "Demo control panel, the confirmation before resetting to seed."
+      },
+      "confirmTitle": {
+        "where": "Demo control panel, the title of the reset confirmation."
+      },
+      "hint": {
+        "where": "Demo control panel, under the reset button."
+      },
+      "title": {
+        "where": "Demo control panel, the heading above the reset button."
+      }
+    },
+    "shortcut": {
+      "where": "Demo control panel, the keyboard shortcut that opens it, shown in its own header."
+    },
+    "snapshots": {
+      "delete": {
+        "where": "Demo control panel, the button that forgets a saved state."
+      },
+      "empty": {
+        "where": "Demo control panel, when no state has been kept."
+      },
+      "keep": {
+        "where": "Demo control panel, the button that keeps the current state under a name."
+      },
+      "nameLabel": {
+        "where": "Demo control panel, the field naming the state about to be kept."
+      },
+      "namePlaceholder": {
+        "where": "Demo control panel, the example name in the field."
+      },
+      "restore": {
+        "where": "Demo control panel, the button that puts a kept state back."
+      },
+      "taken": {
+        "where": "Demo control panel, under each saved state: when it was kept."
+      },
+      "title": {
+        "where": "Demo control panel, the heading above the saved states."
+      }
+    },
+    "subtitle": {
+      "notes": "Says plainly that this is not the product, because a viewer who sees it in a recording must not take it for one.",
+      "where": "Demo control panel, under its title."
+    },
+    "title": {
+      "where": "Demo control panel, its title."
+    },
+    "waypoints": {
+      "aiden": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "chronology": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "home": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "marac": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "maracMeeting": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "marion": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "meeting": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "restricted": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "serverView": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "simulator": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "title": {
+        "where": "Demo control panel, the heading above the waypoint list."
+      },
+      "whatWouldTheySee": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      },
+      "workbook": {
+        "where": "Demo control panel, a chapter of docs/DEMO.md."
+      }
+    }
+  },
   "demoClock": {
     "demoNow": {
       "maxLength": 16,
@@ -20050,14 +20169,15 @@
         "where": "Reason recorded on the audit entry for a reset from Settings"
       },
       "dialogText": {
-        "where": "Body of the reset confirmation dialog"
+        "notes": "Names the clock and break-glass because reset clears both: state drifting between takes is what it exists to stop.",
+        "where": "Settings, the confirmation before resetting the demo data."
       },
       "dialogTitle": {
         "maxLength": 32,
         "where": "Title of the reset confirmation dialog"
       },
       "toastText": {
-        "where": "Toast text after the reset from Settings"
+        "where": "Settings, the toast after a reset."
       }
     },
     "signedIn": {

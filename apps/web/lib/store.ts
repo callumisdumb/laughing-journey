@@ -45,6 +45,26 @@ export interface Session {
   nowIso: string;
 }
 
+/**
+ * A named state, kept so a take can be repeated.
+ *
+ * Recording is the reason this exists. A demonstration that has just written a minute, promoted an
+ * inbox item and moved the clock three weeks cannot be shot again without either resetting to seed,
+ * which throws away the set-up as well as the take, or clicking through the set-up again and hoping
+ * it lands the same way. A snapshot is the overlay and the session as they stand, so the presenter
+ * can put the product back exactly where it was and go again.
+ *
+ * It is deliberately not the whole dataset: the dataset is a pure function of the seed and the
+ * overlay, so storing the overlay stores the difference and nothing else, and a snapshot taken on
+ * one build still applies on the next.
+ */
+export interface DemoSnapshot {
+  name: string;
+  at: string;
+  overlay: Overlay;
+  session: Session;
+}
+
 interface AppState {
   ready: boolean;
   data: Dataset;
@@ -72,6 +92,11 @@ interface AppState {
   setDemoNow: (iso: string) => void;
   resetDemoNow: () => void;
   resetDemo: () => void;
+  /** Named states the presenter has kept, newest first. */
+  snapshots: DemoSnapshot[];
+  takeSnapshot: (name: string) => void;
+  restoreSnapshot: (name: string) => void;
+  deleteSnapshot: (name: string) => void;
   newId: (prefix: string) => string;
   /**
    * The one write pipeline (docs/RECORDS.md section 7). Every create and update goes through it,
@@ -233,6 +258,7 @@ function inboundProcessType(change: InboundChange): ProcessType | null {
 
 const OVERLAY_KEY = 'mas.overlay.v1';
 const SESSION_KEY = 'mas.session';
+const SNAPSHOT_KEY = 'mas.snapshots.v1';
 
 const EMPTY: Dataset = {
   meta: { seed: DEFAULT_SEED, generatedAt: '', now: '', synthetic: true },
@@ -424,6 +450,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   vault: buildVault(EMPTY, DEFAULT_CONFIG),
   chain: emptyChain(),
   session: { userId: null, breakGlass: [], liveClock: false, nowIso: DEMO_NOW_ISO },
+  snapshots: [],
   init: () => {
     if (get().ready) return;
     const seed = process.env.NEXT_PUBLIC_SEED ?? DEFAULT_SEED;
@@ -435,7 +462,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     session.breakGlass = (session.breakGlass ?? []).filter((g) => g.expiresAt > nowIso);
     // Older persisted overlays may predate new configuration keys; defaults fill the gaps.
     const config: Config = overlay.config ? { ...DEFAULT_CONFIG, ...overlay.config } : DEFAULT_CONFIG;
-    set({ data, config, vault: buildVault(data, config), session: { ...session, breakGlass: session.breakGlass, liveClock: session.liveClock ?? false, nowIso: session.nowIso ?? DEMO_NOW_ISO }, ready: true });
+    set({ data, config, vault: buildVault(data, config), session: { ...session, breakGlass: session.breakGlass, liveClock: session.liveClock ?? false, nowIso: session.nowIso ?? DEMO_NOW_ISO }, snapshots: readJson<DemoSnapshot[]>(SNAPSHOT_KEY) ?? [], ready: true });
     applyConfiguredAppearanceDefaults(config);
   },
   now: () => (get().session.liveClock ? new Date() : parseDemoNow(get().session.nowIso)),
@@ -555,6 +582,17 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ session });
     writeJson(SESSION_KEY, session);
   },
+  /**
+   * Back to the seed, deterministically.
+   *
+   * The single most important recording affordance, because state drifting between takes is what
+   * ruins a shoot. So it clears more than the records: the demo clock goes back to its seeded
+   * instant and any break-glass grant is dropped, both of which are exactly the state you least
+   * want carried into the next take. A grant is an audited emergency access with a four hour
+   * window, and one left standing from the previous run would make the next one look like access
+   * the reader simply had. Sign-in and appearance are kept, because those are the presenter's
+   * settings rather than the demonstration's state.
+   */
   resetDemo: () => {
     overlay = {};
     try {
@@ -564,7 +602,35 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
     const seed = process.env.NEXT_PUBLIC_SEED ?? DEFAULT_SEED;
     const rebuilt = buildDataset({ seed });
-    set({ data: rebuilt, config: DEFAULT_CONFIG, vault: buildVault(rebuilt, DEFAULT_CONFIG) });
+    const session = { ...get().session, breakGlass: [], nowIso: DEMO_NOW_ISO, liveClock: false };
+    writeJson(SESSION_KEY, session);
+    set({ data: rebuilt, config: DEFAULT_CONFIG, vault: buildVault(rebuilt, DEFAULT_CONFIG), session });
+  },
+  takeSnapshot: (name) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    // Round-tripped rather than referenced, so a later write cannot reach back into the snapshot.
+    const snapshot: DemoSnapshot = { name: trimmed, at: get().now().toISOString(), overlay: JSON.parse(JSON.stringify(overlay)) as Overlay, session: { ...get().session } };
+    const snapshots = [snapshot, ...get().snapshots.filter((s) => s.name !== trimmed)];
+    writeJson(SNAPSHOT_KEY, snapshots);
+    set({ snapshots });
+  },
+  restoreSnapshot: (name) => {
+    const snapshot = get().snapshots.find((s) => s.name === name);
+    if (!snapshot) return;
+    overlay = JSON.parse(JSON.stringify(snapshot.overlay)) as Overlay;
+    writeJson(OVERLAY_KEY, overlay);
+    const seed = process.env.NEXT_PUBLIC_SEED ?? DEFAULT_SEED;
+    const data = applyOverlay(buildDataset({ seed }), overlay);
+    const config = overlay.config ? { ...DEFAULT_CONFIG, ...overlay.config } : DEFAULT_CONFIG;
+    const session = { ...snapshot.session };
+    writeJson(SESSION_KEY, session);
+    set({ data, config, vault: buildVault(data, config), session });
+  },
+  deleteSnapshot: (name) => {
+    const snapshots = get().snapshots.filter((s) => s.name !== name);
+    writeJson(SNAPSHOT_KEY, snapshots);
+    set({ snapshots });
   },
   /**
    * The write pipeline, in the order docs/RECORDS.md section 7 sets out.

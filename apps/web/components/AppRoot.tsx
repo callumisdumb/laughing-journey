@@ -14,6 +14,7 @@ import { useSimulator } from '@/lib/simulator';
 import { primeDeviceKey } from '@/lib/localStore';
 import { useRoute, useRouterStore } from '@/lib/router';
 import { useAppStore } from '@/lib/store';
+import { DemoPanel } from '@/features/demo/DemoPanel';
 import { SignIn } from '@/features/sign-in/SignIn';
 import { Simulator } from '@/features/simulator/Simulator';
 
@@ -86,6 +87,12 @@ function Boot() {
           path from the toast that announced it, and by then the dialog that created it has closed.
         */}
         <RetireHost />
+        {/*
+          The demo control panel, which is not part of the product. It lives here because a
+          waypoint sets the persona and the route together, so it has to sit above whichever
+          screen is currently drawn, including the simulator.
+        */}
+        <DemoPanel />
       </ToastProvider>
     </QueryClientProvider>
   );

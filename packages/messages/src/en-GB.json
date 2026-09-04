@@ -1892,6 +1892,54 @@
       "title": "Pre-birth"
     }
   },
+  "demo": {
+    "clock": {
+      "title": "The clock"
+    },
+    "connectors": {
+      "latency": "Connector speed",
+      "outageLabel": "{name} is down",
+      "title": "Connectors"
+    },
+    "personas": {
+      "meta": "{role}, {agency}",
+      "title": "Be somebody else"
+    },
+    "reset": {
+      "confirmText": "Every change made on this device goes: records, minutes, shares, promoted inbox items and the audit entries you added. The clock goes back to 02 Sep 2026, 09:00 and any break-glass grant is dropped. Your sign-in and appearance are kept, and your saved states are kept.",
+      "confirmTitle": "Back to the seed?",
+      "hint": "The one thing to press between takes.",
+      "title": "Back to the seed"
+    },
+    "shortcut": "Control, Shift and D",
+    "snapshots": {
+      "delete": "Forget {name}",
+      "empty": "Nothing kept yet. Keep the state you want to shoot again, then restore it between takes.",
+      "keep": "Keep this state",
+      "nameLabel": "Call it",
+      "namePlaceholder": "Before the MARAC invite list",
+      "restore": "Restore {name}",
+      "taken": "Kept {when}",
+      "title": "Saved states"
+    },
+    "subtitle": "Not part of the product. Hidden unless you know the shortcut, and gone from a production build.",
+    "title": "Demo controls",
+    "waypoints": {
+      "aiden": "Aiden Boyle, the child protection case",
+      "chronology": "The integrated chronology",
+      "home": "Home, as the social worker sees it",
+      "marac": "Kayleigh Docherty, the MARAC",
+      "maracMeeting": "The MARAC on 09 September",
+      "marion": "Marion Fraser, adult support and protection",
+      "meeting": "The review CPPM on 14 September",
+      "restricted": "The restricted MAPPA record",
+      "serverView": "What the host can see",
+      "simulator": "The council social work system",
+      "title": "Chapters",
+      "whatWouldTheySee": "What would they see",
+      "workbook": "The ASP data workbook return"
+    }
+  },
   "demoClock": {
     "demoNow": "Demo clock",
     "jump": {
@@ -6490,9 +6538,9 @@
     },
     "reset": {
       "auditReason": "Every local change discarded; the eight scenarios regenerated from the seed",
-      "dialogText": "This removes every change made on this device since the seed: events, minutes, shares, promoted inbox items and audit entries you added. The eight scenarios come back exactly as shipped. Your sign-in and appearance are kept.",
+      "dialogText": "This removes every change made on this device since the seed: events, minutes, shares, promoted inbox items and audit entries you added. The eight scenarios come back exactly as shipped. The clock goes back to 02 Sep 2026, 09:00 and any break-glass grant is dropped. Your sign-in and appearance are kept.",
       "dialogTitle": "Reset demo data?",
-      "toastText": "The eight scenarios are back exactly as shipped. Your sign-in and appearance are unchanged."
+      "toastText": "The eight scenarios are back exactly as shipped, on the seeded clock. Your sign-in and appearance are unchanged."
     },
     "signedIn": {
       "agency": "Agency",
