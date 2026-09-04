@@ -7,7 +7,7 @@ import { officialSensitive } from '@mas/domain';
  */
 import type { Agency, Process } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
-import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
+import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeHousehold, makeLawfulBasis, makeMeeting, makePerson, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
 
 export const MARION = {
@@ -56,7 +56,7 @@ export function seedMarionFraser(ctx: BuildContext): void {
     createdAt: at('2025-03-18', '10:00'),
   });
 
-  ctx.data.households.push({ id: hh, synthetic: true, addressId: shoreLoan.id, memberIds: [marion.id], label: 'Fraser household, Portlennan' });
+  makeHousehold(ctx, { id: hh, addressId: shoreLoan.id, from: '1971-08-14', memberIds: [marion.id], label: 'Fraser household, Portlennan' });
   relate(ctx, callum.id, marion.id, 'nephew-or-niece-of', { notes: 'Son of her late brother. Visits several times a week; does her shopping; holds her bank card under an unregistered "arrangement"' });
   relate(ctx, marion.id, callum.id, 'aunt-or-uncle-of');
 

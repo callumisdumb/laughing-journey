@@ -187,7 +187,7 @@ export function PeopleList() {
           </Table>
         </TableWrap>
       </ScreenState>
-      <AddPersonDialog open={adding} onClose={() => setAdding(false)} onCreated={(person) => navigate(personPath(person.id))} />
+      {adding ? <AddPersonDialog open onClose={() => setAdding(false)} onCreated={(person) => navigate(personPath(person.id))} /> : null}
     </div>
   );
 }

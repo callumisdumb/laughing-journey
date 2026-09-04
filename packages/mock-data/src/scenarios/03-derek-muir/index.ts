@@ -8,7 +8,7 @@ import { officialSensitive } from '@mas/domain';
  */
 import type { Agency, Invitee, Membership, Process } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
-import { at, makeAction, makeAddress, makeAnalysis, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, syntheticChi } from '../../generator/factory';
+import { at, makeAction, makeAddress, makeAnalysis, makeEvent, makeHousehold, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
 
 export const DEREK = {
@@ -59,7 +59,7 @@ export function seedDerekMuir(ctx: BuildContext): void {
     alerts: [{ id: 'alt_derek_mappa', kind: 'mappa', text: 'MAPPA managed (restricted)', from: '2026-07-14', visibleTo: ['police', 'social-work', 'health', 'sps'] }],
     createdAt: at('2026-05-10', '14:10'),
   });
-  ctx.data.households.push({ id: hh, synthetic: true, addressId: abbeyWynd.id, memberIds: [derek.id], label: 'Supported accommodation, 40 Abbey Wynd' });
+  makeHousehold(ctx, { id: hh, addressId: abbeyWynd.id, from: '2026-07-22', memberIds: [derek.id], label: 'Supported accommodation, 40 Abbey Wynd' });
 
   // ----- Lawful basis -----
   const lb = makeLawfulBasis(ctx, {

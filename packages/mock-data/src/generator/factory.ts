@@ -11,6 +11,7 @@ import type {
   ChronologyEvent,
   ConnectorEvent,
   EventType,
+  Household,
   LawfulBasisRecord,
   Meeting,
   Person,
@@ -232,6 +233,28 @@ export function makeAudit(ctx: BuildContext, a: Partialish<AuditEntry, 'id' | 'r
   const rec: AuditEntry = { ...a, id: a.id ?? ctx.ids.next('aud'), synthetic: true, restricted: a.restricted ?? false };
   ctx.data.audit.push(rec);
   return rec;
+}
+
+/**
+ * A household with dated memberships, which is the only kind there is.
+ *
+ * Each member's start date comes from their own address history for this address where they have
+ * one, because that is the date the seed already asserts they moved in, and a household membership
+ * that disagreed with the address history would be two answers to one question. Where a person has
+ * no period for the address, the household's own start date is used.
+ */
+export function makeHousehold(
+  ctx: BuildContext,
+  h: { id?: string; addressId: string; label?: string; from: string; memberIds: string[] },
+): Household {
+  const members = h.memberIds.map((personId) => {
+    const person = ctx.data.people.find((p) => p.id === personId);
+    const period = person?.addressHistory.find((a) => a.addressId === h.addressId);
+    return { personId, from: period?.from ?? h.from, to: period?.to };
+  });
+  const household: Household = { id: h.id ?? ctx.ids.next('hh'), synthetic: true, addressId: h.addressId, members, label: h.label };
+  ctx.data.households.push(household);
+  return household;
 }
 
 /** Synthetic CHI: ddmmyy + 3 digits + check digit. Never a real number. */

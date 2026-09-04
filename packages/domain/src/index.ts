@@ -9,6 +9,7 @@ export * from './chronology';
 export * from './people/duplicates';
 export * from './people/chi';
 export * from './people/merge';
+export * from './people/network';
 export * from './forms';
 export * from './classification/classify';
 export * from './classification/fromConfig';

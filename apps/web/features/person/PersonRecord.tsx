@@ -17,7 +17,9 @@ import { EventList } from '@/features/chronology/EventList';
 import { LanesChart } from '@/features/chronology/LanesChart';
 import { useChronologyStore } from '@/features/chronology/state';
 import { useChronology } from '@/features/chronology/useChronology';
+import { HouseholdPanel } from './HouseholdPanel';
 import { NetworkGraph } from './NetworkGraph';
+import { NetworkPanel } from './NetworkPanel';
 import { MergeDialog, UnmergeDialog } from './MergeDialog';
 import styles from './PersonRecord.module.css';
 
@@ -258,10 +260,14 @@ export function PersonRecord({ personId }: { personId: string }) {
                 </div>
               </SheetBody>
             </Sheet>
+            <div className={styles.homeAndNetwork}>
+              <HouseholdPanel person={person} />
+              <NetworkPanel person={person} />
+            </div>
             <Sheet>
               <SheetHead title={t('person.overview.network.title')} meta={t('person.overview.network.meta')} />
               <SheetBody>
-                <NetworkGraph person={person} concernIds={concernIds} />
+                <NetworkGraph person={person} concernIds={concernIds} on={now.toISOString().slice(0, 10)} />
               </SheetBody>
             </Sheet>
             <Sheet tone="paper">
@@ -534,7 +540,7 @@ export function PersonRecord({ personId }: { personId: string }) {
         </div>
       </Dialog>
 
-      <MergeDialog person={person} open={merging} onClose={() => setMerging(false)} />
+      {merging ? <MergeDialog person={person} open onClose={() => setMerging(false)} /> : null}
       {unmerging ? <UnmergeDialog mergeId={unmerging} open onClose={() => setUnmerging(null)} /> : null}
     </div>
   );

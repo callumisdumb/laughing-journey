@@ -40,7 +40,7 @@ function fixture(): Dataset {
     addresses: [],
     people: [person({ id: 'per_a', chi: undefined }), person({ id: 'per_b', givenName: 'Aidan', chi: '1403192341', gpPractice: 'Ardvale Medical Practice' })],
     personMerges: [],
-    households: [{ id: 'hh_1', synthetic: true, addressId: 'adr_1', memberIds: ['per_a', 'per_b'] }],
+    households: [{ id: 'hh_1', synthetic: true, addressId: 'adr_1', members: [{ personId: 'per_a', from: '2020-01-01' }, { personId: 'per_b', from: '2020-01-01' }] }],
     relationships: [{ id: 'rel_1', synthetic: true, fromPersonId: 'per_c', toPersonId: 'per_b', type: 'mother-of' }],
     processes: [{ id: 'prc_1', detail: { referral: { perpetratorPersonId: 'per_b', childPersonIds: ['per_b', 'per_d'] } }, subjectIds: ['per_b'] }],
     events: [{ id: 'evt_1', subjectIds: ['per_b'], linkedPersonIds: [] }],
@@ -126,7 +126,7 @@ describe('mergePeople', () => {
     expect(strings({ ...result.data, audit: [] }).filter((s) => s === 'per_b')).toEqual([]);
     expect(result.merge.repointed).toContain('processes.0.detail.referral.perpetratorPersonId');
     expect(result.merge.repointed).toContain('processes.0.detail.referral.childPersonIds.0');
-    expect(result.merge.repointed).toContain('households.0.memberIds.1');
+    expect(result.merge.repointed).toContain('households.0.members.1.personId');
   });
 
   it('never touches the audit ledger, because it records what happened', () => {

@@ -127,14 +127,21 @@ export function PersonPicker({
         </Button>
       ) : null}
 
-      <AddPersonDialog
-        open={adding}
-        onClose={() => setAdding(false)}
-        onCreated={(person) => {
-          onChange(person);
-          setAdding(false);
-        }}
-      />
+      {/*
+        Mounted only while it is open. The dialog element is hidden when closed, so leaving it in the
+        markup looks free, and it is not: a person record hosts three pickers, so three copies of the
+        whole create flow sat in the DOM with duplicate ids on every control in them.
+      */}
+      {adding ? (
+        <AddPersonDialog
+          open
+          onClose={() => setAdding(false)}
+          onCreated={(person) => {
+            onChange(person);
+            setAdding(false);
+          }}
+        />
+      ) : null}
     </div>
   );
 }

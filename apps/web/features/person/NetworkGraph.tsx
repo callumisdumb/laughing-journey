@@ -1,6 +1,6 @@
 'use client';
 
-import type { Person, Relationship } from '@mas/domain';
+import { membersOn, type Person, type Relationship } from '@mas/domain';
 import { hasMessage, tKey, useT } from '@mas/messages';
 import { fullName } from '@/lib/selectors';
 import { useData } from '@/lib/store';
@@ -27,14 +27,17 @@ export interface NetworkGraphProps {
   person: Person;
   /** People flagged as an adult of concern (e.g. alleged perpetrator) are drawn dashed. */
   concernIds?: string[];
+  /** The date the household is read as at, so the diagram and the panel above it agree. */
+  on: string;
 }
 
 /** Household and network: the subject in the centre, household inner ring, everyone else outer ring. */
-export function NetworkGraph({ person, concernIds = [] }: NetworkGraphProps) {
+export function NetworkGraph({ person, concernIds = [], on }: NetworkGraphProps) {
   const t = useT();
   const data = useData();
   const rels = data.relationships.filter((r) => r.fromPersonId === person.id || r.toPersonId === person.id);
-  const household = new Set(data.households.find((h) => h.id === person.householdId)?.memberIds ?? []);
+  const home = data.households.find((h) => h.id === person.householdId);
+  const household = new Set(home ? membersOn(home, on).map((m) => m.personId) : []);
   const nodes = new Map<string, { person: Person; relation: string; household: boolean }>();
   for (const r of rels) {
     const otherId = r.fromPersonId === person.id ? r.toPersonId : r.fromPersonId;

@@ -73,6 +73,19 @@ export const casePartySchema = z
     since: isoDate.optional(),
     source: z.enum(CASE_PARTY_SOURCES),
     reason: z.string().optional(),
+    /**
+     * Whether the exclusion this entry carries still stands.
+     *
+     * Absent means it stands, which is the default and the safe one. `false` is a decision somebody
+     * made and is answerable for, and it suppresses the derived entry it shares a key with: ending
+     * the relationship a MARAC associate entry rests on does not lift the exclusion by itself,
+     * because a former partner is frequently the whole risk. Lifting it is a separate decision with
+     * a name, a date and a reason on it (D-132).
+     */
+    stands: z.boolean().optional(),
+    decidedAt: isoDateTime.optional(),
+    decidedByName: z.string().optional(),
+    decisionReason: z.string().optional(),
   })
   .refine((party) => Boolean(party.personId || party.userId || party.name), { error: () => t('errors.schemas.casePartyIdentity') });
 export type CaseParty = z.infer<typeof casePartySchema>;

@@ -111,11 +111,28 @@ export const personMergeSchema = z.object({
 });
 export type PersonMerge = z.infer<typeof personMergeSchema>;
 
+/**
+ * One person's time in a household, dated.
+ *
+ * Removing somebody from a household sets `to` rather than deleting the membership, because who
+ * lived where and when is exactly what a chronology needs, and it is the question a review asks
+ * first: was the mother's new partner living there in the March before the injury. A plain list of
+ * current members cannot answer it, so there is no plain list.
+ */
+export const householdMembershipSchema = z.object({
+  personId: idSchema,
+  from: isoDate,
+  to: isoDate.optional(),
+  /** Why the membership ended, in a phrase. Absent while it is running. */
+  endedReason: z.string().optional(),
+});
+export type HouseholdMembership = z.infer<typeof householdMembershipSchema>;
+
 export const householdSchema = z.object({
   id: idSchema,
   synthetic: syntheticSchema,
   addressId: idSchema,
-  memberIds: z.array(idSchema),
+  members: z.array(householdMembershipSchema),
   label: z.string().optional(),
 });
 export type Household = z.infer<typeof householdSchema>;

@@ -170,6 +170,24 @@ The button that creates the record is not on the screen until the second one has
 
 The count is computed, not written. A warning triangle over "this affects many records" is true and useless; twenty-six is a number a practitioner can compare against what they expect. The comparison runs the real union function rather than describing what it will do, and a value the surviving record gains is marked with a rule as well as a tint.
 
+### 5.3 Household and network, side by side
+
+Two panels rather than one, because they answer two different questions and the difference is the substance of several of the scenarios.
+
+```
++-- Docherty household, 14 Vennel Brae ------+  +-- Wider network ---------+
+| 3 people    [Rename] [Add someone]         |  | [Record a relationship]  |
+| Lily Docherty      since 20 Jan 2023  [x]  |  | Senga Docherty           |
+| Mason Docherty     since 20 Jan 2023  [x]  |  |   mother, since 1995     |
+| Ryan Kerr   (no relationship recorded)[x]  |  |   [Edit] [Ended]         |
+| > Previously in the household              |  | > Ended relationships    |
++---------------------------------------------+  +--------------------------+
+```
+
+A row carries a mark where the person is themselves subject to a process the reader cannot open, and a different mark where they must not receive information about a case the subject is on. The second is why the name beside it is not a link.
+
+Every action opens a dialog that computes its consequences before the button: a household change lists the open cases it touches and offers to tell them, and a relationship change says who it will exclude from which case, in words, from the product's own rules.
+
 ## 6. Hero screen wireframes
 
 ### 6.1 Person record

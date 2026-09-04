@@ -7,7 +7,7 @@ import { officialSensitive } from '@mas/domain';
  */
 import type { Agency, Invitee, Membership, Process } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
-import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
+import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeHousehold, makeLawfulBasis, makeMeeting, makePerson, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
 
 export const WHINBRAE = {
@@ -89,7 +89,7 @@ export function seedWhinbraeLsi(ctx: BuildContext): void {
   const residents = [wilma, jean, malcolm, zofia, margaret, archie];
   const all = residents.map((r) => r.id);
 
-  ctx.data.households.push({ id: WHINBRAE.household, synthetic: true, addressId: home.id, memberIds: all, label: 'Whinbrae House residents' });
+  makeHousehold(ctx, { id: WHINBRAE.household, addressId: home.id, from: '2019-01-01', memberIds: all, label: 'Whinbrae House residents' });
 
   // Relatives named in the record.
   const linda = makePerson(ctx, { id: WHINBRAE.linda, givenName: 'Linda', familyName: 'Paterson', sex: 'female', dateOfBirth: '1961-08-09', chi: syntheticChi(ctx, '1961-08-09', 'female'), addressHistory: [{ addressId: lindaHome.id, from: '2004-03-01' }], contact: { phone: '07700 900418' }, createdAt: at('2023-11-06', '10:00') });

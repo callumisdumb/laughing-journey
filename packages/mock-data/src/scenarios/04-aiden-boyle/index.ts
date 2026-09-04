@@ -5,7 +5,7 @@ import { officialSensitive } from '@mas/domain';
  */
 import type { Agency, Process } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
-import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
+import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeHousehold, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
 
 export const AIDEN = {
@@ -119,7 +119,7 @@ export function seedAidenBoyle(ctx: BuildContext): void {
     createdAt: at('2023-04-19', '10:00'),
   });
 
-  ctx.data.households.push({ id: hh, synthetic: true, addressId: craiglarrick.id, memberIds: [stacey.id, aiden.id, maisie.id], label: 'Boyle household, Craiglarrick' });
+  makeHousehold(ctx, { id: hh, addressId: craiglarrick.id, from: '2024-06-01', memberIds: [stacey.id, aiden.id, maisie.id], label: 'Boyle household, Craiglarrick' });
   relate(ctx, stacey.id, aiden.id, 'mother-of');
   relate(ctx, kevin.id, aiden.id, 'father-of', { notes: 'Separated from Stacey in 2022; sees Aiden most weekends' });
   relate(ctx, stacey.id, maisie.id, 'mother-of');

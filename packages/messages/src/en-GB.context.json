@@ -8074,6 +8074,21 @@
       "expectedDeliveryPast": {
         "where": "Add a person dialog, refusal summary at the top of the body"
       },
+      "householdAlreadyMember": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "householdEndReasonRequired": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "householdLabelRequired": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "householdMissing": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "householdNotAMember": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
       "mergeOtherMissing": {
         "where": "Merge dialog, refusal summary at the top of the body"
       },
@@ -8094,6 +8109,27 @@
       },
       "reasonRequired": {
         "where": "Any create or edit dialog, refusal summary at the top of the body"
+      },
+      "relationshipDuplicate": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "relationshipEndBeforeStart": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "relationshipEndReasonRequired": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "relationshipExclusionUndecided": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "relationshipMissing": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "relationshipPersonMissing": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "relationshipSelf": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
       },
       "searchRequired": {
         "where": "Add a person dialog, refusal summary at the top of the body"
@@ -12675,6 +12711,112 @@
         "where": "Person 360 header fact for an unborn child with no expected delivery date: the bold unborn word, then the placeholder"
       }
     },
+    "household": {
+      "add": {
+        "where": "Add someone to the household dialog"
+      },
+      "addFrom": {
+        "where": "Add someone to the household dialog"
+      },
+      "addNote": {
+        "where": "Add someone to the household dialog"
+      },
+      "addNoteHint": {
+        "where": "Add someone to the household dialog"
+      },
+      "addPerson": {
+        "where": "Add someone to the household dialog"
+      },
+      "addSubmit": {
+        "where": "Add someone to the household dialog"
+      },
+      "addTitle": {
+        "where": "Add someone to the household dialog"
+      },
+      "at": {
+        "where": "Person record, Household panel"
+      },
+      "done": {
+        "addedText": {
+          "where": "Toast after a household change"
+        },
+        "addedTitle": {
+          "where": "Toast after a household change"
+        },
+        "endedText": {
+          "where": "Toast after a household change"
+        },
+        "endedTitle": {
+          "where": "Toast after a household change"
+        }
+      },
+      "editLabel": {
+        "where": "Household panel, the button that opens the rename dialog"
+      },
+      "end": {
+        "where": "Record that they left dialog"
+      },
+      "endReason": {
+        "where": "Record that they left dialog"
+      },
+      "endReasonHint": {
+        "where": "Record that they left dialog"
+      },
+      "endSubmit": {
+        "where": "Record that they left dialog"
+      },
+      "endTitle": {
+        "where": "Record that they left dialog"
+      },
+      "endTo": {
+        "where": "Record that they left dialog"
+      },
+      "eventJoin": {
+        "where": "Chronology entry written by a household change"
+      },
+      "eventJoinDetail": {
+        "where": "Chronology entry written by a household change"
+      },
+      "eventLeave": {
+        "where": "Chronology entry written by a household change"
+      },
+      "eventLeaveDetail": {
+        "where": "Chronology entry written by a household change"
+      },
+      "labelField": {
+        "where": "Rename the household dialog"
+      },
+      "labelHint": {
+        "where": "Rename the household dialog"
+      },
+      "labelSubmit": {
+        "where": "Rename the household dialog"
+      },
+      "membersCount": {
+        "where": "Person record, Household panel"
+      },
+      "none": {
+        "where": "Person record, Household panel"
+      },
+      "noneHint": {
+        "where": "Person record, Household panel"
+      },
+      "past": {
+        "where": "Household panel, the list of people who have left"
+      },
+      "pastRow": {
+        "where": "Household panel, the list of people who have left"
+      },
+      "shareReason": {
+        "where": "Sharing record written when a household change notifies the case members"
+      },
+      "since": {
+        "where": "Person record, Household panel"
+      },
+      "title": {
+        "where": "Person record, Household panel"
+      }
+    },
     "list": {
       "ageBands": {
         "adult": {
@@ -12993,6 +13135,101 @@
       }
     },
     "network": {
+      "add": {
+        "where": "Record a relationship dialog"
+      },
+      "addTitle": {
+        "where": "Record a relationship dialog"
+      },
+      "asAt": {
+        "where": "Person record, Wider network panel"
+      },
+      "consequences": {
+        "affected": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "decisionReason": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "excludes": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "excludesLede": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "lifted": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "liftedHint": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "notify": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "notifyHint": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "restingLede": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "restingTitle": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "stands": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "standsHint": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        },
+        "title": {
+          "where": "Record a relationship dialog, the consequences block above the save button"
+        }
+      },
+      "direction": {
+        "where": "Record a relationship dialog, the direction control"
+      },
+      "editTitle": {
+        "where": "Record a relationship dialog, when editing an existing one"
+      },
+      "endDate": {
+        "where": "Record that a relationship ended dialog"
+      },
+      "endedOn": {
+        "where": "Record that a relationship ended dialog"
+      },
+      "endedTitle": {
+        "where": "Record that a relationship ended dialog"
+      },
+      "endReason": {
+        "where": "Record that a relationship ended dialog"
+      },
+      "endReasonHint": {
+        "where": "Record that a relationship ended dialog"
+      },
+      "endRelationship": {
+        "where": "Record that a relationship ended dialog"
+      },
+      "endSubmit": {
+        "where": "Record that a relationship ended dialog"
+      },
+      "endTitle": {
+        "where": "Record that a relationship ended dialog"
+      },
+      "excludedHere": {
+        "where": "Person record, Wider network panel"
+      },
+      "exclusionLiftedAudit": {
+        "where": "Audit ledger, reason column, after a relationship change"
+      },
+      "exclusionStandsAudit": {
+        "where": "Audit ledger, reason column, after a relationship change"
+      },
+      "from": {
+        "where": "Record a relationship dialog, the start date field"
+      },
+      "fromHint": {
+        "where": "Record a relationship dialog, the start date field"
+      },
       "inverse": {
         "attorneyFor": {
           "maxLength": 24,
@@ -13070,11 +13307,14 @@
           "where": "Relationship word under a name in the household and network graph when the subject is the unborn-child-of side of the relationship"
         }
       },
+      "isThe": {
+        "where": "Person record, Wider network panel"
+      },
       "legend": {
         "concern": {
           "maxLength": 20,
           "screenshot": "phase-2/person-360-light-comfortable.png",
-          "where": "Legend entry under the household and network graph for a dashed adult of concern"
+          "where": "Person record, Wider network panel"
         },
         "household": {
           "maxLength": 20,
@@ -13090,6 +13330,39 @@
       "listItem": {
         "screenshot": "phase-2/person-360-light-comfortable.png",
         "where": "One entry in the visually hidden list that mirrors the network graph for screen readers"
+      },
+      "noInverse": {
+        "where": "Record a relationship dialog, under the type select where the type has no opposite"
+      },
+      "none": {
+        "where": "Person record, Wider network panel"
+      },
+      "noneHint": {
+        "where": "Person record, Wider network panel"
+      },
+      "noRelationship": {
+        "where": "Person record, Wider network panel"
+      },
+      "notes": {
+        "where": "Record a relationship dialog, the notes field"
+      },
+      "ofThe": {
+        "where": "Person record, Wider network panel"
+      },
+      "otherPerson": {
+        "where": "Record a relationship dialog, the person picker"
+      },
+      "presenceOnly": {
+        "where": "Person record, Wider network panel"
+      },
+      "presenceOnlyHint": {
+        "where": "Person record, Wider network panel"
+      },
+      "readsBothWays": {
+        "where": "Record a relationship dialog, under the type select"
+      },
+      "recordRelationship": {
+        "where": "Person record, Wider network panel"
       },
       "relation": {
         "associateOf": {
@@ -13197,6 +13470,15 @@
           "screenshot": "phase-2/person-360-light-comfortable.png",
           "where": "Relationship word under a name in the household and network graph, seen from the other person: the value of the unborn-child-of relationship type"
         }
+      },
+      "save": {
+        "where": "Record a relationship dialog, the save button"
+      },
+      "title": {
+        "where": "Person record, Wider network panel"
+      },
+      "type": {
+        "where": "Record a relationship dialog, the relationship type select"
       }
     },
     "notFound": {

@@ -8,7 +8,7 @@
  */
 import { type Agency, officialSensitive, partiesFromRoles, type Process, type RiskAssessment } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
-import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
+import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeHousehold, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
 
 export const CHLOE = {
@@ -159,7 +159,7 @@ export function seedChloeReid(ctx: BuildContext): void {
     createdAt: at('2019-02-15', '20:45'),
   });
 
-  ctx.data.households.push({ id: hh, synthetic: true, addressId: meadow.id, memberIds: [chloe.id, jordan.id], label: 'Reid household, Ardvale' });
+  makeHousehold(ctx, { id: hh, addressId: meadow.id, from: '2026-08-18', memberIds: [chloe.id, jordan.id], label: 'Reid household, Ardvale' });
   relate(ctx, unborn.id, chloe.id, 'unborn-child-of', { from: '2026-08-18', notes: 'Expected 27 Nov 2026' });
   relate(ctx, jordan.id, unborn.id, 'father-of', { notes: 'Named by Chloe as the father' });
   relate(ctx, jordan.id, chloe.id, 'partner-of', { from: '2025-11-15', notes: 'Relationship from about November 2025; living together since about May 2026' });

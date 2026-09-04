@@ -1,0 +1,123 @@
+/*
+ * The wider network, kept visually distinct from the household above it. A row is a claim about a
+ * relationship, so the name leads, the relationship word follows, and the actions that change it sit
+ * at the end where they do not compete with either.
+ */
+
+.ties {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tie {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto) max-content;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--color-line-1);
+}
+
+.tie:last-child {
+  border-bottom: none;
+}
+
+.tieName {
+  font-weight: 700;
+}
+
+.tieRelation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.tieDate {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-3);
+}
+
+.tieActions {
+  display: flex;
+  gap: 4px;
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.ended {
+  margin-top: 10px;
+  font-size: var(--text-sm);
+}
+
+.ended summary {
+  color: var(--color-ink-2);
+  cursor: pointer;
+}
+
+.endedList {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  color: var(--color-ink-2);
+  padding-inline-start: 18px;
+}
+
+/*
+ * What saving this would do. Marked as a consequence rather than a warning: the block says what
+ * happens and to whom, because "are you sure" is not information and this is not a mistake.
+ */
+.consequences {
+  padding: 10px 14px;
+  background: var(--color-risk-high-soft);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-md);
+}
+
+.consequencesTitle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 4px;
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-ink-1);
+}
+
+.consequencesTitle svg {
+  flex: none;
+  color: var(--color-risk-high);
+}
+
+.consequences ul {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  padding-inline-start: 18px;
+}
+
+/* One decision per exclusion the ending touches. Never a single yes for all of them. */
+.decision {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-line-2);
+}
+
+.decisionWhat {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-1);
+}

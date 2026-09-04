@@ -1,0 +1,96 @@
+/*
+ * The household. A list of people with dates, not a diagram: the question a reader has is who lives
+ * there and since when, and a list answers it faster than anything drawn.
+ */
+
+.members {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.member {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto max-content;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--color-line-1);
+}
+
+.member:last-child {
+  border-bottom: none;
+}
+
+.memberName {
+  font-weight: 700;
+}
+
+.memberMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.since {
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-3);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+/* People who have left. Folded away, because it is history, and kept, because it is the history a
+   review asks for first: who was living there in the March before the injury. */
+.past {
+  margin-top: 10px;
+  font-size: var(--text-sm);
+}
+
+.past summary {
+  color: var(--color-ink-2);
+  cursor: pointer;
+}
+
+.pastList {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  color: var(--color-ink-2);
+  padding-inline-start: 18px;
+}
+
+.reason {
+  display: block;
+  font-style: italic;
+  color: var(--color-ink-3);
+}
+
+/* The open cases a household change touches, computed and named rather than hinted at. */
+.affected {
+  padding: 10px 14px;
+  background: var(--color-accent-soft);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-inline-start: 3px solid var(--color-accent-1);
+}
+
+.affected h4 {
+  margin: 0 0 4px;
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.affected ul {
+  display: grid;
+  gap: 2px;
+  margin: 0 0 6px;
+  font-size: var(--text-sm);
+  padding-inline-start: 18px;
+}

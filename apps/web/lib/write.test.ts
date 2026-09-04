@@ -119,3 +119,30 @@ describe('the write pipeline, step by step', () => {
     });
   });
 });
+
+describe('classificationRefusal on records that carry no classification', () => {
+  /*
+   * A household, a relationship and a person record have no marking: the classification lives on the
+   * process and on the records it links to. The check used to assume every collection carried one,
+   * read `undefined.handling` on the first household edit, and took the screen down rather than
+   * refusing anything. Three dialogs stayed open with no error on them, which is the worst way for a
+   * write to fail: it looks like nothing happened.
+   */
+  const unclassified = { id: 'hh_1', members: [] } as unknown as Parameters<typeof classificationRefusal>[2];
+
+  it('passes an unclassified record either side', () => {
+    expect(classificationRefusal(DEFAULT_CONFIG, unclassified, unclassified)).toBeNull();
+  });
+
+  it('passes when only one side carries a marking', () => {
+    const classified = { classification: { level: 'official', sensitive: true, handling: [] }, accessRestriction: 'none' } as unknown as Parameters<typeof classificationRefusal>[2];
+    expect(classificationRefusal(DEFAULT_CONFIG, unclassified, classified)).toBeNull();
+    expect(classificationRefusal(DEFAULT_CONFIG, classified, unclassified)).toBeNull();
+  });
+
+  it('still refuses a real downgrade between two classified records', () => {
+    const high = { classification: { level: 'official', sensitive: true, handling: [] }, accessRestriction: 'restricted' } as unknown as Parameters<typeof classificationRefusal>[2];
+    const low = { classification: { level: 'official', sensitive: false, handling: [] }, accessRestriction: 'none' } as unknown as Parameters<typeof classificationRefusal>[2];
+    expect(classificationRefusal(DEFAULT_CONFIG, high, low)).toBe('classificationDowngrade');
+  });
+});

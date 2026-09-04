@@ -140,10 +140,18 @@ export function validateRecord(collection: Collection, record: unknown): string[
  * reason, and this refuses everything else.
  */
 export function classificationRefusal(config: Config, before: ClassifiedRecord | undefined, after: ClassifiedRecord): string | null {
-  if (!before) return null;
+  // Not every collection carries a classification. A household, a relationship and a person record
+  // do not: the marking is on the process and the records it links to, and a check that assumed
+  // otherwise read `undefined.handling` and took the screen down rather than refusing anything.
+  if (!before || !isClassified(before) || !isClassified(after)) return null;
   const was = classificationFor(config, before);
   const now = classificationFor(config, after);
   return classificationRank(now) < classificationRank(was) ? 'classificationDowngrade' : null;
+}
+
+/** True where a record actually carries the marking the classification rules read. */
+function isClassified(record: ClassifiedRecord | undefined): record is ClassifiedRecord {
+  return record !== undefined && typeof record.classification === 'object' && record.classification !== null && Array.isArray(record.classification.handling);
 }
 
 /**

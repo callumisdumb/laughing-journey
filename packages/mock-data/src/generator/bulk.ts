@@ -5,7 +5,7 @@
 import type { Agency, EventType, Person, Significance } from '@mas/domain';
 import { addDays, addYears, differenceInYears, formatISO, parseISO, subDays, subYears } from 'date-fns';
 import type { BuildContext } from './context';
-import { at, makeAddress, makeEvent, makePerson, relate, syntheticChi } from './factory';
+import { at, makeAddress, makeEvent, makeHousehold, makePerson, relate, syntheticChi } from './factory';
 import { HOSPITAL, TOWNS, postcode } from './geography';
 import { NAME_POOLS, STAFF_FAMILY, STAFF_GIVEN } from './names';
 
@@ -154,7 +154,7 @@ export function seedBulkPopulation(ctx: BuildContext, householdCount: number): B
       }
     }
 
-    ctx.data.households.push({ id: hhId, synthetic: true, addressId: addr.id, memberIds: members.map((m) => m.id), label: `${family} household, ${town.name}` });
+    makeHousehold(ctx, { id: hhId, addressId: addr.id, from: movedIn, memberIds: members.map((m) => m.id), label: `${family} household, ${town.name}` });
     people += members.length;
 
     // Background events per member.

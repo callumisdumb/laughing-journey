@@ -71,7 +71,9 @@ A chronology event is written for these and not for anything else. The list is s
 
 **Closing a process.** Stops the clocks and records why they stopped; writes the closure reason from the statutory list for that process type; notifies contributing agencies at the detail level the matrix specifies; writes a chronology milestone; expires or removes flags; and proposes the outbound write that closes the episode in the source system. A case closed here and left open in the source system is exactly the divergence the reconciliation screen exists to catch.
 
-**Ending a relationship that is the basis of an exclusion.** Requires an explicit decision about whether the exclusion stands, recorded on the case, defaulting to *stands*. A former partner is frequently the whole risk, and silently un-excluding them is the most dangerous single thing in this matrix.
+**Ending a relationship that is the basis of an exclusion.** Requires an explicit decision about whether the exclusion stands, recorded on the case, defaulting to *stands*. A former partner is frequently the whole risk, and silently un-excluding them is the most dangerous single thing in this matrix. Implemented so that the ending cannot lift it by accident: the party register reads the relationship record rather than its dates, so the exclusion survives the ending on its own. Confirming that it stands moves the entry from derived to explicitly recorded, with a name, a date and a reason; lifting it sets `stands: false` on an explicit entry, which is the only thing in the product that suppresses one. See D-132.
+
+**Changing a household.** Adding somebody or recording that they left names the open processes anybody in the household is a subject of, and offers to tell the people the need-to-know matrix entitles, generating one sharing record each with the lawful basis the matrix names. Membership is dated: removing somebody sets an end date and a reason rather than deleting them, so who lived where and when survives (D-128). Both write a `household.change` chronology entry on everybody moved.
 
 ## 5. Guardrails
 

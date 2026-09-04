@@ -210,6 +210,24 @@
   font-size: var(--text-sm);
   color: var(--color-ink-2);
   background: var(--color-accent-soft);
-  border-inline-start: 3px solid var(--color-accent-1);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  border-inline-start: 3px solid var(--color-accent-1);
+}
+
+/*
+ * Household and network, side by side and across the full width.
+ *
+ * They are two answers to two different questions and belong next to each other, and both carry a
+ * list with actions on every row, which a third of a three column grid cannot hold without the
+ * buttons wrapping under the names.
+ */
+.homeAndNetwork {
+  display: grid;
+
+  /* `min()` so the track never demands more than the window: at 400 percent zoom a 1280px viewport
+     is 320px, and a bare 22rem minimum takes the page sideways. */
+  grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+  grid-column: 1 / -1;
+  gap: var(--density-gap) var(--content-gutter);
+  align-items: start;
 }

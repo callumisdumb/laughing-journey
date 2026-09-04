@@ -163,7 +163,15 @@ function partyKey(p: CaseParty): string {
   return `${p.personId ?? ''}|${p.userId ?? ''}|${p.name ? normalisePartyName(p.name) : ''}|${p.party}`;
 }
 
-/** The explicit register on the process merged with the derived entries. Explicit entries win. */
+/**
+ * The explicit register on the process merged with the derived entries. Explicit entries win.
+ *
+ * An explicit entry marked `stands: false` is a recorded decision that the exclusion has been
+ * lifted, and it suppresses the derived entry it shares a key with. That is the only way an
+ * exclusion resting on a relationship record comes off, and it takes a name, a date and a reason:
+ * ending the relationship does not do it, because a former partner is frequently the whole risk
+ * (D-132).
+ */
 export function partyRegister(process: Process, relationships: Relationship[] = []): CaseParty[] {
   const merged: CaseParty[] = [...process.parties];
   const seen = new Set(merged.map(partyKey));
@@ -173,7 +181,7 @@ export function partyRegister(process: Process, relationships: Relationship[] = 
     seen.add(key);
     merged.push(derived);
   }
-  return merged;
+  return merged.filter((p) => p.stands !== false);
 }
 
 export interface PartyCandidate {

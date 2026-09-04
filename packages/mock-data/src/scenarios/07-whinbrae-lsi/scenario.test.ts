@@ -28,7 +28,7 @@ describe('scenario 7', () => {
     if (process?.type !== 'asp') throw new Error('expected an ASP process');
     expect(process.detail.lsi?.strands.map((s) => s.subjectId).sort()).toEqual([...process.subjectIds].sort());
     const household = ctx.data.households.find((h) => h.id === WHINBRAE.household);
-    expect(household?.memberIds.length).toBe(6);
+    expect(household?.members.length).toBe(6);
     expect(household?.addressId).toBe(WHINBRAE.address);
     for (const id of process.subjectIds) {
       const person = ctx.data.people.find((p) => p.id === id);

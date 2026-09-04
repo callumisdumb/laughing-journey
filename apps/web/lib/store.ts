@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, isValidIso, mergePeople, mergeRefusals, parseDemoNow, roleLabel, unmergePeople, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type Dataset, type PersonMerge, type User } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, contextFor, detailLevelLabel, exclusionsRestingOn, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type Dataset, type PersonMerge, type Process, type Relationship, type User } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -12,7 +12,7 @@ import { isSealedBlob, openLocal, sealLocal } from '@/lib/localStore';
 import { appendAudit, auditDetailKey, emptyChain, type AuditChain } from '@/lib/auditChain';
 import { buildVault, type Vault } from '@/lib/vault';
 import { create } from 'zustand';
-import { classificationRefusal, excludedRecipients, reasonRefusal, startedClocks, validateRecord, type WriteEffect, type WriteRequest, type WriteResult } from '@/lib/write';
+import { classificationRefusal, excludedRecipients, reasonRefusal, startedClocks, validateRecord, type WriteEffect, type WriteRequest, type WriteResult, type WriteShare } from '@/lib/write';
 
 export type Collection = Exclude<keyof Dataset, 'meta'>;
 type Overlay = Partial<Record<Collection, Record<string, unknown>>> & { config?: Config; removed?: Partial<Record<Collection, string[]>> };
@@ -87,6 +87,33 @@ interface AppState {
    */
   mergePerson: (survivorId: string, mergedId: string, reason: string) => WriteResult;
   unmergePerson: (mergeId: string, reason: string) => WriteResult;
+  /**
+   * Household membership, which is dated rather than a list of names.
+   *
+   * Removing somebody sets an end date, because who lived where and when is exactly what a
+   * chronology needs, and a household change writes a chronology entry on the person moved.
+   */
+  addToHousehold: (householdId: string, personId: string, from: string, note: string, notify: boolean) => WriteResult;
+  endHouseholdMembership: (householdId: string, personId: string, to: string, reason: string) => WriteResult;
+  setHouseholdLabel: (householdId: string, label: string) => WriteResult;
+  /**
+   * Relationships, stored once and read from both ends.
+   *
+   * `saveRelationship` covers creating and editing; `endRelationship` sets `to` and never deletes,
+   * because a former partner is a former partner from a date and that date is often the most
+   * important fact in the record. Both take the exclusion decisions the change implies, so the
+   * consequence is decided at the point of saving rather than discovered afterwards.
+   */
+  saveRelationship: (relationship: Relationship, decisions?: PartyDecision[]) => WriteResult;
+  endRelationship: (relationshipId: string, to: string, reason: string, decisions: PartyDecision[]) => WriteResult;
+}
+
+/** A decision about whether an exclusion the change touches still stands, and why. */
+export interface PartyDecision {
+  processId: string;
+  personId: string;
+  stands: boolean;
+  reason: string;
 }
 
 const OVERLAY_KEY = 'mas.overlay.v1';
@@ -588,11 +615,213 @@ export const useAppStore = create<AppState>((set, get) => ({
 
     return { ok: true, errors: [], nearMatches: [], effects, audit };
   },
+  addToHousehold: (householdId, personId, from, note, notify) => {
+    const { config, data } = get();
+    const household = data.households.find((h) => h.id === householdId);
+    const person = data.people.find((p) => p.id === personId);
+    if (!household || !person) return { ok: false, errors: ['householdMissing'], nearMatches: [], effects: [] };
+    if (membersOn(household, from).some((m) => m.personId === personId)) return { ok: false, errors: ['householdAlreadyMember'], nearMatches: [], effects: [] };
+
+    const name = `${person.givenName} ${person.familyName}`;
+    const address = data.addresses.find((a) => a.id === household.addressId);
+    const line = address ? [address.line1, address.town, address.postcode].filter(Boolean).join(', ') : (household.label ?? householdId);
+    const touched = processesTouchedByHousehold(data, householdId, from, [personId]);
+
+    const result = get().write({
+      collection: 'households',
+      record: { ...household, members: [...household.members, { personId, from }] },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'person',
+      targetLabel: name,
+      rules: [],
+      event: {
+        eventType: 'household.change',
+        significance: 'high',
+        visibility: 'integrated',
+        title: t('person.household.eventJoin', { name, address: line }),
+        detail: note.trim() || t('person.household.eventJoinDetail', { name, address: line, date: from }),
+        subjectIds: [personId, ...membersOn(household, from).map((m) => m.personId)],
+        occurredAt: `${from}T00:00:00Z`,
+        linkedProcessIds: touched.map((p) => p.id),
+      },
+      // Telling the case members is offered rather than assumed, and it generates the sharing
+      // records with the lawful basis the matrix names rather than leaving it to memory.
+      shares: notify ? touched.flatMap((process) => notifyShares(process, config, t('person.household.eventJoin', { name, address: line }))) : [],
+    });
+    if (!result.ok) return result;
+
+    // The person's own record follows the household, and the address history keeps the move.
+    get().upsert('people', {
+      ...person,
+      householdId,
+      addressHistory: person.addressHistory.some((a) => a.addressId === household.addressId && a.from === from) ? person.addressHistory : [{ addressId: household.addressId, from }, ...person.addressHistory],
+    });
+    return result;
+  },
+  endHouseholdMembership: (householdId, personId, to, reason) => {
+    const { data } = get();
+    const household = data.households.find((h) => h.id === householdId);
+    const person = data.people.find((p) => p.id === personId);
+    if (!household || !person) return { ok: false, errors: ['householdMissing'], nearMatches: [], effects: [] };
+    if (reason.trim().length < 5) return { ok: false, errors: ['householdEndReasonRequired'], nearMatches: [], effects: [] };
+    const running = household.members.filter((m) => m.personId === personId && !m.to);
+    if (running.length === 0) return { ok: false, errors: ['householdNotAMember'], nearMatches: [], effects: [] };
+
+    const name = `${person.givenName} ${person.familyName}`;
+    const touched = processesTouchedByHousehold(data, householdId, to);
+    const result = get().write({
+      collection: 'households',
+      record: { ...household, members: household.members.map((m) => (m.personId === personId && !m.to ? { ...m, to, endedReason: reason.trim() } : m)) },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'person',
+      targetLabel: name,
+      reason,
+      event: {
+        eventType: 'household.change',
+        significance: 'high',
+        visibility: 'integrated',
+        title: t('person.household.eventLeave', { name }),
+        detail: t('person.household.eventLeaveDetail', { name, date: to, reason: reason.trim() }),
+        subjectIds: [personId, ...membersOn(household, to).map((m) => m.personId)],
+        occurredAt: `${to}T00:00:00Z`,
+        linkedProcessIds: touched.map((p) => p.id),
+      },
+    });
+    if (!result.ok) return result;
+
+    // The membership ended, so the person's own address period ends with it and the link is cleared.
+    get().upsert('people', {
+      ...person,
+      householdId: undefined,
+      addressHistory: person.addressHistory.map((a) => (a.addressId === household.addressId && !a.to ? { ...a, to } : a)),
+    });
+    return result;
+  },
+  setHouseholdLabel: (householdId, label) => {
+    const household = get().data.households.find((h) => h.id === householdId);
+    if (!household) return { ok: false, errors: ['householdMissing'], nearMatches: [], effects: [] };
+    if (label.trim() === '') return { ok: false, errors: ['householdLabelRequired'], nearMatches: [], effects: [] };
+    return get().write({
+      collection: 'households',
+      record: { ...household, label: label.trim() },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'person',
+      targetLabel: label.trim(),
+    });
+  },
+  saveRelationship: (relationship, decisions = []) => {
+    const { data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    if (relationship.fromPersonId === relationship.toPersonId) return { ok: false, errors: ['relationshipSelf'], nearMatches: [], effects: [] };
+
+    const from = data.people.find((p) => p.id === relationship.fromPersonId);
+    const to = data.people.find((p) => p.id === relationship.toPersonId);
+    if (!from || !to) return { ok: false, errors: ['relationshipPersonMissing'], nearMatches: [], effects: [] };
+
+    const duplicate = data.relationships.some((r) => r.id !== relationship.id && r.type === relationship.type && ((r.fromPersonId === relationship.fromPersonId && r.toPersonId === relationship.toPersonId) || (r.fromPersonId === relationship.toPersonId && r.toPersonId === relationship.fromPersonId)));
+    if (duplicate) return { ok: false, errors: ['relationshipDuplicate'], nearMatches: [], effects: [] };
+
+    const result = get().write({
+      collection: 'relationships',
+      record: relationship,
+      intent: data.relationships.some((r) => r.id === relationship.id) ? 'update' : 'create',
+      act: data.relationships.some((r) => r.id === relationship.id) ? 'edit' : 'create',
+      targetType: 'person',
+      targetLabel: `${from.givenName} ${from.familyName} and ${to.givenName} ${to.familyName}`,
+      rules: [],
+    });
+    if (!result.ok) return result;
+    applyDecisions(get, decisions);
+    return result;
+  },
+  endRelationship: (relationshipId, to, reason, decisions) => {
+    const { data } = get();
+    const relationship = data.relationships.find((r) => r.id === relationshipId);
+    if (!relationship) return { ok: false, errors: ['relationshipMissing'], nearMatches: [], effects: [] };
+    if (reason.trim().length < 5) return { ok: false, errors: ['relationshipEndReasonRequired'], nearMatches: [], effects: [] };
+    if (relationship.from && to < relationship.from) return { ok: false, errors: ['relationshipEndBeforeStart'], nearMatches: [], effects: [] };
+
+    const a = data.people.find((p) => p.id === relationship.fromPersonId);
+    const b = data.people.find((p) => p.id === relationship.toPersonId);
+    const label = a && b ? `${a.givenName} ${a.familyName} and ${b.givenName} ${b.familyName}` : relationshipId;
+
+    // Every exclusion the ending touches must be decided, and the decision is written before the
+    // relationship is, so a refused decision cannot leave the exclusion resting on nothing (D-132).
+    const resting = exclusionsRestingOn(data, get().config, relationshipId);
+    const undecided = resting.filter((change) => !decisions.some((d) => d.processId === change.process.id && d.personId === change.personId));
+    if (undecided.length > 0) return { ok: false, errors: ['relationshipExclusionUndecided'], nearMatches: [], effects: [] };
+    applyDecisions(get, decisions);
+
+    return get().write({
+      collection: 'relationships',
+      record: { ...relationship, to, notes: [relationship.notes, reason.trim()].filter(Boolean).join(' ') },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'person',
+      targetLabel: label,
+      reason,
+    });
+  },
   newId: (prefix) => {
     counter += 1;
     return `${prefix}_u${Date.now().toString(36)}${counter.toString(36)}`;
   },
 }));
+
+/**
+ * The people the need-to-know matrix says must hear about a change, each with its lawful basis.
+ *
+ * The matrix already answers "who is entitled to know, at what level of detail, on what basis", so a
+ * household change offering to tell the case members means running it rather than writing a second
+ * list that would drift from the first. Excluded parties are never in the answer, because the
+ * resolver takes the exclusions with it.
+ */
+function notifyShares(process: Process, config: Config, what: string): WriteShare[] {
+  const resolution = resolveNeedToKnow(contextFor(process), config.needToKnow, config.exclusions);
+  return resolution.recipients.map((recipient) => ({
+    recipientName: recipient.label,
+    reason: t('person.household.shareReason', { what, process: process.reference, level: detailLevelLabel(recipient.detailLevel) }),
+    lawfulBasisId: recipient.lawfulBasisHint,
+  }));
+}
+
+/**
+ * Write the exclusion decisions a relationship change carries onto the processes they belong to.
+ *
+ * A decision that the exclusion stands is not a no-op. It moves the entry from being derived from a
+ * relationship record to being written down with a name, a date and a reason on it, so it survives
+ * whatever happens to the relationship next. A decision that it does not stand suppresses the
+ * derived entry, and it is the only thing that does.
+ */
+function applyDecisions(get: () => AppState, decisions: PartyDecision[]): void {
+  const user = get().currentUser();
+  if (!user || decisions.length === 0) return;
+  const byName = `${user.givenName} ${user.familyName}`;
+  const on = get().now().toISOString().slice(0, 10);
+  for (const decision of decisions) {
+    const data = get().data;
+    const process = data.processes.find((p) => p.id === decision.processId);
+    if (!process) continue;
+    const existing = partyRegister(process, data.relationships).find((p) => p.personId === decision.personId);
+    if (!existing) continue;
+    const entry = decision.stands
+      ? { ...existing, source: 'manual' as const, stands: true, decidedAt: `${on}T00:00:00Z`, decidedByName: byName, decisionReason: decision.reason }
+      : { ...existing, source: 'manual' as const, stands: false, decidedAt: `${on}T00:00:00Z`, decidedByName: byName, decisionReason: decision.reason };
+    get().upsert('processes', { ...process, parties: withPartyEntry(process.parties, entry) });
+    get().audit({
+      act: 'edit',
+      targetType: 'process',
+      targetId: process.id,
+      targetLabel: process.reference,
+      processId: process.id,
+      reason: decision.stands ? t('person.network.exclusionStandsAudit', { reason: decision.reason }) : t('person.network.exclusionLiftedAudit', { reason: decision.reason }),
+    });
+  }
+}
 
 export function useData(): Dataset {
   return useAppStore((s) => s.data);

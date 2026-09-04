@@ -8,7 +8,7 @@
  */
 import { type Agency, officialSensitive, partiesFromRoles, type Process, type RiskAssessment } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
-import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
+import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeHousehold, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
 
 export const KAYLEIGH = {
@@ -182,7 +182,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
     createdAt: at('2024-03-17', '09:10'),
   });
 
-  ctx.data.households.push({ id: hh, synthetic: true, addressId: home.id, memberIds: [kayleigh.id, lily.id, mason.id], label: 'Docherty household, Ardvale' });
+  makeHousehold(ctx, { id: hh, addressId: home.id, from: '2023-01-20', memberIds: [kayleigh.id, lily.id, mason.id], label: 'Docherty household, Ardvale' });
   relate(ctx, craig.id, ryan.id, 'sibling-of', { notes: 'Ryan stayed with him after the March 2024 incident' });
   relate(ctx, kayleigh.id, lily.id, 'mother-of', { notes: "Lily's father has had no contact since her birth" });
   relate(ctx, kayleigh.id, mason.id, 'mother-of');

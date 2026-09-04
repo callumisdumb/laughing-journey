@@ -31,12 +31,24 @@
   box-shadow: 0 0 0 1px var(--color-accent-1);
 }
 
+/*
+ * The head wraps rather than overflowing. A sheet in a third of a three column grid is about 280px,
+ * and two small buttons beside a title do not fit: with `flex-shrink: 0` on the actions and no wrap,
+ * the buttons left the sheet entirely and covered whatever was drawn next to it, which is invisible
+ * until something tries to click one.
+ */
 .head {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   align-items: flex-start;
   justify-content: space-between;
   padding: var(--sheet-pad) var(--sheet-pad) 0;
+}
+
+.head > :first-child {
+  flex: 1 1 12rem;
+  min-width: 0;
 }
 
 .head[data-divided='true'] {
@@ -56,11 +68,23 @@
   color: var(--color-ink-3);
 }
 
+/*
+ * The actions may shrink and their buttons may wrap their own text. At 400 percent zoom a 1280px
+ * viewport is 320px wide, and "Add someone to the household" does not fit on one line inside a sheet
+ * that narrow; a `nowrap` button in a block that refuses to shrink takes the whole page sideways.
+ */
 .actions {
   display: flex;
-  flex-shrink: 0;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.actions > * {
+  max-width: 100%;
+  white-space: normal;
 }
 
 .body {

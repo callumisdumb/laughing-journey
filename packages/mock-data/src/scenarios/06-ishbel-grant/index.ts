@@ -7,7 +7,7 @@ import { officialSensitive } from '@mas/domain';
  */
 import type { Agency, Process } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
-import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
+import { at, makeAction, makeAddress, makeAnalysis, makeConnectorEvent, makeEvent, makeHousehold, makeLawfulBasis, makeMeeting, makePerson, makeShare, makeViews, relate, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
 
 export const ISHBEL = {
@@ -68,7 +68,7 @@ export function seedIshbelGrant(ctx: BuildContext): void {
     createdAt: at('2024-09-10', '10:00'),
   });
 
-  ctx.data.households.push({ id: hh, synthetic: true, addressId: larchBrae.id, memberIds: [ishbel.id], label: 'Grant household, Dunlarrick' });
+  makeHousehold(ctx, { id: hh, addressId: larchBrae.id, from: '1975-06-01', memberIds: [ishbel.id], label: 'Grant household, Dunlarrick' });
   relate(ctx, morag.id, ishbel.id, 'child-of', { notes: 'Daughter and nearest relative. Visits most days. Supports a move to residential care' });
   relate(ctx, douglas.id, ishbel.id, 'child-of', { notes: 'Son. Lives ten minutes away. Objects to residential care; offers to move in and provide overnight care' });
   relate(ctx, ishbel.id, morag.id, 'parent-of');

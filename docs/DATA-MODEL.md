@@ -147,7 +147,7 @@ Generated on 2026-09-04 by `pnpm docs:data-model`. Do not edit below this line.
 | `id` | string | yes |
 | `synthetic` | literal true | yes |
 | `addressId` | string | yes |
-| `memberIds` | array of string | yes |
+| `members` | array of object { personId, from, to, endedReason } | yes |
 | `label` | string | no |
 
 ### Relationship
@@ -192,7 +192,7 @@ Variant 1
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `parties` | array of object { personId, userId, name, party, label, since, source, reason } | yes |
+| `parties` | array of object { personId, userId, name, party, label, since, source, reason, stands, decidedAt, decidedByName, decisionReason } | yes |
 | `type` | literal "asp" | yes |
 | `detail` | object { concern, threePointTest, screening, inquiry, investigation, ordersConsidered, planId, closure, lsi } | yes |
 
@@ -223,7 +223,7 @@ Variant 2
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `parties` | array of object { personId, userId, name, party, label, since, source, reason } | yes |
+| `parties` | array of object { personId, userId, name, party, label, since, source, reason, stands, decidedAt, decidedByName, decisionReason } | yes |
 | `type` | literal "cp" | yes |
 | `detail` | object { concern, proceduresInitiatedAt, ird, investigation, cppm, register, coreGroup, childsPlanId, preBirth } | yes |
 
@@ -254,7 +254,7 @@ Variant 3
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `parties` | array of object { personId, userId, name, party, label, since, source, reason } | yes |
+| `parties` | array of object { personId, userId, name, party, label, since, source, reason, stands, decidedAt, decidedByName, decisionReason } | yes |
 | `type` | literal "marac" | yes |
 | `detail` | object { referral, researchRequests, meetingId, actionPlanId, idaa, idaaFeedback, flags, links, safeLivesReturn, transfer } | yes |
 
@@ -285,7 +285,7 @@ Variant 4
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `parties` | array of object { personId, userId, name, party, label, since, source, reason } | yes |
+| `parties` | array of object { personId, userId, name, party, label, since, source, reason, stands, decidedAt, decidedByName, decisionReason } | yes |
 | `type` | literal "mappa" | yes |
 | `detail` | object { category, level, levelHistory, leadResponsibleAuthority, visorReference, victimPersonIds, notification, referral, sonr, custody, licenceConditions, orders, riskAssessmentIds, rmp, era, disclosures, preMeetingReturns, reviewSchedule, exit, significantCaseReviewTrigger } | yes |
 
@@ -316,7 +316,7 @@ Variant 5
 | `riskAssessmentIds` | array of string | yes |
 | `evidenceRefs` | array of object { kind, ref, label } | no |
 | `flags` | object | yes |
-| `parties` | array of object { personId, userId, name, party, label, since, source, reason } | yes |
+| `parties` | array of object { personId, userId, name, party, label, since, source, reason, stands, decidedAt, decidedByName, decisionReason } | yes |
 | `type` | literal "awi" | yes |
 | `detail` | object { concern, capacityAssessments, willAndPreferences, opgResult, routeDecision, application, orders, supervisionVisits, investigations } | yes |
 
@@ -672,7 +672,7 @@ Variant 5
 | `userId` | string | yes |
 | `userName` | string | yes |
 | `agency` | enum (11 values) | yes |
-| `act` | enum (13 values) | yes |
+| `act` | enum (15 values) | yes |
 | `targetType` | enum (9 values) | yes |
 | `targetId` | string | yes |
 | `targetLabel` | string | yes |

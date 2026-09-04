@@ -7,7 +7,7 @@ import { officialSensitive } from '@mas/domain';
  */
 import type { Agency, Process } from '@mas/domain';
 import type { BuildContext } from '../../generator/context';
-import { at, makeAction, makeAddress, makeAnalysis, makeEvent, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, syntheticChi } from '../../generator/factory';
+import { at, makeAction, makeAddress, makeAnalysis, makeEvent, makeHousehold, makeLawfulBasis, makeMeeting, makePerson, makePlan, makeRisk, makeShare, makeViews, syntheticChi } from '../../generator/factory';
 import { USR, userName } from '../../generator/organisations';
 
 export const TOMASZ = {
@@ -41,7 +41,7 @@ export function seedTomaszNowak(ctx: BuildContext): void {
     gpPractice: 'Portlennan Medical Practice',
     createdAt: at('2016-09-12', '10:00'),
   });
-  ctx.data.households.push({ id: hh, synthetic: true, addressId: vennel.id, memberIds: [tomasz.id], label: 'Nowak household, Dunlarrick' });
+  makeHousehold(ctx, { id: hh, addressId: vennel.id, from: '2016-09-12', memberIds: [tomasz.id], label: 'Nowak household, Dunlarrick' });
 
   const co = USR.moiraGilmour;
   const sw = USR.stuartBlair;
