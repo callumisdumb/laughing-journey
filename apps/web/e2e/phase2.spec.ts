@@ -22,10 +22,14 @@ test.describe('people and search', () => {
     await waitForData(page);
     const box = page.getByRole('combobox', { name: /Search people/ });
     await box.fill('aiden');
-    await expect(page.getByRole('option', { name: /Aiden Boyle/ })).toBeVisible();
+    // The typeahead reaches past people now, so "aiden" is also a meeting title, a bail condition
+    // and a second Aiden. His own row is the one to name: the person, not the records about him.
+    const person = page.getByRole('option').filter({ hasText: 'Aiden Boyle' }).filter({ hasText: 'People' });
+    await expect(person).toBeVisible();
     await capture(page, { phase: PHASE, screen: 'search-typeahead' });
+    // The date of birth is his alone, so the first suggestion is him and Enter opens the record.
     await box.fill('14/03/2019');
-    await expect(page.getByRole('option', { name: /Aiden Boyle/ })).toBeVisible();
+    await expect(page.getByRole('listbox').getByRole('option').first()).toContainText('Aiden Boyle');
     await box.press('Enter');
     await expect(page).toHaveURL(/\/people\/per_aiden_boyle/);
   });

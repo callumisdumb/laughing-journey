@@ -4309,10 +4309,9 @@
     },
     "search": {
       "label": "Search people, cases and reference numbers",
-      "personMeta": "{age}. {address}. Matched on {matched}.",
       "placeholder": "Search people, cases, reference numbers",
-      "processMeta": "{process} process. Matched on {matched}.",
-      "showAll": "Press Enter to see all results",
+      "shortcut": "Press Control and K from anywhere to search.",
+      "showAllOption": "See all results for \"{query}\"",
       "suggestions": "Search suggestions"
     },
     "titles": {
@@ -6386,18 +6385,52 @@
       "text": "Check the spelling, or try a date of birth as dd/mm/yyyy, a postcode, or a reference like CP-2026-0412. People you cannot see at all are not listed.",
       "title": "No matches"
     },
+    "groups": {
+      "actions": "Actions",
+      "cases": "Cases",
+      "chronology": "Chronology",
+      "meetings": "Meetings",
+      "more": "{count, plural, one {# more match not shown} other {# more matches not shown}}. Add a word to narrow it.",
+      "people": "People",
+      "plans": "Plans",
+      "practitioners": "Practitioners"
+    },
     "head": {
       "prompt": "Type at least two characters in the search box: a name, alias, date of birth, CHI number, address or reference.",
       "results": "{count, plural, one {# result} other {# results}} for \"{query}\"",
       "title": "Search"
     },
+    "loading": "Searching the records you can open",
+    "matched": {
+      "address": "an address",
+      "alias": "an alias",
+      "chi": "the CHI number",
+      "dateOfBirth": "the date of birth",
+      "detail": "what it says",
+      "location": "where it is being held",
+      "name": "the name",
+      "outcome": "an outcome",
+      "owner": "who owns it",
+      "people": "who it is about",
+      "preferredName": "the preferred name",
+      "reference": "the reference",
+      "role": "the job title",
+      "title": "the title"
+    },
+    "matchedOn": "Matched on {what}.",
     "result": {
+      "actionMeta": "Owned by {owner}, {agency}. Due {due}. {status}.",
+      "caseMeta": "{process}, {stage}. Led by {agency}.",
+      "caseRestricted": "{process}. You hold no key for its content.",
+      "eventMeta": "{date}. {agency}. Recorded by {name}.",
+      "meetingMeta": "{date}, {location}. {status}.",
       "noProcess": "No open process",
       "notOnCase": "you are not on this case",
-      "personMeta": "{age}. {address}. Matched on {matched}.",
-      "processMeta": "{process}: {subject}. Matched on {matched}.",
-      "restrictedSubject": "restricted"
-    }
+      "personMeta": "{age}. {address}.",
+      "planMeta": "{type}. Agreed {date}. {count, plural, one {# outcome} other {# outcomes}}.",
+      "practitionerMeta": "{role}, {agency}. Based at {base}."
+    },
+    "unsearchable": "{count, plural, one {One case was not searched} other {# cases were not searched}}. You hold no key for the content, so none of it reached this index."
   },
   "settings": {
     "appearance": {

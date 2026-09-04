@@ -32,6 +32,7 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - Facts and analysis are separate records; a fact that reads as opinion is rejected by the schema and analysis must cite a fact (D-020b).
 - Presence means a case exists, not who it is about. `identifiesSubject` in `packages/domain/src/permissions/access.ts` is the only answer to whether a reader may see whose case it is; four screens had each tested `level !== 'none'` and named the subject at presence level (D-170). The context drawer refuses in the same words as the record, keeping only what is about the reader (D-171).
 - Linked cases are shown on the case, with the access rules run per link rather than inherited from the case in hand (D-169). The MARAC and the child protection case are clickable end to end, and a reader on one and not the other is told the other exists and nothing more.
+- Search indexes what the reader could decrypt, and is built by decrypting rather than by checking a level (D-172). What it could not reach is counted and never described (D-173). Results are grouped by type on the screen and flat with a type tag in the typeahead (D-174); the results lag the query by 220ms, which is the debounce showing through rather than a spinner (D-175). Control and K focuses the box from anywhere (D-176). `apps/web/lib/search.ts` and `apps/web/lib/searchIndex.ts`.
 
 ### Design
 - No avatars or initials circles; identity is name, date of birth and reference (D-022). Pills are for process and stage only; agencies use marks with a glyph, a colour and a label (D-023).
@@ -283,6 +284,15 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 | audit-chain | light comfortable |
 | statutory-disclosure | light comfortable |
 | help-security | light comfortable |
+
+### search
+
+| Screen | Variants |
+|---|---|
+| typeahead | light comfortable |
+| results | light comfortable |
+| loading | light comfortable |
+| no-key | light comfortable |
 
 ### flows
 

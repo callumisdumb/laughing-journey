@@ -13178,23 +13178,18 @@
         "screenshot": "phase-1/home-light-comfortable.png",
         "where": "Visually hidden label of the search box in the top bar"
       },
-      "personMeta": {
-        "screenshot": "phase-2/search-typeahead-light-comfortable.png",
-        "where": "Search suggestion line under a person: age, address and what matched"
-      },
       "placeholder": {
         "maxLength": 40,
         "screenshot": "phase-1/home-light-comfortable.png",
         "where": "Placeholder in the search box in the top bar"
       },
-      "processMeta": {
-        "screenshot": "phase-2/search-typeahead-light-comfortable.png",
-        "where": "Search suggestion line under a process: the process type and what matched"
+      "shortcut": {
+        "notes": "Visually hidden, and paired with aria-keyshortcuts so assistive technology gets it in its own form too.",
+        "where": "Search box, read out with the field. Names the shortcut that focuses it from anywhere."
       },
-      "showAll": {
-        "maxLength": 40,
-        "screenshot": "phase-2/search-typeahead-light-comfortable.png",
-        "where": "Last line of the search suggestions list"
+      "showAllOption": {
+        "notes": "An option rather than a note, because a keyboard user has to be able to reach it.",
+        "where": "Search typeahead, the last option in the list, which opens the full results screen."
       },
       "suggestions": {
         "maxLength": 24,
@@ -19753,6 +19748,33 @@
         "where": "Search results, empty state title when nothing matches"
       }
     },
+    "groups": {
+      "actions": {
+        "where": "Search results screen, group heading above matching actions."
+      },
+      "cases": {
+        "where": "Search results screen, group heading above matching cases."
+      },
+      "chronology": {
+        "where": "Search results screen, group heading above matching chronology events."
+      },
+      "meetings": {
+        "where": "Search results screen, group heading above matching meetings."
+      },
+      "more": {
+        "notes": "Says what to do about it rather than offering a paginator, because narrowing is the faster path on a caseload this size.",
+        "where": "Search results screen, under a group that has more matches than it is showing."
+      },
+      "people": {
+        "where": "Search results screen, group heading above matching people."
+      },
+      "plans": {
+        "where": "Search results screen, group heading above matching plans."
+      },
+      "practitioners": {
+        "where": "Search results screen, group heading above matching practitioners."
+      }
+    },
     "head": {
       "prompt": {
         "where": "Search results, lede when fewer than two characters have been typed"
@@ -19767,30 +19789,95 @@
         "where": "Search results, page heading"
       }
     },
+    "loading": {
+      "notes": "Says what is being searched, which is the encryption claim in four words.",
+      "where": "Search results screen, the loading state while the index is being searched."
+    },
+    "matched": {
+      "address": {
+        "where": "Search results, the reason a result matched."
+      },
+      "alias": {
+        "where": "Search results, the reason a result matched."
+      },
+      "chi": {
+        "where": "Search results, the reason a result matched. Every CHI number in this product is synthetic."
+      },
+      "dateOfBirth": {
+        "where": "Search results, the reason a result matched."
+      },
+      "detail": {
+        "where": "Search results, the reason a chronology event matched: its body text rather than its title."
+      },
+      "location": {
+        "where": "Search results, the reason a meeting matched."
+      },
+      "name": {
+        "where": "Search results, the reason a result matched."
+      },
+      "outcome": {
+        "where": "Search results, the reason a plan matched."
+      },
+      "owner": {
+        "where": "Search results, the reason an action matched."
+      },
+      "people": {
+        "where": "Search results, the reason a record matched: the name of somebody it is about."
+      },
+      "preferredName": {
+        "where": "Search results, the reason a result matched."
+      },
+      "reference": {
+        "where": "Search results, the reason a case matched."
+      },
+      "role": {
+        "where": "Search results, the reason a practitioner matched."
+      },
+      "title": {
+        "where": "Search results, the reason a result matched."
+      }
+    },
+    "matchedOn": {
+      "notes": "A result that does not say why it is a result reads as a guess.",
+      "where": "Search results, appended to each result's meta line."
+    },
     "result": {
+      "actionMeta": {
+        "where": "Search results screen, the meta line under an action."
+      },
+      "caseMeta": {
+        "where": "Search results screen, the meta line under a case the reader can open."
+      },
+      "caseRestricted": {
+        "notes": "Names the process type and nothing about the case. Never the subject: presence tells a reader a case exists, not whose it is.",
+        "where": "Search results screen, the meta line under a case found by reference that the reader holds no key for."
+      },
+      "eventMeta": {
+        "where": "Search results screen, the meta line under a chronology event."
+      },
+      "meetingMeta": {
+        "where": "Search results screen, the meta line under a meeting."
+      },
       "noProcess": {
-        "maxLength": 24,
-        "screenshot": "phase-2/search-results-light-comfortable.png",
-        "where": "Search results, under a person with no open process"
+        "where": "Search results screen, on a person with no open process, in place of the process badges."
       },
       "notOnCase": {
-        "maxLength": 32,
-        "screenshot": "phase-2/search-results-light-comfortable.png",
-        "where": "Search results, beside a process mark you can see exists but are not a member of"
+        "notes": "Brief section 10.4 asks for the affordance by name. It says a case exists and stops there.",
+        "where": "Search results screen, beside a process badge on a person the reader can see who has a case the reader holds presence on only."
       },
       "personMeta": {
-        "screenshot": "phase-2/search-results-light-comfortable.png",
-        "where": "Search results, line under a person: age, address and what matched"
+        "where": "Search results screen, the meta line under a person."
       },
-      "processMeta": {
-        "screenshot": "phase-2/search-results-light-comfortable.png",
-        "where": "Search results, line under a process: process code, subject and what matched"
+      "planMeta": {
+        "where": "Search results screen, the meta line under a plan."
       },
-      "restrictedSubject": {
-        "maxLength": 16,
-        "screenshot": "phase-2/search-results-light-comfortable.png",
-        "where": "Search results, stands in for the subject's name under a process you may not see"
+      "practitionerMeta": {
+        "where": "Search results screen, the meta line under a practitioner."
       }
+    },
+    "unsearchable": {
+      "notes": "The honest sentence a real client-side index can write: it knows how many wrap lists it is not on and nothing about what is inside them.",
+      "where": "Search results screen, under the heading, when the reader holds no key for one or more cases."
     }
   },
   "settings": {

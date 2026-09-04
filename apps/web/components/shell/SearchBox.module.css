@@ -83,11 +83,31 @@
   gap: 4px;
 }
 
-.footer {
-  padding: 8px 10px 4px;
+/* What a row is, in front of why it matched, so the flat list still reads as grouped. */
+.tag {
+  margin-right: 6px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+}
+
+/*
+ * The way out of a suggestion list that has not found it. It is an option rather than a note,
+ * because a keyboard user has to be able to land on it.
+ */
+.showAll {
+  margin-top: 4px;
+  padding: 8px 10px;
   font-size: var(--text-xs);
-  color: var(--color-ink-3);
+  color: var(--color-ink-2);
   border-top: 1px solid var(--color-line-1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.showAll[aria-selected='true'] {
+  background: var(--color-accent-soft);
 }
 
 /* The search box is the one thing on the bar that can give up width, so below 1024 it does. */

@@ -1,0 +1,123 @@
+/*
+ * Grouped results.
+ *
+ * A search that returns a person, a meeting and an action in one ranked list makes a reader read
+ * every row to find out what each one is. Grouping by type answers that before they start, and the
+ * count in each heading is the thing a practitioner actually scans for: three chronology entries
+ * and no actions is a different answer from the other way round.
+ */
+.groups {
+  display: grid;
+  gap: 20px;
+}
+
+.group {
+  display: grid;
+  gap: 6px;
+}
+
+.groupHead {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-line-2);
+}
+
+.groupName {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+}
+
+.groupCount {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.rows {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: baseline;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.row:hover {
+  background: var(--color-paper-2);
+}
+
+.rowTitle {
+  min-width: 0;
+  font-weight: 600;
+}
+
+.rowMarks {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-self: end;
+}
+
+.rowMarks > * {
+  flex: 0 0 auto;
+}
+
+/*
+ * Brief section 10.4 asks for this affordance by name. A process badge on somebody the reader can
+ * see, on a case the reader is not on, has to say which of those two it is: the mark alone reads as
+ * access, and no mark at all reads as no case.
+ */
+.notOnCase {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.noProcess {
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.rowMeta {
+  grid-column: 1 / -1;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.more {
+  padding: 4px 10px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+/*
+ * What the index could not reach. It sits under the heading rather than at the foot, because a
+ * reader deciding whether to trust an empty result needs it before they conclude there is nothing.
+ */
+.note {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  background: var(--color-paper-2);
+  border-left: 3px solid var(--color-line-3);
+  border-radius: var(--radius-sm);
+}
