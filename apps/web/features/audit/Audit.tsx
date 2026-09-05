@@ -44,7 +44,7 @@ const ACT_TONES: Record<AuditAct, PillTone> = {
   // retirement of a record that should never have existed, and the ledger reads like it.
   close: 'low',
   reopen: 'medium',
-  'recorded-in-error': 'high',
+  'recorded-in-error': 'high', 'stage-change': 'accent',
 };
 
 function targetHref(data: Dataset, a: AuditEntry): string | undefined {

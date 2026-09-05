@@ -36,6 +36,8 @@ export const clockTriggerSchema = z.object({
   ruleId: z.string(),
   triggeredAt: isoDateTime,
   completedAt: isoDateTime.optional(),
+  /** Who answers for this deadline beside the case lead, and is told when it warns or breaches. */
+  ownerUserId: idSchema.optional(),
   /** A locally agreed due date that replaces the computed one, with the reason. */
   dueOverride: isoDate.optional(),
   overrideReason: z.string().optional(),
@@ -194,6 +196,22 @@ export const aspDetailSchema = z.object({
     decision: z.enum(['not-required', 'application-drafting', 'applied', 'granted', 'refused']),
     rationale: z.string(),
   })),
+  /** The chair's outcome from the initial case conference, recorded by the stage engine (D-211). */
+  caseConference: z.object({
+    meetingId: idSchema.optional(),
+    heldAt: isoDateTime,
+    adultAtRisk: z.boolean(),
+    protectionPlanNeeded: z.boolean(),
+    rationale: z.string(),
+  }).optional(),
+  /** Each review conference's decision: continue the plan with a new review date, or close. */
+  reviews: z.array(z.object({
+    meetingId: idSchema.optional(),
+    heldAt: isoDateTime,
+    decision: z.enum(['continue', 'close']),
+    rationale: z.string(),
+    newReviewDate: isoDate.optional(),
+  })).optional(),
   planId: idSchema.optional(),
   closure: z.object({ at: isoDateTime, reason: z.string() }).optional(),
   /** Large Scale Investigation mode: per-subject strands. */
@@ -263,7 +281,10 @@ export const cpDetailSchema = z.object({
     openedAt: isoDateTime,
     jiiHeldAt: isoDateTime.optional(),
     jiiModel: z.literal('SCIM').optional(),
+    jiiSummary: z.string().optional(),
     medicalHeldAt: isoDateTime.optional(),
+    medicalKind: z.enum(['jpfe', 'comprehensive']).optional(),
+    medicalSummary: z.string().optional(),
     summary: z.string(),
   }).optional(),
   cppm: z.object({
@@ -293,6 +314,14 @@ export const cpDetailSchema = z.object({
     leadProfessionalUserId: idSchema.optional(),
     namedPersonUserId: idSchema.optional(),
     firstMeetingAt: isoDateTime.optional(),
+    /** Each core group meeting: who came, what moved, and whether something changed enough to escalate. */
+    meetings: z.array(z.object({
+      heldAt: isoDateTime,
+      attendance: z.array(z.object({ userId: idSchema.optional(), name: z.string(), present: z.boolean() })),
+      progress: z.string(),
+      significantChange: z.boolean(),
+      changeNote: z.string().optional(),
+    })).optional(),
   }).optional(),
   childsPlanId: idSchema.optional(),
   preBirth: z.object({

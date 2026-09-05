@@ -78,7 +78,7 @@ These are not top-level collections. They live inside a `Person` or inside a `Pr
 | **Config** | One configuration per deployment, seeded from `DEFAULT_CONFIG`. Admin edits it; nothing creates a second one. |
 | **ClockRule** | Rules are code, with a source and a confidence. A clock invented in a text box is a clock with no provenance. Admin edits the value, not the rule's existence. |
 | **ClockTrigger** | Started by the write pipeline from the rule the trigger names, never chosen from a menu. A clock somebody started by hand is a deadline with no event behind it. |
-| **StageEntry** | Written by the pipeline on every stage change. The stage history is a record of what happened, not a list to be added to. |
+| **StageEntry** | Written by the stage engine when a transition is recorded, and by opening, closing and reopening (D-211). The stage history is a record of decisions, not a list to be added to, and there is no stage picker. |
 | **Membership** | Generated from the need-to-know resolver when a process opens or its stage changes. Adding a member by hand is how a case membership stops matching the matrix that justifies it. |
 | **CaseParty (derived)** | Derived from the referral and from relationships on every read. Only the manual entries above are written. |
 

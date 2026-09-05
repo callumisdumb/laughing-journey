@@ -49,6 +49,9 @@ export const LOCAL_CLOSURE_REASONS = [
   'person-died',
   'declined-further-involvement',
   'transferred-to-another-area',
+  // Adults with incapacity: the order ran out, or was recalled by the sheriff.
+  'order-expired',
+  'order-recalled',
   'other-reason',
 ] as const;
 export type LocalClosureReason = (typeof LOCAL_CLOSURE_REASONS)[number];

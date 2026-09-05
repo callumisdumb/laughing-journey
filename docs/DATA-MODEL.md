@@ -195,7 +195,7 @@ Variant 1
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
 | `members` | array of object { userId, caseRole, agency, since, reason } | yes |
-| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note, stoppedByClosure } | yes |
+| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, ownerUserId, dueOverride, overrideReason, note, stoppedByClosure } | yes |
 | `linkedProcessIds` | array of string | yes |
 | `viewsRecordIds` | array of string | yes |
 | `riskAssessmentIds` | array of string | yes |
@@ -205,7 +205,7 @@ Variant 1
 | `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
 | `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 | `type` | literal "asp" | yes |
-| `detail` | object { concern, threePointTest, screening, inquiry, investigation, ordersConsidered, planId, closure, lsi } | yes |
+| `detail` | object { concern, threePointTest, screening, inquiry, investigation, ordersConsidered, caseConference, reviews, planId, closure, lsi } | yes |
 
 Variant 2
 
@@ -228,7 +228,7 @@ Variant 2
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
 | `members` | array of object { userId, caseRole, agency, since, reason } | yes |
-| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note, stoppedByClosure } | yes |
+| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, ownerUserId, dueOverride, overrideReason, note, stoppedByClosure } | yes |
 | `linkedProcessIds` | array of string | yes |
 | `viewsRecordIds` | array of string | yes |
 | `riskAssessmentIds` | array of string | yes |
@@ -261,7 +261,7 @@ Variant 3
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
 | `members` | array of object { userId, caseRole, agency, since, reason } | yes |
-| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note, stoppedByClosure } | yes |
+| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, ownerUserId, dueOverride, overrideReason, note, stoppedByClosure } | yes |
 | `linkedProcessIds` | array of string | yes |
 | `viewsRecordIds` | array of string | yes |
 | `riskAssessmentIds` | array of string | yes |
@@ -294,7 +294,7 @@ Variant 4
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
 | `members` | array of object { userId, caseRole, agency, since, reason } | yes |
-| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note, stoppedByClosure } | yes |
+| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, ownerUserId, dueOverride, overrideReason, note, stoppedByClosure } | yes |
 | `linkedProcessIds` | array of string | yes |
 | `viewsRecordIds` | array of string | yes |
 | `riskAssessmentIds` | array of string | yes |
@@ -327,7 +327,7 @@ Variant 5
 | `closedAt` | string (date-time) | no |
 | `closureReason` | string | no |
 | `members` | array of object { userId, caseRole, agency, since, reason } | yes |
-| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, dueOverride, overrideReason, note, stoppedByClosure } | yes |
+| `clocks` | array of object { id, ruleId, triggeredAt, completedAt, ownerUserId, dueOverride, overrideReason, note, stoppedByClosure } | yes |
 | `linkedProcessIds` | array of string | yes |
 | `viewsRecordIds` | array of string | yes |
 | `riskAssessmentIds` | array of string | yes |
@@ -349,6 +349,8 @@ Variant 5
 | `inquiry` | object { openedAt, interAgencyDiscussionMeetingId, agenciesContacted, outcome, action, rationale, decidedAt } | no |
 | `investigation` | object { councilOfficerUserId, secondWorkerUserId, visits, interviews, medicalExamination, recordsRequests, consent, capacity, unduePressure, advocacy } | no |
 | `ordersConsidered` | array of object { order, considered, decision, rationale } | yes |
+| `caseConference` | object { meetingId, heldAt, adultAtRisk, protectionPlanNeeded, rationale } | no |
+| `reviews` | array of object { meetingId, heldAt, decision, rationale, newReviewDate } | no |
 | `planId` | string | no |
 | `closure` | object { at, reason } | no |
 | `lsi` | object { setting, provider, serviceType, careInspectorateCsNumber, nhsHospitalLocationCode, strands, agenciesInvolved, careInspectorateNotified, commissioningInvolved, chairUserId, chairIsSeniorCouncilOfficer } | no |
@@ -360,10 +362,10 @@ Variant 5
 | `concern` | object { receivedAt, source, sourceAgency, sourceReference, summary } | yes |
 | `proceduresInitiatedAt` | string (date-time) | no |
 | `ird` | object { meetingId, heldAt, outOfHours, participants, contributions, decisions, siblingsConsidered, interimSafetyPlanId, childViewsSought } | no |
-| `investigation` | object { openedAt, jiiHeldAt, jiiModel, medicalHeldAt, summary } | no |
+| `investigation` | object { openedAt, jiiHeldAt, jiiModel, jiiSummary, medicalHeldAt, medicalKind, medicalSummary, summary } | no |
 | `cppm` | object { meetingId, heldAt, decision, rationale } | no |
 | `register` | object { registeredAt, concerns, localCategory, deregisteredAt, deregistrationReason, deregistrationNote, transfer } | no |
-| `coreGroup` | object { memberUserIds, leadProfessionalUserId, namedPersonUserId, firstMeetingAt } | no |
+| `coreGroup` | object { memberUserIds, leadProfessionalUserId, namedPersonUserId, firstMeetingAt, meetings } | no |
 | `childsPlanId` | string | no |
 | `preBirth` | object { expectedDeliveryDate, motherPersonId, gestationWeeksAtConcern } | no |
 
@@ -436,7 +438,7 @@ Variant 5
 | `sourceSystem` | enum (11 values) | yes |
 | `recordedByUserId` | string | no |
 | `recordedByName` | string | yes |
-| `eventType` | enum (57 values) | yes |
+| `eventType` | enum (58 values) | yes |
 | `title` | string | yes |
 | `detail` | string | yes |
 | `response` | string | no |
@@ -775,7 +777,7 @@ Variant 5
 | `userId` | string | yes |
 | `userName` | string | yes |
 | `agency` | enum (11 values) | yes |
-| `act` | enum (18 values) | yes |
+| `act` | enum (19 values) | yes |
 | `targetType` | enum (9 values) | yes |
 | `targetId` | string | yes |
 | `targetLabel` | string | yes |

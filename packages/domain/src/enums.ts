@@ -251,6 +251,9 @@ export const EVENT_TYPES = [
   'process.mappa-level',
   'process.core-group',
   'process.referral',
+  // A stage moved by a recorded decision through the stage engine (D-211): the milestone every
+  // transition writes, whatever the stage.
+  'process.stage',
   // A merge and its undo are facts about the record rather than about a field, which is why
   // docs/RECORDS.md puts a person merge on the significant-event list and a corrected typo not.
   'record.merge',
@@ -412,6 +415,9 @@ export const AUDIT_ACTS = [
   'close',
   'reopen',
   'recorded-in-error',
+  // A stage moved by a recorded decision (D-211). Its own act, because "when did this case move and
+  // who moved it" is the question an inspector asks first.
+  'stage-change',
 ] as const;
 export type AuditAct = (typeof AUDIT_ACTS)[number];
 

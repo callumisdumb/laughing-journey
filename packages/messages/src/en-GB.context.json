@@ -2993,6 +2993,9 @@
         "maxLength": 16,
         "where": "Act pill and act filter option on the Audit screen for a sign in"
       },
+      "stageChange": {
+        "where": "Audit ledger act filter and row label for a stage moved by the engine."
+      },
       "unmerge": {
         "where": "Audit ledger, act column and act filter"
       }
@@ -8033,6 +8036,12 @@
       "declinedFurtherInvolvement": {
         "where": "Locally agreed closure reason, in the close a case dialog, declinedFurtherInvolvement"
       },
+      "orderExpired": {
+        "where": "Local closure reason for an adults with incapacity case."
+      },
+      "orderRecalled": {
+        "where": "Local closure reason for an adults with incapacity case."
+      },
       "otherReason": {
         "where": "Locally agreed closure reason, in the close a case dialog, otherReason"
       },
@@ -9041,6 +9050,155 @@
         "where": "Trafficking and exploitation sub-detail \"Sexual exploitation\" on an ASP concern"
       }
     },
+    "transitions": {
+      "aspCaseConferenceHeld": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "aspClose": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "aspInquiryOutcome": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "aspInvestigatoryStep": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "aspOpenInquiry": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "aspRecordProtectionPlan": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "aspRecordSupportPlan": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "aspReviewOutcome": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "aspScheduleCaseConference": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "aspScheduleReview": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "aspScreeningDecision": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "awiBeginSupervision": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "awiCheckExistingPowers": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "awiClose": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "awiCourtEvent": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "awiOpenApplication": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "awiRecordCapacityAssessment": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "awiRecordInvestigation": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "awiRecordReport": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "awiRecordVisit": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "awiRouteDecision": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpBirth": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpClose": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpConveneIrd": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpCoreGroupMeeting": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpCppmHeld": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpDeregister": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpIrdDecisions": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpRecordJii": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpRecordMedical": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpReviewCppmHeld": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpScheduleCppm": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpScheduleReviewCppm": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "mappaExit": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "mappaMeetingHeld": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "mappaRecordDisclosure": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "mappaRecordReturn": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "mappaReferLevel": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "mappaRequestReturns": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "mappaScheduleMeeting": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "maracClose": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "maracHeard": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "maracIdaaFeedback": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "maracLinkCpConcern": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "maracRecordActionPlan": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "maracRecordResearchReturn": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "maracScheduleMeeting": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "maracSendResearchRequests": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "maracTransfer": {
+        "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      }
+    },
     "viewsKinds": {
       "adultViews": {
         "maxLength": 32,
@@ -9174,6 +9332,15 @@
       }
     },
     "write": {
+      "actionIncomplete": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "advocacyRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "agenciesRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "alertEndsBeforeStart": {
         "where": "Refusal listed on the add an alert dialog"
       },
@@ -9185,6 +9352,42 @@
       },
       "alreadyRecordedInError": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"
+      },
+      "applicantRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "applicationNotOpened": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "areaRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "attendanceRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "attendeesRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "attorneyRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "capacityAssessmentRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "capacityRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "chairRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "changeNoteRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "childRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "childViewsRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
       "chiNeedsDateOfBirth": {
         "where": "Add a person dialog, refusal summary when the generate button is pressed with no date of birth"
@@ -9198,11 +9401,41 @@
       "closureReasonRequired": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"
       },
+      "concernsRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "conferenceNotHeld": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "connectorRefusesIntent": {
         "where": "Two-way connectors: errors.write.connectorRefusesIntent"
       },
+      "consentNoteRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "consentRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "contributionsRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "coordinatorRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "coreGroupRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "courtRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "cppmNotScheduled": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "dateOfBirthFuture": {
         "where": "Add a person dialog, refusal summary at the top of the body"
+      },
+      "dateRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
       "deathAlreadyRecorded": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"
@@ -9216,6 +9449,9 @@
       "deathNoteRequired": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"
       },
+      "deregistrationReasonRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "disclosureFactRequired": {
         "where": "Refusal listed on a record dialog"
       },
@@ -9225,11 +9461,26 @@
       "disclosureRecipientRequired": {
         "where": "Refusal listed on a record dialog"
       },
+      "dsdasRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "excluded": {
         "where": "Any dialog adding a recipient, refusal summary at the top of the body"
       },
+      "exitKindRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "expectedDeliveryPast": {
         "where": "Add a person dialog, refusal summary at the top of the body"
+      },
+      "expiryRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "guardianRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "holderRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
       "householdAlreadyMember": {
         "where": "A create or edit dialog, refusal summary at the top of the body"
@@ -9264,11 +9515,74 @@
       "inboundNoType": {
         "where": "Two-way connectors: errors.write.inboundNoType"
       },
+      "informationSharedRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "inquiryActionRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "inquiryNotOpened": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "intervieweeRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "investigationDecisionRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "investigationInFuture": {
         "where": "Refusal listed on a record dialog"
       },
+      "investigationNotOpened": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "investigationSummaryRequired": {
         "where": "Refusal listed on a record dialog"
+      },
+      "inviteesRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "irdTripartiteRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "jiiDecisionRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "lawfulBasisRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "leadProfessionalRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "levelRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "mappaMeetingRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "mappaNotReferred": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "maracMeetingRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "maracPlanRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "matacRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "medicalDecisionRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "medicalKindRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "meetingDateRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "meetingRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
       "mergeOtherMissing": {
         "where": "Merge dialog, refusal summary at the top of the body"
@@ -9282,17 +9596,44 @@
       "mergeSurvivorMissing": {
         "where": "Merge dialog, refusal summary at the top of the body"
       },
+      "mhoRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "nameRequired": {
         "where": "Add a person dialog, refusal summary at the top of the body"
       },
+      "noChildrenOnReferral": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "noInvestigationRouteRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "noResearchOutstanding": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "noReturnsOutstanding": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "noteRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "nothingChanged": {
         "where": "Refusal listed on the edit a person record dialog"
+      },
+      "notPreBirth": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "notRegistered": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
       "noUser": {
         "where": "Any create or edit dialog, refusal summary at the top of the body"
       },
       "orderRationaleRequired": {
         "where": "Refusal listed on a record dialog"
+      },
+      "orderRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
       "outboxLawfulBasisRequired": {
         "where": "Two-way connectors: errors.write.outboxLawfulBasisRequired"
@@ -9306,6 +9647,18 @@
       "outboxPurposeRequired": {
         "where": "Two-way connectors: errors.write.outboxPurposeRequired"
       },
+      "outcomeRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "parentsDecisionRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "parentsExcludedReasonRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "parentsWithheldReasonRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "payloadEmpty": {
         "where": "Two-way connectors: errors.write.payloadEmpty"
       },
@@ -9315,11 +9668,26 @@
       "personMissing": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"
       },
+      "planCoordinatorRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "planOutcomeRequired": {
         "where": "Refusal listed on the add a plan dialog"
       },
+      "planRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "planTitleRequired": {
         "where": "Refusal listed on the add a plan dialog"
+      },
+      "powersNotChecked": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "powersRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "practitionerRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
       "processAlreadyClosed": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"
@@ -9339,14 +9707,35 @@
       "processNotEligible": {
         "where": "Start a process dialog, refusal summary at the top of the body"
       },
+      "processNotOpen": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "processNotYourRole": {
         "where": "Start a process dialog, refusal summary at the top of the body"
+      },
+      "progressRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "proportionalityRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "purposeRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "rationaleRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
       "reasonRequired": {
         "where": "Any create or edit dialog, refusal summary at the top of the body"
       },
       "recordMissing": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"
+      },
+      "recordsRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "referenceRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
       "registerNameRequired": {
         "where": "Refusal listed on a record dialog"
@@ -9375,6 +9764,42 @@
       "relationshipSelf": {
         "where": "A create or edit dialog, refusal summary at the top of the body"
       },
+      "reporterDecisionRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "requestMissing": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "reviewDateRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "riskAssessmentRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "riskDiscussionRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "routeNotApplication": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "routeRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "s13zaObjection": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "s13zaRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "scheduleRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "screeningAlreadyRecorded": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "screeningNotProceed": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "searchRequired": {
         "where": "Add a person dialog, refusal summary at the top of the body"
       },
@@ -9383,6 +9808,30 @@
       },
       "sharesNeedProcess": {
         "where": "Refusal summary when a write asks for sharing records with no case to attach them to"
+      },
+      "significantHarmDecisionRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "summaryRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "supervisingOfficerRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "threePointTestRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "transitionNotFromThisStage": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "transitionNotYourRole": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "transitionWrongProcess": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "unduePressureRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
       "unmergeAlreadyUndone": {
         "where": "Unmerge dialog, refusal summary at the top of the body"
@@ -9393,6 +9842,9 @@
       "unmergeReasonRequired": {
         "where": "Unmerge dialog, refusal summary at the top of the body"
       },
+      "victimConsiderationsRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
       "visitInFuture": {
         "where": "Refusal listed on a record dialog"
       },
@@ -9401,6 +9853,12 @@
       },
       "visitVisitorRequired": {
         "where": "Refusal listed on a record dialog"
+      },
+      "willAndPreferencesRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "wordingRequired": {
+        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       }
     }
   },
@@ -17520,6 +17978,307 @@
         "maxLength": 24,
         "screenshot": "phase-3/process-cp-light-comfortable.png",
         "where": "Accessible name of the stage strip on the process screen"
+      }
+    },
+    "transitions": {
+      "attendanceNote": {
+        "where": "The subject attendance note written on a scheduled planning meeting."
+      },
+      "caseRole": {
+        "chair": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "chairReason": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "coordinator": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "coordinatorReason": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "leadProfessional": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "leadProfessionalReason": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "mho": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "mhoReason": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "minuteTaker": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "minuteTakerReason": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "researchAgency": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "researchAgencyReason": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "returnAgency": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "returnAgencyReason": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "supervisingOfficer": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "supervisingOfficerReason": {
+          "where": "Case role and reason written on a membership the stage engine adds."
+        }
+      },
+      "clockNote": {
+        "birth": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "conferenceHeld": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "cppmHeld": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "flagsPlaced": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "inquiryOpened": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "interimGranted": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "irdDecided": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "mappaHeld": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "maracHeard": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "mhoNotified": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "mhoSubmitted": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "noticeStarted": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "orderGranted": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "researchComplete": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "researchSent": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "reviewHeld": {
+          "where": "Note on a clock the stage engine completes or starts."
+        },
+        "screeningDecided": {
+          "where": "Note on a clock the stage engine completes or starts."
+        }
+      },
+      "meetingTitle": {
+        "aspCaseConference": {
+          "where": "Title of a meeting the stage engine schedules."
+        },
+        "aspReview": {
+          "where": "Title of a meeting the stage engine schedules."
+        },
+        "cppm": {
+          "where": "Title of a meeting the stage engine schedules."
+        },
+        "cppmReview": {
+          "where": "Title of a meeting the stage engine schedules."
+        },
+        "ird": {
+          "where": "Title of a meeting the stage engine schedules."
+        },
+        "mappa": {
+          "where": "Title of a meeting the stage engine schedules."
+        },
+        "marac": {
+          "where": "Title of a meeting the stage engine schedules."
+        },
+        "preBirthCppm": {
+          "where": "Title of a meeting the stage engine schedules."
+        }
+      },
+      "notYourRole": {
+        "where": "Permission refusal on a transition; roles is the list that may record it."
+      },
+      "oversight": {
+        "where": "Permission refusal on a transition for an oversight role."
+      },
+      "parents": {
+        "where": "Label for the parents in the left-off list of a planning meeting."
+      },
+      "route": {
+        "where": "The route offered with a transition permission refusal."
+      },
+      "summary": {
+        "adultNotPresent": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "applicationOpened": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "aspConferenceHeld": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "aspInquiryOpened": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "aspInquiryOutcome": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "aspReview": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "aspScreening": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "aspStep": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "birth": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "capacityOffered": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "close": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "coreGroup": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "coreGroupChange": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "courtEvent": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "cpLinked": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "cppmInquorate": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "cppmNotRegistered": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "cppmRegistered": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "cppmScheduled": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "cpSource": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "deregistered": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "disclosureOffered": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "idaaFeedback": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "investigationOffered": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "irdConvened": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "irdDecided": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "irdNoInvestigation": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "jii": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "mappaExit": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "mappaHeld": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "mappaReferred": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "maracHeard": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "maracPlan": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "medical": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "nothingKnown": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "planRecorded": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "powersChecked": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "reportRecorded": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "researchReturned": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "researchSent": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "returnPurpose": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "returnRecorded": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "returnsRequested": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "reviewContinue": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "reviewDeregister": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "routeDecided": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "s10Purpose": {
+          "where": "Purpose written on the information request a section 10 records request sends to the record holder."
+        },
+        "scheduled": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "supervisionBegun": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "transferred": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "visitOffered": {
+          "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        }
       }
     },
     "views": {

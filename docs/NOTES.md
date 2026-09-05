@@ -485,3 +485,13 @@ The panel is grouped by case rather than listed flat, because nine things in a b
 
 The cross-persona spec is committed red. It drives the action create path from a case that does not exist until the test makes it, and that path lands in the next commit; a spec that passed before the feature existed would be a spec of nothing (D-210).
 
+## The stepper that was a picture (05 Sep 2026)
+
+Asked how to move an adult concern to screening, the honest answer was that the product could not. The stepper drew the stages and nothing on it did anything; a stage was written only at open, close and reopen; and the meeting screen a case reached from Create had no schedule action. `docs/RECORDS.md` said a stage entry was "written by the pipeline on every stage change", which was true and empty, because nothing changed a stage.
+
+The stage engine is the answer, and it is tables rather than a state machine library. Each process type lists its transitions, and each transition says what it needs the record to hold, who records it, what it validates, what it writes, which clocks it completes and starts, where the case goes and what the store must create beside it. The first draft put the follow-on work (the meeting, the plan, the requests) inside `apply`, which made the tables impure and untestable without a store; the second returns them as named follow-ons for the store to run through the pipeline, and the tables are pure and tested on their own (D-211).
+
+Two things were decided by reading the tables back. The three-point test check first looked for reasoning on a limb, and the opening writes a placeholder reason on every limb, so every case looked assessed; it looks for a decided limb now. And the lead of a case heard an overdue action twice with identical wording, once as overdue and once as escalated; the escalation says so.
+
+The forms that record these transitions land per process type in the steps that follow, with a driven spec each. The tables and their forty-nine transitions are committed first so the specs have something to drive.
+

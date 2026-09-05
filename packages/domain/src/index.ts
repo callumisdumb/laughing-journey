@@ -19,6 +19,7 @@ export * from './classification/fromConfig';
 export * from './classification/sharing';
 export * from './nmds/cellMap';
 export * from './processes/close';
+export * from './processes/transitions';
 export * from './records/correct';
 export * from './people/death';
 export * from './connectors/write';
