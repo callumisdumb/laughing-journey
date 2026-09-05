@@ -18,9 +18,11 @@ Drop the remaining templates here, one file each:
 
 | Report | Expected template | Screen |
 |---|---|---|
-| Child Protection Register statistics | Children's Social Work Statistics: child protection return specification | `/reports/cp` |
 | MARAC SafeLives return | SafeLives MARAC data template workbook (quarterly) | `/reports/marac` |
-| MAPPA annual report counts | MAPPA annual report table set (Scottish Government overview report appendix) | `/reports/mappa` |
-| AWI application timeliness | Mental Welfare Commission AWI monitoring return and Office of the Public Guardian guardianship performance measures | `/reports/awi` |
+| AWI application timeliness | Mental Welfare Commission AWI monitoring tables and Office of the Public Guardian guardianship performance measures | `/reports/awi` |
 
 Until a template is here, that report's meta line says "Field set to verify against the current template" and `docs/RESEARCH.md` section 5 records what the field set was built from.
+
+## Read from the source, no file expected
+
+Two reports need no template file because their field sets were read from the source itself and are pinned in the catalogue as `verbatim` keys: the Child Protection Register statistics, whose Table 1.1 to 1.5 row sets were read from Children's Social Work Statistics: Child Protection 2024-25 on 03 Sep 2026 (`docs/RESEARCH.md` 5.16), and the MAPPA annual report, whose nine tables carry the wording of Annex 3 of the MAPPA National Guidance, supplied verbatim the same day (`docs/RESEARCH.md` 5.12).

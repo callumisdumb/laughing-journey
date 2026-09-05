@@ -55,6 +55,7 @@ pnpm desktop:tauri:dev / pnpm desktop:tauri:build
 pnpm desktop:electron:dev / pnpm desktop:electron:build
 pnpm seed:export         # write the generated seed to packages/mock-data/dist for inspection
 pnpm docs:data-model     # regenerate docs/DATA-MODEL.md from the Zod schemas
+pnpm docs:verification-table # regenerate the HANDOVER section 3 table from the clock rules; a test fails when it is stale
 pnpm contact-sheet       # regenerate docs/CONTACT-SHEET.md, the HTML gallery and HANDOVER section 5
 pnpm messages:merge <ns> # fold packages/messages/staging fragments into the catalogue
 pnpm demo:check          # the shooting script still fits its slots (also run by pnpm lint)

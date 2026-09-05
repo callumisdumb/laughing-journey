@@ -1,7 +1,18 @@
 # Research log
 Accessed 2026-09-02 unless stated.
 
-Method note. In this session the network egress proxy refused direct fetches (HTTP 403 on CONNECT) to gov.scot, legislation.gov.uk, safelives.org.uk, scotland.police.uk and every council and NHS board domain tried. Every finding below therefore comes from search-result extracts of the named pages rather than from reading the page itself. The URLs recorded are the ones that appeared in the search results. Where a quotation is given it is the wording returned in the extract; treat it as accurate to the page but re-check against the live page when the network allows. Confidence ratings take this into account: High means the figure is stated in national guidance or statute and the extract quoted it directly.
+Method note. Two kinds of source, and every entry says which.
+
+- Search extracts, the 02 Sep 2026 pass. The network egress proxy refused direct fetches (HTTP 403 on CONNECT) to gov.scot, legislation.gov.uk, safelives.org.uk, scotland.police.uk and every council and NHS board domain tried, so the findings in sections 1, 2, 5.1 to 5.11 and 6.1 come from search-result extracts of the named pages rather than from reading the page itself. The URLs recorded are the ones that appeared in the search results. Where a quotation is given it is the wording returned in the extract; treat it as accurate to the page but re-check against the live page when the network allows. Confidence ratings take this into account: High means the figure is stated in national guidance or statute and the extract quoted it directly.
+- Primary sources, each read whole or supplied whole, with its date and route:
+  - Appendix D of the National Guidance for Child Protection in Scotland 2021 (updated 2023): read live by the product owner on 03 Sep 2026 and supplied to the session as values; 6.4.
+  - Annex 2 of the MAPPA National Guidance 2022, Government Security Classification: supplied verbatim by the product owner on 03 Sep 2026; 5.13.
+  - Annex 3 of the same guidance, the titles, rows and column headers of Tables 1 to 9: supplied verbatim by the product owner on 03 Sep 2026 and held in the catalogue as `verbatim` keys; 5.12.
+  - The ASP data workbook 2026-27, the National Minimum Dataset guidance of July 2025 and its glossary: three files supplied by the product owner on 03 Sep 2026, committed under `docs/templates/` and read directly; 5.14.
+  - Children's Social Work Statistics: Child Protection 2024-25, published 31 March 2026: the register and planning meeting pages read live by the product owner on 03 Sep 2026 and the row sets supplied in the task document of that date; 5.16.
+  - The gov.uk bank holidays feed: captured by the product owner on 03 Sep 2026, committed byte for byte on 04 Sep 2026 as `bank-holidays.raw.json`, and the fixture derived from it offline; 6.2.
+
+Where a later reading corrected an earlier extract, the earlier entry keeps its text and carries a "Superseded by" line naming the entry to read instead; the earlier text is the record of what was known, not guidance (D-205). The verification table is in `docs/HANDOVER.md` section 3 and section 3 below indexes this log by rule id; `packages/domain/src/clocks/verification.test.ts` fails the build if this file marks a clock rule to verify that the handover table marks High.
 
 ## 1. Statutory and local clocks
 
@@ -24,6 +35,7 @@ Method note. In this session the network egress proxy refused direct fetches (HT
 - Confidence: High
 
 ### 1.4 Child protection: initial CPPM
+- Superseded by 6.4. Appendix D, read live on 03 Sep 2026, places the 28 calendar days after a child protection investigation, and the "concern being raised" framing quoted below belongs to the unborn baby row (`cp.prebirth.cppm`). The extract below is kept as the record of the 02 Sep pass; `cp.cppm.initial` follows 6.4 and the handover table.
 - Source: https://www.gov.scot/publications/national-guidance-child-protection-scotland-2021-updated-2023/pages/12/ (Appendix D: Timescales for stages in child protection processes) and Part 3 at https://www.gov.scot/publications/national-guidance-child-protection-scotland-2021-updated-2023/pages/7/
 - Accessed: 2026-09-02
 - Finding: "If a child protection investigation occurs, a CPPM will follow within 28 calendar days of the concern being raised unless there is an IRD decision that this is not required." Exceptions "must be agreed by the accountable senior manager within the statutory social work service, who must be satisfied that an interim safety plan is in place". Appendix D also gives 5 calendar days notice of a CPPM to participants "wherever possible". Note the trigger wording: the clock runs from the concern being raised, not from the IRD.
@@ -36,6 +48,7 @@ Method note. In this session the network egress proxy refused direct fetches (HT
 - Confidence: High for the figure; the unit (working days) is stated in the extract and should be confirmed against the live page.
 
 ### 1.6 Child protection: first review CPPM
+- Superseded by 6.4. `cp.cppm.review.first` is 6 months from Appendix D with no local override anywhere (D-036): the 3 month local override recommended below was withdrawn, and the one scenario that reviews early does so by a decision of the meeting, not by a rule. The extract below is kept as the record of the 02 Sep pass.
 - Source: https://www.gov.scot/publications/national-guidance-child-protection-scotland-2021-updated-2023/pages/12/
 - Accessed: 2026-09-02
 - Finding: "Within 6 months of the initial CPPM and thereafter 6 monthly or earlier if circumstances change significantly." The national guidance does not set a 3 month first review. The brief seeds 3 months for the first review; that figure is a local practice in some areas (older Edinburgh and the Lothians procedures used it) rather than the national figure. Recommended: seed 6 months as the national value and treat 3 months as a local override.
@@ -108,6 +121,7 @@ Method note. In this session the network egress proxy refused direct fetches (HT
 - Confidence: High (statute). Re-read the live section when the network allows, because the extract is a paraphrase-quality rendering of the subsection.
 
 ### 1.18 AWI 2000 s57: interim guardianship order limits
+- Superseded by 6.5. The Expert Working Group citation the brief gave is the Adults with Incapacity Reform: Expert Working Group minutes of April 2026, cited by the product owner on 03 Sep 2026, so the Verify below on that citation is closed and `awi.interim.warning` is High. The statutory limits below stand.
 - Source: https://www.legislation.gov.uk/asp/2000/4/part/6/crossheading/guardianship-orders; Adult Support and Protection (Scotland) Act 2007 s60 at https://www.legislation.gov.uk/asp/2007/10/section/60 and its explanatory notes at https://www.legislation.gov.uk/asp/2007/10/notes/division/2/2; AWI explanatory notes at https://www.legislation.gov.uk/asp/2000/4/notes/division/2/6
 - Accessed: 2026-09-02
 - Finding: An interim guardianship order lasts until a guardian is appointed, or "three months from the date of appointment", or earlier recall. Section 60(1)(d) of the 2007 Act amended section 57 so that "sheriffs may grant interim guardianships for 3 months (as previously) or for a longer period up to a maximum of 6 months"; the amended text allows "such longer period (not exceeding 6 months)". So the statutory ceiling for an interim order is 6 months, which is the point the brief's awi.interim.warning rule warns at. The brief cites "Expert Working Group concerns 2026" for that rule; nothing was found for that reference in this pass and it should be treated as unverified.
@@ -131,23 +145,34 @@ Method note. In this session the network egress proxy refused direct fetches (HT
 - Child Protection Planning Meeting (CPPM) and core group are the 2021 guidance terms (Appendix D uses both). Adult Support and Protection Case Conference is abbreviated ASPCC in the Edinburgh 2024 procedure. Police Scotland's tool is the Domestic Abuse Questions (DAQ); SafeLives' is the DASH risk checklist (Scotland version). MAPPA Level 3 meetings are Multi-Agency Public Protection Panels (MAPPP) in the national guidance. The Fife ASP guidance uses "Interagency Referral Discussion (IRD)" for adults as well, so the product should not assume IRD is a child protection only term.
 
 ## 3. Verification table
-| Rule id | Trigger | Seeded value | Source | Confidence |
-|---|---|---|---|---|
-| cp.cppm.initial | Concern raised and child protection procedures initiated (IRD) | 28 calendar days | National Guidance 2021 (updated 2023), Appendix D and Part 3 | High |
-| cp.coregroup.first | Initial CPPM held | 15 working days (brief seeds 15 calendar days; change unit) | Appendix D | High |
-| cp.cppm.review.first | Initial CPPM held | 6 months national (brief seeds 3 months; keep 3 months only as a local override) | Appendix D | High for 6 months; Local for 3 months |
-| cp.cppm.review.subsequent | Review CPPM held | 6 months, or earlier on significant change | Appendix D | High |
-| cp.prebirth.cppm | Pre-birth concern raised | Within 28 calendar days of concern and by 28 weeks gestation; review within 3 months of the pre-birth CPPM with post-birth latitude | Appendix D | High |
-| asp.inquiry.decision | Adult concern received | Local, seed 5 working days | West of Scotland guidance (Argyll and Bute, Inverclyde, South Ayrshire); Edinburgh 2024 procedure | Local |
-| asp.caseconference.initial | Adult concern received | Local, seed 21 calendar days | Highland 21 days; Orkney 20 days; Renfrewshire 20 working days to complete investigation then conference within 5 working days | Local |
-| asp.plan.review | Initial case conference held or plan agreed | Local, seed 3 months, then three monthly | Right Decisions ASP toolkits (South Lanarkshire, Dumfries and Galloway) | Local |
-| marac.research.return | Case list circulated by coordinator | Local, seed 5 working days before meeting (SafeLives toolkit circulates the list about 8 working days before) | SafeLives toolkit and Scottish operating protocol guidance | Local |
-| marac.flag.expiry | Last MARAC referral | 12 months | SafeLives repeat definition briefing and operating protocol checklist | High |
-| marac.repeat.window | Last MARAC referral | 12 months | SafeLives definition of a repeat | High |
-| mappa.level2.review | Level 2 meeting held | No less than once every 12 weeks | MAPPA National Guidance 2022, chapter 4 and chapter 19 | High |
-| mappa.level3.review | Level 3 (MAPPP) meeting held | No less than once every 6 weeks | MAPPA National Guidance 2022, chapter 4 | High |
-| awi.mho.report | Notice of intention to apply given to the CSWO | 21 days from the date of the notice | AWI 2000 s57(4) | High |
-| awi.interim.warning | Interim guardianship order granted | Warn at 6 months (statutory maximum; default order length 3 months) | AWI 2000 s57 as amended by ASP Act 2007 s60(1)(d) | High for the statutory limits; Verify for the Expert Working Group citation in the brief |
+
+The verification table lives in `docs/HANDOVER.md` section 3 and nowhere else: every clock rule in `packages/domain/src/clocks/rules.ts` with its seeded value, confidence, source and flag, generated from the code by `pnpm docs:verification-table` and pinned to it by `packages/domain/src/clocks/verification.test.ts`. A copy here drifted from it within a day (1.6 and 1.18 kept values the code had moved past) and is not kept. What this log adds is the research behind each rule, so the table below is an index: the entries where the source, the date and the route are recorded, by rule id. An entry marked superseded keeps its text and says which entry replaced it.
+
+| Rule id | Research entries |
+|---|---|
+| cp.cppm.initial | 1.4 (superseded), 6.4 |
+| cp.coregroup.first | 1.5, 6.4 |
+| cp.cppm.review.first | 1.6 (superseded), 6.4 |
+| cp.cppm.review.subsequent | 1.7 |
+| cp.cppm.notice | 1.4 (the notice period in the extract), 6.4 |
+| cp.coregroup.escalate | 1.5, 6.4 |
+| cp.prebirth.review | 1.8, 6.4 |
+| cp.cppm.inquorate.reconvene | 6.4 |
+| cp.cppm.record.distribute | 6.4 |
+| cp.prebirth.cppm | 1.8, 6.4 |
+| asp.inquiry.decision | 1.9, 1.10 |
+| asp.caseconference.initial | 1.9, 1.11 |
+| asp.nmds.q1, asp.nmds.q2, asp.nmds.q3, asp.nmds.q4 | 5.14 |
+| asp.order.banning.maximum, asp.order.assessment.validity, asp.order.removal.validity, asp.order.removal.executeBy | 5.2, 5.14 |
+| asp.plan.review | 1.9, 1.12 |
+| marac.research.return | 1.13 |
+| marac.flag.expiry | 1.15 |
+| marac.repeat.window | 1.14 |
+| mappa.level2.review | 1.1, 1.2 |
+| mappa.level3.review | 1.1, 1.3 |
+| awi.mho.report | 1.17 |
+| awi.interim.warning | 1.18 (superseded), 6.5 |
+| awi.interim.maximum | 1.18, 6.5 |
 
 ## 4. Package versions
 Accessed 2026-09-02.
@@ -253,7 +278,7 @@ Method note: the egress proxy blocked nextjs.org, react.dev, tailwindcss.com, v2
   - TanStack Table 9 (read from https://github.com/TanStack/table/blob/main/docs/framework/react/guide/migrating.md and docs/installation.md): package names are unchanged (`@tanstack/react-table`, `@tanstack/table-core`), but `useReactTable` is renamed `useTable`, a `features` option is now required (`const features = tableFeatures({ rowSortingFeature, sortedRowModel: createSortedRowModel(), sortFns })` or `features: stockFeatures` for v8-like behaviour), row model factories are `createSortedRowModel()`, `createFilteredRowModel()`, `createPaginatedRowModel()` and so on registered on `tableFeatures`, `getCoreRowModel` is no longer needed, packages are ESM-only targeting ES2022, and a deprecated `useLegacyTable` plus `legacyCreateColumnHelper` live in `@tanstack/react-table/legacy` for incremental migration. React 18 or newer is required.
 
 ## 5. Reports and returns
-Accessed 2026-09-03 (the demo clock reads 02 Sep 2026; this is the real date the pages were searched). The egress proxy again refused direct fetches: www.gov.scot, safelives.org.uk and www.mwcscot.org.uk all returned EGRESS_BLOCKED, so every finding below comes from search-result extracts of the named pages rather than the pages themselves. Where a figure is quoted it is the wording in the extract. Re-check against the live page when the network allows. Because of this, every report on the Reports screen carries the line "Field set to verify against the current template" in its meta line and lists what was and was not verified.
+Accessed 2026-09-03 (the demo clock reads 02 Sep 2026; this is the real date the pages were searched). The egress proxy again refused direct fetches: www.gov.scot, safelives.org.uk and www.mwcscot.org.uk all returned EGRESS_BLOCKED, so every finding below comes from search-result extracts of the named pages rather than the pages themselves. Where a figure is quoted it is the wording in the extract. Re-check against the live page when the network allows. Because of this, every report on the Reports screen carried the line "Field set to verify against the current template" in its meta line and listed what was and was not verified. Update 05 Sep 2026: that line now appears on the MARAC and AWI reports only; the ASP field sets were read from the workbook (5.14), the CP register field sets from the publication (5.16) and the MAPPA tables from Annex 3 (5.12).
 
 ### 5.1 ASP biennial report: what the guidance expects an Adult Protection Committee to cover
 - Source: https://www.gov.scot/publications/adult-support-protection-scotland-act-2007-guidance-adult-protection-committees/pages/5/ (Biennial Report) and https://www.gov.scot/publications/adult-support-protection-scotland-act-2007-guidance-adult-protection-committees/pages/4/
@@ -268,12 +293,14 @@ Accessed 2026-09-03 (the demo clock reads 02 Sep 2026; this is the real date the
 - Confidence: High that referrals, inquiries, investigations with and without powers, LSIs, harm type and location of harm are indicators; Verify for the exact harm and location category lists and for the case conference and protection order definitions.
 
 ### 5.3 Child Protection Register statistics 2024-25: what is collected at 31 July
+- Superseded by 5.16. The publication itself was read on 03 Sep 2026 (published 31 March 2026, a later edition than the extracts below describe), and its Table 1.1 to 1.5 row sets replace the age bands and "registered before" categories recorded below as the platform's own.
 - Source: https://www.gov.scot/publications/childrens-social-work-statistics-child-protection-2024-25/pages/children-on-the-child-protection-register/ and the news release https://www.gov.scot/news/child-protection-statistics-2024-25/; supporting tables listed at https://www.gov.scot/publications/childrens-social-work-statistics-child-protection-2024-25/documents/
 - Accessed: 2026-09-03
 - Finding: "On 31 July 2025, 2,087 children were on the child protection register", 1 percent down on 2024 (2,111) and 24 percent down on 2015 (2,741); 51 percent male, 45 percent female, "4% of children were not yet born". "During 2024-25, 3,023 children were registered", 5 percent down on 2023-24 (3,164). "Of those registered, 79% had not been registered before, while 13% of those registered had had two years or more since last de-registration", which is the dividing line the platform uses for re-registrations within two years. The age breakdown is in Table 1.1 of the publication tables (Excel), which the extracts did not show, so the age bands in the report (unborn, under 1, 1 to 4, 5 to 10, 11 to 15, 16 and over) are the platform's own.
 - Confidence: High for the reference date, registrations, de-registrations, unborn share and the two year re-registration line; Verify for the age bands and the exact "registered before" categories.
 
 ### 5.4 Child Protection Register statistics 2023-24: concerns at registration and length of registration
+- Superseded by 5.16. The length of registration bands and the de-registration reasons have been the publication's own since 03 Sep 2026; the bands below described as the platform's are no longer in the product.
 - Source: https://www.gov.scot/publications/childrens-social-work-statistics-child-protection-2023-24/ and its register page https://www.gov.scot/publications/childrens-social-work-statistics-child-protection-2023-24/pages/children-on-the-child-protection-register/; also https://www.gov.scot/publications/childrens-social-work-statistics-2022-23-child-protection/pages/child-protection-register/
 - Accessed: 2026-09-03
 - Finding: 3,117 children were de-registered in 2023-24 (2 percent down on 2022-23). "Of the children being de-registered, around half (48%) had been on the register for less than 6 months." The most common concerns identified at CPPMs for children registered in 2023-24 were domestic abuse (45 percent), neglect (42 percent), parental substance use (39 percent), parental mental ill health (37 percent) and emotional abuse (33 percent); children can have more than one concern. Of those on the register on 31 July 2023, 5 percent were not yet born.
@@ -298,6 +325,7 @@ Accessed 2026-09-03 (the demo clock reads 02 Sep 2026; this is the real date the
 - Confidence: Verify (the threshold is used consistently in SafeLives material but the MARAC dataset definition itself was not read).
 
 ### 5.8 MAPPA annual reports: Tables 1 to 9 in Annex 3 of the National Guidance
+- Superseded by 5.12. The titles, rows and column headers of all nine tables were supplied verbatim by the product owner on 03 Sep 2026 and live in the catalogue, so the Verify below on the titles and row headings of Tables 2 to 9 is closed.
 - Source: https://www.gov.scot/publications/scottish-government-multi-agency-public-protection-arrangements-mappa-national-guidance/pages/24/ (Annex 3: Annual Reports)
 - Accessed: 2026-09-03
 - Finding: "Each MAPPA Annual report must provide the information as set out in Tables 1 to 9 below as requested by Scottish Ministers." Table 1 covers registered sex offenders: the number at liberty in the area, the rate per 100,000 population, those charged with breaching notification requirements, and the numbers of "wanted" and "missing" RSOs (a wanted RSO is one "subject to the notification requirements of the Sexual Offences Act 2003 and who have a live warrant in force"). The extracts confirm that the reports also cover restricted patients, Category 3 offenders, management at Levels 1 to 3, returns to custody, disclosures and civil orders (SHPOs and SROs), but did not give the titles of Tables 2 to 9. Annual reports are published each October; each of the 10 MAPPA regions produces one and Scottish Ministers publish a national overview.
@@ -333,7 +361,7 @@ Accessed 2026-09-03 (the demo clock reads 02 Sep 2026; this is the real date the
 | Report | Verified from extracts | The product's own until the template is checked |
 |---|---|---|
 | ASP biennial figures | Biennial report duty and content expectation; every NMDS field set, read from the 2026-27 workbook itself (5.14) | Table layout only. The field sets are no longer to verify: they are the workbook's own |
-| CP register statistics | 31 July reference date; registrations, de-registrations, unborn share, two year re-registration line, concern categories, under 6 months band | Age bands, the other length bands |
+| CP register statistics | Every row set of Tables 1.1 to 1.5, read from the 2024-25 publication itself (5.16): the sex and age bands, the rate per 1,000, the Table 1.3a linkage columns, time since last de-registration, length of registration and the nine de-registration reasons; the five most common concerns | The concern labels beyond the five, and the child population behind the rate, which is fictional. No template is awaited |
 | MARAC SafeLives return | Meeting-level counts; cases, repeats, children, referral agency, disability, cases per 10,000 adult women; older victims from 61 | Exact agency list, LGBT and male victim definitions, new workbook data points |
 | MAPPA annual report counts | Tables 1 to 9 required; Table 1 rows; 31 March reference; categories, levels, breaches, returns to custody, disclosures, civil orders appear; the titles, rows and column headers of all nine tables, supplied verbatim on 03 Sep 2026 (below) | Nothing. Table 8 and the figures the store cannot hold read "Data not held" by design (D-048) |
 | AWI timeliness | Welfare, financial and combined split; private against local authority; orders granted; duration bands; interim orders exist | Interim order counts, MHO timeliness and application-to-order days (local measures) |
@@ -388,6 +416,19 @@ Accessed 2026-09-03 (the demo clock reads 02 Sep 2026; this is the real date the
 - Consequence for the product: the stored classification enum carried `restricted` as a third value, which was both a retired marking and a conflation of two orthogonal properties. It is split into a `Classification` (`level`, `sensitive`, `handling`) and an `AccessRestriction` (`none`, `restricted`); see D-073 and D-074. The glossary carries an entry recording the abolition, and another distinguishing the three unrelated senses in which the word restricted appears in this codebase.
 - Confidence: High.
 
+### 5.16 Child Protection Register statistics 2024-25: the field sets, read from the publication
+- Source: Children's Social Work Statistics: Child Protection 2024-25 (Accredited Official Statistics, published 31 March 2026), the pages "Children on the child protection register" at https://www.gov.scot/publications/childrens-social-work-statistics-child-protection-2024-25/pages/children-on-the-child-protection-register/ and "Child protection planning meetings" at https://www.gov.scot/publications/childrens-social-work-statistics-child-protection-2024-25/pages/child-protection-planning-meetings/.
+- Accessed: 2026-09-03, read live by the product owner and supplied in the task document of that date with the row sets typed out; not fetched from this container. Applied the same day (commit 4e443ea). This entry supersedes 5.3 and 5.4, which were written from search extracts of the previous editions.
+- Finding: register figures are as at 31 July and activity figures are for the financial year. The publication's sections are children on the register; inter-agency referral discussions; child protection planning meetings; area deprivation; cross-UK comparisons; Care and Risk Management. The row sets, verbatim:
+  - Table 1.1, the register by sex and age at 31 July. Sex rows: Male; Female; Unborn; Unknown. Age rows: Unborn; 0-4; 5-10; 11-15; 16+; Unknown. Total, with number and percentage columns. There is no under-1 band.
+  - Table 1.2, the register as a rate per 1,000 children aged 0 to 17, calculated with National Records of Scotland mid-year population estimates for 0 to 17 years, the figure including children on the register.
+  - Table 1.3a, IRDs, planning meetings and registrations. Columns: IRD Number; IRD Rate; Initial and Pre-Birth Planning Meetings; Initial and Pre-Birth Planning Meetings Rate; Number of Planning Meetings with an IRD recorded within 28 days of the Planning Meeting; Number of Planning Meetings without an IRD recorded within 28 days of the Planning Meeting; Registrations from initial and pre-birth Planning Meetings; Registrations from initial and pre-birth Planning Meetings Rate; Number of registrations with an IRD recorded within 28 days of Planning Meeting; Number of registrations with no IRD recorded within 28 days of Planning Meeting. A planning meeting without an IRD is one with no IRD recorded in the 28 days preceding it.
+  - Table 1.4, time since last de-registration, for registrations in the year. Rows: Never been registered before; Registered before but time unknown; Less than 6 months; 6 months to under 1 year; 1 year to under 18 months; 18 months to under 2 years; 2 years or more; Unknown whether child was registered before; Total.
+  - Table 1.5, de-registrations. Length of time registered rows: Less than 6 months; 6 months to under 1 year; 1 year to under 18 months; 18 months to under 2 years; 2 years or more; No date of registration information. Reason for de-registration rows, nine: Child taken into care & risk reduced; Child with other carers; Child died; Removal of perpetrator; Improved home situation; Child automatically de-registered because of age; Child moved away - no continued risk; Other reason; Reason not known (which includes a child transferred to another local authority and a reason not recorded).
+  - Concerns at planning meetings: the five that have consistently remained the most common, verbatim, are domestic abuse; neglect; parental substance use; parent mental ill health; emotional abuse, with domestic abuse the main concern raised since 2021. A child can have more than one.
+- How the product applies it: the CP report's sex, age, length, time-since and linkage tables and the rate per 1,000 follow these rows, every label flagged `verbatim` in the catalogue under `reports.cp`; the nine de-registration reasons are `CP_DEREGISTRATION_REASONS` and double as the child protection closure list (D-150, D-151); a register entry records concerns rather than a category (D-056), the five above in the publication's wording and the rest the platform's own; `cppmWithIrdWithin28Days` is the linkage measure, counted backwards from the meeting as the mirror of `cp.cppm.initial`.
+- Confidence: High for every row set above. Still the product's own: the concern labels beyond the five, and the child population behind the rate, a fictional Clydeshore figure editable on the screen and labelled a placeholder. No template file is awaited for this report.
+
 ## 6. Round 2 (03 Sep 2026): council officers, holidays, place names, new clocks
 
 The proxy blocked www.legislation.gov.uk, www.gov.uk, www.gov.scot and www.mygov.scot directly; findings below are from search extracts and should be re-read from the primary source on a machine with access.
@@ -435,6 +476,7 @@ The proxy blocked www.legislation.gov.uk, www.gov.uk, www.gov.scot and www.mygov
 - `@playwright/test` 1.62.1 (npm, 03 Sep 2026): its Chromium (v1234, Chrome for Testing 151) could not be downloaded through the session proxy from either the default host or the Microsoft mirror, so the suite runs in the container against the preinstalled Chromium build 1194 through `PLAYWRIGHT_CHROMIUM_PATH`; verified with a passing spec. On macOS run `pnpm exec playwright install chromium` once.
 
 ### 6.7 MAPPA annual report, Annex 3 tables
+- Superseded by 5.12. The annex's own wording arrived the same day this reconstruction was made, and the reconstruction was wrong about four of the nine tables; see the note in place of the table at the end of this entry. Nothing in the product rests on it.
 - Purpose: recover the titles, rows and columns of Tables 1 to 9 that Annex 3 of the MAPPA National Guidance requires in every Strategic Oversight Group annual report, so the Reports screen can carry them until the supplied table text arrives. The proxy blocked gov.scot, every council and health board host tried, Police Scotland, web.archive.org and webarchive.nrscotland.gov.uk, so nothing below was read from a page; every finding is a search extract. Accessed 2026-09-03 throughout.
 - Source: https://www.gov.scot/publications/scottish-government-multi-agency-public-protection-arrangements-mappa-national-guidance/pages/24/ (Annex 3: Annual Reports; blocked). Extract: "Each MAPPA Annual report must provide the information as set out in Tables 1 to 9 below as requested by Scottish Ministers"; the reporting period is 1 April to 31 March; the SOG coordinates, submits and publishes the report on the local authority website and the Scotland MAPPA Community Hub. Table 1 covers RSOs at liberty in the area, per 100,000 of the population, RSOs reported for breaches of the notification requirements, and "wanted" and "missing" RSOs. The 2016 guidance carries the same annex at https://www.gov.scot/publications/multi-agency-public-protection-arrangements-mappa-national-guidance-2016/pages/24/ (blocked).
 - Source: https://www.southlanarkshire.gov.uk/info/200223/justice_services/2244/mappa_annual_report_2024/4 (Lanarkshire MAPPA Annual Report 2024, "Statistical information (1)"; blocked). Extracts: the statistical section is required by s11(3)(a) and (b) of the Management of Offenders etc. (Scotland) Act 2005; "the figures include all offenders who have been notified to the MAPPA Co-ordinator by the Responsible Authorities in the community and within the SPS estate or NHS facilities as at 31 March 2024"; Table 2 covers civil orders (SOPOs in force, SOPOs imposed by the courts, RSHOs in force, convictions for breaching SOPO or RSHO conditions), noting that SOPOs, FTOs and RSHOs were replaced by SHPOs and SROs on 31 March 2023 under the Abusive Behaviour and Sexual Harm (Scotland) Act 2016; Table 7 is "Number of RSOs managed under statutory conditions and/or notification requirements on 31 March 2024"; the section also delineates RSOs by sex.
@@ -444,19 +486,9 @@ The proxy blocked www.legislation.gov.uk, www.gov.uk, www.gov.scot and www.mygov
 - Sources tried and blocked with no table text in the extracts: https://www.scotborders.gov.uk/downloads/file/13114/mappa-annual-report-2023-24 and https://westlothianhscp.org.uk/media/55308/MAPPA-Annual-Report-Lothians-and-Borders-2023-2024/pdf/Edinburgh__the_Lothians_and_Scottish_Borders_MAPPA_Annual_Report_2023_-_2024.pdf (Edinburgh, the Lothians and Scottish Borders 2023-24); https://www.dumfriesandgalloway.gov.uk/sites/default/files/2025-11/MAPPA-annual-report-2025.pdf (Dumfries and Galloway 2025); https://www.east-ayrshire.gov.uk/Resources/PDF/M/mappa-annual-report.pdf (Ayrshire 2024); https://www.nahscp.org/Documents/MAPPA-Annual-Report.pdf; https://glasgowcity.hscp.scot/sites/default/files/publications/ITEM%20No%2015%20-%20MAPPA%20Annual%20Report%202019-20.pdf; https://www.safershetland.com/site/assets/files/1056/mappa-annual-report-2021-22_doc.pdf; https://www.inverclyde.gov.uk/assets/attach/10315/mappa-annual-report-2019.docx; https://www1.renfrewshire.gov.uk/article/4371/Multi-Agency-Public-Protection-Arrangements-MAPPA---Annual-Reports; https://www.scotland.police.uk/about-us/what-we-do/specialist-crime-division/sex-offender-policing-units/multi-agency-public-protection-arrangements-mappa/.
 - Source: https://www.gov.scot/publications/multi-agency-public-protection-arrangements-mappa-scotland-national-overview-report-2023-24/pages/14/ (Appendix C, MAPPA National Data; blocked). Extracts: on 31 March 2024, 4,948 RSOs were in the community, 4,848 at Level 1, 95 at Level 2 and none at Level 3; 12 RSOs were wanted and 1 missing; 94 percent complied with the notification requirements. Confirms the level split, the wanted and missing counts and the breach measure as national data items.
 - Finding: the current numbering recovered from extracts is Table 1 RSOs (community, per 100,000, notification breaches, wanted, missing), Table 2 civil orders, Table 4 restricted patients and Table 7 RSOs under statutory conditions and/or notification requirements. Tables 3, 5, 6, 8 and 9 are placed from the sequence: 3 RSOs by level, 5 Category 3 offenders, 6 RSOs by sex, 8 serious further offences, 9 custody and returns to custody. The product owner's instruction that Table 8 shows "Data not held" only is consistent with a measure the record store cannot supply (further offending), but the title is reconstructed.
-- Confidence: the field set is High on the product owner's instruction of 03 Sep 2026 (nine tables, year 1 April to 31 March, Tables 1, 3, 4, 5, 6, 7 and 9 from data, Table 2 from the order register, Table 8 "Data not held" only), which agrees with the extracts above. Verify applies to the wording only: the content of Table 1 and the subject of Tables 2, 4 and 7 come from extracts, while the labels of Tables 3, 5, 6, 8 and 9 are reconstructed from their place in the sequence. All nine sit as placeholders in `apps/web/features/reports/mappaAnnex3.ts` (exported `MAPPA_ANNEX3_TABLES`), keyed by row id, so the supplied text replaces them in one file. TODO(verify): paste the supplied Annex 3 text over the labels word for word.
+- Confidence: the field set is High on the product owner's instruction of 03 Sep 2026 (nine tables, year 1 April to 31 March, Tables 1, 3, 4, 5, 6, 7 and 9 from data, Table 2 from the order register, Table 8 "Data not held" only), which agrees with the extracts above. Verify applies to the wording only: the content of Table 1 and the subject of Tables 2, 4 and 7 come from extracts, while the labels of Tables 3, 5, 6, 8 and 9 are reconstructed from their place in the sequence. All nine sat as placeholders in `apps/web/features/reports/mappaAnnex3.ts` (exported `MAPPA_ANNEX3_TABLES`), keyed by row id, until the supplied text replaced them in one file the same day.
 
-| Table | Title used | Source | Wording |
-|---|---|---|---|
-| 1 | Registered sex offenders (RSOs) | data | extract |
-| 2 | Civil orders (SOPOs, RSHOs, SHPOs, SROs) | order register | extract |
-| 3 | RSOs by MAPPA management level on 31 March | data | reconstructed |
-| 4 | Restricted patients | data | extract |
-| 5 | Other risk of serious harm offenders (Category 3) | data | reconstructed |
-| 6 | RSOs in the community by sex on 31 March | data | reconstructed |
-| 7 | RSOs managed under statutory conditions and/or notification requirements on 31 March | data | extract |
-| 8 | MAPPA offenders charged with a serious further offence in the year | not held | reconstructed |
-| 9 | RSOs in custody and returned to custody | data | reconstructed |
+The reconstructed table that stood here is struck, so that nobody relies on it. Checked against the annex's own titles (5.12), the reconstruction misidentified Tables 6, 7, 8 and 9: Table 6 delineates RSOs by age on 31 March (reconstructed as by sex); Table 7 delineates the population of RSOs by sex on 31 March (reconstructed as statutory conditions and notification requirements); Table 8 delineates that population by ethnic origin (reconstructed as serious further offences, "not held"); and Table 9 is the number of RSOs managed under statutory conditions and/or notification requirements on 31 March (reconstructed as custody and returns to custody). Tables 1 to 5 were right in subject and wrong in wording. The catalogue holds the annex's text and `mappaAnnex3.ts` holds its shape.
 
 ## 7. Closure reasons (04 Sep 2026)
 

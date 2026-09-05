@@ -10,7 +10,8 @@
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint .",
     "test": "vitest run",
-    "docs:data-model": "tsx scripts/generate-data-model.ts"
+    "docs:data-model": "tsx scripts/generate-data-model.ts",
+    "docs:verification-table": "tsx scripts/generate-verification-table.ts"
   },
   "dependencies": {
     "@mas/messages": "workspace:*",

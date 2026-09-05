@@ -7159,6 +7159,54 @@
           "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
         }
       },
+      "aspNmdsQ1": {
+        "description": {
+          "where": "Plain-language description of the aspNmdsQ1 rule, shown in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Name of the aspNmdsQ1 clock in Admin, Timescales and on the ASP record"
+        },
+        "trigger": {
+          "where": "What starts the aspNmdsQ1 clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "aspNmdsQ2": {
+        "description": {
+          "where": "Plain-language description of the aspNmdsQ2 rule, shown in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Name of the aspNmdsQ2 clock in Admin, Timescales and on the ASP record"
+        },
+        "trigger": {
+          "where": "What starts the aspNmdsQ2 clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "aspNmdsQ3": {
+        "description": {
+          "where": "Plain-language description of the aspNmdsQ3 rule, shown in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Name of the aspNmdsQ3 clock in Admin, Timescales and on the ASP record"
+        },
+        "trigger": {
+          "where": "What starts the aspNmdsQ3 clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "aspNmdsQ4": {
+        "description": {
+          "where": "Plain-language description of the aspNmdsQ4 rule, shown in Help and the Admin timescales dialog"
+        },
+        "label": {
+          "maxLength": 48,
+          "where": "Name of the aspNmdsQ4 clock in Admin, Timescales and on the ASP record"
+        },
+        "trigger": {
+          "where": "What starts the aspNmdsQ4 clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
       "aspOrderAssessmentValidity": {
         "description": {
           "screenshot": "phase-5/admin-timescales-light-comfortable.png",

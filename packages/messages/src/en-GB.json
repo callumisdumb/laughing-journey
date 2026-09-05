@@ -2325,6 +2325,26 @@
         "label": "Inquiry decision",
         "trigger": "Adult concern received"
       },
+      "aspNmdsQ1": {
+        "description": "The ASP National Minimum Dataset return for quarter 1 (1 April to 30 June) is due to the Scottish Government 45 calendar days after the quarter ends. The published dates live on the ASP data collection web page and are confirmed against it each year.",
+        "label": "ASP NMDS quarter 1 return",
+        "trigger": "Quarter 1 ended (30 June)"
+      },
+      "aspNmdsQ2": {
+        "description": "The ASP National Minimum Dataset return for quarter 2 (1 July to 30 September) is due to the Scottish Government 44 calendar days after the quarter ends. The published dates live on the ASP data collection web page and are confirmed against it each year.",
+        "label": "ASP NMDS quarter 2 return",
+        "trigger": "Quarter 2 ended (30 September)"
+      },
+      "aspNmdsQ3": {
+        "description": "The ASP National Minimum Dataset return for quarter 3 (1 October to 31 December) is due to the Scottish Government 43 calendar days after the quarter ends. The published dates live on the ASP data collection web page and are confirmed against it each year.",
+        "label": "ASP NMDS quarter 3 return",
+        "trigger": "Quarter 3 ended (31 December)"
+      },
+      "aspNmdsQ4": {
+        "description": "The ASP National Minimum Dataset return for quarter 4 (1 January to 31 March) is due to the Scottish Government 44 calendar days after the quarter ends. The published dates live on the ASP data collection web page and are confirmed against it each year.",
+        "label": "ASP NMDS quarter 4 return",
+        "trigger": "Quarter 4 ended (31 March)"
+      },
       "aspOrderAssessmentValidity": {
         "description": "An assessment order is valid for 7 days.",
         "label": "Assessment order validity",

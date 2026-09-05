@@ -19,6 +19,7 @@
     "desktop:tauri:dev": "pnpm --filter @mas/desktop-tauri dev",
     "dev": "pnpm --filter @mas/web dev",
     "docs:data-model": "pnpm --filter @mas/domain docs:data-model",
+    "docs:verification-table": "pnpm --filter @mas/domain docs:verification-table",
     "e2e": "pnpm --filter @mas/web e2e",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
