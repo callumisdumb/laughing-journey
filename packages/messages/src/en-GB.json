@@ -51,6 +51,9 @@
       "toastText": "Evidence of completion is recorded against the plan.",
       "toastTitle": "Action complete"
     },
+    "cpConcern": {
+      "summaryFrom": "From the MARAC action on {reference}: {title}."
+    },
     "escalateDialog": {
       "confirm": "Escalate",
       "refused": "The action was not escalated",
@@ -73,6 +76,7 @@
         "status": "Status"
       },
       "complete": "Complete",
+      "cpConcern": "Open a child concern",
       "done": "done {when}",
       "empty": {
         "mineText": "Nothing is assigned to you with this status.",
@@ -6077,6 +6081,68 @@
         "summary": "Summary of findings",
         "time": "Time"
       },
+      "maracCp": {
+        "another": "Another child",
+        "anotherHint": "Search by name or date of birth. A child chosen here is added to the referral when the concern is recorded.",
+        "children": "Children the concern is about",
+        "childrenHint": "Children named on the referral and children related to the victim are listed. Add any other child the meeting learned of.",
+        "known": "Born {born}",
+        "none": "No child is named on the referral or related to the victim yet.",
+        "onReferral": "Named on the referral",
+        "summary": "The concern",
+        "summaryHint": "What the meeting heard that makes this a child protection concern. It opens the child protection case and becomes its concern summary."
+      },
+      "maracFeedback": {
+        "summary": "Feedback",
+        "summaryHint": "What the victim was told about the meeting and the plan, through the IDAA.",
+        "victimResponse": "The victim's response",
+        "victimResponseHint": "In their words where you have them."
+      },
+      "maracPlan": {
+        "addFlag": "Add a flag",
+        "dsdas": "Disclosure scheme considered",
+        "dsdasHint": "Whether a disclosure under the Disclosure Scheme for Domestic Abuse Scotland was considered for a new partner.",
+        "dsdasNote": "Disclosure note",
+        "flagAgency": "Agency",
+        "flagExpiry": "Flags expire on",
+        "flagExpiryHint": "Twelve months from the meeting under the protocol.",
+        "flagReceipt": "Receipt",
+        "flags": "Agency flags",
+        "flagsHint": "The flag each agency has placed on its own system, with the receipt it gave. They expire together.",
+        "flagSystem": "System",
+        "matac": "MATAC considered",
+        "matacHint": "Whether the perpetrator was considered for the multi-agency tasking and coordination process.",
+        "matacNote": "MATAC note",
+        "matacReferred": "Referred to MATAC",
+        "perpetrator": "The perpetrator",
+        "removeFlag": "Remove flag"
+      },
+      "maracResearch": {
+        "agencies": "Agencies to ask",
+        "agenciesHint": "Every agency asked gets the same wording. Tick the ones with a record to search.",
+        "due": "Return by",
+        "dueHint": "The protocol's research deadline, counting back from the meeting.",
+        "wording": "Case list wording",
+        "wordingHint": "The names and dates of birth to search for, as the protocol fixes them. It goes to every agency ticked, with the lawful basis."
+      },
+      "maracReturn": {
+        "none": "No research is outstanding",
+        "nothingKnown": "Nothing known to this agency",
+        "nothingKnownHint": "A nil return is still a return: the meeting needs to know the records were searched.",
+        "proportionate": "This return is relevant, necessary and proportionate",
+        "proportionateHint": "The protocol asks for this confirmation before anything is shared at MARAC.",
+        "request": "Request",
+        "requestHint": "The request this return answers.",
+        "requestOption": "{agency}, due {due} ({status})",
+        "summary": "What your records hold",
+        "summaryHint": "Facts, dated where you can, and only what bears on the risk."
+      },
+      "maracTransfer": {
+        "area": "Receiving MARAC area",
+        "coordinator": "Receiving coordinator",
+        "coordinatorHint": "Named, so the transfer can be followed up.",
+        "hint": "Transferring completes every running clock on this case and tells the receiving coordinator. The record stays here, read only."
+      },
       "plan": {
         "actionDue": "Due (dd Mon yyyy)",
         "actionOwner": "Owner",
@@ -6210,6 +6276,8 @@
       "notYetAssessed": "Not yet assessed. Recorded when the concern was opened.",
       "open": "Start a process",
       "openExisting": "Open {reference}",
+      "perpetrator": "Perpetrator",
+      "perpetratorHint": "The person the referral names as the perpetrator. They are recorded as a party who must not receive anything about this case.",
       "repeatLede": "A further MARAC referral within twelve months of the last is a repeat, which is a SafeLives measure this product reports. The previous referral was received on {date}. The flag is set on the new referral; you do not need to remember it.",
       "repeatTitle": "This is a repeat referral",
       "shareReason": "{reference} was opened. Shared because the need-to-know matrix entitles this recipient at the opening stage of a {process} case.",
@@ -7607,7 +7675,13 @@
       "confirm": "Send response",
       "fieldsLegend": "Fields you are providing",
       "intro": "{name} asked for: {fields}. Purpose: {purpose}. Provide only what is necessary and proportionate for that purpose.",
+      "nothingKnown": "Nothing known to this agency",
+      "nothingKnownHint": "A nil return is still a return: the coordinator needs to know the records were searched.",
+      "proportionate": "This return is relevant, necessary and proportionate",
+      "proportionateHint": "The protocol asks for this confirmation before anything is shared at MARAC.",
       "refused": "The response was not recorded",
+      "researchIntro": "{name} asked your agency for MARAC research on {reference}: {purpose}. What you send is recorded on the case as your agency's return.",
+      "researchText": "Recorded on {reference}: {summary}",
       "response": "Response",
       "responseHint": "Facts only. Anything you decline to share, say why.",
       "title": "Respond to the request",

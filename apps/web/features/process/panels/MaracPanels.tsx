@@ -26,7 +26,7 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
 
   return (
     <>
-      <Sheet>
+      <Sheet data-testid="marac-referral">
         <SheetHead
           title={t('marac.referral.title')}
           meta={t('marac.referral.meta', { when: formatDateTime(d.referral.receivedAt), name: d.referral.referrerName, agency: agencyShort(d.referral.referringAgency) })}
@@ -88,7 +88,7 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
         </SheetBody>
       </Sheet>
 
-      <Sheet>
+      <Sheet data-testid="marac-research">
         <SheetHead title={t('marac.research.title')} meta={t('marac.research.meta')} />
         <SheetBody flush>
           <TableWrap style={{ border: 0, borderRadius: 0 }}>
@@ -136,7 +136,7 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
             <p className={styles.note}>{t('marac.meeting.note')}</p>
           </SheetBody>
         </Sheet>
-        <Sheet>
+        <Sheet data-testid="marac-flags">
           <SheetHead title={t('marac.flags.title')} meta={d.flags.length === 0 ? t('marac.flags.none') : t('marac.flags.meta', { count: d.flags.length })} />
           <SheetBody>
             <ul className={styles.list}>
@@ -153,7 +153,7 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
         </Sheet>
       </div>
 
-      <Sheet>
+      <Sheet data-testid="marac-feedback">
         <SheetHead title={t('marac.feedback.title')} meta={t('marac.feedback.meta', { count: d.idaaFeedback.length })} />
         <SheetBody>
           <ul className={styles.list}>
@@ -170,7 +170,7 @@ export function MaracPanels({ process }: { process: MaracProcess }) {
         </SheetBody>
       </Sheet>
 
-      <Sheet>
+      <Sheet data-testid="marac-links">
         <SheetHead title={t('marac.links.title')} />
         <SheetBody>
           <div className={styles.pills}>

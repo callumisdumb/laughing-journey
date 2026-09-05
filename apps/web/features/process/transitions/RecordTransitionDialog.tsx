@@ -1,10 +1,10 @@
 'use client';
 
-import { canRecordTransition, clockRuleLabel, stageLabel, transitionLabel, type AnyTransition, type Process } from '@mas/domain';
+import { canRecordTransition, clockRuleLabel, leadsTo, stageLabel, transitionLabel, type AnyTransition, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, Dialog, useToast } from '@mas/ui';
 import { useState } from 'react';
-import { useAppStore, useCurrentUser, type TransitionRecordResult } from '@/lib/store';
+import { useAppStore, useCurrentUser, useNow, type TransitionRecordResult } from '@/lib/store';
 import { useWriteErrors } from '@/lib/writeErrors';
 import { TRANSITION_FORMS } from './index';
 import styles from './transitions.module.css';
@@ -15,9 +15,10 @@ import styles from './transitions.module.css';
  * tables say follows. Refusals come back as the engine's codes and are worded here, so a refusal
  * reads the same from the case, from a meeting and from a test.
  */
-export function RecordTransitionDialog({ open, onClose, process, transition, onDone }: { open: boolean; onClose: () => void; process: Process; transition: AnyTransition; onDone?: (result: TransitionRecordResult) => void }) {
+export function RecordTransitionDialog({ open, onClose, process, transition, onDone, initialValue }: { open: boolean; onClose: () => void; process: Process; transition: AnyTransition; onDone?: (result: TransitionRecordResult) => void; /** A first value from the screen that opened it, in place of the form's own. */ initialValue?: unknown }) {
   const t = useT();
   const user = useCurrentUser();
+  const now = useNow();
   const record = useAppStore((s) => s.recordTransition);
   const readErrors = useWriteErrors();
   const { toast } = useToast();
@@ -25,7 +26,7 @@ export function RecordTransitionDialog({ open, onClose, process, transition, onD
   const permission = user ? canRecordTransition(user, transition) : null;
   const missing = transition.requires(process);
   const blocked = !entry || (permission !== null && !permission.allowed) || missing.length > 0;
-  const [value, setValue] = useState<unknown>(() => (entry ? entry.initial(process, { user }) : null));
+  const [value, setValue] = useState<unknown>(() => (entry ? (initialValue ?? entry.initial(process, { user, now })) : null));
   const [errors, setErrors] = useState<string[]>([]);
 
   function submit() {
@@ -44,7 +45,7 @@ export function RecordTransitionDialog({ open, onClose, process, transition, onD
     onDone?.(result);
   }
 
-  const leads = transition.to.filter((s) => s !== process.stage).map((s) => stageLabel(process.type, s));
+  const leads = leadsTo(process, transition);
   const Form = entry?.Form;
   return (
     <Dialog

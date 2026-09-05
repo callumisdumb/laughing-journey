@@ -176,11 +176,16 @@ export const MARAC_TRANSITIONS: Array<Transition<MaracProcess, never>> = [
     to: ['meeting', 'action-plan', 'feedback'],
     roles: ['marac-coordinator', 'social-worker-children', 'team-leader', 'chair'],
     repeatable: true,
-    requires: (process) => (process.detail.referral.childPersonIds.length > 0 ? [] : [{ code: 'noChildrenOnReferral' }]),
-    validate: (input: LinkCpConcernInput, process) => [...(input.childPersonIds.length === 0 || input.childPersonIds.some((id) => !process.detail.referral.childPersonIds.includes(id)) ? ['childRequired'] : []), ...requireText(input.summary, 'summaryRequired')],
+    requires: () => [],
+    validate: (input: LinkCpConcernInput) => [...(input.childPersonIds.length === 0 ? ['childRequired'] : []), ...requireText(input.summary, 'summaryRequired')],
+    // A child the meeting learned of is a child on the referral from then on (D-221): the concern
+    // names them, and the referral, the SafeLives return and the matrix's "if there are children"
+    // rows all read the same list afterwards.
     apply: (process, input: LinkCpConcernInput) => {
+      const childPersonIds = [...process.detail.referral.childPersonIds, ...input.childPersonIds.filter((id) => !process.detail.referral.childPersonIds.includes(id))];
       const summary = t('processes.transitions.summary.cpLinked', { count: input.childPersonIds.length });
-      return outcome(process, process.stage, summary, {
+      const next: MaracProcess = { ...process, detail: { ...process.detail, referral: { ...process.detail.referral, childPersonIds }, safeLivesReturn: { ...process.detail.safeLivesReturn, childrenCount: childPersonIds.length } } };
+      return outcome(next, process.stage, summary, {
         followOn: [{ kind: 'open-process', type: 'cp', subjectIds: input.childPersonIds, summary: input.summary, source: t('processes.transitions.summary.cpSource', { reference: process.reference }) }],
         outbound: null,
       });

@@ -16,8 +16,9 @@ test.use({ viewport: { width: 1440, height: 900 } });
  */
 /** The MARAC coordinator opens a referral on a new victim and schedules the meeting with Janet invited by hand. */
 async function scheduleMarac(page: Page, givenName: string, familyName: string, date: string): Promise<{ reference: string; title: string }> {
+  await createPerson(page, 'Gordon', familyName, '1985-04-19');
   await createPerson(page, givenName, familyName, '1988-11-03');
-  const reference = await startCase(page, 'marac', 'Police Scotland, domestic abuse unit', 'Third call-out in two months. DASH scored 14 with a professional judgement referral.');
+  const reference = await startCase(page, 'marac', 'Police Scotland, domestic abuse unit', 'Third call-out in two months. DASH scored 14 with a professional judgement referral.', { perpetrator: `Gordon ${familyName}` });
   await page.goto('/meetings');
   await waitForData(page);
   await page.getByTestId('schedule-meeting').click();
@@ -41,8 +42,9 @@ async function scheduleMarac(page: Page, givenName: string, familyName: string, 
 test.describe('scheduling', () => {
   test('from the Meetings screen: the matrix proposes the list, the left-off are recorded, and the invitee is told', async ({ page }) => {
     await signInAs(page, 'usr_karen_findlay');
+    await createPerson(page, 'Gordon', 'Rattray', '1985-04-19');
     await createPerson(page, 'Fiona', 'Rattray', '1988-11-03');
-    const reference = await startCase(page, 'marac', 'Police Scotland, domestic abuse unit', 'Third call-out in two months. DASH scored 14 with a professional judgement referral.');
+    const reference = await startCase(page, 'marac', 'Police Scotland, domestic abuse unit', 'Third call-out in two months. DASH scored 14 with a professional judgement referral.', { perpetrator: 'Gordon Rattray' });
 
     await page.goto('/meetings');
     await waitForData(page);

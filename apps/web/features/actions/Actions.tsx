@@ -1,6 +1,6 @@
 'use client';
 
-import { actionStatusLabel, agencyShort, formatDate, formatDateTime, holdsRoleAction, ownsAction, processShort, relativeDays, roleLabel, type Action } from '@mas/domain';
+import { actionStatusLabel, agencyShort, canRecordTransition, formatDate, formatDateTime, holdsRoleAction, ownsAction, processShort, relativeDays, roleLabel, transitionById, type Action, type Process, type User } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, Dialog, Pill, ProcessMark, SelectField, Table, TableWrap, TextField, TextareaField, useToast } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { PersonLink, PractitionerLink } from '@/components/EntityLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
+import { RecordTransitionDialog } from '@/features/process/transitions/RecordTransitionDialog';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { meetingPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
@@ -19,6 +20,16 @@ import styles from './Actions.module.css';
 
 type View = 'mine' | 'team' | 'agency' | 'all';
 type GroupBy = 'process' | 'agency' | 'none';
+
+/**
+ * The child concern a MARAC action can open in one click (task section 1.4): the same transition
+ * the case offers, from the action that said a child needed one, for the people the tables let
+ * record it. The concern's summary starts from the action so the reader knows where it came from.
+ */
+const LINK_CP_CONCERN = transitionById('marac-link-cp-concern')!;
+function opensChildConcern(process: Process | undefined, user: User): process is Process {
+  return Boolean(process && process.type === 'marac' && process.status === 'open' && LINK_CP_CONCERN.from.includes(process.stage) && canRecordTransition(user, LINK_CP_CONCERN).allowed);
+}
 
 /** Renders the <link> tag of a catalogue message as a link to the given path. */
 const linkTo = (href: string): RichValues => ({ link: (chunks) => <AppLink href={href}>{chunks}</AppLink> });
@@ -48,6 +59,7 @@ export function Actions() {
   const [adding, setAdding] = useState(false);
   const [reassigning, setReassigning] = useState<Action | null>(null);
   const [cancelling, setCancelling] = useState<Action | null>(null);
+  const [concern, setConcern] = useState<{ action: Action; process: Process } | null>(null);
 
   useEffect(() => {
     select(null);
@@ -233,6 +245,11 @@ export function Actions() {
                                   {t('actions.list.cancel')}
                                 </Button>
                               ) : null}
+                              {opensChildConcern(process, user) ? (
+                                <Button size="sm" variant="quiet" onClick={() => setConcern({ action: a, process })} data-testid={`cp-concern-${a.id}`}>
+                                  {t('actions.list.cpConcern')}
+                                </Button>
+                              ) : null}
                             </span>
                           ) : null}
                         </td>
@@ -287,6 +304,18 @@ export function Actions() {
       {adding ? <AddActionDialog open onClose={() => setAdding(false)} /> : null}
       {reassigning ? <ReassignDialog action={reassigning} process={data.processes.find((p) => p.id === reassigning.processId)!} open onClose={() => setReassigning(null)} /> : null}
       {cancelling ? <CancelActionDialog action={cancelling} open onClose={() => setCancelling(null)} /> : null}
+      {concern ? (
+        <RecordTransitionDialog
+          open
+          onClose={() => setConcern(null)}
+          process={concern.process}
+          transition={LINK_CP_CONCERN}
+          initialValue={{ childPersonIds: [], summary: t('actions.cpConcern.summaryFrom', { reference: concern.process.reference, title: concern.action.title }) }}
+          onDone={(result) => {
+            if (result.created?.processId) navigate(processPath(result.created.processId));
+          }}
+        />
+      ) : null}
     </div>
   );
 }

@@ -331,7 +331,11 @@ describe('MARAC', () => {
     expect(planned.clocks.starts).toEqual([{ ruleId: 'marac.flag.expiry' }]);
     const linked = ok(planned.process, 'marac-link-cp-concern', { childPersonIds: ['per_child'], summary: 'The child witnessed the assault and is frightened.' }, 'marac-coordinator');
     expect(linked.followOn[0]).toMatchObject({ kind: 'open-process', type: 'cp', subjectIds: ['per_child'] });
-    expect((record(planned.process, 'marac-link-cp-concern', { childPersonIds: ['per_other'], summary: 'A child not on the referral.' }, 'marac-coordinator') as { errors: string[] }).errors).toContain('childRequired');
+    expect((linked.process as MaracProcess).detail.referral.childPersonIds).toEqual(['per_child']);
+    const another = ok(planned.process, 'marac-link-cp-concern', { childPersonIds: ['per_other'], summary: 'A child the meeting learned of, not on the referral.' }, 'marac-coordinator');
+    expect((another.process as MaracProcess).detail.referral.childPersonIds).toEqual(['per_child', 'per_other']);
+    expect((another.process as MaracProcess).detail.safeLivesReturn.childrenCount).toBe(2);
+    expect((record(planned.process, 'marac-link-cp-concern', { childPersonIds: [], summary: 'No child named.' }, 'marac-coordinator') as { errors: string[] }).errors).toContain('childRequired');
     const feedback = ok(planned.process, 'marac-idaa-feedback', { summary: 'The victim has moved and feels safer.', victimResponse: 'Relieved.' }, 'idaa', 'third-sector');
     expect(feedback.to).toBe('feedback');
     const closed = ok(feedback.process, 'marac-close', { reasonId: 'risk-reduced', note: 'Risk reduced after the perpetrator was remanded.' }, 'marac-coordinator');

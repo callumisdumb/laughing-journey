@@ -240,6 +240,12 @@ export interface TransitionRecordResult extends WriteResult {
 export interface OpenProcessRequest extends OpeningInput {
   /** Set where an open case of the same type already exists and a second is being opened anyway. */
   secondCaseReason?: string;
+  /**
+   * The transition that ordered this opening as a follow-on, which authorises it in place of the
+   * opener check: a child concern raised at MARAC opens the child protection case whoever recorded
+   * the decision (D-224). Eligibility still applies.
+   */
+  authorisedBy?: string;
 }
 
 /** A decision about whether an exclusion the change touches still stands, and why. */
@@ -1265,7 +1271,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
 
     const decision = canOpenProcess(user.roleId, request.type);
-    if (!decision.allowed) return { ok: false, errors: ['processNotYourRole'], nearMatches: [], effects: [] };
+    if (!decision.allowed && !request.authorisedBy) return { ok: false, errors: ['processNotYourRole'], nearMatches: [], effects: [] };
 
     const subjects = request.subjectIds.map((id) => data.people.find((p) => p.id === id)).filter((p): p is Person => p !== undefined);
     if (subjects.length === 0) return { ok: false, errors: ['processNoSubject'], nearMatches: [], effects: [] };
@@ -1732,16 +1738,27 @@ export const useAppStore = create<AppState>((set, get) => ({
           break;
         }
         case 'open-process': {
-          const opened = get().openProcess({ type: follow.type, subjectIds: follow.subjectIds, at, source: follow.source, sourceAgency: user.agency, summary: follow.summary, byName, byUserId: user.id });
-          effects.push(...opened.effects);
-          if (opened.ok && opened.process) {
-            created.processId = opened.process.id;
+          // A subject already on an open case of that type is linked to it rather than given a
+          // second one; the others get the case the decision ordered. The opening is authorised by
+          // the transition (D-224), and a refusal is the transition's refusal, not a quiet miss.
+          const already = follow.subjectIds.flatMap((id) => openProcessesOfType(get().data, id, follow.type));
+          const without = follow.subjectIds.filter((id) => !already.some((p) => p.subjectIds.includes(id)));
+          const targets: Process[] = [...new Map(already.map((p) => [p.id, p])).values()];
+          if (without.length > 0) {
+            const opened = get().openProcess({ type: follow.type, subjectIds: without, at, source: follow.source, sourceAgency: user.agency, summary: follow.summary, byName, byUserId: user.id, authorisedBy: transition.id });
+            effects.push(...opened.effects);
+            if (!opened.ok || !opened.process) return { ...result, ok: false, errors: opened.errors, effects, outcome };
+            targets.unshift(opened.process);
+          }
+          created.processId = targets[0]?.id;
+          for (const target of targets) {
             const parent = current();
-            const links = parent.type === 'marac' ? { ...parent, detail: { ...parent.detail, links: { ...parent.detail.links, cpProcessId: opened.process.id } }, linkedProcessIds: [...parent.linkedProcessIds, opened.process.id] } : { ...parent, linkedProcessIds: [...parent.linkedProcessIds, opened.process.id] };
-            const label = t('processes.transitions.audit.link', { reference: opened.process.reference });
+            if (parent.linkedProcessIds.includes(target.id)) continue;
+            const links = parent.type === 'marac' ? { ...parent, detail: { ...parent.detail, links: { ...parent.detail.links, cpProcessId: parent.detail.links.cpProcessId ?? target.id } }, linkedProcessIds: [...parent.linkedProcessIds, target.id] } : { ...parent, linkedProcessIds: [...parent.linkedProcessIds, target.id] };
+            const label = t('processes.transitions.audit.link', { reference: target.reference });
             effects.push(...get().write({ collection: 'processes', record: links, intent: 'update', act: 'edit', targetType: 'process', targetLabel: label, processId: process.id, versionChange: label }).effects);
-            const child = get().data.processes.find((p) => p.id === opened.process!.id);
-            if (child) effects.push(...get().write({ collection: 'processes', record: { ...child, linkedProcessIds: [...child.linkedProcessIds, process.id] }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: t('processes.transitions.audit.link', { reference: parent.reference }), processId: child.id, versionChange: t('processes.transitions.audit.link', { reference: parent.reference }) }).effects);
+            const child = get().data.processes.find((p) => p.id === target.id);
+            if (child && !child.linkedProcessIds.includes(process.id)) effects.push(...get().write({ collection: 'processes', record: { ...child, linkedProcessIds: [...child.linkedProcessIds, process.id] }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: t('processes.transitions.audit.link', { reference: parent.reference }), processId: child.id, versionChange: t('processes.transitions.audit.link', { reference: parent.reference }) }).effects);
           }
           break;
         }

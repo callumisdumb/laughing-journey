@@ -197,13 +197,13 @@ describe('processNotifications', () => {
     const out = processNotifications(asp(), raised, ctx);
     expect(out).toEqual([expect.objectContaining({ kind: 'classification-raised', toUserId: MOIRA })]);
   });
-  it('lands a MARAC research request with the agency asked and its return with the coordinator', () => {
+  it('says nothing about a research request on the case detail, because the request record raises that itself', () => {
     const before = marac();
     const request: Extract<Process, { type: 'marac' }>['detail']['researchRequests'][number] = { id: 'rr_1', agency: 'health', sentAt: AT, dueAt: '2026-09-08', status: 'sent' };
     const asked = { ...before, detail: { ...(before as Extract<Process, { type: 'marac' }>).detail, researchRequests: [request] } } as Process;
-    expect(processNotifications(before, asked, ctx)).toEqual([expect.objectContaining({ kind: 'request', toRole: { agency: 'health', roleId: 'any' } })]);
+    expect(processNotifications(before, asked, ctx)).toEqual([]);
     const back = { ...asked, detail: { ...(asked as Extract<Process, { type: 'marac' }>).detail, researchRequests: [{ ...request, status: 'returned' }] } } as Process;
-    expect(processNotifications(asked, back, ctx)).toEqual([expect.objectContaining({ kind: 'request-returned', toUserId: ANNE })]);
+    expect(processNotifications(asked, back, ctx)).toEqual([]);
   });
 });
 

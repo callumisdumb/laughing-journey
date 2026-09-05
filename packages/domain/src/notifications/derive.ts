@@ -171,27 +171,9 @@ export function processNotifications(before: Process | undefined, after: Process
   if (after.classificationOverride?.direction === 'raised' && before?.classificationOverride?.at !== after.classificationOverride.at && after.leadUserId) {
     out.push(draft('classification-raised', 'process', after.id, { toUserId: after.leadUserId }, { ...base, keySuffix: after.classificationOverride.at }));
   }
-  if (after.type === 'marac') {
-    const requestsBefore = new Map((before?.type === 'marac' ? before.detail.researchRequests : []).map((r) => [r.id, r]));
-    for (const request of after.detail.researchRequests) {
-      const previous = requestsBefore.get(request.id);
-      if (!previous) {
-        const to: Recipient = request.toUserId ? { toUserId: request.toUserId } : { toRole: { agency: request.agency, roleId: 'any' } };
-        out.push(draft('request', 'process', after.id, to, { ...base, keySuffix: request.id }));
-      } else if (previous.status !== request.status && (request.status === 'returned' || request.status === 'nothing-known') && after.leadUserId) {
-        out.push(draft('request-returned', 'process', after.id, { toUserId: after.leadUserId }, { ...base, keySuffix: request.id }));
-      }
-    }
-  }
-  if (after.type === 'mappa') {
-    const returnsBefore = new Map((before?.type === 'mappa' ? before.detail.preMeetingReturns : []).map((r) => [`${r.agency}:${r.requestedAt}`, r]));
-    for (const ret of after.detail.preMeetingReturns) {
-      const key = `${ret.agency}:${ret.requestedAt}`;
-      const previous = returnsBefore.get(key);
-      if (!previous) out.push(draft('request', 'process', after.id, { toRole: { agency: ret.agency, roleId: 'any' } }, { ...base, keySuffix: key }));
-      else if (previous.status !== ret.status && ret.status !== 'requested' && after.leadUserId) out.push(draft('request-returned', 'process', after.id, { toUserId: after.leadUserId }, { ...base, keySuffix: key }));
-    }
-  }
+  // A research request on a MARAC and a pre-meeting return on a MAPPA are records of their own
+  // (the engine writes an information request for each), and the request record raises the
+  // notification in both directions; the case detail raising one as well told the agency twice.
   return out;
 }
 

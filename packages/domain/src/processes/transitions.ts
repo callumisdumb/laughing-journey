@@ -68,8 +68,19 @@ export function whatHappensNext(process: Process, actor: Pick<TransitionActor, '
     transition,
     permission: canRecordTransition(actor, transition),
     missing: transition.requires(process as never),
-    leadsTo: transition.to.filter((stage) => stage !== process.stage).map((stage) => stageLabel(process.type, stage)),
+    leadsTo: leadsTo(process, transition),
   }));
+}
+
+/**
+ * The stages a transition moves the case to from where it is. A transition that records a step
+ * without moving lists the same stages on both sides, and from any of them it leads nowhere; the
+ * other stages on its list are where it would stay if recorded there, not where it goes.
+ */
+export function leadsTo(process: Process, transition: AnyTransition): string[] {
+  const stays = transition.to.includes(process.stage) && transition.to.every((stage) => transition.from.includes(stage));
+  if (stays) return [];
+  return transition.to.filter((stage) => stage !== process.stage).map((stage) => stageLabel(process.type, stage));
 }
 
 export type StageTransitionResult = { ok: true; outcome: TransitionOutcome } | { ok: false; errors: string[]; missing: MissingThing[]; permission?: PermissionDecision };

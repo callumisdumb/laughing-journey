@@ -1,9 +1,10 @@
 import type { Process, User } from '@mas/domain';
 import type { ComponentType } from 'react';
 
-/** What a form's first value may draw on beside the case: who is recording it. */
+/** What a form's first value may draw on beside the case: who is recording it, and when. */
 export interface TransitionFormContext {
   user: User | null;
+  now: Date;
 }
 
 /** What every transition form receives: the case it decides on and its own value. */

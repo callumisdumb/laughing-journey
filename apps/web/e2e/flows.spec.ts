@@ -509,20 +509,244 @@ test.describe('F.2.2 child protection, driven from a concern to de-registration'
   });
 });
 
-test.describe('F.2.3 MARAC, and the cross-process chain', () => {
-  test('the repeat check runs against the twelve month window', async ({ page }) => {
+test.describe('F.2.3 MARAC, driven from a referral to feedback, with the child concern opened from the action list', () => {
+  test.setTimeout(300_000);
+  /**
+   * Nothing seeded. Karen makes the three people and the referral, which names the perpetrator;
+   * the research cannot go out until the meeting is in the diary, because the return counts back
+   * from it; housing and the GP answer from the Sharing screen and the answers land on the case as
+   * returns, the last one completing the clock; Karen hears the case from the meeting workspace and
+   * records the plan with a flag and the MATAC and DSDAS questions; the child concern opens from
+   * her own action in one click and becomes a child protection case Janet can see, linked both
+   * ways; Sadia records the feedback; and the transfer completes every running clock. A second
+   * referral for the same victim then says it is a repeat.
+   */
+  test('the case is walked by the coordinator, two research agencies and the IDAA, and the child concern opens a linked child protection case', async ({ page }) => {
     await signInAs(page, 'usr_karen_findlay');
-    await openByReference(page, 'MARAC-2026-0093');
-    await expect(page.getByText(/repeat/i).first()).toBeVisible();
+    await createPerson(page, 'Craig', 'Lennox', '1988-02-11');
+    await createPerson(page, 'Ellie', 'Lennox', '2019-03-04');
+    await createPerson(page, 'Nicola', 'Lennox', '1990-05-23');
+    const reference = await startCase(page, 'marac', 'DC Sutherland, domestic abuse investigation unit', 'Third call-out in four months. Strangulation disclosed at the DAQ. He still has a key to the flat and Ellie was in the room.', { perpetrator: 'Craig Lennox' });
+    const caseUrl = page.url();
+    const header = page.getByTestId('process-header');
+
+    // The referral names him, says he must not receive anything, and his name is not a link.
+    const referral = page.getByTestId('marac-referral');
+    await expect(referral).toContainText('Craig Lennox');
+    await expect(referral).toContainText('Must not receive anything about this process');
+    await expect(referral.getByRole('link', { name: 'Craig Lennox' })).toHaveCount(0);
+    await expect(referral.getByRole('link', { name: 'Nicola Lennox' })).toBeVisible();
+
+    // The research cannot go out before the meeting is in the diary, and the refusal opens the diary.
+    const research = page.getByTestId('next-marac-send-research-requests');
+    await expect(research).toHaveAttribute('data-state', 'refused');
+    await expect(research).toContainText('No MARAC is scheduled');
+    await capture(page, { phase: PHASE, screen: 'marac-next-refused', fullPage: true });
+    await page.getByTestId('creates-marac-schedule-meeting').click();
+    await expect(page.getByTestId('meeting-type')).toHaveValue('marac');
+    await expect(page.getByTestId('meeting-route')).toHaveAttribute('data-state', 'transition');
+    // The matrix seats the IDAA at the referral, and the perpetrator is left off by his case role.
+    await expect(page.getByTestId('meeting-invitees')).toContainText('Sadia Qureshi');
+    await expect(page.getByTestId('meeting-left-off')).toContainText('Perpetrator: The perpetrator is never told about MARAC');
+    await page.getByTestId('meeting-date').fill('2026-09-17');
+    await page.getByTestId('meeting-time').fill('09:30');
+    await page.getByTestId('meeting-location').fill('Ardvale Police Station, conference room');
+    await page.getByTestId('meeting-chair').selectOption('usr_karen_findlay');
+    await page.getByTestId('meeting-submit').click();
+    await expect(page.getByText('Meeting scheduled').last()).toBeVisible();
+    await expect(page).toHaveURL(/\/meetings\/mtg_/);
+    await waitForData(page);
+    const meetingUrl = page.url();
+
+    // The research goes out to two agencies, the stage moves, and the return clock starts.
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(research).toHaveAttribute('data-state', 'open');
+    await openTransition(page, 'marac-send-research-requests');
+    await page.getByTestId('transition-agency-housing').check();
+    await page.getByTestId('transition-agency-health').check();
+    await page.getByTestId('transition-wording').fill('Nicola Lennox, 23 May 1990; Craig Lennox, 11 Feb 1988; Ellie Lennox, 4 Mar 2019. Anything relevant to the risk of serious harm, for the MARAC on 17 September.');
+    await page.getByTestId('transition-due').fill('2026-09-14');
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'marac-research-form' });
+    await submitTransition(page);
+    await expect(header).toContainText('Research');
+    const researchTable = page.getByTestId('marac-research');
+    await expect(researchTable.getByRole('row').filter({ hasText: 'Housing' })).toContainText('Sent');
+    await expect(researchTable.getByRole('row').filter({ hasText: 'Health' })).toContainText('Sent');
+    await expect(page.getByText(/research return/i).first()).toBeVisible();
+
+    // Housing is told, and answers from the Sharing screen: nothing known, which is still a return.
+    await switchUser(page, 'usr_mark_hepburn');
+    await page.goto('/');
+    await waitForData(page);
+    await page.getByTestId('notifications-bell').click();
+    await expect(page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: `Karen Findlay asked your agency for information on ${reference}` })).toBeVisible();
+    await page.keyboard.press('Escape');
+    await page.goto('/sharing?tab=inbound');
+    await waitForData(page);
+    const housingRequest = page.locator('section').filter({ hasText: `MARAC ${reference}` }).filter({ has: page.getByRole('button', { name: 'Respond' }) }).first();
+    await housingRequest.getByRole('button', { name: 'Respond' }).click();
+    await expect(page.getByRole('dialog')).toContainText(`Karen Findlay asked your agency for MARAC research on ${reference}`);
+    await page.getByTestId('respond-nothing-known').check();
+    // The protocol's confirmation is the engine's rule, and it refuses without it.
+    await page.getByTestId('respond-submit').click();
+    await expect(toast(page).getByText('Confirm the return is relevant, necessary and proportionate')).toBeVisible();
+    await page.getByTestId('respond-proportionate').check();
+    await page.getByTestId('respond-submit').click();
+    await expect(toast(page).getByText(`Recorded on ${reference}: Research returned by housing (nothing known)`)).toBeVisible();
+
+    // The GP answers with what the practice holds.
+    await switchUser(page, 'usr_amira_farouk');
+    await page.goto('/sharing?tab=inbound');
+    await waitForData(page);
+    const healthRequest = page.locator('section').filter({ hasText: `MARAC ${reference}` }).filter({ has: page.getByRole('button', { name: 'Respond' }) }).first();
+    await healthRequest.getByRole('button', { name: 'Respond' }).click();
+    await page.getByTestId('respond-text').fill('Seen twice since June with injuries she said were from a fall; the second time a fractured wrist. Ellie is not registered with the practice.');
+    await page.getByTestId('respond-proportionate').check();
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'marac-research-return' });
+    await page.getByTestId('respond-submit').click();
+    await expect(toast(page).getByText(`Recorded on ${reference}: Research returned by health`)).toBeVisible();
+
+    // Both returns are on the case; the last one completed the clock; Karen was told twice.
+    await switchUser(page, 'usr_karen_findlay');
+    await page.goto('/');
+    await waitForData(page);
+    await page.getByTestId('notifications-bell').click();
+    const panel = page.getByTestId('notifications-panel');
+    await expect(panel.getByTestId('notification-item').filter({ hasText: `Mark Hepburn returned the information you asked for on ${reference}` })).toBeVisible();
+    await expect(panel.getByTestId('notification-item').filter({ hasText: `Amira Farouk returned the information you asked for on ${reference}` })).toBeVisible();
+    await page.keyboard.press('Escape');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(researchTable.getByRole('row').filter({ hasText: 'Housing' })).toContainText('Nothing known');
+    await expect(researchTable.getByRole('row').filter({ hasText: 'Health' })).toContainText('fractured wrist');
+    await expect(page.getByTestId('next-held-marac-heard')).toContainText('Heard at MARAC is recorded when the MARAC is held');
+    await capture(page, { phase: PHASE, screen: 'marac-research-back', fullPage: true });
+
+    // Karen hears the case from the meeting: what each agency shared and the risk discussion.
+    await page.goto(meetingUrl);
+    await waitForData(page);
+    await page.getByTestId('hold-meeting').click();
+    await expect(page.getByTestId('hold-route')).toContainText('Heard at MARAC, which moves the case to Meeting');
+    await page.getByTestId('outcome-shared-add').click();
+    await page.getByTestId('outcome-shared-agency-0').selectOption('police');
+    await page.getByTestId('outcome-shared-summary-0').fill('Three call-outs in four months, the last with a strangulation disclosure. Bail conditions in place.');
+    await page.getByTestId('outcome-shared-add').click();
+    await page.getByTestId('outcome-shared-agency-1').selectOption('health');
+    await page.getByTestId('outcome-shared-summary-1').fill('Two presentations with injuries since June, one fracture.');
+    await page.getByTestId('outcome-risk-discussion').fill('High risk: escalation, strangulation and access to the flat. Ellie present at the last incident.');
+    await page.getByTestId('hold-submit').click();
+    await expect(page.getByText('Meeting closed').last()).toBeVisible();
+    await expect(page.getByTestId('meeting-history')).toContainText('Recorded on the case as Heard at MARAC');
+
+    // The action plan: an action for Karen, one for housing, a housing flag, MATAC and DSDAS considered.
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(header).toContainText('Meeting');
+    await openTransition(page, 'marac-record-action-plan');
+    await page.getByTestId('plan-title').fill('Keeping Nicola and Ellie safe in the flat');
+    await page.getByTestId('plan-outcome-0').fill('Craig cannot get into the flat and Nicola knows who to call');
+    await page.getByTestId('plan-add-action').click();
+    await page.getByTestId('plan-action-title-0').fill('Consider an IRD for Ellie with children and families');
+    await page.getByTestId('plan-action-owner-0').selectOption('usr_karen_findlay');
+    await page.getByTestId('plan-action-due-0').fill('2026-09-24');
+    await page.getByTestId('plan-add-action').click();
+    await page.getByTestId('plan-action-title-1').fill('Change the locks and fit a sanctuary door');
+    await page.getByTestId('plan-action-owner-1').selectOption('usr_mark_hepburn');
+    await page.getByTestId('plan-action-due-1').fill('2026-09-30');
+    await page.getByTestId('transition-add-flag').click();
+    await page.getByTestId('flag-agency-0').selectOption('housing');
+    await page.getByTestId('flag-system-0').fill('Northgate housing');
+    await page.getByTestId('flag-receipt-0').fill('HSG-4471');
+    await page.getByTestId('transition-matac').check();
+    await page.getByTestId('transition-dsdas').check();
+    await page.getByTestId('transition-dsdas-note').fill('No new partner known; to be revisited at feedback.');
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'marac-plan-form', fullPage: true });
+    await submitTransition(page);
+    await expect(header).toContainText('Action plan');
+    await expect(page.getByTestId('marac-flags')).toContainText('HSG-4471');
+    await expect(page.getByTestId('marac-links')).toContainText('MATAC considered');
+    await expect(page.getByTestId('marac-links')).toContainText('DSDAS considered');
+    await expect(page.getByText(/flag expiry/i).first()).toBeVisible();
+    await capture(page, { phase: PHASE, screen: 'marac-plan-recorded', fullPage: true });
+
+    // The child concern opens from Karen's own action in one click, names Ellie, and becomes a
+    // child protection case linked both ways.
+    await page.goto('/actions');
+    await waitForData(page);
+    const irdAction = page.getByRole('row').filter({ hasText: 'Consider an IRD for Ellie' });
+    await irdAction.getByTestId(/^cp-concern-/).click();
+    await expect(page.getByTestId('transition-route')).toContainText('Records a step');
+    await expect(page.getByTestId('transition-summary')).toHaveValue(`From the MARAC action on ${reference}: Consider an IRD for Ellie with children and families.`);
+    await page.getByTestId('transition-child-query').fill('Ellie Lennox');
+    await page.getByTestId('transition-child-results').getByRole('button', { name: /Ellie Lennox/ }).first().click();
+    await expect(page.getByRole('checkbox', { name: /Ellie Lennox/ })).toBeChecked();
+    await page.getByTestId('transition-summary').fill(`From the MARAC action on ${reference}: Ellie was in the room at the last incident and the perpetrator still has a key. An IRD is needed.`);
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'marac-child-concern-form' });
+    await submitTransition(page);
+    await expect(page).toHaveURL(/\/processes\//);
+    await expect(header).toContainText('Ellie Lennox');
+    const cpReference = /CP-\d{4}-\d{4}/.exec((await header.textContent()) ?? '')?.[0] ?? '';
+    expect(cpReference).not.toBe('');
+    await expect(page.getByTestId(`linked-${reference}`)).toBeVisible();
+    await capture(page, { phase: PHASE, screen: 'marac-chain-driven', fullPage: true });
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(page.getByTestId('marac-links')).toContainText('Child protection process');
+    await expect(page.getByTestId('marac-referral')).toContainText('Ellie Lennox');
+
+    // Janet, who holds the children's social work role, finds the concern in her list.
+    await switchUser(page, 'usr_janet_kerr');
+    await page.goto('/processes');
+    await waitForData(page);
+    await expect(page.getByRole('link', { name: cpReference })).toBeVisible();
+    await page.getByRole('link', { name: cpReference }).click();
+    await waitForData(page);
+    await expect(page.getByTestId(`linked-${reference}`)).toBeVisible();
+
+    // Mark has his action.
+    await switchUser(page, 'usr_mark_hepburn');
+    await page.goto('/');
+    await waitForData(page);
+    await page.getByTestId('notifications-bell').click();
+    await expect(page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: 'Change the locks and fit a sanctuary door' })).toBeVisible();
+    await page.keyboard.press('Escape');
+
+    // Sadia records the feedback, which moves the case; Karen transfers it, which completes the clocks.
+    await switchUser(page, 'usr_sadia_qureshi');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await openTransition(page, 'marac-idaa-feedback');
+    await page.getByTestId('transition-summary').fill('Nicola was told the outcome the same afternoon. She has the new locks and knows the door is coming.');
+    await page.getByTestId('transition-victim-response').fill('Relieved. Worried about what happens when the bail ends.');
+    await submitTransition(page);
+    await expect(header).toContainText('Feedback');
+    await expect(page.getByTestId('marac-feedback')).toContainText('Relieved');
+
+    await switchUser(page, 'usr_karen_findlay');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await openTransition(page, 'marac-transfer');
+    await page.getByTestId('transition-area').fill('Lanarkshire');
+    await page.getByTestId('transition-coordinator').fill('J Smith');
+    await submitTransition(page);
+    await expect(header).toContainText('Transferred');
+    await expect(page.getByTestId('marac-links')).toContainText('Transferred to Lanarkshire');
+    await capture(page, { phase: PHASE, screen: 'marac-transferred', fullPage: true });
+
+    // A second referral for the same victim within twelve months is a repeat, and the dialog says so.
+    await page.getByTestId('marac-referral').getByRole('link', { name: 'Nicola Lennox' }).click();
+    await waitForData(page);
+    await page.getByTestId('start-process').click();
+    await page.getByTestId('process-choice-marac').getByRole('radio').check();
+    await expect(page.getByTestId('marac-repeat')).toContainText('This is a repeat referral');
   });
 
-  test('the perpetrator is on the register and their name is not a link', async ({ page }) => {
-    await signInAs(page, 'usr_karen_findlay');
-    await openByReference(page, 'MARAC-2026-0093');
-    await expect(page.getByText(/Must not receive anything about this process/).first()).toBeVisible();
-  });
-
-  test('the chain holds, clickable end to end, and the clock is running at the far end', async ({ page }) => {
+  test('the seeded chain holds, clickable end to end, and the clock is running at the far end', async ({ page }) => {
     // The chain a multi-agency audience has spent careers watching break: a MARAC that produced a
     // child protection concern for a child in the same household. Walked here in clicks rather than
     // asserted from the data, because the argument is that a reader can follow it.

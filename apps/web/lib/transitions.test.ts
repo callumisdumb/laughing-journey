@@ -88,3 +88,59 @@ describe('recordTransition', () => {
     expect(state().data.processes.find((p) => p.id === process.id)!.stage).toBe('concern');
   });
 });
+
+describe('MARAC research through the store (step 7)', () => {
+  it('tells each research agency once, lands each return on the case, and the last return completes the clock', () => {
+    const process = openMarac();
+    state().scheduleMeeting(process.id, 'marac', schedule);
+    const sent = state().recordTransition(process.id, 'marac-send-research-requests', { agencies: ['housing', 'health'], wording: 'Please search your records for the named people and return anything relevant, necessary and proportionate.', dueAt: '2026-09-08' });
+    expect(sent.ok, sent.errors.join(', ')).toBe(true);
+    const mark = state().data.users.find((u) => u.id === USR.markHepburn)!;
+    const toMark = state().data.notifications.filter((n) => n.kind === 'request' && n.processId === process.id && (n.toUserId === mark.id || (n.toRole && n.toRole.agency === mark.agency)));
+    expect(toMark.map((n) => n.key)).toHaveLength(1);
+    const requests = state().data.informationRequests.filter((r) => r.processId === process.id);
+    expect(requests.map((r) => r.toAgency).sort()).toEqual(['health', 'housing']);
+
+    state().signIn(USR.markHepburn);
+    const housing = requests.find((r) => r.toAgency === 'housing')!;
+    const nil = state().recordTransition(process.id, 'marac-record-research-return', { requestId: housing.id, summary: '', nothingKnown: true, relevantNecessaryProportionate: true });
+    expect(nil.ok, nil.errors.join(', ')).toBe(true);
+    expect(state().data.informationRequests.find((r) => r.id === housing.id)?.status).toBe('responded');
+    let after = state().data.processes.find((p) => p.id === process.id) as MaracProcess;
+    expect(after.clocks.find((c) => c.ruleId === 'marac.research.return')?.completedAt).toBeUndefined();
+    expect(after.members.some((m) => m.userId === USR.markHepburn)).toBe(true);
+
+    state().signIn(USR.amiraFarouk);
+    const health = requests.find((r) => r.toAgency === 'health')!;
+    const returned = state().recordTransition(process.id, 'marac-record-research-return', { requestId: health.id, summary: 'Seen twice since June with injuries.', nothingKnown: false, relevantNecessaryProportionate: true });
+    expect(returned.ok, returned.errors.join(', ')).toBe(true);
+    after = state().data.processes.find((p) => p.id === process.id) as MaracProcess;
+    expect(after.clocks.find((c) => c.ruleId === 'marac.research.return')?.completedAt).toBeDefined();
+    expect(state().data.notifications.filter((n) => n.kind === 'request-returned' && n.toUserId === USR.karenFindlay && n.processId === process.id)).toHaveLength(2);
+  }, 30_000);
+});
+
+describe('the child concern from a MARAC (step 7)', () => {
+  it('opens a linked child protection case on the coordinator\'s authority, adds the child to the referral, and links a second concern to the case that exists', () => {
+    const process = openMarac();
+    state().scheduleMeeting(process.id, 'marac', schedule);
+    const meetingId = (state().data.processes.find((p) => p.id === process.id) as MaracProcess).detail.meetingId!;
+    state().recordTransition(process.id, 'marac-send-research-requests', { agencies: ['police'], wording: 'Please search your records for the named people and return anything relevant, necessary and proportionate.', dueAt: '2026-09-08' });
+    const heard = state().recordTransition(process.id, 'marac-heard', { meetingId, informationShared: [{ agency: 'police', summary: 'Three call-outs.' }], riskDiscussion: 'High risk with a child in the household.' });
+    expect(heard.ok, heard.errors.join(', ')).toBe(true);
+    const child = state().data.people.find((p) => p.lifeStage === 'child' && !state().data.processes.some((x) => processSubjectIds(x).includes(p.id)))!;
+    const linked = state().recordTransition(process.id, 'marac-link-cp-concern', { childPersonIds: [child.id], summary: 'The child was in the room at the last incident and the perpetrator still has a key.' });
+    expect(linked.ok, linked.errors.join(', ')).toBe(true);
+    const cp = state().data.processes.find((p) => p.id === linked.created?.processId)!;
+    expect(cp).toMatchObject({ type: 'cp', stage: 'concern', subjectIds: [child.id] });
+    expect(cp.linkedProcessIds).toContain(process.id);
+    const marac = state().data.processes.find((p) => p.id === process.id) as MaracProcess;
+    expect(marac.linkedProcessIds).toContain(cp.id);
+    expect(marac.detail.links.cpProcessId).toBe(cp.id);
+    expect(marac.detail.referral.childPersonIds).toContain(child.id);
+    const again = state().recordTransition(process.id, 'marac-link-cp-concern', { childPersonIds: [child.id], summary: 'A further concern for the same child, after the plan.' });
+    expect(again.ok, again.errors.join(', ')).toBe(true);
+    expect(again.created?.processId).toBe(cp.id);
+    expect(state().data.processes.filter((p) => p.type === 'cp' && p.subjectIds.includes(child.id) && p.status === 'open')).toHaveLength(1);
+  }, 30_000);
+});

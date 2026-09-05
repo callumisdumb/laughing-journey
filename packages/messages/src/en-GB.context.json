@@ -145,6 +145,11 @@
         "where": "Toast title after an action is completed"
       }
     },
+    "cpConcern": {
+      "summaryFrom": {
+        "where": "The child concern form opened from an action on a MARAC plan; the first line of its summary."
+      }
+    },
     "escalateDialog": {
       "confirm": {
         "maxLength": 12,
@@ -215,6 +220,9 @@
         "maxLength": 12,
         "screenshot": "phase-4/actions-light-comfortable.png",
         "where": "Row button on an open action that opens the record completion dialog"
+      },
+      "cpConcern": {
+        "where": "The row actions on the Actions screen, for an action on a MARAC case."
       },
       "done": {
         "screenshot": "phase-4/actions-light-comfortable.png",
@@ -18364,6 +18372,168 @@
           "where": "Label of the time field on the medical examination form"
         }
       },
+      "maracCp": {
+        "another": {
+          "where": "The child concern form, opened from the MARAC case or from an action on its plan; it opens a child protection case."
+        },
+        "anotherHint": {
+          "where": "The child concern form, opened from the MARAC case or from an action on its plan; it opens a child protection case."
+        },
+        "children": {
+          "where": "The child concern form, opened from the MARAC case or from an action on its plan; it opens a child protection case."
+        },
+        "childrenHint": {
+          "where": "The child concern form, opened from the MARAC case or from an action on its plan; it opens a child protection case."
+        },
+        "known": {
+          "where": "The child concern form, opened from the MARAC case or from an action on its plan; it opens a child protection case."
+        },
+        "none": {
+          "where": "The child concern form, opened from the MARAC case or from an action on its plan; it opens a child protection case."
+        },
+        "onReferral": {
+          "where": "The child concern form, opened from the MARAC case or from an action on its plan; it opens a child protection case."
+        },
+        "summary": {
+          "where": "The child concern form, opened from the MARAC case or from an action on its plan; it opens a child protection case."
+        },
+        "summaryHint": {
+          "where": "The child concern form, opened from the MARAC case or from an action on its plan; it opens a child protection case."
+        }
+      },
+      "maracFeedback": {
+        "summary": {
+          "where": "The IDAA feedback form on a MARAC case."
+        },
+        "summaryHint": {
+          "where": "The IDAA feedback form on a MARAC case."
+        },
+        "victimResponse": {
+          "where": "The IDAA feedback form on a MARAC case."
+        },
+        "victimResponseHint": {
+          "where": "The IDAA feedback form on a MARAC case."
+        }
+      },
+      "maracPlan": {
+        "addFlag": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "dsdas": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "dsdasHint": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "dsdasNote": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "flagAgency": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "flagExpiry": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "flagExpiryHint": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "flagReceipt": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "flags": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "flagsHint": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "flagSystem": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "matac": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "matacHint": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "matacNote": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "matacReferred": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "perpetrator": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        },
+        "removeFlag": {
+          "where": "The MARAC action plan form, opened from the case after the meeting."
+        }
+      },
+      "maracResearch": {
+        "agencies": {
+          "where": "The send research requests form, opened from the MARAC case."
+        },
+        "agenciesHint": {
+          "where": "The send research requests form, opened from the MARAC case."
+        },
+        "due": {
+          "where": "The send research requests form, opened from the MARAC case."
+        },
+        "dueHint": {
+          "where": "The send research requests form, opened from the MARAC case."
+        },
+        "wording": {
+          "where": "The send research requests form, opened from the MARAC case."
+        },
+        "wordingHint": {
+          "where": "The send research requests form, opened from the MARAC case."
+        }
+      },
+      "maracReturn": {
+        "none": {
+          "where": "The research return form, opened from the MARAC case by an agency answering a request."
+        },
+        "nothingKnown": {
+          "where": "The research return form, opened from the MARAC case by an agency answering a request."
+        },
+        "nothingKnownHint": {
+          "where": "The research return form, opened from the MARAC case by an agency answering a request."
+        },
+        "proportionate": {
+          "where": "The research return form, opened from the MARAC case by an agency answering a request."
+        },
+        "proportionateHint": {
+          "where": "The research return form, opened from the MARAC case by an agency answering a request."
+        },
+        "request": {
+          "where": "The research return form, opened from the MARAC case by an agency answering a request."
+        },
+        "requestHint": {
+          "where": "The research return form, opened from the MARAC case by an agency answering a request."
+        },
+        "requestOption": {
+          "where": "The research return form, opened from the MARAC case by an agency answering a request."
+        },
+        "summary": {
+          "where": "The research return form, opened from the MARAC case by an agency answering a request."
+        },
+        "summaryHint": {
+          "where": "The research return form, opened from the MARAC case by an agency answering a request."
+        }
+      },
+      "maracTransfer": {
+        "area": {
+          "where": "The transfer form on a MARAC case."
+        },
+        "coordinator": {
+          "where": "The transfer form on a MARAC case."
+        },
+        "coordinatorHint": {
+          "where": "The transfer form on a MARAC case."
+        },
+        "hint": {
+          "where": "The transfer form on a MARAC case."
+        }
+      },
       "plan": {
         "actionDue": {
           "where": "Label of the due date on a plan form row"
@@ -18759,6 +18929,12 @@
       },
       "openExisting": {
         "where": "Start a process dialog"
+      },
+      "perpetrator": {
+        "where": "The start process dialog on a person record, when MARAC is chosen."
+      },
+      "perpetratorHint": {
+        "where": "The start process dialog on a person record, when MARAC is chosen."
       },
       "repeatLede": {
         "where": "Start a process dialog, the MARAC repeat warning"
@@ -23170,8 +23346,26 @@
       "intro": {
         "where": "Opening paragraph of the respond dialog: who asked, for what and why"
       },
+      "nothingKnown": {
+        "where": "The respond dialog on the Sharing screen, when the request is MARAC research the case sent."
+      },
+      "nothingKnownHint": {
+        "where": "The respond dialog on the Sharing screen, when the request is MARAC research the case sent."
+      },
+      "proportionate": {
+        "where": "The respond dialog on the Sharing screen, when the request is MARAC research the case sent."
+      },
+      "proportionateHint": {
+        "where": "The respond dialog on the Sharing screen, when the request is MARAC research the case sent."
+      },
       "refused": {
         "where": "Sharing screen, error toast title when the pipeline refuses a response to an information request"
+      },
+      "researchIntro": {
+        "where": "The respond dialog on the Sharing screen, when the request is MARAC research the case sent."
+      },
+      "researchText": {
+        "where": "The respond dialog on the Sharing screen, when the request is MARAC research the case sent."
       },
       "response": {
         "maxLength": 12,

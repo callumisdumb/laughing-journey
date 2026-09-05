@@ -15,6 +15,18 @@ import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } fr
 import { useWriteErrors } from '@/lib/writeErrors';
 import styles from './Sharing.module.css';
 
+/**
+ * The stage-engine transition a response to this request records, where the case sent the request
+ * through the engine (D-222): a MARAC research request is answered as the agency's research return,
+ * so the return lands on the case, completes the research clock when it is the last, and puts the
+ * responder on the case. A request made by hand is answered by hand.
+ */
+function returnTransitionFor(process: Process | undefined, request: InformationRequest): string | null {
+  if (!process || process.status !== 'open') return null;
+  if (process.type === 'marac' && process.detail.researchRequests.some((r) => r.id === request.id)) return 'marac-record-research-return';
+  return null;
+}
+
 /** Renders the <b> tag of a catalogue message as <strong>, for the bold lead-ins on a request. */
 const STRONG: RichValues = { b: (chunks) => <strong>{chunks}</strong> };
 
@@ -41,6 +53,7 @@ export function Sharing() {
   const navigate = useNavigate();
   const grants = useGrants();
   const write = useAppStore((s) => s.write);
+  const recordTransition = useAppStore((s) => s.recordTransition);
   const readErrors = useWriteErrors();
   const select = useSelection((s) => s.select);
   const { toast } = useToast();
@@ -48,6 +61,8 @@ export function Sharing() {
   const tab = route.query.get('tab') ?? 'outbound';
   const [responding, setResponding] = useState<InformationRequest | null>(null);
   const [responseText, setResponseText] = useState('');
+  const [nothingKnown, setNothingKnown] = useState(false);
+  const [proportionate, setProportionate] = useState(false);
   const [fieldsProvided, setFieldsProvided] = useState<string[]>([]);
   const [previewProcess, setPreviewProcess] = useState('');
   const [previewUser, setPreviewUser] = useState('');
@@ -90,8 +105,28 @@ export function Sharing() {
     write({ collection: 'sharingRecords', record: { ...s, status: 'read', readAt: now.toISOString() }, intent: 'update', act: 'read', targetType: 'sharing', targetLabel: s.summary, processId: s.processId, versionChange: t('sharing.audit.read') });
   }
 
+  function reset() {
+    setResponding(null);
+    setResponseText('');
+    setFieldsProvided([]);
+    setNothingKnown(false);
+    setProportionate(false);
+  }
+
   function respond() {
     if (!responding) return;
+    const process = data.processes.find((p) => p.id === responding.processId);
+    const via = returnTransitionFor(process, responding);
+    if (via && process) {
+      const result = recordTransition(process.id, via, { requestId: responding.id, summary: responseText, nothingKnown, relevantNecessaryProportionate: proportionate });
+      if (!result.ok) {
+        toast({ title: t('sharing.respondDialog.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
+        return;
+      }
+      toast({ title: t('sharing.respondDialog.toastTitle'), text: t('sharing.respondDialog.researchText', { reference: process.reference, summary: result.outcome?.summary ?? '' }), tone: 'success' });
+      reset();
+      return;
+    }
     const label = t('sharing.audit.responded', { name: responding.fromName, count: fieldsProvided.length });
     const result = write({ collection: 'informationRequests', record: { ...responding, status: 'responded', response: { at: now.toISOString(), byName: userName(user!), text: responseText, fieldsProvided } }, intent: 'update', act: 'share', targetType: 'sharing', targetLabel: label, processId: responding.processId, versionChange: label });
     if (!result.ok) {
@@ -99,10 +134,11 @@ export function Sharing() {
       return;
     }
     toast({ title: t('sharing.respondDialog.toastTitle'), text: t('sharing.respondDialog.toastText'), tone: 'success' });
-    setResponding(null);
-    setResponseText('');
-    setFieldsProvided([]);
+    reset();
   }
+
+  const respondingProcess = responding ? data.processes.find((p) => p.id === responding.processId) : undefined;
+  const respondingVia = responding ? returnTransitionFor(respondingProcess, responding) : null;
 
   const pProcess = data.processes.find((p) => p.id === previewProcess);
   const pUser = data.users.find((u) => u.id === previewUser);
@@ -227,7 +263,7 @@ export function Sharing() {
                       <SheetHead
                         title={t('sharing.inbound.requests.asksAbout', { name: r.fromName, agency: agencyShort(r.fromAgency), subject: subject ? fullName(subject) : r.subjectId })}
                         meta={t('sharing.inbound.requests.received', { hasProcess: p ? 'yes' : 'no', process: p ? processShort(p.type) : '', reference: p?.reference ?? '', received: formatDateTime(r.createdAt), hasDue: r.dueAt ? 'yes' : 'no', due: r.dueAt ? formatDate(r.dueAt) : '' })}
-                        actions={r.status === 'open' ? <Button size="sm" variant="primary" onClick={() => setResponding(r)}>{t('sharing.inbound.requests.respond')}</Button> : <Pill size="sm" tone={r.status === 'responded' ? 'low' : 'outline'}>{r.status}</Pill>}
+                        actions={r.status === 'open' ? <Button size="sm" variant="primary" onClick={() => setResponding(r)} data-testid={`respond-${r.id}`}>{t('sharing.inbound.requests.respond')}</Button> : <Pill size="sm" tone={r.status === 'responded' ? 'low' : 'outline'}>{r.status}</Pill>}
                       />
                       <SheetBody>
                         <div className={styles.request}>
@@ -258,15 +294,15 @@ export function Sharing() {
 
       <Dialog
         open={responding !== null}
-        onClose={() => setResponding(null)}
+        onClose={reset}
         title={t('sharing.respondDialog.title')}
         size="lg"
         actions={
           <>
-            <Button variant="quiet" onClick={() => setResponding(null)}>
+            <Button variant="quiet" onClick={reset}>
               {t('common.actions.cancel')}
             </Button>
-            <Button variant="primary" disabled={responseText.trim().length < 5} onClick={respond}>
+            <Button variant="primary" disabled={!(respondingVia && nothingKnown) && responseText.trim().length < 5} onClick={respond} data-testid="respond-submit">
               {t('sharing.respondDialog.confirm')}
             </Button>
           </>
@@ -274,14 +310,18 @@ export function Sharing() {
       >
         {responding ? (
           <div className="stack">
-            <p>{t('sharing.respondDialog.intro', { name: responding.fromName, fields: responding.fields.join('; '), purpose: responding.purpose })}</p>
-            <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
-              <legend style={{ fontWeight: 700, fontSize: 'var(--text-sm)', marginBottom: 6 }}>{t('sharing.respondDialog.fieldsLegend')}</legend>
-              {responding.fields.map((f) => (
-                <CheckboxField key={f} label={f} checked={fieldsProvided.includes(f)} onChange={(e) => setFieldsProvided(e.target.checked ? [...fieldsProvided, f] : fieldsProvided.filter((x) => x !== f))} />
-              ))}
-            </fieldset>
-            <TextareaField label={t('sharing.respondDialog.response')} required value={responseText} onChange={(e) => setResponseText(e.target.value)} hint={t('sharing.respondDialog.responseHint')} />
+            {respondingVia ? <p>{t('sharing.respondDialog.researchIntro', { name: responding.fromName, reference: respondingProcess?.reference ?? '', purpose: responding.purpose })}</p> : <p>{t('sharing.respondDialog.intro', { name: responding.fromName, fields: responding.fields.join('; '), purpose: responding.purpose })}</p>}
+            {responding.fields.length > 0 ? (
+              <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
+                <legend style={{ fontWeight: 700, fontSize: 'var(--text-sm)', marginBottom: 6 }}>{t('sharing.respondDialog.fieldsLegend')}</legend>
+                {responding.fields.map((f) => (
+                  <CheckboxField key={f} label={f} checked={fieldsProvided.includes(f)} onChange={(e) => setFieldsProvided(e.target.checked ? [...fieldsProvided, f] : fieldsProvided.filter((x) => x !== f))} />
+                ))}
+              </fieldset>
+            ) : null}
+            {respondingVia ? <CheckboxField label={t('sharing.respondDialog.nothingKnown')} hint={t('sharing.respondDialog.nothingKnownHint')} checked={nothingKnown} onChange={(e) => setNothingKnown(e.target.checked)} data-testid="respond-nothing-known" /> : null}
+            {respondingVia && nothingKnown ? null : <TextareaField label={t('sharing.respondDialog.response')} required value={responseText} onChange={(e) => setResponseText(e.target.value)} hint={t('sharing.respondDialog.responseHint')} data-testid="respond-text" />}
+            {respondingVia ? <CheckboxField label={t('sharing.respondDialog.proportionate')} hint={t('sharing.respondDialog.proportionateHint')} checked={proportionate} onChange={(e) => setProportionate(e.target.checked)} data-testid="respond-proportionate" /> : null}
           </div>
         ) : null}
       </Dialog>

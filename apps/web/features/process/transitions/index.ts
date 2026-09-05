@@ -1,6 +1,7 @@
 import type { TransitionForm } from './registry';
 import { ASP_INQUIRY_OUTCOME, ASP_INVESTIGATORY_STEP, ASP_OPEN_INQUIRY, ASP_PROTECTION_PLAN, ASP_SCREENING, ASP_SUPPORT_PLAN } from './AspForms';
 import { CP_BIRTH, CP_DEREGISTER, CP_RECORD_JII, CP_RECORD_MEDICAL } from './CpForms';
+import { MARAC_ACTION_PLAN, MARAC_IDAA_FEEDBACK, MARAC_LINK_CP_CONCERN, MARAC_RESEARCH_REQUESTS, MARAC_RESEARCH_RETURN, MARAC_TRANSFER } from './MaracForms';
 
 /**
  * The form each transition opens from the case (D-217), keyed on the transition id. Transitions
@@ -20,6 +21,12 @@ export const TRANSITION_FORMS: Readonly<Record<string, TransitionForm>> = {
   'cp-record-medical': CP_RECORD_MEDICAL,
   'cp-deregister': CP_DEREGISTER,
   'cp-birth': CP_BIRTH,
+  'marac-send-research-requests': MARAC_RESEARCH_REQUESTS,
+  'marac-record-research-return': MARAC_RESEARCH_RETURN,
+  'marac-record-action-plan': MARAC_ACTION_PLAN,
+  'marac-link-cp-concern': MARAC_LINK_CP_CONCERN,
+  'marac-idaa-feedback': MARAC_IDAA_FEEDBACK,
+  'marac-transfer': MARAC_TRANSFER,
 };
 
 export type { TransitionForm, TransitionFormContext, TransitionFormProps } from './registry';

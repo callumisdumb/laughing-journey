@@ -24,11 +24,17 @@ export async function createPerson(page: Page, givenName: string, familyName: st
   await expect(page.getByRole('heading', { name: new RegExp(`${givenName} ${familyName}`) })).toBeVisible();
 }
 
-export async function startCase(page: Page, type: 'asp' | 'cp' | 'marac' | 'mappa' | 'awi', source: string, summary: string): Promise<string> {
+export async function startCase(page: Page, type: 'asp' | 'cp' | 'marac' | 'mappa' | 'awi', source: string, summary: string, options: { perpetrator?: string } = {}): Promise<string> {
   await page.getByTestId('start-process').click();
   await page.getByTestId(`process-choice-${type}`).getByRole('radio').check();
   await page.getByTestId('process-source').fill(source);
   await page.getByTestId('process-summary').fill(summary);
+  if (options.perpetrator) {
+    // A MARAC referral names its perpetrator, picked from the people the record knows.
+    await page.getByTestId('process-perpetrator-query').fill(options.perpetrator);
+    await page.getByTestId('process-perpetrator-results').getByRole('button', { name: new RegExp(options.perpetrator) }).first().click();
+    await expect(page.getByTestId('process-perpetrator-chosen')).toContainText(options.perpetrator);
+  }
   await page.getByTestId('start-process-submit').click();
   await waitForData(page);
   const header = (await page.getByTestId('process-header').textContent()) ?? '';

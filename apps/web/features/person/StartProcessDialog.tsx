@@ -28,6 +28,7 @@ import { Button, Dialog, Pill, SelectField, TextField, TextareaField, useToast }
 import { Ban, Check, Clock, FolderPlus, TriangleAlert } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
+import { PersonPicker } from '@/components/PersonPicker';
 import { useNavigate } from '@/lib/router';
 import { processPath } from '@/lib/routes';
 import { fullName } from '@/lib/selectors';
@@ -64,6 +65,7 @@ export function StartProcessDialog({ person, open, onClose }: { person: Person; 
   const [sourceReference, setSourceReference] = useState('');
   const [summary, setSummary] = useState('');
   const [secondCaseReason, setSecondCaseReason] = useState('');
+  const [perpetrator, setPerpetrator] = useState<Person | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
 
   const answers = useMemo(() => eligibilityForAll(person, now), [person, now]);
@@ -94,12 +96,12 @@ export function StartProcessDialog({ person, open, onClose }: { person: Person; 
       byUserId: user?.id,
       secondCaseReason: secondCaseReason.trim() || undefined,
       /*
-       * A MARAC referral needs its three people and its assessment. Opened from a person record the
-       * subject is the victim; the perpetrator and the assessment are recorded on the referral form
-       * afterwards, which is why this path is offered from the person record and the full referral
-       * dialog is offered from the MARAC screen.
+       * A MARAC referral names its victim and its perpetrator. Opened from a person record the
+       * subject is the victim and the perpetrator is picked here, because a referral without one
+       * would put the victim on her own must-not-receive register (D-223); the assessment and the
+       * children are recorded on the case afterwards.
        */
-      marac: type === 'marac' ? { victimPersonId: person.id, perpetratorPersonId: person.id, childPersonIds: [], riskAssessmentId: undefined, repeat: repeat.repeat, previousHearingAt: repeat.previousAt?.slice(0, 10), professionalJudgement: true } : undefined,
+      marac: type === 'marac' ? { victimPersonId: person.id, perpetratorPersonId: perpetrator?.id ?? '', childPersonIds: [], riskAssessmentId: undefined, repeat: repeat.repeat, previousHearingAt: repeat.previousAt?.slice(0, 10), professionalJudgement: true } : undefined,
       mappa: type === 'mappa' ? { category: 1, level: 1, leadResponsibleAuthority: 'police', visorReference: '' } : undefined,
       preBirth: type === 'cp' && person.lifeStage === 'unborn' && person.expectedDeliveryDate ? { expectedDeliveryDate: person.expectedDeliveryDate, motherPersonId: person.id } : undefined,
     });
@@ -124,7 +126,7 @@ export function StartProcessDialog({ person, open, onClose }: { person: Person; 
     return resolveNeedToKnow({ process: type, stage: OPENING_STAGE[type], flags: {} }, config.needToKnow, config.exclusions).recipients.length;
   }, [type, config]);
 
-  const ready = Boolean(type && chosen?.eligibility.eligible && permission?.allowed && source.trim() !== '' && summary.trim().length > 10 && (existing.length === 0 || secondCaseReason.trim().length >= 10));
+  const ready = Boolean(type && chosen?.eligibility.eligible && permission?.allowed && source.trim() !== '' && summary.trim().length > 10 && (type !== 'marac' || perpetrator) && (existing.length === 0 || secondCaseReason.trim().length >= 10));
 
   return (
     <Dialog
@@ -224,6 +226,7 @@ export function StartProcessDialog({ person, open, onClose }: { person: Person; 
               <TextField label={t('processes.open.sourceReference')} value={sourceReference} onChange={(e) => setSourceReference(e.target.value)} />
             </div>
             <TextareaField label={t('processes.open.summary')} hint={t('processes.open.summaryHint')} value={summary} onChange={(e) => setSummary(e.target.value)} rows={3} required data-testid="process-summary" />
+            {type === 'marac' ? <PersonPicker label={t('processes.open.perpetrator')} hint={t('processes.open.perpetratorHint')} value={perpetrator} onChange={setPerpetrator} exclude={[person.id]} idPrefix="process-perpetrator" /> : null}
 
             <div className={styles.consequences} data-testid="process-consequences">
               <h4 className={styles.consequencesTitle}>
