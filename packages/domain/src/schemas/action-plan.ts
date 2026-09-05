@@ -1,6 +1,6 @@
 import { t } from '@mas/messages';
 import { z } from 'zod';
-import { ACTION_STATUSES, AGENCIES, PLAN_TYPES, RISK_BANDS, RISK_TOOLS, VIEWS_KINDS } from '../enums';
+import { ACTION_STATUSES, AGENCIES, PLAN_TYPES, RISK_BANDS, RISK_TOOLS, ROLES, VIEWS_KINDS } from '../enums';
 import { correctable, evidenceRefSchema, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
 export const actionSchema = z.object({
@@ -12,6 +12,11 @@ export const actionSchema = z.object({
   title: z.string(),
   detail: z.string().optional(),
   ownerUserId: idSchema.optional(),
+  /**
+   * An action assigned to a role rather than a person: every holder of the role in the agency sees
+   * it on their worklist until one of them takes it, at which point `ownerUserId` is set.
+   */
+  ownerRoleId: z.enum(ROLES).optional(),
   ownerName: z.string(),
   ownerAgency: z.enum(AGENCIES),
   due: isoDate,
@@ -22,6 +27,7 @@ export const actionSchema = z.object({
   escalatedToName: z.string().optional(),
   createdAt: isoDateTime,
   createdByName: z.string(),
+  createdByUserId: idSchema.optional(),
   ...correctable,
 });
 export type Action = z.infer<typeof actionSchema>;

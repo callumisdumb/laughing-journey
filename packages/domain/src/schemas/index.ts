@@ -6,6 +6,7 @@ export * from './process';
 export * from './meeting';
 export * from './action-plan';
 export * from './sharing';
+export * from './notification';
 export * from './audit';
 export * from './connector';
 export * from './outbox';

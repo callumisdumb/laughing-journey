@@ -3,9 +3,11 @@
 import { accessRestrictionLabel, actionStatusLabel, identifiesSubject, agencyShort, classificationLabel, effectiveClassification, formatDate, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, recipientView, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type ClassifiedRecord, type Process } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { AgencyMark, Dialog, IconButton, Pill, RiskBand } from '@mas/ui';
-import { Ban, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, ShieldCheck, Users } from 'lucide-react';
+import { Ban, Bell, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, ShieldCheck, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { PractitionerLink } from '@/components/EntityLink';
+import { NotificationList } from '@/components/notifications/NotificationList';
+import { useNotifications } from '@/components/notifications/useNotifications';
 import { useAppearance } from '@/lib/appearance';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, fullName, membersByAgency, personById, processById, processesInvolving, userById, userName } from '@/lib/selectors';
@@ -280,6 +282,14 @@ function ProcessDrawer({ process }: { process: Process }) {
       <Section title={t('nav.drawer.section.classification')} icon={<ShieldCheck size={14} aria-hidden="true" />}>
         <ProcessClassification process={process} />
       </Section>
+      {/*
+        What this person has been told about this case. Shown at every level, because each line was
+        written at the level its recipient holds: a presence-level reader sees that the case changed
+        and nothing else, which is exactly what they were told.
+      */}
+      <Section title={t('nav.drawer.section.notifications')} icon={<Bell size={14} aria-hidden="true" />}>
+        <ProcessNotifications processId={process.id} />
+      </Section>
       {identifiesSubject(level) ? (
         <>
           <Section title={t('nav.drawer.section.whoIsInvolved')} icon={<Users size={14} aria-hidden="true" />}>
@@ -299,6 +309,17 @@ function ProcessDrawer({ process }: { process: Process }) {
         <p className={styles.withheld}>{t('nav.drawer.process.withheld')}</p>
       )}
     </>
+  );
+}
+
+function ProcessNotifications({ processId }: { processId: string }) {
+  const t = useT();
+  const { items, open } = useNotifications();
+  const mine = items.filter((i) => i.processId === processId).slice(0, 5);
+  return (
+    <div data-testid="drawer-notifications">
+      <NotificationList items={mine} onOpen={open} emptyText={t('nav.drawer.notifications.empty')} />
+    </div>
   );
 }
 

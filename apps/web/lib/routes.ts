@@ -11,6 +11,7 @@ export const STATIC_ROUTES = [
   // The two-persona view, which is a demo affordance rather than a screen of the product.
   'compare',
   'inbox',
+  'notifications',
   'processes',
   'meetings',
   'actions',

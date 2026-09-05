@@ -97,6 +97,7 @@ export const DEFAULT_CONFIG: Config = {
     { date: '2027-09-20', title: 'Clydeshore September holiday' },
   ],
   breakGlassHours: 4,
+  actionEscalationDays: 3,
   breakGlassReasons: ['Immediate risk to a child', 'Immediate risk to an adult', 'Court, hearing or panel deadline today', 'Request from the coordinator or chair', 'Other (state why)'],
   guidanceEditions: [
     { id: 'asp-cop', label: 'ASP Code of Practice', edition: 'July 2022' },

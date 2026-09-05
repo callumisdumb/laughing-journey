@@ -1,0 +1,19 @@
+.panel {
+  --dialog-width: 28rem;
+}
+
+.count {
+  margin: 0 0 8px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.seeAll {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 8px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-accent-1);
+}

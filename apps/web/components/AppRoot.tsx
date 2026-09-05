@@ -39,6 +39,17 @@ function Boot() {
   const queryClient = useMemo(() => new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 30_000 } } }), []);
   useDesktop();
 
+  // Clocks are re-read once a minute while the real clock is on, because "evaluated whenever the
+  // real clock advances" has to mean something on a screen left open overnight. The demo clock is
+  // evaluated when it moves, by the store, and never here.
+  const liveClock = useAppStore((s) => s.session.liveClock);
+  const evaluateClocks = useAppStore((s) => s.evaluateClocks);
+  useEffect(() => {
+    if (!ready || !liveClock) return undefined;
+    const handle = window.setInterval(() => evaluateClocks(), 60_000);
+    return () => window.clearInterval(handle);
+  }, [ready, liveClock, evaluateClocks]);
+
   useEffect(() => {
     hydrate();
     // The simulator's state is read by the reconciliation screen as well as by the simulator itself,

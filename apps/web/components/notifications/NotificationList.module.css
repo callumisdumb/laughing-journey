@@ -1,0 +1,116 @@
+/*
+ * A list of what the product has told one person.
+ *
+ * Every row is one button and one dismiss control, so the whole row opens the thing and the corner
+ * hides it; an unread row carries a mark in the gutter and the word "Unread" for a screen reader,
+ * because the mark alone is colour. The grouped form puts a case reference over each run of rows,
+ * so a bell with nine things in it reads as three cases rather than nine interruptions.
+ */
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.group + .group {
+  margin-top: 12px;
+}
+
+.groupTitle {
+  margin: 0 0 4px;
+  padding: 0 4px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  gap: 0 8px;
+  align-items: start;
+  border-bottom: 1px solid var(--color-line-1);
+}
+
+.item[data-state='unread'] {
+  background: var(--color-paper-1);
+}
+
+.mark {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 16px 0 0 4px;
+  background: transparent;
+  border-radius: 50%;
+}
+
+.item[data-state='unread'] .mark {
+  background: var(--color-accent-1);
+}
+
+.open {
+  display: grid;
+  gap: 2px;
+  min-height: 44px;
+  padding: 8px 4px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.open:hover {
+  background: var(--color-paper-2);
+}
+
+.open:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: -2px;
+}
+
+.kind {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-ink-2);
+}
+
+.item[data-state='unread'] .text {
+  font-weight: 700;
+}
+
+.text {
+  font-size: var(--text-sm);
+  color: var(--color-ink-1);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.time {
+  font-variant-numeric: tabular-nums;
+}
+
+.dismiss {
+  margin-top: 6px;
+}
+
+.empty {
+  margin: 0;
+  padding: 8px 4px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}

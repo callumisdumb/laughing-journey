@@ -13,6 +13,7 @@ import { Home } from '@/features/home/Home';
 import { Inbox } from '@/features/inbox/Inbox';
 import { MeetingList } from '@/features/meetings/MeetingList';
 import { MeetingWorkspace } from '@/features/meetings/MeetingWorkspace';
+import { Notifications } from '@/features/notifications/Notifications';
 import { PeopleList } from '@/features/people/PeopleList';
 import { PersonRecord } from '@/features/person/PersonRecord';
 import { PractitionerCard } from '@/features/practitioner/PractitionerCard';
@@ -35,6 +36,7 @@ const TITLE_KEYS = {
   compare: 'nav.titles.compare',
   search: 'nav.titles.search',
   inbox: 'nav.titles.inbox',
+  notifications: 'nav.titles.notifications',
   processes: 'nav.titles.processes',
   meetings: 'nav.titles.meetings',
   actions: 'nav.titles.actions',
@@ -79,6 +81,8 @@ export function Screen() {
       return <Search />;
     case 'inbox':
       return <Inbox />;
+    case 'notifications':
+      return <Notifications />;
     case 'processes':
       return id ? <ProcessScreen processId={id} /> : <ProcessList />;
     case 'meetings':

@@ -169,6 +169,12 @@ export const configSchema = z.object({
   councilHolidays: z.array(councilHolidaySchema),
   /** Break-glass window in hours. */
   breakGlassHours: z.number().int().positive(),
+  /**
+   * How many calendar days after an action falls due its owner's silence is escalated to the case
+   * lead, recorded on the action. Configuration rather than a rule, because no national guidance
+   * sets it and a partnership will want its own figure.
+   */
+  actionEscalationDays: z.number().int().positive(),
   /** Reason categories offered in the break-glass dialog; the free-text reason is recorded alongside. */
   breakGlassReasons: z.array(z.string()).min(1),
   /** Editions in use, shown in Help and Admin. */

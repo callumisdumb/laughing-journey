@@ -11,6 +11,7 @@ import { seedBulkPopulation } from './bulk';
 import { createContext, type BuildContext } from './context';
 import { seedOrganisations } from './organisations';
 import { seedAudit } from './audit';
+import { seedNotifications } from './notifications';
 
 export const DEFAULT_SEED = 'clydeshore-2026';
 
@@ -53,6 +54,7 @@ export function buildDataset(options: BuildOptions = {}): Dataset {
   seedBulkPopulation(ctx, options.households ?? 58);
   linkMemberships(ctx);
   seedAudit(ctx);
+  seedNotifications(ctx);
   if (options.validate) datasetSchema.parse(ctx.data);
   return ctx.data;
 }

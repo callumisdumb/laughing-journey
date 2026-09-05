@@ -59,7 +59,7 @@ Outline written in Phase 0. From Phase 1 the entity tables below are regenerated
 
 ## Generated tables
 
-Generated on 2026-09-04 by `pnpm docs:data-model`. Do not edit below this line.
+Generated on 2026-09-05 by `pnpm docs:data-model`. Do not edit below this line.
 
 ### Organisation
 
@@ -529,6 +529,7 @@ Variant 5
 | `title` | string | yes |
 | `detail` | string | no |
 | `ownerUserId` | string | no |
+| `ownerRoleId` | enum (38 values) | no |
 | `ownerName` | string | yes |
 | `ownerAgency` | enum (11 values) | yes |
 | `due` | string (date) | yes |
@@ -539,6 +540,7 @@ Variant 5
 | `escalatedToName` | string | no |
 | `createdAt` | string (date-time) | yes |
 | `createdByName` | string | yes |
+| `createdByUserId` | string | no |
 | `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
 | `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
@@ -679,6 +681,27 @@ Variant 5
 | `response` | object { at, byName, text, fieldsProvided } | no |
 | `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
 | `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
+
+### Notification
+
+| Field | Type | Required |
+|---|---|---|
+| `id` | string | yes |
+| `synthetic` | literal true | yes |
+| `toUserId` | string | no |
+| `toRole` | object { agency, roleId } | no |
+| `kind` | enum (23 values) | yes |
+| `sourceType` | enum (9 values) | yes |
+| `sourceId` | string | yes |
+| `processId` | string | no |
+| `subjectId` | string | no |
+| `detailLevel` | "presence" \| "summary" \| "full" \| "fields" | yes |
+| `lawfulBasisId` | string | no |
+| `createdAt` | string (date-time) | yes |
+| `readAt` | string (date-time) | no |
+| `dismissedAt` | string (date-time) | no |
+| `createdByUserId` | string | no |
+| `key` | string | yes |
 
 ### ConnectorEvent
 
@@ -828,6 +851,7 @@ Variant 5
 | `holidayObservance` | array of object { date, organisationId, observed, reason } | yes |
 | `councilHolidays` | array of object { date, title } | yes |
 | `breakGlassHours` | integer | yes |
+| `actionEscalationDays` | integer | yes |
 | `breakGlassReasons` | array of string | yes |
 | `guidanceEditions` | array of object { id, label, edition } | yes |
 

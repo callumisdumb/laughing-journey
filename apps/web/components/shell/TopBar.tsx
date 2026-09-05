@@ -6,23 +6,24 @@ import { useState } from 'react';
 import { Badge, Button, IconButton } from '@mas/ui';
 import { AppLink } from '@/components/AppLink';
 import { CreateMenu } from '@/components/CreateMenu';
+import { NotificationsPanel } from '@/components/shell/NotificationsPanel';
 import { PersonaSwitcher } from '@/components/shell/PersonaSwitcher';
 import { SearchBox } from '@/components/shell/SearchBox';
 import { DRAWER_STATE, RAIL_STATE, useChrome, useLayoutMode } from '@/lib/layout';
-import { useNavigate } from '@/lib/router';
-import { clocksForUser, unreadSharesForUser, userName } from '@/lib/selectors';
+import { unreadNotificationsForUser } from '@/lib/notifications';
+import { clocksForUser, userName } from '@/lib/selectors';
 import { useConfig, useCurrentUser, useData, useNow } from '@/lib/store';
 import styles from './TopBar.module.css';
 
 export function TopBar() {
   const t = useT();
-  const navigate = useNavigate();
   const user = useCurrentUser();
   const data = useData();
   const config = useConfig();
   const now = useNow();
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const mode = useLayoutMode();
   const railOverlayOpen = useChrome((s) => s.railOverlayOpen);
   const drawerOverlayOpen = useChrome((s) => s.drawerOverlayOpen);
@@ -31,7 +32,7 @@ export function TopBar() {
 
   const clocks = user ? clocksForUser(data, config, user, now).filter((c) => c.daysRemaining <= 7) : [];
   const worst = clocks[0]?.band ?? 'low';
-  const unread = user ? unreadSharesForUser(data, user).length : 0;
+  const unread = user ? unreadNotificationsForUser(data, config, user).length : 0;
 
   return (
     <header className={styles.bar}>
@@ -73,11 +74,16 @@ export function TopBar() {
           <PanelRightOpen size={18} aria-hidden="true" />
         </IconButton>
       ) : null}
+      {/*
+        The bell counts everything unread of every kind and opens the panel rather than a screen,
+        because the question it answers is "what happened while I was away" and the answer is a
+        list, not a destination. Its name carries the count so a screen reader hears it.
+      */}
       <span className={styles.notify}>
-        <IconButton aria-label={t('nav.topBar.notifications', { count: unread })} onClick={() => navigate('/sharing?tab=inbound')}>
+        <IconButton aria-label={t('nav.topBar.notifications', { count: unread })} aria-haspopup="dialog" aria-expanded={notificationsOpen} onClick={() => setNotificationsOpen(true)} data-testid="notifications-bell">
           <Bell size={18} aria-hidden="true" />
         </IconButton>
-        {unread > 0 ? <Badge className={styles.notifyBadge} count={unread} label={t('nav.topBar.unread')} tone="critical" /> : null}
+        {unread > 0 ? <Badge className={styles.notifyBadge} count={unread} label={t('nav.topBar.unread')} tone="critical" data-testid="notifications-unread" /> : null}
       </span>
       {/*
         The label is explicit rather than taken from the text, because below 1024 the name and the
@@ -97,6 +103,7 @@ export function TopBar() {
         <ChevronDown size={14} aria-hidden="true" />
       </button>
       <PersonaSwitcher open={switcherOpen} onClose={() => setSwitcherOpen(false)} />
+      <NotificationsPanel open={notificationsOpen} onClose={() => setNotificationsOpen(false)} />
       <CreateMenu open={createOpen} onClose={() => setCreateOpen(false)} />
     </header>
   );

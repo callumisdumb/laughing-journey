@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Agency, type ConnectorId, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type InformationRequest, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -12,6 +12,7 @@ import { useViewAs } from '@/lib/viewAs';
 import { isSealedBlob, openLocal, sealLocal } from '@/lib/localStore';
 import { appendAudit, auditDetailKey, emptyChain, type AuditChain } from '@/lib/auditChain';
 import { buildVault, type Vault } from '@/lib/vault';
+import { ESCROW_HOLDERS } from '@/lib/keyManagement';
 import { encryptForGateway, platformViewOutbound } from '@mas/connectors';
 import { generateKeyPair, type PublicKey } from '@mas/crypto';
 import { create } from 'zustand';
@@ -92,6 +93,24 @@ interface AppState {
   setDemoNow: (iso: string) => void;
   resetDemoNow: () => void;
   resetDemo: () => void;
+  /**
+   * The recipient's own state on a notification: read, all read, dismissed. Not audited, because
+   * reading a pointer to a record is not reading the record; the record's own read is ledgered
+   * when the person opens it (D-209).
+   */
+  markNotificationRead: (id: string) => void;
+  markAllNotificationsRead: () => void;
+  dismissNotification: (id: string) => void;
+  /**
+   * The clock engine's write: a warning for every running clock inside its rule's window, a breach
+   * for every one past due, the same for every open action, and the escalation marker on an action
+   * whose owner has been silent past the configured interval. Evaluated whenever the instant moves
+   * and after any write that could start a clock, and safe to run again because every draft carries
+   * a key the store refuses twice. `asRead` records what it finds as already read, which is how the
+   * seeded state's standing warnings are written without lighting the bell before anything happened.
+   * Returns how many it wrote.
+   */
+  evaluateClocks: (asRead?: boolean) => number;
   /** Named states the presenter has kept, newest first. */
   snapshots: DemoSnapshot[];
   takeSnapshot: (name: string) => void;
@@ -227,6 +246,7 @@ const TARGET_TYPES: Record<Collection, AuditEntry['targetType']> = {
   outbox: 'sharing',
   inbound: 'inbox',
   audit: 'config',
+  notifications: 'sharing',
 };
 
 /**
@@ -297,6 +317,7 @@ const EMPTY: Dataset = {
   outbox: [],
   inbound: [],
   audit: [],
+  notifications: [],
 };
 
 /**
@@ -482,6 +503,33 @@ function upsert<K extends Collection>(get: () => AppState, set: Setter, collecti
   writeJson(OVERLAY_KEY, overlay);
 }
 
+/**
+ * Write the notifications a change implies (docs/RECORDS.md section 7, step 8).
+ *
+ * The drafts say who and what; this decides whether. The actor is never told about their own act,
+ * an excluded party on the case is never a recipient, by the same check that refuses them as a share
+ * recipient, and a draft whose key the store already holds is the same notification and is not
+ * written twice. Nothing here composes text: the summary a person reads is rendered from the kind
+ * and the source at read time (lib/notifications.ts), so a notification never carries content its
+ * recipient's level would withhold.
+ */
+function notify(get: () => AppState, set: Setter, drafts: readonly NotificationDraft[], ctx: { actorUserId?: string; process?: Process; asRead?: boolean }): Notification[] {
+  const { data, config } = get();
+  const at = get().now().toISOString();
+  const held = new Set(data.notifications.map((n) => n.key));
+  const written: Notification[] = [];
+  for (const d of drafts) {
+    if (held.has(d.key)) continue;
+    const process = d.processId && d.processId !== ctx.process?.id ? data.processes.find((p) => p.id === d.processId) : ctx.process;
+    if (!admissible(d, { actorUserId: ctx.actorUserId, process, exclusions: config.exclusions, relationships: data.relationships, users: data.users })) continue;
+    held.add(d.key);
+    const record: Notification = { ...d, id: get().newId('ntf'), synthetic: true, createdAt: at, createdByUserId: ctx.actorUserId, readAt: ctx.asRead ? at : undefined };
+    upsert(get, set, 'notifications', record);
+    written.push(record);
+  }
+  return written;
+}
+
 export const useAppStore = create<AppState>((set, get) => ({
   ready: false,
   data: EMPTY,
@@ -503,6 +551,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     const config: Config = overlay.config ? { ...DEFAULT_CONFIG, ...overlay.config } : DEFAULT_CONFIG;
     set({ data, config, vault: buildVault(data, config), session: { ...session, breakGlass: session.breakGlass, liveClock: session.liveClock ?? false, nowIso: session.nowIso ?? DEMO_NOW_ISO }, snapshots: readJson<DemoSnapshot[]>(SNAPSHOT_KEY) ?? [], ready: true });
     applyConfiguredAppearanceDefaults(config);
+    // The standing warnings of the seeded state are recorded as already read the first time this
+    // device sees them; anything that falls due after that is new and stays unread across a reload.
+    get().evaluateClocks(overlay.notifications === undefined);
   },
   now: () => (get().session.liveClock ? new Date() : parseDemoNow(get().session.nowIso)),
   currentUser: () => {
@@ -575,12 +626,16 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ session });
     writeJson(SESSION_KEY, session);
     const p = get().data.processes.find((x) => x.id === processId);
-    get().audit({ act: 'break-glass', targetType: 'process', targetId: processId, targetLabel: p ? `${p.reference}: ${p.title}` : processId, processId, reason: `${category}: ${reason}`, restricted: true, expiresAt: grant.expiresAt });
+    const entry = get().audit({ act: 'break-glass', targetType: 'process', targetId: processId, targetLabel: p ? `${p.reference}: ${p.title}` : processId, processId, reason: `${category}: ${reason}`, restricted: true, expiresAt: grant.expiresAt });
+    // The lead of the case that was opened, and the escrow holders who answer for emergency access,
+    // are told. The person who broke the glass is not: they know.
+    if (p && entry) notify(get, set, breakGlassNotifications(p, entry.id, ESCROW_HOLDERS.map((h) => ({ agency: h.agency, roleId: h.roleId }))), { actorUserId: entry.userId, process: p });
   },
   setLiveClock: (v) => {
     const session = { ...get().session, liveClock: v };
     set({ session });
     writeJson(SESSION_KEY, session);
+    get().evaluateClocks();
   },
   /**
    * Move the demo clock. Absolute, so a jump forwards and a jump back are the same operation and
@@ -594,11 +649,15 @@ export const useAppStore = create<AppState>((set, get) => ({
     const session = { ...get().session, nowIso: iso, liveClock: false };
     set({ session });
     writeJson(SESSION_KEY, session);
+    // The clocks are re-read against the new instant, which is the whole point of moving it: a
+    // deadline the jump has passed raises its breach now rather than on the next reload.
+    get().evaluateClocks();
   },
   resetDemoNow: () => {
     const session = { ...get().session, nowIso: DEMO_NOW_ISO };
     set({ session });
     writeJson(SESSION_KEY, session);
+    get().evaluateClocks();
   },
   /**
    * Back to the seed, deterministically.
@@ -623,6 +682,43 @@ export const useAppStore = create<AppState>((set, get) => ({
     const session = { ...get().session, breakGlass: [], nowIso: DEMO_NOW_ISO, liveClock: false };
     writeJson(SESSION_KEY, session);
     set({ data: rebuilt, config: DEFAULT_CONFIG, vault: buildVault(rebuilt, DEFAULT_CONFIG), session });
+    // Every notification went with the overlay. The seeded state's standing warnings come back as
+    // read, exactly as on a first sign-in, so the next take starts from the same bell as the last.
+    get().evaluateClocks(true);
+  },
+  markNotificationRead: (id) => {
+    const n = get().data.notifications.find((x) => x.id === id);
+    if (!n || n.readAt) return;
+    upsert(get, set, 'notifications', { ...n, readAt: get().now().toISOString() });
+  },
+  markAllNotificationsRead: () => {
+    const user = get().currentUser();
+    if (!user) return;
+    const at = get().now().toISOString();
+    for (const n of get().data.notifications) {
+      if (!n.readAt && !n.dismissedAt && addressedTo(n, user)) upsert(get, set, 'notifications', { ...n, readAt: at });
+    }
+  },
+  dismissNotification: (id) => {
+    const n = get().data.notifications.find((x) => x.id === id);
+    if (!n || n.dismissedAt) return;
+    const at = get().now().toISOString();
+    upsert(get, set, 'notifications', { ...n, readAt: n.readAt ?? at, dismissedAt: at });
+  },
+  evaluateClocks: (asRead = false) => {
+    const { data, config } = get();
+    const now = get().now();
+    const drafts = clockNotifications(data.processes, { config, now });
+    const actions = actionClockNotifications(data.actions, data.processes, { config, now });
+    drafts.push(...actions.drafts);
+    // The escalation is recorded on the action itself, so the Actions screen and the print pack say
+    // it happened without consulting the notifications. The lead's name is the record of who to.
+    for (const action of actions.escalate) {
+      const lead = get().data.users.find((u) => u.id === get().data.processes.find((p) => p.id === action.processId)?.leadUserId);
+      if (!lead) continue;
+      upsert(get, set, 'actions', { ...action, escalatedAt: now.toISOString(), escalatedToName: `${lead.givenName} ${lead.familyName}` });
+    }
+    return notify(get, set, drafts, { asRead }).length;
   },
   takeSnapshot: (name) => {
     const trimmed = name.trim();
@@ -644,6 +740,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const session = { ...snapshot.session };
     writeJson(SESSION_KEY, session);
     set({ data, config, vault: buildVault(data, config), session });
+    get().evaluateClocks();
   },
   deleteSnapshot: (name) => {
     const snapshots = get().snapshots.filter((s) => s.name !== name);
@@ -830,6 +927,46 @@ export const useAppStore = create<AppState>((set, get) => ({
       effects.push({ kind: 'share', detail: `${share.recipientName}: ${share.reason}` });
     }
 
+    // 8, second half: who is told (D-207). Derived from what this write changed, never composed by
+    // a screen. The need-to-know rows for the stage arrive as the shares above, the write's own
+    // effects (an assignment, an invitation, a distribution, a member joining, a stage moving) as
+    // the difference between the record before and after, and the request flows as the requests
+    // themselves. The same exclusion check that refuses a share recipient refuses a recipient here.
+    const recordId = (request.record as { id: string }).id;
+    const drafts: NotificationDraft[] = [];
+    const written = get().data;
+    if (request.collection === 'processes') {
+      const after = written.processes.find((p) => p.id === recordId);
+      if (after) drafts.push(...processNotifications(existing as Process | undefined, after, { config }));
+    } else if (request.collection === 'actions') {
+      const after = written.actions.find((a) => a.id === recordId);
+      if (after) drafts.push(...actionNotifications(existing as Action | undefined, after, { meetings: written.meetings, plans: written.plans }));
+    } else if (request.collection === 'meetings') {
+      const after = written.meetings.find((m) => m.id === recordId);
+      if (after) drafts.push(...meetingNotifications(existing as Meeting | undefined, after, written.sharingRecords));
+    } else if (request.collection === 'informationRequests') {
+      const after = written.informationRequests.find((r) => r.id === recordId);
+      if (after) drafts.push(...informationRequestNotifications(existing as InformationRequest | undefined, after));
+    } else if (request.collection === 'sharingRecords') {
+      const after = written.sharingRecords.find((r) => r.id === recordId);
+      if (after) {
+        drafts.push(...sharingNotifications(existing as SharingRecord | undefined, after));
+        // A share the recipient has marked read is a notification they have read.
+        if (after.status === 'read' && (existing as SharingRecord | undefined)?.status !== 'read') {
+          const n = written.notifications.find((x) => x.key === `share:${after.id}:${after.recipient.userId ?? ''}`);
+          if (n && !n.readAt) upsert(get, set, 'notifications', { ...n, readAt: at });
+        }
+      }
+    }
+    for (const share of shares ?? []) drafts.push(...sharingNotifications(undefined, share));
+    if (shareOn && (request.shares ?? []).length > 0) drafts.push(...matrixShareNotifications(request.shares ?? [], shareOn, recordId));
+    const processNow = request.collection === 'processes' ? written.processes.find((p) => p.id === recordId) : processBefore;
+    if (nearMatches.length > 0 && processNow) drafts.push(...nearMatchNotifications(processNow, at));
+    for (const n of notify(get, set, drafts, { actorUserId: user.id, process: processNow })) effects.push({ kind: 'notification', detail: n.kind });
+    // A write that can start a clock is followed by a reading of the clocks, so a deadline that is
+    // already inside its window when it starts raises its warning now rather than on the next tick.
+    if (request.collection === 'processes' || request.collection === 'actions') get().evaluateClocks();
+
     // 9. Outbound connector proposals, into the outbox. Proposed only: nothing leaves without a
     // named person authorising it, with a purpose and a lawful basis, because a write into another
     // organisation's record is a disclosure and that is what a disclosure carries.
@@ -871,6 +1008,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     const held = (get().data[collection] as Array<{ id: string; externalRef: string; connectorId: string }>).find((r) => r.id !== record.id && r.externalRef === record.externalRef && r.connectorId === record.connectorId);
     if (held) return { ok: true, errors: [], duplicate: true };
     upsert(get, set, collection, record);
+    // The agency whose inbox reviews the delivery is told it has arrived. A system delivery has no
+    // actor, so nobody is left out for having caused it.
+    if (collection === 'connectorEvents') notify(get, set, inboxNotifications(record as ConnectorEvent), {});
     return { ok: true, errors: [], duplicate: false };
   },
   mergePerson: (survivorId, mergedId, reason) => {

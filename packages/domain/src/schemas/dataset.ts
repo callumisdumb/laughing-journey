@@ -5,6 +5,7 @@ import { chronologyAnalysisSchema, chronologyEventSchema } from './chronology';
 import { connectorEventSchema } from './connector';
 import { inboundChangeSchema, outboundWriteSchema } from './outbox';
 import { meetingSchema } from './meeting';
+import { notificationSchema } from './notification';
 import { addressSchema, householdSchema, organisationSchema, personMergeSchema, personSchema, relationshipSchema, teamSchema } from './person';
 import { processSchema } from './process';
 import { informationRequestSchema, lawfulBasisRecordSchema, sharingRecordSchema } from './sharing';
@@ -32,6 +33,12 @@ export const datasetSchema = z.object({
   lawfulBases: z.array(lawfulBasisRecordSchema),
   sharingRecords: z.array(sharingRecordSchema),
   informationRequests: z.array(informationRequestSchema),
+  /**
+   * What the product has told whom. Written by the pipeline and the clock engine, read by the bell,
+   * the panel, Home, the worklist and the drawer; persisted like every other collection, because a
+   * notification that vanishes on a reload was never a notification (D-207).
+   */
+  notifications: z.array(notificationSchema),
   connectorEvents: z.array(connectorEventSchema),
   /**
    * Outbound writes awaiting authorisation, in flight, acknowledged or failed. Persisted rather

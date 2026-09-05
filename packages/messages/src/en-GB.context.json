@@ -8253,6 +8253,100 @@
         "where": "Minute status in the meeting list, meeting workspace and process screens"
       }
     },
+    "notificationKinds": {
+      "actionAssigned": {
+        "maxLength": 28,
+        "where": "Kind label of a actionAssigned notification, on the panel row and the Home counts"
+      },
+      "actionCompleted": {
+        "maxLength": 28,
+        "where": "Kind label of a actionCompleted notification, on the panel row and the Home counts"
+      },
+      "actionDue": {
+        "maxLength": 28,
+        "where": "Kind label of a actionDue notification, on the panel row and the Home counts"
+      },
+      "actionOverdue": {
+        "maxLength": 28,
+        "where": "Kind label of a actionOverdue notification, on the panel row and the Home counts"
+      },
+      "actionReassigned": {
+        "maxLength": 28,
+        "where": "Kind label of a actionReassigned notification, on the panel row and the Home counts"
+      },
+      "breakGlass": {
+        "maxLength": 28,
+        "where": "Kind label of a breakGlass notification, on the panel row and the Home counts"
+      },
+      "classificationRaised": {
+        "maxLength": 28,
+        "where": "Kind label of a classificationRaised notification, on the panel row and the Home counts"
+      },
+      "clockBreached": {
+        "maxLength": 28,
+        "where": "Kind label of a clockBreached notification, on the panel row and the Home counts"
+      },
+      "clockWarning": {
+        "maxLength": 28,
+        "where": "Kind label of a clockWarning notification, on the panel row and the Home counts"
+      },
+      "exclusionNearMatch": {
+        "maxLength": 28,
+        "where": "Kind label of a exclusionNearMatch notification, on the panel row and the Home counts"
+      },
+      "inboxArrived": {
+        "maxLength": 28,
+        "where": "Kind label of a inboxArrived notification, on the panel row and the Home counts"
+      },
+      "involvementDecided": {
+        "maxLength": 28,
+        "where": "Kind label of a involvementDecided notification, on the panel row and the Home counts"
+      },
+      "involvementRequested": {
+        "maxLength": 28,
+        "where": "Kind label of a involvementRequested notification, on the panel row and the Home counts"
+      },
+      "meetingCancelled": {
+        "maxLength": 28,
+        "where": "Kind label of a meetingCancelled notification, on the panel row and the Home counts"
+      },
+      "meetingChanged": {
+        "maxLength": 28,
+        "where": "Kind label of a meetingChanged notification, on the panel row and the Home counts"
+      },
+      "meetingInvited": {
+        "maxLength": 28,
+        "where": "Kind label of a meetingInvited notification, on the panel row and the Home counts"
+      },
+      "membershipAdded": {
+        "maxLength": 28,
+        "where": "Kind label of a membershipAdded notification, on the panel row and the Home counts"
+      },
+      "membershipRemoved": {
+        "maxLength": 28,
+        "where": "Kind label of a membershipRemoved notification, on the panel row and the Home counts"
+      },
+      "minuteDistributed": {
+        "maxLength": 28,
+        "where": "Kind label of a minuteDistributed notification, on the panel row and the Home counts"
+      },
+      "request": {
+        "maxLength": 28,
+        "where": "Kind label of a request notification, on the panel row and the Home counts"
+      },
+      "requestReturned": {
+        "maxLength": 28,
+        "where": "Kind label of a requestReturned notification, on the panel row and the Home counts"
+      },
+      "share": {
+        "maxLength": 28,
+        "where": "Kind label of a share notification, on the panel row and the Home counts"
+      },
+      "stageChanged": {
+        "maxLength": 28,
+        "where": "Kind label of a stageChanged notification, on the panel row and the Home counts"
+      }
+    },
     "packItemKinds": {
       "chronology": {
         "maxLength": 20,
@@ -9060,6 +9154,9 @@
       },
       "casePartyIdentity": {
         "where": "Schema validation message when a case-party register entry has no person, user or name"
+      },
+      "notificationRecipient": {
+        "where": "Schema refusal for a notification with no recipient or two"
       }
     },
     "threePointTest": {
@@ -11162,6 +11259,23 @@
       "reviewEvent": {
         "screenshot": "phase-1/home-light-comfortable.png",
         "where": "Home, waiting on you: title of an inbox event, with the connector name and the event title"
+      }
+    },
+    "notifications": {
+      "count": {
+        "where": "Notifications region on Home"
+      },
+      "empty": {
+        "where": "Notifications region on Home"
+      },
+      "kindCount": {
+        "where": "Notifications region on Home"
+      },
+      "seeAll": {
+        "where": "Notifications region on Home"
+      },
+      "title": {
+        "where": "Notifications region on Home"
       }
     },
     "recent": {
@@ -13357,6 +13471,11 @@
           "where": "Context panel, need-to-know section: the stage line above the audiences"
         }
       },
+      "notifications": {
+        "empty": {
+          "where": "Context drawer on a case: the notifications the reader has received about it"
+        }
+      },
       "open": {
         "maxLength": 24,
         "where": "Button that opens the collapsed context panel, read by screen readers"
@@ -13416,6 +13535,9 @@
           "maxLength": 32,
           "screenshot": "phase-3/process-cp-light-comfortable.png",
           "where": "Context panel section heading for need-to-know on a selected process"
+        },
+        "notifications": {
+          "where": "Context drawer on a case: the notifications the reader has received about it"
         },
         "recipient": {
           "maxLength": 32,
@@ -13652,6 +13774,9 @@
         "maxLength": 24,
         "where": "Browser tab title while a meetings screen is open"
       },
+      "notifications": {
+        "where": "Browser tab title on the Notifications screen."
+      },
       "people": {
         "maxLength": 24,
         "where": "Browser tab title while a people screen is open"
@@ -13726,6 +13851,143 @@
       "label": {
         "where": "Accessible name of the row of records showing how the reader reached the current one."
       }
+    }
+  },
+  "notifications": {
+    "groups": {
+      "noCase": {
+        "where": "Group heading in the notifications panel for notifications not linked to a case"
+      }
+    },
+    "item": {
+      "open": {
+        "where": "A row in the notifications panel"
+      },
+      "time": {
+        "where": "The timestamp on a notification row, a formatted date and time."
+      },
+      "unread": {
+        "where": "A row in the notifications panel"
+      }
+    },
+    "lede": {
+      "where": "Lede under the notifications heading"
+    },
+    "page": {
+      "markAllRead": {
+        "where": "Button in the Notifications screen head."
+      },
+      "unread": {
+        "where": "Count beside the Notifications screen title."
+      }
+    },
+    "panel": {
+      "dismissLabel": {
+        "where": "Notifications panel opened from the bell"
+      },
+      "empty": {
+        "text": {
+          "where": "Notifications panel opened from the bell"
+        },
+        "title": {
+          "where": "Notifications panel opened from the bell"
+        }
+      },
+      "markAllRead": {
+        "where": "Notifications panel opened from the bell"
+      },
+      "seeAll": {
+        "where": "Notifications panel opened from the bell"
+      },
+      "title": {
+        "where": "Notifications panel opened from the bell"
+      },
+      "unread": {
+        "where": "Notifications panel opened from the bell"
+      }
+    },
+    "summary": {
+      "actionAssigned": {
+        "where": "Rendered text of a actionAssigned notification, in the panel, on Home and in the drawer"
+      },
+      "actionCompleted": {
+        "where": "Rendered text of a actionCompleted notification, in the panel, on Home and in the drawer"
+      },
+      "actionDue": {
+        "where": "Rendered text of a actionDue notification, in the panel, on Home and in the drawer"
+      },
+      "actionEscalated": {
+        "where": "Notification summary for the case lead when an overdue action passes the configured escalation interval; days is the interval from Admin, Defaults."
+      },
+      "actionOverdue": {
+        "where": "Rendered text of a actionOverdue notification, in the panel, on Home and in the drawer"
+      },
+      "actionReassigned": {
+        "where": "Rendered text of a actionReassigned notification, in the panel, on Home and in the drawer"
+      },
+      "breakGlass": {
+        "where": "Rendered text of a breakGlass notification, in the panel, on Home and in the drawer"
+      },
+      "classificationRaised": {
+        "where": "Rendered text of a classificationRaised notification, in the panel, on Home and in the drawer"
+      },
+      "clockBreached": {
+        "where": "Rendered text of a clockBreached notification, in the panel, on Home and in the drawer"
+      },
+      "clockWarning": {
+        "where": "Rendered text of a clockWarning notification, in the panel, on Home and in the drawer"
+      },
+      "exclusionNearMatch": {
+        "where": "Rendered text of a exclusionNearMatch notification, in the panel, on Home and in the drawer"
+      },
+      "inboxArrived": {
+        "where": "Rendered text of a inboxArrived notification, in the panel, on Home and in the drawer"
+      },
+      "involvementDecided": {
+        "where": "Rendered text of a involvementDecided notification, in the panel, on Home and in the drawer"
+      },
+      "involvementRequested": {
+        "where": "Rendered text of a involvementRequested notification, in the panel, on Home and in the drawer"
+      },
+      "meetingCancelled": {
+        "where": "Rendered text of a meetingCancelled notification, in the panel, on Home and in the drawer"
+      },
+      "meetingChanged": {
+        "where": "Rendered text of a meetingChanged notification, in the panel, on Home and in the drawer"
+      },
+      "meetingInvited": {
+        "where": "Rendered text of a meetingInvited notification, in the panel, on Home and in the drawer"
+      },
+      "membershipAdded": {
+        "where": "Rendered text of a membershipAdded notification, in the panel, on Home and in the drawer"
+      },
+      "membershipRemoved": {
+        "where": "Rendered text of a membershipRemoved notification, in the panel, on Home and in the drawer"
+      },
+      "minuteDistributed": {
+        "where": "Rendered text of a minuteDistributed notification, in the panel, on Home and in the drawer"
+      },
+      "presence": {
+        "where": "Rendered text of a presence notification, in the panel, on Home and in the drawer"
+      },
+      "request": {
+        "where": "Rendered text of a request notification, in the panel, on Home and in the drawer"
+      },
+      "requestReturned": {
+        "where": "Rendered text of a requestReturned notification, in the panel, on Home and in the drawer"
+      },
+      "share": {
+        "where": "Rendered text of a share notification, in the panel, on Home and in the drawer"
+      },
+      "someone": {
+        "where": "Stands in for the actor's name in a notification summary when the notification carries no author, which the pipeline never produces and a corrupted overlay might."
+      },
+      "stageChanged": {
+        "where": "Rendered text of a stageChanged notification, in the panel, on Home and in the drawer"
+      }
+    },
+    "title": {
+      "where": "Heading of the notifications screen"
     }
   },
   "permissions": {
@@ -21365,6 +21627,12 @@
         "screenshot": "phase-2/worklist-light-comfortable.png",
         "where": "Worklist, detail line under a report request: meeting type and date"
       },
+      "requestMeta": {
+        "where": "Worklist row for an open information request addressed to the reader"
+      },
+      "requestTitle": {
+        "where": "Worklist row for an open information request addressed to the reader"
+      },
       "researchMeta": {
         "where": "Worklist, detail line under a MARAC research request"
       },
@@ -21392,6 +21660,9 @@
         "maxLength": 12,
         "screenshot": "phase-2/worklist-light-comfortable.png",
         "where": "Worklist, kind column for a pre-meeting report request"
+      },
+      "request": {
+        "where": "Worklist row for an open information request addressed to the reader"
       },
       "research": {
         "maxLength": 12,

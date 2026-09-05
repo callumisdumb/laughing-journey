@@ -36,6 +36,9 @@ const WALKED: ReadonlyArray<keyof Dataset> = [
   'sharingRecords',
   'informationRequests',
   'connectorEvents',
+  // A notification points at a subject by id, and a pointer to the merged record is a pointer to
+  // nothing once the merge is done.
+  'notifications',
 ];
 
 /**

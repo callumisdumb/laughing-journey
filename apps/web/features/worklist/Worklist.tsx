@@ -1,13 +1,14 @@
 'use client';
 
-import { formatDate, meetingTypeLabel, processShort, relativeDays, type Process, type User } from '@mas/domain';
+import { formatDate, meetingTypeLabel, processShort, relativeDays, type Config, type Process, type User } from '@mas/domain';
 import { useT, type MessageKey, type Translator } from '@mas/messages';
 import { Button, CheckboxField, ClockNumeral, ProcessMark, Table, TableWrap, useToast } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { CalendarDays, FileText, Inbox, ListChecks, Search } from 'lucide-react';
+import { CalendarDays, FileText, Inbox, ListChecks, MailQuestion, Search } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
+import { unreadNotificationsForUser } from '@/lib/notifications';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { meetingPath, processPath } from '@/lib/routes';
 import { useSelection, type Selection } from '@/lib/selection';
@@ -19,7 +20,7 @@ type View = 'mine' | 'team' | 'overdue' | 'process' | 'clocks';
 
 interface Item {
   key: string;
-  kind: 'inbox' | 'research' | 'report' | 'action' | 'meeting';
+  kind: 'inbox' | 'research' | 'report' | 'action' | 'meeting' | 'request';
   href: string;
   icon: ReactNode;
   title: string;
@@ -31,7 +32,7 @@ interface Item {
   selection?: Selection;
 }
 
-function itemsFor(t: Translator, data: ReturnType<typeof useData>, user: User, now: Date): Item[] {
+function itemsFor(t: Translator, data: ReturnType<typeof useData>, config: Config, user: User, now: Date): Item[] {
   const out: Item[] = [];
   const owner = userName(user);
   for (const c of inboxForUser(data, user)) {
@@ -52,6 +53,16 @@ function itemsFor(t: Translator, data: ReturnType<typeof useData>, user: User, n
     const context = process ? (subject ? t('worklist.items.processSubject', { process: processShort(process.type), subject: fullName(subject) }) : processShort(process.type)) : '';
     out.push({ key: a.id, kind: 'action', href: `/actions?action=${a.id}`, icon: <ListChecks size={16} aria-hidden="true" />, title: a.title, meta: t('worklist.items.actionMeta', { context }), due: a.due, days: differenceInCalendarDays(parseISO(a.due), now), owner: a.ownerName, process, selection: process ? { kind: 'process', id: process.id } : undefined });
   }
+  // An information request somebody has sent this person, or their agency, and nobody has answered.
+  // It is on the list because it was sent, so the unread notification is the item; answering it on
+  // the Sharing screen closes the request and reads the notification with it.
+  for (const n of unreadNotificationsForUser(data, config, user)) {
+    if (n.kind !== 'request' || n.sourceType !== 'request') continue;
+    const request = data.informationRequests.find((r) => r.id === n.sourceId);
+    if (!request || request.status !== 'open') continue;
+    const process = data.processes.find((p) => p.id === request.processId);
+    out.push({ key: n.id, kind: 'request', href: '/sharing?tab=inbound', icon: <MailQuestion size={16} aria-hidden="true" />, title: t('worklist.items.requestTitle', { name: request.fromName }), meta: t('worklist.items.requestMeta', { purpose: request.purpose }), due: request.dueAt, days: request.dueAt ? differenceInCalendarDays(parseISO(request.dueAt), now) : undefined, owner, process, selection: process ? { kind: 'process', id: process.id } : undefined });
+  }
   for (const m of meetingsForUser(data, user)) {
     const days = differenceInCalendarDays(parseISO(m.scheduledAt), now);
     if (m.status !== 'scheduled' || days < 0 || days > 14) continue;
@@ -61,7 +72,7 @@ function itemsFor(t: Translator, data: ReturnType<typeof useData>, user: User, n
   return out.sort((a, b) => (a.days ?? 999) - (b.days ?? 999));
 }
 
-const KIND_KEYS = { inbox: 'worklist.kinds.inbox', research: 'worklist.kinds.research', report: 'worklist.kinds.report', action: 'worklist.kinds.action', meeting: 'worklist.kinds.meeting' } as const satisfies Record<Item['kind'], MessageKey>;
+const KIND_KEYS = { inbox: 'worklist.kinds.inbox', research: 'worklist.kinds.research', report: 'worklist.kinds.report', action: 'worklist.kinds.action', meeting: 'worklist.kinds.meeting', request: 'worklist.kinds.request' } as const satisfies Record<Item['kind'], MessageKey>;
 
 export function Worklist() {
   const t = useT();
@@ -87,12 +98,12 @@ export function Worklist() {
     if (view === 'team') {
       const team = data.users.filter((u) => u.teamId === user.teamId);
       const seen = new Set<string>();
-      return team.flatMap((u) => itemsFor(t, data, u, now)).filter((i) => (seen.has(i.key) ? false : (seen.add(i.key), true)));
+      return team.flatMap((u) => itemsFor(t, data, config, u, now)).filter((i) => (seen.has(i.key) ? false : (seen.add(i.key), true)));
     }
-    const mine = itemsFor(t, data, user, now);
+    const mine = itemsFor(t, data, config, user, now);
     if (view === 'overdue') return mine.filter((i) => (i.days ?? 1) < 0);
     return mine;
-  }, [data, user, now, view, t]);
+  }, [data, config, user, now, view, t]);
 
   const clocks = user ? clocksForUser(data, config, user, now) : [];
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { MEETING_TRANSITIONS, classificationFor, classificationRank, computeClock, datasetSchema, findClockRule, isExcludedParty, mostRestrictedAccess, mostSensitiveClassification, nearMatchesOnList, nearMatchesOnRegister, normalisePartyName, workingCalendarFrom, type Agency, type AuditEntry, type CaseParty, type Classification, type ClassifiedRecord, type ChronologyEvent, type ClockTrigger, type Config, type Dataset, type DetailLevel, type LawfulBasisRecord, type MeetingType, type Process, type ProcessType, type SharingRecord, type User } from '@mas/domain';
+import { MEETING_TRANSITIONS, classificationFor, classificationRank, computeClock, datasetSchema, findClockRule, isExcludedParty, mostRestrictedAccess, mostSensitiveClassification, nearMatchesOnList, nearMatchesOnRegister, normalisePartyName, workingCalendarFrom, type Agency, type AuditEntry, type CaseParty, type Classification, type ClassifiedRecord, type ChronologyEvent, type ClockTrigger, type Config, type Dataset, type DetailLevel, type LawfulBasisRecord, type MeetingType, type NotificationRole, type Process, type ProcessType, type SharingRecord, type User } from '@mas/domain';
 import { warrantsVersion, type ConnectorId, type OutboundIntent, type PayloadField, type RecordVersion } from '@mas/domain';
 import type { Collection } from '@/lib/store';
 
@@ -44,8 +44,12 @@ export interface WriteEvent {
 
 export interface WriteShare {
   recipientUserId?: string;
+  /** Where the matrix names a role rather than a person, so the notification reaches every holder. */
+  toRole?: NotificationRole;
   recipientName: string;
   reason: string;
+  /** The level the recipient is told at. Defaults to summary. */
+  detailLevel?: DetailLevel;
   /** The lawful basis this share rests on. A share without one is not written. */
   lawfulBasisId: string;
 }
@@ -163,7 +167,7 @@ export interface SharingInput {
 export type ClockTransition = { meetingType: MeetingType; at: string } | { completes?: string[]; starts?: string[]; at?: string; note?: string };
 
 export interface WriteEffect {
-  kind: 'audit' | 'clock' | 'event' | 'share' | 'rewrap' | 'classification' | 'outbound' | 'version' | 'register' | 'nearMatch';
+  kind: 'audit' | 'clock' | 'event' | 'share' | 'rewrap' | 'classification' | 'outbound' | 'version' | 'register' | 'nearMatch' | 'notification';
   detail: string;
 }
 

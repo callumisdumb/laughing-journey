@@ -36,6 +36,7 @@ export function createContext(seed: string, nowIso: string): BuildContext {
     lawfulBases: [],
     sharingRecords: [],
     informationRequests: [],
+    notifications: [],
     connectorEvents: [],
     outbox: [],
     inbound: [],

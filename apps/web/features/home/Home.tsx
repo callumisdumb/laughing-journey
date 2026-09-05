@@ -1,10 +1,13 @@
 'use client';
 
-import { formatDate, formatTime, localDateOf, meetingTypeLabel, processShort, relativeDays, roleLabel } from '@mas/domain';
+import { formatDate, formatTime, localDateOf, meetingTypeLabel, notificationKindLabel, processShort, relativeDays, roleLabel } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { ClockNumeral } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { CalendarDays, FileText, Inbox, ListChecks, Search } from 'lucide-react';
+import { NotificationList } from '@/components/notifications/NotificationList';
+import { useNotifications } from '@/components/notifications/useNotifications';
+import { countByKind } from '@/lib/notifications';
 import { useEffect, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
@@ -43,6 +46,7 @@ export function Home() {
   const dev = useDevState();
 
   const recent = useTrail((s) => s.recent);
+  const notifications = useNotifications();
 
   useEffect(() => {
     select(null);
@@ -86,7 +90,8 @@ export function Home() {
   const todays = upcoming.filter((m) => localDateOf(m.scheduledAt) === today);
   const visitsToday = actionsForUser(data, user).filter((a) => a.due === today && /visit/i.test(a.title));
 
-  const state = dev ?? (clocks.length === 0 && items.length === 0 && todays.length === 0 ? 'empty' : 'ready');
+  const unreadNotifications = notifications.items.filter((n) => n.unread);
+  const state = dev ?? (clocks.length === 0 && items.length === 0 && todays.length === 0 && notifications.items.length === 0 ? 'empty' : 'ready');
   const nextMeeting = upcoming[0] ? t('home.today.nextMeeting', { title: upcoming[0].title, date: formatDate(upcoming[0].scheduledAt) }) : t('home.today.noNext');
 
   return (
@@ -109,6 +114,24 @@ export function Home() {
                 </AppLink>
               ))}
             </div>
+          </section>
+          {/*
+            What the product has told you, newest first, and how many of each kind are waiting.
+
+            The bell has the same list; this is the copy on the screen a person opens first in the
+            morning, because a count on a bell is a number and five lines are a morning.
+          */}
+          <section className={styles.region} aria-labelledby="home-notifications" data-testid="home-notifications">
+            <h2 className={styles.regionTitle} id="home-notifications">
+              {t('home.notifications.title')} <span className={styles.regionCount}>{t('home.notifications.count', { count: unreadNotifications.length })}</span>
+            </h2>
+            {unreadNotifications.length > 0 ? <p className={styles.quiet}>{countByKind(unreadNotifications.map((n) => n.notification)).map((k) => t('home.notifications.kindCount', { kind: notificationKindLabel(k.kind), count: k.count })).join(', ')}</p> : null}
+            <NotificationList items={notifications.items.slice(0, 5)} onOpen={notifications.open} emptyText={t('home.notifications.empty')} />
+            {notifications.items.length > 5 ? (
+              <p className={styles.quiet}>
+                <AppLink href="/notifications">{t('home.notifications.seeAll')}</AppLink>
+              </p>
+            ) : null}
           </section>
           {/*
             What you were last working on, in view order.
