@@ -1,6 +1,6 @@
 # Handover
 
-What was built, what was decided, what was verified, and what is left. Read with `docs/BRIEF.md` (the request), `docs/PLAN.md` (the shape), `docs/DESIGN.md` (the look), `docs/DECISIONS.md` (the why), `docs/NOTES.md` (the phase logs), `docs/RESEARCH.md` (the sources), `docs/DEMO.md` (the demo script) and, for the cryptography, `docs/THREAT-MODEL.md`, `docs/SECURITY.md`, `docs/CRYPTO-INVENTORY.md` and `docs/DPIA-NOTES.md` (the architecture, what it does not do, and the mapping to Article 32).
+What was built, what was decided, what was verified, and what is left. Read with `docs/BRIEF.md` (the request), `docs/PLAN.md` (the shape), `docs/DESIGN.md` (the look), `docs/DECISIONS.md` (the why), `docs/NOTES.md` (the phase logs), `docs/RESEARCH.md` (the sources), `docs/DEMO.md` (the demo script), `docs/HOW-TO.md` (how a practitioner moves work through it, written from the stage engine's tables) and, for the cryptography, `docs/THREAT-MODEL.md`, `docs/SECURITY.md`, `docs/CRYPTO-INVENTORY.md` and `docs/DPIA-NOTES.md` (the architecture, what it does not do, and the mapping to Article 32).
 
 Everything in the dataset is fictional. Postcodes are in the Q, V and X ranges, CHI numbers are synthetic, and every person, address, organisation and record was invented for this mockup.
 
@@ -8,7 +8,7 @@ Everything in the dataset is fictional. Postcodes are in the Q, V and X ranges, 
 
 | Area | Where | State |
 |---|---|---|
-| Domain model, clocks, need-to-know, permissions, forms | `packages/domain` | Zod schemas are the source of truth; `docs/DATA-MODEL.md` is generated from them. Unit tests cover clocks, transitions, resolver, permissions, lenses and forms. |
+| Domain model, clocks, need-to-know, permissions, forms, the stage engine, notifications | `packages/domain` | Zod schemas are the source of truth; `docs/DATA-MODEL.md` is generated from them. Unit tests cover clocks, the 49 stage transitions (each driven through a permitted actor, a refused actor, a record that lacks what it needs and one that has it), the notification derivation, resolver, permissions, lenses and forms. |
 | Design system | `packages/ui`, `apps/web/styles/tokens.css`, `docs/DESIGN.md` | Warm paper, heather accent, Atkinson Hyperlegible, Bricolage Grotesque, JetBrains Mono for audit only. Light and dark, comfortable and compact. Contrast is checked by a script over every text and control pairing. |
 | Synthetic data | `packages/mock-data` | Deterministic generator (seed `clydeshore-2026`, demo now 02 Sep 2026 09:00), eight worked scenarios under `src/scenarios`, 58 background households, audit trail. |
 | Copy catalogue | `packages/messages`, `docs/MESSAGES.md` | Every user-visible string in `src/en-GB.json` with `src/en-GB.context.json` beside it; typed keys, ICU MessageFormat, three-layer overrides (bundled, local file, session) edited in Admin, Copy and labels; `pnpm messages:check` in lint. |
@@ -16,7 +16,7 @@ Everything in the dataset is fictional. Postcodes are in the Q, V and X ranges, 
 | Connectors | `packages/connectors` | Ten mock adapters with fixtures, mapping tables, simulated latency, outage and degraded toggles, and "how this would connect for real" copy. |
 | Web app | `apps/web` | Next.js 16 static export with a client-side router; every screen in brief section 10. |
 | Desktop shells | `apps/desktop-tauri`, `apps/desktop-electron` | Tauri 2 is the primary target (config, Rust menu, capabilities); Electron is the verified fallback. Both load `apps/web/out`. |
-| Tests | `apps/web/e2e`, package `*.test.ts` | Playwright per phase with axe on every captured screen; Vitest in domain, ui and mock-data. |
+| Tests | `apps/web/e2e`, package `*.test.ts`, `apps/web/lib/*.test.ts` | Playwright per phase and per round with axe on every captured screen, and the driven suites (`flows`, `meetings`, `actions`, `notifications`, `cross-persona`) that create a thing from nothing, drive it to its terminal state and read every consequence as a second persona (D-210). Vitest in domain, web (the store's pipeline, transitions and involvement), crypto, messages, ui, mock-data and connectors. |
 | Screenshots | `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png` | Reviewed at the end of each phase; the index is in section 5. |
 
 ## 2. Decisions
@@ -65,6 +65,15 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - A closure writes the coded reason its own national return uses, and says so where the list is local rather than national (D-150, D-151). A reopened case resumes the clocks the closure stopped, against the date they started, because the case was shut and the statutory period was running the whole time (D-152). `packages/domain/src/processes/close.ts`.
 - A reason is required on a name, a date of birth or a CHI number and not on a telephone number, because those are what other agencies match on (D-154).
 - A death is a flow with named consequences, computed by the function that performs them: each case the person is a subject of closes with its own return's reason, and a case they are only a party to is flagged for review rather than shut (D-155). `packages/domain/src/people/death.ts`.
+
+### Casework: the stage engine, meetings, actions and notifications
+- A notification is an output of the write pipeline and of the clock engine, never something a screen composes (D-207). It stores a kind, a pointer to its source, the recipient's detail level, the lawful basis where the thing announced reveals content, and a key; the sentence is rendered at read time from the catalogue and the record, so a presence-level recipient reads that a case they are linked to changed and nothing more. The actor is never told about their own act, an excluded party is never a recipient, and two drafts with one key are one notification. Twenty-three kinds. `packages/domain/src/notifications/derive.ts`, `apps/web/lib/notifications.ts`.
+- The clock engine is the third writer beside `write` and `receive` (D-208): warnings at `warnDays`, breaches at due, actions due, overdue and escalated, evaluated when the instant moves, after every process or action write, and once a minute on the live clock, keyed on the trigger so a hundred evaluations raise one warning. The seed carries its standing warnings already read, so a fresh seed writes nothing at boot and reset leaves an empty overlay. Reading, marking read and dismissing are the recipient's own state and are not audited (D-209).
+- "Works" means a driven test (D-210): created from nothing, driven through the interface to its terminal state, and read by a second persona. Seeded data is never the thing under test. `cross-persona.spec.ts`, the five driven walks in `flows.spec.ts` (F.2.1 to F.2.5), `meetings.spec.ts`, `actions.spec.ts`, `notifications.spec.ts`.
+- The stage engine is the only route to a stage (D-211). `packages/domain/src/processes/transitions.ts` and `stages/` hold 49 transitions across the five types, each with what it needs the record to hold, who records it, what it validates and writes, the clocks it completes and starts, where the case goes and what the store creates beside it (a meeting, a plan and its actions, information requests, a closure, a linked case). There is no stage picker; forward only, with reopen as the way back; a refusal names the roles that record it or the missing thing and the action that creates it. The stepper's offer is a panel of buttons, one per transition, and the drawer and the demo panel say the same thing as sentences (D-217). `docs/HOW-TO.md` is written from the tables. Two readings decided in code: the ASP inquiry decision clock completes at the screening decision, and a level 1 MAPPA case sits at notification with managed semantics and never meets.
+- An action may be given to any person the case permits or to every holder of a role, and membership is not the test (D-212); the test is the share recipient check. A role's action sits on every holder's worklist until one takes it, which is a reassignment. Cancelling keeps it. The escalation interval is configuration. `packages/domain/src/actions/assign.ts`.
+- A meeting is scheduled through the engine where the tables schedule its type from the case's stage, as a plain meeting where they do not, and is refused, naming the stages, where the case has not reached it (D-213). Holding a meeting is recording the decision it made: the close button opens the transition's outcome form and the meeting is marked held as a consequence; the old meeting clock table is deleted. The invite list is proposed by one module and everybody it leaves off is recorded on the meeting with the reason (D-214). A rescheduled CPPM moves its notice period and a cancelled one completes it (D-216).
+- What the driven walks found and fixed: recording a decision puts the recorder on the case (D-219); Home reads the case's members, not only the seeded list (D-218); the child protection decisions live in the meetings that make them (D-220); a MARAC child concern opens the child protection case authorised by the transition, and links to one already open (D-221, D-224); a response to a request the engine sent is the engine's own transition, so the MARAC research clock completes (D-222); a MARAC referral opens without a risk assessment and names its perpetrator (D-215, D-223); the MAPPA referral form records through the engine and the level waits for the meeting (D-225); a clock trigger is an instant and step 1 of the pipeline validates them (D-226); and "Ask to be involved" is a record the lead decides (D-227).
 
 ### Connectors, in both directions
 - The write capability matrix is per connector and deliberately asymmetric (D-157). ECLIPSE is full two-way, CareFirst is batch, SEEMIS is a flag and an alert, EMIS Web is a coded flag after accreditation and marked unverified, iVPD is notify-only, ViSOR is never. It is on each connector card. `packages/domain/src/connectors/write.ts`.
@@ -139,7 +148,7 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 
 ## 5. Screenshot index
 
-263 screenshots under `docs/SCREENSHOTS/<round>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 unless the round says otherwise (the `compare`, `recording` and `script` rounds are 1920 by 1080, which is what they are filmed at). Light comfortable is the default; dark and compact variants are listed where captured, and phase 6 holds the dark and compact sweep of every screen. **This section is generated by `pnpm contact-sheet`. Do not edit by hand.** `docs/CONTACT-SHEET.md` is the same list with the images, and `docs/CONTACT-SHEET.html` is a single self-contained file whose captures open at full size in a viewer; that one is gitignored.
+309 screenshots under `docs/SCREENSHOTS/<round>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 unless the round says otherwise (the `compare`, `recording` and `script` rounds are 1920 by 1080, which is what they are filmed at). Light comfortable is the default; dark and compact variants are listed where captured, and phase 6 holds the dark and compact sweep of every screen. **This section is generated by `pnpm contact-sheet`. Do not edit by hand.** `docs/CONTACT-SHEET.md` is the same list with the images, and `docs/CONTACT-SHEET.html` is a single self-contained file whose captures open at full size in a viewer; that one is gitignored.
 
 ### phase-1
 
@@ -437,11 +446,39 @@ The eight named flows walked end to end rather than described: the three-point t
 
 | Screen | Variants |
 |---|---|
+| asp next refused | light comfortable |
+| asp plan form | light comfortable |
 | asp plan milestone | light comfortable |
+| asp plan recorded | light comfortable |
+| asp reviewed | light comfortable |
+| asp screening form | light comfortable |
 | audit after write | light comfortable |
+| awi next | light comfortable |
+| awi order form | light comfortable |
+| awi route form | light comfortable |
+| awi supervision | light comfortable |
 | connector inbox | light comfortable |
+| cp cppm form | light comfortable |
+| cp deregistered | light comfortable |
 | cp ird | light comfortable |
+| cp ird form | light comfortable |
+| cp pre birth born | light comfortable |
+| cp registered | light comfortable |
+| mappa held form | light comfortable |
+| mappa managed | light comfortable |
+| mappa presence driven | light comfortable |
+| mappa referral form | light comfortable |
+| mappa risk form | light comfortable |
 | marac chain | light comfortable |
+| marac chain driven | light comfortable |
+| marac child concern form | light comfortable |
+| marac next refused | light comfortable |
+| marac plan form | light comfortable |
+| marac plan recorded | light comfortable |
+| marac research back | light comfortable |
+| marac research form | light comfortable |
+| marac research return | light comfortable |
+| marac transferred | light comfortable |
 | nmds export | light comfortable |
 | persona not on the case | light comfortable |
 | report asp | light comfortable |
@@ -537,6 +574,44 @@ The working calendar behind every statutory clock: the national bank holiday lis
 | calculator | light comfortable |
 | calendar | light comfortable |
 
+### actions
+
+| Screen | Variants |
+|---|---|
+| add from case | light comfortable |
+| taken | light comfortable |
+
+### cross-persona
+
+| Screen | Variants |
+|---|---|
+| ask to be involved | light comfortable |
+| break glass driven | light comfortable |
+| break glass ledger | light comfortable |
+| involvement accepted | light comfortable |
+| involvement requests | light comfortable |
+| janet panel | light comfortable |
+| janet worklist overdue | light comfortable |
+
+### meetings
+
+| Screen | Variants |
+|---|---|
+| cancelled | light comfortable |
+| hold plain | light comfortable |
+| inquorate | light comfortable |
+| minute distributed bell | light comfortable |
+| schedule dialog | light comfortable |
+| schedule refused | light comfortable |
+| scheduled | light comfortable |
+
+### notifications
+
+| Screen | Variants |
+|---|---|
+| panel | light comfortable |
+| screen | light comfortable |
+
 ## 6. Known gaps and TODO(verify)
 
 Everything marked here is either configuration seeded from research rather than a primary source, or a deliberate limit of a mockup with no backend.
@@ -551,6 +626,32 @@ Everything marked here is either configuration seeded from research rather than 
 
 ### Reconciled on 05 Sep 2026
 - **The research log had kept 02 Sep extracts as if current where a later reading corrected them.** 1.4 and 1.6 (the CP clocks, corrected by 6.4), 1.18 (the AWI citation, by 6.5), 5.3 and 5.4 (the CP register field sets, by the publication read on 03 Sep, now 5.16), and 5.8 and 6.7 (the Annex 3 tables, by 5.12); with them a second copy of the verification table above that had drifted from it, and a reconstruction of Annex 3 that had four of the nine tables wrong. Writing the test then showed the table above was short as well: the four NMDS submission deadlines and the four ASP order clocks added on 03 Sep had never reached it, so it is now generated from `rules.ts` (`pnpm docs:verification-table`) rather than kept by hand. Generating it showed one more thing: the four NMDS deadline clocks had no label, trigger or description in the catalogue, so Admin, Timescales was printing their keys. They have catalogue text now, the one change outside the documents in this round, and the test refuses a rule without it. Each superseded entry now carries a "Superseded by" line and keeps its text, the reconstruction is struck, section 3 of the log indexes the entries by rule id and points here for the values, the method note names each primary source with its date and route, and `verification.test.ts` fails the build if the log marks a rule to verify that this table marks High (D-205).
+
+### Made to work on 05 Sep 2026, and what the documents had said
+The round's standard was a driven test (D-210), and the full record of each overclaim is in `docs/NOTES.md` ("What the documents said the product did"). In short:
+- **The bell counted seeded shares.** Notifications are now an entity the pipeline and the clock engine write, twenty-three kinds, rendered at the reader's level (D-207 to D-209).
+- **The stepper was a picture.** Stages were set by whichever form wrote `stage`. The stage engine is now the only route (D-211), and there is no stage picker.
+- **"Ask to be involved" was a toast.** It is a record the lead decides, with both sides told (D-227).
+- **Holding a meeting wrote a status.** It now records the decision the meeting made, and the meeting clock table that answered separately is deleted (D-213).
+- **The walks found nine more.** A MARAC research return never reached the case (D-222); the MAPPA referral form set the level before any meeting (D-225); a MARAC referral from the person record named the victim as the perpetrator (D-223); the coordinator's child concern opened nothing and said it had (D-224); an interim order under the 2000 Act poisoned the next write on the case (D-226); a team leader who screened a concern read the case at presence level a second later (D-219); Home's clocks missed a case opened that morning (D-218); a rescheduled planning meeting completed its own notice clock (D-216); and a referral without a risk assessment could not open at all (D-215). Each is a decision, a fix and a driven assertion.
+
+### What practitioners still cannot do
+Listed here so nobody discovers it in a room. None of these is claimed anywhere in the product.
+- **Take a case back a stage.** The engine is forward only. A screening decision cannot be recorded twice, and nothing returns a case to an earlier stage; closing and reopening returns it to the stage it had reached.
+- **Edit a referral once the case is open**, beyond what a decision adds to it (a child concern adds the children it names, D-221). A wrong perpetrator on a MARAC referral is corrected on the case-role register, not on the referral.
+- **Reallocate the lead worker.** The lead is set at opening and nothing changes it; membership grows by decisions and accepted requests, and the resolver.
+- **Respond to a meeting invitation.** No accept, decline or apologies ahead of the meeting; attendance is recorded at the meeting by the chair.
+- **Correct an approved minute.** `docs/RECORDS.md` specifies a correction with a re-distribution to the original list; it is not built. An approved minute is final in the product.
+- **Attach a file to anything.** The pack builder lists items and the minute is text; the only uploads are the copy catalogue import and the workbook round trip.
+- **Withdraw or amend a request to be involved.** One request at a time, decided by somebody on the case; a declined requester may ask again.
+- **Open a Large Scale Investigation, add a strand to one, or hold its planning meeting as a decision.** Scenario 7 is seeded; the LSI planning meeting, the ASP inter-agency discussion and the AWI multi-disciplinary discussion are held with their minute and nothing decided on the case.
+- **Transfer a child protection, adult protection or adults with incapacity case to another authority.** Only MARAC and MAPPA carry a transfer.
+- **Renew, vary or recall a guardianship order, or record an appeal.** An order's expiry is recorded on the order and no clock counts down to it; the interim order clocks are the only ones the 2000 Act stages run after the MHO report.
+- **Review a level 1 MAPPA case on a clock.** Level 1 sits at notification with managed semantics by decision (D-211): disclosure, exit and a referral up are its decisions, and it never meets.
+- **Send a request to an agency nobody holds a role in.** A return is recorded by a person of that agency from their Sharing inbound tab, so an agency with no persona cannot answer.
+- **Give an action to somebody outside the partnership**, make it recur, or attach evidence other than text.
+- **Be told outside the product.** No email, text or digest; nothing reaches somebody who is not signed in; no delegate or out-of-office, so a role-addressed notification, read for the role by its first reader, is the only shared inbox.
+- **Mark a return as submitted.** Reports are computed from the dataset and read only; the ASP workbook export is the one thing that leaves.
 
 ### Statutory and local values to verify (also in `docs/RESEARCH.md` and Admin, Timescales)
 - `asp.inquiry.decision` (5 working days), `asp.caseconference.initial` (21 calendar days), `asp.plan.review` (3 months) and `marac.research.return` (5 working days): local values; confirm against the Clydeshore equivalent's own procedures.
@@ -617,7 +718,10 @@ pnpm messages:check                # ICU syntax, key usage, context coverage and
 pnpm messages:extract              # list string literals that have not moved to the catalogue
 pnpm crypto:inventory              # regenerate docs/CRYPTO-INVENTORY.md from the source
 pnpm crypto:inventory:check        # fail on drift between the source and the inventory (also part of pnpm lint)
-pnpm contact-sheet                 # regenerate docs/CONTACT-SHEET.md and .html from docs/SCREENSHOTS
+pnpm contact-sheet                 # regenerate docs/CONTACT-SHEET.md and .html from docs/SCREENSHOTS, and section 5 above
+pnpm messages:merge <ns>           # fold packages/messages/staging fragments into the catalogue
+pnpm demo:check                    # the shooting script still fits its slots (also part of pnpm lint)
+pnpm holidays:sync                 # refresh the bank holiday fixture, at maintenance time only; --from <path> derives from a captured response
 ```
 
 Playwright is pinned to 1.62.1. On macOS or Windows run `pnpm exec playwright install chromium` once in `apps/web` (it downloads the matching Chrome for Testing build); in the build container that download is blocked, so the suite runs against the preinstalled Chromium through `PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium` (D-038).

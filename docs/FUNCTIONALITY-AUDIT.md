@@ -53,3 +53,7 @@ None. Every `<Button>` in the product carries either an `onClick` or a submit ty
 ## Reconciliation with the demo script
 
 Every control the current `docs/DEMO.md` touches is in the first two groups. Nothing on the scripted path is dead. The risk on camera is not a control that does nothing when pressed; it is a control that appears to work and leaves no trace anywhere else in the product, which is the second group, and which a viewer only notices when the presenter switches persona and the expected notification is not there.
+
+## Re-run on 05 Sep 2026
+
+The audit was re-run after the round that made everything work (`docs/NOTES.md`, "The button that said the lead would see it"), as a sweep rather than a walk: every button without a handler, every handler that only toasts, every link to a route that does not exist. It found the one toast, "Ask to be involved", which is now a record the lead decides (D-227), and nothing else. The group above headed "Works, but the downstream effect is missing" is empty: every mutation goes through the pipeline (D-110, corrected 04 Sep 2026), every consequence is a notification the pipeline or the clock engine wrote (D-207), and every stage is reached through the engine (D-211). The three export controls stay in the cosmetic group on purpose, because producing a file is their whole effect. What a practitioner still cannot do is not a dead control but an absent one, and `docs/HANDOVER.md` section 6 lists those.

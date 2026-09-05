@@ -2,7 +2,7 @@
 
 Person360: multi-agency public protection for Scotland, a high-fidelity clickable desktop mockup with no backend. The product name lives in the message catalogue as `product.name`, so a rebrand is one edit. The UI chrome pairs it with a lantern glyph until a mark is designed. The hero screen is the Person record, deliberately not named after the product (D-057).
 
-Read `docs/BRIEF.md` first. It is the single source of truth. Then `docs/PLAN.md`, `docs/DESIGN.md`, `docs/DECISIONS.md`, `docs/NOTES.md` and `docs/RESEARCH.md`.
+Read `docs/BRIEF.md` first. It is the single source of truth. Then `docs/PLAN.md`, `docs/DESIGN.md`, `docs/DECISIONS.md`, `docs/NOTES.md` and `docs/RESEARCH.md`. `docs/HOW-TO.md` is the practitioner's guide, written from the stage engine's tables; `docs/HANDOVER.md` section 6 keeps the list of what practitioners still cannot do.
 
 ## Stack
 

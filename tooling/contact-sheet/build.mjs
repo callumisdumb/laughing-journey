@@ -91,7 +91,9 @@ function describe(file) {
  *
  * So the second encoding pays for the first. A single 1280px image serves the grid card, where the
  * browser downsamples it to the column width and the text stays crisp, and the lightbox, where it is
- * shown at full size. The page came down to 10.6 MB in the process. `loading="lazy"` keeps the
+ * shown at full size. The page came down to 10.6 MB in the process, and at 309 captures went past
+ * the limit again at quality 44, so the quality dropped to 36, the first of the three answers below
+ * (D-228); at that setting a card is still readable in the grid. `loading="lazy"` keeps the
  * decode cost to what is near the viewport, which is what makes one large source per card viable.
  */
 const GALLERY_WIDTH = 1280;
@@ -104,7 +106,7 @@ const GALLERY_WIDTH = 1280;
  * few points, drop the width, or split the sheet by round. It is not to quietly stop capturing.
  */
 const MAX_BYTES = 16 * 1024 * 1024;
-const QUALITY = 44;
+const QUALITY = 36;
 
 async function encode(path, width, quality) {
   const buffer = await sharp(path).resize({ width, withoutEnlargement: true }).webp({ quality }).toBuffer();
