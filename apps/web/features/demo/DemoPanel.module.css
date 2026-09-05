@@ -152,3 +152,11 @@
   font-size: var(--text-sm);
   color: var(--color-ink-3);
 }
+
+.walk {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0 0 0 18px;
+  font-size: var(--text-sm);
+}

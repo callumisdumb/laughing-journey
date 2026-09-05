@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { createPerson, openTransition, startCase, submitTransition } from './driven';
 import { capture, expectNoAxeViolations, signInAs, switchUser, waitForData } from './helpers';
 
 const PHASE = 'flows';
@@ -23,63 +24,192 @@ async function openByReference(page: Page, reference: string) {
  * changes nothing is the failure mode this spec exists to catch, and it is the failure mode that
  * shows up on camera.
  */
-test.describe('F.2.1 adult support and protection, concern to protection plan', () => {
-  test('the three-point test computes its outcome from the limbs, and the record shows it', async ({ page }) => {
+test.describe('F.2.1 adult support and protection, driven from a concern to a reviewed protection plan', () => {
+  test.setTimeout(240_000);
+  /**
+   * Nothing seeded. Moira records the concern and the three-point test; the screening decision is
+   * Anne's and the panel says so; the inquiry, its outcome and a section 7 visit are Moira's; the
+   * case conference is chaired by David and its outcome recorded by him; the protection plan starts
+   * the review clock, which reaches Moira's Home on a case her seeded list never knew; and the
+   * review is held and continued. Every stage is reached through the engine and no other way.
+   */
+  test('the case is walked by the people whose decisions they are, and each consequence is read off the screen', async ({ page }) => {
     await signInAs(page, 'usr_moira_gilmour');
-    await openByReference(page, 'ASP-2026-0217');
+    await createPerson(page, 'Elspeth', 'Munro', '1943-07-12');
+    const reference = await startCase(page, 'asp', 'District nurse, Kirkbrae practice', 'Bruising on both forearms and a nephew who controls her money and her front door.');
+    const caseUrl = page.url();
+    const header = page.getByTestId('process-header');
 
-    await expect(page.getByText('Three-point test (s3)')).toBeVisible();
+    // The panel under the stepper is the tables' offer. The screening decision is the team
+    // leader's, and the council officer is told so rather than shown a button that fails.
+    const screening = page.getByTestId('next-asp-screening-decision');
+    await expect(screening).toHaveAttribute('data-state', 'refused');
+    await expect(screening).toContainText('is recorded by Team leader, not by your role');
+    await expect(page.getByTestId('next-asp-screening-decision-button')).toBeDisabled();
+    await capture(page, { phase: PHASE, screen: 'asp-next-refused', fullPage: true });
+
+    // The three-point test, which the screening decision needs, from the panel the case already had.
     await page.getByRole('button', { name: 'Record three-point test' }).click();
-    const dialog = page.getByRole('dialog');
-    await expect(dialog).toBeVisible();
-    // Per-limb reasoning, not a single tick. The outcome is computed from the three answers.
-    await expect(dialog.getByText(/unable to safeguard/i).first()).toBeVisible();
-    await dialog.getByRole('button', { name: 'Record three-point test' }).click();
+    const test3 = page.getByRole('dialog');
+    await test3.getByLabel('Date of assessment').fill('2026-09-02');
+    for (let i = 0; i < 3; i += 1) await test3.getByRole('radio', { name: 'Met', exact: true }).nth(i).check();
+    await test3.getByLabel('Reasoning for limb (a)').fill('Elspeth cannot get out of the house without help and depends on the nephew for shopping and money.');
+    await test3.getByLabel('Reasoning for limb (b)').fill('Bruising on both forearms consistent with gripping; money missing from her account.');
+    await test3.getByLabel('Reasoning for limb (c)').fill('Frailty and a memory that is going make her more vulnerable to being harmed than others.');
+    await test3.getByLabel('Financial or Material harm').check();
+    await test3.getByLabel('Physical harm').check();
+    await test3.getByLabel('Immediate safety').fill('No immediate danger tonight; the district nurse is visiting tomorrow morning.');
+    await test3.getByRole('button', { name: 'Record three-point test' }).click();
     await expect(toast(page).getByText('Three-point test recorded')).toBeVisible();
 
-    // The consequences the pipeline writes, which the form used to skip: a chronology milestone on
-    // the adult, and a ledger line naming the act. A form that saves and writes neither is the
-    // failure this assertion exists to catch.
-    await page.goto('/people/per_marion_fraser/chronology');
+    // Anne screens it: proceed to inquiry. The stage moves, the stepper says who and when.
+    await switchUser(page, 'usr_anne_hendry');
+    await page.goto(caseUrl);
     await waitForData(page);
-    await expect(page.getByRole('table').getByText('Three-point test recorded').first()).toBeVisible();
-    await page.goto('/audit');
+    await openTransition(page, 'asp-screening-decision');
+    await expect(page.getByTestId('transition-route')).toContainText('Moves the case to Screening');
+    await page.getByTestId('transition-rationale').fill('Three-point test met on all limbs. Financial and physical harm with a controlling nephew; inquiry under section 4.');
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'asp-screening-form' });
+    await submitTransition(page);
+    await expect(header).toContainText('Screening');
+    await expect(page.getByRole('region', { name: 'Process stages' })).toContainText('Anne Hendry');
+
+    // Moira opens the inquiry: two agencies asked, each on a lawful basis, and the GP's agency told.
+    await switchUser(page, 'usr_moira_gilmour');
+    await page.goto(caseUrl);
     await waitForData(page);
-    await expect(page.getByRole('table').getByText(/Three-point test recorded/).first()).toBeVisible();
-  });
+    await openTransition(page, 'asp-open-inquiry');
+    await page.getByTestId('transition-agency-health').check();
+    await page.getByTestId('transition-agency-police').check();
+    await page.getByTestId('transition-purpose').fill('Whether the practice or the police hold anything about the injuries or the nephew, for the section 4 inquiry.');
+    await submitTransition(page);
+    await expect(header).toContainText('Inquiry (s4)');
+    await expect(page.getByText('Health, Police').first()).toBeVisible();
 
-  test('the case conference clock is running and reaches Home', async ({ page }) => {
-    await signInAs(page, 'usr_moira_gilmour');
-    await openByReference(page, 'ASP-2026-0217');
-    // The clock the concern started, on the case.
-    await expect(page.getByText(/case conference/i).first()).toBeVisible();
-
+    await switchUser(page, 'usr_amira_farouk');
     await page.goto('/');
     await waitForData(page);
-    // And on Home, which is where a practitioner sees it without looking for it. Home names the
-    // person and the deadline rather than the case reference, which is the right way round: a
-    // practitioner scans for whose deadline it is, not for a case number.
-    const clocks = page.getByRole('region', { name: /clock/i }).or(page.locator('section', { has: page.getByRole('heading', { name: /clock/i }) })).first();
-    await expect(clocks.getByText('Marion Fraser').first()).toBeVisible();
-    await expect(clocks.getByText(/case conference/i).first()).toBeVisible();
-  });
+    await page.getByTestId('notifications-bell').click();
+    await expect(page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: `Moira Gilmour asked your agency for information on ${reference}` })).toBeVisible();
+    await page.keyboard.press('Escape');
 
-  test('a protection plan with outcomes, and the milestone it writes', async ({ page }) => {
-    await signInAs(page, 'usr_moira_gilmour');
-    await openByReference(page, 'ASP-2026-0217');
-
-    await page.getByTestId('add-plan').click();
-    await page.getByTestId('plan-title').fill('Keeping Marion safe at home');
-    await page.getByTestId('plan-outcome-0').fill('Marion decides who comes into her house');
-    await page.getByTestId('plan-review-date').fill('2026-12-01');
-    await page.getByTestId('plan-submit').click();
-    await expect(toast(page).getByText('Plan recorded')).toBeVisible();
-
-    // The consequence: a chronology milestone on the subject, not just a row in a table.
-    await page.goto('/people/per_marion_fraser/chronology');
+    // The inquiry outcome: proceed to investigation, with the four things the Act asks about.
+    await switchUser(page, 'usr_moira_gilmour');
+    await page.goto(caseUrl);
     await waitForData(page);
-    await expect(page.getByRole('table').getByText(/Adult Protection Plan agreed/).first()).toBeVisible();
-    await capture(page, { phase: PHASE, screen: 'asp-plan-milestone', fullPage: true });
+    await openTransition(page, 'asp-inquiry-outcome');
+    await page.getByTestId('transition-capacity').check();
+    await page.getByTestId('transition-capacity-summary').fill('Understands the questions; memory for recent events is poor. Capacity to decide about the visit is present.');
+    await page.getByTestId('transition-pressure').check();
+    await page.getByTestId('transition-advocacy').check();
+    await page.getByTestId('transition-rationale').fill('The GP confirms unexplained bruising over three months and the bank confirms withdrawals Elspeth does not recognise.');
+    await submitTransition(page);
+    await expect(header).toContainText('Inquiry using investigatory powers');
+
+    // A section 7 visit, which stays where it is and lands on the investigation panel.
+    await openTransition(page, 'asp-investigatory-step');
+    await expect(page.getByTestId('transition-route')).toContainText('Records a step');
+    await page.getByTestId('transition-attended').fill('Moira Gilmour\nPC Sutherland');
+    await page.getByTestId('transition-note').fill('Elspeth seen alone in the kitchen. Bruising consistent with gripping. The nephew was not present.');
+    await submitTransition(page);
+    await expect(page.getByText('Moira Gilmour, PC Sutherland.').first()).toBeVisible();
+
+    // The case conference is scheduled from the panel through the schedule dialog, David chairing.
+    await openTransition(page, 'asp-schedule-case-conference');
+    await expect(page.getByTestId('meeting-type')).toHaveValue('asp-case-conference');
+    await expect(page.getByTestId('meeting-route')).toHaveAttribute('data-state', 'transition');
+    await page.getByTestId('meeting-date').fill('2026-09-16');
+    await page.getByTestId('meeting-location').fill('Portlennan Resource Centre, room 1');
+    await page.getByTestId('meeting-chair').selectOption('usr_david_laird');
+    await page.getByTestId('meeting-submit').click();
+    await expect(page.getByText('Meeting scheduled').last()).toBeVisible();
+    await expect(page).toHaveURL(/\/meetings\/mtg_/);
+    await waitForData(page);
+    const conferenceUrl = page.url();
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(page.getByTestId('next-held-asp-case-conference-held')).toContainText('Case conference held is recorded when the ASP case conference is held');
+    await expect(page.getByTestId('next-held-asp-case-conference-held').getByRole('link')).toBeVisible();
+
+    // David holds it: adult at risk, plan needed. The stage moves and the meeting names the decision.
+    await switchUser(page, 'usr_david_laird');
+    await page.goto(conferenceUrl);
+    await waitForData(page);
+    await page.getByTestId('hold-meeting').click();
+    await expect(page.getByTestId('hold-route')).toContainText('Case conference held, which moves the case to Case conference');
+    await page.getByTestId('outcome-rationale').fill('All three limbs met and the harm is continuing. A protection plan is needed with the nephew kept away.');
+    await page.getByTestId('hold-submit').click();
+    await expect(page.getByText('Meeting closed').last()).toBeVisible();
+    await expect(page.getByTestId('meeting-history')).toContainText('Recorded on the case as Case conference held');
+
+    // Moira records the protection plan: outcomes, a review date, and an action for Anne.
+    await switchUser(page, 'usr_moira_gilmour');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(header).toContainText('Case conference');
+    await openTransition(page, 'asp-record-protection-plan');
+    await page.getByTestId('plan-title').fill('Keeping Elspeth safe at home');
+    await page.getByTestId('plan-outcome-0').fill('Elspeth decides who comes into her house and who handles her money');
+    await page.getByTestId('plan-review-date').fill('2026-12-01');
+    await page.getByTestId('plan-add-action').click();
+    await page.getByTestId('plan-action-title-0').fill('Arrange a corporate appointee for the pension');
+    await page.getByTestId('plan-action-owner-0').selectOption('usr_anne_hendry');
+    await page.getByTestId('plan-action-due-0').fill('2026-09-30');
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'asp-plan-form', fullPage: true });
+    await submitTransition(page);
+    await expect(header).toContainText('Protection plan');
+    await expect(page.getByText('Keeping Elspeth safe at home').first()).toBeVisible();
+    await expect(page.getByRole('row').filter({ hasText: 'Arrange a corporate appointee' })).toContainText('Anne Hendry');
+    await capture(page, { phase: PHASE, screen: 'asp-plan-recorded', fullPage: true });
+
+    // The review clock the plan started reaches Home, on a case Moira's seeded list never knew.
+    await page.goto('/');
+    await waitForData(page);
+    const clocks = page.locator('section[aria-labelledby="home-clocks"]');
+    await expect(clocks.getByText('Elspeth Munro').first()).toBeVisible();
+    await expect(clocks.getByText(/review/i).first()).toBeVisible();
+
+    // And Anne has the action.
+    await switchUser(page, 'usr_anne_hendry');
+    await page.goto('/');
+    await waitForData(page);
+    await page.getByTestId('notifications-bell').click();
+    await expect(page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: 'Arrange a corporate appointee for the pension' })).toBeVisible();
+    await page.keyboard.press('Escape');
+
+    // The review: scheduled by Moira, held by David, continued with a new date; the clock restarts.
+    await switchUser(page, 'usr_moira_gilmour');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await openTransition(page, 'asp-schedule-review');
+    // The matrix seats nobody at the protection plan stage but the adult and their advocate, so the
+    // dialog says so and the list is built by hand.
+    await expect(page.getByTestId('meeting-invitees')).toContainText('The matrix seats nobody at this stage');
+    await page.getByTestId('meeting-add-invitee').selectOption('usr_anne_hendry');
+    await page.getByTestId('meeting-add-invitee-button').click();
+    await page.getByTestId('meeting-date').fill('2026-11-25');
+    await page.getByTestId('meeting-location').fill('Portlennan Resource Centre, room 1');
+    await page.getByTestId('meeting-chair').selectOption('usr_david_laird');
+    await page.getByTestId('meeting-submit').click();
+    await expect(page.getByText('Meeting scheduled').last()).toBeVisible();
+    await expect(page).toHaveURL(/\/meetings\/mtg_/);
+    await waitForData(page);
+    const reviewUrl = page.url();
+    await switchUser(page, 'usr_david_laird');
+    await page.goto(reviewUrl);
+    await waitForData(page);
+    await page.getByTestId('hold-meeting').click();
+    await page.getByTestId('outcome-review-date').fill('2027-03-01');
+    await page.getByTestId('outcome-rationale').fill('The appointeeship is in place and the nephew has not been back. The plan continues to the spring.');
+    await page.getByTestId('hold-submit').click();
+    await expect(page.getByText('Meeting closed').last()).toBeVisible();
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(header).toContainText('Review');
+    await expect(page.getByText('01 Mar 2027').first()).toBeVisible();
+    await capture(page, { phase: PHASE, screen: 'asp-reviewed', fullPage: true });
   });
 });
 

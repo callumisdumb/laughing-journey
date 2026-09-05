@@ -2065,6 +2065,11 @@
     },
     "subtitle": "Not part of the product. Hidden unless you know the shortcut, and gone from a production build.",
     "title": "Demo controls",
+    "walk": {
+      "lede": "What the stage engine offers from here, for the person signed in. Switch persona to see it change.",
+      "none": "Nothing to record from this stage.",
+      "title": "Walk this case: {reference}"
+    },
     "waypoints": {
       "chain": "5. A live multi-agency chain",
       "chronology": "2. The integrated chronology",
@@ -4840,6 +4845,9 @@
         "source": "{notes}. Source: {source}.",
         "stage": "Stage: {stage}. Default is deny; these audiences are told."
       },
+      "next": {
+        "none": "Nothing to record from here."
+      },
       "notifications": {
         "empty": "Nothing has been sent to you about this case."
       },
@@ -4859,6 +4867,7 @@
         "lawfulBasisInclusion": "Lawful basis for inclusion",
         "needToKnowFor": "Need to know: {reference}",
         "needToKnowStage": "Need to know at this stage",
+        "next": "What happens next",
         "notifications": "Sent to you about this case",
         "recipient": "Recipient",
         "restsOn": "Rests on {count} facts",
@@ -5924,6 +5933,97 @@
       "reason": "This record's content is encrypted to the people the need-to-know rules entitle, and your keys do not open it. This is not a setting someone can change for you: there is no copy of the key held for you to be given. If you need to be on this case, ask the lead to add you, which wraps the key to you from that point on.",
       "title": "You hold no key for this record"
     },
+    "forms": {
+      "asp": {
+        "closureNote": "Closure note",
+        "closureReason": "Closure reason",
+        "closureReasonPlaceholder": "Choose a reason"
+      },
+      "aspInquiry": {
+        "agencies": "Agencies to ask",
+        "agenciesHint": "Each is sent an information request on a lawful basis and is told.",
+        "discussion": "Convene an inter-agency discussion",
+        "discussionHint": "The schedule dialog opens once the inquiry is recorded.",
+        "purpose": "Purpose",
+        "purposeHint": "Why they are being asked. It goes on every request."
+      },
+      "aspOutcome": {
+        "action": "Action taken",
+        "actionHint": "The national minimum dataset's six categories. This is what the return counts.",
+        "advocacyAccepted": "Advocacy accepted",
+        "advocacyOffered": "Independent advocacy offered",
+        "advocacyProvider": "Advocacy provider",
+        "advocateName": "Advocate",
+        "capacityAssessed": "Capacity assessed",
+        "capacityFluctuates": "Capacity fluctuates",
+        "capacitySummary": "Capacity summary",
+        "consent": "Consent",
+        "consentNote": "Consent note",
+        "investigateHint": "Opens the investigation. Consent, capacity, undue pressure and advocacy are recorded here.",
+        "nfaHint": "Closes the case with the action taken.",
+        "outcome": "Inquiry outcome",
+        "pressureConsidered": "Undue pressure considered",
+        "pressureFound": "Undue pressure found",
+        "pressureHint": "Section 35: whether somebody is influencing the adult's refusal.",
+        "pressureReasoning": "Reasoning",
+        "supportHint": "No investigation; a support plan is recorded next."
+      },
+      "aspScreening": {
+        "emergencyHint": "Straight to investigation, with the protection order dialog offered next.",
+        "nfaHint": "Closes the case with the reason the national return asks for.",
+        "outcome": "Screening decision",
+        "proceedHint": "Opens the section 4 inquiry. Needs the three-point test recorded."
+      },
+      "aspStep": {
+        "adultDeclined": "The adult declined to be interviewed",
+        "adultPresent": "The adult was present",
+        "attended": "Who went",
+        "attendedHint": "One name per line.",
+        "examConsent": "The adult consented to the examination",
+        "examOutcome": "Outcome, if known",
+        "holder": "Record holder",
+        "holderAgency": "Holder's agency",
+        "interviewee": "Interviewed",
+        "lawfulBasis": "Lawful basis",
+        "note": "What was seen and said",
+        "power": "Which power",
+        "practitioner": "Health professional",
+        "records": "Records requested",
+        "recordsHint": "One per line.",
+        "s10": "Section 10 records request",
+        "s10Hint": "Sends an information request to the record holder on the basis you name.",
+        "s7": "Section 7 visit",
+        "s7Hint": "A visit to the place the adult is, with who went.",
+        "s8": "Section 8 interview",
+        "s8Hint": "A private interview; the adult may decline.",
+        "s9": "Section 9 medical examination",
+        "s9Hint": "Requested of a health professional, with the adult's consent."
+      },
+      "plan": {
+        "actionDue": "Due (dd Mon yyyy)",
+        "actionOwner": "Owner",
+        "actionOwnerPlaceholder": "Choose an owner",
+        "actions": "Actions",
+        "actionsHint": "Each with an owner the case permits and a date. Every owner is told.",
+        "actionTitle": "Action",
+        "addAction": "Add an action",
+        "addOutcome": "Add an outcome",
+        "consent": "Consent",
+        "consentHint": "A support plan rests on the adult's agreement. Say what they agreed to and how it was given.",
+        "coordinator": "Coordinator",
+        "coordinatorPlaceholder": "Choose a coordinator",
+        "outcome": "Outcome {number}",
+        "outcomes": "Outcomes",
+        "outcomesHint": "What will be different for the person, one per line. Actions hang off the first.",
+        "remove": "Remove",
+        "removeAction": "Remove this action",
+        "reviewDate": "Review date (dd Mon yyyy)",
+        "reviewDateRequired": "Review date (dd Mon yyyy), required",
+        "title": "Plan title"
+      },
+      "rationale": "Rationale",
+      "rationaleHint": "Why this decision, in the words you would want read back at a review."
+    },
     "head": {
       "askToBeInvolved": "Ask to be involved",
       "born": "born {date}",
@@ -5979,6 +6079,23 @@
       "schedule": "Schedule",
       "scheduled": "{when}, {location}",
       "title": "Meetings"
+    },
+    "next": {
+      "dialogTitle": "{transition}: {reference}",
+      "formPending": "The form for {transition} is not built yet.",
+      "held": "{transition} is recorded when the {meeting} is held{scheduled, select, yes {: } other {. Schedule it first.}}",
+      "leadsTo": "Moves the case to {stage}.",
+      "meta": "{count, plural, =0 {Nothing to record from this stage} one {# decision this stage carries} other {# decisions this stage carries}}",
+      "none": "This case carries no decision from here. It is closed, transferred, or waiting on something outside the product.",
+      "recorded": "{transition} recorded",
+      "recordedText": "{summary} Clocks completed: {completed}. Clocks started: {started}.",
+      "recordFirst": "Go to {transition}",
+      "recordIt": "Record it",
+      "route": "{moves, select, yes {Moves the case to {stage}.} other {Records a step. The case stays at {stays}.}}",
+      "sentence": "{transition}{moves, select, yes {, which moves the case to {stage}} other {}}. {who, select, you {Yours to record.} other {{route}}}{missing, select, yes { Something it needs is not recorded yet.} other {}}{held, select, scheduled { Recorded when the scheduled meeting is held.} unscheduled { Recorded when its meeting is held; none is scheduled.} other {}}",
+      "stays": "Records a step; the case stays where it is.",
+      "submit": "Record",
+      "title": "What happens next"
     },
     "notFound": {
       "allProcesses": "All processes",
@@ -6176,6 +6293,7 @@
         "mhoReason": "Nominated for the application",
         "minuteTaker": "Minute taker",
         "minuteTakerReason": "Takes the minute",
+        "recorderReason": "Recorded {transition}",
         "researchAgency": "Research agency",
         "researchAgencyReason": "Returned research for the MARAC",
         "returnAgency": "Pre-meeting return",

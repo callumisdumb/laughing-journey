@@ -1608,8 +1608,12 @@ export const useAppStore = create<AppState>((set, get) => ({
 
     // The people the decision puts on the case, before the write, so the rewrap and the stage-change
     // notifications see them as members.
+    // Recording a decision on a case puts the recorder on it (D-219): a team leader who screened
+    // a concern is involved in the case whatever the matrix says about the next stage.
     let after = outcome.process;
-    const joining = outcome.addMembers.filter((m) => !after.members.some((existing) => existing.userId === m.userId) && data.users.some((u) => u.id === m.userId));
+    const named = outcome.addMembers.filter((m) => data.users.some((u) => u.id === m.userId));
+    const recorder = named.some((m) => m.userId === user.id) ? [] : [{ userId: user.id, caseRole: roleLabel(user.roleId), agency: user.agency, reason: t('processes.transitions.caseRole.recorderReason', { transition: transitionLabel(transition.id) }) }];
+    const joining = [...named, ...recorder].filter((m) => !after.members.some((existing) => existing.userId === m.userId));
     if (joining.length > 0) after = { ...after, members: [...after.members, ...joining.map((m) => ({ userId: m.userId, caseRole: m.caseRole, agency: m.agency, since: at.slice(0, 10), reason: t('processes.transitions.audit.member', { role: m.caseRole, reason: m.reason }) }))] };
 
     // Clocks: a rule that is completed and started in the same decision restarts through the

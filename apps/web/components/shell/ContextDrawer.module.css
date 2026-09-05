@@ -204,3 +204,11 @@
   display: flex;
   flex-direction: column;
 }
+
+.plain {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0 0 0 16px;
+  font-size: var(--text-sm);
+}

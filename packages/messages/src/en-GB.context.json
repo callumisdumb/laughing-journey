@@ -6323,6 +6323,17 @@
     "title": {
       "where": "Demo control panel, its title."
     },
+    "walk": {
+      "lede": {
+        "where": "Lede of the walk-this-case section"
+      },
+      "none": {
+        "where": "Shown in the walk-this-case section when the stage carries nothing"
+      },
+      "title": {
+        "where": "Heading of the demo panel section listing what the case on screen can record next"
+      }
+    },
     "waypoints": {
       "chain": {
         "where": "Demo control panel, chapter 5 of docs/DEMO.md."
@@ -14574,6 +14585,11 @@
           "where": "Context panel, need-to-know section: the stage line above the audiences"
         }
       },
+      "next": {
+        "none": {
+          "where": "Shown in the drawer's what-happens-next section when the stage carries no transition"
+        }
+      },
       "notifications": {
         "empty": {
           "where": "Context drawer on a case: the notifications the reader has received about it"
@@ -14638,6 +14654,9 @@
           "maxLength": 32,
           "screenshot": "phase-3/process-cp-light-comfortable.png",
           "where": "Context panel section heading for need-to-know on a selected process"
+        },
+        "next": {
+          "where": "Drawer section on a case listing the decisions the stage carries"
         },
         "notifications": {
           "where": "Context drawer on a case: the notifications the reader has received about it"
@@ -17963,6 +17982,251 @@
         "where": "Title of the restricted state shown when the record's key does not unwrap"
       }
     },
+    "forms": {
+      "asp": {
+        "closureNote": {
+          "where": "Label of the closure note on an ASP form"
+        },
+        "closureReason": {
+          "where": "Label of the closure reason select on an ASP form"
+        },
+        "closureReasonPlaceholder": {
+          "where": "Placeholder option of the closure reason select"
+        }
+      },
+      "aspInquiry": {
+        "agencies": {
+          "where": "Legend of the agency checkboxes on the open inquiry form"
+        },
+        "agenciesHint": {
+          "where": "Hint under the agency checkboxes on the open inquiry form"
+        },
+        "discussion": {
+          "where": "Checkbox on the open inquiry form"
+        },
+        "discussionHint": {
+          "where": "Hint under the discussion checkbox on the open inquiry form"
+        },
+        "purpose": {
+          "where": "Label of the purpose field on the open inquiry form"
+        },
+        "purposeHint": {
+          "where": "Hint under the purpose field on the open inquiry form"
+        }
+      },
+      "aspOutcome": {
+        "action": {
+          "where": "Label of the action taken select on the inquiry outcome form"
+        },
+        "actionHint": {
+          "where": "Hint under the action taken select"
+        },
+        "advocacyAccepted": {
+          "where": "Checkbox on the inquiry outcome form"
+        },
+        "advocacyOffered": {
+          "where": "Checkbox on the inquiry outcome form"
+        },
+        "advocacyProvider": {
+          "where": "Label of the advocacy provider field"
+        },
+        "advocateName": {
+          "where": "Label of the advocate name field"
+        },
+        "capacityAssessed": {
+          "where": "Checkbox on the inquiry outcome form"
+        },
+        "capacityFluctuates": {
+          "where": "Checkbox on the inquiry outcome form"
+        },
+        "capacitySummary": {
+          "where": "Label of the capacity summary field"
+        },
+        "consent": {
+          "where": "Label of the consent status select on the inquiry outcome form"
+        },
+        "consentNote": {
+          "where": "Label of the consent note field"
+        },
+        "investigateHint": {
+          "where": "Hint on the investigate option"
+        },
+        "nfaHint": {
+          "where": "Hint on the no further action option"
+        },
+        "outcome": {
+          "where": "Legend of the outcome radio group on the inquiry outcome form"
+        },
+        "pressureConsidered": {
+          "where": "Checkbox on the inquiry outcome form"
+        },
+        "pressureFound": {
+          "where": "Checkbox on the inquiry outcome form"
+        },
+        "pressureHint": {
+          "where": "Hint under the undue pressure checkbox"
+        },
+        "pressureReasoning": {
+          "where": "Label of the undue pressure reasoning field"
+        },
+        "supportHint": {
+          "where": "Hint on the support only option"
+        }
+      },
+      "aspScreening": {
+        "emergencyHint": {
+          "where": "Hint on the emergency option of the ASP screening form"
+        },
+        "nfaHint": {
+          "where": "Hint on the no further action option of the ASP screening form"
+        },
+        "outcome": {
+          "where": "Legend of the outcome radio group on the ASP screening form"
+        },
+        "proceedHint": {
+          "where": "Hint on the proceed option of the ASP screening form"
+        }
+      },
+      "aspStep": {
+        "adultDeclined": {
+          "where": "Checkbox on the section 8 form"
+        },
+        "adultPresent": {
+          "where": "Checkbox on the section 7 form"
+        },
+        "attended": {
+          "where": "Label of the attendees field on the section 7 form"
+        },
+        "attendedHint": {
+          "where": "Hint under the attendees field"
+        },
+        "examConsent": {
+          "where": "Checkbox on the section 9 form"
+        },
+        "examOutcome": {
+          "where": "Label of the outcome field on the section 9 form"
+        },
+        "holder": {
+          "where": "Label of the holder field on the section 10 form"
+        },
+        "holderAgency": {
+          "where": "Label of the agency select on the section 10 form"
+        },
+        "interviewee": {
+          "where": "Label of the interviewee select on the section 8 form"
+        },
+        "lawfulBasis": {
+          "where": "Label of the lawful basis field on the section 10 form"
+        },
+        "note": {
+          "where": "Label of the note field on the section 7 and 8 forms"
+        },
+        "power": {
+          "where": "Legend of the power radio group on the investigatory step form"
+        },
+        "practitioner": {
+          "where": "Label of the practitioner field on the section 9 form"
+        },
+        "records": {
+          "where": "Label of the records field on the section 10 form"
+        },
+        "recordsHint": {
+          "where": "Hint under the records field"
+        },
+        "s10": {
+          "where": "Radio option on the investigatory step form"
+        },
+        "s10Hint": {
+          "where": "Hint on the section 10 option"
+        },
+        "s7": {
+          "where": "Radio option on the investigatory step form"
+        },
+        "s7Hint": {
+          "where": "Hint on the section 7 option"
+        },
+        "s8": {
+          "where": "Radio option on the investigatory step form"
+        },
+        "s8Hint": {
+          "where": "Hint on the section 8 option"
+        },
+        "s9": {
+          "where": "Radio option on the investigatory step form"
+        },
+        "s9Hint": {
+          "where": "Hint on the section 9 option"
+        }
+      },
+      "plan": {
+        "actionDue": {
+          "where": "Label of the due date on a plan form row"
+        },
+        "actionOwner": {
+          "where": "Label of the owner select on a plan form row"
+        },
+        "actionOwnerPlaceholder": {
+          "where": "Placeholder option of the owner select on a plan form row"
+        },
+        "actions": {
+          "where": "Legend of the actions list on a plan form"
+        },
+        "actionsHint": {
+          "where": "Hint under the actions legend on a plan form"
+        },
+        "actionTitle": {
+          "where": "Label of the action title field on a plan form row"
+        },
+        "addAction": {
+          "where": "Button that adds an action row on a plan form"
+        },
+        "addOutcome": {
+          "where": "Button that adds an outcome row on a plan form"
+        },
+        "consent": {
+          "where": "Label of the consent note on a support plan form"
+        },
+        "consentHint": {
+          "where": "Hint under the consent note on a support plan form"
+        },
+        "coordinator": {
+          "where": "Label of the coordinator select on a plan form"
+        },
+        "coordinatorPlaceholder": {
+          "where": "Placeholder option of the coordinator select on a plan form"
+        },
+        "outcome": {
+          "where": "Label of one outcome field on a plan form"
+        },
+        "outcomes": {
+          "where": "Legend of the outcomes list on a plan form"
+        },
+        "outcomesHint": {
+          "where": "Hint under the outcomes legend on a plan form"
+        },
+        "remove": {
+          "where": "Button that removes an outcome or an action row on a plan form"
+        },
+        "removeAction": {
+          "where": "Accessible name of the button that removes an action row"
+        },
+        "reviewDate": {
+          "where": "Label of the review date field on a plan form"
+        },
+        "reviewDateRequired": {
+          "where": "Label of the review date field on a plan form where the plan must carry one"
+        },
+        "title": {
+          "where": "Label of the plan title field"
+        }
+      },
+      "rationale": {
+        "where": "Label of the rationale field on a transition form"
+      },
+      "rationaleHint": {
+        "where": "Hint under the rationale field on a transition form"
+      }
+    },
     "head": {
       "askToBeInvolved": {
         "maxLength": 30,
@@ -18148,6 +18412,53 @@
         "maxLength": 20,
         "screenshot": "phase-3/process-cp-light-comfortable.png",
         "where": "Sheet title of the meetings card on the process screen"
+      }
+    },
+    "next": {
+      "dialogTitle": {
+        "where": "Title of the dialog that records a transition on a case"
+      },
+      "formPending": {
+        "where": "Under a transition whose form does not exist yet"
+      },
+      "held": {
+        "where": "Sentence for a transition a meeting fires; followed by a link to the scheduled meeting where there is one"
+      },
+      "leadsTo": {
+        "where": "Under a transition button: the stage it leads to"
+      },
+      "meta": {
+        "where": "Count beside the what-happens-next heading"
+      },
+      "none": {
+        "where": "Shown in the what-happens-next panel when the stage carries no transition"
+      },
+      "recorded": {
+        "where": "Toast title after a transition is recorded"
+      },
+      "recordedText": {
+        "where": "Toast text after a transition is recorded"
+      },
+      "recordFirst": {
+        "where": "Small button beside a refusal that opens the transition which records the missing thing"
+      },
+      "recordIt": {
+        "where": "Small button beside a refusal that opens the dialog recording the missing thing"
+      },
+      "route": {
+        "where": "First line of the record transition dialog"
+      },
+      "sentence": {
+        "where": "One sentence per transition in the drawer and the demo panel"
+      },
+      "stays": {
+        "where": "Under a transition button that does not move the stage"
+      },
+      "submit": {
+        "where": "Primary button of the record transition dialog"
+      },
+      "title": {
+        "where": "Heading of the panel under the stepper on a case that lists the decisions the stage carries"
       }
     },
     "notFound": {
@@ -18703,6 +19014,9 @@
         },
         "minuteTakerReason": {
           "where": "Case role and reason written on a membership the stage engine adds."
+        },
+        "recorderReason": {
+          "where": "Reason on the case membership the store adds for whoever records a transition on a case they were not yet on; transition is the transition label"
         },
         "researchAgency": {
           "where": "Case role and reason written on a membership the stage engine adds."

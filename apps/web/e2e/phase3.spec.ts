@@ -130,7 +130,7 @@ test.describe('scenario dashboards', () => {
     await expect(page.getByText(/Section 13ZA/).first()).toBeVisible();
     await expectNoAxeViolations(page);
     await capture(page, { phase: PHASE, screen: 'process-awi', fullPage: true });
-    await page.getByRole('button', { name: 'Record capacity assessment' }).click();
+    await page.getByRole('button', { name: 'Record capacity assessment' }).last().click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await capture(page, { phase: PHASE, screen: 'process-awi-capacity-form' });
   });

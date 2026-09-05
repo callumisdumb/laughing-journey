@@ -514,3 +514,11 @@ Scheduling went the same way. One dialog behind three doors (the case, the Meeti
 The invite list is proposed rather than generated: everybody the matrix seats is ticked, everybody it does not seat is listed underneath with the reason, and unticking a name moves it to that list. The meeting keeps the list of who was left off (D-214), which the header shows, because the question after the meeting is never "who came" and always "why was she not invited".
 
 Two smaller things fell out. A MARAC could not be opened from a person record at all (D-215): the dialog said Available and the schema said no, and no test had driven one from nothing until this one did. And the pipeline's clock step ran fresh triggers before the transition, so a rescheduled CPPM's notice period could not be moved in one write (D-216).
+
+## The stepper grew buttons (05 Sep 2026)
+
+The stepper was a picture and the decisions that move a case were forms scattered across panels, some of them writing the stage directly. With the tables in place (D-211) the case screen gained a panel under the stepper, "What happens next", which is the tables read out for the person signed in: the screening decision for the team leader, the inquiry for the council officer, the visit that stays where it is, the conference to schedule, the conference outcome that waits for the meeting. Tried listing everything the type can ever do. Rejected: eleven buttons on an adult concern, nine of them disabled, is a wall; the panel lists what this stage carries, and the drawer's sentences say where each one leads and whose it is.
+
+The refusals are the useful part. "Record screening decision is recorded by Team leader, not by your role" beside a disabled button tells the council officer whom to ask; "Three-point test required. Record it" opens the dialog that records it. Every refusal the engine can give had to name a route (D-211) and this is where the routes became clickable.
+
+The driven ASP walk (F.2.1 in `flows.spec.ts`) found the Home clocks reading the user's seeded case list (D-218): the plan review clock Moira started on a case she had opened an hour earlier was on the case and nowhere else. It also found nothing else, which after four such walks is the first time.

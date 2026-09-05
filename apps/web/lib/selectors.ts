@@ -66,7 +66,9 @@ export function clocksForUser(data: Dataset, config: Config, user: User, now: Da
   const out: UserClock[] = [];
   for (const p of data.processes) {
     if (p.status !== 'open') continue;
-    if (!user.caseMemberships.includes(p.id) && !isOversight(user)) continue;
+    // On the case by its own member list or the seeded one: a case opened this session is not on
+    // the user's seeded list, and its clocks belong on Home from the moment they start.
+    if (!user.caseMemberships.includes(p.id) && !p.members.some((m) => m.userId === user.id) && !isOversight(user)) continue;
     const subject = personById(data, p.subjectIds[0]);
     for (const c of clocksForProcess(data, config, p, now)) {
       if (c.status === 'complete') continue;

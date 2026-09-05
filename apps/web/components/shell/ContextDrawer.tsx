@@ -3,7 +3,7 @@
 import { accessRestrictionLabel, actionStatusLabel, identifiesSubject, agencyShort, classificationLabel, effectiveClassification, formatDate, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, recipientView, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type ClassifiedRecord, type Process } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { AgencyMark, Dialog, IconButton, Pill, RiskBand } from '@mas/ui';
-import { Ban, Bell, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, ShieldCheck, Users } from 'lucide-react';
+import { ArrowRight, Ban, Bell, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, ShieldCheck, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { PractitionerLink } from '@/components/EntityLink';
 import { NotificationList } from '@/components/notifications/NotificationList';
@@ -12,6 +12,7 @@ import { useAppearance } from '@/lib/appearance';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, fullName, membersByAgency, personById, processById, processesInvolving, userById, userName } from '@/lib/selectors';
 import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
+import { useTransitionsNarrative } from '@/features/process/transitions/TransitionPanel';
 import styles from './ContextDrawer.module.css';
 
 /**
@@ -290,6 +291,16 @@ function ProcessDrawer({ process }: { process: Process }) {
       <Section title={t('nav.drawer.section.notifications')} icon={<Bell size={14} aria-hidden="true" />}>
         <ProcessNotifications processId={process.id} />
       </Section>
+      {/*
+        What the stage engine offers next (D-217), as sentences: what each decision is, where it
+        leads, whether it is this person's to record and what it waits for. The panel on the case
+        has the buttons; the drawer says the same thing on any screen the case is selected from.
+      */}
+      {level === 'full' ? (
+        <Section title={t('nav.drawer.section.next')} icon={<ArrowRight size={14} aria-hidden="true" />}>
+          <WhatHappensNext process={process} />
+        </Section>
+      ) : null}
       {identifiesSubject(level) ? (
         <>
           <Section title={t('nav.drawer.section.whoIsInvolved')} icon={<Users size={14} aria-hidden="true" />}>
@@ -309,6 +320,19 @@ function ProcessDrawer({ process }: { process: Process }) {
         <p className={styles.withheld}>{t('nav.drawer.process.withheld')}</p>
       )}
     </>
+  );
+}
+
+function WhatHappensNext({ process }: { process: Process }) {
+  const t = useT();
+  const sentences = useTransitionsNarrative(process);
+  if (sentences.length === 0) return <p className={styles.empty}>{t('nav.drawer.next.none')}</p>;
+  return (
+    <ul className={styles.plain} data-testid="drawer-next">
+      {sentences.map((sentence) => (
+        <li key={sentence}>{sentence}</li>
+      ))}
+    </ul>
   );
 }
 

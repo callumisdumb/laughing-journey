@@ -19,6 +19,7 @@ import { readProcessDetail } from '@/lib/vault';
 import { AddPlanDialog } from './AddPlanDialog';
 import { AddActionDialog } from '@/features/actions/AddActionDialog';
 import { ScheduleMeetingDialog } from '@/features/meetings/ScheduleMeetingDialog';
+import { TransitionPanel } from './transitions/TransitionPanel';
 import { OutboundStatus } from './OutboundStatus';
 import { CloseProcessDialog, ReopenProcessDialog } from './CloseProcessDialog';
 import { RegisterEntryDialog } from './forms/RegisterEntryDialog';
@@ -222,6 +223,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
             <div className={styles.stepper}>
               <Stepper steps={steps} label={t('processes.stages.label')} />
             </div>
+            {access.level === 'full' ? <TransitionPanel process={process} /> : null}
             <div className={styles.layout}>
               <div className={styles.main}>
                 {access.level === 'summary' || access.level === 'fields' ? (

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { createPerson, selectOptionContaining, startCase, switchPersona, unreadCount } from './driven';
 import { capture, expectNoAxeViolations, signInAs, switchUser, waitForData } from './helpers';
 
 const PHASE = 'meetings';
@@ -13,60 +14,9 @@ test.use({ viewport: { width: 1440, height: 900 } });
  * distributed and the recipient told; and a meeting type the tables schedule from a later stage
  * refused with the stage named. Every consequence is read off the interface.
  */
-async function switchPersona(page: Page, userId: string): Promise<void> {
-  await page.keyboard.press('Control+Shift+D');
-  await expect(page.getByTestId('demo-panel')).toBeVisible();
-  await page.getByTestId(`persona-${userId}`).click();
-  await waitForData(page);
-}
-
-async function createAdult(page: Page, givenName: string, familyName: string, dateOfBirth: string): Promise<void> {
-  await page.goto('/people');
-  await waitForData(page);
-  await page.getByTestId('add-person').click();
-  const dialog = page.getByRole('dialog');
-  await dialog.getByLabel('Given name').fill(givenName);
-  await dialog.getByLabel('Family name').fill(familyName);
-  await dialog.getByLabel(/Date of birth/).fill(dateOfBirth);
-  await page.getByTestId('create-person-search').click();
-  await page.getByTestId('create-person-none-match').click();
-  await page.getByTestId('create-person-submit').click();
-  await expect(page.getByRole('dialog')).toHaveCount(0);
-  await waitForData(page);
-  await expect(page.getByRole('heading', { name: new RegExp(`${givenName} ${familyName}`) })).toBeVisible();
-}
-
-async function startCase(page: Page, type: 'asp' | 'marac', source: string, summary: string): Promise<string> {
-  await page.getByTestId('start-process').click();
-  await page.getByTestId(`process-choice-${type}`).getByRole('radio').check();
-  await page.getByTestId('process-source').fill(source);
-  await page.getByTestId('process-summary').fill(summary);
-  await page.getByTestId('start-process-submit').click();
-  await waitForData(page);
-  const header = (await page.getByTestId('process-header').textContent()) ?? '';
-  const reference = new RegExp(`${type.toUpperCase()}-\\d{4}-\\d{4}`).exec(header)?.[0] ?? '';
-  expect(reference, 'the new case shows its reference in the header').not.toBe('');
-  return reference;
-}
-
-/** Playwright matches option labels exactly, so a reference inside a longer label is found by hand. */
-async function selectOptionContaining(page: Page, testId: string, text: string | RegExp): Promise<void> {
-  const select = page.getByTestId(testId);
-  const options = await select.locator('option').evaluateAll((els) => els.map((el) => ({ value: (el as HTMLOptionElement).value, text: el.textContent ?? '' })));
-  const match = options.find((o) => (typeof text === 'string' ? o.text.includes(text) : text.test(o.text)));
-  expect(match, `an option matching ${String(text)}`).toBeDefined();
-  await select.selectOption(match!.value);
-}
-
-async function unreadCount(page: Page): Promise<number> {
-  const badge = page.getByTestId('notifications-unread');
-  if ((await badge.count()) === 0) return 0;
-  return Number.parseInt(((await badge.textContent()) ?? '0').replace(/\D/g, ''), 10) || 0;
-}
-
 /** The MARAC coordinator opens a referral on a new victim and schedules the meeting with Janet invited by hand. */
 async function scheduleMarac(page: Page, givenName: string, familyName: string, date: string): Promise<{ reference: string; title: string }> {
-  await createAdult(page, givenName, familyName, '1988-11-03');
+  await createPerson(page, givenName, familyName, '1988-11-03');
   const reference = await startCase(page, 'marac', 'Police Scotland, domestic abuse unit', 'Third call-out in two months. DASH scored 14 with a professional judgement referral.');
   await page.goto('/meetings');
   await waitForData(page);
@@ -91,7 +41,7 @@ async function scheduleMarac(page: Page, givenName: string, familyName: string, 
 test.describe('scheduling', () => {
   test('from the Meetings screen: the matrix proposes the list, the left-off are recorded, and the invitee is told', async ({ page }) => {
     await signInAs(page, 'usr_karen_findlay');
-    await createAdult(page, 'Fiona', 'Rattray', '1988-11-03');
+    await createPerson(page, 'Fiona', 'Rattray', '1988-11-03');
     const reference = await startCase(page, 'marac', 'Police Scotland, domestic abuse unit', 'Third call-out in two months. DASH scored 14 with a professional judgement referral.');
 
     await page.goto('/meetings');
@@ -153,7 +103,7 @@ test.describe('scheduling', () => {
 
   test('from the case, a type the tables schedule from a later stage is refused with the stage named', async ({ page }) => {
     await signInAs(page, 'usr_moira_gilmour');
-    await createAdult(page, 'Hamish', 'Craik', '1946-06-30');
+    await createPerson(page, 'Hamish', 'Craik', '1946-06-30');
     await startCase(page, 'asp', 'District nurse, Kirkbrae practice', 'Money going missing from the house and a nephew who will not leave.');
     await page.getByTestId('schedule-meeting').click();
     await page.getByTestId('meeting-type').selectOption('asp-case-conference');
@@ -220,7 +170,7 @@ test.describe('moving and cancelling', () => {
 test.describe('holding a meeting the engine has no view of', () => {
   test('a pre-meeting request goes out and comes back, the meeting is held, and the distributed minute reaches its recipient', async ({ page }) => {
     await signInAs(page, 'usr_moira_gilmour');
-    await createAdult(page, 'Peigi', 'Buchan', '1941-01-22');
+    await createPerson(page, 'Peigi', 'Buchan', '1941-01-22');
     const reference = await startCase(page, 'asp', 'Care at home provider, Whinbrae Care', 'Carers report the house is unheated and the adult is refusing meals and visits.');
     await page.getByTestId('schedule-meeting').click();
     await page.getByTestId('meeting-type').selectOption('asp-inter-agency-discussion');

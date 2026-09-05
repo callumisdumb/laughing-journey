@@ -8,7 +8,8 @@ import { RotateCcw, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { DemoClock } from '@/components/DemoClock';
 import { useAppearance } from '@/lib/appearance';
-import { useNavigate } from '@/lib/router';
+import { useNavigate, useRoute } from '@/lib/router';
+import { useTransitionsNarrative } from '@/features/process/transitions/TransitionPanel';
 import { DEMO_TOOLS } from '@/lib/simulator';
 import { useAppStore, useData } from '@/lib/store';
 import { userName } from '@/lib/selectors';
@@ -41,6 +42,9 @@ export function DemoPanel() {
   const t = useT();
   const data = useData();
   const navigate = useNavigate();
+  const route = useRoute();
+  const onCase = route.segments[0] === 'processes' && route.segments[1] ? data.processes.find((p) => p.id === route.segments[1]) : undefined;
+  const walk = useTransitionsNarrative(onCase);
   const signIn = useAppStore((s) => s.signIn);
   const userId = useAppStore((s) => s.session.userId);
   const setDemoNow = useAppStore((s) => s.setDemoNow);
@@ -122,6 +126,19 @@ export function DemoPanel() {
               })}
             </ul>
           </section>
+
+          {onCase ? (
+            <section className={styles.section} aria-label={t('demo.walk.title', { reference: onCase.reference })} data-testid="demo-walk">
+              <h3 className={styles.sectionTitle}>{t('demo.walk.title', { reference: onCase.reference })}</h3>
+              <p className={styles.lede}>{t('demo.walk.lede')}</p>
+              {walk.length === 0 ? <p className={styles.lede}>{t('demo.walk.none')}</p> : null}
+              <ul className={styles.walk}>
+                {walk.map((sentence) => (
+                  <li key={sentence}>{sentence}</li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
           <section className={styles.section} aria-label={t('demo.personas.title')}>
             <h3 className={styles.sectionTitle}>{t('demo.personas.title')}</h3>
