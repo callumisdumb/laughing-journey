@@ -973,8 +973,166 @@ test.describe('F.2.4 MAPPA, driven from a notification to an exit, with the rest
   });
 });
 
-test.describe('F.2.5 adults with incapacity', () => {
-  test('the MHO report clock runs its twenty one days and the route decision is recorded', async ({ page }) => {
+test.describe('F.2.5 adults with incapacity, driven from a capacity concern to supervision', () => {
+  test.setTimeout(300_000);
+  /**
+   * Nothing seeded. Stuart raises the concern from the ward; the GP records the capacity
+   * assessment; Stuart checks the register of existing powers and records the route with the
+   * adult's will and preferences beside it; the application names Graeme as its MHO, which puts
+   * him on the case and starts his report clock on his own Home; the medical and MHO reports come
+   * in and the report completes the clock; the court events run to an order, which completes the
+   * interim clocks; supervision begins and a visit is recorded; and the case is closed with the
+   * reason the return counts.
+   */
+  test('the case is walked by the worker, the GP and the MHO, and each clock starts and stops on the decision that owns it', async ({ page }) => {
+    await signInAs(page, 'usr_stuart_blair');
+    await createPerson(page, 'Agnes', 'Petrie', '1938-02-14');
+    await startCase(page, 'awi', 'Ward 12, Clydeshore Royal Infirmary', 'Ready for discharge but cannot weigh up a move to residential care; no attorney known. Daughter asking what happens next.');
+    const caseUrl = page.url();
+    const header = page.getByTestId('process-header');
+    await expect(header).toContainText('Capacity concern');
+
+    // The route decision is a stage away and needs two things; the panel offers what this stage carries.
+    await expect(page.getByTestId('next-awi-check-existing-powers')).toHaveAttribute('data-state', 'open');
+    await expect(page.getByTestId('next-awi-record-capacity-assessment')).toHaveAttribute('data-state', 'open');
+    await capture(page, { phase: PHASE, screen: 'awi-next', fullPage: true });
+
+    // The GP records the capacity assessment, decision by decision, through the dialog the case had.
+    await switchUser(page, 'usr_amira_farouk');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await page.getByTestId('next-awi-record-capacity-assessment-button').click();
+    const capacity = page.getByRole('dialog');
+    await capacity.getByLabel('The specific decision').fill('Whether to move from the ward to Whinbrae House rather than home with a care package');
+    await capacity.getByLabel(/^Date\b/).fill('2026-09-02');
+    for (let i = 0; i < 5; i += 1) await capacity.getByRole('radio', { name: 'No', exact: true }).nth(i).check();
+    await capacity.getByLabel('Evidence for the conclusion').fill('Agnes could not say where she was or why, and repeated the same question about her cat six times in ten minutes. She agreed to whatever was last said.');
+    await capacity.getByRole('radio', { name: 'Lacks capacity' }).check();
+    await capacity.getByLabel('Past and present wishes considered').fill('Has always said she would never go into a home. Now says she wants to be where her cat is.');
+    await capacity.getByRole('button', { name: 'Record assessment' }).click();
+    await expect(toast(page).getByText('Capacity assessment recorded')).toBeVisible();
+    await expect(page.getByText('Lacks capacity').first()).toBeVisible();
+
+    // Stuart checks the register: nothing there.
+    await switchUser(page, 'usr_stuart_blair');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await openTransition(page, 'awi-check-existing-powers');
+    await page.getByTestId('transition-reference').fill('OPG-2026-4471');
+    await submitTransition(page);
+    await expect(header).toContainText('Existing powers');
+    await expect(page.getByText('OPG-2026-4471').first()).toBeVisible();
+
+    // Stuart records the route, with the will and preferences beside the decision. The MHO is not
+    // yet on the case: the matrix seats him at the concern and again at the application, and the
+    // application is what names him.
+    await openTransition(page, 'awi-route-decision');
+    await page.getByTestId('transition-awi-route').selectOption('guardianship-welfare');
+    await page.getByTestId('transition-rationale').fill('No attorney, a decision about where to live that the family cannot take, and a daughter who does not want to apply. The council should apply for welfare guardianship.');
+    await page.getByTestId('transition-past-wishes').fill('Never wanted to go into a home.');
+    await page.getByTestId('transition-present-wishes').fill('Wants to be where her cat is, which is at her daughter\'s.');
+    await page.getByTestId('transition-communication').fill('Speech, mornings, with her daughter present');
+    await page.getByTestId('transition-add-consulted').click();
+    await page.getByTestId('consulted-name-0').fill('Morag Petrie');
+    await page.getByTestId('consulted-relationship-0').fill('daughter');
+    await page.getByTestId('consulted-view-0').fill('Cannot manage her at home and will not apply herself.');
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'awi-route-form', fullPage: true });
+    await submitTransition(page);
+    await expect(header).toContainText('Route decision');
+    await expect(page.getByText('Welfare guardianship').last()).toBeVisible();
+    await expect(page.getByText('Morag Petrie').first()).toBeVisible();
+
+    // Stuart opens the application naming Graeme, whose clock starts that moment.
+    await openTransition(page, 'awi-open-application');
+    await page.getByTestId('transition-applicant-name').fill('Clydeshore Council, Chief Social Work Officer');
+    await page.getByTestId('transition-powers').fill('Decide where Agnes lives\nConsent to care and treatment');
+    await page.getByTestId('transition-mho').selectOption('usr_graeme_dunlop');
+    await page.getByTestId('transition-court').fill('Dunlarrick Sheriff Court');
+    await submitTransition(page);
+    await expect(header).toContainText('Application');
+    await expect(page.getByText('MHO report (s57(4))').first()).toBeVisible();
+
+    await switchUser(page, 'usr_graeme_dunlop');
+    await page.goto('/');
+    await waitForData(page);
+    const clocks = page.locator('section[aria-labelledby="home-clocks"]');
+    await expect(clocks.getByText('Agnes Petrie').first()).toBeVisible();
+    await expect(clocks.getByText(/MHO report/i).first()).toBeVisible();
+
+    // The medical report from the GP and the MHO report from Graeme, which completes his clock.
+    await switchUser(page, 'usr_amira_farouk');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await openTransition(page, 'awi-record-report');
+    await page.getByRole('radio', { name: 'Medical report' }).check();
+    await page.getByTestId('transition-practitioner').fill('Dr Amira Farouk');
+    await page.getByTestId('transition-date').fill('2026-09-09');
+    await submitTransition(page);
+    await expect(page.getByText('Dr Amira Farouk').first()).toBeVisible();
+
+    await switchUser(page, 'usr_graeme_dunlop');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await openTransition(page, 'awi-record-report');
+    await page.getByRole('radio', { name: 'MHO report' }).check();
+    await page.getByTestId('transition-date').fill('2026-09-16');
+    await submitTransition(page);
+    await expect(page.getByText(/Report submitted/i).first()).toBeVisible();
+
+    // The court events, as they happen: lodged, an interim order that starts its two clocks, a
+    // hearing, and the order, which moves the case and completes them.
+    await switchUser(page, 'usr_stuart_blair');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await openTransition(page, 'awi-court-event');
+    await page.getByRole('radio', { name: 'Application lodged' }).check();
+    await page.getByTestId('transition-date').fill('2026-09-18');
+    await submitTransition(page);
+    await openTransition(page, 'awi-court-event');
+    await page.getByRole('radio', { name: 'Interim order granted' }).check();
+    await page.getByTestId('transition-date').fill('2026-09-25');
+    await page.getByTestId('transition-expiry').fill('2026-12-24');
+    await submitTransition(page);
+    await expect(page.getByText(/interim/i).first()).toBeVisible();
+    await openTransition(page, 'awi-court-event');
+    await page.getByRole('radio', { name: 'Hearing fixed' }).check();
+    await page.getByTestId('transition-date').fill('2026-11-06');
+    await submitTransition(page);
+    await openTransition(page, 'awi-court-event');
+    await page.getByRole('radio', { name: /^Order granted/ }).check();
+    await page.getByTestId('transition-date').fill('2026-11-06');
+    await page.getByTestId('transition-order-kind').selectOption('welfare-guardianship');
+    await page.getByTestId('transition-order-expiry').fill('2029-11-06');
+    await page.getByTestId('transition-guardian').fill('Clydeshore Council, Chief Social Work Officer');
+    await page.getByTestId('transition-powers').fill('Decide where Agnes lives\nConsent to care and treatment');
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'awi-order-form' });
+    await submitTransition(page);
+    await expect(header).toContainText('Order');
+    await expect(page.getByText('Clydeshore Council, Chief Social Work Officer').first()).toBeVisible();
+
+    // Supervision begins with Stuart, a visit is recorded, and the case closes when the order runs out.
+    await openTransition(page, 'awi-begin-supervision');
+    await expect(page.getByTestId('transition-officer')).toHaveValue('usr_stuart_blair');
+    await page.getByTestId('transition-date').fill('2026-11-20');
+    await submitTransition(page);
+    await expect(header).toContainText('Supervision');
+    await page.getByTestId('record-visit').click();
+    await page.getByTestId('visit-date').fill('2026-09-02');
+    await page.getByTestId('visit-summary').fill('Agnes settled at Whinbrae House. Her cat visits on Sundays with Morag.');
+    await page.getByTestId('visit-submit').click();
+    await expect(page.getByText('Her cat visits on Sundays').first()).toBeVisible();
+    await capture(page, { phase: PHASE, screen: 'awi-supervision', fullPage: true });
+
+    await page.getByTestId('next-awi-close-button').click();
+    await page.getByTestId('close-reason').selectOption('order-expired');
+    await page.getByTestId('close-note').fill('The order ran to its end date. Agnes remains at Whinbrae House under the section 13ZA arrangement.');
+    await page.getByTestId('close-submit').click();
+    await expect(header).toContainText('Closed');
+  });
+
+  test('the seeded application tracker shows the MHO report clock and the section 13ZA decision', async ({ page }) => {
     await signInAs(page, 'usr_graeme_dunlop');
     await openByReference(page, 'AWI-2026-0102');
     await expect(page.getByText('Guardianship application tracker')).toBeVisible();

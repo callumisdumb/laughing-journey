@@ -1,4 +1,4 @@
-import { processSubjectIds, type MappaProcess, type MaracProcess, type Process } from '@mas/domain';
+import { processSubjectIds, type AwiProcess, type MappaProcess, type MaracProcess, type Process } from '@mas/domain';
 import { USR } from '@mas/mock-data';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { primeDeviceKey } from './localStore';
@@ -184,5 +184,45 @@ describe('MAPPA through the store (step 8)', () => {
     after = state().data.processes.find((p) => p.id === process.id) as MappaProcess;
     expect(after.detail.preMeetingReturns[0]?.status).toBe('nothing-known');
     expect(state().data.notifications.some((n) => n.kind === 'request-returned' && n.toUserId === USR.rossMowat && n.processId === process.id)).toBe(true);
+  });
+});
+
+describe('adults with incapacity through the store (step 9)', () => {
+  it('the application puts the MHO on the case and starts their clock, and the MHO report completes it', () => {
+    state().signIn(USR.stuartBlair);
+    const subject = state().data.people.find((p) => p.lifeStage === 'adult' && p.dateOfBirth && p.dateOfBirth < '1950-01-01' && !state().data.processes.some((x) => processSubjectIds(x).includes(p.id)))!;
+    const opened = state().openProcess({ type: 'awi', subjectIds: [subject.id], at: state().now().toISOString(), source: 'Ward 12, Clydeshore Royal Infirmary', sourceAgency: 'health', summary: 'Ready for discharge but cannot weigh up a move to residential care.', byName: 'Stuart Blair', byUserId: USR.stuartBlair, awi: { decisionInQuestion: 'Where to live after discharge' } });
+    expect(opened.ok, opened.errors.join(', ')).toBe(true);
+    const process = opened.process!;
+    const checked = state().recordTransition(process.id, 'awi-check-existing-powers', { reference: 'OPG-2026-4471', powerOfAttorney: { exists: false }, guardianship: { exists: false } });
+    expect(checked.ok, checked.errors.join(', ')).toBe(true);
+    const refused = state().recordTransition(process.id, 'awi-route-decision', { route: 'guardianship-welfare', rationale: 'A welfare guardian is needed for decisions about where she lives.', willAndPreferences: { pastWishes: '', presentWishes: 'Wants to be where her cat is', communicationMethod: 'Speech' } });
+    expect(refused.ok).toBe(false);
+    expect(refused.missing?.[0]).toMatchObject({ code: 'capacityAssessmentRequired', creates: { kind: 'dialog', dialog: 'capacity-assessment' } });
+    const withAssessment = state().data.processes.find((p) => p.id === process.id) as AwiProcess;
+    const assessed = state().write({ collection: 'processes', record: { ...withAssessment, detail: { ...withAssessment.detail, capacityAssessments: [{ id: state().newId('cap'), decision: 'Where to live', assessedAt: state().now().toISOString(), assessorName: 'Dr Amira Farouk', assessorRole: 'GP', outcome: 'lacks-capacity', evidence: 'Cannot retain the information long enough to decide.' }] } }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: 'Capacity assessment', processId: process.id, versionChange: 'Capacity assessment' });
+    expect(assessed.ok, assessed.errors.join(', ')).toBe(true);
+    state().signIn(USR.graemeDunlop);
+    const decided = state().recordTransition(process.id, 'awi-route-decision', { route: 'guardianship-welfare', rationale: 'A welfare guardian is needed for decisions about where she lives.', willAndPreferences: { pastWishes: '', presentWishes: 'Wants to be where her cat is', communicationMethod: 'Speech' } });
+    expect(decided.ok, decided.errors.join(', ')).toBe(true);
+    expect(decided.offers?.[0]).toMatchObject({ kind: 'transition', transition: 'awi-open-application' });
+
+    state().signIn(USR.stuartBlair);
+    const application = state().recordTransition(process.id, 'awi-open-application', { applicant: 'council', applicantName: 'Clydeshore Council', powersSought: ['Decide where she lives'], mhoUserId: USR.graemeDunlop, sheriffCourt: 'Dunlarrick Sheriff Court' });
+    expect(application.ok, application.errors.join(', ')).toBe(true);
+    let after = state().data.processes.find((p) => p.id === process.id) as AwiProcess;
+    expect(after.stage).toBe('application');
+    expect(after.members.some((m) => m.userId === USR.graemeDunlop)).toBe(true);
+    const clock = after.clocks.find((c) => c.ruleId === 'awi.mho.report');
+    expect(clock).toMatchObject({ ownerUserId: USR.graemeDunlop });
+    // Graeme is on the case already, having recorded the route decision (D-219), so the MHO
+    // membership adds nothing; the clock is his by its owner.
+
+    state().signIn(USR.graemeDunlop);
+    const report = state().recordTransition(process.id, 'awi-record-report', { kind: 'mho', submittedAt: '2026-09-16T09:00:00.000Z' });
+    expect(report.ok, report.errors.join(', ')).toBe(true);
+    after = state().data.processes.find((p) => p.id === process.id) as AwiProcess;
+    expect(after.clocks.find((c) => c.ruleId === 'awi.mho.report')?.completedAt).toBeDefined();
+    expect(after.detail.application?.mhoReport.status).toBe('submitted');
   });
 });

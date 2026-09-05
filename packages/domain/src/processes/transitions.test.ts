@@ -420,6 +420,8 @@ describe('adults with incapacity', () => {
     expect((lodged.process as AwiProcess).detail.application?.court.lodgedAt).toBe('2026-09-22');
     const interim = ok(lodged.process, 'awi-court-event', { event: 'interim-granted', at: '2026-09-30', expiresAt: '2026-12-30' }, 'mho');
     expect(interim.clocks.starts.map((s) => s.ruleId)).toEqual(['awi.interim.warning', 'awi.interim.maximum']);
+    // A trigger is an instant, whatever the form typed: a date alone fails the clock schema on the next write.
+    for (const start of interim.clocks.starts) expect(start.triggeredAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
     const granted = ok(interim.process, 'awi-court-event', { event: 'order-granted', at: '2026-11-15', order: { kind: 'welfare-guardianship', expiresAt: '2029-11-15', guardianName: 'Clydeshore Council CSWO', powers: ['Decide where to live'] } }, 'mho');
     expect(granted.to).toBe('order');
     expect(granted.clocks.completes).toEqual(['awi.interim.warning', 'awi.interim.maximum', 'awi.mho.report']);

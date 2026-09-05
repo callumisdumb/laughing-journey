@@ -3,7 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { KAYLEIGH, buildDataset } from '@mas/mock-data';
 import { describe, expect, it } from 'vitest';
-import { REASON_REQUIRED, applyClockTransition, classificationRefusal, excludedRecipients, lawfulBasisFor, reasonRefusal, registerChanges, reverseNearMatches, sharingRecordFor, startedClocks, validateRecord, versionFor } from './write';
+import { REASON_REQUIRED, applyClockTransition, classificationRefusal, excludedRecipients, lawfulBasisFor, reasonRefusal, registerChanges, reverseNearMatches, sharingRecordFor, startedClocks, validateRecord, versionFor, validateTriggers } from './write';
 
 const data = buildDataset();
 const config = DEFAULT_CONFIG;
@@ -29,6 +29,13 @@ describe('the write pipeline, step by step', () => {
     it('refuses a record missing a required field rather than writing a half one', () => {
       const { id: _id, ...rest } = kayleigh;
       expect(validateRecord('people', rest).length).toBeGreaterThan(0);
+    });
+
+    it('refuses a clock trigger that is not an instant, on the write that carries it', () => {
+      expect(validateTriggers([{ id: 'clk_1', ruleId: 'awi.interim.warning', triggeredAt: '2026-09-25T00:00:00.000Z' }])).toEqual([]);
+      const errors = validateTriggers([{ id: 'clk_1', ruleId: 'awi.interim.warning', triggeredAt: '2026-09-25' }]);
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors.join(' ')).toContain('clocks.0.triggeredAt');
     });
 
     it('says nothing about a collection with no element schema, rather than refusing everything', () => {

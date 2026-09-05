@@ -18404,6 +18404,249 @@
           "where": "Hint on the section 9 option"
         }
       },
+      "awiApplication": {
+        "applicant": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "applicantName": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "council": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "councilHint": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "court": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "mho": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "mhoHint": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "mhoPlaceholder": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "powers": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "powersHint": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "private": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "privateHint": {
+          "where": "The open application form on an adults with incapacity case."
+        },
+        "solicitor": {
+          "where": "The open application form on an adults with incapacity case."
+        }
+      },
+      "awiCourt": {
+        "date": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "event": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "expires": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "expiresHint": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "granted": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "grantedHint": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "guardian": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "hearing": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "hearingHint": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "interim": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "interimHint": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "lodged": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "lodgedHint": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "order": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "orderExpires": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "orderKind": {
+          "where": "The record court event form on an adults with incapacity case."
+        },
+        "powers": {
+          "where": "The record court event form on an adults with incapacity case."
+        }
+      },
+      "awiPowers": {
+        "attorney": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        },
+        "expires": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        },
+        "guardian": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        },
+        "guardianship": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        },
+        "guardianshipExists": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        },
+        "poa": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        },
+        "poaExists": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        },
+        "poaKind": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        },
+        "powers": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        },
+        "reference": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        },
+        "referenceHint": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        },
+        "registered": {
+          "where": "The check existing powers form on an adults with incapacity case."
+        }
+      },
+      "awiReport": {
+        "kind": {
+          "where": "The record report form on an adults with incapacity case."
+        },
+        "medical": {
+          "where": "The record report form on an adults with incapacity case."
+        },
+        "medicalHint": {
+          "where": "The record report form on an adults with incapacity case."
+        },
+        "mho": {
+          "where": "The record report form on an adults with incapacity case."
+        },
+        "mhoHint": {
+          "where": "The record report form on an adults with incapacity case."
+        },
+        "practitioner": {
+          "where": "The record report form on an adults with incapacity case."
+        },
+        "practitionerKind": {
+          "where": "The record report form on an adults with incapacity case."
+        },
+        "received": {
+          "where": "The record report form on an adults with incapacity case."
+        },
+        "submitted": {
+          "where": "The record report form on an adults with incapacity case."
+        },
+        "suitability": {
+          "where": "The record report form on an adults with incapacity case."
+        },
+        "suitabilityHint": {
+          "where": "The record report form on an adults with incapacity case."
+        }
+      },
+      "awiRoute": {
+        "addConsulted": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "communication": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "communicationHint": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "consultedName": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "consultedRelationship": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "consultedView": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "pastWishes": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "presentWishes": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "removeConsulted": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "route": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "routeHint": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "s13za": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "s13zaApplied": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "s13zaConsidered": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "s13zaObjection": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "s13zaObjectionHint": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "s13zaReasoning": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "will": {
+          "where": "The route decision form on an adults with incapacity case."
+        },
+        "willHint": {
+          "where": "The route decision form on an adults with incapacity case."
+        }
+      },
+      "awiSupervision": {
+        "firstVisit": {
+          "where": "The begin supervision form on an adults with incapacity case."
+        },
+        "firstVisitHint": {
+          "where": "The begin supervision form on an adults with incapacity case."
+        },
+        "officer": {
+          "where": "The begin supervision form on an adults with incapacity case."
+        },
+        "officerHint": {
+          "where": "The begin supervision form on an adults with incapacity case."
+        },
+        "officerPlaceholder": {
+          "where": "The begin supervision form on an adults with incapacity case."
+        }
+      },
       "cpBirth": {
         "date": {
           "where": "Label of the date field on the record the birth form"
@@ -18696,6 +18939,9 @@
         "hint": {
           "where": "The transfer form on a MARAC case."
         }
+      },
+      "oneALine": {
+        "where": "A hint under any list field on a transition form that takes one entry a line."
       },
       "plan": {
         "actionDue": {

@@ -1,4 +1,5 @@
 import type { TransitionForm } from './registry';
+import { AWI_BEGIN_SUPERVISION, AWI_CHECK_POWERS, AWI_COURT_EVENT, AWI_OPEN_APPLICATION, AWI_RECORD_REPORT, AWI_ROUTE_DECISION } from './AwiForms';
 import { ASP_INQUIRY_OUTCOME, ASP_INVESTIGATORY_STEP, ASP_OPEN_INQUIRY, ASP_PROTECTION_PLAN, ASP_SCREENING, ASP_SUPPORT_PLAN } from './AspForms';
 import { CP_BIRTH, CP_DEREGISTER, CP_RECORD_JII, CP_RECORD_MEDICAL } from './CpForms';
 import { MAPPA_EXIT, MAPPA_RECORD_RETURN, MAPPA_REQUEST_RETURNS } from './MappaForms';
@@ -31,6 +32,12 @@ export const TRANSITION_FORMS: Readonly<Record<string, TransitionForm>> = {
   'mappa-request-returns': MAPPA_REQUEST_RETURNS,
   'mappa-record-return': MAPPA_RECORD_RETURN,
   'mappa-exit': MAPPA_EXIT,
+  'awi-check-existing-powers': AWI_CHECK_POWERS,
+  'awi-route-decision': AWI_ROUTE_DECISION,
+  'awi-open-application': AWI_OPEN_APPLICATION,
+  'awi-record-report': AWI_RECORD_REPORT,
+  'awi-court-event': AWI_COURT_EVENT,
+  'awi-begin-supervision': AWI_BEGIN_SUPERVISION,
 };
 
 export type { TransitionForm, TransitionFormContext, TransitionFormProps } from './registry';

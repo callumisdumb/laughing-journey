@@ -1,6 +1,6 @@
 'use client';
 
-import { classificationFor, classificationRank, computeClock, datasetSchema, findClockRule, isExcludedParty, mostRestrictedAccess, mostSensitiveClassification, nearMatchesOnList, nearMatchesOnRegister, normalisePartyName, workingCalendarFrom, type Agency, type AuditEntry, type CaseParty, type Classification, type ClassifiedRecord, type ChronologyEvent, type ClockTrigger, type Config, type Dataset, type DetailLevel, type LawfulBasisRecord, type NotificationRole, type Process, type ProcessType, type SharingRecord, type User } from '@mas/domain';
+import { classificationFor, classificationRank, clockTriggerSchema, computeClock, datasetSchema, findClockRule, isExcludedParty, mostRestrictedAccess, mostSensitiveClassification, nearMatchesOnList, nearMatchesOnRegister, normalisePartyName, workingCalendarFrom, type Agency, type AuditEntry, type CaseParty, type Classification, type ClassifiedRecord, type ChronologyEvent, type ClockTrigger, type Config, type Dataset, type DetailLevel, type LawfulBasisRecord, type NotificationRole, type Process, type ProcessType, type SharingRecord, type User } from '@mas/domain';
 import { warrantsVersion, type ConnectorId, type OutboundIntent, type PayloadField, type RecordVersion } from '@mas/domain';
 import type { Collection } from '@/lib/store';
 
@@ -205,6 +205,18 @@ export function validateRecord(collection: Collection, record: unknown): string[
   const parsed = element.safeParse(record);
   if (parsed.success) return [];
   return (parsed.error?.issues ?? []).map((issue) => (issue.path.length > 0 ? `${issue.path.join('.')}: ${issue.message}` : issue.message));
+}
+
+/**
+ * Step 1, for the clocks a write starts. A trigger is appended to the case after the record has
+ * been checked, so a bad one (a date where an instant belongs) used to pass this write and refuse
+ * the next, which named a field nobody had typed. It refuses the write that carries it.
+ */
+export function validateTriggers(triggers: readonly ClockTrigger[]): string[] {
+  return triggers.flatMap((trigger, i) => {
+    const parsed = clockTriggerSchema.safeParse(trigger);
+    return parsed.success ? [] : parsed.error.issues.map((issue) => `clocks.${i}.${issue.path.join('.')}: ${issue.message}`);
+  });
 }
 
 /**

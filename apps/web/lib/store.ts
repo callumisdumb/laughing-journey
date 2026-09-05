@@ -17,7 +17,7 @@ import { encryptForGateway, platformViewOutbound } from '@mas/connectors';
 import { generateKeyPair, type PublicKey } from '@mas/crypto';
 import { create } from 'zustand';
 import { listedNames } from '@/lib/selectors';
-import { applyClockTransition, classificationRefusal, excludedRecipients, lawfulBasisFor, reasonRefusal, registerChanges, reverseNearMatches, sharingRecordFor, startedClocks, validateRecord, versionFor, type WriteEffect, type WriteRequest, type WriteResult, type WriteShare } from '@/lib/write';
+import { applyClockTransition, classificationRefusal, excludedRecipients, lawfulBasisFor, reasonRefusal, registerChanges, reverseNearMatches, sharingRecordFor, startedClocks, validateRecord, validateTriggers, versionFor, type WriteEffect, type WriteRequest, type WriteResult, type WriteShare } from '@/lib/write';
 
 export type Collection = Exclude<keyof Dataset, 'meta'>;
 type Overlay = Partial<Record<Collection, Record<string, unknown>>> & { config?: Config; removed?: Partial<Record<Collection, string[]>> };
@@ -806,6 +806,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
     // 1. The schema, then the rules the schema cannot express, then the reason a correction needs.
     errors.push(...validateRecord(request.collection, request.record));
+    errors.push(...validateTriggers(request.clocks ?? []));
     errors.push(...(request.rules ?? []));
     const reasonError = reasonRefusal(request.intent, request.reason);
     if (reasonError) errors.push(reasonError);

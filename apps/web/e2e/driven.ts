@@ -75,9 +75,14 @@ export async function openTransition(page: Page, transitionId: string): Promise<
   await page.getByTestId(`next-${transitionId}-button`).click();
 }
 
-/** Record the transition whose form is open and wait for the toast that says it was. */
+/**
+ * Record the transition whose form is open and wait for the dialog to close and the toast that
+ * says it was. The dialog closing is the real signal: a toast from the previous decision can still
+ * be on screen, and a refused decision leaves the dialog open with the reason, which this reports.
+ */
 export async function submitTransition(page: Page): Promise<void> {
   await page.getByTestId('transition-submit').click();
+  await expect(page.getByTestId('transition-dialog'), 'the decision was recorded and its dialog closed').toHaveCount(0);
   await expect(page.getByText(/ recorded$/).last()).toBeVisible();
   await waitForData(page);
 }

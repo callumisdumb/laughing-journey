@@ -1,4 +1,5 @@
 import { t } from '@mas/messages';
+import { londonToIso } from '../../dates';
 import type { AwiDetail, AwiProcess } from '../../schemas/process';
 import { moved, outcome, requireText, type MissingThing, type Transition } from './shared';
 
@@ -204,7 +205,9 @@ export const AWI_TRANSITIONS: Array<Transition<AwiProcess, never>> = [
         }
         case 'interim-granted': {
           const next: AwiProcess = { ...process, detail: { ...process.detail, application: { ...application, interimOrder: { soughtAt: application.interimOrder?.soughtAt ?? input.at.slice(0, 10), grantedAt: input.at.slice(0, 10), expiresAt: input.expiresAt, renewals: application.interimOrder ? application.interimOrder.renewals + 1 : 0 } } } };
-          return outcome(next, 'application', summary, { clocks: { completes: [], starts: [{ ruleId: 'awi.interim.warning', triggeredAt: input.at }, { ruleId: 'awi.interim.maximum', triggeredAt: input.at }], note: t('processes.transitions.clockNote.interimGranted') }, eventType: 'legal.order-granted' });
+          // The order is dated, not timed; its clocks run from the start of that day, as an instant.
+          const granted = londonToIso(input.at.slice(0, 10), '00:00');
+          return outcome(next, 'application', summary, { clocks: { completes: [], starts: [{ ruleId: 'awi.interim.warning', triggeredAt: granted }, { ruleId: 'awi.interim.maximum', triggeredAt: granted }], note: t('processes.transitions.clockNote.interimGranted') }, eventType: 'legal.order-granted' });
         }
         case 'hearing-set': {
           const next: AwiProcess = { ...process, detail: { ...process.detail, application: { ...application, court: { ...application.court, hearingAt: input.at.slice(0, 10) } } } };
