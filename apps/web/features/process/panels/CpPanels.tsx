@@ -1,6 +1,6 @@
 'use client';
 
-import { agencyShort, cpConcernLabel, cppmDecisionLabel, formatDate, formatDateTime, irdMedicalKindLabel, planStatusLabel, type CpProcess } from '@mas/domain';
+import { agencyShort, cpConcernLabel, cpDeregistrationReasonLabel, cppmDecisionLabel, formatDate, formatDateTime, irdMedicalKindLabel, planStatusLabel, type CpProcess } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, KeyValue, Pill, Sheet, SheetBody, SheetHead } from '@mas/ui';
 import { differenceInCalendarDays, differenceInWeeks, parseISO, subWeeks } from 'date-fns';
@@ -129,8 +129,8 @@ export function CpPanels({ process }: { process: CpProcess }) {
               <KeyValue
                 items={[
                   { key: t('cp.investigation.opened'), value: formatDateTime(d.investigation.openedAt) },
-                  { key: t('cp.investigation.jii'), value: d.investigation.jiiHeldAt ? t('cp.investigation.jiiHeld', { when: formatDateTime(d.investigation.jiiHeldAt), model: d.investigation.jiiModel ?? t('cp.investigation.jiiModelDefault') }) : ird?.decisions.jii.decided && /^yes/i.test(ird.decisions.jii.decision) ? t('cp.investigation.jiiPlanned') : t('cp.investigation.jiiNotNeeded') },
-                  { key: t('cp.investigation.medical'), value: d.investigation.medicalHeldAt ? t('cp.investigation.medicalHeld', { when: formatDateTime(d.investigation.medicalHeldAt) }) : t('cp.investigation.medicalNotHeld') },
+                  { key: t('cp.investigation.jii'), value: d.investigation.jiiHeldAt ? t('cp.investigation.jiiHeld', { when: formatDateTime(d.investigation.jiiHeldAt), model: d.investigation.jiiModel ?? t('cp.investigation.jiiModelDefault'), hasSummary: d.investigation.jiiSummary ? 'yes' : 'no', summary: d.investigation.jiiSummary ?? '' }) : ird?.decisions.jii.decided && /^yes/i.test(ird.decisions.jii.decision) ? t('cp.investigation.jiiPlanned') : t('cp.investigation.jiiNotNeeded') },
+                  { key: t('cp.investigation.medical'), value: d.investigation.medicalHeldAt ? t('cp.investigation.medicalHeld', { when: formatDateTime(d.investigation.medicalHeldAt), hasKind: d.investigation.medicalKind ? 'yes' : 'no', kind: d.investigation.medicalKind ? irdMedicalKindLabel(d.investigation.medicalKind) : '', hasSummary: d.investigation.medicalSummary ? 'yes' : 'no', summary: d.investigation.medicalSummary ?? '' }) : t('cp.investigation.medicalNotHeld') },
                   { key: t('cp.investigation.summary'), value: d.investigation.summary },
                 ]}
               />
@@ -146,7 +146,7 @@ export function CpPanels({ process }: { process: CpProcess }) {
               items={[
                 { key: t('cp.cppm.cppm'), value: d.cppm ? t('cp.cppm.cppmValue', { hasHeld: d.cppm.heldAt ? 'yes' : 'no', when: d.cppm.heldAt ? formatDateTime(d.cppm.heldAt) : '', decision: cppmDecisionLabel(d.cppm.decision), rationale: d.cppm.rationale ?? '' }) : t('cp.cppm.notHeld') },
                 { key: t('cp.cppm.register'), value: d.register ? <span className={styles.pills}><Pill tone="critical" size="sm">{t('cp.cppm.registered', { date: formatDate(d.register.registeredAt) })}</Pill>{d.register.concerns.map((c) => <Pill key={c} tone="high" size="sm">{cpConcernLabel(c)}</Pill>)}{d.register.localCategory ? <Pill tone="outline" size="sm">{t('cp.cppm.localCategory', { category: d.register.localCategory })}</Pill> : null}</span> : t('cp.cppm.notOnRegister') },
-                ...(d.register?.deregisteredAt ? [{ key: t('cp.cppm.deregistered'), value: t('cp.cppm.deregisteredValue', { date: formatDate(d.register.deregisteredAt), reason: d.register.deregistrationReason ?? '' }) }] : []),
+                ...(d.register?.deregisteredAt ? [{ key: t('cp.cppm.deregistered'), value: t('cp.cppm.deregisteredValue', { date: formatDate(d.register.deregisteredAt), reason: d.register.deregistrationReason ? cpDeregistrationReasonLabel(d.register.deregistrationReason) : '' }) }] : []),
                 ...(d.register?.transfer ? [{ key: t('cp.cppm.transfer'), value: t('cp.cppm.transferValue', { direction: d.register.transfer.direction, area: d.register.transfer.area, date: formatDate(d.register.transfer.at) }) }] : []),
                 { key: t('cp.cppm.daysOnRegister'), value: d.register ? String(differenceInCalendarDays(now, parseISO(d.register.registeredAt))) : '' },
               ]}

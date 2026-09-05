@@ -1727,6 +1727,7 @@
       "emptyAll": "Nothing has been proposed for any connector yet.",
       "failedLine": "The write to {system} failed: {reason}. Nobody there has been told.",
       "lede": "Every write this product proposes into another agency's system, with the state it is actually in. Nothing goes out without a named person authorising it, and a failure is shown to somebody rather than retried into silence.",
+      "moreWaiting": "{count, plural, one {# earlier write to it is waiting too.} other {# earlier writes to it are waiting too.}}",
       "needsAttention": "{count, plural, =0 {Nothing needs attention} one {One write needs attention} other {# writes need attention}}",
       "notProposed": "{connector} would not take this write: {reason}",
       "notSent": "Not yet written to {system}.",
@@ -1973,12 +1974,12 @@
     },
     "investigation": {
       "jii": "JII",
-      "jiiHeld": "Held {when} under {model}",
+      "jiiHeld": "Held {when} under {model}{hasSummary, select, yes {. {summary}} other {}}",
       "jiiModelDefault": "SCIM",
       "jiiNotNeeded": "Not needed",
       "jiiPlanned": "Planned, not yet held",
       "medical": "Medical",
-      "medicalHeld": "Held {when}",
+      "medicalHeld": "Held {when}{hasKind, select, yes { ({kind})} other {}}{hasSummary, select, yes {. {summary}} other {}}",
       "medicalNotHeld": "Not held",
       "none": "No investigation opened.",
       "opened": "Opened",
@@ -4617,6 +4618,23 @@
         "significantChange": "Something changed enough to bring the review forward",
         "significantChangeHint": "Starts the escalation clock and tells the lead professional."
       },
+      "cppm": {
+        "choose": "Choose",
+        "concerns": "Concerns",
+        "concernsHint": "The register carries concerns, not a category (D-056). A child may have more than one.",
+        "coreGroup": "Core group",
+        "coreGroupHint": "From the people at the meeting. The first core group meeting is due within 15 working days.",
+        "decision": "Decision",
+        "leadProfessional": "Lead professional",
+        "localCategory": "Local category, if your partnership uses one",
+        "localCategoryHint": "National guidance does not require one.",
+        "namedPerson": "Named person",
+        "notRegister": "Do not register",
+        "notRegisterHint": "The case can then be closed from the case screen.",
+        "plan": "Child's plan",
+        "register": "Register",
+        "registerHint": "Places the child on the register with the concerns, sets up the core group and records the child's plan."
+      },
       "cpReview": {
         "continue": "Continue the plan",
         "decision": "Decision",
@@ -4626,6 +4644,41 @@
         "inquorateHint": "An inquorate meeting decides nothing. Closing it starts the ten working day reconvene clock.",
         "quorate": "The meeting was quorate",
         "quorateHint": "Untick if it was not. The reconvene clock starts and nothing else is decided."
+      },
+      "ird": {
+        "addContribution": "Add a contribution",
+        "childViews": "The child's views",
+        "childViewsHint": "How they were sought and what the child said, in the child's words where possible.",
+        "close": "Close the case",
+        "consentBy": "Consent given by",
+        "contributions": "What each agency brought",
+        "contributionsHint": "Pre-filled from what was shared during the meeting. At least one agency.",
+        "contributor": "By",
+        "decided": "Decided",
+        "decision": "Decision",
+        "dissent": "Dissent, if any",
+        "informedBy": "Informed by",
+        "interimPlan": "Record an interim safety plan",
+        "interimPlanHint": "Actions to keep the child safe until the planning meeting, each with an owner who is told.",
+        "interimPlanTitle": "Interim safety plan",
+        "measure": "Measure",
+        "medicalKind": "Kind of medical",
+        "medicalWhen": "When (dd Mon yyyy)",
+        "meetingNote": "Recording these closes {title} and moves the case on.",
+        "noInvestigation": "No investigation",
+        "noInvestigationReason": "Reason",
+        "noInvestigationRoute": "Route",
+        "noSiblings": "No siblings are recorded on the child's network.",
+        "planner": "Interview planned by",
+        "siblings": "Siblings considered",
+        "singleAgency": "Single agency follow-up",
+        "withheld": "Why the parents are not told yet"
+      },
+      "irdMeasures": {
+        "cpo": "Child protection order",
+        "exclusionOrder": "Exclusion order",
+        "none": "None",
+        "policeEmergencyPowers": "Police emergency powers"
       },
       "marac": {
         "add": "Add an agency",
@@ -5998,6 +6051,31 @@
         "s8Hint": "A private interview; the adult may decline.",
         "s9": "Section 9 medical examination",
         "s9Hint": "Requested of a health professional, with the adult's consent."
+      },
+      "cpBirth": {
+        "date": "Date of birth (dd Mon yyyy)",
+        "hint": "The unborn child becomes a child with this date of birth, and the pre-birth clocks hand over to the child protection ones.",
+        "time": "Time"
+      },
+      "cpDeregister": {
+        "note": "Note",
+        "noteHint": "Closes the case with this reason and stops every child protection clock.",
+        "reason": "Reason for removal",
+        "reasonHint": "In the wording of the national statistics publication."
+      },
+      "cpJii": {
+        "date": "Date of interview (dd Mon yyyy)",
+        "summary": "Summary",
+        "summaryHint": "What the child said, in outline. The recording is the record; this is the note of it.",
+        "time": "Time"
+      },
+      "cpMedical": {
+        "comprehensiveHint": "Comprehensive medical assessment.",
+        "date": "Date (dd Mon yyyy)",
+        "jpfeHint": "Joint paediatric forensic examination.",
+        "kind": "Kind of examination",
+        "summary": "Summary of findings",
+        "time": "Time"
       },
       "plan": {
         "actionDue": "Due (dd Mon yyyy)",

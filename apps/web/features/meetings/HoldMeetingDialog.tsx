@@ -36,7 +36,7 @@ export function HoldMeetingDialog({ open, onClose, meeting, process, onHeld }: {
   const entry = transition ? HELD_FORMS[transition.id] : undefined;
   const blocked = elsewhere.length > 0 || (permission !== null && !permission.allowed) || missing.length > 0 || (transition !== undefined && entry === undefined);
 
-  const [value, setValue] = useState<unknown>(() => (entry ? entry.initial(meeting, process) : null));
+  const [value, setValue] = useState<unknown>(() => (entry ? entry.initial(meeting, process, { user }) : null));
   const [note, setNote] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
 

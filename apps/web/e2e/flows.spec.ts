@@ -213,29 +213,299 @@ test.describe('F.2.1 adult support and protection, driven from a concern to a re
   });
 });
 
-test.describe('F.2.2 child protection, concern to registration', () => {
-  test('the IRD is fully operable, with four agencies and a recorded dissent', async ({ page }) => {
-    await signInAs(page, 'usr_janet_kerr');
-    await openByReference(page, 'CP-2026-0412');
+test.describe('F.2.2 child protection, driven from a concern to de-registration', () => {
+  test.setTimeout(300_000);
 
-    // Scoped to the IRD sheet. A loose text query over the page finds the persona switcher, which
-    // is hidden and lists every agency, and would pass whether the IRD rendered or not.
-    const ird = page.locator('section', { has: page.getByRole('heading', { name: /Inter-agency Referral Discussion/i }) }).first();
-    await expect(ird).toBeVisible();
-    // Several agencies contributing, which is what makes it an IRD rather than a meeting.
-    await expect(ird.getByText(/contribution|participant/i).first()).toBeVisible();
-    await capture(page, { phase: PHASE, screen: 'cp-ird', fullPage: true });
+  /** The IRD's seven decisions, each with a rationale the engine accepts. */
+  async function decideIrd(page: Page, investigate: boolean) {
+    const answers: Array<[string, string]> = [
+      ['significantHarm', 'Bruising to the upper arm not consistent with the account, and a disclosure to the class teacher.'],
+      ['investigationNeeded', investigate ? 'A joint investigation is needed to establish how the injury happened.' : 'The account is consistent and the injury explained; health will follow up.'],
+      ['jii', 'Rowan can give an account and should be interviewed jointly.'],
+      ['medical', 'A forensic examination of the injury is needed.'],
+      ['emergencyMeasures', 'Rowan is safe with the grandmother tonight and no order is needed.'],
+      ['reporterReferral', 'Compulsory measures may be needed if the parents do not engage.'],
+      ['parentsInformed', 'The parents are told today; nothing in the account points at either of them.'],
+    ];
+    for (const [key, rationale] of answers) {
+      const block = page.getByTestId(`ird-${key}`);
+      if (key === 'investigationNeeded' && !investigate) await block.getByRole('radio', { name: 'No' }).check();
+      await page.getByTestId(`ird-${key}-rationale`).fill(rationale);
+    }
+    await page.getByTestId('ird-child-views').fill('Spoken to at school with the teacher present. Rowan says he wants to stay with Gran for now.');
+    await page.getByTestId('ird-contribution-add').click();
+    await page.getByTestId('ird-contribution-name-0').fill('DS Paul Mackay');
+    await page.getByTestId('ird-contribution-summary-0').fill('Two prior domestic calls to the address, no charges.');
+  }
+
+  /**
+   * Nothing seeded. Janet records the concern and convenes the IRD, whose decisions she records
+   * from the meeting; the JII and the medical are hers; the planning meeting is scheduled with the
+   * parents invited, David chairs it and registers the child with two concerns, a core group and a
+   * plan whose action reaches its owner; the first core group meeting completes its clock; the
+   * review continues the plan; and Anne de-registers, which closes the case with the national
+   * return's reason.
+   */
+  test('the case is walked from a child concern to de-registration by the people whose decisions they are', async ({ page }) => {
+    await signInAs(page, 'usr_janet_kerr');
+    await createPerson(page, 'Rowan', 'Baxter', '2019-03-04');
+    await startCase(page, 'cp', 'Class teacher, Ardvale Primary', 'Bruising to the upper arm and a disclosure to the class teacher that Dad grabbed him.');
+    const caseUrl = page.url();
+    const header = page.getByTestId('process-header');
+
+    // The IRD is convened as a meeting, tripartite by the engine's own rule.
+    await openTransition(page, 'cp-convene-ird');
+    await expect(page.getByTestId('meeting-type')).toHaveValue('ird');
+    await page.getByTestId('meeting-date').fill('2026-09-02');
+    await page.getByTestId('meeting-time').fill('14:00');
+    await page.getByTestId('meeting-location').fill('Ardvale Civic Centre, by telephone');
+    await page.getByTestId('meeting-add-invitee').selectOption('usr_fiona_ross');
+    await page.getByTestId('meeting-add-invitee-button').click();
+    await page.getByTestId('meeting-submit').click();
+    await expect(page.getByText('Meeting scheduled').last()).toBeVisible();
+    await expect(page).toHaveURL(/\/meetings\/mtg_/);
+    await waitForData(page);
+    const irdUrl = page.url();
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(header).toContainText('IRD');
+    await expect(page.getByTestId('next-held-cp-ird-decisions')).toContainText('Record IRD decisions is recorded when the Inter-agency Referral Discussion is held');
+
+    // Its decisions are recorded from the meeting. Refusing to investigate needs a route; investigating opens the investigation.
+    await page.goto(irdUrl);
+    await waitForData(page);
+    await page.getByTestId('hold-meeting').click();
+    await expect(page.getByTestId('hold-route')).toContainText('Record IRD decisions, which moves the case to Investigation');
+    await decideIrd(page, true);
     await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'cp-ird-form', fullPage: true });
+    await page.getByTestId('hold-submit').click();
+    await expect(page.getByText('Meeting closed').last()).toBeVisible();
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(header).toContainText('Investigation');
+    await expect(page.getByText('Two prior domestic calls to the address').first()).toBeVisible();
+    // The planning meeting clock started when the investigation opened.
+    await expect(page.getByText(/planning meeting/i).first()).toBeVisible();
+
+    // The interview and the medical, from the case.
+    await openTransition(page, 'cp-record-jii');
+    await page.getByTestId('transition-date').fill('2026-09-03');
+    await page.getByTestId('transition-summary').fill('Rowan described being grabbed and pushed against the door. Consistent with the bruising.');
+    await submitTransition(page);
+    await openTransition(page, 'cp-record-medical');
+    await page.getByTestId('transition-date').fill('2026-09-03');
+    await page.getByTestId('transition-summary').fill('Grip-pattern bruising to the left upper arm, two to four days old. No other injuries.');
+    await submitTransition(page);
+    await expect(page.getByText('Grip-pattern bruising').first()).toBeVisible();
+
+    // The planning meeting, parents invited, David chairing, Lesley minuting.
+    await openTransition(page, 'cp-schedule-cppm');
+    await expect(page.getByTestId('meeting-type')).toHaveValue('cppm');
+    await page.getByTestId('meeting-date').fill('2026-09-14');
+    await page.getByTestId('meeting-location').fill('Ardvale Civic Centre, room 2.4');
+    await page.getByTestId('meeting-chair').selectOption('usr_david_laird');
+    await page.getByTestId('meeting-minute-taker').selectOption('usr_lesley_morton');
+    // The matrix seats the health adviser at the investigation stage, so she is already on the list.
+    await expect(page.getByTestId('invitee-usr_fiona_ross')).toBeChecked();
+    await page.getByTestId('meeting-submit').click();
+    await expect(page.getByText('Meeting scheduled').last()).toBeVisible();
+    await expect(page).toHaveURL(/\/meetings\/mtg_/);
+    await waitForData(page);
+    const cppmUrl = page.url();
+    await expect(page.getByTestId('meeting-attendance-note')).toHaveText('Parents invited. Child invited.');
+
+    // David registers: two concerns, a core group, a lead professional, a plan with an action for the health adviser.
+    // The owner has to be somebody the case permits at the stage the plan is recorded from (D-212):
+    // the health visitor is seated by the matrix only once the child is on the register.
+    await switchUser(page, 'usr_david_laird');
+    await page.goto(cppmUrl);
+    await waitForData(page);
+    await page.getByTestId('hold-meeting').click();
+    await expect(page.getByTestId('hold-route')).toContainText('Planning meeting held');
+    await page.getByTestId('cppm-concern-physical-abuse').check();
+    await page.getByTestId('cppm-concern-neglect').check();
+    await page.getByTestId('cppm-member-usr_janet_kerr').check();
+    await page.getByTestId('cppm-member-usr_fiona_ross').check();
+    await page.getByTestId('cppm-lead').selectOption('usr_janet_kerr');
+    await page.getByTestId('plan-title').fill("Rowan's plan");
+    await page.getByTestId('plan-outcome-0').fill('Rowan is safe from physical harm at home');
+    await page.getByTestId('plan-add-action').click();
+    await page.getByTestId('plan-action-title-0').fill('Weekly health contact with the family');
+    await page.getByTestId('plan-action-owner-0').selectOption('usr_fiona_ross');
+    await page.getByTestId('plan-action-due-0').fill('2026-09-21');
+    await page.getByTestId('outcome-rationale').fill('Physical injury by a parent, a pattern of neglect at home, and a family that has not engaged with earlier support.');
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'cp-cppm-form', fullPage: true });
+    await page.getByTestId('hold-submit').click();
+    await expect(page.getByText('Meeting closed').last()).toBeVisible();
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(header).toContainText("Child's plan");
+    await expect(page.getByText('Physical abuse').first()).toBeVisible();
+    await expect(page.getByText('Neglect').first()).toBeVisible();
+    await expect(page.getByText(/Category of registration/i)).toHaveCount(0);
+    await expect(page.getByRole('row').filter({ hasText: 'Weekly health contact' })).toContainText('Fiona Ross');
+    await capture(page, { phase: PHASE, screen: 'cp-registered', fullPage: true });
+
+    // The lead professional's Home carries the core group clock; the health adviser has her action.
+    await switchUser(page, 'usr_janet_kerr');
+    await page.goto('/');
+    await waitForData(page);
+    const clocks = page.locator('section[aria-labelledby="home-clocks"]');
+    await expect(clocks.getByText('Rowan Baxter').first()).toBeVisible();
+    await expect(clocks.getByText('First core group meeting').first()).toBeVisible();
+    await switchUser(page, 'usr_fiona_ross');
+    await page.goto('/');
+    await waitForData(page);
+    await page.getByTestId('notifications-bell').click();
+    await expect(page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: 'Weekly health contact with the family' })).toBeVisible();
+    await page.keyboard.press('Escape');
+
+    // The first core group meeting: scheduled as a plain meeting, held with attendance and progress, which completes its clock.
+    await switchUser(page, 'usr_janet_kerr');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await page.getByTestId('schedule-meeting').click();
+    await page.getByTestId('meeting-type').selectOption('core-group');
+    await expect(page.getByTestId('meeting-route')).toHaveAttribute('data-state', 'plain');
+    await page.getByTestId('meeting-date').fill('2026-09-28');
+    await page.getByTestId('meeting-location').fill('Ardvale Primary, family room');
+    await page.getByTestId('meeting-add-invitee').selectOption('usr_fiona_ross');
+    await page.getByTestId('meeting-add-invitee-button').click();
+    await page.getByTestId('meeting-submit').click();
+    await expect(page.getByText('Meeting scheduled').last()).toBeVisible();
+    await expect(page).toHaveURL(/\/meetings\/mtg_/);
+    await waitForData(page);
+    await page.getByTestId('hold-meeting').click();
+    await expect(page.getByTestId('hold-route')).toContainText('Record core group meeting');
+    await page.getByTestId('outcome-present-usr_fiona_ross').check();
+    await page.getByTestId('outcome-progress').fill('Weekly contact in place. The father has moved out and Gran is staying. Nursery attendance is full.');
+    await page.getByTestId('hold-submit').click();
+    await expect(page.getByText('Meeting closed').last()).toBeVisible();
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(page.getByText('First core group meeting').first()).toBeVisible();
+
+    // The review planning meeting continues the plan; then the chair de-registers, which closes the case.
+    // Anne could too, by role, but she has recorded nothing on this case and is not on it (D-219).
+    await openTransition(page, 'cp-schedule-review-cppm');
+    await page.getByTestId('meeting-date').fill('2027-02-22');
+    await page.getByTestId('meeting-location').fill('Ardvale Civic Centre, room 2.4');
+    await page.getByTestId('meeting-chair').selectOption('usr_david_laird');
+    await page.getByTestId('meeting-add-invitee').selectOption('usr_fiona_ross');
+    await page.getByTestId('meeting-add-invitee-button').click();
+    await page.getByTestId('meeting-submit').click();
+    await expect(page.getByText('Meeting scheduled').last()).toBeVisible();
+    await expect(page).toHaveURL(/\/meetings\/mtg_/);
+    await waitForData(page);
+    const reviewUrl = page.url();
+    await switchUser(page, 'usr_david_laird');
+    await page.goto(reviewUrl);
+    await waitForData(page);
+    await page.getByTestId('hold-meeting').click();
+    await page.getByTestId('outcome-rationale').fill('The plan is working: no further injury, the father is out of the house and the family is engaging.');
+    await page.getByTestId('hold-submit').click();
+    await expect(page.getByText('Meeting closed').last()).toBeVisible();
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(header).toContainText('Review');
+    await openTransition(page, 'cp-deregister');
+    await page.getByTestId('transition-reason').selectOption('improved-home-situation');
+    await page.getByTestId('transition-note').fill('Six months without injury, the father has left, and Gran is a protective factor.');
+    await submitTransition(page);
+    await expect(header).toContainText('Closed');
+    await expect(page.getByRole('region', { name: 'Process stages' })).toContainText('De-registered');
+    await expect(page.getByText('Improved home situation').first()).toBeVisible();
+    await capture(page, { phase: PHASE, screen: 'cp-deregistered', fullPage: true });
   });
 
-  test('the register records concerns rather than a category', async ({ page }) => {
+  /**
+   * The same engine on an unborn child: the pre-birth planning meeting registers the baby, and the
+   * birth, recorded from the case, converts the subject and hands the pre-birth clocks to the
+   * child protection ones.
+   */
+  test('a pre-birth case is registered before the birth, and the birth swaps its clocks', async ({ page }) => {
     await signInAs(page, 'usr_janet_kerr');
-    await openByReference(page, 'CP-2026-0412');
-    // The 2021 national guidance says a category of registration need not be identified, so the
-    // register carries concerns and a child may have more than one (D-056).
-    await expect(page.getByText('Emotional abuse').first()).toBeVisible();
-    await expect(page.getByText('Physical abuse').first()).toBeVisible();
-    await expect(page.getByText(/Category of registration/i)).toHaveCount(0);
+    await page.goto('/people');
+    await waitForData(page);
+    await page.getByTestId('add-person').click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByLabel('Given name').fill('Baby');
+    await dialog.getByLabel('Family name').fill('Wishart');
+    await page.getByTestId('create-person-search').click();
+    await page.getByTestId('create-person-none-match').click();
+    await dialog.getByLabel('Life stage').selectOption('unborn');
+    await dialog.getByLabel('Expected delivery date').fill('2026-11-20');
+    await page.getByTestId('create-person-submit').click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await waitForData(page);
+    const reference = await startCase(page, 'cp', 'Midwife, Ardvale maternity', 'Mother using heroin through the pregnancy and the partner has a conviction for assaulting a previous partner.');
+    const caseUrl = page.url();
+    const header = page.getByTestId('process-header');
+    await expect(page.getByText(/pre-birth/i).first()).toBeVisible();
+
+    await openTransition(page, 'cp-convene-ird');
+    await page.getByTestId('meeting-date').fill('2026-09-03');
+    await page.getByTestId('meeting-location').fill('Ardvale maternity, by telephone');
+    await page.getByTestId('meeting-add-invitee').selectOption('usr_kasia_nowicka');
+    await page.getByTestId('meeting-add-invitee-button').click();
+    await page.getByTestId('meeting-submit').click();
+    await expect(page.getByText('Meeting scheduled').last()).toBeVisible();
+    await expect(page).toHaveURL(/\/meetings\/mtg_/);
+    await waitForData(page);
+    await page.getByTestId('hold-meeting').click();
+    await decideIrd(page, true);
+    await page.getByTestId('hold-submit').click();
+    await expect(page.getByText('Meeting closed').last()).toBeVisible();
+
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await openTransition(page, 'cp-schedule-cppm');
+    // A pre-birth case schedules a pre-birth planning meeting, and only that.
+    await expect(page.getByTestId('meeting-type')).toHaveValue('pre-birth-cppm');
+    await page.getByTestId('meeting-date').fill('2026-09-24');
+    await page.getByTestId('meeting-location').fill('Ardvale Civic Centre, room 2.4');
+    await page.getByTestId('meeting-chair').selectOption('usr_david_laird');
+    await page.getByTestId('meeting-add-invitee').selectOption('usr_kasia_nowicka');
+    await page.getByTestId('meeting-add-invitee-button').click();
+    await page.getByTestId('meeting-submit').click();
+    await expect(page.getByText('Meeting scheduled').last()).toBeVisible();
+    await expect(page).toHaveURL(/\/meetings\/mtg_/);
+    await waitForData(page);
+    const cppmUrl = page.url();
+    await switchUser(page, 'usr_david_laird');
+    await page.goto(cppmUrl);
+    await waitForData(page);
+    await page.getByTestId('hold-meeting').click();
+    await page.getByTestId('cppm-concern-parental-substance-use').check();
+    await page.getByTestId('cppm-concern-domestic-abuse').check();
+    await page.getByTestId('cppm-member-usr_janet_kerr').check();
+    await page.getByTestId('cppm-member-usr_kasia_nowicka').check();
+    await page.getByTestId('cppm-lead').selectOption('usr_janet_kerr');
+    await page.getByTestId('plan-title').fill('Pre-birth plan');
+    await page.getByTestId('plan-outcome-0').fill('The baby goes home to a safe, drug-free household or to kinship care');
+    await page.getByTestId('outcome-rationale').fill('Substance use through the pregnancy and a violent partner in the household: the baby will be at risk of significant harm from birth.');
+    await page.getByTestId('hold-submit').click();
+    await expect(page.getByText('Meeting closed').last()).toBeVisible();
+
+    // Registered before the birth, with the pre-birth review clock running.
+    await switchUser(page, 'usr_janet_kerr');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(header).toContainText("Child's plan");
+    await expect(page.getByText('Parental substance use').first()).toBeVisible();
+    await expect(page.getByText('Review of the pre-birth plan').first()).toBeVisible();
+
+    // The birth, from the case: the subject becomes a child and the review clock is the child protection one.
+    await openTransition(page, 'cp-birth');
+    await page.getByTestId('transition-date').fill('2026-11-18');
+    await submitTransition(page);
+    await expect(page.getByText('First review CPPM').first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Pre-birth/ })).toHaveCount(0);
+    await expect(header).toContainText('born 18 Nov 2026');
+    await capture(page, { phase: PHASE, screen: 'cp-pre-birth-born', fullPage: true });
+    expect(reference).toMatch(/^CP-/);
   });
 });
 

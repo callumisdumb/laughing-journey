@@ -1,4 +1,4 @@
-import type { Meeting, Process } from '@mas/domain';
+import type { Meeting, Process, User } from '@mas/domain';
 import type { ComponentType } from 'react';
 
 /** What every outcome form receives: the meeting it closes, the case it decides on, and its own value. */
@@ -9,9 +9,14 @@ export interface OutcomeFormProps<I> {
   onChange: (value: I) => void;
 }
 
+/** What a form's first value may draw on beside the meeting and the case: who is closing it. */
+export interface OutcomeFormContext {
+  user: User | null;
+}
+
 export interface HeldForm {
   /** The input before anybody has typed, from what the meeting already knows. */
-  initial: (meeting: Meeting, process: Process) => unknown;
+  initial: (meeting: Meeting, process: Process, ctx: OutcomeFormContext) => unknown;
   Form: ComponentType<OutcomeFormProps<unknown>>;
 }
 
@@ -20,6 +25,6 @@ export interface HeldForm {
  * the value as unknown, because the transition it feeds validates the input and the dialog never
  * reads inside it.
  */
-export function heldForm<I>(initial: (meeting: Meeting, process: Process) => I, Form: ComponentType<OutcomeFormProps<I>>): HeldForm {
+export function heldForm<I>(initial: (meeting: Meeting, process: Process, ctx: OutcomeFormContext) => I, Form: ComponentType<OutcomeFormProps<I>>): HeldForm {
   return { initial, Form: Form as unknown as ComponentType<OutcomeFormProps<unknown>> };
 }

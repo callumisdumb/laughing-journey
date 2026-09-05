@@ -522,3 +522,11 @@ The stepper was a picture and the decisions that move a case were forms scattere
 The refusals are the useful part. "Record screening decision is recorded by Team leader, not by your role" beside a disabled button tells the council officer whom to ask; "Three-point test required. Record it" opens the dialog that records it. Every refusal the engine can give had to name a route (D-211) and this is where the routes became clickable.
 
 The driven ASP walk (F.2.1 in `flows.spec.ts`) found the Home clocks reading the user's seeded case list (D-218): the plan review clock Moira started on a case she had opened an hour earlier was on the case and nowhere else. It also found nothing else, which after four such walks is the first time.
+
+## Seven decisions and a baby (05 Sep 2026)
+
+The child protection walk (F.2.2 in `flows.spec.ts`) is the longest in the product: a concern, an IRD convened as a tripartite meeting and closed with its seven decisions, an interview and a medical from the case, a planning meeting that registers with two concerns and a core group and a plan, the first core group meeting held from its own meeting record, a review that continues, and a de-registration that closes. Five people record it. Tried putting the IRD's decisions on the case screen as a form of their own. Rejected: the decisions were made in the discussion, by the people in it, and the meeting record is where the minute and the dissent already live; recording them from anywhere else would have been a second copy of the room.
+
+The pre-birth walk is the same engine with two differences the product now shows rather than describes: the schedule dialog offers only the pre-birth planning meeting on an unborn child's case, and the birth is a decision recorded from the case that converts the subject and swaps the clocks, which the case screen shows as the pre-birth sheet disappearing and the first review clock appearing.
+
+Two things the walk found. The planning meeting form started with no plan coordinator and refused on submit, so the outcome forms now know who is closing the meeting and start the plan with them. And the joint investigative interview and the medical were recorded with a summary the case never showed; the investigation panel now carries both, because a medical with no findings on the screen is a date.

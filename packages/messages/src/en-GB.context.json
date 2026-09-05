@@ -5330,6 +5330,9 @@
       "lede": {
         "where": "Two-way connectors: connectors.outbox.lede"
       },
+      "moreWaiting": {
+        "where": "Appended to the outbound status line on a case when more than one write to the same source system is waiting; count is the number behind the latest"
+      },
       "needsAttention": {
         "where": "Two-way connectors: connectors.outbox.needsAttention"
       },
@@ -13897,6 +13900,53 @@
           "where": "Hint under the significant change checkbox"
         }
       },
+      "cppm": {
+        "choose": {
+          "where": "Placeholder option of the lead professional and named person selects"
+        },
+        "concerns": {
+          "where": "Legend of the concern checkboxes on the planning meeting outcome form"
+        },
+        "concernsHint": {
+          "where": "Hint under the concern checkboxes"
+        },
+        "coreGroup": {
+          "where": "Legend of the core group member checkboxes"
+        },
+        "coreGroupHint": {
+          "where": "Hint under the core group legend"
+        },
+        "decision": {
+          "where": "Legend of the register radio on the planning meeting outcome form"
+        },
+        "leadProfessional": {
+          "where": "Label of the lead professional select"
+        },
+        "localCategory": {
+          "where": "Label of the optional local category field"
+        },
+        "localCategoryHint": {
+          "where": "Hint under the local category field"
+        },
+        "namedPerson": {
+          "where": "Label of the named person select"
+        },
+        "notRegister": {
+          "where": "Radio option on the planning meeting outcome form"
+        },
+        "notRegisterHint": {
+          "where": "Hint on the do not register option"
+        },
+        "plan": {
+          "where": "Legend of the plan editor on the planning meeting outcome form"
+        },
+        "register": {
+          "where": "Radio option on the planning meeting outcome form"
+        },
+        "registerHint": {
+          "where": "Hint on the register option"
+        }
+      },
       "cpReview": {
         "continue": {
           "where": "Radio option on the review CPPM outcome form"
@@ -13921,6 +13971,103 @@
         },
         "quorateHint": {
           "where": "Hint under the quorate checkbox on the review CPPM outcome form"
+        }
+      },
+      "ird": {
+        "addContribution": {
+          "where": "Button that adds a contribution row"
+        },
+        "childViews": {
+          "where": "Label of the child's views field on the IRD outcome form"
+        },
+        "childViewsHint": {
+          "where": "Hint under the child's views field"
+        },
+        "close": {
+          "where": "Radio option: no investigation, the case closes"
+        },
+        "consentBy": {
+          "where": "Label on the medical decision block"
+        },
+        "contributions": {
+          "where": "Legend of the contributions list on the IRD outcome form"
+        },
+        "contributionsHint": {
+          "where": "Hint under the contributions legend"
+        },
+        "contributor": {
+          "where": "Label of the contributor name field on a contribution row"
+        },
+        "decided": {
+          "where": "Legend of the yes or no radio inside each IRD decision block"
+        },
+        "decision": {
+          "where": "Label of the one-line decision field inside each IRD decision block"
+        },
+        "dissent": {
+          "where": "Label of the dissent field on the IRD outcome form"
+        },
+        "informedBy": {
+          "where": "Label on the JII decision block"
+        },
+        "interimPlan": {
+          "where": "Checkbox on the IRD outcome form"
+        },
+        "interimPlanHint": {
+          "where": "Hint under the interim plan checkbox"
+        },
+        "interimPlanTitle": {
+          "where": "Default title of an interim safety plan recorded from the IRD"
+        },
+        "measure": {
+          "where": "Label of the emergency measure select"
+        },
+        "medicalKind": {
+          "where": "Label of the kind select on the medical decision block"
+        },
+        "medicalWhen": {
+          "where": "Label of the date on the medical decision block"
+        },
+        "meetingNote": {
+          "where": "Line at the foot of the IRD outcome form"
+        },
+        "noInvestigation": {
+          "where": "Legend of the block shown when the IRD decides not to investigate"
+        },
+        "noInvestigationReason": {
+          "where": "Label of the reason field when the IRD decides not to investigate"
+        },
+        "noInvestigationRoute": {
+          "where": "Legend of the route radio when the IRD decides not to investigate"
+        },
+        "noSiblings": {
+          "where": "Shown when the network holds no sibling to consider"
+        },
+        "planner": {
+          "where": "Label on the JII decision block"
+        },
+        "siblings": {
+          "where": "Legend of the siblings checkboxes on the IRD outcome form"
+        },
+        "singleAgency": {
+          "where": "Radio option: no investigation, one agency follows up"
+        },
+        "withheld": {
+          "where": "Label on the parents decision block when the decision is not to inform them"
+        }
+      },
+      "irdMeasures": {
+        "cpo": {
+          "where": "Emergency measure option"
+        },
+        "exclusionOrder": {
+          "where": "Emergency measure option"
+        },
+        "none": {
+          "where": "Emergency measure option"
+        },
+        "policeEmergencyPowers": {
+          "where": "Emergency measure option"
         }
       },
       "marac": {
@@ -18156,6 +18303,65 @@
         },
         "s9Hint": {
           "where": "Hint on the section 9 option"
+        }
+      },
+      "cpBirth": {
+        "date": {
+          "where": "Label of the date field on the record the birth form"
+        },
+        "hint": {
+          "where": "Line at the top of the record the birth form"
+        },
+        "time": {
+          "where": "Label of the time field on the record the birth form"
+        }
+      },
+      "cpDeregister": {
+        "note": {
+          "where": "Label of the note field on the de-registration form"
+        },
+        "noteHint": {
+          "where": "Hint under the note field on the de-registration form"
+        },
+        "reason": {
+          "where": "Label of the reason select on the de-registration form"
+        },
+        "reasonHint": {
+          "where": "Hint under the reason select on the de-registration form"
+        }
+      },
+      "cpJii": {
+        "date": {
+          "where": "Label of the date field on the joint investigative interview form"
+        },
+        "summary": {
+          "where": "Label of the summary field on the joint investigative interview form"
+        },
+        "summaryHint": {
+          "where": "Hint under the summary field"
+        },
+        "time": {
+          "where": "Label of the time field on the joint investigative interview form"
+        }
+      },
+      "cpMedical": {
+        "comprehensiveHint": {
+          "where": "Hint on the comprehensive option"
+        },
+        "date": {
+          "where": "Label of the date field on the medical examination form"
+        },
+        "jpfeHint": {
+          "where": "Hint on the JPFE option"
+        },
+        "kind": {
+          "where": "Legend of the kind radio on the medical examination form"
+        },
+        "summary": {
+          "where": "Label of the summary field on the medical examination form"
+        },
+        "time": {
+          "where": "Label of the time field on the medical examination form"
         }
       },
       "plan": {

@@ -1,5 +1,6 @@
 import type { TransitionForm } from './registry';
 import { ASP_INQUIRY_OUTCOME, ASP_INVESTIGATORY_STEP, ASP_OPEN_INQUIRY, ASP_PROTECTION_PLAN, ASP_SCREENING, ASP_SUPPORT_PLAN } from './AspForms';
+import { CP_BIRTH, CP_DEREGISTER, CP_RECORD_JII, CP_RECORD_MEDICAL } from './CpForms';
 
 /**
  * The form each transition opens from the case (D-217), keyed on the transition id. Transitions
@@ -15,6 +16,10 @@ export const TRANSITION_FORMS: Readonly<Record<string, TransitionForm>> = {
   'asp-investigatory-step': ASP_INVESTIGATORY_STEP,
   'asp-record-protection-plan': ASP_PROTECTION_PLAN,
   'asp-record-support-plan': ASP_SUPPORT_PLAN,
+  'cp-record-jii': CP_RECORD_JII,
+  'cp-record-medical': CP_RECORD_MEDICAL,
+  'cp-deregister': CP_DEREGISTER,
+  'cp-birth': CP_BIRTH,
 };
 
 export type { TransitionForm, TransitionFormContext, TransitionFormProps } from './registry';

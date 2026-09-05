@@ -23,13 +23,29 @@ export function OutboundStatus({ processId }: { processId: string }) {
 
   const writes = data.outbox.filter((w) => w.processId === processId && w.state !== 'cancelled');
   if (writes.length === 0) return null;
+  // Every write that was acknowledged or failed keeps its own line: those are the sentences that
+  // matter. The writes still waiting collapse to one line per source system, the latest, with a
+  // count of the rest: a case that moved through six stages in a morning proposed six writes to
+  // the same system, and six copies of "not yet written" is one sentence said six times.
+  const settled = writes.filter((w) => isConfirmed(w) || w.state === 'failed' || w.state === 'dead-letter');
+  const latest = new Map<string, { write: OutboundWrite; others: number }>();
+  for (const write of writes) {
+    if (settled.includes(write)) continue;
+    const current = latest.get(write.connectorId);
+    if (!current) latest.set(write.connectorId, { write, others: 0 });
+    else latest.set(write.connectorId, { write: write.proposedAt > current.write.proposedAt ? write : current.write, others: current.others + 1 });
+  }
+  const lines = [...settled.map((write) => ({ write, others: 0 })), ...latest.values()];
 
   return (
     <ul className={styles.lines} data-testid="outbound-status">
-      {writes.map((write) => (
+      {lines.map(({ write, others }) => (
         <li key={write.id} className={styles.line} data-state={write.state}>
           <Icon write={write} />
-          <span>{line(t, write)}</span>
+          <span>
+            {line(t, write)}
+            {others > 0 ? ` ${t('connectors.outbox.moreWaiting', { count: others })}` : ''}
+          </span>
           <AppLink href={`/connectors?adapter=${write.connectorId}&tab=outbox`} className={styles.link}>
             {t('connectors.outbox.title')}
           </AppLink>

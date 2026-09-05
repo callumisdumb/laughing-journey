@@ -360,6 +360,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
             <span>{meeting.location}</span>
             <span>{t('meetings.head.chair', { name: meeting.chairName })}</span>
             {meeting.minuteTakerName ? <span>{t('meetings.head.minutes', { name: meeting.minuteTakerName })}</span> : null}
+            {meeting.subjectAttendance ? <span data-testid="meeting-attendance-note">{meeting.subjectAttendance}</span> : null}
             {subjects.map((s) => (
               <PersonLink key={s.id} person={s} process={process} />
             ))}
