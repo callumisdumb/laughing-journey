@@ -6,6 +6,8 @@ import { CloseProcessDialog } from '@/features/process/CloseProcessDialog';
 import { InvestigationDialog, SupervisionVisitDialog } from '@/features/process/forms/AwiRecordDialogs';
 import { CapacityAssessmentDialog } from '@/features/process/forms/CapacityAssessmentDialog';
 import { DisclosureDecisionDialog } from '@/features/process/forms/DisclosureDecisionDialog';
+import { MappaReferralDialog } from '@/features/process/forms/MappaReferralDialog';
+import { RiskAssessmentDialog } from '@/features/process/forms/RiskAssessmentDialog';
 import { ProtectionOrderDialog } from '@/features/process/forms/ProtectionOrderDialog';
 import { ThreePointTestDialog } from '@/features/process/forms/ThreePointTestDialog';
 import { ScheduleMeetingDialog } from '@/features/meetings/ScheduleMeetingDialog';
@@ -37,8 +39,10 @@ export function CreatesHost({ creates, process, onClose }: { creates: Extract<Cr
       return process.type === 'awi' ? <InvestigationDialog open onClose={onClose} process={process} /> : null;
     case 'disclosure':
       return process.type === 'mappa' ? <DisclosureDecisionDialog open onClose={onClose} process={process} /> : null;
+    case 'mappa-referral':
+      return process.type === 'mappa' ? <MappaReferralDialog open onClose={onClose} process={process} /> : null;
     case 'risk-assessment':
-      return null;
+      return process.type === 'mappa' ? <RiskAssessmentDialog open onClose={onClose} process={process} /> : null;
   }
 }
 
@@ -54,9 +58,9 @@ export function canOpenCreates(creates: Creates, process: Process): boolean {
     case 'awi-investigation':
       return process.type === 'awi';
     case 'disclosure':
-      return process.type === 'mappa';
+    case 'mappa-referral':
     case 'risk-assessment':
-      return false;
+      return process.type === 'mappa';
     default:
       return true;
   }

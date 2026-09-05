@@ -395,7 +395,7 @@ Variant 5
 | `visorReference` | string | yes |
 | `victimPersonIds` | array of string | yes |
 | `notification` | object { at, source, byName } | yes |
-| `referral` | object { at, byName, riskAssessmentIds, reason } | no |
+| `referral` | object { at, byName, riskAssessmentIds, reason, levelSought, imminentRisk, victimConsiderations } | no |
 | `sonr` | object { subject, compliant, lastNotificationAt, nextDueAt, endsAt } | yes |
 | `custody` | object { releasedAt, licenceExpiresAt, establishment } | yes |
 | `licenceConditions` | array of object { id, text, status } | yes |

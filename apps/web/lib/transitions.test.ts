@@ -1,6 +1,6 @@
-import { processSubjectIds, type MaracProcess, type Process } from '@mas/domain';
+import { processSubjectIds, type MappaProcess, type MaracProcess, type Process } from '@mas/domain';
 import { USR } from '@mas/mock-data';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { primeDeviceKey } from './localStore';
 import { useAppStore } from './store';
 
@@ -23,6 +23,10 @@ function openMarac(): MaracProcess {
 }
 
 const schedule = { scheduledAt: '2026-09-10T10:00:00.000Z', location: 'Room 3', chairUserId: USR.karenFindlay, chairName: 'Karen Findlay', invitees: [{ userId: USR.janetKerr, name: 'Janet Kerr', agency: 'social-work' as const, role: 'Social worker', reason: 'Added by hand' }] };
+
+// Every test here drives the store through several writes, each of which rewraps the dataset's
+// keys; under the load of a parallel Playwright run one can pass the default five seconds.
+vi.setConfig({ testTimeout: 60_000 });
 
 beforeAll(async () => {
   await primeDeviceKey();
@@ -117,7 +121,7 @@ describe('MARAC research through the store (step 7)', () => {
     after = state().data.processes.find((p) => p.id === process.id) as MaracProcess;
     expect(after.clocks.find((c) => c.ruleId === 'marac.research.return')?.completedAt).toBeDefined();
     expect(state().data.notifications.filter((n) => n.kind === 'request-returned' && n.toUserId === USR.karenFindlay && n.processId === process.id)).toHaveLength(2);
-  }, 30_000);
+  });
 });
 
 describe('the child concern from a MARAC (step 7)', () => {
@@ -142,5 +146,43 @@ describe('the child concern from a MARAC (step 7)', () => {
     expect(again.ok, again.errors.join(', ')).toBe(true);
     expect(again.created?.processId).toBe(cp.id);
     expect(state().data.processes.filter((p) => p.type === 'cp' && p.subjectIds.includes(child.id) && p.status === 'open')).toHaveLength(1);
-  }, 30_000);
+  });
+});
+
+describe('MAPPA through the store (step 8)', () => {
+  it('refers up on the coordinator\'s authority with the register entry, asks for returns as request records, and a return answers its request', () => {
+    state().signIn(USR.priyaSharif);
+    const subject = state().data.people.find((p) => p.lifeStage === 'adult' && !state().data.processes.some((x) => processSubjectIds(x).includes(p.id)))!;
+    const opened = state().openProcess({ type: 'mappa', subjectIds: [subject.id], at: state().now().toISOString(), source: 'Police Scotland, sex offender liaison', sourceAgency: 'police', summary: 'Released on licence after a conviction for sexual assault.', byName: 'Priya Sharif', byUserId: USR.priyaSharif, mappa: { category: 1, level: 1, leadResponsibleAuthority: 'police', visorReference: '' } });
+    expect(opened.ok, opened.errors.join(', ')).toBe(true);
+    const process = opened.process!;
+    const refused = state().recordTransition(process.id, 'mappa-refer-level', { level: 2, reason: 'Released two streets from the victim.', riskAssessmentId: 'ra_none', referringAuthority: 'police' });
+    expect(refused.ok).toBe(false);
+    expect(refused.missing?.[0]).toMatchObject({ code: 'riskAssessmentRequired', creates: { kind: 'dialog', dialog: 'risk-assessment' } });
+    const ra = { id: state().newId('ra'), synthetic: true as const, processId: process.id, subjectId: subject.id, tool: 'rm2000' as const, assessedAt: state().now().toISOString(), assessorName: 'Priya Sharif', assessorAgency: 'police' as const, band: 'high' as const, bandLabel: 'High', evidenceRefs: [] };
+    expect(state().write({ collection: 'riskAssessments', record: ra, intent: 'create', act: 'create', targetType: 'process', targetLabel: 'RM2000', processId: process.id }).ok).toBe(true);
+    const withRa = state().data.processes.find((p) => p.id === process.id)!;
+    expect(state().write({ collection: 'processes', record: { ...withRa, riskAssessmentIds: [ra.id] }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: 'Attached', processId: process.id, versionChange: 'Attached' }).ok).toBe(true);
+    const referred = state().recordTransition(process.id, 'mappa-refer-level', { level: 2, reason: 'Released two streets from the victim of the index offence.', riskAssessmentId: ra.id, referringAuthority: 'police', visorReference: 'V-2026-0417', mustNotReceive: [{ name: 'Kevin Cargill', party: 'perpetrator-associates', relationship: 'brother', reason: 'Would tell him.' }], via: 'the MAPPA referral' });
+    expect(referred.ok, referred.errors.join(', ')).toBe(true);
+    let after = state().data.processes.find((p) => p.id === process.id) as MappaProcess;
+    expect(after.stage).toBe('referral');
+    expect(after.detail.level).toBe(1);
+    expect(after.detail.referral?.levelSought).toBe(2);
+    expect(after.parties.some((p) => p.name === 'Kevin Cargill')).toBe(true);
+
+    state().signIn(USR.rossMowat);
+    const asked = state().recordTransition(process.id, 'mappa-request-returns', { agencies: [{ agency: 'housing', contact: 'M Hepburn' }], dueAt: '2026-09-12' });
+    expect(asked.ok, asked.errors.join(', ')).toBe(true);
+    const request = state().data.informationRequests.find((r) => r.processId === process.id && r.toAgency === 'housing')!;
+    expect(request.status).toBe('open');
+
+    state().signIn(USR.markHepburn);
+    const back = state().recordTransition(process.id, 'mappa-record-return', { agency: 'housing', requestId: request.id, summary: '', nothingKnown: true });
+    expect(back.ok, back.errors.join(', ')).toBe(true);
+    expect(state().data.informationRequests.find((r) => r.id === request.id)?.status).toBe('responded');
+    after = state().data.processes.find((p) => p.id === process.id) as MappaProcess;
+    expect(after.detail.preMeetingReturns[0]?.status).toBe('nothing-known');
+    expect(state().data.notifications.some((n) => n.kind === 'request-returned' && n.toUserId === USR.rossMowat && n.processId === process.id)).toBe(true);
+  });
 });

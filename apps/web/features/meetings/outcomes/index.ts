@@ -2,6 +2,7 @@ import type { HeldForm } from './registry';
 import { ASP_CASE_CONFERENCE_HELD, ASP_REVIEW_OUTCOME } from './AspOutcomeForms';
 import { CP_CPPM_HELD, CP_IRD_DECISIONS } from './CpMeetingForms';
 import { CP_CORE_GROUP, CP_REVIEW_CPPM_HELD } from './CpOutcomeForms';
+import { MAPPA_MEETING_HELD } from './MappaMeetingForm';
 import { MARAC_HEARD } from './MaracHeardForm';
 
 /**
@@ -17,6 +18,7 @@ export const HELD_FORMS: Readonly<Record<string, HeldForm>> = {
   'cp-core-group-meeting': CP_CORE_GROUP,
   'cp-ird-decisions': CP_IRD_DECISIONS,
   'cp-cppm-held': CP_CPPM_HELD,
+  'mappa-meeting-held': MAPPA_MEETING_HELD,
 };
 
 export type { OutcomeFormProps } from './registry';

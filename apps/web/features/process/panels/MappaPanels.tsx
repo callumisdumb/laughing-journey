@@ -9,6 +9,7 @@ import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
 import { useWriteErrors } from '@/lib/writeErrors';
 import { DisclosureDecisionDialog } from '../forms/DisclosureDecisionDialog';
 import { MappaReferralDialog } from '../forms/MappaReferralDialog';
+import { RiskAssessmentDialog } from '../forms/RiskAssessmentDialog';
 import styles from './shared.module.css';
 
 export function MappaPanels({ process }: { process: MappaProcess }) {
@@ -21,6 +22,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
   const { toast } = useToast();
   const [referralOpen, setReferralOpen] = useState(false);
   const [disclosureOpen, setDisclosureOpen] = useState(false);
+  const [riskOpen, setRiskOpen] = useState(false);
   const d = process.detail;
   const risks = data.riskAssessments.filter((r) => d.riskAssessmentIds.includes(r.id) || r.processId === process.id);
   const era = d.era;
@@ -59,8 +61,8 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
       </div>
 
       <div className={styles.stack}>
-        <Sheet>
-          <SheetHead title={t('mappa.level.title')} meta={mappaCategoryLabel(d.category)} actions={<Button size="sm" variant="secondary" onClick={() => setReferralOpen(true)}>{t('mappa.level.refer')}</Button>} />
+        <Sheet data-testid="mappa-level">
+          <SheetHead title={t('mappa.level.title')} meta={mappaCategoryLabel(d.category)} actions={<Button size="sm" variant="secondary" onClick={() => setReferralOpen(true)} data-testid="refer-level">{t('mappa.level.refer')}</Button>} />
           <SheetBody>
             <div className={styles.bigLevel}>
               <span className={styles.bigLevelNumeral}>{d.level}</span>
@@ -121,8 +123,8 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
         </Sheet>
       </div>
 
-      <Sheet>
-        <SheetHead title={t('mappa.risk.title')} meta={t('mappa.risk.meta')} />
+      <Sheet data-testid="mappa-risk">
+        <SheetHead title={t('mappa.risk.title')} meta={t('mappa.risk.meta')} actions={process.status === 'open' ? <Button size="sm" variant="secondary" onClick={() => setRiskOpen(true)} data-testid="record-risk-assessment">{t('mappa.risk.record')}</Button> : undefined} />
         <SheetBody flush>
           <TableWrap style={{ border: 0, borderRadius: 0 }}>
             <Table>
@@ -152,7 +154,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
       </Sheet>
 
       {d.rmp ? (
-        <Sheet>
+        <Sheet data-testid="mappa-rmp">
           <SheetHead title={t('mappa.rmp.title')} meta={t('mappa.rmp.meta', { date: formatDate(d.rmp.reviewedAt) })} />
           <SheetBody>
             <div className={styles.grid2}>
@@ -178,7 +180,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
             ) : null}
           </SheetBody>
         </Sheet>
-        <Sheet>
+        <Sheet data-testid="mappa-returns">
           <SheetHead title={t('mappa.returns.title')} meta={t('mappa.returns.meta', { hasDate: d.reviewSchedule.nextDueAt ? 'yes' : 'no', date: d.reviewSchedule.nextDueAt ? formatDate(d.reviewSchedule.nextDueAt) : '' })} />
           <SheetBody>
             <ul className={styles.list}>
@@ -196,7 +198,7 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
         </Sheet>
       </div>
 
-      <Sheet>
+      <Sheet data-testid="mappa-disclosures">
         <SheetHead title={t('mappa.disclosures.title')} meta={t('mappa.disclosures.meta')} actions={<Button size="sm" variant="secondary" onClick={() => setDisclosureOpen(true)} data-testid="propose-disclosure">{t('mappa.disclosures.propose')}</Button>} />
         <SheetBody flush>
           <TableWrap style={{ border: 0, borderRadius: 0 }}>
@@ -250,14 +252,15 @@ export function MappaPanels({ process }: { process: MappaProcess }) {
       </Sheet>
 
       {d.exit ? (
-        <Sheet tone="well">
+        <Sheet tone="well" data-testid="mappa-exit">
           <SheetHead title={t('mappa.exit.title')} meta={t('mappa.exit.meta', { kind: mappaExitKindLabel(d.exit.kind), date: formatDate(d.exit.at) })} />
           <SheetBody>{d.exit.note}</SheetBody>
         </Sheet>
       ) : null}
 
-      <MappaReferralDialog open={referralOpen} onClose={() => setReferralOpen(false)} process={process} />
+      {referralOpen ? <MappaReferralDialog open onClose={() => setReferralOpen(false)} process={process} /> : null}
       {disclosureOpen ? <DisclosureDecisionDialog process={process} open onClose={() => setDisclosureOpen(false)} /> : null}
+      {riskOpen ? <RiskAssessmentDialog process={process} open onClose={() => setRiskOpen(false)} /> : null}
     </>
   );
 }

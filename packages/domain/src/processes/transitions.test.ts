@@ -353,9 +353,11 @@ describe('MAPPA', () => {
     const refused = record(mappa, 'mappa-refer-level', { level: 2, reason: 'Escalating risk to a known victim.', riskAssessmentId: 'ra_1', referringAuthority: 'police' }, 'offender-management', 'police');
     expect((refused as { missing: Array<{ code: string }> }).missing[0]?.code).toBe('riskAssessmentRequired');
     const assessed = { ...mappa, riskAssessmentIds: ['ra_1'] } as MappaProcess;
-    const referred = ok(assessed, 'mappa-refer-level', { level: 2, reason: 'Escalating risk to a known victim.', riskAssessmentId: 'ra_1', referringAuthority: 'police' }, 'offender-management', 'police');
+    const referred = ok(assessed, 'mappa-refer-level', { level: 2, reason: 'Escalating risk to a known victim.', riskAssessmentId: 'ra_1', referringAuthority: 'police', category: 2, visorReference: 'V-2026-0417', imminentRisk: true, victimConsiderations: 'The victim has been offered the notification scheme.', mustNotReceive: [{ name: 'Kevin Muir', party: 'perpetrator-associates', relationship: "the subject's brother", reason: 'Would tell him.' }], via: 'the MAPPA referral' }, 'offender-management', 'police');
     expect(referred.to).toBe('referral');
-    expect((referred.process as MappaProcess).detail.referral?.riskAssessmentIds).toEqual(['ra_1']);
+    expect((referred.process as MappaProcess).detail.referral).toMatchObject({ riskAssessmentIds: ['ra_1'], levelSought: 2, imminentRisk: true });
+    expect((referred.process as MappaProcess).detail).toMatchObject({ category: 2, visorReference: 'V-2026-0417', level: 1 });
+    expect(referred.process.parties.some((p) => p.name === 'Kevin Muir' && p.party === 'perpetrator-associates')).toBe(true);
     expect(record(assessed, 'mappa-refer-level', { level: 2, reason: 'Escalating risk.', riskAssessmentId: 'ra_1', referringAuthority: 'police' }, 'housing-officer', 'housing').ok).toBe(false);
   });
   it('requests returns, records them per agency, schedules and holds the meeting, and exits', () => {
@@ -363,8 +365,9 @@ describe('MAPPA', () => {
     const asked = ok(referred, 'mappa-request-returns', { agencies: [{ agency: 'housing', contact: 'M Hepburn' }, { agency: 'health', contact: 'Dr Farouk' }], dueAt: '2026-09-10' }, 'mappa-coordinator');
     expect(asked.to).toBe('pre-meeting');
     expect(asked.followOn[0]).toMatchObject({ kind: 'requests', agencies: ['housing', 'health'] });
-    const back = ok(asked.process, 'mappa-record-return', { agency: 'housing', summary: 'Tenancy stable; no complaints.', nothingKnown: false }, 'housing-officer', 'housing');
+    const back = ok(asked.process, 'mappa-record-return', { agency: 'housing', summary: 'Tenancy stable; no complaints.', nothingKnown: false, requestId: 'req_h' }, 'housing-officer', 'housing');
     expect((back.process as MappaProcess).detail.preMeetingReturns.map((r) => r.status)).toEqual(['returned', 'requested']);
+    expect(back.followOn[0]).toMatchObject({ kind: 'request-response', requestId: 'req_h', nothingKnown: false });
     const meeting = ok(back.process, 'mappa-schedule-meeting', schedule, 'mappa-coordinator');
     expect(meeting.to).toBe('meeting');
     expect(meeting.followOn[0]).toMatchObject({ kind: 'meeting', meeting: { type: 'mappa-level2' } });

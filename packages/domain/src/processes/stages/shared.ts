@@ -47,7 +47,7 @@ export function caseName(process: Pick<Process, 'title'>, ctx: Pick<TransitionCo
 }
 
 /** A dialog that already exists in the product, offered as the way to create what is missing. */
-export type DialogId = 'three-point-test' | 'risk-assessment' | 'capacity-assessment' | 'protection-order' | 'plan' | 'disclosure' | 'supervision-visit' | 'awi-investigation' | 'close' | 'schedule-meeting';
+export type DialogId = 'three-point-test' | 'risk-assessment' | 'capacity-assessment' | 'protection-order' | 'plan' | 'disclosure' | 'mappa-referral' | 'supervision-visit' | 'awi-investigation' | 'close' | 'schedule-meeting';
 
 export type Creates = { kind: 'dialog'; dialog: DialogId; meetingType?: MeetingType; planType?: PlanType } | { kind: 'transition'; transition: TransitionId };
 

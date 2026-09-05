@@ -1,6 +1,7 @@
 import type { TransitionForm } from './registry';
 import { ASP_INQUIRY_OUTCOME, ASP_INVESTIGATORY_STEP, ASP_OPEN_INQUIRY, ASP_PROTECTION_PLAN, ASP_SCREENING, ASP_SUPPORT_PLAN } from './AspForms';
 import { CP_BIRTH, CP_DEREGISTER, CP_RECORD_JII, CP_RECORD_MEDICAL } from './CpForms';
+import { MAPPA_EXIT, MAPPA_RECORD_RETURN, MAPPA_REQUEST_RETURNS } from './MappaForms';
 import { MARAC_ACTION_PLAN, MARAC_IDAA_FEEDBACK, MARAC_LINK_CP_CONCERN, MARAC_RESEARCH_REQUESTS, MARAC_RESEARCH_RETURN, MARAC_TRANSFER } from './MaracForms';
 
 /**
@@ -27,6 +28,9 @@ export const TRANSITION_FORMS: Readonly<Record<string, TransitionForm>> = {
   'marac-link-cp-concern': MARAC_LINK_CP_CONCERN,
   'marac-idaa-feedback': MARAC_IDAA_FEEDBACK,
   'marac-transfer': MARAC_TRANSFER,
+  'mappa-request-returns': MAPPA_REQUEST_RETURNS,
+  'mappa-record-return': MAPPA_RECORD_RETURN,
+  'mappa-exit': MAPPA_EXIT,
 };
 
 export type { TransitionForm, TransitionFormContext, TransitionFormProps } from './registry';

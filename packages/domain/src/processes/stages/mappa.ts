@@ -1,5 +1,6 @@
 import { t } from '@mas/messages';
 import type { Agency } from '../../enums';
+import { withMustNotReceive, type MustNotReceiveEntry } from '../../forms/must-not-receive';
 import type { MappaDetail, MappaProcess } from '../../schemas/process';
 import { buildMeeting, buildPlan, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition } from './shared';
 import { chairAndMinuteTaker } from './asp';
@@ -17,6 +18,15 @@ export interface ReferLevelInput {
   reason: string;
   riskAssessmentId: string;
   referringAuthority: MappaDetail['leadResponsibleAuthority'];
+  /** The referral form's own answers, recorded with it (D-225). */
+  category?: MappaDetail['category'];
+  visorReference?: string;
+  imminentRisk?: boolean;
+  victimConsiderations?: string;
+  /** Anyone the referral names as must not receive, which joins the case-role register. */
+  mustNotReceive?: MustNotReceiveEntry[];
+  /** How the register labels an entry the referral added, e.g. "the MAPPA referral". */
+  via?: string;
 }
 
 export interface PreMeetingReturnsInput {
@@ -28,6 +38,8 @@ export interface PreMeetingReturnInput {
   agency: Agency;
   summary: string;
   nothingKnown: boolean;
+  /** The information request the return answers, where it answers one; the request is marked responded. */
+  requestId?: string;
 }
 
 export interface MappaMeetingHeldInput {
@@ -59,11 +71,14 @@ export const MAPPA_TRANSITIONS: Array<Transition<MappaProcess, never>> = [
     from: ['notification'],
     to: ['referral'],
     roles: [...RESPONSIBLE_AUTHORITIES],
+    via: { kind: 'dialog', dialog: 'mappa-referral' },
     requires: riskAssessed,
     validate: (input: ReferLevelInput, process) => [...requireText(input.reason, 'rationaleRequired'), ...(input.level === 2 || input.level === 3 ? [] : ['levelRequired']), ...([...process.detail.riskAssessmentIds, ...process.riskAssessmentIds].includes(input.riskAssessmentId) ? [] : ['riskAssessmentRequired'])],
     apply: (process, input: ReferLevelInput, ctx) => {
       const summary = t('processes.transitions.summary.mappaReferred', { level: input.level, reason: input.reason });
-      const next: MappaProcess = { ...process, detail: { ...process.detail, referral: { at: ctx.at, byName: ctx.actor.name, riskAssessmentIds: [input.riskAssessmentId], reason: input.reason }, leadResponsibleAuthority: input.referringAuthority } };
+      const parties = input.mustNotReceive && input.mustNotReceive.length > 0 ? withMustNotReceive(process.parties, input.mustNotReceive, ctx.at.slice(0, 10), input.via ?? '').parties : process.parties;
+      const referral = { at: ctx.at, byName: ctx.actor.name, riskAssessmentIds: [input.riskAssessmentId], reason: input.reason, levelSought: input.level, imminentRisk: input.imminentRisk, victimConsiderations: input.victimConsiderations };
+      const next: MappaProcess = { ...process, parties, detail: { ...process.detail, referral, leadResponsibleAuthority: input.referringAuthority, category: input.category ?? process.detail.category, visorReference: input.visorReference || process.detail.visorReference } };
       return outcome(moved(next, 'referral', ctx, summary), 'referral', summary, { eventType: 'process.referral' });
     },
   },
@@ -103,7 +118,11 @@ export const MAPPA_TRANSITIONS: Array<Transition<MappaProcess, never>> = [
       });
       const summary = t('processes.transitions.summary.returnRecorded', { agency: input.agency, nothingKnown: input.nothingKnown ? 'yes' : 'no' });
       const next: MappaProcess = { ...process, detail: { ...process.detail, preMeetingReturns } };
-      return outcome(next, 'pre-meeting', summary, { outbound: null, addMembers: [{ userId: ctx.actor.userId, caseRole: t('processes.transitions.caseRole.returnAgency'), agency: ctx.actor.agency, reason: t('processes.transitions.caseRole.returnAgencyReason') }] });
+      return outcome(next, 'pre-meeting', summary, {
+        followOn: input.requestId ? [{ kind: 'request-response', requestId: input.requestId, text: input.nothingKnown ? t('processes.transitions.summary.nothingKnown') : input.summary, nothingKnown: input.nothingKnown }] : [],
+        outbound: null,
+        addMembers: [{ userId: ctx.actor.userId, caseRole: t('processes.transitions.caseRole.returnAgency'), agency: ctx.actor.agency, reason: t('processes.transitions.caseRole.returnAgencyReason') }],
+      });
     },
   },
   {

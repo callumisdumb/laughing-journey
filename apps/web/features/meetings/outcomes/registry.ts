@@ -9,9 +9,10 @@ export interface OutcomeFormProps<I> {
   onChange: (value: I) => void;
 }
 
-/** What a form's first value may draw on beside the meeting and the case: who is closing it. */
+/** What a form's first value may draw on beside the meeting and the case: who is closing it, and when. */
 export interface OutcomeFormContext {
   user: User | null;
+  now: Date;
 }
 
 export interface HeldForm {

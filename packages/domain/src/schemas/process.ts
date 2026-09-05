@@ -394,7 +394,16 @@ export const mappaDetailSchema = z.object({
   /** Victims with a person record. Victims are a hard exclusion; the Victim Notification Scheme is a separate route. */
   victimPersonIds: z.array(idSchema).default([]),
   notification: z.object({ at: isoDateTime, source: z.string(), byName: z.string() }),
-  referral: z.object({ at: isoDateTime, byName: z.string(), riskAssessmentIds: z.array(idSchema), reason: z.string() }).optional(),
+  referral: z.object({
+    at: isoDateTime,
+    byName: z.string(),
+    riskAssessmentIds: z.array(idSchema),
+    reason: z.string(),
+    /** The level the referral asks for; the meeting decides the level the case is managed at. */
+    levelSought: z.union([z.literal(2), z.literal(3)]).optional(),
+    imminentRisk: z.boolean().optional(),
+    victimConsiderations: z.string().optional(),
+  }).optional(),
   sonr: z.object({
     subject: z.boolean(),
     compliant: z.boolean(),

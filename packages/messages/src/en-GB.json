@@ -3502,7 +3502,6 @@
       "accommodation": {
         "label": "Accommodation issue (ERA needed)"
       },
-      "audit": "MAPPA referral to Level {level}",
       "category": {
         "legend": "Category",
         "one": "1: registered sex offender",
@@ -3512,10 +3511,6 @@
       "disclosure": {
         "label": "Disclosure to a third party considered"
       },
-      "event": {
-        "title": "Referred to MAPPA Level {level}"
-      },
-      "historyReason": "Referral by {name}: {reason}",
       "imminent": {
         "label": "Imminent risk of serious harm (required for Level 3)"
       },
@@ -3554,6 +3549,24 @@
       "visor": {
         "label": "ViSOR (MAPPS) reference"
       }
+    },
+    "mappaRisk": {
+      "attached": "Risk assessment attached: {tool}",
+      "audit": "Risk assessment recorded: {tool}, {band}",
+      "band": "Band",
+      "date": "Assessed on",
+      "done": {
+        "text": "{tool}, {band}. The case can now be referred to level 2 or 3.",
+        "title": "Risk assessment recorded"
+      },
+      "intro": "The platform records the tool, the date, the assessor and the band. It does not run the tool.",
+      "score": "Score",
+      "scoreHint": "As the tool reports it, where it scores.",
+      "submit": "Record assessment",
+      "summary": "Summary",
+      "summaryHint": "What the assessment found, for the chronology.",
+      "title": "Record a risk assessment",
+      "tool": "Tool"
     },
     "mustNotReceive": {
       "add": "Add a person",
@@ -4275,6 +4288,7 @@
         "tool": "Tool"
       },
       "meta": "The platform records the tool, date, assessor and band. It does not implement the tools.",
+      "record": "Record a risk assessment",
       "title": "Risk assessment tools"
     },
     "rmp": {
@@ -4683,6 +4697,25 @@
         "exclusionOrder": "Exclusion order",
         "none": "None",
         "policeEmergencyPowers": "Police emergency powers"
+      },
+      "mappa": {
+        "accommodation": "Accommodation",
+        "associates": "Associates",
+        "contingencies": "Contingencies",
+        "controls": "Controls",
+        "employment": "Employment",
+        "level": "Level the meeting sets",
+        "levelHint": "The level the case is managed at from this meeting. Level 1 returns it to single-agency management and starts no review clock.",
+        "levelReason": "Why that level",
+        "oneALine": "One a line.",
+        "reviewDate": "Review by",
+        "reviewDateHint": "Twelve weeks at level 2 and six at level 3 under the national guidance. The review clock runs from today.",
+        "rmp": "Risk management plan",
+        "rmpHint": "To the RMA FRAME headings: what the plan watches for, what it does when they appear, and what it controls.",
+        "triggers": "Triggers",
+        "victimConsiderations": "Victim considerations",
+        "victimConsiderationsHint": "What the meeting decided about the victim: the notification scheme, safety planning, and who tells them what.",
+        "victimSafety": "Victim safety"
       },
       "marac": {
         "add": "Add an agency",
@@ -6080,6 +6113,34 @@
         "kind": "Kind of examination",
         "summary": "Summary of findings",
         "time": "Time"
+      },
+      "mappaExit": {
+        "area": "Receiving MAPPA area",
+        "areaHint": "The area the case transfers to.",
+        "kind": "How the case leaves",
+        "kindHint": "Each kind is counted in the annual report. A level down returns the case to single-agency management; a transfer names the receiving area.",
+        "note": "Note",
+        "noteHint": "Why, in enough words for the annual report and the audit."
+      },
+      "mappaReturn": {
+        "agency": "Agency",
+        "agencyHint": "The return this answers.",
+        "agencyOption": "{agency}, {contact} ({status})",
+        "none": "No return is outstanding",
+        "nothingKnown": "Nothing known to this agency",
+        "nothingKnownHint": "A nil return is still a return: the meeting needs to know the records were searched.",
+        "summary": "What your agency holds",
+        "summaryHint": "Facts, dated where you can, and only what bears on the risk."
+      },
+      "mappaReturns": {
+        "addAgency": "Add an agency",
+        "agencies": "Agencies to ask",
+        "agenciesHint": "Each single point of contact is asked for a pre-meeting return, with the date it is due.",
+        "agency": "Agency",
+        "contact": "Contact",
+        "due": "Return by",
+        "dueHint": "The coordinator's deadline for returns before the meeting.",
+        "removeAgency": "Remove agency"
       },
       "maracCp": {
         "another": "Another child",
@@ -7684,6 +7745,7 @@
       "researchText": "Recorded on {reference}: {summary}",
       "response": "Response",
       "responseHint": "Facts only. Anything you decline to share, say why.",
+      "returnIntro": "{name} asked your agency for a pre-meeting return on {reference}: {purpose}. What you send is recorded on the case as your agency's return.",
       "title": "Respond to the request",
       "toastText": "Only the fields you ticked are shared. The response carries the same lawful basis as the request.",
       "toastTitle": "Response sent"

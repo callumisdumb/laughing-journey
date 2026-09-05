@@ -1,12 +1,12 @@
 'use client';
 
-import { MAPPA_MUST_NOT_RECEIVE_PARTIES, formatDate, mappaReferralFormSchema, riskToolLabel, withMustNotReceive, type MappaProcess, type MappaReferralForm } from '@mas/domain';
+import { MAPPA_MUST_NOT_RECEIVE_PARTIES, formatDate, mappaReferralFormSchema, riskToolLabel, type MappaProcess, type MappaReferralForm } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, CheckboxField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useAppStore, useCurrentUser, useData } from '@/lib/store';
 import { formErrorSummary } from '@/lib/formErrors';
 import { useWriteErrors } from '@/lib/writeErrors';
 import { MustNotReceiveFields } from './MustNotReceiveFields';
@@ -16,8 +16,7 @@ export function MappaReferralDialog({ open, onClose, process }: { open: boolean;
   const t = useT();
   const data = useData();
   const user = useCurrentUser();
-  const now = useNow();
-  const write = useAppStore((s) => s.write);
+  const recordTransition = useAppStore((s) => s.recordTransition);
   const readErrors = useWriteErrors();
   const { toast } = useToast();
   const [refusals, setRefusals] = useState<string[]>([]);
@@ -32,38 +31,24 @@ export function MappaReferralDialog({ open, onClose, process }: { open: boolean;
   function submit(values: MappaReferralForm) {
     if (!user) return;
     const v = mappaReferralFormSchema.parse(values);
-    const by = `${user.givenName} ${user.familyName}`;
-    // Anyone named as "must not receive" joins the case-role register as a manual entry from today.
-    // The pipeline notices the entries move: it ledgers the register change and runs the check in
-    // reverse against every name already on a list for the case, and reports both as effects.
-    const register = withMustNotReceive(process.parties, v.mustNotReceive, now.toISOString().slice(0, 10), t('forms.mappaReferral.via'));
-    const result = write({
-      collection: 'processes',
-      record: {
-        ...process,
-        parties: register.parties,
-        detail: {
-          ...d,
-          level: v.levelSought,
-          levelHistory: [...d.levelHistory, { level: v.levelSought, at: now.toISOString().slice(0, 10), reason: t('forms.mappaReferral.historyReason', { name: by, reason: v.reason }) }],
-          referral: { at: now.toISOString(), byName: by, riskAssessmentIds: v.riskAssessmentIds, reason: v.reason },
-        },
-      },
-      intent: 'update',
-      act: 'edit',
-      targetType: 'process',
-      targetLabel: t('forms.mappaReferral.audit', { level: v.levelSought }),
-      processId: process.id,
-      versionChange: t('forms.mappaReferral.audit', { level: v.levelSought }),
-      event: {
-        eventType: 'process.mappa-level',
-        significance: 'high',
-        visibility: 'agency-only',
-        title: t('forms.mappaReferral.event.title', { level: v.levelSought }),
-        detail: v.reason,
-        subjectIds: process.subjectIds,
-        linkedProcessIds: [process.id],
-      },
+    /*
+     * The referral is the engine's `mappa-refer-level` (D-225): it moves the case to Referral,
+     * records the level sought and the form's own answers, and puts anyone named as "must not
+     * receive" on the case-role register, where the pipeline ledgers the change and runs the
+     * check in reverse against every name already on a list. The level itself is the meeting's
+     * decision, so the case stays at its current level until the meeting sets one.
+     */
+    const result = recordTransition(process.id, 'mappa-refer-level', {
+      level: v.levelSought,
+      reason: v.reason,
+      riskAssessmentId: v.riskAssessmentIds[0] ?? '',
+      referringAuthority: v.leadResponsibleAuthority,
+      category: v.category,
+      visorReference: v.visorReference,
+      imminentRisk: v.imminentRisk,
+      victimConsiderations: v.victimConsiderations,
+      mustNotReceive: v.mustNotReceive,
+      via: t('forms.mappaReferral.via'),
     });
     if (!result.ok) {
       setRefusals(result.errors);
@@ -87,7 +72,7 @@ export function MappaReferralDialog({ open, onClose, process }: { open: boolean;
           <Button variant="quiet" onClick={onClose}>
             {t('common.actions.cancel')}
           </Button>
-          <Button variant="primary" onClick={() => void form.handleSubmit(submit)()}>
+          <Button variant="primary" onClick={() => void form.handleSubmit(submit)()} data-testid="referral-submit">
             {t('forms.mappaReferral.submit')}
           </Button>
         </>
@@ -112,16 +97,16 @@ export function MappaReferralDialog({ open, onClose, process }: { open: boolean;
               </fieldset>
             )}
           />
-          <TextareaField label={t('forms.mappaReferral.reason.label')} required {...form.register('reason')} error={errors.reason?.message} />
+          <TextareaField label={t('forms.mappaReferral.reason.label')} required {...form.register('reason')} error={errors.reason?.message} data-testid="referral-reason" />
           <CheckboxField label={t('forms.mappaReferral.imminent.label')} {...form.register('imminentRisk')} />
           {errors.imminentRisk ? <div role="alert" style={{ color: 'var(--color-risk-critical)', fontSize: 'var(--text-sm)' }}>{errors.imminentRisk.message}</div> : null}
-          <TextareaField label={t('forms.mappaReferral.victim.label')} required {...form.register('victimConsiderations')} error={errors.victimConsiderations?.message} hint={t('forms.mappaReferral.victim.hint')} />
+          <TextareaField label={t('forms.mappaReferral.victim.label')} required {...form.register('victimConsiderations')} error={errors.victimConsiderations?.message} hint={t('forms.mappaReferral.victim.hint')} data-testid="referral-victim" />
           <MustNotReceiveFields parties={MAPPA_MUST_NOT_RECEIVE_PARTIES} relationshipHint={t('forms.mappaReferral.relationshipHint')} />
           <div className="cluster">
             <CheckboxField label={t('forms.mappaReferral.accommodation.label')} {...form.register('accommodationIssue')} />
             <CheckboxField label={t('forms.mappaReferral.disclosure.label')} {...form.register('disclosureConsidered')} />
           </div>
-          <TextField label={t('forms.mappaReferral.visor.label')} required {...form.register('visorReference')} error={errors.visorReference?.message} />
+          <TextField label={t('forms.mappaReferral.visor.label')} required {...form.register('visorReference')} error={errors.visorReference?.message} data-testid="referral-visor" />
         </form>
       </FormProvider>
     </Dialog>

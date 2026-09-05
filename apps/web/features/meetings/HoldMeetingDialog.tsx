@@ -4,7 +4,7 @@ import { canRecordTransition, clockRuleLabel, heldTransitionFor, heldTransitions
 import { useT } from '@mas/messages';
 import { Button, Dialog, TextareaField, useToast } from '@mas/ui';
 import { useState } from 'react';
-import { useAppStore, useCurrentUser } from '@/lib/store';
+import { useAppStore, useCurrentUser, useNow } from '@/lib/store';
 import { useWriteErrors } from '@/lib/writeErrors';
 import { HELD_FORMS } from './outcomes';
 import styles from './outcomes/outcomes.module.css';
@@ -36,7 +36,8 @@ export function HoldMeetingDialog({ open, onClose, meeting, process, onHeld }: {
   const entry = transition ? HELD_FORMS[transition.id] : undefined;
   const blocked = elsewhere.length > 0 || (permission !== null && !permission.allowed) || missing.length > 0 || (transition !== undefined && entry === undefined);
 
-  const [value, setValue] = useState<unknown>(() => (entry ? entry.initial(meeting, process, { user }) : null));
+  const now = useNow();
+  const [value, setValue] = useState<unknown>(() => (entry ? entry.initial(meeting, process, { user, now }) : null));
   const [note, setNote] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
 

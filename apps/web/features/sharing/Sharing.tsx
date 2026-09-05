@@ -15,15 +15,28 @@ import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } fr
 import { useWriteErrors } from '@/lib/writeErrors';
 import styles from './Sharing.module.css';
 
+/** How a response to a request the engine sent is recorded: the transition, its input, and whether the protocol's proportionality confirmation is asked. */
+interface ReturnRoute {
+  transition: string;
+  proportionality: boolean;
+  input: (answer: { summary: string; nothingKnown: boolean; proportionate: boolean }) => unknown;
+}
+
 /**
  * The stage-engine transition a response to this request records, where the case sent the request
  * through the engine (D-222): a MARAC research request is answered as the agency's research return,
  * so the return lands on the case, completes the research clock when it is the last, and puts the
- * responder on the case. A request made by hand is answered by hand.
+ * responder on the case; a MAPPA pre-meeting request is answered as the agency's return the same
+ * way. A request made by hand is answered by hand.
  */
-function returnTransitionFor(process: Process | undefined, request: InformationRequest): string | null {
+function returnTransitionFor(process: Process | undefined, request: InformationRequest): ReturnRoute | null {
   if (!process || process.status !== 'open') return null;
-  if (process.type === 'marac' && process.detail.researchRequests.some((r) => r.id === request.id)) return 'marac-record-research-return';
+  if (process.type === 'marac' && process.detail.researchRequests.some((r) => r.id === request.id)) {
+    return { transition: 'marac-record-research-return', proportionality: true, input: (a) => ({ requestId: request.id, summary: a.summary, nothingKnown: a.nothingKnown, relevantNecessaryProportionate: a.proportionate }) };
+  }
+  if (process.type === 'mappa' && process.detail.preMeetingReturns.some((r) => r.agency === request.toAgency && r.status === 'requested')) {
+    return { transition: 'mappa-record-return', proportionality: false, input: (a) => ({ agency: request.toAgency, requestId: request.id, summary: a.summary, nothingKnown: a.nothingKnown }) };
+  }
   return null;
 }
 
@@ -118,7 +131,7 @@ export function Sharing() {
     const process = data.processes.find((p) => p.id === responding.processId);
     const via = returnTransitionFor(process, responding);
     if (via && process) {
-      const result = recordTransition(process.id, via, { requestId: responding.id, summary: responseText, nothingKnown, relevantNecessaryProportionate: proportionate });
+      const result = recordTransition(process.id, via.transition, via.input({ summary: responseText, nothingKnown, proportionate }));
       if (!result.ok) {
         toast({ title: t('sharing.respondDialog.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
         return;
@@ -310,7 +323,7 @@ export function Sharing() {
       >
         {responding ? (
           <div className="stack">
-            {respondingVia ? <p>{t('sharing.respondDialog.researchIntro', { name: responding.fromName, reference: respondingProcess?.reference ?? '', purpose: responding.purpose })}</p> : <p>{t('sharing.respondDialog.intro', { name: responding.fromName, fields: responding.fields.join('; '), purpose: responding.purpose })}</p>}
+            {respondingVia ? <p>{t(respondingVia.proportionality ? 'sharing.respondDialog.researchIntro' : 'sharing.respondDialog.returnIntro', { name: responding.fromName, reference: respondingProcess?.reference ?? '', purpose: responding.purpose })}</p> : <p>{t('sharing.respondDialog.intro', { name: responding.fromName, fields: responding.fields.join('; '), purpose: responding.purpose })}</p>}
             {responding.fields.length > 0 ? (
               <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
                 <legend style={{ fontWeight: 700, fontSize: 'var(--text-sm)', marginBottom: 6 }}>{t('sharing.respondDialog.fieldsLegend')}</legend>
@@ -321,7 +334,7 @@ export function Sharing() {
             ) : null}
             {respondingVia ? <CheckboxField label={t('sharing.respondDialog.nothingKnown')} hint={t('sharing.respondDialog.nothingKnownHint')} checked={nothingKnown} onChange={(e) => setNothingKnown(e.target.checked)} data-testid="respond-nothing-known" /> : null}
             {respondingVia && nothingKnown ? null : <TextareaField label={t('sharing.respondDialog.response')} required value={responseText} onChange={(e) => setResponseText(e.target.value)} hint={t('sharing.respondDialog.responseHint')} data-testid="respond-text" />}
-            {respondingVia ? <CheckboxField label={t('sharing.respondDialog.proportionate')} hint={t('sharing.respondDialog.proportionateHint')} checked={proportionate} onChange={(e) => setProportionate(e.target.checked)} data-testid="respond-proportionate" /> : null}
+            {respondingVia?.proportionality ? <CheckboxField label={t('sharing.respondDialog.proportionate')} hint={t('sharing.respondDialog.proportionateHint')} checked={proportionate} onChange={(e) => setProportionate(e.target.checked)} data-testid="respond-proportionate" /> : null}
           </div>
         ) : null}
       </Dialog>

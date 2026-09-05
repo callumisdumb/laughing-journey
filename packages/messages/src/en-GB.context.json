@@ -10460,9 +10460,6 @@
           "where": "Checkbox on the MAPPA referral form"
         }
       },
-      "audit": {
-        "where": "Audit ledger line and version entry for a MAPPA referral, with the level sought"
-      },
       "category": {
         "legend": {
           "maxLength": 20,
@@ -10486,14 +10483,6 @@
           "maxLength": 40,
           "where": "Checkbox on the MAPPA referral form"
         }
-      },
-      "event": {
-        "title": {
-          "where": "Chronology event title written by a MAPPA referral, with the level"
-        }
-      },
-      "historyReason": {
-        "where": "Reason written to the MAPPA level history when a referral is sent; shown in the category and level card"
       },
       "imminent": {
         "label": {
@@ -10593,6 +10582,52 @@
           "maxLength": 30,
           "where": "Label of the ViSOR reference field on the MAPPA referral form"
         }
+      }
+    },
+    "mappaRisk": {
+      "attached": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+      },
+      "audit": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+      },
+      "band": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+      },
+      "date": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+      },
+      "done": {
+        "text": {
+          "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+        },
+        "title": {
+          "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+        }
+      },
+      "intro": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+      },
+      "score": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+      },
+      "scoreHint": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+      },
+      "submit": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+      },
+      "summary": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+      },
+      "summaryHint": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+      },
+      "title": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
+      },
+      "tool": {
+        "where": "The risk assessment dialog on a MAPPA case, opened from the risk sheet or from the referral's refusal."
       }
     },
     "mustNotReceive": {
@@ -12752,6 +12787,9 @@
         "screenshot": "phase-3/process-mappa-light-comfortable.png",
         "where": "Meta of the risk assessment tools table"
       },
+      "record": {
+        "where": "The risk sheet on the MAPPA dashboard."
+      },
       "title": {
         "maxLength": 30,
         "screenshot": "phase-3/process-mappa-light-comfortable.png",
@@ -14076,6 +14114,59 @@
         },
         "policeEmergencyPowers": {
           "where": "Emergency measure option"
+        }
+      },
+      "mappa": {
+        "accommodation": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "associates": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "contingencies": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "controls": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "employment": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "level": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "levelHint": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "levelReason": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "oneALine": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "reviewDate": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "reviewDateHint": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "rmp": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "rmpHint": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "triggers": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "victimConsiderations": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "victimConsiderationsHint": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
+        },
+        "victimSafety": {
+          "where": "The outcome form that closes a MAPPA level 2 or 3 meeting."
         }
       },
       "marac": {
@@ -18370,6 +18461,78 @@
         },
         "time": {
           "where": "Label of the time field on the medical examination form"
+        }
+      },
+      "mappaExit": {
+        "area": {
+          "where": "The exit form on a MAPPA case."
+        },
+        "areaHint": {
+          "where": "The exit form on a MAPPA case."
+        },
+        "kind": {
+          "where": "The exit form on a MAPPA case."
+        },
+        "kindHint": {
+          "where": "The exit form on a MAPPA case."
+        },
+        "note": {
+          "where": "The exit form on a MAPPA case."
+        },
+        "noteHint": {
+          "where": "The exit form on a MAPPA case."
+        }
+      },
+      "mappaReturn": {
+        "agency": {
+          "where": "The pre-meeting return form on a MAPPA case, recorded by the agency asked."
+        },
+        "agencyHint": {
+          "where": "The pre-meeting return form on a MAPPA case, recorded by the agency asked."
+        },
+        "agencyOption": {
+          "where": "The pre-meeting return form on a MAPPA case, recorded by the agency asked."
+        },
+        "none": {
+          "where": "The pre-meeting return form on a MAPPA case, recorded by the agency asked."
+        },
+        "nothingKnown": {
+          "where": "The pre-meeting return form on a MAPPA case, recorded by the agency asked."
+        },
+        "nothingKnownHint": {
+          "where": "The pre-meeting return form on a MAPPA case, recorded by the agency asked."
+        },
+        "summary": {
+          "where": "The pre-meeting return form on a MAPPA case, recorded by the agency asked."
+        },
+        "summaryHint": {
+          "where": "The pre-meeting return form on a MAPPA case, recorded by the agency asked."
+        }
+      },
+      "mappaReturns": {
+        "addAgency": {
+          "where": "The request pre-meeting returns form on a MAPPA case."
+        },
+        "agencies": {
+          "where": "The request pre-meeting returns form on a MAPPA case."
+        },
+        "agenciesHint": {
+          "where": "The request pre-meeting returns form on a MAPPA case."
+        },
+        "agency": {
+          "where": "The request pre-meeting returns form on a MAPPA case."
+        },
+        "contact": {
+          "where": "The request pre-meeting returns form on a MAPPA case."
+        },
+        "due": {
+          "where": "The request pre-meeting returns form on a MAPPA case."
+        },
+        "dueHint": {
+          "where": "The request pre-meeting returns form on a MAPPA case."
+        },
+        "removeAgency": {
+          "where": "The request pre-meeting returns form on a MAPPA case."
         }
       },
       "maracCp": {
@@ -23373,6 +23536,9 @@
       },
       "responseHint": {
         "where": "Hint under the response textarea in the respond dialog"
+      },
+      "returnIntro": {
+        "where": "The respond dialog on the Sharing screen, when the request is a MAPPA pre-meeting return the case asked for."
       },
       "title": {
         "maxLength": 24,

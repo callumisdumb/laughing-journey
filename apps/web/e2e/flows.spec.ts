@@ -768,15 +768,204 @@ test.describe('F.2.3 MARAC, driven from a referral to feedback, with the child c
   });
 });
 
-test.describe('F.2.4 MAPPA, restriction and break glass', () => {
-  test('shows presence only to somebody outside the responsible authorities', async ({ page }) => {
+test.describe('F.2.4 MAPPA, driven from a notification to an exit, with the restriction read from outside', () => {
+  test.setTimeout(300_000);
+  /**
+   * Nothing seeded. Priya notifies the case; the referral up is refused until a risk assessment
+   * is on the record and the refusal records one; the referral names the level sought and moves
+   * the case; Ross asks two single points of contact for returns and both answer from their own
+   * inboxes; the level 2 meeting is scheduled from the panel and held from the workspace, which
+   * sets the level, records the risk management plan and starts the review clock; a disclosure is
+   * proposed and approved on the register; somebody outside the responsible authorities reads
+   * presence and nothing else; and the exit completes the clock.
+   */
+  test('the case is walked by the lead responsible authority, the coordinator and two duty-to-cooperate agencies, and a reader outside them sees presence only', async ({ page }) => {
+    await signInAs(page, 'usr_priya_sharif');
+    await createPerson(page, 'Lee', 'Cargill', '1979-06-30');
+    const reference = await startCase(page, 'mappa', 'Police Scotland, sex offender liaison', 'Released on licence on 28 Aug 2026 after a conviction for sexual assault; registered sex offender for ten years.');
+    const caseUrl = page.url();
+    const header = page.getByTestId('process-header');
+    await expect(header).toContainText('Notification');
+
+    // The referral up needs a current risk assessment, and the refusal records one.
+    const refer = page.getByTestId('next-mappa-refer-level');
+    await expect(refer).toHaveAttribute('data-state', 'refused');
+    await expect(refer).toContainText('A current risk assessment is required');
+    await page.getByTestId('creates-risk-assessment').click();
+    await page.getByTestId('risk-tool').selectOption('rm2000');
+    await page.getByTestId('risk-band').selectOption('high');
+    await page.getByTestId('risk-date').fill('2026-09-01');
+    await page.getByTestId('risk-summary').fill('Risk Matrix 2000 high on the sexual scale; two previous convictions and a stranger victim.');
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'mappa-risk-form' });
+    await page.getByTestId('risk-submit').click();
+    await expect(toast(page).getByText('Risk assessment recorded')).toBeVisible();
+    await expect(page.getByTestId('mappa-risk')).toContainText('Risk Matrix 2000');
+    await expect(refer).toHaveAttribute('data-state', 'open');
+
+    // The referral: level 2 sought, the assessment cited, a name that must not receive anything.
+    await openTransition(page, 'mappa-refer-level');
+    const referral = page.getByRole('dialog');
+    await referral.getByRole('radio', { name: 'Level 2: active multi-agency management' }).check();
+    await referral.getByRole('checkbox', { name: /Risk Matrix 2000/ }).check();
+    await referral.getByTestId('referral-reason').fill('Released to a tenancy two streets from the victim of the index offence. Licence conditions need multi-agency oversight.');
+    await referral.getByTestId('referral-victim').fill('The victim has been offered the Victim Notification Scheme and knows the release date.');
+    await referral.getByTestId('referral-visor').fill('V-2026-0417');
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'mappa-referral-form' });
+    await referral.getByTestId('referral-submit').click();
+    await expect(toast(page).getByText('Referred to Level 2').first()).toBeVisible();
+    await expect(header).toContainText('Referral');
+    // The level is the meeting's decision, so the case is still managed at level 1.
+    await expect(page.getByTestId('mappa-level')).toContainText('1');
+    await expect(page.getByText('V-2026-0417').first()).toBeVisible();
+
+    // Ross asks housing and health for pre-meeting returns.
+    await switchUser(page, 'usr_ross_mowat');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await openTransition(page, 'mappa-request-returns');
+    await page.getByTestId('transition-add-return').click();
+    await page.getByTestId('return-agency-0').selectOption('housing');
+    await page.getByTestId('return-contact-0').fill('M Hepburn');
+    await page.getByTestId('transition-add-return').click();
+    await page.getByTestId('return-agency-1').selectOption('health');
+    await page.getByTestId('return-contact-1').fill('L Kennedy');
+    await page.getByTestId('transition-due').fill('2026-09-12');
+    await submitTransition(page);
+    await expect(header).toContainText('Pre-meeting sharing');
+    await expect(page.getByTestId('mappa-returns')).toContainText('M Hepburn');
+
+    // Housing answers from the Sharing screen; health answers with what it holds.
+    await switchUser(page, 'usr_mark_hepburn');
+    await page.goto('/sharing?tab=inbound');
+    await waitForData(page);
+    const housingRequest = page.locator('section').filter({ hasText: `MAPPA ${reference}` }).filter({ has: page.getByRole('button', { name: 'Respond' }) }).first();
+    await housingRequest.getByRole('button', { name: 'Respond' }).click();
+    await expect(page.getByRole('dialog')).toContainText(`Ross Mowat asked your agency for a pre-meeting return on ${reference}`);
+    await page.getByTestId('respond-nothing-known').check();
+    await page.getByTestId('respond-submit').click();
+    await expect(toast(page).getByText(`Recorded on ${reference}: Pre-meeting return from housing (nothing known)`)).toBeVisible();
+
+    await switchUser(page, 'usr_louise_kennedy');
+    await page.goto('/sharing?tab=inbound');
+    await waitForData(page);
+    const healthRequest = page.locator('section').filter({ hasText: `MAPPA ${reference}` }).filter({ has: page.getByRole('button', { name: 'Respond' }) }).first();
+    await healthRequest.getByRole('button', { name: 'Respond' }).click();
+    await page.getByTestId('respond-text').fill('Known to the community mental health team; engaging with treatment; no concerns about compliance since release.');
+    await page.getByTestId('respond-submit').click();
+    await expect(toast(page).getByText(`Recorded on ${reference}: Pre-meeting return from health`)).toBeVisible();
+
+    // Both returns are on the case, and the meeting is scheduled from the panel, Ross chairing.
+    await switchUser(page, 'usr_ross_mowat');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(page.getByTestId('mappa-returns')).toContainText('Nothing known');
+    await expect(page.getByTestId('mappa-returns')).toContainText('community mental health team');
+    await openTransition(page, 'mappa-schedule-meeting');
+    await expect(page.getByTestId('meeting-type')).toHaveValue('mappa-level2');
+    await expect(page.getByTestId('meeting-route')).toHaveAttribute('data-state', 'transition');
+    await page.getByTestId('meeting-date').fill('2026-09-18');
+    await page.getByTestId('meeting-time').fill('10:00');
+    await page.getByTestId('meeting-location').fill('Ardvale Civic Centre, room 3.2');
+    await page.getByTestId('meeting-chair').selectOption('usr_ross_mowat');
+    await page.getByTestId('meeting-submit').click();
+    await expect(page.getByText('Meeting scheduled').last()).toBeVisible();
+    await expect(page).toHaveURL(/\/meetings\/mtg_/);
+    await waitForData(page);
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(header).toContainText('Meeting');
+    await expect(page.getByTestId('next-held-mappa-meeting-held')).toContainText('MAPPA meeting held is recorded when the');
+    await page.getByTestId('next-held-mappa-meeting-held').getByRole('link').click();
+    await waitForData(page);
+
+    // Held: level 2 confirmed, the risk management plan with an action for housing, the review date.
+    await page.getByTestId('hold-meeting').click();
+    await expect(page.getByTestId('hold-route')).toContainText('MAPPA meeting held, which moves the case to Managed');
+    await page.getByRole('radio', { name: 'Level 2' }).check();
+    await page.getByTestId('outcome-level-reason').fill('Active multi-agency management is proportionate to the risk to the index victim.');
+    await page.getByTestId('plan-title').fill('Risk management plan for Lee Cargill');
+    await page.getByTestId('plan-outcome-0').fill('No contact with the victim and no unsupervised contact with children');
+    await page.getByTestId('plan-add-action').click();
+    await page.getByTestId('plan-action-title-0').fill('Move the tenancy away from the victim\'s street');
+    await page.getByTestId('plan-action-owner-0').selectOption('usr_mark_hepburn');
+    await page.getByTestId('plan-action-due-0').fill('2026-10-16');
+    await page.getByTestId('outcome-triggers').fill('Alcohol use\nContact with the victim\'s family');
+    await page.getByTestId('outcome-contingencies').fill('Recall to custody on breach');
+    await page.getByTestId('outcome-controls').fill('Curfew 19:00 to 07:00\nExclusion zone around the victim\'s address');
+    await page.getByTestId('outcome-victim-safety').fill('Victim aware of the plan through the Victim Notification Scheme.');
+    await page.getByTestId('outcome-accommodation').fill('Council tenancy, to be moved');
+    await page.getByTestId('outcome-employment').fill('None');
+    await page.getByTestId('outcome-associates').fill('Brother, monitored');
+    await page.getByTestId('outcome-victim-considerations').fill('The victim is told the outcome by the police single point of contact.');
+    await page.getByTestId('outcome-review-date').fill('2026-12-11');
+    await expectNoAxeViolations(page);
+    await capture(page, { phase: PHASE, screen: 'mappa-held-form', fullPage: true });
+    await page.getByTestId('hold-submit').click();
+    await expect(page.getByText('Meeting closed').last()).toBeVisible();
+    await expect(page.getByTestId('meeting-history')).toContainText('Recorded on the case as MAPPA meeting held');
+
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(header).toContainText('Managed');
+    await expect(page.getByTestId('mappa-level')).toContainText('Level 2 from');
+    await expect(page.getByTestId('mappa-rmp')).toContainText('Recall to custody on breach');
+    await expect(page.getByText(/level 2 review/i).first()).toBeVisible();
+    await capture(page, { phase: PHASE, screen: 'mappa-managed', fullPage: true });
+
+    // A disclosure to the landlord, proposed and approved on the register.
+    await page.getByTestId('propose-disclosure').click();
+    await page.getByTestId('disclosure-recipient').fill('Clydeshore Housing Association');
+    await page.getByTestId('disclosure-recipient-kind').selectOption('landlord');
+    await page.getByTestId('disclosure-fact-0').fill('Subject of licence conditions including a curfew and an exclusion zone');
+    await page.getByTestId('disclosure-rationale').fill('The landlord manages the block and needs to know the curfew to report a breach.');
+    await page.getByTestId('disclosure-submit').click();
+    await expect(toast(page).getByText('Disclosure proposed')).toBeVisible();
+    await page.getByTestId('mappa-disclosures').getByRole('button', { name: 'Approve' }).first().click();
+    await expect(toast(page).getByText('Disclosure approved')).toBeVisible();
+    await expect(page.getByTestId('mappa-disclosures')).toContainText('Clydeshore Housing Association');
+
+    // Housing has its action; a head teacher outside the responsible authorities reads presence only.
+    await switchUser(page, 'usr_mark_hepburn');
+    await page.goto('/');
+    await waitForData(page);
+    await page.getByTestId('notifications-bell').click();
+    await expect(page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: 'Move the tenancy away from the victim' })).toBeVisible();
+    await page.keyboard.press('Escape');
+
+    await switchUser(page, 'usr_claire_cowan');
+    await page.goto('/processes');
+    await waitForData(page);
+    const row = page.getByRole('row').filter({ hasText: reference });
+    await expect(row).toContainText('Restricted');
+    await expect(row).not.toContainText('Lee Cargill');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await expect(page.getByText(/restricted record/i).first()).toBeVisible();
+    await expect(page.getByText('Lee Cargill')).toHaveCount(0);
+    await capture(page, { phase: PHASE, screen: 'mappa-presence-driven', fullPage: true });
+
+    // The exit: level down, which completes the review clock and closes the case.
+    await switchUser(page, 'usr_ross_mowat');
+    await page.goto(caseUrl);
+    await waitForData(page);
+    await openTransition(page, 'mappa-exit');
+    await page.getByRole('radio', { name: 'Level down' }).check();
+    await page.getByTestId('transition-note').fill('Risk reduced after the tenancy moved and three months of compliance. Level 1 management by the police.');
+    await submitTransition(page);
+    await expect(header).toContainText('Exit');
+    await expect(page.getByTestId('mappa-exit')).toContainText('Level down');
+  });
+
+  test('the seeded restricted case shows presence only to somebody outside the responsible authorities', async ({ page }) => {
     await signInAs(page, 'usr_claire_cowan');
     await page.goto('/processes');
     await waitForData(page);
     await expect(page.getByText('Restricted').first()).toBeVisible();
   });
 
-  test('the lead responsible authority sees the risk management plan and the disclosure register', async ({ page }) => {
+  test('the seeded lead responsible authority sees the risk management plan and the disclosure register', async ({ page }) => {
     await signInAs(page, 'usr_priya_sharif');
     await openByReference(page, 'MAPPA-2026-0034');
     await expect(page.getByRole('heading', { name: 'Environmental Risk Assessment' })).toBeVisible();
