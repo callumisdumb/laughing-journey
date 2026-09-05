@@ -28,8 +28,9 @@ export interface RenderedNotification {
   time: string;
 }
 
+/** By instant, not by string: a seeded timestamp with an offset and a written one in UTC do not sort as text. */
 function newestFirst(a: Notification, b: Notification): number {
-  return a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0;
+  return Date.parse(b.createdAt) - Date.parse(a.createdAt);
 }
 
 /**

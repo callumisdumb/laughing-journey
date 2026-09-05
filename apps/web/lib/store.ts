@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type InformationRequest, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyTransition, classificationFor, stagePayload, stageLabel, transitionById, transitionLabel, type Creates, type InformationRequest, type MissingThing, type PermissionDecision, type TransitionOutcome } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -106,11 +106,11 @@ interface AppState {
    * for every one past due, the same for every open action, and the escalation marker on an action
    * whose owner has been silent past the configured interval. Evaluated whenever the instant moves
    * and after any write that could start a clock, and safe to run again because every draft carries
-   * a key the store refuses twice. `asRead` records what it finds as already read, which is how the
-   * seeded state's standing warnings are written without lighting the bell before anything happened.
-   * Returns how many it wrote.
+   * a key the store refuses twice. The seeded state's standing warnings are in the seed itself,
+   * already read, so a fresh seed writes nothing here and the overlay stays empty (D-208). Returns
+   * how many it wrote.
    */
-  evaluateClocks: (asRead?: boolean) => number;
+  evaluateClocks: () => number;
   /** Named states the presenter has kept, newest first. */
   snapshots: DemoSnapshot[];
   takeSnapshot: (name: string) => void;
@@ -197,9 +197,33 @@ interface AppState {
   authoriseOutbound: (id: string, purpose: string, lawfulBasisId: string) => WriteResult & { write?: OutboundWrite };
   parkOutbound: (id: string) => WriteResult;
   cancelOutbound: (id: string) => WriteResult;
+  /**
+   * Record a stage transition: the only route to a stage (D-211).
+   *
+   * The engine decides whether the decision may be recorded and what the record looks like after
+   * it; this runs the consequences through the pipeline in order. The process write carries the
+   * stage entry, the audit act, the milestone, the clocks completed and started, the rewrap, the
+   * notifications and the connector proposal. Then each follow-on the engine named is its own
+   * write with its own ledger line: the meeting, the plan and its actions, the information requests
+   * on a lawful basis, the answer to a request, the closure, the linked case, the birth.
+   */
+  recordTransition: (processId: string, transitionId: string, input: unknown) => TransitionRecordResult;
   /** Accept a case opened in a source system, which creates the matching process here. */
   acceptInbound: (id: string) => WriteResult & { process?: Process };
   declineInbound: (id: string, reason: string) => WriteResult;
+}
+
+export interface TransitionRecordResult extends WriteResult {
+  outcome?: TransitionOutcome;
+  /** What the engine said was missing, each with the action that creates it. */
+  missing?: MissingThing[];
+  permission?: PermissionDecision;
+  /** The records the transition created beside the process. */
+  created?: { meetingId?: string; planId?: string; actionIds: string[]; requestIds: string[]; processId?: string };
+  /** Dialogs the engine offered next, for the screen to open. */
+  offers?: Creates[];
+  /** A meeting the engine asked to be rescheduled, for the screen to offer. */
+  reschedule?: string;
 }
 
 export interface OpenProcessRequest extends OpeningInput {
@@ -513,7 +537,7 @@ function upsert<K extends Collection>(get: () => AppState, set: Setter, collecti
  * and the source at read time (lib/notifications.ts), so a notification never carries content its
  * recipient's level would withhold.
  */
-function notify(get: () => AppState, set: Setter, drafts: readonly NotificationDraft[], ctx: { actorUserId?: string; process?: Process; asRead?: boolean }): Notification[] {
+function notify(get: () => AppState, set: Setter, drafts: readonly NotificationDraft[], ctx: { actorUserId?: string; process?: Process }): Notification[] {
   const { data, config } = get();
   const at = get().now().toISOString();
   const held = new Set(data.notifications.map((n) => n.key));
@@ -523,7 +547,7 @@ function notify(get: () => AppState, set: Setter, drafts: readonly NotificationD
     const process = d.processId && d.processId !== ctx.process?.id ? data.processes.find((p) => p.id === d.processId) : ctx.process;
     if (!admissible(d, { actorUserId: ctx.actorUserId, process, exclusions: config.exclusions, relationships: data.relationships, users: data.users })) continue;
     held.add(d.key);
-    const record: Notification = { ...d, id: get().newId('ntf'), synthetic: true, createdAt: at, createdByUserId: ctx.actorUserId, readAt: ctx.asRead ? at : undefined };
+    const record: Notification = { ...d, id: get().newId('ntf'), synthetic: true, createdAt: at, createdByUserId: ctx.actorUserId };
     upsert(get, set, 'notifications', record);
     written.push(record);
   }
@@ -551,9 +575,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     const config: Config = overlay.config ? { ...DEFAULT_CONFIG, ...overlay.config } : DEFAULT_CONFIG;
     set({ data, config, vault: buildVault(data, config), session: { ...session, breakGlass: session.breakGlass, liveClock: session.liveClock ?? false, nowIso: session.nowIso ?? DEMO_NOW_ISO }, snapshots: readJson<DemoSnapshot[]>(SNAPSHOT_KEY) ?? [], ready: true });
     applyConfiguredAppearanceDefaults(config);
-    // The standing warnings of the seeded state are recorded as already read the first time this
-    // device sees them; anything that falls due after that is new and stays unread across a reload.
-    get().evaluateClocks(overlay.notifications === undefined);
+    // The seed carries its own standing warnings, read; anything that has fallen due since the
+    // session's instant was last read is new and stays unread across a reload.
+    get().evaluateClocks();
   },
   now: () => (get().session.liveClock ? new Date() : parseDemoNow(get().session.nowIso)),
   currentUser: () => {
@@ -682,9 +706,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     const session = { ...get().session, breakGlass: [], nowIso: DEMO_NOW_ISO, liveClock: false };
     writeJson(SESSION_KEY, session);
     set({ data: rebuilt, config: DEFAULT_CONFIG, vault: buildVault(rebuilt, DEFAULT_CONFIG), session });
-    // Every notification went with the overlay. The seeded state's standing warnings come back as
-    // read, exactly as on a first sign-in, so the next take starts from the same bell as the last.
-    get().evaluateClocks(true);
+    // Every notification went with the overlay; the seed's own come back with it, and at the seeded
+    // instant the clocks have nothing new to say, so the overlay stays empty after a reset.
+    get().evaluateClocks();
   },
   markNotificationRead: (id) => {
     const n = get().data.notifications.find((x) => x.id === id);
@@ -705,7 +729,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const at = get().now().toISOString();
     upsert(get, set, 'notifications', { ...n, readAt: n.readAt ?? at, dismissedAt: at });
   },
-  evaluateClocks: (asRead = false) => {
+  evaluateClocks: () => {
     const { data, config } = get();
     const now = get().now();
     const drafts = clockNotifications(data.processes, { config, now });
@@ -718,7 +742,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       if (!lead) continue;
       upsert(get, set, 'actions', { ...action, escalatedAt: now.toISOString(), escalatedToName: `${lead.givenName} ${lead.familyName}` });
     }
-    return notify(get, set, drafts, { asRead }).length;
+    return notify(get, set, drafts, {}).length;
   },
   takeSnapshot: (name) => {
     const trimmed = name.trim();
@@ -1552,6 +1576,173 @@ export const useAppStore = create<AppState>((set, get) => ({
       processId: write.processId,
       versionChange: t('connectors.outbox.cancelledVersion'),
     });
+  },
+  recordTransition: (processId, transitionId, input) => {
+    const { config, data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const process = data.processes.find((p) => p.id === processId);
+    if (!process) return { ok: false, errors: ['processMissing'], nearMatches: [], effects: [] };
+    const transition = transitionById(transitionId);
+    if (!transition) return { ok: false, errors: ['transitionMissing'], nearMatches: [], effects: [] };
+    const at = get().now().toISOString();
+    const byName = `${user.givenName} ${user.familyName}`;
+    const applied = applyTransition(process, transition, input, { at, actor: { userId: user.id, name: byName, roleId: user.roleId, agency: user.agency }, newId: get().newId });
+    if (!applied.ok) return { ok: false, errors: applied.errors, nearMatches: [], effects: [], missing: applied.missing, permission: applied.permission };
+    const { outcome } = applied;
+
+    // The people the decision puts on the case, before the write, so the rewrap and the stage-change
+    // notifications see them as members.
+    let after = outcome.process;
+    const joining = outcome.addMembers.filter((m) => !after.members.some((existing) => existing.userId === m.userId) && data.users.some((u) => u.id === m.userId));
+    if (joining.length > 0) after = { ...after, members: [...after.members, ...joining.map((m) => ({ userId: m.userId, caseRole: m.caseRole, agency: m.agency, since: at.slice(0, 10), reason: t('processes.transitions.audit.member', { role: m.caseRole, reason: m.reason }) }))] };
+
+    // Clocks: a rule that is completed and started in the same decision restarts through the
+    // transition, which completes before it starts; everything else starts as a trigger of its own
+    // with its own instant and owner.
+    const completes = outcome.clocks.completes;
+    const restarts = outcome.clocks.starts.filter((s) => completes.includes(s.ruleId)).map((s) => s.ruleId);
+    const fresh: ClockTrigger[] = outcome.clocks.starts
+      .filter((s) => !completes.includes(s.ruleId) && !after.clocks.some((c) => c.ruleId === s.ruleId && !c.completedAt))
+      .map((s) => ({ id: get().newId('clk'), ruleId: s.ruleId, triggeredAt: s.triggeredAt ?? at, ownerUserId: s.ownerUserId, note: outcome.clocks.note }));
+    const stageChanged = after.stage !== process.stage;
+    const requests = outcome.followOn.filter((f): f is Extract<typeof f, { kind: 'requests' }> => f.kind === 'requests');
+    const lawfulBasisId = requests.length > 0 ? get().newId('lb') : undefined;
+
+    const result = get().write({
+      collection: 'processes',
+      record: after,
+      intent: 'update',
+      act: stageChanged ? 'stage-change' : 'edit',
+      targetType: 'process',
+      targetLabel: outcome.summary,
+      processId: process.id,
+      versionChange: t('processes.transitions.version', { transition: transitionLabel(transition.id) }),
+      clocks: fresh,
+      clockTransition: completes.length > 0 || restarts.length > 0 ? { completes, starts: restarts, note: outcome.clocks.note ?? outcome.summary } : undefined,
+      event: {
+        eventType: outcome.eventType,
+        significance: 'high',
+        visibility: 'integrated',
+        title: transitionLabel(transition.id),
+        detail: outcome.summary,
+        subjectIds: after.subjectIds,
+        occurredAt: at,
+        linkedProcessIds: [after.id],
+      },
+      lawfulBasis: lawfulBasisId ? { id: lawfulBasisId, purpose: t('processes.transitions.lawfulBasis.purpose', { reference: after.reference, stage: stageLabel(after.type, after.stage) }), necessity: t('processes.transitions.lawfulBasis.necessity'), processes: [after] } : undefined,
+      outbound:
+        stageChanged && outcome.outbound === 'stage-change'
+          ? connectorsForIntent('stage-change', CONNECTOR_IDS).map((connectorId) => ({ connectorId, intent: 'stage-change' as const, payload: stagePayload(after), summary: t('connectors.outbox.proposedStage', { reference: after.reference, stage: stageLabel(after.type, after.stage) }), discriminator: after.stage }))
+          : undefined,
+    });
+    if (!result.ok) return { ...result, outcome };
+
+    const created: NonNullable<TransitionRecordResult['created']> = { actionIds: [], requestIds: [] };
+    const offers: Creates[] = [];
+    let reschedule: string | undefined;
+    const effects = [...result.effects];
+    const current = () => get().data.processes.find((p) => p.id === process.id) ?? after;
+    for (const follow of outcome.followOn) {
+      switch (follow.kind) {
+        case 'meeting': {
+          const written = get().write({ collection: 'meetings', record: follow.meeting, intent: 'create', act: 'create', targetType: 'meeting', targetLabel: t('processes.transitions.audit.meeting', { title: follow.meeting.title }), processId: process.id, recipients: follow.meeting.invitees.filter((i) => i.userId).map((i) => ({ userId: i.userId, name: i.name })), recipientProcess: current() });
+          if (written.ok) created.meetingId = follow.meeting.id;
+          effects.push(...written.effects);
+          break;
+        }
+        case 'plan': {
+          const written = get().write({ collection: 'plans', record: follow.plan, intent: 'create', act: 'create', targetType: 'process', targetLabel: t('processes.transitions.audit.plan', { title: follow.plan.title }), processId: process.id });
+          if (written.ok) created.planId = follow.plan.id;
+          effects.push(...written.effects);
+          for (const action of follow.actions) {
+            const one = get().write({ collection: 'actions', record: action, intent: 'create', act: 'create', targetType: 'process', targetLabel: t('processes.transitions.audit.action', { title: action.title, owner: action.ownerName }), processId: process.id });
+            if (one.ok) created.actionIds.push(action.id);
+            effects.push(...one.effects);
+          }
+          break;
+        }
+        case 'plan-review': {
+          const plan = get().data.plans.find((p) => p.id === follow.planId);
+          if (plan) {
+            const label = t('processes.transitions.audit.planReview', { date: follow.reviewDate });
+            effects.push(...get().write({ collection: 'plans', record: { ...plan, reviewDate: follow.reviewDate, status: 'reviewed' }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: label, processId: process.id, versionChange: label }).effects);
+          }
+          break;
+        }
+        case 'requests': {
+          const now = current();
+          follow.agencies.forEach((agency, i) => {
+            const request: InformationRequest = {
+              id: follow.ids[i] ?? get().newId('req'),
+              synthetic: true,
+              processId: process.id,
+              subjectId: now.subjectIds[0]!,
+              fromAgency: user.agency,
+              fromName: byName,
+              fromUserId: user.id,
+              toAgency: agency,
+              toName: agencyShort(agency),
+              purpose: follow.purpose,
+              fields: [],
+              lawfulBasisId: lawfulBasisId!,
+              classification: classificationFor(config, now),
+              accessRestriction: now.accessRestriction,
+              status: 'open',
+              createdAt: at,
+              dueAt: follow.dueAt,
+            };
+            const one = get().write({ collection: 'informationRequests', record: request, intent: 'create', act: 'share', targetType: 'sharing', targetLabel: t('processes.transitions.audit.request', { agency: agencyShort(agency), purpose: follow.purpose }), processId: process.id });
+            if (one.ok) created.requestIds.push(request.id);
+            effects.push(...one.effects);
+          });
+          break;
+        }
+        case 'request-response': {
+          const request = get().data.informationRequests.find((r) => r.id === follow.requestId);
+          if (request && request.status === 'open') {
+            const label = t('processes.transitions.audit.response', { summary: follow.text });
+            effects.push(...get().write({ collection: 'informationRequests', record: { ...request, status: 'responded', response: { at, byName, text: follow.text, fieldsProvided: [] } }, intent: 'update', act: 'share', targetType: 'sharing', targetLabel: label, processId: process.id, versionChange: label }).effects);
+          }
+          break;
+        }
+        case 'close': {
+          const closed = get().closeProcess(process.id, { reasonId: follow.reasonId, note: follow.note });
+          effects.push(...closed.effects);
+          if (!closed.ok) return { ...result, ok: false, errors: closed.errors, effects, outcome };
+          break;
+        }
+        case 'open-process': {
+          const opened = get().openProcess({ type: follow.type, subjectIds: follow.subjectIds, at, source: follow.source, sourceAgency: user.agency, summary: follow.summary, byName, byUserId: user.id });
+          effects.push(...opened.effects);
+          if (opened.ok && opened.process) {
+            created.processId = opened.process.id;
+            const parent = current();
+            const links = parent.type === 'marac' ? { ...parent, detail: { ...parent.detail, links: { ...parent.detail.links, cpProcessId: opened.process.id } }, linkedProcessIds: [...parent.linkedProcessIds, opened.process.id] } : { ...parent, linkedProcessIds: [...parent.linkedProcessIds, opened.process.id] };
+            const label = t('processes.transitions.audit.link', { reference: opened.process.reference });
+            effects.push(...get().write({ collection: 'processes', record: links, intent: 'update', act: 'edit', targetType: 'process', targetLabel: label, processId: process.id, versionChange: label }).effects);
+            const child = get().data.processes.find((p) => p.id === opened.process!.id);
+            if (child) effects.push(...get().write({ collection: 'processes', record: { ...child, linkedProcessIds: [...child.linkedProcessIds, process.id] }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: t('processes.transitions.audit.link', { reference: parent.reference }), processId: child.id, versionChange: t('processes.transitions.audit.link', { reference: parent.reference }) }).effects);
+          }
+          break;
+        }
+        case 'birth': {
+          const person = get().data.people.find((p) => p.id === follow.personId);
+          if (person) {
+            const label = t('processes.transitions.audit.birth', { date: follow.bornAt.slice(0, 10) });
+            effects.push(...get().write({ collection: 'people', record: { ...person, lifeStage: 'child', dateOfBirth: follow.bornAt.slice(0, 10) }, intent: 'update', act: 'edit', targetType: 'person', targetLabel: label, reason: label, versionChange: label }).effects);
+          }
+          break;
+        }
+        case 'offer':
+          offers.push(follow.creates);
+          break;
+        case 'reschedule':
+          reschedule = follow.meetingId;
+          break;
+      }
+    }
+    return { ...result, effects, outcome, created, offers, reschedule };
   },
   acceptInbound: (id) => {
     const { data } = get();

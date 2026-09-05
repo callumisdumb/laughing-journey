@@ -1,11 +1,117 @@
 {
   "actions": {
+    "add": {
+      "actionTitle": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "actionTitleHint": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "audit": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "case": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "caseHint": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "casePlaceholder": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "detail": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "detailHint": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "due": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "noCases": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "owner": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "ownerHint": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "ownerKind": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "ownerPerson": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "ownerPlaceholder": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "ownerRole": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "plan": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "planNone": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "role": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "roleHint": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "roleOption": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "rolePlaceholder": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "submit": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "title": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "titleFor": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "toastText": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "toastTitle": {
+        "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      }
+    },
     "audit": {
       "complete": {
         "where": "Audit entry when an action is completed, with the action title"
       },
       "escalated": {
         "where": "Audit entry when an action is escalated, with who it went to and the action title"
+      }
+    },
+    "cancel": {
+      "audit": {
+        "where": "The cancel dialog on the Actions screen."
+      },
+      "reason": {
+        "where": "The cancel dialog on the Actions screen."
+      },
+      "reasonHint": {
+        "where": "The cancel dialog on the Actions screen."
+      },
+      "submit": {
+        "where": "The cancel dialog on the Actions screen."
+      },
+      "title": {
+        "where": "The cancel dialog on the Actions screen."
+      },
+      "toastText": {
+        "where": "The cancel dialog on the Actions screen."
+      },
+      "toastTitle": {
+        "where": "The cancel dialog on the Actions screen."
       }
     },
     "completeDialog": {
@@ -69,6 +175,15 @@
       }
     },
     "list": {
+      "add": {
+        "where": "Row controls and notes on the Actions screen."
+      },
+      "cancel": {
+        "where": "Row controls and notes on the Actions screen."
+      },
+      "cancelledNote": {
+        "where": "Row controls and notes on the Actions screen."
+      },
       "columns": {
         "action": {
           "maxLength": 12,
@@ -172,6 +287,12 @@
         "screenshot": "phase-4/actions-light-comfortable.png",
         "where": "Pill on an action whose due date has passed"
       },
+      "reassign": {
+        "where": "Row controls and notes on the Actions screen."
+      },
+      "roleOwner": {
+        "where": "Row controls and notes on the Actions screen."
+      },
       "statusOptions": {
         "any": {
           "maxLength": 8,
@@ -194,6 +315,9 @@
           "where": "Option of the status filter"
         }
       },
+      "take": {
+        "where": "Row controls and notes on the Actions screen."
+      },
       "title": {
         "maxLength": 12,
         "screenshot": "phase-4/actions-light-comfortable.png",
@@ -204,7 +328,41 @@
         "where": "Accessible name of the mine, my team and all switch above the actions list"
       }
     },
+    "reassign": {
+      "audit": {
+        "where": "The reassign dialog on the Actions screen."
+      },
+      "refused": {
+        "where": "The reassign dialog on the Actions screen."
+      },
+      "submit": {
+        "where": "The reassign dialog on the Actions screen."
+      },
+      "title": {
+        "where": "The reassign dialog on the Actions screen."
+      },
+      "toastText": {
+        "where": "The reassign dialog on the Actions screen."
+      },
+      "toastTitle": {
+        "where": "The reassign dialog on the Actions screen."
+      }
+    },
+    "take": {
+      "audit": {
+        "where": "Taking a role-assigned action on the Actions screen."
+      },
+      "toastText": {
+        "where": "Taking a role-assigned action on the Actions screen."
+      },
+      "toastTitle": {
+        "where": "Taking a role-assigned action on the Actions screen."
+      }
+    },
     "views": {
+      "agency": {
+        "where": "View toggle on the Actions screen."
+      },
       "all": {
         "maxLength": 16,
         "screenshot": "phase-4/actions-team-light-compact.png",
@@ -806,8 +964,7 @@
         }
       },
       "audit": {
-        "notes": "The holiday lists moved to the Calendar screen, so they are no longer counted here.",
-        "where": "Admin, Defaults: the audit reason recorded when the defaults are saved."
+        "where": "Audit ledger line when Admin, Defaults is saved."
       },
       "breakGlass": {
         "hours": {
@@ -893,6 +1050,18 @@
         "dateDuplicate": {
           "where": "Error under the add-holiday field when the date is already listed; date is formatted"
         },
+        "days": {
+          "where": "Validation on the escalation days field in Admin, Defaults."
+        },
+        "daysInt": {
+          "where": "Validation on the escalation days field in Admin, Defaults."
+        },
+        "daysMax": {
+          "where": "Validation on the escalation days field in Admin, Defaults."
+        },
+        "daysMin": {
+          "where": "Validation on the escalation days field in Admin, Defaults."
+        },
         "hours": {
           "where": "Validation message when the hours value is not a number"
         },
@@ -910,6 +1079,20 @@
         },
         "ruleDuplicate": {
           "where": "Error under the add-rule field when the rule is already listed"
+        }
+      },
+      "escalation": {
+        "days": {
+          "where": "Admin, Defaults: the action escalation sheet."
+        },
+        "daysHint": {
+          "where": "Admin, Defaults: the action escalation sheet."
+        },
+        "meta": {
+          "where": "Admin, Defaults: the action escalation sheet."
+        },
+        "title": {
+          "where": "Admin, Defaults: the action escalation sheet."
         }
       },
       "lede": {
@@ -5171,6 +5354,9 @@
       "proposedEpisode": {
         "where": "Two-way connectors: connectors.outbox.proposedEpisode"
       },
+      "proposedStage": {
+        "where": "Outbox proposal summary for a stage change proposed to the source system."
+      },
       "purposeLine": {
         "where": "Two-way connectors: connectors.outbox.purposeLine"
       },
@@ -9332,8 +9518,17 @@
       }
     },
     "write": {
+      "actionDueRequired": {
+        "where": "Refusal from the action pipeline, shown in the add, reassign and cancel dialogs."
+      },
       "actionIncomplete": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "actionProcessRequired": {
+        "where": "Refusal from the action pipeline, shown in the add, reassign and cancel dialogs."
+      },
+      "actionTitleRequired": {
+        "where": "Refusal from the action pipeline, shown in the add, reassign and cancel dialogs."
       },
       "advocacyRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -9362,6 +9557,21 @@
       "areaRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
+      "assigneeExcluded": {
+        "where": "Refusal from the action pipeline, shown in the add, reassign and cancel dialogs."
+      },
+      "assigneeMissing": {
+        "where": "Refusal from the action pipeline, shown in the add, reassign and cancel dialogs."
+      },
+      "assigneeNoAccess": {
+        "where": "Refusal from the action pipeline, shown in the add, reassign and cancel dialogs."
+      },
+      "assigneeOversight": {
+        "where": "Refusal from the action assignment rule for an oversight role."
+      },
+      "assigneeRoleEmpty": {
+        "where": "Refusal from the action pipeline, shown in the add, reassign and cancel dialogs."
+      },
       "attendanceRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
@@ -9370,6 +9580,9 @@
       },
       "attorneyRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "cancelReasonRequired": {
+        "where": "Refusal from the action pipeline, shown in the add, reassign and cancel dialogs."
       },
       "capacityAssessmentRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -9820,6 +10033,12 @@
       },
       "threePointTestRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "transitionMissing": {
+        "where": "Refusal when a transition id is not in the tables."
+      },
+      "transitionNoAccess": {
+        "where": "Refusal when the person recording a transition cannot open the case."
       },
       "transitionNotFromThisStage": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -17785,6 +18004,12 @@
         "maxLength": 16,
         "where": "Button in the plans and actions sheet header on the process screen"
       },
+      "addAction": {
+        "where": "The plans panel on the process screen: the per-plan row and its add action button."
+      },
+      "addActionTo": {
+        "where": "The plans panel on the process screen: the per-plan row and its add action button."
+      },
       "addOutcome": {
         "maxLength": 24,
         "where": "Add a plan dialog, button below the outcome rows"
@@ -17879,6 +18104,9 @@
       "plan": {
         "screenshot": "phase-3/process-cp-light-comfortable.png",
         "where": "One plan in the meta of the plans and actions table; several are joined with semicolons"
+      },
+      "planRow": {
+        "where": "The plans panel on the process screen: the per-plan row and its add action button."
       },
       "removeOutcome": {
         "maxLength": 12,
@@ -17984,6 +18212,35 @@
       "attendanceNote": {
         "where": "The subject attendance note written on a scheduled planning meeting."
       },
+      "audit": {
+        "action": {
+          "where": "Audit ledger line for a record the stage engine creates beside a transition."
+        },
+        "birth": {
+          "where": "Audit ledger line for a record the stage engine creates beside a transition."
+        },
+        "link": {
+          "where": "Audit ledger line for a record the stage engine creates beside a transition."
+        },
+        "meeting": {
+          "where": "Audit ledger line for a record the stage engine creates beside a transition."
+        },
+        "member": {
+          "where": "Audit ledger line for a record the stage engine creates beside a transition."
+        },
+        "plan": {
+          "where": "Audit ledger line for a record the stage engine creates beside a transition."
+        },
+        "planReview": {
+          "where": "Audit ledger line for a record the stage engine creates beside a transition."
+        },
+        "request": {
+          "where": "Audit ledger line for a record the stage engine creates beside a transition."
+        },
+        "response": {
+          "where": "Audit ledger line for a record the stage engine creates beside a transition."
+        }
+      },
       "caseRole": {
         "chair": {
           "where": "Case role and reason written on a membership the stage engine adds."
@@ -18085,6 +18342,14 @@
         },
         "screeningDecided": {
           "where": "Note on a clock the stage engine completes or starts."
+        }
+      },
+      "lawfulBasis": {
+        "necessity": {
+          "where": "Necessity on the lawful basis a transition writes for the information requests it sends."
+        },
+        "purpose": {
+          "where": "Purpose on the lawful basis a transition writes for the information requests it sends."
         }
       },
       "meetingTitle": {
@@ -18279,6 +18544,9 @@
         "visitOffered": {
           "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
         }
+      },
+      "version": {
+        "where": "Version history phrase on a process moved by a transition; the transition label."
       }
     },
     "views": {

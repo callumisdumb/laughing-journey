@@ -15,6 +15,7 @@ import { AddPersonDialog } from '@/features/person/AddPersonDialog';
 import { StartProcessDialog } from '@/features/person/StartProcessDialog';
 import { AddEventDialog } from '@/features/chronology/AddEventDialog';
 import { AddPlanDialog } from '@/features/process/AddPlanDialog';
+import { AddActionDialog } from '@/features/actions/AddActionDialog';
 import { InvestigationDialog, SupervisionVisitDialog } from '@/features/process/forms/AwiRecordDialogs';
 import { DisclosureDecisionDialog } from '@/features/process/forms/DisclosureDecisionDialog';
 import { ProtectionOrderDialog } from '@/features/process/forms/ProtectionOrderDialog';
@@ -67,7 +68,7 @@ const ON_A_CASE: Option[] = [
 
 const ELSEWHERE: Option[] = [
   { kind: 'meeting', icon: <CalendarDays size={16} aria-hidden="true" />, needs: 'nothing', go: '/meetings' },
-  { kind: 'action', icon: <ListChecks size={16} aria-hidden="true" />, needs: 'nothing', go: '/actions' },
+  { kind: 'action', icon: <ListChecks size={16} aria-hidden="true" />, needs: 'process' },
   { kind: 'share', icon: <Send size={16} aria-hidden="true" />, needs: 'nothing', go: '/sharing' },
 ];
 
@@ -269,6 +270,7 @@ export function CreateMenu({ open, onClose }: { open: boolean; onClose: () => vo
         />
       ) : null}
       {running === 'plan' && chosen ? <AddPlanDialog process={chosen} open onClose={() => setRunning(null)} /> : null}
+      {running === 'action' && chosen ? <AddActionDialog process={chosen} open onClose={() => setRunning(null)} /> : null}
       {running === 'register' && chosen ? <RegisterEntryDialog process={chosen} open onClose={() => setRunning(null)} /> : null}
       {running === 'order' && chosen?.type === 'asp' ? <ProtectionOrderDialog process={chosen} open onClose={() => setRunning(null)} /> : null}
       {running === 'disclosure' && chosen?.type === 'mappa' ? <DisclosureDecisionDialog process={chosen} open onClose={() => setRunning(null)} /> : null}

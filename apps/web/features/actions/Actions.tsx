@@ -1,6 +1,6 @@
 'use client';
 
-import { actionStatusLabel, agencyShort, formatDate, formatDateTime, processShort, relativeDays, type Action } from '@mas/domain';
+import { actionStatusLabel, agencyShort, formatDate, formatDateTime, holdsRoleAction, ownsAction, processShort, relativeDays, roleLabel, type Action } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, Dialog, Pill, ProcessMark, SelectField, Table, TableWrap, TextField, TextareaField, useToast } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -14,9 +14,10 @@ import { useSelection } from '@/lib/selection';
 import { accessForUser, personById } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import { useWriteErrors } from '@/lib/writeErrors';
+import { AddActionDialog, CancelActionDialog, ReassignDialog } from './AddActionDialog';
 import styles from './Actions.module.css';
 
-type View = 'mine' | 'team' | 'all';
+type View = 'mine' | 'team' | 'agency' | 'all';
 type GroupBy = 'process' | 'agency' | 'none';
 
 /** Renders the <link> tag of a catalogue message as a link to the given path. */
@@ -44,6 +45,9 @@ export function Actions() {
   const [evidence, setEvidence] = useState('');
   const [escalating, setEscalating] = useState<Action | null>(null);
   const [escalateTo, setEscalateTo] = useState('');
+  const [adding, setAdding] = useState(false);
+  const [reassigning, setReassigning] = useState<Action | null>(null);
+  const [cancelling, setCancelling] = useState<Action | null>(null);
 
   useEffect(() => {
     select(null);
@@ -62,17 +66,23 @@ export function Actions() {
     .filter(({ action: a, process }) => {
       if (!process) return false;
       const access = accessForUser(data, config, user, process, grants, now);
-      const own = a.ownerUserId === user.id;
+      const own = ownsAction(a, user);
       if (!own && access.level !== 'full') return false;
       if (view === 'mine' && !own) return false;
-      if (view === 'team' && !(a.ownerUserId && team.includes(a.ownerUserId))) return false;
+      if (view === 'team' && !((a.ownerUserId && team.includes(a.ownerUserId)) || own)) return false;
+      if (view === 'agency' && a.ownerAgency !== user.agency) return false;
       const overdue = a.status !== 'complete' && a.status !== 'cancelled' && a.due < today;
       if (status === 'open' && (a.status === 'complete' || a.status === 'cancelled')) return false;
       if (status === 'overdue' && !overdue) return false;
       if (status === 'complete' && a.status !== 'complete') return false;
       return true;
     })
-    .sort((a, b) => (a.action.due < b.action.due ? -1 : 1));
+    // Overdue first, then by due date: the thing that is late is the thing to look at.
+    .sort((a, b) => {
+      const lateA = a.action.status !== 'complete' && a.action.status !== 'cancelled' && a.action.due < today ? 0 : 1;
+      const lateB = b.action.status !== 'complete' && b.action.status !== 'cancelled' && b.action.due < today ? 0 : 1;
+      return lateA !== lateB ? lateA - lateB : a.action.due < b.action.due ? -1 : 1;
+    });
 
   const groups = groupBy === 'none' ? [['all', rows] as const] : groupBy === 'process' ? [...new Map(rows.map((r) => [r.process!.id, r.process!])).entries()].map(([id, p]) => [`${p.reference}: ${p.title}`, rows.filter((r) => r.process!.id === id)] as const) : [...new Set(rows.map((r) => r.action.ownerAgency))].map((ag) => [agencyShort(ag), rows.filter((r) => r.action.ownerAgency === ag)] as const);
 
@@ -106,6 +116,16 @@ export function Actions() {
     setEscalateTo('');
   }
 
+  function take(a: Action) {
+    const label = t('actions.take.audit', { name: `${user!.givenName} ${user!.familyName}`, title: a.title });
+    const result = write({ collection: 'actions', record: { ...a, ownerUserId: user!.id, ownerName: `${user!.givenName} ${user!.familyName}`, ownerRoleId: undefined }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: label, processId: a.processId, versionChange: label });
+    if (!result.ok) {
+      toast({ title: t('actions.reassign.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
+      return;
+    }
+    toast({ title: t('actions.take.toastTitle'), text: t('actions.take.toastText'), tone: 'success' });
+  }
+
   const overdueCount = rows.filter((r) => r.action.status !== 'complete' && r.action.status !== 'cancelled' && r.action.due < today).length;
 
   return (
@@ -115,6 +135,11 @@ export function Actions() {
           <h1>{t('actions.list.title')}</h1>
           <p className="page-lede">{t('actions.list.lede', { count: overdueCount })}</p>
         </div>
+        <div>
+          <Button variant="primary" onClick={() => setAdding(true)} data-testid="add-action">
+            {t('actions.list.add')}
+          </Button>
+        </div>
       </div>
       <div className={styles.toolbar}>
         <div className={styles.views} role="group" aria-label={t('actions.list.viewsLabel')}>
@@ -122,6 +147,7 @@ export function Actions() {
             [
               ['mine', t('actions.views.mine')],
               ['team', t('actions.views.team')],
+              ['agency', t('actions.views.agency')],
               ['all', t('actions.views.all')],
             ] as Array<[View, string]>
           ).map(([v, label]) => (
@@ -153,6 +179,7 @@ export function Actions() {
                 </thead>
                 <tbody>
                   {list.map(({ action: a, process }) => {
+                    const access = process ? accessForUser(data, config, user, process, grants, now) : null;
                     const days = differenceInCalendarDays(parseISO(a.due), now);
                     const overdue = a.status !== 'complete' && a.status !== 'cancelled' && days < 0;
                     const subject = process ? personById(data, process.subjectIds[0]) : undefined;
@@ -164,10 +191,11 @@ export function Actions() {
                             {process ? <AppLink href={processPath(process.id)}><ProcessMark type={process.type} /></AppLink> : null} {subject ? <PersonLink person={subject} process={process} /> : ''}
                             {a.meetingId ? <> {t.rich('actions.list.fromMeeting', { ...linkTo(meetingPath(a.meetingId)), title: data.meetings.find((m) => m.id === a.meetingId)?.title ?? t('actions.list.meetingFallback') })}</> : ''}
                             {a.escalatedAt ? <> {t('actions.list.escalatedNote', { name: a.escalatedToName ?? '', date: formatDate(a.escalatedAt) })}</> : ''}
+                            {a.status === 'cancelled' && a.cancelledAt ? <> {t('actions.list.cancelledNote', { date: formatDate(a.cancelledAt), reason: a.cancelReason ?? '' })}</> : ''}
                           </span>
                         </td>
                         <td>
-                          <AgencyMark agency={a.ownerAgency} hideLabel /> <PractitionerLink userId={a.ownerUserId}>{a.ownerName}</PractitionerLink>
+                          <AgencyMark agency={a.ownerAgency} hideLabel /> {a.ownerUserId ? <PractitionerLink userId={a.ownerUserId}>{a.ownerName}</PractitionerLink> : a.ownerRoleId ? t('actions.list.roleOwner', { role: roleLabel(a.ownerRoleId), agency: agencyShort(a.ownerAgency) }) : a.ownerName}
                         </td>
                         <td className={overdue ? styles.overdue : undefined} style={{ whiteSpace: 'nowrap' }}>
                           {formatDate(a.due)}
@@ -182,12 +210,27 @@ export function Actions() {
                         <td>
                           {a.status !== 'complete' && a.status !== 'cancelled' ? (
                             <span className={styles.rowActions}>
-                              <Button size="sm" variant="secondary" onClick={() => setCompleting(a)}>
+                              {holdsRoleAction(a, user) ? (
+                                <Button size="sm" variant="primary" onClick={() => take(a)} data-testid={`take-${a.id}`}>
+                                  {t('actions.list.take')}
+                                </Button>
+                              ) : null}
+                              <Button size="sm" variant="secondary" onClick={() => setCompleting(a)} data-testid={`complete-${a.id}`}>
                                 {t('actions.list.complete')}
                               </Button>
+                              {access?.level === 'full' ? (
+                                <Button size="sm" variant="quiet" onClick={() => setReassigning(a)} data-testid={`reassign-${a.id}`}>
+                                  {t('actions.list.reassign')}
+                                </Button>
+                              ) : null}
                               {overdue && !a.escalatedAt ? (
                                 <Button size="sm" variant="quiet" onClick={() => setEscalating(a)}>
                                   {t('actions.list.escalate')}
+                                </Button>
+                              ) : null}
+                              {access?.level === 'full' ? (
+                                <Button size="sm" variant="quiet" onClick={() => setCancelling(a)} data-testid={`cancel-${a.id}`}>
+                                  {t('actions.list.cancel')}
                                 </Button>
                               ) : null}
                             </span>
@@ -241,6 +284,9 @@ export function Actions() {
         <p style={{ marginBottom: 10 }}>{escalating?.title}</p>
         <TextField label={t('actions.escalateDialog.to')} required value={escalateTo} onChange={(e) => setEscalateTo(e.target.value)} placeholder={t('actions.escalateDialog.toPlaceholder')} hint={escalating ? t('actions.escalateDialog.toHint', { process: processShort(data.processes.find((p) => p.id === escalating.processId)?.type ?? 'cp'), owner: escalating.ownerName }) : undefined} />
       </Dialog>
+      {adding ? <AddActionDialog open onClose={() => setAdding(false)} /> : null}
+      {reassigning ? <ReassignDialog action={reassigning} process={data.processes.find((p) => p.id === reassigning.processId)!} open onClose={() => setReassigning(null)} /> : null}
+      {cancelling ? <CancelActionDialog action={cancelling} open onClose={() => setCancelling(null)} /> : null}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 /**
  * Pure selectors over the dataset. No React here.
  */
-import { accessFor, agencyShort, computeClock, findClockRule, sortByUrgency, workingCalendarFrom, type Action, type Agency, type ChronologyEvent, type ClockResult, type Config, type Dataset, type Meeting, type Membership, type Person, type Process, type User, type AccessResult } from '@mas/domain';
+import { accessFor, agencyShort, computeClock, findClockRule, sortByUrgency, workingCalendarFrom, type Action, type Agency, type ChronologyEvent, type ClockResult, type Config, type Dataset, type Meeting, type Membership, type Person, type Process, type User, type AccessResult, ownsAction } from '@mas/domain';
 import { t } from '@mas/messages';
 import type { BreakGlassGrant } from './store';
 
@@ -80,8 +80,9 @@ export function isOversight(user: User): boolean {
   return ['cswo', 'apc-lead-officer', 'cpc-lead-officer', 'inspector'].includes(user.roleId);
 }
 
+/** Open actions on this person's list: owned by name, or assigned to a role they hold and not yet taken. */
 export function actionsForUser(data: Dataset, user: User): Action[] {
-  return data.actions.filter((a) => a.ownerUserId === user.id && a.status !== 'complete' && a.status !== 'cancelled').sort((a, b) => (a.due < b.due ? -1 : 1));
+  return data.actions.filter((a) => ownsAction(a, user) && a.status !== 'complete' && a.status !== 'cancelled').sort((a, b) => (a.due < b.due ? -1 : 1));
 }
 
 export function meetingsForUser(data: Dataset, user: User): Meeting[] {

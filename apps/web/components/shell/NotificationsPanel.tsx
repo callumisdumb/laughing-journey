@@ -34,21 +34,28 @@ export function NotificationsPanel({ open, onClose }: { open: boolean; onClose: 
         </>
       }
     >
-      <div data-testid="notifications-panel">
-        <p className={styles.count} aria-live="polite" data-testid="notifications-panel-unread">
-          {t('notifications.panel.unread', { count: unread })}
-        </p>
-        <NotificationList
-          items={items}
-          grouped
-          onOpen={(item) => {
-            onClose();
-            openOne(item);
-          }}
-          onDismiss={dismiss}
-          emptyText={t('notifications.panel.empty.text')}
-        />
-      </div>
+      {/*
+        Drawn only while open. A closed dialog is still in the document, and a list of every
+        notification sitting hidden on every screen is both wasted work and a trap for anything
+        that looks the page up by text.
+      */}
+      {open ? (
+        <div data-testid="notifications-panel">
+          <p className={styles.count} aria-live="polite" data-testid="notifications-panel-unread">
+            {t('notifications.panel.unread', { count: unread })}
+          </p>
+          <NotificationList
+            items={items}
+            grouped
+            onOpen={(item) => {
+              onClose();
+              openOne(item);
+            }}
+            onDismiss={dismiss}
+            emptyText={t('notifications.panel.empty.text')}
+          />
+        </div>
+      ) : null}
     </Dialog>
   );
 }

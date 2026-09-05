@@ -25,6 +25,9 @@ export const actionSchema = z.object({
   evidence: z.string().optional(),
   escalatedAt: isoDateTime.optional(),
   escalatedToName: z.string().optional(),
+  /** A cancelled action keeps its reason; it is never deleted. */
+  cancelledAt: isoDateTime.optional(),
+  cancelReason: z.string().optional(),
   createdAt: isoDateTime,
   createdByName: z.string(),
   createdByUserId: idSchema.optional(),

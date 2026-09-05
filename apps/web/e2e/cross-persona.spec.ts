@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { capture, expectNoAxeViolations, signInAs, switchUser, waitForData } from './helpers';
+import { capture, expectNoAxeViolations, signInAs, waitForData } from './helpers';
 
 const PHASE = 'cross-persona';
 
@@ -21,6 +21,18 @@ async function unreadCount(page: Page): Promise<number> {
   return Number.parseInt(text.replace(/\D/g, ''), 10) || 0;
 }
 
+
+/**
+ * Switch persona the way the demonstration does, through the demo panel, which keeps the demo clock
+ * where it was. Rewriting the session in storage would put the clock back to the seed.
+ */
+async function switchPersona(page: Page, userId: string): Promise<void> {
+  await page.keyboard.press('Control+Shift+D');
+  await expect(page.getByTestId('demo-panel')).toBeVisible();
+  await page.getByTestId(`persona-${userId}`).click();
+  await waitForData(page);
+}
+
 async function createAdult(page: Page, givenName: string, familyName: string): Promise<void> {
   await page.goto('/people');
   await waitForData(page);
@@ -39,7 +51,7 @@ async function createAdult(page: Page, givenName: string, familyName: string): P
   await expect(page.getByRole('heading', { name: new RegExp(`${givenName} ${familyName}`) })).toBeVisible();
 }
 
-async function openAdultConcern(page: Page): Promise<string> {
+async function openAdultConcern(page: Page): Promise<{ reference: string; marking: string | null }> {
   await page.getByTestId('start-process').click();
   await page.getByTestId('process-choice-asp').getByRole('radio').check();
   await page.getByTestId('process-source').fill('Community nurse, Kirkbrae practice');
@@ -49,7 +61,10 @@ async function openAdultConcern(page: Page): Promise<string> {
   const header = await page.getByTestId('process-header').textContent();
   const match = /ASP-\d{4}-\d{4}/.exec(header ?? '');
   expect(match, 'the new case shows its reference in the header').not.toBeNull();
-  return match![0];
+  // The marking the case carries, if any: routine Official carries none by design (D-058), so the
+  // panel is held to whatever the record header shows rather than to a marking assumed.
+  const marking = /OFFICIAL-SENSITIVE/.exec(header ?? '')?.[0] ?? null;
+  return { reference: match![0], marking };
 }
 
 async function addAction(page: Page, title: string, ownerId: string, due: string): Promise<void> {
@@ -71,10 +86,9 @@ test('an action assigned by Moira is seen, completed and reported back by Janet,
   const janetBefore = await unreadCount(page);
 
   // Moira: a new person, a new adult concern, and an action for Janet due tomorrow.
-  await switchUser(page, 'usr_moira_gilmour');
-  await waitForData(page);
+  await switchPersona(page, 'usr_moira_gilmour');
   await createAdult(page, 'Ailsa', 'Muir');
-  const reference = await openAdultConcern(page);
+  const { reference, marking } = await openAdultConcern(page);
   const caseUrl = page.url();
   await addAction(page, 'Arrange an advocate for Ailsa', 'usr_janet_kerr', '2026-09-03');
   await addAction(page, 'Request the GP summary', 'usr_janet_kerr', '2026-09-03');
@@ -82,8 +96,7 @@ test('an action assigned by Moira is seen, completed and reported back by Janet,
   const moiraBefore = await unreadCount(page);
 
   // Janet: the bell, the panel, Home, the worklist and the drawer all carry the assignment.
-  await switchUser(page, 'usr_janet_kerr');
-  await waitForData(page);
+  await switchPersona(page, 'usr_janet_kerr');
   expect(await unreadCount(page)).toBe(janetBefore + 2);
   await page.getByTestId('notifications-bell').click();
   const panel = page.getByTestId('notifications-panel');
@@ -92,11 +105,14 @@ test('an action assigned by Moira is seen, completed and reported back by Janet,
   await expect(group).toBeVisible();
   await expect(group).toContainText('Moira Gilmour assigned you an action');
   await expect(group).toContainText('Arrange an advocate for Ailsa');
-  await expect(group).toContainText('OFFICIAL-SENSITIVE');
+  if (marking) await expect(group).toContainText(marking);
+  await expect(group.getByText(reference, { exact: true }).first()).toBeVisible();
   await capture(page, { phase: PHASE, screen: 'janet-panel' });
   await expectNoAxeViolations(page);
   await page.keyboard.press('Escape');
 
+  await page.goto('/');
+  await waitForData(page);
   await expect(page.getByTestId('home-notifications')).toContainText('Arrange an advocate for Ailsa');
   await page.goto('/worklist');
   await waitForData(page);
@@ -119,8 +135,7 @@ test('an action assigned by Moira is seen, completed and reported back by Janet,
   await expect(page.getByText('Action complete')).toBeVisible();
 
   // Moira: one unread completion, and the action shows Janet's evidence and the time.
-  await switchUser(page, 'usr_moira_gilmour');
-  await waitForData(page);
+  await switchPersona(page, 'usr_moira_gilmour');
   expect(await unreadCount(page)).toBe(moiraBefore + 1);
   await page.getByTestId('notifications-bell').click();
   await expect(page.getByTestId('notifications-panel')).toContainText('Janet Kerr completed an action');
@@ -143,14 +158,18 @@ test('an action assigned by Moira is seen, completed and reported back by Janet,
   await expect(page.getByTestId('notifications-panel')).toContainText('is overdue: Request the GP summary');
   await page.keyboard.press('Escape');
 
-  await switchUser(page, 'usr_janet_kerr');
-  await waitForData(page);
+  await switchPersona(page, 'usr_janet_kerr');
   await page.getByTestId('notifications-bell').click();
   await expect(page.getByTestId('notifications-panel')).toContainText('is overdue: Request the GP summary');
   await page.keyboard.press('Escape');
   await page.goto('/worklist');
   await waitForData(page);
-  const first = page.getByRole('row').nth(1);
-  await expect(first).toContainText('Request the GP summary');
+  // Overdue items move to the front: the new twin is overdue, and nothing before it is on time.
+  const gpRow = page.getByRole('row').filter({ hasText: 'Request the GP summary' });
+  await expect(gpRow).toContainText('overdue');
+  const rows = await page.getByRole('row').allTextContents();
+  const index = rows.findIndex((text) => text.includes('Request the GP summary'));
+  expect(index).toBeGreaterThan(0);
+  for (const earlier of rows.slice(1, index)) expect(earlier).toContain('overdue');
   await capture(page, { phase: PHASE, screen: 'janet-worklist-overdue' });
 });

@@ -25,3 +25,4 @@ export * from './people/death';
 export * from './connectors/write';
 export * from './connectors/outbox';
 export * from './notifications';
+export * from './actions';

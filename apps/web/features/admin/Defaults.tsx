@@ -18,6 +18,7 @@ function defaultsSchema(t: Translator) {
     theme: z.enum(['light', 'dark', 'system']),
     density: z.enum(['comfortable', 'compact']),
     breakGlassHours: z.number({ error: t('admin.defaults.errors.hours') }).int(t('admin.defaults.errors.hoursInt')).min(1, t('admin.defaults.errors.hoursMin')).max(24, t('admin.defaults.errors.hoursMax')),
+    actionEscalationDays: z.number({ error: t('admin.defaults.errors.days') }).int(t('admin.defaults.errors.daysInt')).min(1, t('admin.defaults.errors.daysMin')).max(60, t('admin.defaults.errors.daysMax')),
   });
 }
 type DefaultsValues = z.infer<ReturnType<typeof defaultsSchema>>;
@@ -26,7 +27,7 @@ export function Defaults() {
   const t = useT();
   const { config, canEdit, save } = useAdminConfig();
   const schema = useMemo(() => defaultsSchema(t), [t]);
-  const form = useForm<DefaultsValues>({ resolver: zodResolver(schema), defaultValues: { theme: config.defaults.theme, density: config.defaults.density, breakGlassHours: config.breakGlassHours } });
+  const form = useForm<DefaultsValues>({ resolver: zodResolver(schema), defaultValues: { theme: config.defaults.theme, density: config.defaults.density, breakGlassHours: config.breakGlassHours, actionEscalationDays: config.actionEscalationDays } });
   const [rules, setRules] = useState<string[]>(config.aspCouncilOfficerEligibility);
   const [reasons, setReasons] = useState<string[]>(config.breakGlassReasons);
   const [newReason, setNewReason] = useState('');
@@ -74,9 +75,9 @@ export function Defaults() {
   }
   function submit(values: DefaultsValues) {
     const result = save(
-      { ...config, defaults: { theme: values.theme, density: values.density }, breakGlassHours: values.breakGlassHours, breakGlassReasons: reasons, aspCouncilOfficerEligibility: rules },
+      { ...config, defaults: { theme: values.theme, density: values.density }, breakGlassHours: values.breakGlassHours, actionEscalationDays: values.actionEscalationDays, breakGlassReasons: reasons, aspCouncilOfficerEligibility: rules },
       'defaults',
-      t('admin.defaults.audit', { theme: values.theme, density: values.density, hours: values.breakGlassHours, reasons: reasons.length, rules: rules.length }),
+      t('admin.defaults.audit', { theme: values.theme, density: values.density, hours: values.breakGlassHours, escalation: values.actionEscalationDays, reasons: reasons.length, rules: rules.length }),
     );
     setSaveErrors(result.errors);
     if (result.ok) {
@@ -85,7 +86,7 @@ export function Defaults() {
     }
   }
   function discard() {
-    form.reset({ theme: config.defaults.theme, density: config.defaults.density, breakGlassHours: config.breakGlassHours });
+    form.reset({ theme: config.defaults.theme, density: config.defaults.density, breakGlassHours: config.breakGlassHours, actionEscalationDays: config.actionEscalationDays });
     setReasons(config.breakGlassReasons);
     setNewReason('');
     setRules(config.aspCouncilOfficerEligibility);
@@ -163,6 +164,15 @@ export function Defaults() {
         </Sheet>
 
 
+
+        <Sheet>
+          <SheetHead title={t('admin.defaults.escalation.title')} meta={t('admin.defaults.escalation.meta')} />
+          <SheetBody>
+            <div className={styles.twoUp}>
+              <TextField label={t('admin.defaults.escalation.days')} type="number" min={1} max={60} step={1} required disabled={!canEdit} {...form.register('actionEscalationDays', { valueAsNumber: true })} error={errors.actionEscalationDays?.message} hint={t('admin.defaults.escalation.daysHint')} data-testid="defaults-escalation-days" />
+            </div>
+          </SheetBody>
+        </Sheet>
 
         <Sheet>
           <SheetHead title={t('admin.defaults.eligibility.title')} meta={t('admin.defaults.eligibility.meta')} />

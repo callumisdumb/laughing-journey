@@ -76,10 +76,12 @@
   position: relative;
 }
 
+/* The count sits on the bell and must never take the click that was meant for it. */
 .notifyBadge {
   position: absolute;
   top: 2px;
   right: 2px;
+  pointer-events: none;
 }
 
 .personaName {

@@ -495,3 +495,11 @@ Two things were decided by reading the tables back. The three-point test check f
 
 The forms that record these transitions land per process type in the steps that follow, with a driven spec each. The tables and their forty-nine transitions are committed first so the specs have something to drive.
 
+## Four doors to one action (05 Sep 2026)
+
+An action could be captured live in a meeting and nowhere else. The cross-persona proof begins "on the case, create an action and assign it to Janet Kerr", and the case had no such button, which is why the spec was committed red two steps ago.
+
+One dialog now serves the four places an action starts: the Actions screen, which asks for the case first; the case; a plan on the case, which pre-selects the plan; and the global create menu, which asked for a case already. The owner picker is shared with the reassign dialog, so who may own an action is one rule in one place (D-212). The first draft limited owners to case members and refused Janet on a case Moira had opened a minute earlier; the rule is access rather than membership, which is what the share recipient check already was.
+
+The Actions screen gained the agency view, overdue-first ordering, take, reassign and cancel, and the row says when a role-assigned action has nobody's name on it yet. The escalation interval moved out of a constant and into Admin, Defaults.
+

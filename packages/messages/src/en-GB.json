@@ -1,8 +1,46 @@
 {
   "actions": {
+    "add": {
+      "actionTitle": "Action",
+      "actionTitleHint": "What will happen, in a sentence.",
+      "audit": "Action added: {title}, owner {owner}",
+      "case": "Case",
+      "caseHint": "The case the action belongs to. Only cases you can work on are offered.",
+      "casePlaceholder": "Choose a case",
+      "detail": "Detail",
+      "detailHint": "Anything the owner needs to know to do it.",
+      "due": "Due (dd Mon yyyy)",
+      "noCases": "There is no open case you can work on.",
+      "owner": "Owner",
+      "ownerHint": "People this case permits. Members of the case come first.",
+      "ownerKind": "Who owns it",
+      "ownerPerson": "A named person",
+      "ownerPlaceholder": "Choose a person",
+      "ownerRole": "Everybody holding a role",
+      "plan": "Plan",
+      "planNone": "Not under a plan",
+      "role": "Role",
+      "roleHint": "Every holder sees it on their worklist until one of them takes it.",
+      "roleOption": "{role}, {agency} ({count, plural, one {# person} other {# people}})",
+      "rolePlaceholder": "Choose a role",
+      "submit": "Add action",
+      "title": "Add an action",
+      "titleFor": "Add an action to {reference}",
+      "toastText": "{owner} has been told.",
+      "toastTitle": "Action added"
+    },
     "audit": {
       "complete": "Action complete: {title}",
       "escalated": "Action escalated to {name}: {title}"
+    },
+    "cancel": {
+      "audit": "Action cancelled: {title}. {reason}",
+      "reason": "Why it is cancelled",
+      "reasonHint": "The action stays on the record with this reason.",
+      "submit": "Cancel the action",
+      "title": "Cancel an action",
+      "toastText": "It stays on the record with the reason.",
+      "toastTitle": "Action cancelled"
     },
     "completeDialog": {
       "confirm": "Mark complete",
@@ -24,6 +62,9 @@
       "toPlaceholder": "Team leader or chair by name"
     },
     "list": {
+      "add": "Add action",
+      "cancel": "Cancel action",
+      "cancelledNote": "Cancelled on {date}: {reason}",
       "columns": {
         "action": "Action",
         "due": "Due",
@@ -53,16 +94,33 @@
       "lede": "Every owned, dated action across every process you can see. {count, plural, =0 {Nothing overdue.} other {# overdue.}}",
       "meetingFallback": "meeting",
       "overdue": "overdue",
+      "reassign": "Reassign",
+      "roleOwner": "{role}, {agency} (nobody has taken it yet)",
       "statusOptions": {
         "any": "Any",
         "complete": "Complete",
         "open": "Open",
         "overdue": "Overdue"
       },
+      "take": "Take",
       "title": "Actions",
       "viewsLabel": "Whose actions"
     },
+    "reassign": {
+      "audit": "Action reassigned from {from} to {to}: {title}",
+      "refused": "The action was not reassigned",
+      "submit": "Reassign",
+      "title": "Reassign an action",
+      "toastText": "Both the new owner and the previous one have been told.",
+      "toastTitle": "Reassigned to {owner}"
+    },
+    "take": {
+      "audit": "Action taken by {name}: {title}",
+      "toastText": "The action is on your list and off the role’s.",
+      "toastTitle": "It is yours"
+    },
     "views": {
+      "agency": "My agency",
       "all": "All I can see",
       "mine": "Mine",
       "team": "My team"
@@ -263,7 +321,7 @@
         "themeLegend": "Theme",
         "title": "Appearance"
       },
-      "audit": "Theme {theme}, density {density}, break-glass {hours} hours, {reasons} reason categories, {rules} eligibility rules",
+      "audit": "Defaults saved: theme {theme}, density {density}, break-glass {hours} hours, escalation after {escalation} days, {reasons} reasons, {rules} eligibility rules",
       "breakGlass": {
         "hours": "Hours",
         "hoursHint": "Between 1 and 24. Every read within the window is audited.",
@@ -291,12 +349,22 @@
       "errors": {
         "date": "Enter a date",
         "dateDuplicate": "{date} is already in the list",
+        "days": "Give a number of days",
+        "daysInt": "Whole days only",
+        "daysMax": "At most 60 days",
+        "daysMin": "At least 1 day",
         "hours": "Enter whole hours",
         "hoursInt": "Whole hours only",
         "hoursMax": "No more than 24 hours",
         "hoursMin": "At least 1 hour",
         "rule": "Describe the eligibility rule in a sentence",
         "ruleDuplicate": "That rule is already in the list"
+      },
+      "escalation": {
+        "days": "Days after the due date",
+        "daysHint": "Whole days. The owner and the case lead are told on the day an action falls overdue; the lead is told again after this many days.",
+        "meta": "How long an overdue action waits before the case lead is escalated to.",
+        "title": "Action escalation"
       },
       "lede": "What a new sign-in on this device starts with, the break-glass window, and the calendar and eligibility values the clocks and ASP screens rely on.",
       "reasons": {
@@ -1667,6 +1735,7 @@
       "parkedVersion": "Parked",
       "proposedClosure": "Close the episode for {reference}",
       "proposedEpisode": "Open the episode for {reference}",
+      "proposedStage": "Move the episode for {reference} to {stage}",
       "purposeLine": "{name}, {date}. {purpose}",
       "relayed": "{bytes} bytes of ciphertext relayed. The platform cannot read the payload.",
       "retry": "Authorise again",
@@ -3103,7 +3172,10 @@
       "reasoning": "Give the reasoning for this limb (at least {min} characters)"
     },
     "write": {
+      "actionDueRequired": "Give a due date.",
       "actionIncomplete": "Every action needs a title and a due date.",
+      "actionProcessRequired": "Choose the case the action belongs to.",
+      "actionTitleRequired": "Say what the action is, in at least a few words.",
       "advocacyRequired": "Say whether independent advocacy was offered, and whether the adult accepted it.",
       "agenciesRequired": "Name at least one agency.",
       "alertEndsBeforeStart": "An alert cannot stop showing before it starts.",
@@ -3113,9 +3185,15 @@
       "applicantRequired": "Name the applicant.",
       "applicationNotOpened": "No application has been opened. Open the application first.",
       "areaRequired": "Name the receiving area.",
+      "assigneeExcluded": "That person is an excluded party on this case and cannot own an action on it.",
+      "assigneeMissing": "Choose who owns the action.",
+      "assigneeNoAccess": "That person cannot open this case, so they cannot be asked to work on it.",
+      "assigneeOversight": "That role reads across cases for oversight and does not hold the work on them.",
+      "assigneeRoleEmpty": "Nobody holds that role.",
       "attendanceRequired": "Record who was present. A meeting nobody attended was not held.",
       "attendeesRequired": "Name who attended the visit.",
       "attorneyRequired": "Name the attorney where a power of attorney exists.",
+      "cancelReasonRequired": "Say why the action is cancelled.",
       "capacityAssessmentRequired": "No capacity assessment has been recorded. Record one first.",
       "capacityRequired": "Say whether capacity was assessed, and what was found.",
       "chairRequired": "Name the chair.",
@@ -3266,6 +3344,8 @@
       "summaryRequired": "Write a summary.",
       "supervisingOfficerRequired": "Name the supervising officer.",
       "threePointTestRequired": "The three-point test has not been recorded. Record it first.",
+      "transitionMissing": "That decision is not one this case can record.",
+      "transitionNoAccess": "You cannot open this case, so you cannot record a decision on it.",
       "transitionNotFromThisStage": "The case is not at the stage this decision is made from.",
       "transitionNotYourRole": "This decision is recorded by another role.",
       "transitionWrongProcess": "This decision belongs to a different kind of case.",
@@ -5848,6 +5928,8 @@
     },
     "plans": {
       "add": "Add a plan",
+      "addAction": "Add action",
+      "addActionTo": "Add action to {title}",
       "addOutcome": "Add another outcome",
       "addTitle": "Add a plan to {reference}",
       "columns": {
@@ -5874,6 +5956,7 @@
       "outcomesHint": "One line each, in words the person would recognise. Actions hang off outcomes and a review checks them one at a time, so a plan written as a single paragraph cannot be reviewed.",
       "overdue": "overdue",
       "plan": "{title} ({status})",
+      "planRow": "{title}: {status}{hasReview, select, yes {, review {date}} other {}}",
       "removeOutcome": "Remove",
       "reviewDate": "Review date",
       "reviewDateHint": "An adult protection plan must carry a date for its review meeting.",
@@ -5911,6 +5994,17 @@
     },
     "transitions": {
       "attendanceNote": "Parents {parents, select, invited {invited} other {not invited: {reason}}}. Child {child, select, yes {invited} other {not invited}}.",
+      "audit": {
+        "action": "Action added: {title}, owner {owner}",
+        "birth": "Birth recorded on {date}",
+        "link": "Linked to {reference}",
+        "meeting": "Meeting scheduled: {title}",
+        "member": "Added to the case as {role}: {reason}",
+        "plan": "Plan recorded: {title}",
+        "planReview": "Review date moved to {date}",
+        "request": "Information requested from {agency}: {purpose}",
+        "response": "Request answered: {summary}"
+      },
       "caseRole": {
         "chair": "Chair",
         "chairReason": "Chairs the meeting",
@@ -5947,6 +6041,10 @@
         "researchSent": "Research requests sent",
         "reviewHeld": "Review held",
         "screeningDecided": "Screening decision recorded"
+      },
+      "lawfulBasis": {
+        "necessity": "The stage the case has reached requires it, and the request names what it needs and why.",
+        "purpose": "Information requested for {reference} at {stage}"
       },
       "meetingTitle": {
         "aspCaseConference": "Case conference: {title}",
@@ -6014,7 +6112,8 @@
         "supervisionBegun": "Supervision begun by {officer}, first visit {date}",
         "transferred": "Transferred to {area}, coordinator {coordinator}",
         "visitOffered": "Supervision visit"
-      }
+      },
+      "version": "{transition}"
     },
     "views": {
       "count": "{count} recorded",

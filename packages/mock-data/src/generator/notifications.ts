@@ -1,27 +1,37 @@
-import { sharingNotifications } from '@mas/domain';
+import { DEFAULT_CONFIG, actionClockNotifications, clockNotifications, sharingNotifications, type Notification, type NotificationDraft } from '@mas/domain';
 import type { BuildContext } from './context';
 
 /**
- * The notifications the seeded state has already produced: one for every share sent to a named
- * person, unread where the share is unread.
+ * The notifications the seeded state has already produced, so the overlay starts empty and the
+ * bell on a fresh seed shows what the demonstration did and nothing the seed was born with.
  *
- * Nothing else is seeded. A stage moving, an action assigned or a clock falling due is written by
- * the pipeline and the clock engine when it happens, and the standing warnings of the seeded clocks
- * are recorded by the store on first sign-in as already read, so the bell on a fresh seed shows what
- * the sharing inbox showed before notifications existed and nothing the demonstration did not cause
- * (D-207).
+ * Two kinds. One per share sent to a named person, unread where the share is unread, which is
+ * exactly what the old bell counted. And the standing clock warnings and breaches of the seeded
+ * clocks and actions at the seeded instant, recorded as already read, with the escalation marker
+ * written onto the actions that have sat past the interval. The store re-reads the clocks at boot
+ * and refuses every key it already holds, so nothing here is written twice, and a reset that leaves
+ * the overlay empty leaves the dataset byte for byte what it was (D-179, D-208).
  */
 export function seedNotifications(ctx: BuildContext): void {
+  const push = (draft: NotificationDraft, createdAt: string, readAt: string | undefined, createdByUserId?: string) => {
+    const record: Notification = { ...draft, id: ctx.ids.next('ntf'), synthetic: true, createdAt, createdByUserId, readAt };
+    ctx.data.notifications.push(record);
+  };
   for (const share of ctx.data.sharingRecords) {
     for (const draft of sharingNotifications(undefined, share)) {
-      ctx.data.notifications.push({
-        ...draft,
-        id: ctx.ids.next('ntf'),
-        synthetic: true,
-        createdAt: share.sentAt ?? share.createdAt,
-        createdByUserId: share.createdByUserId,
-        readAt: share.status === 'read' ? (share.readAt ?? share.createdAt) : undefined,
-      });
+      push(draft, share.sentAt ?? share.createdAt, share.status === 'read' ? (share.readAt ?? share.createdAt) : undefined, share.createdByUserId);
     }
+  }
+  const now = new Date(ctx.nowIso);
+  // Written in UTC like every timestamp the store writes, so the two sort together.
+  const at = now.toISOString();
+  for (const draft of clockNotifications(ctx.data.processes, { config: DEFAULT_CONFIG, now })) push(draft, at, at);
+  const actions = actionClockNotifications(ctx.data.actions, ctx.data.processes, { config: DEFAULT_CONFIG, now });
+  for (const draft of actions.drafts) push(draft, at, at);
+  for (const action of actions.escalate) {
+    const lead = ctx.data.users.find((u) => u.id === ctx.data.processes.find((p) => p.id === action.processId)?.leadUserId);
+    if (!lead) continue;
+    action.escalatedAt = at;
+    action.escalatedToName = `${lead.givenName} ${lead.familyName}`;
   }
 }

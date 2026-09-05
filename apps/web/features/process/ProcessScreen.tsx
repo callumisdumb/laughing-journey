@@ -17,6 +17,7 @@ import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow, use
 import { useWriteErrors } from '@/lib/writeErrors';
 import { readProcessDetail } from '@/lib/vault';
 import { AddPlanDialog } from './AddPlanDialog';
+import { AddActionDialog } from '@/features/actions/AddActionDialog';
 import { OutboundStatus } from './OutboundStatus';
 import { CloseProcessDialog, ReopenProcessDialog } from './CloseProcessDialog';
 import { RegisterEntryDialog } from './forms/RegisterEntryDialog';
@@ -46,6 +47,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const [reasonCategory, setReasonCategory] = useState('');
   const [classifyOpen, setClassifyOpen] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
+  const [actionFor, setActionFor] = useState<{ planId?: string } | null>(null);
   const [registerOpen, setRegisterOpen] = useState(false);
   const [closing, setClosing] = useState(false);
   const [reopening, setReopening] = useState(false);
@@ -393,8 +395,22 @@ export function ProcessScreen({ processId }: { processId: string }) {
               </div>
               <div className={styles.wide}>
                 <Sheet>
-                  <SheetHead title={t('processes.plans.title')} meta={plans.length === 0 ? t('processes.plans.none') : plans.map((p) => t('processes.plans.plan', { title: p.title, status: planStatusLabel(p.status) })).join('; ')} actions={<Button size="sm" variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={() => setPlanOpen(true)} data-testid="add-plan">{t('processes.plans.add')}</Button>} />
+                  <SheetHead title={t('processes.plans.title')} meta={plans.length === 0 ? t('processes.plans.none') : plans.map((p) => t('processes.plans.plan', { title: p.title, status: planStatusLabel(p.status) })).join('; ')} actions={<span className={styles.sheetActions}><Button size="sm" variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={() => setPlanOpen(true)} data-testid="add-plan">{t('processes.plans.add')}</Button>{process.status === 'open' ? <Button size="sm" variant="primary" icon={<Plus size={14} aria-hidden="true" />} onClick={() => setActionFor({})} data-testid="add-action">{t('processes.plans.addAction')}</Button> : null}</span>} />
                   <SheetBody flush>
+                    {plans.length > 0 ? (
+                      <ul className={styles.planList}>
+                        {plans.map((p) => (
+                          <li key={p.id} className={styles.planRow}>
+                            <span>{t('processes.plans.planRow', { title: p.title, status: planStatusLabel(p.status), hasReview: p.reviewDate ? 'yes' : 'no', date: p.reviewDate ? formatDate(p.reviewDate) : '' })}</span>
+                            {process.status === 'open' ? (
+                              <Button size="sm" variant="quiet" onClick={() => setActionFor({ planId: p.id })} aria-label={t('processes.plans.addActionTo', { title: p.title })} data-testid={`add-action-plan-${p.id}`}>
+                                {t('processes.plans.addAction')}
+                              </Button>
+                            ) : null}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
                     <TableWrap style={{ border: 0, borderRadius: 0 }} className={styles.actionsTable}>
                       <Table>
                         <thead>
@@ -568,6 +584,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
       </Dialog>
 
       {planOpen ? <AddPlanDialog process={process} open onClose={() => setPlanOpen(false)} /> : null}
+      {actionFor ? <AddActionDialog process={process} planId={actionFor.planId} open onClose={() => setActionFor(null)} /> : null}
       {registerOpen ? <RegisterEntryDialog process={process} open onClose={() => setRegisterOpen(false)} /> : null}
       {closing ? <CloseProcessDialog process={process} open onClose={() => setClosing(false)} /> : null}
       {reopening ? <ReopenProcessDialog process={process} open onClose={() => setReopening(false)} /> : null}
