@@ -3231,6 +3231,7 @@
       "expiryRequired": "Give the date the interim order expires.",
       "guardianRequired": "Name the guardian.",
       "holderRequired": "Name who holds the records.",
+      "holdFormPending": "The outcome form for this meeting is not built yet.",
       "householdAlreadyMember": "They are already recorded as living there on that date.",
       "householdEndReasonRequired": "Say why in a phrase. It goes on the record.",
       "householdLabelRequired": "Give the household a name.",
@@ -3263,8 +3264,14 @@
       "matacRequired": "Record whether a MATAC referral was considered.",
       "medicalDecisionRequired": "Record the decision on a medical examination, with the reasoning.",
       "medicalKindRequired": "Say which kind of examination it was.",
+      "meetingCancelReasonRequired": "Say why the meeting is cancelled.",
       "meetingDateRequired": "Give the meeting date and time.",
+      "meetingHeldByTransition": "This meeting is closed by recording its decision on the case, not by a note.",
+      "meetingLocationRequired": "Say where the meeting is.",
+      "meetingMissing": "That meeting no longer exists.",
+      "meetingNotScheduled": "Only a scheduled meeting can be moved, cancelled or closed.",
       "meetingRequired": "Name the meeting this records.",
+      "meetingWrongStage": "This kind of meeting is scheduled from a later stage of the case. The dialog names which.",
       "mergeOtherMissing": "Choose the record to merge into this one.",
       "mergeReasonRequired": "Say how you know these are the same person, in a sentence.",
       "mergeSameRecord": "A record cannot be merged into itself.",
@@ -3327,6 +3334,7 @@
       "relationshipSelf": "A person cannot be related to themselves.",
       "reporterDecisionRequired": "Record the decision on referral to the Reporter, with the reasoning.",
       "requestMissing": "That request is not on the record.",
+      "rescheduleReasonRequired": "Say why the meeting is moving.",
       "reviewDateRequired": "Give the review date.",
       "riskAssessmentRequired": "A current risk assessment is required. Record one first.",
       "riskDiscussionRequired": "Record the risk discussion.",
@@ -4392,10 +4400,13 @@
     },
     "audit": {
       "action": "Action added: {title}, for {owner}",
+      "cancelled": "{title} cancelled: {reason}",
       "held": "{title} held",
-      "heldDetail": "{type} held. {decisions, plural, =0 {No decisions recorded.} one {# decision recorded.} other {# decisions recorded.}}",
+      "inquorate": "{title} held and found inquorate",
       "minutesPack": "Minutes pack: {title}",
+      "reconvened": "{title} reconvened",
       "refused": "The change was not saved",
+      "rescheduled": "{title} moved to {date}: {reason}",
       "updated": "{title}: {what, select, invites {invite list generated} request {information request sent} returned {information returned to the pack} shared {information shared} decision {decision recorded} action {action added} pack {minutes pack changed} agenda {agenda moved on} views {views read into the meeting} attendance {attendance marked} minuteDraft {minute drafted} minuteApproved {minute approved by the chair} reviewDate {review date set} distribution {distribution list generated} distributionLevel {distribution detail level changed} held {held} distributed {minute distributed} other {updated}}"
     },
     "before": {
@@ -4435,6 +4446,29 @@
         "toastTitle": "Information request sent",
         "toPlaceholder": "Choose a person"
       }
+    },
+    "change": {
+      "cancelHint": "{count, plural, =0 {Nobody is invited.} one {# invitee will be told.} other {# invitees will be told.}} The case stays where it is; a replacement can be scheduled from it.",
+      "cancelledLine": "Cancelled {date}: {reason}",
+      "cancelledToast": "Meeting cancelled",
+      "cancelledToastText": "Everybody invited has been told.",
+      "cancelReasonHint": "Goes into the ledger and the version history.",
+      "cancelSubmit": "Cancel the meeting",
+      "cancelTitle": "Cancel: {title}",
+      "clockCancelled": "Meeting cancelled",
+      "clockMoved": "Notice period moved with the meeting to {date}",
+      "currently": "Currently {when}, {location}.",
+      "history": "Moved from {from} on {at} by {name}: {reason}",
+      "keep": "Keep the meeting",
+      "newDate": "New date (dd Mon yyyy)",
+      "newLocation": "Location",
+      "newTime": "New time",
+      "reason": "Reason",
+      "reasonHint": "Goes into the ledger and the version history. Everybody invited is told the new date.",
+      "rescheduledToast": "Meeting moved",
+      "rescheduledToastText": "Everybody invited has been told.",
+      "rescheduleSubmit": "Move the meeting",
+      "rescheduleTitle": "Reschedule: {title}"
     },
     "close": {
       "toastText": "Clocks completed: {completed}. Clocks started: {started}. Minute is now a draft.",
@@ -4494,15 +4528,34 @@
       }
     },
     "head": {
+      "cancel": "Cancel meeting",
       "chair": "Chair {name}",
       "chairBanner": "Chair mode: larger type, minimal chrome. The current agenda item is enlarged.",
       "chairMode": "Chair mode",
       "close": "Close meeting and update clocks",
       "exitChairMode": "Exit chair mode",
+      "heldBy": "Held {date}. Recorded on the case as {transition}.",
+      "inquoratePill": "Inquorate",
+      "leftOff": "{count, plural, one {# person} other {# people}} left off the invite list: {names}",
       "minutePill": "Minute: {status}",
       "minutes": "Minutes {name}",
       "phaseGroup": "Meeting phase",
+      "reconvene": "Reconvene",
+      "reschedule": "Reschedule",
       "when": "{date} {start}{hasEnd, select, yes { to {end}} other {}}"
+    },
+    "hold": {
+      "formPending": "The outcome form for {transition} is not built yet, so this meeting stays open.",
+      "inquorateLine": "Inquorate on {date}: {reason}{reconvened, select, yes {. Reconvened as a new meeting.} other {}}",
+      "inquorateToast": "Meeting inquorate",
+      "inquorateToastText": "The reconvene clock is running. Reconvene it from the meeting header.",
+      "note": "Note",
+      "noteHint": "Optional. Goes into the ledger beside the closure.",
+      "noTransition": "Nothing on the case is decided by closing this meeting. Its minute opens and the decisions recorded during it stand.",
+      "submit": "Close meeting",
+      "title": "Close: {title}",
+      "transition": "Closing this meeting records {transition}{moves, select, yes {, which moves the case to {stage}} other {}}.",
+      "wrongStage": "{transition} is recorded from {stages}; this case is at {stage}. Record what comes first, then close the meeting."
     },
     "list": {
       "columns": {
@@ -4526,12 +4579,63 @@
         "type": "Meeting type"
       },
       "lede": "IRDs, planning meetings, case conferences, MARAC and MAPPA. Open one to prepare the pack, run the meeting and distribute the minute.",
+      "schedule": "Schedule a meeting",
       "title": "Meetings"
     },
     "notFound": {
       "back": "All meetings",
       "text": "This meeting does not exist in the demo dataset.",
       "title": "Meeting not found"
+    },
+    "outcome": {
+      "asp": {
+        "adultAtRisk": "Is the adult an adult at risk?",
+        "protectionPlan": "Is a protection plan needed?"
+      },
+      "aspReview": {
+        "close": "Close the case",
+        "closeHint": "Runs the closure with the reason the national return asks for.",
+        "closureNote": "Closure note",
+        "closureReason": "Closure reason",
+        "closureReasonPlaceholder": "Choose a reason",
+        "continue": "Continue the plan",
+        "continueHint": "The review clock restarts from the new date.",
+        "decision": "Decision",
+        "newReviewDate": "Next review (dd Mon yyyy)"
+      },
+      "coreGroup": {
+        "attendance": "Who came",
+        "changeNote": "What changed",
+        "heldAt": "Held {when}.",
+        "progress": "Progress against the plan",
+        "progressHint": "What moved since the last meeting, outcome by outcome.",
+        "significantChange": "Something changed enough to bring the review forward",
+        "significantChangeHint": "Starts the escalation clock and tells the lead professional."
+      },
+      "cpReview": {
+        "continue": "Continue the plan",
+        "decision": "Decision",
+        "deregister": "Remove from the register",
+        "deregistrationNote": "Note",
+        "deregistrationReason": "Reason for removal",
+        "inquorateHint": "An inquorate meeting decides nothing. Closing it starts the ten working day reconvene clock.",
+        "quorate": "The meeting was quorate",
+        "quorateHint": "Untick if it was not. The reconvene clock starts and nothing else is decided."
+      },
+      "marac": {
+        "add": "Add an agency",
+        "agency": "Agency",
+        "remove": "Remove",
+        "riskDiscussion": "Risk discussion",
+        "riskDiscussionHint": "What the meeting made of the risk, as the protocol asks the chair to record it.",
+        "shared": "Information shared",
+        "sharedHint": "Pre-filled from what was shared during the meeting. One row per agency.",
+        "summary": "What they shared"
+      },
+      "no": "No",
+      "rationale": "Rationale",
+      "rationaleHint": "Why the meeting decided what it did, in the words it would want minuted.",
+      "yes": "Yes"
     },
     "phase": {
       "after": "After",
@@ -4546,6 +4650,60 @@
       "confirm": "Record return and add to pack",
       "summary": "Summary of the return",
       "title": "Record the return"
+    },
+    "schedule": {
+      "case": "Case",
+      "caseHint": "Only the open cases you can work on are offered.",
+      "casePlaceholder": "Choose a case",
+      "chair": "Chair",
+      "chairHint": "Chairs, people on the case, and you. The chair joins the case when the meeting is scheduled.",
+      "chairPlaceholder": "Choose a chair",
+      "childInvited": "The child is invited",
+      "date": "Date (dd Mon yyyy)",
+      "invites": {
+        "add": "Add somebody",
+        "addButton": "Add",
+        "addPlaceholder": "Choose a person",
+        "byHand": "Added by hand",
+        "empty": "The matrix seats nobody at this stage. Add people by hand.",
+        "hint": "Proposed by the need-to-know matrix for this stage. Untick anybody who should not come; they are listed below with the reason.",
+        "person": "{name}, {role} ({agency})",
+        "reason": "{reason}{hasRule, select, yes { (rule {rowId})} other {}}",
+        "title": "Invite list"
+      },
+      "leftOff": {
+        "excluded": "Excluded party on this case: {party}",
+        "hint": "Everybody the matrix names but does not seat, everybody excluded by their case role, and anybody unticked above. The meeting records them with the reason.",
+        "level": "The matrix gives them {level} for this stage, not a seat at the meeting",
+        "nearMatch": "Name resembles a case-role register entry. Add by hand to confirm they are not that person.",
+        "none": "Nobody is left off.",
+        "title": "Left off",
+        "unticked": "Unticked by the person scheduling the meeting"
+      },
+      "location": "Location",
+      "locationPlaceholder": "Room, building or video link",
+      "minuteTaker": "Minute taker",
+      "minuteTakerNone": "Not yet named",
+      "noCases": "There is no open case you can work on. Open one from the person record first.",
+      "outOfHours": "Convened out of hours",
+      "parents": "Parents",
+      "parentsExcluded": "Not invited",
+      "parentsInvited": "Invited",
+      "parentsReason": "Why the parents are not invited",
+      "plainTitle": "{type}: {title}",
+      "reconveneTitle": "Reconvene: {title}",
+      "route": {
+        "plain": "Scheduling this decides nothing on the case. What it decides is recorded when it is held.",
+        "refused": "{type} is scheduled from {stages}. This case is at {stage}.",
+        "transition": "Recorded on the case as {transition}{moves, select, yes {, which moves the case to {stage}} other {}}."
+      },
+      "submit": "Schedule",
+      "time": "Time",
+      "title": "Schedule a meeting",
+      "titleFor": "Schedule a meeting on {reference}",
+      "toastText": "{count, plural, =0 {Nobody invited yet.} one {# person invited and told.} other {# people invited and told.}}{leftOff, plural, =0 {} one { # left off, with the reason recorded.} other { # left off, with the reasons recorded.}}",
+      "toastTitle": "Meeting scheduled",
+      "type": "Meeting type"
     }
   },
   "nav": {
@@ -4570,7 +4728,7 @@
         "disclosure": "Facts a third party would be told, proposed for a decision.",
         "event": "A fact that happened, or an analysis note against facts already recorded.",
         "investigation": "Under section 10 or section 12 of the 2000 Act.",
-        "meeting": "Made on the meetings screen, where the invite list comes from need-to-know.",
+        "meeting": "Scheduled on a case. The invite list comes from need-to-know and the type decides what the case records.",
         "order": "Assessment, removal or banning, with the statutory clock it starts.",
         "person": "Search first, then record who they are. The search is not optional.",
         "plan": "Outcomes rather than prose, so a review can check them one at a time.",
@@ -5815,8 +5973,10 @@
       "title": "Processes"
     },
     "meetings": {
+      "cancelled": "Cancelled: {reason}",
       "held": "Held {time}. Minute {status}.",
       "meta": "{count} on this process",
+      "schedule": "Schedule",
       "scheduled": "{when}, {location}",
       "title": "Meetings"
     },

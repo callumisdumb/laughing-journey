@@ -4,7 +4,7 @@ import { exclusionPartyLabel, identifiesSubject, partyRegister, STAGES_BY_PROCES
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { Archive, Lock, Plus, RotateCcw, ShieldCheck, UserPlus } from 'lucide-react';
+import { Archive, CalendarPlus, Lock, Plus, RotateCcw, ShieldCheck, UserPlus } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { PersonLink, PractitionerLink } from '@/components/EntityLink';
@@ -18,6 +18,7 @@ import { useWriteErrors } from '@/lib/writeErrors';
 import { readProcessDetail } from '@/lib/vault';
 import { AddPlanDialog } from './AddPlanDialog';
 import { AddActionDialog } from '@/features/actions/AddActionDialog';
+import { ScheduleMeetingDialog } from '@/features/meetings/ScheduleMeetingDialog';
 import { OutboundStatus } from './OutboundStatus';
 import { CloseProcessDialog, ReopenProcessDialog } from './CloseProcessDialog';
 import { RegisterEntryDialog } from './forms/RegisterEntryDialog';
@@ -49,6 +50,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const [planOpen, setPlanOpen] = useState(false);
   const [actionFor, setActionFor] = useState<{ planId?: string } | null>(null);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [scheduling, setScheduling] = useState(false);
   const [closing, setClosing] = useState(false);
   const [reopening, setReopening] = useState(false);
   const [classifySensitive, setClassifySensitive] = useState(true);
@@ -359,7 +361,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                   </SheetBody>
                 </Sheet>
                 <Sheet>
-                  <SheetHead title={t('processes.meetings.title')} meta={t('processes.meetings.meta', { count: meetings.length })} />
+                  <SheetHead title={t('processes.meetings.title')} meta={t('processes.meetings.meta', { count: meetings.length })} actions={process.status === 'open' && access.level === 'full' ? <Button size="sm" variant="secondary" icon={<CalendarPlus size={14} aria-hidden="true" />} onClick={() => setScheduling(true)} data-testid="schedule-meeting">{t('processes.meetings.schedule')}</Button> : undefined} />
                   <SheetBody>
                     <div className={styles.meetingList}>
                       {meetings.map((m) => (
@@ -367,7 +369,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                           <span className={styles.meetingDate}>{formatDate(m.scheduledAt).slice(0, 6)}</span>
                           <span className={styles.meetingTitle}>{m.title}</span>
                           <span className={styles.meetingMeta}>
-                            {m.status === 'held' ? t('processes.meetings.held', { time: formatTime(m.scheduledAt), status: minuteStatusLabel(m.minute.status) }) : m.status === 'scheduled' ? t('processes.meetings.scheduled', { when: formatDateTime(m.scheduledAt), location: m.location }) : meetingStatusLabel(m.status)}
+                            {m.status === 'held' ? t('processes.meetings.held', { time: formatTime(m.scheduledAt), status: minuteStatusLabel(m.minute.status) }) : m.status === 'scheduled' ? t('processes.meetings.scheduled', { when: formatDateTime(m.scheduledAt), location: m.location }) : m.status === 'cancelled' && m.cancelReason ? t('processes.meetings.cancelled', { reason: m.cancelReason }) : meetingStatusLabel(m.status)}
                           </span>
                         </AppLink>
                       ))}
@@ -584,6 +586,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
       </Dialog>
 
       {planOpen ? <AddPlanDialog process={process} open onClose={() => setPlanOpen(false)} /> : null}
+      {scheduling ? <ScheduleMeetingDialog open onClose={() => setScheduling(false)} process={process} /> : null}
       {actionFor ? <AddActionDialog process={process} planId={actionFor.planId} open onClose={() => setActionFor(null)} /> : null}
       {registerOpen ? <RegisterEntryDialog process={process} open onClose={() => setRegisterOpen(false)} /> : null}
       {closing ? <CloseProcessDialog process={process} open onClose={() => setClosing(false)} /> : null}

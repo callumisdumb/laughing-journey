@@ -3,7 +3,7 @@ import { STAGES_BY_PROCESS, type Agency, type ProcessType, type RoleId, type Sta
 import { OPENING_STAGE, buildOpeningProcess, openingClassification, type OpeningInput } from './open';
 import type { AspProcess, AwiProcess, CpProcess, MappaProcess, MaracProcess, Process } from '../schemas/process';
 import { processSchema } from '../schemas/process';
-import { TRANSITIONS, applyTransition, canRecordTransition, reachableStages, transitionById, transitionsFrom, whatHappensNext, type PlanInput, type ScheduleInput, type TransitionContext } from './transitions';
+import { MEETING_TYPES_BY_PROCESS, TRANSITIONS, applyTransition, canRecordTransition, heldTransitionFor, heldTransitionsFor, reachableStages, scheduleRoute, transitionById, transitionsFrom, whatHappensNext, type PlanInput, type ScheduleInput, type TransitionContext } from './transitions';
 
 /**
  * Every transition, driven: a permitted actor records it from the right stage on a record that
@@ -446,5 +446,54 @@ describe('permission across the tables', () => {
         for (const roleId of transition.roles) expect(canRecordTransition({ roleId }, transition).allowed, `${transition.id} ${roleId}`).toBe(true);
       }
     }
+  });
+});
+
+describe('scheduling routes (D-213)', () => {
+  it('routes a type through the transition that schedules it from the current stage', () => {
+    const route = scheduleRoute(open('marac'), 'marac');
+    expect(route.kind).toBe('transition');
+    expect((route as { transition: { id: string } }).transition.id).toBe('marac-schedule-meeting');
+    expect(scheduleRoute(at(open('asp'), 'investigation'), 'asp-case-conference')).toMatchObject({ kind: 'transition', transition: { id: 'asp-schedule-case-conference' } });
+  });
+
+  it('refuses a type the tables schedule from another stage, naming the stages', () => {
+    const route = scheduleRoute(open('asp'), 'asp-case-conference');
+    expect(route).toMatchObject({ kind: 'refused', code: 'meetingWrongStage', stages: ['investigation'] });
+    expect(scheduleRoute(open('cp'), 'cppm-review')).toMatchObject({ kind: 'refused', stages: ['childs-plan', 'review'] });
+  });
+
+  it('is a plain write where the engine awaits the type at this stage, or has no view of it', () => {
+    // A second IRD while the case sits at ird: the held transition fires from here, so nothing moves.
+    expect(scheduleRoute(at(open('cp'), 'ird'), 'ird')).toEqual({ kind: 'plain' });
+    // A core group is recorded when it is held; scheduling it moves nothing.
+    expect(scheduleRoute(at(open('cp'), 'childs-plan'), 'core-group')).toEqual({ kind: 'plain' });
+    expect(scheduleRoute(open('asp'), 'asp-inter-agency-discussion')).toEqual({ kind: 'plain' });
+    expect(scheduleRoute(open('awi'), 'awi-mdt')).toEqual({ kind: 'plain' });
+  });
+
+  it('names the transition a held meeting fires from the current stage, and every stage it could fire from', () => {
+    expect(heldTransitionFor(at(open('asp'), 'investigation'), 'asp-case-conference')?.id).toBe('asp-case-conference-held');
+    expect(heldTransitionFor(open('asp'), 'asp-case-conference')).toBeUndefined();
+    expect(heldTransitionsFor('asp', 'asp-case-conference').map((t) => t.id)).toEqual(['asp-case-conference-held']);
+    expect(heldTransitionFor(at(open('cp'), 'childs-plan'), 'core-group')?.id).toBe('cp-core-group-meeting');
+    expect(heldTransitionFor(open('asp'), 'lsi-planning')).toBeUndefined();
+  });
+
+  it('every meeting type a case type holds is either scheduled by a transition, awaited by one, or free', () => {
+    for (const type of Object.keys(MEETING_TYPES_BY_PROCESS) as ProcessType[]) {
+      for (const meetingType of MEETING_TYPES_BY_PROCESS[type]) {
+        const schedulers = TRANSITIONS[type].filter((t) => t.schedules?.includes(meetingType));
+        const holders = TRANSITIONS[type].filter((t) => t.firedBy?.includes(meetingType));
+        // A type the tables schedule is also one they hold, so a scheduled meeting always has an outcome form.
+        if (schedulers.length > 0) expect(holders.length, `${type} ${meetingType} is scheduled but never held`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('a scheduled meeting carries the people left off, so the omission is a decision', () => {
+    const out = ok(open('marac'), 'marac-schedule-meeting', { ...schedule, leftOff: [{ name: 'A Perpetrator', reason: 'Excluded party' }] }, 'marac-coordinator');
+    const meeting = out.followOn.find((f) => f.kind === 'meeting');
+    expect(meeting && meeting.kind === 'meeting' ? meeting.meeting.leftOff : undefined).toEqual([{ name: 'A Perpetrator', reason: 'Excluded party' }]);
   });
 });

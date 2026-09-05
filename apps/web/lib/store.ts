@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyTransition, classificationFor, stagePayload, stageLabel, transitionById, transitionLabel, type Creates, type InformationRequest, type MissingThing, type PermissionDecision, type TransitionOutcome } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyTransition, buildMeeting, classificationFor, formatDate, heldTransitionFor, meetingTypeLabel, scheduleRoute, stagePayload, stageLabel, transitionById, transitionLabel, validateSchedule, type Creates, type InformationRequest, type MeetingType, type MissingThing, type PermissionDecision, type ScheduleInput, type TransitionOutcome } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -208,6 +208,17 @@ interface AppState {
    * on a lawful basis, the answer to a request, the closure, the linked case, the birth.
    */
   recordTransition: (processId: string, transitionId: string, input: unknown) => TransitionRecordResult;
+  /**
+   * Meetings (D-213). Scheduling routes through the engine where the tables schedule the type from
+   * the case's stage and is a plain meeting write otherwise; a move and a cancellation each carry a
+   * reason into the ledger and tell everybody invited; a meeting whose type fires no transition from
+   * the case's stage is held here with its minute opened, and every other meeting is held by the
+   * transition it fires, through `recordTransition`.
+   */
+  scheduleMeeting: (processId: string, type: MeetingType, input: ScheduleInput & { reconvenes?: string } & Record<string, unknown>) => TransitionRecordResult;
+  rescheduleMeeting: (meetingId: string, change: { scheduledAt: string; location: string; reason: string }) => WriteResult;
+  cancelMeeting: (meetingId: string, reason: string) => WriteResult;
+  holdMeeting: (meetingId: string, note: string) => WriteResult;
   /** Accept a case opened in a source system, which creates the matching process here. */
   acceptInbound: (id: string) => WriteResult & { process?: Process };
   declineInbound: (id: string, reason: string) => WriteResult;
@@ -889,8 +900,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (clocksOn && ((request.clocks ?? []).length > 0 || request.clockTransition)) {
       const process = get().data.processes.find((p) => p.id === clocksOn);
       if (process) {
-        const fresh = (request.clocks ?? []).filter((t) => !process.clocks.some((c) => c.id === t.id));
-        let next = [...process.clocks, ...fresh];
+        // The transition first, then the fresh triggers: a write that completes a rule and starts it
+        // again from a new instant (a rescheduled meeting's notice period) names the completion in
+        // the transition and the new trigger in `clocks`, and the order is what keeps them apart.
+        let next = [...process.clocks];
         if (request.clockTransition) {
           const applied = applyClockTransition(next, request.clockTransition, at, get().newId);
           next = applied.clocks;
@@ -898,6 +911,8 @@ export const useAppStore = create<AppState>((set, get) => ({
           for (const ruleId of applied.completed) effects.push({ kind: 'clock', detail: t('processes.clocks.effectCompleted', { rule: clockRuleLabel(ruleId) }) });
           for (const ruleId of applied.started) effects.push({ kind: 'clock', detail: t('processes.clocks.effectStarted', { rule: clockRuleLabel(ruleId) }) });
         }
+        const fresh = (request.clocks ?? []).filter((trigger) => !next.some((c) => c.id === trigger.id));
+        next = [...next, ...fresh];
         if (next.length !== process.clocks.length || next.some((c, i) => c !== process.clocks[i])) upsert(get, set, 'processes', { ...process, clocks: next });
       }
     }
@@ -989,7 +1004,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     for (const n of notify(get, set, drafts, { actorUserId: user.id, process: processNow })) effects.push({ kind: 'notification', detail: n.kind });
     // A write that can start a clock is followed by a reading of the clocks, so a deadline that is
     // already inside its window when it starts raises its warning now rather than on the next tick.
-    if (request.collection === 'processes' || request.collection === 'actions') get().evaluateClocks();
+    if (request.collection === 'processes' || request.collection === 'actions' || request.clockTransition || (request.clocks ?? []).length > 0) get().evaluateClocks();
 
     // 9. Outbound connector proposals, into the outbox. Proposed only: nothing leaves without a
     // named person authorising it, with a purpose and a lawful basis, because a write into another
@@ -1587,7 +1602,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!transition) return { ok: false, errors: ['transitionMissing'], nearMatches: [], effects: [] };
     const at = get().now().toISOString();
     const byName = `${user.givenName} ${user.familyName}`;
-    const applied = applyTransition(process, transition, input, { at, actor: { userId: user.id, name: byName, roleId: user.roleId, agency: user.agency }, newId: get().newId });
+    const applied = applyTransition(process, transition, input, { at, actor: { userId: user.id, name: byName, roleId: user.roleId, agency: user.agency }, newId: get().newId, subjectName: subjectNameOf(get, process) });
     if (!applied.ok) return { ok: false, errors: applied.errors, nearMatches: [], effects: [], missing: applied.missing, permission: applied.permission };
     const { outcome } = applied;
 
@@ -1742,7 +1757,124 @@ export const useAppStore = create<AppState>((set, get) => ({
           break;
       }
     }
+    // The meeting the decision was recorded from is held by the same decision. Its outcome lives on
+    // the case; the meeting says which transition it fired and when, opens its minute, and says so
+    // when the decision was that it was inquorate and has to be reconvened.
+    const firedFromId = transition.firedBy && typeof (input as { meetingId?: unknown } | null)?.meetingId === 'string' ? (input as { meetingId: string }).meetingId : undefined;
+    const firedFrom = firedFromId ? get().data.meetings.find((m) => m.id === firedFromId) : undefined;
+    if (firedFrom && firedFrom.status !== 'held' && firedFrom.status !== 'cancelled') {
+      const inquorate = reschedule === firedFrom.id;
+      const label = inquorate ? t('meetings.audit.inquorate', { title: firedFrom.title }) : t('meetings.audit.held', { title: firedFrom.title });
+      const held = get().write({
+        collection: 'meetings',
+        record: { ...firedFrom, status: 'held', heldAt: at, transitionId: transition.id, minute: firedFrom.minute.status === 'not-started' ? { ...firedFrom.minute, status: 'draft', draftedAt: at } : firedFrom.minute, inquorate: inquorate ? { at, reason: outcome.summary } : firedFrom.inquorate },
+        intent: 'update',
+        act: 'edit',
+        targetType: 'meeting',
+        targetLabel: label,
+        processId: process.id,
+        versionChange: label,
+      });
+      effects.push(...held.effects);
+    }
     return { ...result, effects, outcome, created, offers, reschedule };
+  },
+  scheduleMeeting: (processId, type, input) => {
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const process = get().data.processes.find((p) => p.id === processId);
+    if (!process) return { ok: false, errors: ['processMissing'], nearMatches: [], effects: [] };
+    if (process.status !== 'open') return { ok: false, errors: ['processNotOpen'], nearMatches: [], effects: [] };
+    const route = scheduleRoute(process, type);
+    if (route.kind === 'refused') return { ok: false, errors: [route.code], nearMatches: [], effects: [] };
+    const { reconvenes, ...schedule } = input;
+    const result = route.kind === 'transition' ? get().recordTransition(processId, route.transition.id, schedule) : scheduleOutsideTheEngine(get, process, type, schedule);
+    // A meeting reconvening an inquorate one is written back onto the one it replaces.
+    const previous = reconvenes ? get().data.meetings.find((m) => m.id === reconvenes) : undefined;
+    if (result.ok && result.created?.meetingId && previous?.inquorate) {
+      const label = t('meetings.audit.reconvened', { title: previous.title });
+      result.effects.push(...get().write({ collection: 'meetings', record: { ...previous, inquorate: { ...previous.inquorate, reconvenedMeetingId: result.created.meetingId } }, intent: 'update', act: 'edit', targetType: 'meeting', targetLabel: label, processId: process.id, versionChange: label }).effects);
+    }
+    return result;
+  },
+  rescheduleMeeting: (meetingId, change) => {
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const meeting = get().data.meetings.find((m) => m.id === meetingId);
+    if (!meeting) return { ok: false, errors: ['meetingMissing'], nearMatches: [], effects: [] };
+    if (meeting.status !== 'scheduled') return { ok: false, errors: ['meetingNotScheduled'], nearMatches: [], effects: [] };
+    const errors: string[] = [];
+    if (!change.scheduledAt) errors.push('meetingDateRequired');
+    if (change.reason.trim().length < 5) errors.push('rescheduleReasonRequired');
+    if (errors.length > 0) return { ok: false, errors, nearMatches: [], effects: [] };
+    const at = get().now().toISOString();
+    const byName = `${user.givenName} ${user.familyName}`;
+    const label = t('meetings.audit.rescheduled', { title: meeting.title, date: formatDate(change.scheduledAt), reason: change.reason });
+    const notice = noticeClockFor(get, meeting);
+    return get().write({
+      collection: 'meetings',
+      record: { ...meeting, scheduledAt: change.scheduledAt, location: change.location.trim() || meeting.location, reschedules: [...(meeting.reschedules ?? []), { from: meeting.scheduledAt, to: change.scheduledAt, fromLocation: meeting.location, reason: change.reason, at, byName, byUserId: user.id }] },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'meeting',
+      targetLabel: label,
+      processId: meeting.processId,
+      reason: change.reason,
+      versionChange: label,
+      // A notice period counts back from the meeting, so it moves with it: the running one is
+      // completed and a fresh one starts from the new date.
+      clockTransition: notice ? { completes: [notice], note: t('meetings.change.clockMoved', { date: formatDate(change.scheduledAt) }) } : undefined,
+      clocks: notice ? [{ id: get().newId('clk'), ruleId: notice, triggeredAt: change.scheduledAt, note: t('meetings.change.clockMoved', { date: formatDate(change.scheduledAt) }) }] : undefined,
+    });
+  },
+  cancelMeeting: (meetingId, reason) => {
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const meeting = get().data.meetings.find((m) => m.id === meetingId);
+    if (!meeting) return { ok: false, errors: ['meetingMissing'], nearMatches: [], effects: [] };
+    if (meeting.status !== 'scheduled') return { ok: false, errors: ['meetingNotScheduled'], nearMatches: [], effects: [] };
+    if (reason.trim().length < 5) return { ok: false, errors: ['meetingCancelReasonRequired'], nearMatches: [], effects: [] };
+    const at = get().now().toISOString();
+    const label = t('meetings.audit.cancelled', { title: meeting.title, reason });
+    const notice = noticeClockFor(get, meeting);
+    return get().write({
+      collection: 'meetings',
+      record: { ...meeting, status: 'cancelled', cancelledAt: at, cancelReason: reason },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'meeting',
+      targetLabel: label,
+      processId: meeting.processId,
+      reason,
+      versionChange: label,
+      clockTransition: notice ? { completes: [notice], note: t('meetings.change.clockCancelled') } : undefined,
+    });
+  },
+  holdMeeting: (meetingId, note) => {
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const meeting = get().data.meetings.find((m) => m.id === meetingId);
+    if (!meeting) return { ok: false, errors: ['meetingMissing'], nearMatches: [], effects: [] };
+    if (meeting.status !== 'scheduled' && meeting.status !== 'in-progress') return { ok: false, errors: ['meetingNotScheduled'], nearMatches: [], effects: [] };
+    const process = get().data.processes.find((p) => p.id === meeting.processId);
+    if (!process) return { ok: false, errors: ['processMissing'], nearMatches: [], effects: [] };
+    // A meeting whose type fires a transition from this stage is held by that transition, so its
+    // outcome is recorded once and on the case. This path is for the meetings the engine has no
+    // view of, and it refuses the others rather than holding them with nothing decided.
+    if (heldTransitionFor(process, meeting.type)) return { ok: false, errors: ['meetingHeldByTransition'], nearMatches: [], effects: [] };
+    const at = get().now().toISOString();
+    const label = t('meetings.audit.held', { title: meeting.title });
+    return get().write({
+      collection: 'meetings',
+      record: { ...meeting, status: 'held', heldAt: at, minute: meeting.minute.status === 'not-started' ? { ...meeting.minute, status: 'draft', draftedAt: at } : meeting.minute },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'meeting',
+      targetLabel: label,
+      processId: meeting.processId,
+      reason: note.trim() || undefined,
+      versionChange: label,
+    });
   },
   acceptInbound: (id) => {
     const { data } = get();
@@ -1940,4 +2072,41 @@ export function useNow(): Date {
   const live = useAppStore((s) => s.session.liveClock);
   const nowIso = useAppStore((s) => s.session.nowIso);
   return live ? new Date() : parseDemoNow(nowIso);
+}
+
+/** The notice clock a meeting of this type carries, where the process has one running. */
+function noticeClockFor(get: () => AppState, meeting: Meeting): string | undefined {
+  if (meeting.type !== 'cppm' && meeting.type !== 'pre-birth-cppm' && meeting.type !== 'cppm-review') return undefined;
+  const process = get().data.processes.find((p) => p.id === meeting.processId);
+  return process?.clocks.some((c) => c.ruleId === 'cp.cppm.notice' && !c.completedAt) ? 'cp.cppm.notice' : undefined;
+}
+
+/**
+ * A meeting the engine has no view of at this stage: written through the pipeline like any other
+ * record, the invitees checked against the register and told, and nothing on the case moved.
+ */
+function scheduleOutsideTheEngine(get: () => AppState, process: Process, type: MeetingType, input: ScheduleInput): TransitionRecordResult {
+  const user = get().currentUser()!;
+  const errors = validateSchedule(input);
+  if (errors.length > 0) return { ok: false, errors, nearMatches: [], effects: [] };
+  const at = get().now().toISOString();
+  const meeting = buildMeeting(process, type, t('meetings.schedule.plainTitle', { type: meetingTypeLabel(type), title: subjectNameOf(get, process) }), input, { at, actor: { userId: user.id, name: `${user.givenName} ${user.familyName}`, roleId: user.roleId, agency: user.agency }, newId: get().newId });
+  const result = get().write({
+    collection: 'meetings',
+    record: meeting,
+    intent: 'create',
+    act: 'create',
+    targetType: 'meeting',
+    targetLabel: t('processes.transitions.audit.meeting', { title: meeting.title }),
+    processId: process.id,
+    recipients: meeting.invitees.filter((i) => i.userId).map((i) => ({ userId: i.userId, name: i.name })),
+    recipientProcess: process,
+  });
+  return { ...result, created: result.ok ? { meetingId: meeting.id, actionIds: [], requestIds: [] } : undefined };
+}
+
+/** The name a meeting or a plan on this case is titled after: the first subject, or the case title where there is none. */
+function subjectNameOf(get: () => AppState, process: Process): string {
+  const person = get().data.people.find((p) => p.id === process.subjectIds[0]);
+  return person ? `${person.givenName} ${person.familyName}` : process.title;
 }

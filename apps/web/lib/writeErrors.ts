@@ -204,6 +204,14 @@ const KEYS = [
   'inboundNoType',
   'sharesNeedLawfulBasis',
   'sharesNeedProcess',
+  'meetingWrongStage',
+  'meetingMissing',
+  'meetingNotScheduled',
+  'meetingHeldByTransition',
+  'meetingLocationRequired',
+  'rescheduleReasonRequired',
+  'meetingCancelReasonRequired',
+  'holdFormPending',
 ] as const;
 
 export type WriteErrorCode = (typeof KEYS)[number];

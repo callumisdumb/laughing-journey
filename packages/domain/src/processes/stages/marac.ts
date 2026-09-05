@@ -1,7 +1,7 @@
 import { t } from '@mas/messages';
 import type { Agency } from '../../enums';
 import type { MaracProcess } from '../../schemas/process';
-import { buildMeeting, buildPlan, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition } from './shared';
+import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition } from './shared';
 import { chairAndMinuteTaker } from './asp';
 
 /**
@@ -71,10 +71,11 @@ export const MARAC_TRANSITIONS: Array<Transition<MaracProcess, never>> = [
     to: ['referral', 'research'],
     roles: ['marac-coordinator'],
     repeatable: true,
+    schedules: ['marac'],
     requires: () => [],
     validate: (input: ScheduleInput) => validateSchedule(input),
     apply: (process, input: ScheduleInput, ctx) => {
-      const meeting = buildMeeting(process, 'marac', t('processes.transitions.meetingTitle.marac', { title: process.title, repeat: process.detail.referral.repeat ? 'yes' : 'no' }), input, ctx);
+      const meeting = buildMeeting(process, 'marac', t('processes.transitions.meetingTitle.marac', { title: caseName(process, ctx), repeat: process.detail.referral.repeat ? 'yes' : 'no' }), input, ctx);
       const summary = t('processes.transitions.summary.scheduled', { title: meeting.title, date: input.scheduledAt.slice(0, 10) });
       const next: MaracProcess = { ...process, detail: { ...process.detail, meetingId: meeting.id } };
       return outcome(next, process.stage, summary, { followOn: [{ kind: 'meeting', meeting }], outbound: null, addMembers: chairAndMinuteTaker(input) });

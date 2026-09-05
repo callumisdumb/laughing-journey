@@ -1,0 +1,63 @@
+/* The schedule form: the route the type takes is said beside the type, and the two lists sit apart. */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: 12px 16px;
+  align-items: start;
+}
+
+.route {
+  align-self: end;
+  margin: 0;
+  padding: 8px 10px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  background: var(--color-paper-2);
+  border-radius: var(--radius-md);
+}
+
+.route[data-state='refused'] {
+  color: var(--color-ink-1);
+  background: var(--color-risk-critical-soft);
+}
+
+.section {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.legend {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-ink-2);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.list {
+  display: grid;
+  gap: 4px;
+}
+
+.addRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 8px;
+  align-items: end;
+}
+
+.leftOff {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0 0 0 18px;
+  font-size: var(--text-sm);
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { MEETING_TRANSITIONS, classificationFor, classificationRank, computeClock, datasetSchema, findClockRule, isExcludedParty, mostRestrictedAccess, mostSensitiveClassification, nearMatchesOnList, nearMatchesOnRegister, normalisePartyName, workingCalendarFrom, type Agency, type AuditEntry, type CaseParty, type Classification, type ClassifiedRecord, type ChronologyEvent, type ClockTrigger, type Config, type Dataset, type DetailLevel, type LawfulBasisRecord, type MeetingType, type NotificationRole, type Process, type ProcessType, type SharingRecord, type User } from '@mas/domain';
+import { classificationFor, classificationRank, computeClock, datasetSchema, findClockRule, isExcludedParty, mostRestrictedAccess, mostSensitiveClassification, nearMatchesOnList, nearMatchesOnRegister, normalisePartyName, workingCalendarFrom, type Agency, type AuditEntry, type CaseParty, type Classification, type ClassifiedRecord, type ChronologyEvent, type ClockTrigger, type Config, type Dataset, type DetailLevel, type LawfulBasisRecord, type NotificationRole, type Process, type ProcessType, type SharingRecord, type User } from '@mas/domain';
 import { warrantsVersion, type ConnectorId, type OutboundIntent, type PayloadField, type RecordVersion } from '@mas/domain';
 import type { Collection } from '@/lib/store';
 
@@ -161,10 +161,16 @@ export interface SharingInput {
 }
 
 /**
- * Either a meeting type, which the transition table turns into the clocks it completes and starts,
- * or the rule ids named directly.
+ * The rule ids a write completes and starts on its process, and the instant it does so. The stage
+ * engine's tables decide these for a transition (D-211, D-213); a distributed minute names the
+ * record clock it completes directly.
  */
-export type ClockTransition = { meetingType: MeetingType; at: string } | { completes?: string[]; starts?: string[]; at?: string; note?: string };
+export interface ClockTransition {
+  completes?: string[];
+  starts?: string[];
+  at?: string;
+  note?: string;
+}
 
 export interface WriteEffect {
   kind: 'audit' | 'clock' | 'event' | 'share' | 'rewrap' | 'classification' | 'outbound' | 'version' | 'register' | 'nearMatch' | 'notification';
@@ -423,13 +429,13 @@ export function sharingRecordFor(input: SharingInput, process: Process, lawfulBa
 /**
  * Step 6, the other direction. A write can complete clocks as well as start them: a meeting held
  * completes the clock that was counting down to it and starts the next, and a distributed minute
- * completes the record clock. The meeting table is configuration (`MEETING_TRANSITIONS`), so a
- * caller names the meeting type and never the rule ids.
+ * completes the record clock. The rule ids come from the stage engine's tables (D-211), so a screen
+ * never decides for itself what a decision does to the clocks.
  */
 export function applyClockTransition(clocks: ClockTrigger[], transition: ClockTransition, now: string, newId: (prefix: string) => string): { clocks: ClockTrigger[]; completed: string[]; started: string[] } {
   const at = transition.at ?? now;
-  const table = 'meetingType' in transition ? MEETING_TRANSITIONS[transition.meetingType] : { completes: transition.completes ?? [], starts: transition.starts ?? [] };
-  const by = 'meetingType' in transition ? transition.meetingType : (transition.note ?? 'this record');
+  const table = { completes: transition.completes ?? [], starts: transition.starts ?? [] };
+  const by = transition.note ?? 'this record';
   const completed: string[] = [];
   const next = clocks.map((c) => {
     if (!c.completedAt && table.completes.includes(c.ruleId)) {

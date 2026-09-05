@@ -112,6 +112,7 @@ export const MAPPA_TRANSITIONS: Array<Transition<MappaProcess, never>> = [
     from: ['pre-meeting', 'managed'],
     to: ['meeting'],
     roles: ['mappa-coordinator'],
+    schedules: ['mappa-level2', 'mappa-level3'],
     requires: (process) => (process.detail.referral ? [] : [{ code: 'mappaNotReferred', creates: { kind: 'transition', transition: 'mappa-refer-level' } }]),
     validate: (input: ScheduleInput) => validateSchedule(input),
     apply: (process, input: ScheduleInput, ctx) => {

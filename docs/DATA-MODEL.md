@@ -503,6 +503,13 @@ Variant 5
 | `reviewDate` | string (date) | no |
 | `subjectAttendance` | string | no |
 | `aspAttendance` | object { adultInvited, adultAttended, advocateInvited, advocateAttended, adultNotInvitedReason } | no |
+| `reschedules` | array of object { from, to, fromLocation, reason, at, byName, byUserId } | no |
+| `cancelledAt` | string (date-time) | no |
+| `cancelReason` | string | no |
+| `heldAt` | string (date-time) | no |
+| `transitionId` | string | no |
+| `inquorate` | object { at, reason, reconvenedMeetingId } | no |
+| `leftOff` | array of object { name, reason } | no |
 | `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
 | `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
@@ -540,6 +547,8 @@ Variant 5
 | `evidence` | string | no |
 | `escalatedAt` | string (date-time) | no |
 | `escalatedToName` | string | no |
+| `cancelledAt` | string (date-time) | no |
+| `cancelReason` | string | no |
 | `createdAt` | string (date-time) | yes |
 | `createdByName` | string | yes |
 | `createdByUserId` | string | no |

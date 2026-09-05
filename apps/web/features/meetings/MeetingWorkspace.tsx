@@ -1,9 +1,9 @@
 'use client';
 
-import { AGENCIES, DETAIL_LEVELS, agencyShort, nearMatchesOnRegister, attendanceLabel, contextFor, detailLevelLabel, formatDate, formatDateTime, formatTime, isExcludedParty, meetingStatusLabel, meetingTypeLabel, minuteStatusLabel, packItemKindLabel, processShort, researchStatusLabel, resolveNeedToKnow, roleLabel, stageLabel, type Action, type Agency, type DetailLevel, type Meeting, type User } from '@mas/domain';
+import { AGENCIES, DETAIL_LEVELS, agencyShort, nearMatchesOnRegister, attendanceLabel, contextFor, detailLevelLabel, formatDate, formatDateTime, formatTime, isExcludedParty, meetingStatusLabel, meetingTypeLabel, minuteStatusLabel, packItemKindLabel, processShort, researchStatusLabel, resolveNeedToKnow, roleLabel, stageLabel, transitionLabel, type Action, type Agency, type DetailLevel, type Meeting } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, CheckboxField, ClockNumeral, DateField, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
-import { CheckCircle2, Maximize2, Minimize2, Play, Printer, Send, UserPlus } from 'lucide-react';
+import { CalendarClock, CheckCircle2, Maximize2, Minimize2, Play, Printer, RotateCcw, Send, UserPlus, XCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { NearMatchDialog, type NearMatchList, type PendingNearMatch } from '@/components/NearMatchDialog';
@@ -17,12 +17,16 @@ import { accessForUser, clocksForProcess, personById, userName } from '@/lib/sel
 import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import type { WriteRequest } from '@/lib/write';
 import { useWriteErrors } from '@/lib/writeErrors';
+import { proposeInvitees } from '@/lib/invites';
+import { HoldMeetingDialog } from './HoldMeetingDialog';
+import { CancelMeetingDialog, RescheduleMeetingDialog } from './MeetingChangeDialogs';
 import { MinutesPrintPack } from './MinutesPrintPack';
+import { ScheduleMeetingDialog } from './ScheduleMeetingDialog';
 import styles from './MeetingWorkspace.module.css';
 
 type Phase = 'before' | 'during' | 'after';
 /** What changed on the meeting, for the ledger line and the version entry (meetings.audit.updated). */
-type MeetingChange = 'invites' | 'request' | 'returned' | 'shared' | 'decision' | 'action' | 'pack' | 'agenda' | 'views' | 'attendance' | 'minuteDraft' | 'minuteApproved' | 'reviewDate' | 'distribution' | 'distributionLevel' | 'held' | 'distributed';
+type MeetingChange = 'invites' | 'request' | 'returned' | 'shared' | 'decision' | 'action' | 'pack' | 'agenda' | 'views' | 'attendance' | 'minuteDraft' | 'minuteApproved' | 'reviewDate' | 'distribution' | 'distributionLevel' | 'distributed';
 const ATTENDANCE: Meeting['invitees'][number]['attendance'][] = ['invited', 'accepted', 'declined', 'present', 'remote', 'apologies', 'absent'];
 
 export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
@@ -55,6 +59,10 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   const [returning, setReturning] = useState<{ id: string; summary: string } | null>(null);
   const [pendingMatch, setPendingMatch] = useState<PendingNearMatch | null>(null);
   const [reviewDate, setReviewDate] = useState(meeting?.reviewDate ?? '');
+  const [holdOpen, setHoldOpen] = useState(false);
+  const [rescheduleOpen, setRescheduleOpen] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [reconveneOpen, setReconveneOpen] = useState(false);
 
   useEffect(() => {
     select({ kind: 'meeting', id: meetingId });
@@ -79,7 +87,8 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   }
   if (route.query.get('view') === 'print') return <MinutesPrintPack meetingId={meetingId} />;
   const access = accessForUser(data, config, user, process, grants, now);
-  const invited = meeting.invitees.some((i) => i.userId === user.id) || meeting.chairUserId === user.id || meeting.minuteTakerUserId === user.id;
+  // Invited, chairing, minuting, or asked for a report before the meeting: each has business here.
+  const invited = meeting.invitees.some((i) => i.userId === user.id) || meeting.chairUserId === user.id || meeting.minuteTakerUserId === user.id || meeting.preMeetingRequests.some((r) => r.toUserId === user.id);
   if (access.level === 'none' || (!invited && access.level !== 'full')) {
     return (
       <div className="page">
@@ -153,41 +162,18 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   }
 
   function generateInvites() {
-    const res = resolveNeedToKnow(contextFor(process!), config.needToKnow, config.exclusions);
-    const additions: Meeting['invitees'] = [];
-    // Anyone holding an excluded party role on the case-role register is skipped, whatever their agency row says.
-    const excludedByRole = new Set<string>();
-    // Anyone whose name only resembles a hand-recorded entry is held back for a confirmation instead.
-    const heldBack: User[] = [];
-    for (const r of res.recipients) {
-      if (r.detailLevel !== 'full') continue;
-      const candidates = data.users.filter((u) => u.agency === r.agency && (r.role === 'any' ? true : u.roleId === r.role) && (u.caseMemberships.includes(process!.id) || r.role !== 'any'));
-      const eligible = candidates.filter((u) => {
-        const hit = isExcludedParty(process!, { userId: u.id }, config.exclusions, process!.stage, data.relationships);
-        if (hit) excludedByRole.add(u.id);
-        return !hit;
-      });
-      for (const u of eligible.slice(0, r.role === 'any' ? 1 : 2)) {
-        if (meeting!.invitees.some((i) => i.userId === u.id) || additions.some((i) => i.userId === u.id)) continue;
-        // A register entry recorded by hand carries a name and no account, so the id check above
-        // cannot see it. Anyone whose name resembles one is held back for a confirmation.
-        if (nearMatchesOnRegister(process!, userName(u), { exclusions: config.exclusions, stage: process!.stage, relationships: data.relationships }).length > 0) {
-          heldBack.push(u);
-          continue;
-        }
-        additions.push({ userId: u.id, name: userName(u), agency: u.agency, role: roleLabel(u.roleId), required: true, attendance: 'invited', reason: `${r.label}: ${r.reason}`, needToKnowRowId: r.rowId });
-      }
-    }
-    update('invites', { invitees: [...meeting!.invitees, ...additions] });
-    const first = heldBack[0];
+    const proposal = proposeInvitees(t, data, config, process!, meeting!.invitees, [meeting!.chairUserId ?? '']);
+    update('invites', { invitees: [...meeting!.invitees, ...proposal.additions], leftOff: proposal.leftOff.length > 0 ? proposal.leftOff : meeting!.leftOff });
+    const first = proposal.heldBack[0];
     if (first) {
       guardAdd(userName(first), 'invitees', () => {
-        update('invites', { invitees: [...meeting!.invitees, ...additions, { userId: first.id, name: userName(first), agency: first.agency, role: roleLabel(first.roleId), required: true, attendance: 'invited', reason: t('meetings.before.invites.confirmedReason') }] });
+        update('invites', { invitees: [...meeting!.invitees, ...proposal.additions, { userId: first.id, name: userName(first), agency: first.agency, role: roleLabel(first.roleId), required: true, attendance: 'invited', reason: t('meetings.before.invites.confirmedReason') }] });
       });
     }
+    const res = resolveNeedToKnow(contextFor(process!), config.needToKnow, config.exclusions);
     toast({
-      title: additions.length === 0 ? t('meetings.before.invites.toastComplete') : t('meetings.before.invites.toastAdded', { count: additions.length }),
-      text: t('meetings.before.invites.toastText', { rule: res.exclusions.length > 0 ? 'excluded' : 'none', labels: res.exclusions.map((e) => e.label).join('; '), leftOff: excludedByRole.size }),
+      title: proposal.additions.length === 0 ? t('meetings.before.invites.toastComplete') : t('meetings.before.invites.toastAdded', { count: proposal.additions.length }),
+      text: t('meetings.before.invites.toastText', { rule: res.exclusions.length > 0 ? 'excluded' : 'none', labels: res.exclusions.map((e) => e.label).join('; '), leftOff: proposal.leftOff.filter((x) => !res.exclusions.some((e) => e.label === x.name)).length }),
       tone: 'success',
     });
   }
@@ -234,34 +220,6 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
     }
     update('action', { actionIds: [...meeting!.actionIds, a.id] });
     setActionForm({ title: '', owner: '', due: '' });
-  }
-
-  function closeMeeting() {
-    const heldAt = now.toISOString();
-    // The transition table decides which clocks this meeting completes and starts; the pipeline
-    // applies it to the case and writes the milestone (docs/RECORDS.md section 3).
-    const result = update(
-      'held',
-      { status: 'held', minute: meeting!.minute.status === 'not-started' ? { ...meeting!.minute, status: 'draft', draftedAt: heldAt } : meeting!.minute },
-      {
-        targetLabel: t('meetings.audit.held', { title: meeting!.title }),
-        versionChange: t('meetings.audit.held', { title: meeting!.title }),
-        clockTransition: { meetingType: meeting!.type, at: heldAt },
-        event: {
-          eventType: meeting!.type === 'ird' ? 'process.ird' : meeting!.type === 'core-group' ? 'process.core-group' : meeting!.type === 'marac' ? 'process.marac' : meeting!.type.startsWith('mappa') ? 'process.mappa-level' : meeting!.type.startsWith('asp') ? 'process.case-conference' : 'process.cppm',
-          significance: 'high',
-          visibility: 'integrated',
-          title: t('meetings.audit.held', { title: meeting!.title }),
-          detail: t('meetings.audit.heldDetail', { type: meetingTypeLabel(meeting!.type), decisions: meeting!.decisions.length }),
-          subjectIds: meeting!.subjectIds,
-          occurredAt: heldAt,
-          linkedProcessIds: [process!.id],
-        },
-      },
-    );
-    if (!result.ok) return;
-    toast({ title: t('meetings.close.toastTitle'), text: t('meetings.close.toastText', { completed: result.clocks?.completed.join(', ') || t('common.values.none'), started: result.clocks?.started.join(', ') || t('common.values.none') }), tone: 'success' });
-    setPhase('after');
   }
 
   function generateDistribution() {
@@ -354,9 +312,14 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
           <div className="cluster">
             <ProcessMark type={process.type} restricted={process.accessRestriction === 'restricted'} />
             <AppLink href={processPath(process.id)}>{process.reference}</AppLink>
-            <Pill size="sm" tone={meeting.status === 'held' ? 'low' : meeting.status === 'scheduled' ? 'accent' : 'outline'}>
+            <Pill size="sm" tone={meeting.status === 'held' ? 'low' : meeting.status === 'scheduled' ? 'accent' : meeting.status === 'cancelled' ? 'critical' : 'outline'} data-testid="meeting-status">
               {meetingStatusLabel(meeting.status)}
             </Pill>
+            {meeting.inquorate ? (
+              <Pill size="sm" tone="medium" data-testid="meeting-inquorate">
+                {t('meetings.head.inquoratePill')}
+              </Pill>
+            ) : null}
             <Pill size="sm" tone="outline">
               {t('meetings.head.minutePill', { status: minuteStatusLabel(meeting.minute.status) })}
             </Pill>
@@ -367,9 +330,24 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                 {t('meetings.head.chairMode')}
               </Button>
             ) : null}
-            {meeting.status !== 'held' ? (
-              <Button variant="primary" icon={<CheckCircle2 size={16} aria-hidden="true" />} onClick={closeMeeting}>
+            {meeting.status === 'scheduled' ? (
+              <>
+                <Button variant="secondary" icon={<CalendarClock size={16} aria-hidden="true" />} onClick={() => setRescheduleOpen(true)} data-testid="reschedule-meeting">
+                  {t('meetings.head.reschedule')}
+                </Button>
+                <Button variant="secondary" icon={<XCircle size={16} aria-hidden="true" />} onClick={() => setCancelOpen(true)} data-testid="cancel-meeting">
+                  {t('meetings.head.cancel')}
+                </Button>
+              </>
+            ) : null}
+            {meeting.status === 'scheduled' || meeting.status === 'in-progress' ? (
+              <Button variant="primary" icon={<CheckCircle2 size={16} aria-hidden="true" />} onClick={() => setHoldOpen(true)} data-testid="hold-meeting">
                 {t('meetings.head.close')}
+              </Button>
+            ) : null}
+            {meeting.status === 'held' && meeting.inquorate && !meeting.inquorate.reconvenedMeetingId && process.status === 'open' ? (
+              <Button variant="primary" icon={<RotateCcw size={16} aria-hidden="true" />} onClick={() => setReconveneOpen(true)} data-testid="reconvene-meeting">
+                {t('meetings.head.reconvene')}
               </Button>
             ) : null}
           </div>
@@ -386,6 +364,21 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
               <PersonLink key={s.id} person={s} process={process} />
             ))}
           </div>
+          {/*
+            What happened to the meeting after it was scheduled, in the header where the date is,
+            because a date that moved twice is a fact about the meeting and not a footnote.
+          */}
+          {meeting.transitionId || (meeting.reschedules ?? []).length > 0 || meeting.cancelReason || meeting.inquorate || (meeting.leftOff ?? []).length > 0 ? (
+            <div className={styles.history} data-testid="meeting-history">
+              {meeting.transitionId ? <span>{t('meetings.head.heldBy', { transition: transitionLabel(meeting.transitionId), date: meeting.heldAt ? formatDateTime(meeting.heldAt) : '' })}</span> : null}
+              {(meeting.reschedules ?? []).map((r) => (
+                <span key={r.at}>{t('meetings.change.history', { from: formatDateTime(r.from), at: formatDate(r.at), name: r.byName, reason: r.reason })}</span>
+              ))}
+              {meeting.cancelReason ? <span>{t('meetings.change.cancelledLine', { date: meeting.cancelledAt ? formatDate(meeting.cancelledAt) : '', reason: meeting.cancelReason })}</span> : null}
+              {meeting.inquorate ? <span>{t('meetings.hold.inquorateLine', { date: formatDate(meeting.inquorate.at), reason: meeting.inquorate.reason, reconvened: meeting.inquorate.reconvenedMeetingId ? 'yes' : 'no' })}</span> : null}
+              {meeting.leftOff && meeting.leftOff.length > 0 ? <span>{t('meetings.head.leftOff', { count: meeting.leftOff.length, names: meeting.leftOff.map((x) => `${x.name} (${x.reason})`).join('; ') })}</span> : null}
+            </div>
+          ) : null}
         </div>
       </header>
 
@@ -717,6 +710,10 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       </Dialog>
 
       <NearMatchDialog pending={pendingMatch} onClose={resolveNearMatch} />
+      {holdOpen ? <HoldMeetingDialog open onClose={() => setHoldOpen(false)} meeting={meeting} process={process} onHeld={() => setPhase('after')} /> : null}
+      {rescheduleOpen ? <RescheduleMeetingDialog open onClose={() => setRescheduleOpen(false)} meeting={meeting} /> : null}
+      {cancelOpen ? <CancelMeetingDialog open onClose={() => setCancelOpen(false)} meeting={meeting} /> : null}
+      {reconveneOpen ? <ScheduleMeetingDialog open onClose={() => setReconveneOpen(false)} process={process} reconvene={meeting} /> : null}
     </div>
   );
 }

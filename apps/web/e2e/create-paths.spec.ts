@@ -244,8 +244,8 @@ test.describe('the global create action', () => {
     await page.goto('/');
     await waitForData(page);
     await page.getByTestId('global-create').click();
-    await page.getByTestId('create-meeting').click();
+    await page.getByTestId('create-share').click();
     await waitForData(page);
-    await expect(page).toHaveURL(/\/meetings/);
+    await expect(page).toHaveURL(/\/sharing/);
   });
 });

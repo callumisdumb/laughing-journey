@@ -1,0 +1,35 @@
+/* Outcome forms share one small vocabulary: a grid for paired fields, a section for a list. */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: 12px 16px;
+  align-items: start;
+}
+
+.section {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.legend {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-ink-2);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.sharedRow {
+  display: grid;
+  grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr) max-content;
+  gap: 8px;
+  align-items: end;
+}

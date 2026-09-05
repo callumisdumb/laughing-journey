@@ -9695,6 +9695,9 @@
       "holderRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
+      "holdFormPending": {
+        "where": "Refusal when a meeting whose transition has no form is closed"
+      },
       "householdAlreadyMember": {
         "where": "A create or edit dialog, refusal summary at the top of the body"
       },
@@ -9791,11 +9794,29 @@
       "medicalKindRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
+      "meetingCancelReasonRequired": {
+        "where": "Refusal when a meeting is cancelled without a reason"
+      },
       "meetingDateRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
+      "meetingHeldByTransition": {
+        "where": "Refusal when a meeting that fires a transition is closed through the plain path"
+      },
+      "meetingLocationRequired": {
+        "where": "Refusal when a meeting is scheduled without a location"
+      },
+      "meetingMissing": {
+        "where": "Refusal when a meeting id is not found"
+      },
+      "meetingNotScheduled": {
+        "where": "Refusal when a held or cancelled meeting is changed"
+      },
       "meetingRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "meetingWrongStage": {
+        "where": "Refusal when a meeting type is scheduled from a stage the engine does not schedule it from"
       },
       "mergeOtherMissing": {
         "where": "Merge dialog, refusal summary at the top of the body"
@@ -9982,6 +10003,9 @@
       },
       "requestMissing": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "rescheduleReasonRequired": {
+        "where": "Refusal when a meeting is rescheduled without a reason"
       },
       "reviewDateRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -13178,17 +13202,26 @@
       "action": {
         "where": "Audit ledger line when an action is added from the meeting workspace"
       },
+      "cancelled": {
+        "where": "Ledger line and version entry when a meeting is cancelled"
+      },
       "held": {
         "where": "Audit entry when a meeting is closed, with the meeting title"
       },
-      "heldDetail": {
-        "where": "Chronology event body when a meeting is closed: the type and how many decisions"
+      "inquorate": {
+        "where": "Ledger line and version entry when a meeting is recorded as inquorate"
       },
       "minutesPack": {
         "where": "Audit entry when the minutes print pack is opened, with the meeting title"
       },
+      "reconvened": {
+        "where": "Ledger line and version entry on an inquorate meeting when its replacement is scheduled"
+      },
       "refused": {
         "where": "Meeting workspace, error toast title when the pipeline refuses a change"
+      },
+      "rescheduled": {
+        "where": "Ledger line and version entry when a meeting is rescheduled"
       },
       "updated": {
         "where": "Audit ledger line and version entry for every change made in the meeting workspace, naming what changed"
@@ -13327,6 +13360,71 @@
           "screenshot": "phase-4/meeting-before-light-comfortable.png",
           "where": "Placeholder of the person select in the send a request form"
         }
+      }
+    },
+    "change": {
+      "cancelHint": {
+        "where": "Line at the top of the cancel meeting dialog"
+      },
+      "cancelledLine": {
+        "where": "Line in the meeting header of a cancelled meeting"
+      },
+      "cancelledToast": {
+        "where": "Toast title after a meeting is cancelled"
+      },
+      "cancelledToastText": {
+        "where": "Toast text after a meeting is cancelled"
+      },
+      "cancelReasonHint": {
+        "where": "Hint under the reason field in the cancel meeting dialog"
+      },
+      "cancelSubmit": {
+        "where": "Primary button of the cancel meeting dialog"
+      },
+      "cancelTitle": {
+        "where": "Title of the cancel meeting dialog"
+      },
+      "clockCancelled": {
+        "where": "Clock note when a notice period is completed because its meeting was cancelled"
+      },
+      "clockMoved": {
+        "where": "Clock note when a notice period restarts from a rescheduled meeting's new date"
+      },
+      "currently": {
+        "where": "Line at the top of the reschedule dialog saying when and where the meeting is now"
+      },
+      "history": {
+        "where": "One line per reschedule in the meeting header"
+      },
+      "keep": {
+        "where": "Quiet button of the cancel meeting dialog, which closes it without cancelling"
+      },
+      "newDate": {
+        "where": "Label of the new date field in the reschedule dialog"
+      },
+      "newLocation": {
+        "where": "Label of the location field in the reschedule dialog"
+      },
+      "newTime": {
+        "where": "Label of the new time field in the reschedule dialog"
+      },
+      "reason": {
+        "where": "Label of the reason field in the reschedule and cancel dialogs"
+      },
+      "reasonHint": {
+        "where": "Hint under the reason field in the reschedule dialog"
+      },
+      "rescheduledToast": {
+        "where": "Toast title after a meeting is rescheduled"
+      },
+      "rescheduledToastText": {
+        "where": "Toast text after a meeting is rescheduled"
+      },
+      "rescheduleSubmit": {
+        "where": "Primary button of the reschedule dialog"
+      },
+      "rescheduleTitle": {
+        "where": "Title of the reschedule dialog"
       }
     },
     "close": {
@@ -13536,6 +13634,9 @@
       }
     },
     "head": {
+      "cancel": {
+        "where": "Button in the meeting header that opens the cancel dialog"
+      },
       "chair": {
         "screenshot": "phase-4/meeting-before-light-comfortable.png",
         "where": "Meta line item in the meeting header: the chair"
@@ -13559,6 +13660,15 @@
         "screenshot": "phase-4/meeting-chair-light-comfortable.png",
         "where": "Button in the chair mode banner that turns chair mode off"
       },
+      "heldBy": {
+        "where": "Line in the meeting header of a held meeting naming the transition it fired"
+      },
+      "inquoratePill": {
+        "where": "Pill in the meeting header of an inquorate meeting"
+      },
+      "leftOff": {
+        "where": "Line in the meeting header listing who was left off and why"
+      },
       "minutePill": {
         "maxLength": 24,
         "screenshot": "phase-4/meeting-before-light-comfortable.png",
@@ -13572,9 +13682,50 @@
         "screenshot": "phase-4/meeting-before-light-comfortable.png",
         "where": "Accessible name of the before, during and after phase switch"
       },
+      "reconvene": {
+        "where": "Button in the meeting header of an inquorate meeting that schedules its replacement"
+      },
+      "reschedule": {
+        "where": "Button in the meeting header that opens the reschedule dialog"
+      },
       "when": {
         "screenshot": "phase-4/meeting-before-light-comfortable.png",
         "where": "Meta line item in the meeting header: date, start time and end time"
+      }
+    },
+    "hold": {
+      "formPending": {
+        "where": "Appended to the first line of the close meeting dialog when a transition has no outcome form"
+      },
+      "inquorateLine": {
+        "where": "Line in the meeting header of an inquorate meeting"
+      },
+      "inquorateToast": {
+        "where": "Toast title when a meeting is recorded as inquorate"
+      },
+      "inquorateToastText": {
+        "where": "Toast text when a meeting is recorded as inquorate"
+      },
+      "note": {
+        "where": "Label of the note field when a meeting with no transition is closed"
+      },
+      "noteHint": {
+        "where": "Hint under the note field in the close meeting dialog"
+      },
+      "noTransition": {
+        "where": "First line of the close meeting dialog when the meeting's type fires no transition"
+      },
+      "submit": {
+        "where": "Primary button of the close meeting dialog"
+      },
+      "title": {
+        "where": "Title of the dialog that closes a meeting and records its outcome"
+      },
+      "transition": {
+        "where": "First line of the close meeting dialog when the meeting fires a transition"
+      },
+      "wrongStage": {
+        "where": "First line of the close meeting dialog when the meeting's transition fires from a stage the case has not reached"
       }
     },
     "list": {
@@ -13652,6 +13803,9 @@
         "screenshot": "phase-4/meetings-light-comfortable.png",
         "where": "Lede under the meetings list title"
       },
+      "schedule": {
+        "where": "Primary button in the Meetings screen header"
+      },
       "title": {
         "maxLength": 16,
         "screenshot": "phase-4/meetings-light-comfortable.png",
@@ -13669,6 +13823,132 @@
       "title": {
         "maxLength": 24,
         "where": "Title of the state shown when the meeting id is not in the dataset"
+      }
+    },
+    "outcome": {
+      "asp": {
+        "adultAtRisk": {
+          "where": "Legend of the first question on the adult protection case conference outcome form"
+        },
+        "protectionPlan": {
+          "where": "Legend of the second question on the adult protection case conference outcome form"
+        }
+      },
+      "aspReview": {
+        "close": {
+          "where": "Radio option on the review conference outcome form"
+        },
+        "closeHint": {
+          "where": "Hint on the close option of the review conference outcome form"
+        },
+        "closureNote": {
+          "where": "Label of the closure note field on the review conference outcome form"
+        },
+        "closureReason": {
+          "where": "Label of the closure reason select on the review conference outcome form"
+        },
+        "closureReasonPlaceholder": {
+          "where": "Placeholder option of the closure reason select"
+        },
+        "continue": {
+          "where": "Radio option on the review conference outcome form"
+        },
+        "continueHint": {
+          "where": "Hint on the continue option of the review conference outcome form"
+        },
+        "decision": {
+          "where": "Legend of the decision radio group on the review conference outcome form"
+        },
+        "newReviewDate": {
+          "where": "Label of the next review date on the review conference outcome form"
+        }
+      },
+      "coreGroup": {
+        "attendance": {
+          "where": "Legend of the attendance list on the core group outcome form"
+        },
+        "changeNote": {
+          "where": "Label of the change note field on the core group outcome form"
+        },
+        "heldAt": {
+          "where": "Line at the top of the core group outcome form saying when the meeting was held"
+        },
+        "progress": {
+          "where": "Label of the progress field on the core group outcome form"
+        },
+        "progressHint": {
+          "where": "Hint under the progress field on the core group outcome form"
+        },
+        "significantChange": {
+          "where": "Checkbox on the core group outcome form"
+        },
+        "significantChangeHint": {
+          "where": "Hint under the significant change checkbox"
+        }
+      },
+      "cpReview": {
+        "continue": {
+          "where": "Radio option on the review CPPM outcome form"
+        },
+        "decision": {
+          "where": "Legend of the decision radio group on the review CPPM outcome form"
+        },
+        "deregister": {
+          "where": "Radio option on the review CPPM outcome form"
+        },
+        "deregistrationNote": {
+          "where": "Label of the deregistration note field on the review CPPM outcome form"
+        },
+        "deregistrationReason": {
+          "where": "Label of the deregistration reason select on the review CPPM outcome form"
+        },
+        "inquorateHint": {
+          "where": "Shown on the review CPPM outcome form when the quorate box is unticked"
+        },
+        "quorate": {
+          "where": "Checkbox on the review CPPM outcome form"
+        },
+        "quorateHint": {
+          "where": "Hint under the quorate checkbox on the review CPPM outcome form"
+        }
+      },
+      "marac": {
+        "add": {
+          "where": "Button that adds an information shared row"
+        },
+        "agency": {
+          "where": "Label of the agency select on an information shared row"
+        },
+        "remove": {
+          "where": "Button that removes an information shared row"
+        },
+        "riskDiscussion": {
+          "where": "Label of the risk discussion field on the MARAC outcome form"
+        },
+        "riskDiscussionHint": {
+          "where": "Hint under the risk discussion field on the MARAC outcome form"
+        },
+        "shared": {
+          "where": "Legend of the information shared list on the MARAC outcome form"
+        },
+        "sharedHint": {
+          "where": "Hint under the information shared legend on the MARAC outcome form"
+        },
+        "summary": {
+          "where": "Label of the summary field on an information shared row"
+        }
+      },
+      "no": {
+        "where": "Radio option in an outcome form"
+      },
+      "rationale": {
+        "where": "Label of the rationale field in an outcome form"
+      },
+      "rationaleHint": {
+        "where": "Hint under the rationale field in an outcome form"
+      },
+      "yes": {
+        "where": "Radio option in an outcome form"
       }
     },
     "phase": {
@@ -13711,6 +13991,152 @@
         "maxLength": 24,
         "screenshot": "phase-4/meeting-before-light-comfortable.png",
         "where": "Title of the dialog that records a returned information request"
+      }
+    },
+    "schedule": {
+      "case": {
+        "where": "Label of the case select in the schedule dialog"
+      },
+      "caseHint": {
+        "where": "Hint under the case select in the schedule dialog"
+      },
+      "casePlaceholder": {
+        "where": "Placeholder option of the case select in the schedule dialog"
+      },
+      "chair": {
+        "where": "Label of the chair select in the schedule dialog"
+      },
+      "chairHint": {
+        "where": "Hint under the chair select in the schedule dialog"
+      },
+      "chairPlaceholder": {
+        "where": "Placeholder option of the chair select"
+      },
+      "childInvited": {
+        "where": "Checkbox in the schedule dialog for a child protection planning meeting"
+      },
+      "date": {
+        "where": "Label of the date field in the schedule dialog"
+      },
+      "invites": {
+        "add": {
+          "where": "Label of the select that adds an invitee by hand"
+        },
+        "addButton": {
+          "where": "Button beside the add-invitee select"
+        },
+        "addPlaceholder": {
+          "where": "Placeholder option of the add-invitee select"
+        },
+        "byHand": {
+          "where": "Reason recorded on an invitee added by hand rather than by the matrix"
+        },
+        "empty": {
+          "where": "Shown when the matrix proposes nobody for the invite list"
+        },
+        "hint": {
+          "where": "Hint under the invite list legend in the schedule dialog"
+        },
+        "person": {
+          "where": "Label of one invitee checkbox: name, role and agency short name"
+        },
+        "reason": {
+          "where": "Hint under an invitee checkbox: the reason they are seated and the need-to-know row id"
+        },
+        "title": {
+          "where": "Legend of the invite list in the schedule dialog"
+        }
+      },
+      "leftOff": {
+        "excluded": {
+          "where": "Reason recorded for a person the case-role register excludes; party is the exclusion party label"
+        },
+        "hint": {
+          "where": "Hint under the left-off heading in the schedule dialog"
+        },
+        "level": {
+          "where": "Reason recorded for an audience the matrix names at less than full detail; level is the detail level label"
+        },
+        "nearMatch": {
+          "where": "Reason recorded for a person held back for a near-match confirmation"
+        },
+        "none": {
+          "where": "Shown when the left-off list is empty"
+        },
+        "title": {
+          "where": "Heading of the left-off list in the schedule dialog"
+        },
+        "unticked": {
+          "where": "Reason recorded for an invitee unticked by hand"
+        }
+      },
+      "location": {
+        "where": "Label of the location field in the schedule dialog"
+      },
+      "locationPlaceholder": {
+        "where": "Placeholder of the location field in the schedule dialog"
+      },
+      "minuteTaker": {
+        "where": "Label of the minute taker select in the schedule dialog"
+      },
+      "minuteTakerNone": {
+        "where": "Placeholder option of the minute taker select, meaning nobody is named"
+      },
+      "noCases": {
+        "where": "Shown in the schedule dialog when the persona can work on no open case"
+      },
+      "outOfHours": {
+        "where": "Checkbox in the schedule dialog for an IRD held outside office hours"
+      },
+      "parents": {
+        "where": "Legend of the parents radio group when scheduling a child protection planning meeting"
+      },
+      "parentsExcluded": {
+        "where": "Radio option: the parents are not invited to the planning meeting, which needs a reason"
+      },
+      "parentsInvited": {
+        "where": "Radio option: the parents are invited to the planning meeting"
+      },
+      "parentsReason": {
+        "where": "Label of the reason field when the parents are not invited"
+      },
+      "plainTitle": {
+        "where": "Title given to a meeting the engine has no view of; type is the meeting type label, title the case title"
+      },
+      "reconveneTitle": {
+        "where": "Title of the schedule dialog when it reconvenes an inquorate meeting; title is the old meeting's title"
+      },
+      "route": {
+        "plain": {
+          "where": "Sentence beside the type select when the meeting is a plain write with no stage effect"
+        },
+        "refused": {
+          "where": "Sentence beside the type select when the engine schedules this type from a stage the case has not reached; stages is a comma list"
+        },
+        "transition": {
+          "where": "Sentence beside the type select when the stage engine schedules this type from the case's stage; transition is the transition label, stage the stage it leads to"
+        }
+      },
+      "submit": {
+        "where": "Primary button of the schedule dialog"
+      },
+      "time": {
+        "where": "Label of the time field in the schedule dialog"
+      },
+      "title": {
+        "where": "Title of the schedule dialog opened from the Meetings screen, before a case is chosen"
+      },
+      "titleFor": {
+        "where": "Title of the schedule dialog opened on a case; reference is the case reference"
+      },
+      "toastText": {
+        "where": "Toast text after a meeting is scheduled"
+      },
+      "toastTitle": {
+        "where": "Toast title after a meeting is scheduled"
+      },
+      "type": {
+        "where": "Label of the meeting type select in the schedule dialog"
       }
     }
   },
@@ -13774,7 +14200,7 @@
           "where": "Global create dialog, one line explaining the investigation option"
         },
         "meeting": {
-          "where": "Global create dialog, one line explaining the meeting option"
+          "where": "Hint under the meeting option in the create menu"
         },
         "order": {
           "where": "Global create dialog, one line explaining the order option"
@@ -17699,6 +18125,9 @@
       }
     },
     "meetings": {
+      "cancelled": {
+        "where": "Meta line of a cancelled meeting on the case's meetings sheet"
+      },
       "held": {
         "screenshot": "phase-3/process-cp-light-comfortable.png",
         "where": "Line under a held meeting in the meetings card: the time and the minute status"
@@ -17707,6 +18136,9 @@
         "maxLength": 24,
         "screenshot": "phase-3/process-cp-light-comfortable.png",
         "where": "Meta of the meetings card: how many meetings the process has"
+      },
+      "schedule": {
+        "where": "Button on the case's meetings sheet that opens the schedule dialog"
       },
       "scheduled": {
         "screenshot": "phase-3/process-cp-light-comfortable.png",

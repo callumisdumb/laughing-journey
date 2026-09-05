@@ -339,7 +339,8 @@ export const maracDetailSchema = z.object({
     receivedAt: isoDateTime,
     referringAgency: z.enum(AGENCIES),
     referrerName: z.string(),
-    riskAssessmentId: idSchema,
+    /** Absent on a professional judgement referral opened before its DASH is recorded; the assessment dialog attaches it (D-215). */
+    riskAssessmentId: idSchema.optional(),
     professionalJudgementReferral: z.boolean(),
     repeat: z.boolean(),
     previousHearingAt: isoDate.optional(),

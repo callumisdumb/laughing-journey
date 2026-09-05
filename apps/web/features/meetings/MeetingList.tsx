@@ -2,8 +2,9 @@
 
 import { MEETING_TYPES, formatDate, formatTime, meetingStatusLabel, meetingTypeLabel, minuteStatusLabel, processShort } from '@mas/domain';
 import { useT } from '@mas/messages';
-import { Pill, ProcessMark, SelectField, Switch, Table, TableWrap } from '@mas/ui';
-import { useEffect } from 'react';
+import { Button, Pill, ProcessMark, SelectField, Switch, Table, TableWrap } from '@mas/ui';
+import { CalendarPlus } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
@@ -11,6 +12,7 @@ import { meetingPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { accessForUser, fullName, personById } from '@/lib/selectors';
 import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
+import { ScheduleMeetingDialog } from './ScheduleMeetingDialog';
 
 export function MeetingList() {
   const t = useT();
@@ -26,6 +28,7 @@ export function MeetingList() {
   const typeFilter = route.query.get('type') ?? '';
   const mine = route.query.get('mine') !== '0';
   const past = route.query.get('past') === '1';
+  const [scheduling, setScheduling] = useState(false);
 
   useEffect(() => {
     select(null);
@@ -56,6 +59,11 @@ export function MeetingList() {
         <div className="page-head-text">
           <h1>{t('meetings.list.title')}</h1>
           <p className="page-lede">{t('meetings.list.lede')}</p>
+        </div>
+        <div className="page-head-actions">
+          <Button variant="primary" icon={<CalendarPlus size={16} aria-hidden="true" />} onClick={() => setScheduling(true)} data-testid="schedule-meeting">
+            {t('meetings.list.schedule')}
+          </Button>
         </div>
       </div>
       <div className="cluster" style={{ marginBottom: 'var(--density-gap)', alignItems: 'flex-end', gap: 16 }}>
@@ -95,7 +103,7 @@ export function MeetingList() {
                     <td>{process?.accessRestriction === 'restricted' ? processShort(process.type) : subject ? fullName(subject) : ''}</td>
                     <td>{m.chairName}</td>
                     <td>
-                      <Pill size="sm" tone={m.status === 'scheduled' ? 'accent' : m.status === 'held' ? 'low' : 'outline'}>
+                      <Pill size="sm" tone={m.status === 'scheduled' ? 'accent' : m.status === 'held' ? 'low' : m.status === 'cancelled' ? 'critical' : 'outline'}>
                         {meetingStatusLabel(m.status)}
                       </Pill>
                     </td>
@@ -107,6 +115,7 @@ export function MeetingList() {
           </Table>
         </TableWrap>
       </ScreenState>
+      {scheduling ? <ScheduleMeetingDialog open onClose={() => setScheduling(false)} /> : null}
     </div>
   );
 }

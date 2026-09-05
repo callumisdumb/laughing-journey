@@ -1,4 +1,4 @@
-import type { ProcessType, Stage } from '../enums';
+import type { MeetingType, ProcessType, Stage } from '../enums';
 import { stageLabel } from '../config/labels';
 import type { Process } from '../schemas/process';
 import type { PermissionDecision } from './eligibility';
@@ -91,6 +91,50 @@ export function applyTransition(process: Process, transition: AnyTransition, inp
   if (errors.length > 0) return { ok: false, errors, missing: [] };
   return { ok: true, outcome: transition.apply(process, input as never, ctx) };
 }
+
+export type ScheduleRoute =
+  | { kind: 'transition'; transition: AnyTransition }
+  | { kind: 'plain' }
+  | { kind: 'refused'; code: 'meetingWrongStage'; transition: AnyTransition; stages: Stage[] };
+
+/**
+ * How a meeting of a type is scheduled on a case (D-213). Through the transition whose table
+ * schedules the type from the case's current stage, where there is one. As a plain meeting write
+ * where the engine awaits the type at this stage (a held transition fires from it, so a second IRD
+ * or a reconvened CPPM is scheduled without moving anything) or has no view of the type at all (a
+ * core group, an inter-agency discussion, an AWI multidisciplinary meeting). And refused, naming the
+ * stages the table schedules it from, where the type is the engine's but the case is elsewhere: a
+ * case conference on a concern that has not been screened is not a meeting, it is a stage skipped.
+ */
+export function scheduleRoute(process: Process, type: MeetingType): ScheduleRoute {
+  const table = TRANSITIONS[process.type];
+  const schedulers = table.filter((t) => t.schedules?.includes(type));
+  const fromHere = schedulers.find((t) => t.from.includes(process.stage));
+  if (fromHere) return { kind: 'transition', transition: fromHere };
+  if (table.some((t) => t.firedBy?.includes(type) && t.from.includes(process.stage))) return { kind: 'plain' };
+  const first = schedulers[0];
+  if (!first) return { kind: 'plain' };
+  return { kind: 'refused', code: 'meetingWrongStage', transition: first, stages: [...new Set(schedulers.flatMap((t) => [...t.from]))] };
+}
+
+/** The transition a meeting of this type fires when it is held, from the case's current stage. */
+export function heldTransitionFor(process: Process, type: MeetingType): AnyTransition | undefined {
+  return TRANSITIONS[process.type].find((t) => t.firedBy?.includes(type) && t.from.includes(process.stage));
+}
+
+/** The transitions a meeting type fires from any stage, for the sentence that says where the case has to be. */
+export function heldTransitionsFor(processType: ProcessType, type: MeetingType): readonly AnyTransition[] {
+  return TRANSITIONS[processType].filter((t) => t.firedBy?.includes(type));
+}
+
+/** The meeting types a case type holds, in the order they usually happen. */
+export const MEETING_TYPES_BY_PROCESS: Record<ProcessType, readonly MeetingType[]> = {
+  asp: ['asp-inter-agency-discussion', 'asp-case-conference', 'asp-review-conference', 'lsi-planning'],
+  cp: ['ird', 'cppm', 'pre-birth-cppm', 'core-group', 'cppm-review'],
+  marac: ['marac'],
+  mappa: ['mappa-level2', 'mappa-level3'],
+  awi: ['awi-mdt'],
+};
 
 /** Every stage a type can reach through the engine, in table order: the stepper's spine. */
 export function reachableStages(type: ProcessType): Stage[] {

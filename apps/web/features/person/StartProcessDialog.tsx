@@ -99,7 +99,7 @@ export function StartProcessDialog({ person, open, onClose }: { person: Person; 
        * afterwards, which is why this path is offered from the person record and the full referral
        * dialog is offered from the MARAC screen.
        */
-      marac: type === 'marac' ? { victimPersonId: person.id, perpetratorPersonId: person.id, childPersonIds: [], riskAssessmentId: '', repeat: repeat.repeat, previousHearingAt: repeat.previousAt?.slice(0, 10), professionalJudgement: true } : undefined,
+      marac: type === 'marac' ? { victimPersonId: person.id, perpetratorPersonId: person.id, childPersonIds: [], riskAssessmentId: undefined, repeat: repeat.repeat, previousHearingAt: repeat.previousAt?.slice(0, 10), professionalJudgement: true } : undefined,
       mappa: type === 'mappa' ? { category: 1, level: 1, leadResponsibleAuthority: 'police', visorReference: '' } : undefined,
       preBirth: type === 'cp' && person.lifeStage === 'unborn' && person.expectedDeliveryDate ? { expectedDeliveryDate: person.expectedDeliveryDate, motherPersonId: person.id } : undefined,
     });

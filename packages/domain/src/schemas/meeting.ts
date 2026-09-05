@@ -140,6 +140,20 @@ export const meetingSchema = z.object({
       adultNotInvitedReason: z.string().optional(),
     })
     .optional(),
+  /**
+   * What happened to the meeting after it was scheduled. Every move carries the date it left, the
+   * reason and who moved it; a cancellation carries its reason; an inquorate meeting says so and
+   * names the one that reconvened it once there is one; a held meeting names the transition it
+   * fired, which is where its outcome lives (D-213).
+   */
+  reschedules: z.array(z.object({ from: isoDateTime, to: isoDateTime, fromLocation: z.string().optional(), reason: z.string(), at: isoDateTime, byName: z.string(), byUserId: idSchema.optional() })).optional(),
+  cancelledAt: isoDateTime.optional(),
+  cancelReason: z.string().optional(),
+  heldAt: isoDateTime.optional(),
+  transitionId: z.string().optional(),
+  inquorate: z.object({ at: isoDateTime, reason: z.string(), reconvenedMeetingId: idSchema.optional() }).optional(),
+  /** Everybody the need-to-know answer left off the invite list, each with the reason, so the omission is a decision. */
+  leftOff: z.array(z.object({ name: z.string(), reason: z.string() })).optional(),
   ...correctable,
 });
 export type Meeting = z.infer<typeof meetingSchema>;

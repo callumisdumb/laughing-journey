@@ -3,7 +3,7 @@
  * Data stays ISO 8601. All functions are pure.
  */
 import { differenceInCalendarDays, differenceInYears, format, isValid, parse, parseISO } from 'date-fns';
-import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
+import { formatInTimeZone, fromZonedTime, toZonedTime } from 'date-fns-tz';
 
 export const TIME_ZONE = 'Europe/London';
 
@@ -77,6 +77,11 @@ export function parseTypedDate(text: string): string | undefined {
 export function formatCalendarDate(iso: string): string {
   const d = parse(iso, 'yyyy-MM-dd', new Date(2000, 0, 1));
   return isValid(d) ? format(d, 'dd MMM yyyy') : '';
+}
+
+/** A wall-clock date and time in Europe/London (`2026-09-14`, `10:00`) as the ISO instant it names. */
+export function londonToIso(date: string, time: string): string {
+  return fromZonedTime(`${date}T${time || '00:00'}:00`, TIME_ZONE).toISOString();
 }
 
 export function toLocal(iso: string | Date): Date {

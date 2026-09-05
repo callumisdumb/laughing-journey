@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { capture, expectNoAxeViolations, setAppearance, signInAs, waitForData } from './helpers';
+import { capture, expectNoAxeViolations, setAppearance, signInAs, switchUser, waitForData } from './helpers';
 
 const PHASE = 'phase-4';
 
@@ -58,18 +58,37 @@ test.describe('meetings', () => {
     await expect(page.getByText('Minute: distributed')).toBeVisible();
     await expectNoAxeViolations(page);
     await capture(page, { phase: PHASE, screen: 'meeting-after', fullPage: true });
-    await page.getByRole('button', { name: 'Close meeting and update clocks' }).click();
-    await expect(page.getByText('Meeting closed')).toBeVisible();
 
     // What the pipeline wrote on the way: one sharing record per recipient, each resting on the
     // lawful basis written beside it, on the sharing screen where the sender sees them go out.
     await page.goto('/sharing');
     await waitForData(page);
     await expect(page.getByRole('table').getByText(/^Minute of /).first()).toBeVisible();
-    // And the ledger carries the meeting's closure and its distribution as separate acts.
+    // And the ledger carries the distribution as its own act.
     await page.goto('/audit');
     await waitForData(page);
     await expect(page.getByRole('table').getByText(/Minute distributed to \d+ recipients/).first()).toBeVisible();
+
+    // Closing a review CPPM records the review's decision on the case (D-213), and only the chair
+    // records it: the social worker is told who does, and the chair sees the outcome form.
+    await page.goto('/meetings/mtg_aiden_review?phase=after');
+    await waitForData(page);
+    await page.getByRole('button', { name: 'Close meeting and update clocks' }).click();
+    await expect(page.getByTestId('hold-route')).toContainText('is recorded by Independent reviewing chair, not by your role');
+    await expect(page.getByTestId('hold-submit')).toBeDisabled();
+    await page.getByRole('dialog').getByRole('button', { name: 'Cancel', exact: true }).click();
+    await switchUser(page, 'usr_david_laird');
+    await page.goto('/meetings/mtg_aiden_review?phase=after');
+    await waitForData(page);
+    await page.getByRole('button', { name: 'Close meeting and update clocks' }).click();
+    await expect(page.getByTestId('hold-route')).toContainText('Review planning meeting held');
+    await page.getByTestId('outcome-rationale').fill('The plan is working. Attendance is up and the core group agreed the risks have reduced but not gone.');
+    await page.getByTestId('hold-submit').click();
+    await expect(page.getByText('Meeting closed')).toBeVisible();
+    await expect(page.getByTestId('meeting-history')).toContainText('Recorded on the case as Review planning meeting held');
+    // The chair's own ledger carries the closure.
+    await page.goto('/audit');
+    await waitForData(page);
     await expect(page.getByRole('table').getByText(/ held$/).first()).toBeVisible();
   });
 

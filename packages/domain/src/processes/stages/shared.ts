@@ -37,6 +37,13 @@ export interface TransitionContext {
   at: string;
   actor: TransitionActor;
   newId: (prefix: string) => string;
+  /** The subject's name, for the titles a transition writes; the case title stands in where it is not given. */
+  subjectName?: string;
+}
+
+/** Who a meeting or a plan is titled after: the person, where the store knows them. */
+export function caseName(process: Pick<Process, 'title'>, ctx: Pick<TransitionContext, 'subjectName'>): string {
+  return ctx.subjectName ?? process.title;
 }
 
 /** A dialog that already exists in the product, offered as the way to create what is missing. */
@@ -118,6 +125,8 @@ export interface Transition<P extends Process = Process, I = unknown> {
   repeatable?: boolean;
   /** Fired by the meeting workspace when a meeting of this type is held, not from the stepper. */
   firedBy?: readonly MeetingType[];
+  /** Schedules a meeting of these types: the schedule dialog routes the type through this transition. */
+  schedules?: readonly MeetingType[];
   /** Recorded through a dialog that already exists, rather than a form of its own. */
   via?: Creates;
   requires: (process: P) => MissingThing[];
@@ -195,6 +204,7 @@ export function buildMeeting(process: Process, type: MeetingType, title: string,
     viewsRecordIds: [],
     minute: { status: 'not-started' },
     distribution: [],
+    leftOff: input.leftOff && input.leftOff.length > 0 ? input.leftOff : undefined,
   };
 }
 

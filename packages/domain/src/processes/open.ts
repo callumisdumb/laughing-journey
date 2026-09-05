@@ -111,7 +111,7 @@ export interface OpeningInput {
   byName: string;
   byUserId?: string;
   /** MARAC only: the three people the referral is about, and the assessment behind it. */
-  marac?: { victimPersonId: string; perpetratorPersonId: string; childPersonIds: string[]; riskAssessmentId: string; repeat: boolean; previousHearingAt?: string; professionalJudgement: boolean };
+  marac?: { victimPersonId: string; perpetratorPersonId: string; childPersonIds: string[]; riskAssessmentId?: string; repeat: boolean; previousHearingAt?: string; professionalJudgement: boolean };
   /** MAPPA only: what makes them a subject. */
   mappa?: { category: MappaDetail['category']; level: MappaDetail['level']; leadResponsibleAuthority: MappaDetail['leadResponsibleAuthority']; visorReference: string };
   /** AWI only: the decision the person may lack capacity for. */

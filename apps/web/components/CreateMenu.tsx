@@ -16,6 +16,7 @@ import { StartProcessDialog } from '@/features/person/StartProcessDialog';
 import { AddEventDialog } from '@/features/chronology/AddEventDialog';
 import { AddPlanDialog } from '@/features/process/AddPlanDialog';
 import { AddActionDialog } from '@/features/actions/AddActionDialog';
+import { ScheduleMeetingDialog } from '@/features/meetings/ScheduleMeetingDialog';
 import { InvestigationDialog, SupervisionVisitDialog } from '@/features/process/forms/AwiRecordDialogs';
 import { DisclosureDecisionDialog } from '@/features/process/forms/DisclosureDecisionDialog';
 import { ProtectionOrderDialog } from '@/features/process/forms/ProtectionOrderDialog';
@@ -67,7 +68,7 @@ const ON_A_CASE: Option[] = [
 ];
 
 const ELSEWHERE: Option[] = [
-  { kind: 'meeting', icon: <CalendarDays size={16} aria-hidden="true" />, needs: 'nothing', go: '/meetings' },
+  { kind: 'meeting', icon: <CalendarDays size={16} aria-hidden="true" />, needs: 'process' },
   { kind: 'action', icon: <ListChecks size={16} aria-hidden="true" />, needs: 'process' },
   { kind: 'share', icon: <Send size={16} aria-hidden="true" />, needs: 'nothing', go: '/sharing' },
 ];
@@ -82,9 +83,9 @@ const ELSEWHERE: Option[] = [
  * create needs (a person, or a case), then opens the same dialog the screen would have opened. It is
  * the same code path, not a second one, which is why there is no risk of the two drifting.
  *
- * Three creates are not dialogs at all: a meeting, an action and a share are made on their own
- * screens with context those screens hold. The menu says so and takes you there rather than
- * pretending to a completeness it does not have.
+ * One create is not a dialog at all: a share is made on the sharing screen with the lawful basis
+ * chosen beside it. The menu says so and takes you there rather than pretending to a completeness
+ * it does not have.
  */
 export function CreateMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const t = useT();
@@ -271,6 +272,7 @@ export function CreateMenu({ open, onClose }: { open: boolean; onClose: () => vo
       ) : null}
       {running === 'plan' && chosen ? <AddPlanDialog process={chosen} open onClose={() => setRunning(null)} /> : null}
       {running === 'action' && chosen ? <AddActionDialog process={chosen} open onClose={() => setRunning(null)} /> : null}
+      {running === 'meeting' && chosen ? <ScheduleMeetingDialog process={chosen} open onClose={() => setRunning(null)} /> : null}
       {running === 'register' && chosen ? <RegisterEntryDialog process={chosen} open onClose={() => setRunning(null)} /> : null}
       {running === 'order' && chosen?.type === 'asp' ? <ProtectionOrderDialog process={chosen} open onClose={() => setRunning(null)} /> : null}
       {running === 'disclosure' && chosen?.type === 'mappa' ? <DisclosureDecisionDialog process={chosen} open onClose={() => setRunning(null)} /> : null}

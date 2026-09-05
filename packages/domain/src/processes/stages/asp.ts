@@ -1,7 +1,7 @@
 import { t } from '@mas/messages';
 import { ASP_INQUIRY_ACTIONS, type Agency, type AspInquiryAction, type ConsentStatus } from '../../enums';
 import type { AspProcess } from '../../schemas/process';
-import { buildMeeting, buildPlan, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransitionContext } from './shared';
+import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransitionContext } from './shared';
 
 /**
  * Adult support and protection, from an adult concern to closure (task section 1.2).
@@ -230,10 +230,11 @@ export const ASP_TRANSITIONS: Array<Transition<AspProcess, never>> = [
     to: ['investigation'],
     roles: [...SCHEDULERS],
     repeatable: true,
+    schedules: ['asp-case-conference'],
     requires: (process) => (process.detail.investigation ? [] : [{ code: 'investigationNotOpened', creates: { kind: 'transition', transition: 'asp-inquiry-outcome' } }]),
     validate: (input: ScheduleInput) => validateSchedule(input),
     apply: (process, input: ScheduleInput, ctx) => {
-      const meeting = buildMeeting(process, 'asp-case-conference', t('processes.transitions.meetingTitle.aspCaseConference', { title: process.title }), input, ctx);
+      const meeting = buildMeeting(process, 'asp-case-conference', t('processes.transitions.meetingTitle.aspCaseConference', { title: caseName(process, ctx) }), input, ctx);
       const summary = t('processes.transitions.summary.scheduled', { title: meeting.title, date: input.scheduledAt.slice(0, 10) });
       return outcome(process, 'investigation', summary, { followOn: [{ kind: 'meeting', meeting }], outbound: null, addMembers: chairAndMinuteTaker(input) });
     },
@@ -297,10 +298,11 @@ export const ASP_TRANSITIONS: Array<Transition<AspProcess, never>> = [
     to: ['protection-plan', 'support-plan', 'review'],
     roles: [...SCHEDULERS],
     repeatable: true,
+    schedules: ['asp-review-conference'],
     requires: (process) => (process.detail.planId ? [] : [{ code: 'planRequired', creates: { kind: 'dialog', dialog: 'plan' } }]),
     validate: (input: ScheduleInput) => validateSchedule(input),
     apply: (process, input: ScheduleInput, ctx) => {
-      const meeting = buildMeeting(process, 'asp-review-conference', t('processes.transitions.meetingTitle.aspReview', { title: process.title }), input, ctx);
+      const meeting = buildMeeting(process, 'asp-review-conference', t('processes.transitions.meetingTitle.aspReview', { title: caseName(process, ctx) }), input, ctx);
       const summary = t('processes.transitions.summary.scheduled', { title: meeting.title, date: input.scheduledAt.slice(0, 10) });
       return outcome(process, process.stage, summary, { followOn: [{ kind: 'meeting', meeting }], outbound: null, addMembers: chairAndMinuteTaker(input) });
     },

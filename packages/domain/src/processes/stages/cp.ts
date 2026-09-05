@@ -1,7 +1,7 @@
 import { t } from '@mas/messages';
 import { CP_CONCERNS, CP_DEREGISTRATION_REASONS, type Agency, type CpConcern, type CpDeregistrationReason } from '../../enums';
 import type { CpProcess } from '../../schemas/process';
-import { buildMeeting, buildPlan, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransitionContext, type TransitionOutcome } from './shared';
+import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransitionContext, type TransitionOutcome } from './shared';
 import { chairAndMinuteTaker } from './asp';
 
 /**
@@ -71,6 +71,8 @@ export interface CppmHeldInput {
 }
 
 export interface CoreGroupInput {
+  /** The scheduled core group meeting this records, where it was scheduled rather than recorded after the fact. */
+  meetingId?: string;
   heldAt: string;
   attendance: Array<{ userId?: string; name: string; present: boolean }>;
   progress: string;
@@ -128,6 +130,7 @@ export const CP_TRANSITIONS: Array<Transition<CpProcess, never>> = [
     from: ['concern'],
     to: ['ird'],
     roles: [...SOCIAL_WORK, 'detective-sergeant-ppu', 'concern-hub-officer'],
+    schedules: ['ird'],
     requires: () => [],
     validate: (input: ConveneIrdInput) => {
       const errors = validateSchedule(input);
@@ -136,7 +139,7 @@ export const CP_TRANSITIONS: Array<Transition<CpProcess, never>> = [
       return errors;
     },
     apply: (process, input: ConveneIrdInput, ctx) => {
-      const meeting = buildMeeting(process, 'ird', t('processes.transitions.meetingTitle.ird', { title: process.title }), input, ctx);
+      const meeting = buildMeeting(process, 'ird', t('processes.transitions.meetingTitle.ird', { title: caseName(process, ctx) }), input, ctx);
       const summary = t('processes.transitions.summary.irdConvened', { date: input.scheduledAt.slice(0, 10), outOfHours: input.outOfHours ? 'yes' : 'no' });
       const ird: NonNullable<CpProcess['detail']['ird']> = {
         meetingId: meeting.id,
@@ -253,6 +256,7 @@ export const CP_TRANSITIONS: Array<Transition<CpProcess, never>> = [
     to: ['investigation'],
     roles: [...SCHEDULERS],
     repeatable: true,
+    schedules: ['cppm', 'pre-birth-cppm'],
     requires: (process) => (process.detail.investigation ? [] : [{ code: 'investigationNotOpened', creates: { kind: 'transition', transition: 'cp-ird-decisions' } }]),
     validate: (input: ScheduleCppmInput) => [...validateSchedule(input), ...(input?.parents === 'excluded' ? requireText(input.parentsExcludedReason, 'parentsExcludedReasonRequired') : [])],
     apply: (process, input: ScheduleCppmInput, ctx) => scheduleCppm(process, input, ctx, preBirth(process) ? 'pre-birth-cppm' : 'cppm'),
@@ -323,6 +327,7 @@ export const CP_TRANSITIONS: Array<Transition<CpProcess, never>> = [
     to: ['childs-plan', 'review'],
     roles: [...SOCIAL_WORK, 'health-visitor', 'education-cp-lead', 'cp-nurse-adviser', 'chair'],
     repeatable: true,
+    firedBy: ['core-group'],
     requires: registered,
     validate: (input: CoreGroupInput) => [...(input.heldAt ? [] : ['dateRequired']), ...(input.attendance.some((a) => a.present) ? [] : ['attendanceRequired']), ...requireText(input.progress, 'progressRequired'), ...(input.significantChange ? requireText(input.changeNote, 'changeNoteRequired') : [])],
     apply: (process, input: CoreGroupInput) => {
@@ -344,6 +349,7 @@ export const CP_TRANSITIONS: Array<Transition<CpProcess, never>> = [
     to: ['childs-plan', 'review'],
     roles: [...SCHEDULERS],
     repeatable: true,
+    schedules: ['cppm-review'],
     requires: registered,
     validate: (input: ScheduleCppmInput) => [...validateSchedule(input), ...(input?.parents === 'excluded' ? requireText(input.parentsExcludedReason, 'parentsExcludedReasonRequired') : [])],
     apply: (process, input: ScheduleCppmInput, ctx) => scheduleCppm(process, input, ctx, 'cppm-review'),
@@ -442,7 +448,8 @@ export const CP_TRANSITIONS: Array<Transition<CpProcess, never>> = [
 ];
 
 function scheduleCppm(process: CpProcess, input: ScheduleCppmInput, ctx: TransitionContext, type: 'cppm' | 'pre-birth-cppm' | 'cppm-review'): TransitionOutcome {
-  const title = type === 'cppm-review' ? t('processes.transitions.meetingTitle.cppmReview', { title: process.title }) : type === 'pre-birth-cppm' ? t('processes.transitions.meetingTitle.preBirthCppm', { title: process.title }) : t('processes.transitions.meetingTitle.cppm', { title: process.title });
+  const name = caseName(process, ctx);
+  const title = type === 'cppm-review' ? t('processes.transitions.meetingTitle.cppmReview', { title: name }) : type === 'pre-birth-cppm' ? t('processes.transitions.meetingTitle.preBirthCppm', { title: name }) : t('processes.transitions.meetingTitle.cppm', { title: name });
   const meeting = buildMeeting(process, type, title, input, ctx);
   const leftOff = [...(input.leftOff ?? [])];
   if (input.parents === 'excluded') leftOff.push({ name: t('processes.transitions.parents'), reason: input.parentsExcludedReason ?? '' });

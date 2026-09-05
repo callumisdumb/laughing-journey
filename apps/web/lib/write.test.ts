@@ -246,9 +246,9 @@ describe('6. a write can complete clocks as well as start them', () => {
   let counter = 0;
   const newId = (prefix: string) => `${prefix}_${(counter += 1)}`;
 
-  it('applies the meeting transition table for a meeting type', () => {
+  it('completes and starts the rules a transition names, at the instant it names', () => {
     const clocks = [{ id: 'clk_1', ruleId: 'cp.cppm.initial', triggeredAt: '2026-08-01T09:00:00Z' }];
-    const result = applyClockTransition(clocks, { meetingType: 'cppm', at: '2026-08-20T10:00:00Z' }, now.toISOString(), newId);
+    const result = applyClockTransition(clocks, { completes: ['cp.cppm.initial'], starts: ['cp.coregroup.first', 'cp.cppm.review.first', 'cp.cppm.record.distribute'], at: '2026-08-20T10:00:00Z', note: 'CPPM held' }, now.toISOString(), newId);
     expect(result.completed).toEqual(['cp.cppm.initial']);
     expect(result.started).toEqual(['cp.coregroup.first', 'cp.cppm.review.first', 'cp.cppm.record.distribute']);
     expect(result.clocks.find((c) => c.id === 'clk_1')?.completedAt).toBe('2026-08-20T10:00:00Z');
