@@ -1,0 +1,116 @@
+.box {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 160px;
+  max-width: 520px;
+  margin-right: auto;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  color: var(--color-ink-3);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.input {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px 0 38px;
+  font-size: var(--text-base);
+  color: var(--color-ink-1);
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-3);
+  border-radius: var(--radius-pill);
+}
+
+.input::placeholder {
+  color: var(--color-ink-3);
+}
+
+.input:focus-visible {
+  border-color: var(--color-accent-1);
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 1px;
+}
+
+.list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  max-height: 420px;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  background: var(--color-paper-0);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+}
+
+.option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.option[aria-selected='true'] {
+  background: var(--color-accent-soft);
+}
+
+.optionName {
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.optionMeta {
+  grid-column: 1 / -1;
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.optionMarks {
+  display: flex;
+  gap: 4px;
+}
+
+/* What a row is, in front of why it matched, so the flat list still reads as grouped. */
+.tag {
+  margin-right: 6px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+}
+
+/*
+ * The way out of a suggestion list that has not found it. It is an option rather than a note,
+ * because a keyboard user has to be able to land on it.
+ */
+.showAll {
+  margin-top: 4px;
+  padding: 8px 10px;
+  font-size: var(--text-xs);
+  color: var(--color-ink-2);
+  border-top: 1px solid var(--color-line-1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.showAll[aria-selected='true'] {
+  background: var(--color-accent-soft);
+}
+
+/* The search box is the one thing on the bar that can give up width, so below 1024 it does. */
+:root[data-layout='narrow'] .box {
+  min-width: 0;
+}

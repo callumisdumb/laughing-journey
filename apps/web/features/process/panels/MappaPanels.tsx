@@ -1,0 +1,266 @@
+'use client';
+
+import { agencyShort, disclosureStatusLabel, eraStatusLabel, formatDate, formatDateTime, licenceConditionStatusLabel, mappaCategoryLabel, mappaExitKindLabel, mappaLevelLabel, researchStatusLabel, riskToolLabel, type MappaProcess } from '@mas/domain';
+import { useT } from '@mas/messages';
+import { AgencyMark, Button, KeyValue, Pill, RiskBand, Sheet, SheetBody, SheetHead, Table, TableWrap, useToast } from '@mas/ui';
+import { ShieldAlert } from 'lucide-react';
+import { useState } from 'react';
+import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { useWriteErrors } from '@/lib/writeErrors';
+import { DisclosureDecisionDialog } from '../forms/DisclosureDecisionDialog';
+import { MappaReferralDialog } from '../forms/MappaReferralDialog';
+import { RiskAssessmentDialog } from '../forms/RiskAssessmentDialog';
+import styles from './shared.module.css';
+
+export function MappaPanels({ process }: { process: MappaProcess }) {
+  const t = useT();
+  const data = useData();
+  const now = useNow();
+  const user = useCurrentUser();
+  const write = useAppStore((s) => s.write);
+  const readErrors = useWriteErrors();
+  const { toast } = useToast();
+  const [referralOpen, setReferralOpen] = useState(false);
+  const [disclosureOpen, setDisclosureOpen] = useState(false);
+  const [riskOpen, setRiskOpen] = useState(false);
+  const d = process.detail;
+  const risks = data.riskAssessments.filter((r) => d.riskAssessmentIds.includes(r.id) || r.processId === process.id);
+  const era = d.era;
+  const eraAddress = era?.proposedAddressId ? data.addresses.find((a) => a.id === era.proposedAddressId) : undefined;
+
+  function decideDisclosure(id: string, status: 'approved' | 'declined') {
+    if (!user) return;
+    const next = { ...d, disclosures: d.disclosures.map((x) => (x.id === id ? { ...x, status, decidedByName: `${user.givenName} ${user.familyName}`, decidedAt: now.toISOString() } : x)) };
+    const recipient = d.disclosures.find((x) => x.id === id)?.recipient ?? id;
+    const label = t('mappa.disclosures.decidedAudit', { status: disclosureStatusLabel(status), recipient });
+    // A disclosure decision is a chronology event in its own right (docs/RECORDS.md section 3),
+    // agency-only like the proposal, because it names a third party.
+    const result = write({
+      collection: 'processes',
+      record: { ...process, detail: next },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'process',
+      targetLabel: label,
+      processId: process.id,
+      versionChange: label,
+      event: { eventType: 'disclosure', significance: 'high', visibility: 'agency-only', title: label, detail: d.disclosures.find((x) => x.id === id)?.rationale ?? '', subjectIds: process.subjectIds, linkedProcessIds: [process.id] },
+    });
+    if (!result.ok) {
+      toast({ title: t('mappa.disclosures.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
+      return;
+    }
+    toast({ title: t('mappa.disclosures.decided.title', { status }), text: t('mappa.disclosures.decided.text', { status }), tone: 'success' });
+  }
+
+  return (
+    <>
+      <div className={styles.warn}>
+        <ShieldAlert size={16} aria-hidden="true" />
+        <span>{t('mappa.banner')}</span>
+      </div>
+
+      <div className={styles.stack}>
+        <Sheet data-testid="mappa-level">
+          <SheetHead title={t('mappa.level.title')} meta={mappaCategoryLabel(d.category)} actions={<Button size="sm" variant="secondary" onClick={() => setReferralOpen(true)} data-testid="refer-level">{t('mappa.level.refer')}</Button>} />
+          <SheetBody>
+            <div className={styles.bigLevel}>
+              <span className={styles.bigLevelNumeral}>{d.level}</span>
+              <span className={styles.bigLevelLabel}>{mappaLevelLabel(d.level)}</span>
+            </div>
+            <div className={styles.levelHistory} style={{ marginTop: 12 }}>
+              {d.levelHistory.map((h, i) => (
+                <span key={i}>{t('mappa.level.history', { level: h.level, date: formatDate(h.at), reason: h.reason })}</span>
+              ))}
+            </div>
+          </SheetBody>
+        </Sheet>
+        <Sheet>
+          <SheetHead title={t('mappa.identifiers.title')} />
+          <SheetBody>
+            <KeyValue
+              items={[
+                { key: t('mappa.identifiers.leadRa'), value: agencyShort(d.leadResponsibleAuthority) },
+                { key: t('mappa.identifiers.visor'), value: <span>{d.visorReference} <span className={styles.note}>{t('mappa.identifiers.visorNote')}</span></span> },
+                { key: t('mappa.identifiers.notification'), value: t('mappa.identifiers.notificationValue', { when: formatDateTime(d.notification.at), source: d.notification.source, name: d.notification.byName }) },
+                { key: t('mappa.identifiers.referral'), value: d.referral ? t('mappa.identifiers.referralValue', { when: formatDateTime(d.referral.at), name: d.referral.byName, reason: d.referral.reason }) : t('mappa.identifiers.noReferral') },
+                { key: t('mappa.identifiers.custody'), value: d.custody.releasedAt ? t('mappa.identifiers.released', { date: formatDate(d.custody.releasedAt), hasEstablishment: d.custody.establishment ? 'yes' : 'no', establishment: d.custody.establishment ?? '', hasLicence: d.custody.licenceExpiresAt ? 'yes' : 'no', licence: d.custody.licenceExpiresAt ? formatDate(d.custody.licenceExpiresAt) : '' }) : d.custody.establishment ? t('mappa.identifiers.inCustody', { establishment: d.custody.establishment }) : t('mappa.identifiers.notInCustody') },
+              ]}
+            />
+          </SheetBody>
+        </Sheet>
+      </div>
+
+      <div className={styles.grid2}>
+        <Sheet>
+          <SheetHead title={t('mappa.sonr.title')} />
+          <SheetBody>
+            <KeyValue
+              items={[
+                { key: t('mappa.sonr.subject'), value: d.sonr.subject ? t('common.answers.yes') : t('common.answers.no') },
+                { key: t('mappa.sonr.compliance'), value: <Pill size="sm" tone={d.sonr.compliant ? 'low' : 'critical'}>{d.sonr.compliant ? t('mappa.sonr.compliant') : t('mappa.sonr.nonCompliant')}</Pill> },
+                { key: t('mappa.sonr.lastNotification'), value: d.sonr.lastNotificationAt ? formatDate(d.sonr.lastNotificationAt) : t('common.keyValue.none') },
+                { key: t('mappa.sonr.nextDue'), value: d.sonr.nextDueAt ? formatDate(d.sonr.nextDueAt) : t('mappa.sonr.notSet') },
+                { key: t('mappa.sonr.end'), value: d.sonr.endsAt ? formatDate(d.sonr.endsAt) : t('mappa.sonr.indefinite') },
+              ]}
+            />
+          </SheetBody>
+        </Sheet>
+        <Sheet>
+          <SheetHead title={t('mappa.licence.title')} meta={t('mappa.licence.meta', { count: d.licenceConditions.filter((c) => c.status === 'active').length })} />
+          <SheetBody>
+            <ul className={styles.list}>
+              {d.licenceConditions.map((c) => (
+                <li key={c.id}>
+                  <Pill size="sm" tone={c.status === 'active' ? 'accent' : c.status === 'breached' ? 'critical' : 'outline'}>
+                    {licenceConditionStatusLabel(c.status)}
+                  </Pill>
+                  <span>{c.text}</span>
+                </li>
+              ))}
+            </ul>
+          </SheetBody>
+        </Sheet>
+      </div>
+
+      <Sheet data-testid="mappa-risk">
+        <SheetHead title={t('mappa.risk.title')} meta={t('mappa.risk.meta')} actions={process.status === 'open' ? <Button size="sm" variant="secondary" onClick={() => setRiskOpen(true)} data-testid="record-risk-assessment">{t('mappa.risk.record')}</Button> : undefined} />
+        <SheetBody flush>
+          <TableWrap style={{ border: 0, borderRadius: 0 }}>
+            <Table>
+              <thead>
+                <tr>
+                  <th scope="col">{t('mappa.risk.columns.tool')}</th>
+                  <th scope="col">{t('mappa.risk.columns.date')}</th>
+                  <th scope="col">{t('mappa.risk.columns.assessor')}</th>
+                  <th scope="col">{t('mappa.risk.columns.band')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {risks.map((r) => (
+                  <tr key={r.id}>
+                    <td>{riskToolLabel(r.tool)}</td>
+                    <td>{formatDate(r.assessedAt)}</td>
+                    <td>{t('mappa.risk.assessor', { name: r.assessorName, agency: agencyShort(r.assessorAgency) })}</td>
+                    <td>
+                      <RiskBand band={r.band} label={r.bandLabel} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </TableWrap>
+        </SheetBody>
+      </Sheet>
+
+      {d.rmp ? (
+        <Sheet data-testid="mappa-rmp">
+          <SheetHead title={t('mappa.rmp.title')} meta={t('mappa.rmp.meta', { date: formatDate(d.rmp.reviewedAt) })} />
+          <SheetBody>
+            <div className={styles.grid2}>
+              <KeyValue items={[{ key: t('mappa.rmp.triggers'), value: <ul>{d.rmp.triggers.map((x) => <li key={x}>{x}</li>)}</ul> }, { key: t('mappa.rmp.contingencies'), value: <ul>{d.rmp.contingencies.map((x) => <li key={x}>{x}</li>)}</ul> }, { key: t('mappa.rmp.controls'), value: <ul>{d.rmp.controls.map((x) => <li key={x}>{x}</li>)}</ul> }]} />
+              <KeyValue items={[{ key: t('mappa.rmp.victimSafety'), value: d.rmp.victimSafety }, { key: t('mappa.rmp.accommodation'), value: d.rmp.accommodation }, { key: t('mappa.rmp.employment'), value: d.rmp.employment }, { key: t('mappa.rmp.associates'), value: d.rmp.associates }]} />
+            </div>
+          </SheetBody>
+        </Sheet>
+      ) : null}
+
+      <div className={styles.grid2}>
+        <Sheet tone={era?.status === 'in-progress' ? 'accent' : 'default'}>
+          <SheetHead title={t('mappa.era.title')} meta={era ? t('mappa.era.meta', { status: eraStatusLabel(era.status), date: formatDate(era.startedAt), name: era.assessorName }) : t('mappa.era.notStarted')} />
+          <SheetBody>
+            {era ? (
+              <KeyValue
+                items={[
+                  { key: t('mappa.era.address'), value: eraAddress ? t('mappa.era.addressValue', { line1: eraAddress.line1, town: eraAddress.town, postcode: eraAddress.postcode }) : t('mappa.era.notRecorded') },
+                  { key: t('mappa.era.concerns'), value: <ul>{era.concerns.map((c) => <li key={c}>{c}</li>)}</ul> },
+                  { key: t('mappa.era.conclusion'), value: era.conclusion ?? t('mappa.era.pending') },
+                ]}
+              />
+            ) : null}
+          </SheetBody>
+        </Sheet>
+        <Sheet data-testid="mappa-returns">
+          <SheetHead title={t('mappa.returns.title')} meta={t('mappa.returns.meta', { hasDate: d.reviewSchedule.nextDueAt ? 'yes' : 'no', date: d.reviewSchedule.nextDueAt ? formatDate(d.reviewSchedule.nextDueAt) : '' })} />
+          <SheetBody>
+            <ul className={styles.list}>
+              {d.preMeetingReturns.map((r, i) => (
+                <li key={i}>
+                  <AgencyMark agency={r.agency} hideLabel />
+                  <span>
+                    <strong>{agencyShort(r.agency)}</strong> ({r.contact}): <Pill size="sm" tone={r.status === 'returned' ? 'low' : r.status === 'nothing-known' ? 'outline' : 'medium'}>{researchStatusLabel(r.status)}</Pill>
+                    {r.summary ? <span className={styles.listMeta} style={{ display: 'block' }}>{r.summary}</span> : null}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </SheetBody>
+        </Sheet>
+      </div>
+
+      <Sheet data-testid="mappa-disclosures">
+        <SheetHead title={t('mappa.disclosures.title')} meta={t('mappa.disclosures.meta')} actions={<Button size="sm" variant="secondary" onClick={() => setDisclosureOpen(true)} data-testid="propose-disclosure">{t('mappa.disclosures.propose')}</Button>} />
+        <SheetBody flush>
+          <TableWrap style={{ border: 0, borderRadius: 0 }}>
+            <Table>
+              <thead>
+                <tr>
+                  <th scope="col">{t('mappa.disclosures.columns.recipient')}</th>
+                  <th scope="col">{t('mappa.disclosures.columns.facts')}</th>
+                  <th scope="col">{t('mappa.disclosures.columns.rationale')}</th>
+                  <th scope="col">{t('mappa.disclosures.columns.status')}</th>
+                  <th scope="col">{t('mappa.disclosures.columns.decision')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {d.disclosures.length === 0 ? (
+                  <tr>
+                    <td colSpan={5}>{t('mappa.disclosures.empty')}</td>
+                  </tr>
+                ) : null}
+                {d.disclosures.map((x) => (
+                  <tr key={x.id}>
+                    <td>
+                      {x.recipient} <span className={styles.note}>({t(`mappa.disclosures.recipientKind.${x.recipientKind}` as 'mappa.disclosures.recipientKind.other')})</span>
+                    </td>
+                    <td>{x.factsToDisclose.join('; ')}</td>
+                    <td>{x.rationale}</td>
+                    <td>
+                      <Pill size="sm" tone={x.status === 'pending' ? 'medium' : x.status === 'declined' ? 'outline' : 'accent'}>
+                        {disclosureStatusLabel(x.status)}
+                      </Pill>
+                      {x.decidedByName ? <span className={styles.listMeta} style={{ display: 'block' }}>{t('mappa.disclosures.decidedBy', { name: x.decidedByName, date: x.decidedAt ? formatDate(x.decidedAt) : '' })}</span> : null}
+                    </td>
+                    <td>
+                      {x.status === 'pending' ? (
+                        <span className={styles.pills}>
+                          <Button size="sm" variant="primary" onClick={() => decideDisclosure(x.id, 'approved')}>
+                            {t('mappa.disclosures.approve')}
+                          </Button>
+                          <Button size="sm" variant="quiet" onClick={() => decideDisclosure(x.id, 'declined')}>
+                            {t('mappa.disclosures.decline')}
+                          </Button>
+                        </span>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </TableWrap>
+        </SheetBody>
+      </Sheet>
+
+      {d.exit ? (
+        <Sheet tone="well" data-testid="mappa-exit">
+          <SheetHead title={t('mappa.exit.title')} meta={t('mappa.exit.meta', { kind: mappaExitKindLabel(d.exit.kind), date: formatDate(d.exit.at) })} />
+          <SheetBody>{d.exit.note}</SheetBody>
+        </Sheet>
+      ) : null}
+
+      {referralOpen ? <MappaReferralDialog open onClose={() => setReferralOpen(false)} process={process} /> : null}
+      {disclosureOpen ? <DisclosureDecisionDialog process={process} open onClose={() => setDisclosureOpen(false)} /> : null}
+      {riskOpen ? <RiskAssessmentDialog process={process} open onClose={() => setRiskOpen(false)} /> : null}
+    </>
+  );
+}

@@ -1,0 +1,43 @@
+.label {
+  display: block;
+  font-weight: 700;
+}
+
+.id {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.version {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.date {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.source {
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.current {
+  padding: 10px 14px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  background: var(--color-paper-2);
+  border-radius: var(--radius-md);
+}
+
+.errors {
+  margin: 0;
+  padding: 10px 14px 10px 28px;
+  font-size: var(--text-sm);
+  color: var(--color-risk-critical);
+  background: var(--color-risk-critical-soft);
+  border-radius: var(--radius-md);
+}

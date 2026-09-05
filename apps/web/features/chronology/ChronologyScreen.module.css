@@ -1,0 +1,157 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--color-paper-2);
+  border-radius: var(--radius-pill);
+}
+
+.segment {
+  height: 30px;
+  padding: 0 12px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-ink-2);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+}
+
+.segment[aria-pressed='true'] {
+  color: var(--color-accent-1);
+  background: var(--color-paper-0);
+  box-shadow: var(--shadow-1);
+}
+
+.segment:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: -2px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: var(--text-sm);
+}
+
+.filterLabel {
+  font-weight: 700;
+  color: var(--color-ink-2);
+}
+
+.chip {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-pill);
+}
+
+.chip[aria-pressed='true'] {
+  color: var(--color-accent-1);
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent-1);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 2px;
+}
+
+.select {
+  height: 28px;
+  padding: 0 8px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-1);
+  background: var(--color-paper-0);
+  border: 1px solid var(--color-line-3);
+  border-radius: var(--radius-sm);
+}
+
+.lensPanel {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0;
+  padding: 12px 14px;
+  font-size: var(--text-sm);
+  background: var(--color-accent-soft);
+  border-left: 3px solid var(--color-accent-1);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.lensTitle {
+  font-weight: 700;
+  color: var(--color-accent-1);
+}
+
+.section {
+  margin-top: var(--density-gap);
+}
+
+.windowNote {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.analysisList {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.analysisNote {
+  display: grid;
+  gap: 4px;
+  padding: 10px 14px;
+  font-size: var(--text-sm);
+  background: var(--color-paper-1);
+  border-left: 3px solid var(--color-accent-1);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  cursor: pointer;
+}
+
+.analysisNote[data-selected='true'] {
+  background: var(--color-accent-soft);
+}
+
+.analysisMeta {
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+/*
+ * Below the list: what is not on it, and what can be done to the row that is selected. The count of
+ * retired entries lives here rather than in the list, because a row that is not shown cannot carry
+ * its own explanation.
+ */
+.listFoot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}

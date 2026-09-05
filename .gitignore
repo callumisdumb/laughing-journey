@@ -1,0 +1,21 @@
+node_modules/
+.pnpm-store/
+dist/
+out/
+.next/
+*.tsbuildinfo
+coverage/
+test-results/
+playwright-report/
+apps/desktop-tauri/src-tauri/target/
+apps/desktop-tauri/src-tauri/gen/
+apps/desktop-electron/release/
+packages/mock-data/dist/
+.DS_Store
+*.log
+.env.local
+
+# The contact sheet's HTML embeds every screenshot as a data URI (about 13 MB). The markdown
+# version is committed and renders on GitHub against the files; regenerate the HTML with
+# `pnpm contact-sheet` when you want a single file to open or host.
+docs/CONTACT-SHEET.html

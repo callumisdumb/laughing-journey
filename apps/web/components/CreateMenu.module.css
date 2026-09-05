@@ -1,0 +1,95 @@
+/* The global create action: a list of what can be made, then the one thing it needs to know. */
+
+.groups {
+  display: grid;
+  gap: 18px;
+}
+
+.groupTitle {
+  margin: 0 0 6px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: 8px;
+}
+
+.option {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  min-height: 44px;
+  padding: 10px 12px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: var(--color-paper-0);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.option:hover {
+  background: var(--color-paper-1);
+  border-color: var(--color-line-3);
+}
+
+.option:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 2px;
+}
+
+.optionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--color-accent-1);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-sm);
+}
+
+.optionText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.optionLabel {
+  font-weight: 700;
+}
+
+.optionHint {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.chosen {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  font-size: var(--text-sm);
+  background: var(--color-paper-1);
+  border-left: 3px solid var(--color-accent-1);
+  border-radius: var(--radius-sm);
+}
+
+.chosenLabel {
+  font-weight: 700;
+  color: var(--color-ink-2);
+}
+
+.empty {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}

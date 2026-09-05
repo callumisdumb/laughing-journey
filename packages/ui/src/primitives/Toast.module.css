@@ -1,0 +1,77 @@
+.region {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(380px, calc(100vw - 40px));
+}
+
+.toast {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  font-size: var(--text-base);
+  color: var(--color-ink-1);
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-2);
+  border-left: 3px solid var(--color-accent-1);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+  animation: settle-in var(--dur-base) var(--ease-standard);
+}
+
+.toast[data-tone='error'] {
+  border-left-color: var(--color-risk-critical);
+}
+
+.toast[data-tone='success'] {
+  border-left-color: var(--color-risk-low);
+}
+
+.toastText {
+  flex: 1;
+}
+
+.toastTitle {
+  font-weight: 700;
+}
+
+@keyframes settle-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*
+ * The one action a toast may carry. Underlined rather than a button box, because a toast is a
+ * notice and a filled button in one reads as the primary action on the screen, which it is not.
+ */
+.toastAction {
+  min-height: 32px;
+  margin-top: 2px;
+  padding: 4px 0;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: underline;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-underline-offset: 3px;
+}
+
+.toastAction:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}

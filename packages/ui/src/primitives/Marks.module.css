@@ -1,0 +1,107 @@
+.agency {
+  --mark-gap: 6px;
+
+  display: inline-flex;
+  gap: var(--mark-gap);
+  align-items: center;
+  min-width: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-1);
+}
+
+.agency[data-size='lg'] {
+  font-size: var(--text-base);
+}
+
+.agencyGlyph {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--agency-colour);
+}
+
+.agencyLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agencyLabel[data-coloured='true'] {
+  font-weight: 700;
+  color: var(--agency-colour);
+}
+
+.process {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px 0 6px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-accent-1);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-pill);
+}
+
+.process[data-restricted='true'] {
+  color: var(--color-on-accent);
+  background: var(--color-ink-1);
+}
+
+.processStage {
+  font-weight: 400;
+  color: var(--color-ink-2);
+}
+
+.process[data-restricted='true'] .processStage {
+  color: var(--color-on-accent);
+  opacity: 0.85;
+}
+
+.risk {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px 0 7px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--risk-colour);
+  background: var(--risk-soft);
+  border-radius: var(--radius-pill);
+}
+
+.risk[data-size='lg'] {
+  height: 30px;
+  padding: 0 12px 0 9px;
+  font-size: var(--text-base);
+}
+
+.risk[data-band='critical'] {
+  --risk-colour: var(--color-risk-critical);
+  --risk-soft: var(--color-risk-critical-soft);
+}
+
+.risk[data-band='high'] {
+  --risk-colour: var(--color-risk-high);
+  --risk-soft: var(--color-risk-high-soft);
+}
+
+.risk[data-band='medium'] {
+  --risk-colour: var(--color-risk-medium);
+  --risk-soft: var(--color-risk-medium-soft);
+}
+
+.risk[data-band='low'] {
+  --risk-colour: var(--color-risk-low);
+  --risk-soft: var(--color-risk-low-soft);
+}
+
+.risk[data-band='unknown'] {
+  --risk-colour: var(--color-risk-unknown);
+  --risk-soft: var(--color-risk-unknown-soft);
+}
+

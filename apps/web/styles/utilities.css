@@ -1,0 +1,19 @@
+/* The only file where !important is permitted, for print and state overrides. */
+.print-only {
+  display: none !important;
+}
+
+@media print {
+  .print-only {
+    display: block !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Inactive tab panels and anything else the markup hides stay out of layout whatever their display rule. */
+[hidden] {
+  display: none !important;
+}

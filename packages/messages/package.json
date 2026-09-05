@@ -1,0 +1,39 @@
+{
+  "name": "@mas/messages",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The editable message catalogue: every string a person can see or hear, ICU MessageFormat, one locale file per language",
+  "exports": {
+    ".": "./src/index.ts",
+    "./en-GB.json": "./src/en-GB.json",
+    "./en-GB.context.json": "./src/en-GB.context.json"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@formatjs/icu-messageformat-parser": "3.5.17",
+    "intl-messageformat": "11.2.14"
+  },
+  "peerDependencies": {
+    "react": "^19"
+  },
+  "devDependencies": {
+    "@mas/eslint-config": "workspace:*",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "22.20.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "@vitejs/plugin-react": "6.1.1",
+    "eslint": "9.39.5",
+    "jsdom": "30.0.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  }
+}

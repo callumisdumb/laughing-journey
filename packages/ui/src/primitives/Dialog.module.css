@@ -1,0 +1,223 @@
+/**
+ * The dialog is centred by rules of its own, not by the user agent's.
+ *
+ * Tailwind's preflight emits `*, ::after, ::before, ::backdrop { margin: 0 }`, which zeroes the user
+ * agent's `dialog { margin: auto }`. That is what centres a modal dialog against its two zero
+ * insets, so with the margin gone every modal in the product rendered pinned to the top left with a
+ * correct width, which is exactly the signature the review reported.
+ *
+ * So the centring is stated here in full rather than inherited: position, insets and margin
+ * together, at a specificity a universal selector cannot reach. `tooling/dialog-margin-guard.mjs`
+ * reads the compiled CSS and fails the build if anything resolves `dialog` or `.dialog` back to a
+ * zero margin, because this bug must not be able to return silently.
+ */
+.dialog {
+  --dialog-pad: var(--density-pad);
+  --dialog-inset: 24px;
+  --dialog-width: 34rem;
+
+  position: fixed;
+  inset: 0;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(var(--dialog-width), calc(100vw - 2 * var(--dialog-inset)));
+  max-height: calc(100dvh - 2 * var(--dialog-inset));
+  margin: auto;
+  padding: 0;
+  color: var(--color-ink-1);
+  background: var(--color-paper-0);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+}
+
+/* Confirmations. */
+.dialog[data-size='sm'] {
+  --dialog-width: 24rem;
+}
+
+/* Most forms. */
+.dialog[data-size='md'] {
+  --dialog-width: 34rem;
+}
+
+/* The long statutory forms: the DAQ, the three-point test, the capacity assessment. */
+.dialog[data-size='lg'] {
+  --dialog-width: 46rem;
+}
+
+/* The meeting pack builder and the sharing preview, which want the width they can get. */
+.dialog[data-size='full'] {
+  --dialog-width: calc(100vw - 2 * var(--dialog-inset));
+
+  max-width: 1200px;
+}
+
+/**
+ * The edge placements, for the panels that belong against a side of the screen rather than in the
+ * middle of it: the context drawer and the navigation rail, once the viewport is too narrow to dock
+ * them as columns. Same primitive, same top layer, same focus trap, same Escape, same scroll lock.
+ *
+ * The centring margin is replaced rather than removed. `margin-inline-start: auto` against two zero
+ * insets pushes the panel to the end edge and keeps the block margins at `auto`, so nothing here
+ * reintroduces the zero margin the guard exists to catch.
+ */
+.dialog[data-placement='inline-end'],
+.dialog[data-placement='inline-start'] {
+  --dialog-inset: 0px;
+
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(var(--dialog-width), calc(100vw - 3rem));
+  height: 100dvh;
+  max-height: none;
+  border-radius: 0;
+}
+
+.dialog[data-placement='inline-end'] {
+  margin-inline: auto 0;
+  border-inline-end: 0;
+}
+
+.dialog[data-placement='inline-start'] {
+  margin-inline: 0 auto;
+  border-inline-start: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dialog[data-placement='inline-end'][open] {
+    animation: dialog-in-end var(--dur-base) var(--ease-standard);
+  }
+
+  .dialog[data-placement='inline-start'][open] {
+    animation: dialog-in-start var(--dur-base) var(--ease-standard);
+  }
+}
+
+@keyframes dialog-in-end {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+
+@keyframes dialog-in-start {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+}
+
+.dialog::backdrop {
+  background: rgb(34 32 27 / 45%);
+}
+
+/**
+ * `display` belongs here and not on `.dialog`, because the user agent closes a dialog with
+ * `dialog:not([open]) { display: none }` and a class that sets `display` unconditionally beats it.
+ * A closed dialog then stays in the layout as a full-viewport fixed box with `inset: 0`, invisible
+ * but intercepting every click that lands inside its band. That is what the regression spec caught
+ * first: the trigger button was visible and enabled and the click never resolved, at 1440 and below,
+ * where the centred box happened to cover it.
+ */
+.dialog[open] {
+  display: grid;
+  animation: dialog-in var(--dur-base) var(--ease-standard);
+}
+
+.head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--dialog-pad) var(--dialog-pad) calc(var(--dialog-pad) * 0.6);
+  border-bottom: 1px solid transparent;
+}
+
+.title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+/**
+ * `minmax(0, 1fr)` on this row plus `overflow: auto` here is what makes a tall form submittable:
+ * the body takes the space left over and scrolls inside it, so the footer stays on screen. Without
+ * it the three-point test runs off the bottom of the viewport and its primary action is unreachable,
+ * which on camera is a demo that stops.
+ */
+.body {
+  padding: calc(var(--dialog-pad) * 0.7) var(--dialog-pad);
+  overflow: auto;
+}
+
+/* Scroll shadows: the body says there is more, above and below, without a scrollbar to read. */
+.body[data-scroll-top='true'] {
+  border-top: 1px solid var(--color-line-1);
+  box-shadow: inset 0 8px 8px -8px rgb(34 32 27 / 18%);
+}
+
+.body[data-scroll-bottom='true'] {
+  border-bottom: 1px solid var(--color-line-1);
+  box-shadow: inset 0 -8px 8px -8px rgb(34 32 27 / 18%);
+}
+
+.body[data-scroll-top='true'][data-scroll-bottom='true'] {
+  box-shadow:
+    inset 0 8px 8px -8px rgb(34 32 27 / 18%),
+    inset 0 -8px 8px -8px rgb(34 32 27 / 18%);
+}
+
+.foot {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: calc(var(--dialog-pad) * 0.6) var(--dialog-pad) var(--dialog-pad);
+  border-top: 1px solid var(--color-line-1);
+}
+
+/* The validation summary sits at the top of the body and takes focus, so a keyboard user lands on it. */
+.errors {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  color: var(--color-ink-1);
+  background: var(--color-risk-critical-soft);
+  border-left: 3px solid var(--color-risk-critical);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.errors:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 2px;
+}
+
+.errorsTitle {
+  font-weight: 700;
+}
+
+.errorsList {
+  margin-top: 4px;
+  padding-left: 18px;
+  list-style: disc;
+}
+
+/* Destructive confirmations read as different before the reader gets to the button. */
+.dialog[data-tone='destructive'] .head {
+  border-bottom-color: var(--color-risk-critical);
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog[open] {
+    animation: none;
+  }
+}

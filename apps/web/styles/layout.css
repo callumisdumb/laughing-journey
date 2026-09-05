@@ -1,0 +1,171 @@
+/**
+ * App shell grid. Components style their own insides.
+ *
+ * Every track width here is chosen by `data-layout` on the document element, which one module sets
+ * from the viewport width (`apps/web/lib/layout.ts`). There are deliberately no media queries in
+ * this file: the layout used to take its columns from breakpoints here and its component states
+ * from the appearance store, so at 1100px the rail's track was 72px while the rail still rendered
+ * its expanded contents, which want 125px. That is a clipped rail, not a collapsed one. One
+ * attribute drives both, so they cannot disagree.
+ */
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--rail-track) minmax(0, 1fr) var(--drawer-track);
+  grid-template-rows: var(--topbar-height) minmax(0, 1fr);
+  grid-template-areas:
+    'rail topbar drawer'
+    'rail content drawer';
+  height: 100vh;
+  background: var(--color-paper-0);
+}
+
+/**
+ * The two side tracks are fixed, and the record takes what is left. `minmax(0, 1fr)` on the middle
+ * is what stops a wide table pushing the record's track past the viewport and dragging the drawer
+ * off the right-hand edge; the side elements carry a matching `min-width` of their own, so content
+ * inside them cannot widen a track either. Both halves of that are needed: the track constrains the
+ * element, and the `min-width` stops the element asking for more.
+ */
+:root[data-layout='wide'] {
+  --rail-track: var(--rail-width);
+  --drawer-track: var(--drawer-width);
+}
+
+:root[data-layout='standard'] {
+  --rail-track: var(--rail-width);
+  --drawer-track: var(--drawer-width-standard);
+}
+
+/* Below 1280 an expanded rail and a docked drawer leave the record less than half the screen. */
+:root[data-layout='compact'] {
+  --rail-track: var(--rail-width-collapsed);
+  --drawer-track: 0px;
+}
+
+/* Below 1024 the chrome gets out of the way entirely. This is also the 400 percent zoom case. */
+:root[data-layout='narrow'] {
+  --rail-track: 0px;
+  --drawer-track: 0px;
+}
+
+/* The default before the boot script runs, and on the server, where there is no viewport to read. */
+:root {
+  --rail-track: var(--rail-width);
+  --drawer-track: var(--drawer-width-standard);
+}
+
+/* A person can still collapse either column by hand in the modes where it is a column at all. */
+.app-shell[data-rail='collapsed'] {
+  --rail-track: var(--rail-width-collapsed);
+}
+
+.app-shell[data-drawer='collapsed'] {
+  --drawer-track: var(--drawer-width-collapsed);
+}
+
+/* The chair's meeting view and the configuration screens have no selection, so no drawer (D-026). */
+.app-shell[data-chrome='minimal'] {
+  --rail-track: var(--rail-width-collapsed);
+  --drawer-track: 0px;
+}
+
+.app-shell[data-chrome='wide'] {
+  --drawer-track: 0px;
+}
+
+/* With a track at zero the element leaves the page, so nothing overflows or stays in the tab order. */
+.app-shell[data-chrome='minimal'] > aside,
+.app-shell[data-chrome='wide'] > aside,
+:root[data-layout='compact'] .app-shell > aside,
+:root[data-layout='narrow'] .app-shell > aside,
+:root[data-layout='narrow'] .app-shell > nav {
+  display: none;
+}
+
+/**
+ * The record's own columns respond to the space the record has, not the space the window has. A two
+ * column panel inside an 832px record at 1440 and inside an 832px record at 1920 should look the
+ * same, and under a media query it does not. Declaring the content area a container is what makes
+ * `@container record (...)` available to every panel inside it.
+ */
+.app-content {
+  grid-area: content;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  container: record / inline-size;
+}
+
+.page {
+  width: 100%;
+  max-width: calc(var(--content-max) + var(--content-gutter) * 2);
+  margin: 0 auto;
+  padding: var(--density-pad) var(--content-gutter) calc(var(--density-pad) * 2);
+}
+
+.page[data-width='wide'] {
+  max-width: none;
+}
+
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--density-gap) var(--content-gutter);
+}
+
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--density-gap);
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--density-pad);
+}
+
+.page-head-text {
+  min-width: 0;
+}
+
+.page-lede {
+  margin-top: 4px;
+  color: var(--color-ink-2);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--density-gap);
+}
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/**
+ * The twelve column content grid halves below 1024, so a `span 6` half becomes a full row rather
+ * than a column too narrow to read. Expressed on the layout mode like everything else, so there is
+ * one definition of where 1024 is.
+ */
+:root[data-layout='narrow'] .grid-12 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+
+/*
+ * The trail sits above the record rather than inside each screen, because every screen would
+ * otherwise have to remember to render it and one of them would not. Same gutters as the page, and
+ * no vertical space at all when the trail has nothing to show.
+ */
+.page-trail:not(:empty) {
+  width: 100%;
+  max-width: calc(var(--content-max) + var(--content-gutter) * 2);
+  margin: 0 auto;
+  padding: var(--density-pad) var(--content-gutter) 0;
+}
+
+.page-trail:not(:empty) + .page {
+  padding-top: 8px;
+}

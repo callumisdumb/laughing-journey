@@ -1,0 +1,62 @@
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--density-gap) var(--content-gutter);
+}
+
+.cardItem {
+  display: flex;
+  min-width: 0;
+}
+
+.card {
+  flex: 1;
+}
+
+.cardTitle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.cardBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.purpose {
+  max-width: none;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.cardMeta {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 4px 12px;
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.cardMeta dt {
+  color: var(--color-ink-3);
+}
+
+.cardMeta dd {
+  margin: 0;
+}
+
+.cardLink {
+  margin-top: auto;
+  font-weight: 700;
+}
+
+.footnote {
+  max-width: none;
+  margin-top: var(--density-gap);
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}

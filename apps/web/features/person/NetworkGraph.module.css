@@ -1,0 +1,121 @@
+.graph {
+  --node-label: 0.9375rem;
+
+  width: 100%;
+  overflow: hidden;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.edge {
+  stroke: var(--color-line-2);
+  stroke-width: 1.5;
+}
+
+.edge[data-household='true'] {
+  stroke: var(--color-ink-2);
+}
+
+.node circle {
+  fill: var(--color-paper-0);
+  stroke: var(--color-ink-2);
+  stroke-width: 2;
+}
+
+.node[data-household='true'] circle {
+  fill: var(--color-paper-2);
+  stroke: var(--color-ink-1);
+}
+
+.node[data-subject='true'] circle {
+  fill: var(--color-accent-1);
+  stroke: var(--color-accent-1);
+}
+
+.node[data-concern='true'] circle {
+  stroke: var(--color-risk-high);
+  stroke-dasharray: 3 2;
+}
+
+.name {
+  font-size: var(--node-label);
+  font-weight: 700;
+  fill: var(--color-ink-1);
+}
+
+.relation {
+  font-size: var(--node-label);
+  fill: var(--color-ink-3);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.legendItem {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--color-ink-1);
+  border-radius: 50%;
+}
+
+.swatch[data-kind='household'] {
+  background: var(--color-paper-2);
+}
+
+.swatch[data-kind='other'] {
+  border-color: var(--color-ink-2);
+}
+
+.swatch[data-kind='concern'] {
+  border-color: var(--color-risk-high);
+  border-style: dashed;
+}
+
+/*
+ * The list of people around this person, which is now real content rather than a hidden
+ * alternative to the diagram: it is the only way to reach a relative's record from here.
+ */
+.people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.person {
+  display: inline-flex;
+  gap: 6px;
+  align-items: baseline;
+  padding: 4px 10px;
+  font-size: var(--text-sm);
+  background: var(--color-paper-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+}
+
+/* Household is a solid edge in the diagram, so it is a solid border here. */
+.person[data-household='true'] {
+  border-color: var(--color-line-2);
+}
+
+.personRelation {
+  color: var(--color-ink-3);
+}

@@ -1,0 +1,38 @@
+/* The verification result: a plain statement, not a badge doing the talking. */
+.result {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  font-size: var(--text-sm);
+  background: var(--color-paper-2);
+  border-radius: var(--radius-md);
+}
+
+.result[data-ok='false'] {
+  color: var(--color-risk-critical);
+  background: var(--color-risk-critical-soft);
+}
+
+.note {
+  max-width: 80ch;
+  margin: 0 0 8px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.opaque {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* The broken entry, marked on the row so a reader's eye lands on it rather than on the summary. */
+.brokenRow th,
+.brokenRow td {
+  color: var(--color-risk-critical);
+  background: var(--color-risk-critical-soft);
+}

@@ -1,0 +1,21 @@
+appId: uk.person360.app
+productName: Person360
+artifactName: Person360-${version}-${os}-${arch}.${ext}
+directories:
+  output: release
+files:
+  - dist/**
+  - package.json
+extraResources:
+  - from: ../web/out
+    to: web/out
+  - from: ../../packages/messages/src/en-GB.json
+    to: en-GB.json
+mac:
+  category: public.app-category.productivity
+  target: [dmg]
+win:
+  target: [nsis, msi]
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

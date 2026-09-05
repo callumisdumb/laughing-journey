@@ -1,0 +1,236 @@
+.head {
+  display: grid;
+
+  /* The same two-column header as the person record, and the same floor on the identity column (D-200). */
+  grid-template-columns: minmax(min(28ch, 100%), 1fr) auto;
+  gap: 10px var(--content-gutter);
+  align-items: start;
+  margin-bottom: var(--density-gap);
+}
+
+:root[data-layout='narrow'] .head {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ref {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.subjects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 6px;
+  font-size: var(--text-base);
+  color: var(--color-ink-2);
+}
+
+/** Under the marking: who raised or lowered it and why, so a reader knows it was not derived. */
+.overrideNote {
+  max-width: 68ch;
+  margin-top: 6px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.headActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.banner {
+  margin-bottom: var(--density-gap);
+  border-radius: var(--radius-md);
+}
+
+.stepper {
+  margin-bottom: var(--density-gap);
+  padding: 12px 14px;
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-1);
+  border-radius: var(--radius-lg);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+  gap: var(--density-gap) var(--content-gutter);
+  align-items: start;
+}
+
+/*
+ * The two columns become one when the record itself is narrow, not when the window is. A container
+ * query rather than a media query because the record is 872px at 1440 and 1312px at 1920 with the
+ * same chrome, and 952px at 1024 with none: the number that decides whether two columns fit is the
+ * record's, and the window's does not predict it.
+ */
+@container record (width < 44rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.main,
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--density-gap);
+  min-width: 0;
+}
+
+/*
+ * A grid item's `min-width` defaults to `auto`, which is its min-content width, so a full-width row
+ * holding anything with a wide minimum sets the track for the whole layout: at a 320px record this
+ * row's min-content was 453px and both columns above it inherited that. Explicitly zero, so the
+ * track comes from the layout and the content inside scrolls in its own box where it has to.
+ */
+.wide {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+/* A clock links to the timescale rule that sets it; the link must not repaint the numeral. */
+.clockLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius-md);
+}
+
+.clockLink:hover {
+  background: var(--color-paper-2);
+}
+
+.clockLink:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 2px;
+}
+
+.clockList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.members {
+  display: grid;
+  gap: 8px;
+}
+
+.member {
+  display: grid;
+  gap: 2px;
+  font-size: var(--text-sm);
+}
+
+.memberName {
+  font-weight: 700;
+}
+
+.memberMeta {
+  color: var(--color-ink-3);
+}
+
+.meetingList {
+  display: grid;
+  gap: 8px;
+}
+
+.meeting {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 2px 10px;
+  padding: 8px 10px;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  color: inherit;
+  background: var(--color-paper-0);
+  border: 1px solid var(--color-line-1);
+  border-radius: var(--radius-md);
+}
+
+.meeting:hover {
+  border-color: var(--color-ink-2);
+}
+
+.meetingDate {
+  grid-row: span 2;
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.meetingTitle {
+  font-weight: 700;
+}
+
+.meetingMeta {
+  color: var(--color-ink-3);
+}
+
+.summaryOnly {
+  padding: 12px 14px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  background: var(--color-paper-2);
+  border-radius: var(--radius-md);
+}
+
+.actionsTable td {
+  font-size: var(--text-sm);
+}
+
+.overdue {
+  font-weight: 700;
+  color: var(--color-risk-critical);
+}
+
+.voices {
+  display: grid;
+  gap: 16px;
+}
+
+@media (width <= 1279px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sheetActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* The plans a case holds, each with its own add action control, above the actions table. */
+.planList {
+  margin: 0;
+  padding: 0 var(--density-pad);
+  list-style: none;
+}
+
+.planRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: var(--text-sm);
+  border-bottom: 1px solid var(--color-line-1);
+}

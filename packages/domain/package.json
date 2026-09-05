@@ -1,0 +1,30 @@
+{
+  "name": "@mas/domain",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "docs:data-model": "tsx scripts/generate-data-model.ts",
+    "docs:verification-table": "tsx scripts/generate-verification-table.ts"
+  },
+  "dependencies": {
+    "@mas/messages": "workspace:*",
+    "date-fns": "4.4.0",
+    "date-fns-tz": "3.2.0",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@mas/eslint-config": "workspace:*",
+    "eslint": "9.39.5",
+    "tsx": "4.23.13",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11",
+    "@types/node": "22.20.1"
+  }
+}

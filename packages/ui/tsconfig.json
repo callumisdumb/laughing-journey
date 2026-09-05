@@ -1,0 +1,5 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "jsx": "react-jsx", "types": ["node", "react", "react-dom", "vitest/globals"] },
+  "include": ["src", "css-modules.d.ts"]
+}

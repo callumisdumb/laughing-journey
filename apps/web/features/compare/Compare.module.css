@@ -1,0 +1,111 @@
+/*
+ * Two people, one record, one window.
+ *
+ * The panels are the real screens rather than a summary of what the rules would say, so the layout
+ * has to give each one a proper record width and then get out of the way. At 1920 that is two
+ * panels at about 900 each, or three at 620 with the host panel, which is narrower than the product
+ * ever runs but is enough for the point being made: the difference between the panels is visible
+ * from the back of a room.
+ */
+.page {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.panels {
+  display: grid;
+  grid-template-columns: repeat(var(--compare-columns, 2), minmax(0, 1fr));
+  gap: 12px;
+  min-height: 0;
+}
+
+/* Below the width two records need, the panels stack rather than being squeezed into columns. */
+@media (max-width: 1279px) {
+  .panels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-lg);
+}
+
+.panelHead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  padding: 10px 14px;
+  background: var(--color-paper-2);
+  border-bottom: 1px solid var(--color-line-2);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.panelWho {
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.panelRole {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.panelAccess {
+  margin-left: auto;
+}
+
+/*
+ * Each panel is its own record container, so the screens inside choose their layout from the panel
+ * rather than from the window. Without this both panels would read the window as wide and lay
+ * themselves out for a width neither of them has.
+ */
+.panelBody {
+  min-width: 0;
+  padding: 0 4px;
+  overflow: auto;
+  container: record / inline-size;
+}
+
+.host {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  font-size: var(--text-sm);
+}
+
+.hostLede {
+  margin: 0;
+  color: var(--color-ink-3);
+}
+
+.hostRow {
+  display: grid;
+  grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+  gap: 4px 10px;
+}
+
+.hostKey {
+  color: var(--color-ink-3);
+}
+
+.hostValue {
+  min-width: 0;
+  font-family: var(--font-mono);
+  word-break: break-all;
+}
