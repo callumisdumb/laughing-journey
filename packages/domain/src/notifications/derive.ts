@@ -11,7 +11,7 @@ import type { Meeting } from '../schemas/meeting';
 import type { Notification, NotificationKind, NotificationRole, NotificationSource } from '../schemas/notification';
 import type { Relationship } from '../schemas/person';
 import type { Process } from '../schemas/process';
-import type { InformationRequest, SharingRecord } from '../schemas/sharing';
+import type { InformationRequest, SharingRecord, InvolvementRequest } from '../schemas/sharing';
 import type { User } from '../schemas/user';
 import { localDateOf } from '../dates';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -187,6 +187,17 @@ export function informationRequestNotifications(before: InformationRequest | und
   if (before.status === 'open' && after.status !== 'open' && after.fromUserId) {
     return [draft('request-returned', 'request', after.id, { toUserId: after.fromUserId }, { ...base, keySuffix: after.status })];
   }
+  return [];
+}
+
+/**
+ * A request to be involved lands with the case's lead; the decision goes back to whoever asked,
+ * with the decision in the key so the two outcomes read differently.
+ */
+export function involvementNotifications(before: InvolvementRequest | undefined, after: InvolvementRequest, leadUserId: string | undefined): NotificationDraft[] {
+  const base = { processId: after.processId };
+  if (!before) return leadUserId ? [draft('involvement-requested', 'involvement', after.id, { toUserId: leadUserId }, base)] : [];
+  if (before.status === 'pending' && after.status !== 'pending') return [draft('involvement-decided', 'involvement', after.id, { toUserId: after.requesterUserId }, { ...base, keySuffix: after.status })];
   return [];
 }
 

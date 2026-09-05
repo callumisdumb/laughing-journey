@@ -234,3 +234,12 @@
   font-size: var(--text-sm);
   border-bottom: 1px solid var(--color-line-1);
 }
+
+/* A request to be involved that is waiting on the lead sits where the button was, and says so. */
+.pendingInvolvement {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}

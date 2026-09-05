@@ -693,6 +693,27 @@ Variant 5
 | `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
 | `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
+### InvolvementRequest
+
+| Field | Type | Required |
+|---|---|---|
+| `id` | string | yes |
+| `synthetic` | literal true | yes |
+| `processId` | string | yes |
+| `requesterUserId` | string | yes |
+| `requesterName` | string | yes |
+| `requesterAgency` | enum (11 values) | yes |
+| `requesterRoleId` | enum (38 values) | yes |
+| `reason` | string | yes |
+| `status` | "pending" \| "accepted" \| "declined" | yes |
+| `createdAt` | string (date-time) | yes |
+| `decidedAt` | string (date-time) | no |
+| `decidedByUserId` | string | no |
+| `decidedByName` | string | no |
+| `decisionNote` | string | no |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
+
 ### Notification
 
 | Field | Type | Required |

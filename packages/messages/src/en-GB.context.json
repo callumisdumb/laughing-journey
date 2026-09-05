@@ -9567,6 +9567,9 @@
       "alertTextRequired": {
         "where": "Refusal listed on the add an alert dialog"
       },
+      "alreadyMember": {
+        "where": "Refusals from the write pipeline for involvement requests."
+      },
       "alreadyRecordedInError": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"
       },
@@ -9779,6 +9782,24 @@
       },
       "inviteesRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "involvementDecided": {
+        "where": "Refusals from the write pipeline for involvement requests."
+      },
+      "involvementExcluded": {
+        "where": "Refusals from the write pipeline for involvement requests."
+      },
+      "involvementMissing": {
+        "where": "Refusals from the write pipeline for involvement requests."
+      },
+      "involvementNotYours": {
+        "where": "Refusals from the write pipeline for involvement requests."
+      },
+      "involvementPending": {
+        "where": "Refusals from the write pipeline for involvement requests."
+      },
+      "involvementReasonRequired": {
+        "where": "Refusals from the write pipeline for involvement requests."
       },
       "irdTripartiteRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -19053,6 +19074,86 @@
         "maxLength": 16,
         "screenshot": "phase-3/process-cp-prebirth-light-comfortable.png",
         "where": "After a subject name in the process header, following a comma, when the child is unborn"
+      }
+    },
+    "involvement": {
+      "accept": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "audit": {
+        "decided": {
+          "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+        },
+        "joined": {
+          "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+        },
+        "requested": {
+          "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+        }
+      },
+      "decidedBy": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "decidedToast": {
+        "text": {
+          "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+        },
+        "title": {
+          "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+        }
+      },
+      "decline": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "dialogTitle": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "intro": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "memberReason": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "note": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "noteHint": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "pending": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "reason": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "reasonHint": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "refused": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "request": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "sheetMeta": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "sheetTitle": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "status": {
+        "accepted": {
+          "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+        },
+        "declined": {
+          "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+        },
+        "pending": {
+          "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+        }
+      },
+      "submit": {
+        "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
       }
     },
     "linked": {

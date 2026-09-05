@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ACCESS_RESTRICTIONS, AGENCIES, ALL_STAGES, CHANNELS, CONSENT_STATUSES, DETAIL_LEVELS } from '../enums';
+import { ACCESS_RESTRICTIONS, AGENCIES, ALL_STAGES, CHANNELS, CONSENT_STATUSES, DETAIL_LEVELS, ROLES } from '../enums';
 import { classificationSchema, correctable, idSchema, isoDate, isoDateTime, syntheticSchema } from './common';
 
 export const lawfulBasisRecordSchema = z.object({
@@ -99,3 +99,28 @@ export const informationRequestSchema = z.object({
   ...correctable,
 });
 export type InformationRequest = z.infer<typeof informationRequestSchema>;
+
+/**
+ * A request to be involved in a case, from somebody who can see that it exists and no more (D-227).
+ * The lead decides it; accepted, the requester joins the case's members with the reason on the
+ * membership, and either way the requester is told.
+ */
+export const involvementRequestSchema = z.object({
+  id: idSchema,
+  synthetic: syntheticSchema,
+  processId: idSchema,
+  requesterUserId: idSchema,
+  requesterName: z.string(),
+  requesterAgency: z.enum(AGENCIES),
+  requesterRoleId: z.enum(ROLES),
+  /** Why they need to be on the case, in their words; the lead reads it and the membership carries it. */
+  reason: z.string(),
+  status: z.enum(['pending', 'accepted', 'declined']),
+  createdAt: isoDateTime,
+  decidedAt: isoDateTime.optional(),
+  decidedByUserId: idSchema.optional(),
+  decidedByName: z.string().optional(),
+  decisionNote: z.string().optional(),
+  ...correctable,
+});
+export type InvolvementRequest = z.infer<typeof involvementRequestSchema>;

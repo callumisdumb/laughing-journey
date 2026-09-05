@@ -1,6 +1,6 @@
 'use client';
 
-import { exclusionPartyLabel, identifiesSubject, partyRegister, STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, OFFICIAL, canLower, classificationFor, classificationLabel, effectiveClassification, marking, officialSensitive, overrideDecision, overrideDirection, relativeDays, stageLabel, type Classification, type Process } from '@mas/domain';
+import { exclusionPartyLabel, identifiesSubject, partyRegister, STAGES_BY_PROCESS, actionStatusLabel, agencyShort, detailLevelLabel, formatDate, formatDateTime, formatTime, meetingStatusLabel, minuteStatusLabel, planStatusLabel, processLabel, processStatusLabel, OFFICIAL, canLower, classificationFor, classificationLabel, effectiveClassification, marking, officialSensitive, overrideDecision, overrideDirection, relativeDays, stageLabel, type Classification, type Process, isExcludedParty } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, ClassificationTag, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, Stepper, Table, TableWrap, TextareaField, VoiceBlock, useToast, type Step } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -12,13 +12,14 @@ import { ScreenState, useDevState } from '@/components/ScreenState';
 import { meetingPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
 import { useTrail } from '@/lib/trail';
-import { accessForUser, clocksForProcess, membersByAgency, personById, userName } from '@/lib/selectors';
+import { accessForUser, clocksForProcess, isOversight, membersByAgency, personById, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow, useVault } from '@/lib/store';
 import { useWriteErrors } from '@/lib/writeErrors';
 import { readProcessDetail } from '@/lib/vault';
 import { AddPlanDialog } from './AddPlanDialog';
 import { AddActionDialog } from '@/features/actions/AddActionDialog';
 import { ScheduleMeetingDialog } from '@/features/meetings/ScheduleMeetingDialog';
+import { AskToBeInvolvedDialog, InvolvementRequests } from './Involvement';
 import { TransitionPanel } from './transitions/TransitionPanel';
 import { OutboundStatus } from './OutboundStatus';
 import { CloseProcessDialog, ReopenProcessDialog } from './CloseProcessDialog';
@@ -45,6 +46,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const { toast } = useToast();
   const dev = useDevState();
   const [breakGlassOpen, setBreakGlassOpen] = useState(false);
+  const [asking, setAsking] = useState(false);
   const [reason, setReason] = useState('');
   const [reasonCategory, setReasonCategory] = useState('');
   const [classifyOpen, setClassifyOpen] = useState(false);
@@ -121,6 +123,10 @@ export function ProcessScreen({ processId }: { processId: string }) {
       return { id: s, label: stageLabel(process.type, s), state: i < currentIndex ? 'done' : i === currentIndex ? 'current' : 'upcoming', meta: entry ? `${formatDate(entry.at)}, ${entry.byName}` : undefined };
     });
   const lead = process.leadUserId ? data.users.find((u) => u.id === process.leadUserId) : undefined;
+  const pendingInvolvement = user ? data.involvementRequests.some((r) => r.processId === process.id && r.requesterUserId === user.id && r.status === 'pending') : false;
+  // Asking to be involved is for somebody who can see the case exists and is not on it: not an
+  // oversight role, which reads by right, and not an excluded party, who is never on it (D-227).
+  const canAskToBeInvolved = Boolean(user && process.status === 'open' && (access.level === 'presence' || access.level === 'none') && !isOversight(user) && !isExcludedParty(process, { userId: user.id }, config.exclusions, process.stage, data.relationships));
 
   const state = dev ?? (access.level === 'none' ? 'restricted' : 'ready');
 
@@ -174,10 +180,16 @@ export function ProcessScreen({ processId }: { processId: string }) {
           "Next: MARAC: Kayleigh Docherty (repeat)" two lines below would have refused nothing.
         */}
         {nextMeeting && identifiesSubject(access.level) ? <AppLink href={meetingPath(nextMeeting.id)}>{t('processes.head.nextMeeting', { title: nextMeeting.title, date: formatDate(nextMeeting.scheduledAt) })}</AppLink> : null}
-        {access.level === 'presence' ? (
-          <Button variant="secondary" icon={<UserPlus size={16} aria-hidden="true" />} onClick={() => toast({ title: t('processes.head.requestSent.title'), text: t('processes.head.requestSent.text', { hasLead: lead ? 'yes' : 'no', name: lead ? userName(lead) : '' }) })}>
-            {t('processes.head.askToBeInvolved')}
-          </Button>
+        {canAskToBeInvolved ? (
+          pendingInvolvement ? (
+            <span className={styles.pendingInvolvement} data-testid="involve-pending">
+              <UserPlus size={16} aria-hidden="true" /> {t('processes.involvement.pending', { name: lead ? userName(lead) : agencyShort(process.leadAgency) })}
+            </span>
+          ) : (
+            <Button variant="secondary" icon={<UserPlus size={16} aria-hidden="true" />} onClick={() => setAsking(true)} data-testid="ask-to-be-involved">
+              {t('processes.head.askToBeInvolved')}
+            </Button>
+          )
         ) : null}
         {access.level === 'full' ? (
           <Button
@@ -331,6 +343,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                     </div>
                   </SheetBody>
                 </Sheet>
+                {access.level === 'full' ? <InvolvementRequests process={process} /> : null}
                 <Sheet>
                   <SheetHead title={t('processes.participants.title')} meta={t('processes.participants.meta', { count: process.members.length })} />
                   <SheetBody>
@@ -589,6 +602,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
 
       {planOpen ? <AddPlanDialog process={process} open onClose={() => setPlanOpen(false)} /> : null}
       {scheduling ? <ScheduleMeetingDialog open onClose={() => setScheduling(false)} process={process} /> : null}
+      {asking ? <AskToBeInvolvedDialog open onClose={() => setAsking(false)} process={process} /> : null}
       {actionFor ? <AddActionDialog process={process} planId={actionFor.planId} open onClose={() => setActionFor(null)} /> : null}
       {registerOpen ? <RegisterEntryDialog process={process} open onClose={() => setRegisterOpen(false)} /> : null}
       {closing ? <CloseProcessDialog process={process} open onClose={() => setClosing(false)} /> : null}

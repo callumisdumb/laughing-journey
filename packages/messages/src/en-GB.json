@@ -3191,6 +3191,7 @@
       "alertEndsBeforeStart": "An alert cannot stop showing before it starts.",
       "alertScopeRequired": "Name at least one agency, or let anybody who can see the record see the alert.",
       "alertTextRequired": "Write the alert in a sentence. It is read by somebody about to knock on the door.",
+      "alreadyMember": "You are already on this case.",
       "alreadyRecordedInError": "This has already been recorded in error.",
       "applicantRequired": "Name the applicant.",
       "applicationNotOpened": "No application has been opened. Open the application first.",
@@ -3262,6 +3263,12 @@
       "investigationNotOpened": "No investigation has been opened. Record the outcome that opens one first.",
       "investigationSummaryRequired": "Say what is being investigated, in a sentence.",
       "inviteesRequired": "Invite at least one person.",
+      "involvementDecided": "That request has already been decided.",
+      "involvementExcluded": "You are recorded as a party who must not receive anything about this case.",
+      "involvementMissing": "That request is not on the record.",
+      "involvementNotYours": "Only somebody on the case decides who joins it.",
+      "involvementPending": "You have already asked. The lead has not decided yet.",
+      "involvementReasonRequired": "Say why you need to be involved, in at least ten characters.",
       "irdTripartiteRequired": "An IRD needs social work, police and health. Invite all three.",
       "jiiDecisionRequired": "Record the decision on a joint investigative interview, with the reasoning.",
       "lawfulBasisRequired": "Say the lawful basis for asking for the records.",
@@ -6331,6 +6338,38 @@
       },
       "restrictedTitle": "{process} (restricted)",
       "unborn": "unborn"
+    },
+    "involvement": {
+      "accept": "Accept",
+      "audit": {
+        "decided": "Involvement request from {name} {decision}",
+        "joined": "{name} joined the case on request",
+        "requested": "Asked to be involved in {reference}"
+      },
+      "decidedBy": "{name}, {when}.{hasNote, select, yes { {note}} other {}}",
+      "decidedToast": {
+        "text": "{name} has been told.",
+        "title": "{decision, select, accepted {Request accepted} other {Request declined}}"
+      },
+      "decline": "Decline",
+      "dialogTitle": "Ask to be involved in {reference}",
+      "intro": "You can see that this case exists and nothing more. Say why you need to be on it. The lead decides, and if they agree the reason is recorded on your membership.",
+      "memberReason": "Asked to be involved: {reason} Accepted by {name}.",
+      "note": "Note",
+      "noteHint": "Optional. Goes back to them with the decision.",
+      "pending": "Request sent. Waiting on {name}.",
+      "reason": "Why you need to be involved",
+      "reasonHint": "What you hold or do that the case needs. It goes to the lead and stays on the record.",
+      "refused": "The decision was not recorded",
+      "request": "{role}, {agency}. Asked {when}.",
+      "sheetMeta": "{count, plural, =0 {none pending} one {# pending} other {# pending}}",
+      "sheetTitle": "Requests to be involved",
+      "status": {
+        "accepted": "Accepted",
+        "declined": "Declined",
+        "pending": "Pending"
+      },
+      "submit": "Send request"
     },
     "linked": {
       "item": "{stage}. Led by {agency}. {status}.",

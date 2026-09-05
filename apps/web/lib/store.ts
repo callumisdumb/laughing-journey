@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyTransition, buildMeeting, classificationFor, formatDate, heldTransitionFor, meetingTypeLabel, scheduleRoute, stagePayload, stageLabel, transitionById, transitionLabel, validateSchedule, type Creates, type InformationRequest, type MeetingType, type MissingThing, type PermissionDecision, type ScheduleInput, type TransitionOutcome } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, isExcludedParty, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, involvementNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyTransition, buildMeeting, classificationFor, formatDate, heldTransitionFor, meetingTypeLabel, scheduleRoute, stagePayload, stageLabel, transitionById, transitionLabel, validateSchedule, type Creates, type InformationRequest, type InvolvementRequest, type MeetingType, type MissingThing, type PermissionDecision, type ScheduleInput, type TransitionOutcome } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -219,6 +219,10 @@ interface AppState {
   rescheduleMeeting: (meetingId: string, change: { scheduledAt: string; location: string; reason: string }) => WriteResult;
   cancelMeeting: (meetingId: string, reason: string) => WriteResult;
   holdMeeting: (meetingId: string, note: string) => WriteResult;
+  /** Ask to be put on a case this person can see the existence of and no more (D-227). */
+  requestInvolvement: (processId: string, reason: string) => WriteResult;
+  /** Decide a request to be involved; accepted, the requester joins the case's members. */
+  decideInvolvement: (requestId: string, decision: 'accepted' | 'declined', note?: string) => WriteResult;
   /** Accept a case opened in a source system, which creates the matching process here. */
   acceptInbound: (id: string) => WriteResult & { process?: Process };
   declineInbound: (id: string, reason: string) => WriteResult;
@@ -283,6 +287,7 @@ const TARGET_TYPES: Record<Collection, AuditEntry['targetType']> = {
   lawfulBases: 'sharing',
   sharingRecords: 'sharing',
   informationRequests: 'sharing',
+  involvementRequests: 'process',
   connectorEvents: 'inbox',
   outbox: 'sharing',
   inbound: 'inbox',
@@ -354,6 +359,7 @@ const EMPTY: Dataset = {
   lawfulBases: [],
   sharingRecords: [],
   informationRequests: [],
+  involvementRequests: [],
   connectorEvents: [],
   outbox: [],
   inbound: [],
@@ -993,6 +999,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     } else if (request.collection === 'informationRequests') {
       const after = written.informationRequests.find((r) => r.id === recordId);
       if (after) drafts.push(...informationRequestNotifications(existing as InformationRequest | undefined, after));
+    } else if (request.collection === 'involvementRequests') {
+      const after = written.involvementRequests.find((r) => r.id === recordId);
+      if (after) drafts.push(...involvementNotifications(existing as InvolvementRequest | undefined, after, written.processes.find((p) => p.id === after.processId)?.leadUserId));
     } else if (request.collection === 'sharingRecords') {
       const after = written.sharingRecords.find((r) => r.id === recordId);
       if (after) {
@@ -1848,6 +1857,42 @@ export const useAppStore = create<AppState>((set, get) => ({
       clockTransition: notice ? { completes: [notice], note: t('meetings.change.clockMoved', { date: formatDate(change.scheduledAt) }) } : undefined,
       clocks: notice ? [{ id: get().newId('clk'), ruleId: notice, triggeredAt: change.scheduledAt, note: t('meetings.change.clockMoved', { date: formatDate(change.scheduledAt) }) }] : undefined,
     });
+  },
+  requestInvolvement: (processId, reason) => {
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const process = get().data.processes.find((p) => p.id === processId);
+    if (!process) return { ok: false, errors: ['processMissing'], nearMatches: [], effects: [] };
+    if (process.members.some((m) => m.userId === user.id)) return { ok: false, errors: ['alreadyMember'], nearMatches: [], effects: [] };
+    if (isExcludedParty(process, { userId: user.id }, get().config.exclusions, process.stage, get().data.relationships)) return { ok: false, errors: ['involvementExcluded'], nearMatches: [], effects: [] };
+    if (get().data.involvementRequests.some((r) => r.processId === processId && r.requesterUserId === user.id && r.status === 'pending')) return { ok: false, errors: ['involvementPending'], nearMatches: [], effects: [] };
+    if (reason.trim().length < 10) return { ok: false, errors: ['involvementReasonRequired'], nearMatches: [], effects: [] };
+    const at = get().now().toISOString();
+    const record: InvolvementRequest = { id: get().newId('inv'), synthetic: true, processId, requesterUserId: user.id, requesterName: `${user.givenName} ${user.familyName}`, requesterAgency: user.agency, requesterRoleId: user.roleId, reason: reason.trim(), status: 'pending', createdAt: at };
+    return get().write({ collection: 'involvementRequests', record, intent: 'create', act: 'create', targetType: 'process', targetLabel: t('processes.involvement.audit.requested', { reference: process.reference }), processId });
+  },
+  decideInvolvement: (requestId, decision, note) => {
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const request = get().data.involvementRequests.find((r) => r.id === requestId);
+    if (!request) return { ok: false, errors: ['involvementMissing'], nearMatches: [], effects: [] };
+    if (request.status !== 'pending') return { ok: false, errors: ['involvementDecided'], nearMatches: [], effects: [] };
+    const process = get().data.processes.find((p) => p.id === request.processId);
+    if (!process) return { ok: false, errors: ['processMissing'], nearMatches: [], effects: [] };
+    if (process.leadUserId !== user.id && !process.members.some((m) => m.userId === user.id)) return { ok: false, errors: ['involvementNotYours'], nearMatches: [], effects: [] };
+    const at = get().now().toISOString();
+    const byName = `${user.givenName} ${user.familyName}`;
+    const label = t('processes.involvement.audit.decided', { name: request.requesterName, decision });
+    const decided = get().write({ collection: 'involvementRequests', record: { ...request, status: decision, decidedAt: at, decidedByUserId: user.id, decidedByName: byName, decisionNote: note?.trim() || undefined }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: label, processId: process.id, versionChange: label });
+    if (!decided.ok || decision === 'declined') return decided;
+    // Accepted: the requester joins the case with the reason on the membership, and the membership
+    // notification tells them so beside the decision.
+    const current = get().data.processes.find((p) => p.id === process.id)!;
+    if (current.members.some((m) => m.userId === request.requesterUserId)) return decided;
+    const member = { userId: request.requesterUserId, caseRole: roleLabel(request.requesterRoleId), agency: request.requesterAgency, since: at.slice(0, 10), reason: t('processes.involvement.memberReason', { reason: request.reason, name: byName }) };
+    const joinedLabel = t('processes.involvement.audit.joined', { name: request.requesterName });
+    const joined = get().write({ collection: 'processes', record: { ...current, members: [...current.members, member] }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: joinedLabel, processId: process.id, versionChange: joinedLabel });
+    return { ...joined, effects: [...decided.effects, ...joined.effects] };
   },
   cancelMeeting: (meetingId, reason) => {
     const user = get().currentUser();

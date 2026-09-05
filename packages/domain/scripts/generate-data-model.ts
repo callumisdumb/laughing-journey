@@ -67,6 +67,7 @@ const entities: Array<[string, z.ZodType]> = [
   ['LawfulBasisRecord', schemas.lawfulBasisRecordSchema],
   ['SharingRecord', schemas.sharingRecordSchema],
   ['InformationRequest', schemas.informationRequestSchema],
+  ['InvolvementRequest', schemas.involvementRequestSchema],
   ['Notification', schemas.notificationSchema],
   ['ConnectorEvent', schemas.connectorEventSchema],
   ['OutboundWrite', schemas.outboundWriteSchema],

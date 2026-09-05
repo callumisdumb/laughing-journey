@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
-import { capture, expectNoAxeViolations, signInAs, waitForData } from './helpers';
+import { createPerson, startCase } from './driven';
+import { capture, expectNoAxeViolations, signInAs, switchUser, waitForData } from './helpers';
 
 const PHASE = 'cross-persona';
 
@@ -172,4 +173,87 @@ test('an action assigned by Moira is seen, completed and reported back by Janet,
   expect(index).toBeGreaterThan(0);
   for (const earlier of rows.slice(1, index)) expect(earlier).toContain('overdue');
   await capture(page, { phase: PHASE, screen: 'janet-worklist-overdue' });
+});
+
+test('a request to be involved reaches the lead, the decision reaches the requester, and an accepted one opens the case to them', async ({ page }) => {
+  test.setTimeout(180_000);
+  // Priya notifies a MAPPA case, which is restricted: a head teacher can see that it exists and
+  // no more. Her request carries a reason; Priya reads it on the case and accepts; the next time
+  // the head teacher opens the case she is on it, with her own reason on the membership. A second
+  // request is declined with a note, and the decline reaches its requester too.
+  await signInAs(page, 'usr_priya_sharif');
+  await createPerson(page, 'Kyle', 'Rennie', '1981-03-09');
+  const reference = await startCase(page, 'mappa', 'Police Scotland, sex offender liaison', 'Released on licence on 21 Aug 2026; registered sex offender; living two streets from a primary school.');
+  const caseUrl = page.url();
+
+  await switchUser(page, 'usr_claire_cowan');
+  await page.goto(caseUrl);
+  await waitForData(page);
+  await expect(page.getByText(/restricted record/i).first()).toBeVisible();
+  await page.getByTestId('ask-to-be-involved').click();
+  await page.getByTestId('involve-reason').fill('He has been seen at the school gate at home time twice this week, and the school needs to know what the licence allows.');
+  await expectNoAxeViolations(page);
+  await capture(page, { phase: PHASE, screen: 'ask-to-be-involved' });
+  await page.getByTestId('involve-submit').click();
+  await expect(page.getByTestId('involve-pending')).toContainText('Waiting on Priya Sharif');
+  await expect(page.getByTestId('ask-to-be-involved')).toHaveCount(0);
+
+  // Priya is told, reads the reason on the case, and accepts.
+  await switchUser(page, 'usr_priya_sharif');
+  await page.goto('/');
+  await waitForData(page);
+  await page.getByTestId('notifications-bell').click();
+  await page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: `Claire Cowan asked to be involved in ${reference}` }).getByRole('button').first().click();
+  await waitForData(page);
+  await expect(page).toHaveURL(caseUrl);
+  const requests = page.getByTestId('involvement-requests');
+  await expect(requests).toContainText('school gate at home time');
+  await expect(requests).toContainText('1 pending');
+  await capture(page, { phase: PHASE, screen: 'involvement-requests', fullPage: true });
+  await requests.getByRole('button', { name: 'Accept' }).click();
+  await expect(page.getByText('Request accepted').first()).toBeVisible();
+  await expect(requests).toContainText('none pending');
+  await expect(page.getByText('Asked to be involved: He has been seen at the school gate').first()).toBeVisible();
+
+  // Claire is told, and the case opens to her, with her reason on her membership.
+  await switchUser(page, 'usr_claire_cowan');
+  await page.goto('/');
+  await waitForData(page);
+  await page.getByTestId('notifications-bell').click();
+  await expect(page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: `Your request to be involved in ${reference} was accepted` })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await page.goto(caseUrl);
+  await waitForData(page);
+  await expect(page.getByText(/not on the distribution list/i)).toHaveCount(0);
+  await expect(page.getByTestId('process-header')).toContainText('Kyle Rennie');
+  await expect(page.getByText('Asked to be involved: He has been seen at the school gate').first()).toBeVisible();
+  await capture(page, { phase: PHASE, screen: 'involvement-accepted', fullPage: true });
+
+  // A second request is declined with a note, and the requester is told that too.
+  await switchUser(page, 'usr_gavin_brodie');
+  await page.goto(caseUrl);
+  await waitForData(page);
+  await page.getByTestId('ask-to-be-involved').click();
+  await page.getByTestId('involve-reason').fill('Concern hub triage would like sight of the licence conditions.');
+  await page.getByTestId('involve-submit').click();
+  await expect(page.getByTestId('involve-pending')).toBeVisible();
+
+  await switchUser(page, 'usr_priya_sharif');
+  await page.goto(caseUrl);
+  await waitForData(page);
+  const pending = page.getByTestId('involvement-requests').locator('[data-state="pending"]');
+  await pending.getByTestId(/^involve-note-/).fill('Not needed for triage; the hub gets the notification it needs.');
+  await pending.getByRole('button', { name: 'Decline' }).click();
+  await expect(page.getByText('Request declined').first()).toBeVisible();
+
+  await switchUser(page, 'usr_gavin_brodie');
+  await page.goto('/');
+  await waitForData(page);
+  await page.getByTestId('notifications-bell').click();
+  await expect(page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: `Your request to be involved in ${reference} was declined` })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await page.goto(caseUrl);
+  await waitForData(page);
+  await expect(page.getByText(/restricted record/i).first()).toBeVisible();
+  await expect(page.getByTestId('ask-to-be-involved')).toBeVisible();
 });
