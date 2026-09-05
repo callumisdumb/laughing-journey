@@ -249,7 +249,7 @@ test.describe('F.2.2 child protection, driven from a concern to de-registration'
   test('the case is walked from a child concern to de-registration by the people whose decisions they are', async ({ page }) => {
     await signInAs(page, 'usr_janet_kerr');
     await createPerson(page, 'Rowan', 'Baxter', '2019-03-04');
-    await startCase(page, 'cp', 'Class teacher, Ardvale Primary', 'Bruising to the upper arm and a disclosure to the class teacher that Dad grabbed him.');
+    const reference = await startCase(page, 'cp', 'Class teacher, Ardvale Primary', 'Bruising to the upper arm and a disclosure to the class teacher that Dad grabbed him.');
     const caseUrl = page.url();
     const header = page.getByTestId('process-header');
 
@@ -347,6 +347,25 @@ test.describe('F.2.2 child protection, driven from a concern to de-registration'
     await expect(page.getByText(/Category of registration/i)).toHaveCount(0);
     await expect(page.getByRole('row').filter({ hasText: 'Weekly health contact' })).toContainText('Fiona Ross');
     await capture(page, { phase: PHASE, screen: 'cp-registered', fullPage: true });
+
+    // The same stage change, read at three levels. Janet is on the case and reads the sentence with
+    // the reference and the recorder; the GP's row on the register gives fields, which is still the
+    // sentence; the community mental health nurse's row gives presence, which is a sentence that
+    // names nothing, because a case she is linked to changing is all she is entitled to know.
+    await switchUser(page, 'usr_amira_farouk');
+    await page.goto('/');
+    await waitForData(page);
+    await page.getByTestId('notifications-bell').click();
+    await expect(page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: `${reference} moved to Child's plan` })).toBeVisible();
+    await page.keyboard.press('Escape');
+    await switchUser(page, 'usr_louise_kennedy');
+    await page.goto('/');
+    await waitForData(page);
+    await page.getByTestId('notifications-bell').click();
+    const presence = page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: 'A case you are linked to changed. Your access to it is presence only' });
+    await expect(presence.first()).toBeVisible();
+    await expect(presence.first()).not.toContainText(reference);
+    await page.keyboard.press('Escape');
 
     // The lead professional's Home carries the core group clock; the health adviser has her action.
     await switchUser(page, 'usr_janet_kerr');

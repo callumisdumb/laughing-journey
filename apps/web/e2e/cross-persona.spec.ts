@@ -257,3 +257,48 @@ test('a request to be involved reaches the lead, the decision reaches the reques
   await expect(page.getByText(/restricted record/i).first()).toBeVisible();
   await expect(page.getByTestId('ask-to-be-involved')).toBeVisible();
 });
+
+test('a break-glass read reaches the lead as a notification and the Chief Social Work Officer as a ledger line, with the reason', async ({ page }) => {
+  test.setTimeout(180_000);
+  // Priya notifies a restricted case. A concern hub officer outside the responsible authorities
+  // opens it with a reason; the lead is told who opened it, and the oversight role finds the read
+  // on the ledger with the category and the reason typed, because a break-glass that nobody is told
+  // about is a back door.
+  await signInAs(page, 'usr_priya_sharif');
+  await createPerson(page, 'Dean', 'Sneddon', '1984-11-02');
+  const reference = await startCase(page, 'mappa', 'Police Scotland, sex offender liaison', 'Released on licence on 30 Aug 2026; registered sex offender; bail address near a nursery.');
+  const caseUrl = page.url();
+
+  await switchUser(page, 'usr_gavin_brodie');
+  await page.goto(caseUrl);
+  await waitForData(page);
+  await expect(page.getByText(/restricted record/i).first()).toBeVisible();
+  await page.getByRole('button', { name: 'Open with a reason' }).click();
+  await page.getByLabel(/^Why you need it/).selectOption('Immediate risk to a child');
+  await page.getByLabel(/^Reason/).fill('A child seen leaving his address at 08:10 today; concern hub triage cannot wait for the SPOC.');
+  await expectNoAxeViolations(page);
+  await capture(page, { phase: PHASE, screen: 'break-glass-driven' });
+  await page.getByRole('button', { name: 'Open with this reason' }).click();
+  await expect(page.getByText('Break-glass access granted')).toBeVisible();
+  await expect(page.getByTestId('process-header')).toContainText('Dean Sneddon');
+
+  // The lead is told who opened it.
+  await switchUser(page, 'usr_priya_sharif');
+  await page.goto('/');
+  await waitForData(page);
+  await page.getByTestId('notifications-bell').click();
+  await expect(page.getByTestId('notifications-panel').getByTestId('notification-item').filter({ hasText: `Gavin Brodie opened ${reference} under break-glass` })).toBeVisible();
+  await page.keyboard.press('Escape');
+
+  // The Chief Social Work Officer finds it on the ledger, with the reason.
+  await switchUser(page, 'usr_andrew_muirhead');
+  await page.goto('/audit?quick=1');
+  await waitForData(page);
+  // Two ledger lines carry his name: the grant, with its category and reason, and the restricted
+  // read that followed it. The grant is the one the oversight role is looking for.
+  const grant = page.getByRole('row').filter({ hasText: 'Gavin Brodie' }).filter({ hasText: reference }).filter({ hasText: 'Immediate risk to a child' });
+  await expect(grant).toBeVisible();
+  await expect(grant).toContainText('concern hub triage cannot wait for the SPOC');
+  await expect(page.getByRole('row').filter({ hasText: 'Gavin Brodie' }).filter({ hasText: reference }).filter({ hasText: 'Restricted read' }).first()).toBeVisible();
+  await capture(page, { phase: PHASE, screen: 'break-glass-ledger', fullPage: true });
+});
