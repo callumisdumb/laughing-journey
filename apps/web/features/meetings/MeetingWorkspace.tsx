@@ -394,8 +394,9 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       <ScreenState state={state}>
         {phase === 'before' ? (
           <div className={styles.grid}>
-            <Sheet className={styles.col6}>
-              <SheetHead title={t('meetings.before.invites.title')} meta={t('meetings.before.invites.meta')} actions={<Button size="sm" variant="secondary" icon={<UserPlus size={14} aria-hidden="true" />} onClick={generateInvites}>{t('meetings.before.invites.generate')}</Button>} />
+            <Sheet className={styles.col6} empty={meeting.invitees.length === 0}>
+              <SheetHead title={t('meetings.before.invites.title')} meta={meeting.invitees.length === 0 ? t('meetings.before.invites.none') : t('meetings.before.invites.meta')} actions={<Button size="sm" variant="secondary" icon={<UserPlus size={14} aria-hidden="true" />} onClick={generateInvites}>{t('meetings.before.invites.generate')}</Button>} />
+              {meeting.invitees.length > 0 ? (
               <SheetBody>
                 <div className={styles.invitees}>
                   {meeting.invitees.map((i, idx) => (
@@ -411,6 +412,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   ))}
                 </div>
               </SheetBody>
+              ) : null}
             </Sheet>
             <Sheet className={styles.col6}>
               <SheetHead title={t('meetings.before.requests.title')} meta={t('meetings.before.requests.meta', { returned: meeting.preMeetingRequests.filter((r) => r.status === 'returned' || r.status === 'nothing-known').length, total: meeting.preMeetingRequests.length })} />

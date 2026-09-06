@@ -1,0 +1,78 @@
+.wrap {
+  position: relative;
+  display: inline-block;
+}
+
+/*
+ * The list hangs from the button's end edge by default, because an action row sits at the right of a
+ * header and a list that opened rightwards from its last button would leave the record. `min-width`
+ * keeps a two-item list from looking like a tooltip.
+ */
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  z-index: 30;
+  display: grid;
+  min-width: 15rem;
+  padding: 6px;
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+}
+
+.wrap[data-align='end'] .menu {
+  right: 0;
+}
+
+.wrap[data-align='start'] .menu {
+  left: 0;
+}
+
+.itemWrap {
+  display: contents;
+}
+
+.item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-align: left;
+  color: var(--color-ink-1);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.item:hover,
+.item:focus-visible {
+  background: var(--color-paper-2);
+  outline: none;
+}
+
+.item:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: -2px;
+}
+
+.item:disabled {
+  color: var(--color-ink-3);
+  cursor: not-allowed;
+}
+
+.item[data-tone='destructive'] {
+  color: var(--color-risk-critical);
+}
+
+.separator {
+  height: 1px;
+  margin: 6px 4px;
+  background: var(--color-line-1);
+}

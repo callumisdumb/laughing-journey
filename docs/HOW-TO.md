@@ -21,7 +21,7 @@ Everything here is driven end to end by a test that creates the thing from nothi
 | Home | Your clocks (from the cases you are on), your actions, and unread notifications by kind. |
 | Worklist | Actions and inbox items waiting on you; bulk **Mark complete** for actions. |
 | Notifications (the bell, or the Notifications page) | Everything sent to you or to a role you hold; **Mark all read**; dismiss. What you read depends on your access to the case it concerns. |
-| People, then a person record | **Start a process** for the person; their alerts, views, chronology, household and network; the badges for every open case. |
+| People, then a person record | The header: identity on the left, the case status and the action row on the right. **Start a process**, **Edit the record**, **Add an alert**, and **More** for the rare actions (Merge with another record, Record a death). The overview: clocks, alerts, key contacts, the Household and network card (add someone, record a relationship, record a move, rename, show the diagram), views and voice, recent chronology, current plans, and the history of the record collapsed until opened. |
 | Processes, then a case record | The stepper, **What happens next**, the panels for that process type, plans, clocks, membership, **Close the case**, **Reopen the case**, and at presence level **Ask to be involved**. |
 | Meetings | Every meeting you can read; **Schedule a meeting** (it asks for the case first); the meeting workspace with its Before, During and After phases. |
 | Actions | Every action you can read; **Add an action**; **Take** a role's action; reassign, complete, cancel. |

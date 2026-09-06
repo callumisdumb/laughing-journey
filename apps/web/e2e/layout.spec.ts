@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
-import { capture, expectNoAxeViolations, signInAs, waitForData } from './helpers';
+import { createPerson } from './driven';
+import { capture, expectNoAxeViolations, setAppearance, signInAs, waitForData } from './helpers';
 
 const PHASE = 'layout';
 
@@ -292,4 +293,131 @@ test.describe('layout appearance', () => {
       await capture(page, { phase: PHASE, screen: `person-${mode}-${w}`, theme: 'light' });
     });
   }
+});
+
+/**
+ * The person record's composition, asserted on a record created from nothing.
+ *
+ * Ailsa Muir is made through the search-first flow with a date of birth and an address, which is
+ * the state every person is in for the first minute of their existence in the product, and the one
+ * the composition round was prompted by. Six things hold at every width and in both themes: the
+ * overview is one twelve-column grid whose cards end on column boundaries and whose rows are never
+ * more than one column short; it never exceeds the width cap; a person with nobody around them gets
+ * no diagram and a household card no taller than its head; the header's two regions share a top
+ * edge (and stack at compact); nothing outside the classification marking is set in capitals; and
+ * the action row is three buttons and one menu (D-229 to D-232).
+ */
+test.describe('the person record composition', () => {
+  const WIDTHS = [
+    { w: 1440, h: 900, mode: 'standard' },
+    { w: 1920, h: 1080, mode: 'wide' },
+    { w: 2560, h: 1440, mode: 'wide' },
+    { w: 1100, h: 800, mode: 'compact' },
+  ] as const;
+  const CONTENT_MAX = 1200;
+  const HOUSEHOLD_EMPTY_MAX = 200;
+
+  for (const theme of ['light', 'dark'] as const) {
+    for (const { w, h, mode } of WIDTHS) {
+      test(`a new record at ${w} in ${theme} (${mode})`, async ({ page }) => {
+        await page.setViewportSize({ width: w, height: h });
+        await signInAs(page, 'usr_janet_kerr');
+        await createPerson(page, 'Ailsa', 'Muir', '12 Mar 1988', { address: true });
+        await setAppearance(page, theme, 'comfortable');
+        await page.waitForTimeout(120);
+        expect(await page.evaluate(() => document.documentElement.dataset.layout)).toBe(mode);
+
+        const result = await page.evaluate(() => {
+          const grid = document.querySelector<HTMLElement>('[data-testid="person-overview"]')!;
+          const g = grid.getBoundingClientRect();
+          const style = getComputedStyle(grid);
+          const tracks = style.gridTemplateColumns.split(' ').length;
+          const gap = parseFloat(style.columnGap) || 0;
+          const track = (g.width - gap * (tracks - 1)) / tracks;
+          const cells = Array.from(grid.children) as HTMLElement[];
+          const misaligned: string[] = [];
+          const rows = new Map<number, number>();
+          for (const cell of cells) {
+            const r = cell.getBoundingClientRect();
+            const span = Number(cell.dataset.span);
+            const expectedWidth = span * track + (span - 1) * gap;
+            // The right edge sits on a column boundary: some whole number of tracks from the left.
+            const k = Math.round((r.right - g.left + gap) / (track + gap));
+            const boundary = g.left + k * track + (k - 1) * gap;
+            if (Math.abs(r.right - boundary) > 1 || Math.abs(r.width - expectedWidth) > 1) misaligned.push(`${cell.dataset.card}: ${Math.round(r.left - g.left)} to ${Math.round(r.right - g.left)} of ${Math.round(g.width)}`);
+            const top = Math.round(r.top);
+            rows.set(top, (rows.get(top) ?? 0) + span);
+          }
+          const short = [...rows.entries()].filter(([, used]) => tracks - used > 1).map(([top, used]) => `row at ${top}: ${used} of ${tracks}`);
+
+          const identity = document.querySelector<HTMLElement>('[data-testid="person-identity"]')!.getBoundingClientRect();
+          const status = document.querySelector<HTMLElement>('[data-testid="person-status"]')!.getBoundingClientRect();
+          const household = document.querySelector<HTMLElement>('[data-testid="card-household"]')!.getBoundingClientRect();
+
+          const capitals: string[] = [];
+          for (const el of Array.from(document.body.querySelectorAll<HTMLElement>('*'))) {
+            const box = el.getBoundingClientRect();
+            if (box.width === 0 || box.height === 0) continue;
+            if (getComputedStyle(el).textTransform !== 'uppercase') continue;
+            if (el.closest('[data-marking]')) continue;
+            capitals.push(`${el.tagName}.${String(el.className).split(' ')[0]}: ${(el.textContent ?? '').trim().slice(0, 30)}`);
+          }
+
+          const row = document.querySelector<HTMLElement>('[data-testid="record-actions"]')!;
+          const buttons = row.querySelectorAll('button:not([aria-haspopup])').length;
+          const menus = row.querySelectorAll('button[aria-haspopup="menu"]').length;
+
+          return {
+            tracks,
+            gridWidth: g.width,
+            misaligned,
+            short,
+            identityTop: identity.top,
+            identityBottom: identity.bottom,
+            statusTop: status.top,
+            householdHeight: household.height,
+            graphs: document.querySelectorAll('[data-testid="network-graph"]').length,
+            capitals: [...new Set(capitals)],
+            buttons,
+            menus,
+          };
+        });
+
+        expect(result.tracks).toBe(12);
+        expect(result.misaligned, 'a card whose right edge is not on a grid column boundary').toEqual([]);
+        expect(result.short, 'a grid row more than one column short of twelve').toEqual([]);
+        expect(result.gridWidth, 'the overview is wider than the wide-mode cap').toBeLessThanOrEqual(CONTENT_MAX + 1);
+        expect(result.graphs, 'a person with no relationships renders a graph canvas').toBe(0);
+        expect(result.householdHeight, 'the household card of a person who lives alone is taller than its head').toBeLessThan(HOUSEHOLD_EMPTY_MAX);
+        if (mode === 'compact') {
+          expect(result.statusTop, 'at compact the status region should sit below the identity').toBeGreaterThanOrEqual(result.identityBottom - 1);
+        } else {
+          expect(Math.abs(result.statusTop - result.identityTop), 'the identity and status regions do not share a top edge').toBeLessThanOrEqual(2);
+        }
+        expect(result.capitals, 'text set in capitals outside the classification marking').toEqual([]);
+        expect(result.buttons, 'the action row should hold exactly three buttons').toBe(3);
+        expect(result.menus, 'the action row should hold exactly one menu').toBe(1);
+      });
+    }
+  }
+
+  test('a populated record keeps the same grid and action row', async ({ page }) => {
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await open(page, SCREENS[0]);
+    const result = await page.evaluate(() => {
+      const grid = document.querySelector<HTMLElement>('[data-testid="person-overview"]')!;
+      const tracks = getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+      const rows = new Map<number, number>();
+      for (const cell of Array.from(grid.children) as HTMLElement[]) {
+        const top = Math.round(cell.getBoundingClientRect().top);
+        rows.set(top, (rows.get(top) ?? 0) + Number(cell.dataset.span));
+      }
+      const row = document.querySelector<HTMLElement>('[data-testid="record-actions"]')!;
+      return { tracks, short: [...rows.values()].filter((used) => tracks - used > 1), buttons: row.querySelectorAll('button:not([aria-haspopup])').length, menus: row.querySelectorAll('button[aria-haspopup="menu"]').length };
+    });
+    expect(result.tracks).toBe(12);
+    expect(result.short).toEqual([]);
+    expect(result.buttons).toBe(3);
+    expect(result.menus).toBe(1);
+  });
 });

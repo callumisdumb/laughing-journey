@@ -9552,6 +9552,9 @@
       "actionTitleRequired": {
         "where": "Refusal from the action pipeline, shown in the add, reassign and cancel dialogs."
       },
+      "addressMissing": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
       "advocacyRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
@@ -9729,6 +9732,9 @@
       "householdEndReasonRequired": {
         "where": "A create or edit dialog, refusal summary at the top of the body"
       },
+      "householdExists": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
       "householdLabelRequired": {
         "where": "A create or edit dialog, refusal summary at the top of the body"
       },
@@ -9875,6 +9881,12 @@
       },
       "mhoRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "moveDateRequired": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "moveSameAddress": {
+        "where": "A create or edit dialog, refusal summary at the top of the body"
       },
       "nameRequired": {
         "where": "Add a person dialog, refusal summary at the top of the body"
@@ -13322,6 +13334,9 @@
           "screenshot": "phase-4/meeting-before-light-comfortable.png",
           "where": "Meta line of the invite list sheet in the before phase"
         },
+        "none": {
+          "where": "Meeting workspace, Before phase, the invite list card when nobody has been invited"
+        },
         "person": {
           "screenshot": "phase-4/meeting-before-light-comfortable.png",
           "where": "Name and role of one invitee on the invite list; optional invitees carry the suffix"
@@ -16039,6 +16054,9 @@
         "screenshot": "phase-2/person-360-light-comfortable.png",
         "where": "Beside the name in the Person 360 header, with the preferred name"
       },
+      "more": {
+        "where": "Person record header, the menu holding the rare actions"
+      },
       "moves": {
         "maxLength": 20,
         "screenshot": "phase-2/person-360-light-comfortable.png",
@@ -16074,6 +16092,9 @@
         "screenshot": "phase-2/person-360-light-comfortable.png",
         "where": "Restricted pill in the Person 360 header for a process the user cannot see"
       },
+      "status": {
+        "where": "Person record header, the status strip's accessible name"
+      },
       "unborn": {
         "maxLength": 12,
         "screenshot": "phase-2/person-360-light-comfortable.png",
@@ -16089,17 +16110,20 @@
       }
     },
     "history": {
-      "empty": {
-        "where": "The history panel on a record, empty"
-      },
       "entry": {
         "where": "The history panel on a record, entry"
+      },
+      "hide": {
+        "where": "History of this record card, the toggle that opens the version list"
       },
       "meta": {
         "where": "The history panel on a record, meta"
       },
       "reason": {
         "where": "The history panel on a record, reason"
+      },
+      "show": {
+        "where": "History of this record card, the toggle that opens the version list"
       },
       "title": {
         "where": "The history panel on a record, title"
@@ -16139,8 +16163,11 @@
       "addTitle": {
         "where": "Add someone to the household dialog"
       },
-      "at": {
-        "where": "Person record, Household panel"
+      "alone": {
+        "where": "Household and network card"
+      },
+      "aloneNoAddress": {
+        "where": "Household and network card"
       },
       "done": {
         "addedText": {
@@ -16189,8 +16216,20 @@
       "eventLeaveDetail": {
         "where": "Chronology entry written by a household change"
       },
+      "eventMove": {
+        "where": "Household and network card"
+      },
+      "eventMoveDetail": {
+        "where": "Household and network card"
+      },
+      "inThis": {
+        "where": "Household and network card"
+      },
       "labelField": {
         "where": "Rename the household dialog"
+      },
+      "labelFor": {
+        "where": "Household and network card"
       },
       "labelHint": {
         "where": "Rename the household dialog"
@@ -16201,11 +16240,46 @@
       "membersCount": {
         "where": "Person record, Household panel"
       },
-      "none": {
-        "where": "Person record, Household panel"
+      "move": {
+        "where": "Household and network card"
       },
-      "noneHint": {
-        "where": "Person record, Household panel"
+      "moveDialog": {
+        "household": {
+          "where": "Record a move dialog"
+        },
+        "note": {
+          "where": "Record a move dialog"
+        },
+        "noteHint": {
+          "where": "Record a move dialog"
+        },
+        "on": {
+          "where": "Record a move dialog"
+        },
+        "refused": {
+          "where": "Record a move dialog"
+        },
+        "submit": {
+          "where": "Record a move dialog"
+        },
+        "title": {
+          "where": "Record a move dialog"
+        },
+        "to": {
+          "where": "Record a move dialog"
+        },
+        "toastText": {
+          "where": "Record a move dialog"
+        },
+        "toastTitle": {
+          "where": "Record a move dialog"
+        },
+        "toPlaceholder": {
+          "where": "Record a move dialog"
+        }
+      },
+      "moveReason": {
+        "where": "Household and network card"
       },
       "past": {
         "where": "Household panel, the list of people who have left"
@@ -16217,9 +16291,6 @@
         "where": "Sharing record written when a household change notifies the case members"
       },
       "since": {
-        "where": "Person record, Household panel"
-      },
-      "title": {
         "where": "Person record, Household panel"
       }
     },
@@ -16547,9 +16618,6 @@
       "addTitle": {
         "where": "Record a relationship dialog"
       },
-      "asAt": {
-        "where": "Person record, Wider network panel"
-      },
       "consequences": {
         "affected": {
           "where": "Record a relationship dialog, the consequences block above the save button"
@@ -16635,6 +16703,9 @@
       },
       "fromHint": {
         "where": "Record a relationship dialog, the start date field"
+      },
+      "hideDiagram": {
+        "where": "Household and network card, the diagram toggle"
       },
       "inverse": {
         "attorneyFor": {
@@ -16733,18 +16804,11 @@
           "where": "Legend entry under the household and network graph"
         }
       },
-      "listItem": {
-        "screenshot": "phase-2/person-360-light-comfortable.png",
-        "where": "One entry in the visually hidden list that mirrors the network graph for screen readers"
+      "nobody": {
+        "where": "Household and network card, the wider network list when it is empty"
       },
       "noInverse": {
         "where": "Record a relationship dialog, under the type select where the type has no opposite"
-      },
-      "none": {
-        "where": "Person record, Wider network panel"
-      },
-      "noneHint": {
-        "where": "Person record, Wider network panel"
       },
       "noRelationship": {
         "where": "Person record, Wider network panel"
@@ -16880,6 +16944,9 @@
       "save": {
         "where": "Record a relationship dialog, the save button"
       },
+      "showDiagram": {
+        "where": "Household and network card, the diagram toggle"
+      },
       "title": {
         "where": "Person record, Wider network panel"
       },
@@ -16904,11 +16971,24 @@
       }
     },
     "overview": {
-      "clocks": {
-        "hint": {
-          "screenshot": "phase-2/person-360-light-comfortable.png",
-          "where": "Note in the clocks sheet when no clock is running"
+      "alerts": {
+        "count": {
+          "where": "Person record overview, Alerts card"
         },
+        "dates": {
+          "where": "Person record overview, Alerts card"
+        },
+        "none": {
+          "where": "Person record overview, Alerts card"
+        },
+        "scope": {
+          "where": "Person record overview, Alerts card"
+        },
+        "title": {
+          "where": "Person record overview, Alerts card"
+        }
+      },
+      "clocks": {
         "none": {
           "maxLength": 32,
           "screenshot": "phase-2/person-360-light-comfortable.png",
@@ -16990,6 +17070,23 @@
           "where": "Title of the current plans sheet on the Overview tab"
         }
       },
+      "recent": {
+        "add": {
+          "where": "Person record overview, Recent chronology card"
+        },
+        "all": {
+          "where": "Person record overview, Recent chronology card"
+        },
+        "meta": {
+          "where": "Person record overview, Recent chronology card"
+        },
+        "none": {
+          "where": "Person record overview, Recent chronology card"
+        },
+        "title": {
+          "where": "Person record overview, Recent chronology card"
+        }
+      },
       "voice": {
         "all": {
           "maxLength": 8,
@@ -17006,9 +17103,8 @@
           "screenshot": "phase-2/person-360-light-comfortable.png",
           "where": "Meta line of the views and voice sheet when nothing is recorded"
         },
-        "placeholder": {
-          "screenshot": "phase-2/person-360-light-comfortable.png",
-          "where": "Body of the views and voice sheet when nothing is recorded"
+        "record": {
+          "where": "Person record overview, Views and voice card when nothing is recorded"
         },
         "title": {
           "maxLength": 20,
@@ -19710,6 +19806,9 @@
       "name": {
         "maxLength": 32,
         "where": "Add a plan dialog, text field label for the plan title"
+      },
+      "noActions": {
+        "where": "Process record, Plans and actions card, a plan row with no actions"
       },
       "noFurtherAction": {
         "where": "Add a plan dialog, checkbox label shown for adult protection plans only"

@@ -1,13 +1,15 @@
 'use client';
 
 import { VIEWS_KINDS, ageLabel, agencyShort, detailLevelLabel, evidenceKindLabel, formatDate, formatDateTime, packItemKindLabel, planTypeLabel, processShort, processStatusLabel, roleLabel, resolvePersonId, shareStatusLabel, stageLabel, standingMerges, viewsKindLabel, type Person, type Process, type ViewsRecord } from '@mas/domain';
-import { useT, type RichValues } from '@mas/messages';
-import { AgencyMark, Button, ClockNumeral, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Tabs, Table, TableWrap, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
-import { AlertTriangle, ArrowUpRight, Flag, FolderPlus, HeartOff, Languages, Lock, Merge, Pencil, Plus, RotateCcw, ShieldAlert } from 'lucide-react';
+import { tKey, useT, type RichValues } from '@mas/messages';
+import { AgencyMark, Button, ClockNumeral, Dialog, EmptyState, Menu, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TabPanel, Tabs, Table, TableWrap, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
+import { AlertTriangle, ArrowUpRight, FilePlus, Flag, FolderPlus, HeartOff, Languages, Lock, Merge, Pencil, Plus, RotateCcw, ShieldAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { RecordHistory } from '@/components/RecordHistory';
 import { ScreenState, useDevState } from '@/components/ScreenState';
+import { composeRows, placedSpans } from '@/lib/composition';
+import { useLayoutMode } from '@/lib/layout';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { chronologyPath, meetingPath, personPath, processPath } from '@/lib/routes';
 import { useSelection } from '@/lib/selection';
@@ -15,13 +17,12 @@ import { useTrail } from '@/lib/trail';
 import { accessForUser, clocksForProcess, currentAddress, fullName, membersByAgency, processesInvolving, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import { useWriteErrors } from '@/lib/writeErrors';
+import { AddEventDialog } from '@/features/chronology/AddEventDialog';
 import { EventList } from '@/features/chronology/EventList';
 import { LanesChart } from '@/features/chronology/LanesChart';
 import { useChronologyStore } from '@/features/chronology/state';
 import { useChronology } from '@/features/chronology/useChronology';
-import { HouseholdPanel } from './HouseholdPanel';
-import { NetworkGraph } from './NetworkGraph';
-import { NetworkPanel } from './NetworkPanel';
+import { HouseholdNetworkCard } from './HouseholdNetworkCard';
 import { AddAlertDialog } from './AddAlertDialog';
 import { EditPersonDialog } from './EditPersonDialog';
 import { RecordDeathDialog } from './RecordDeathDialog';
@@ -31,6 +32,11 @@ import styles from './PersonRecord.module.css';
 
 /** Argument bag for t.rich, typed so a React node (the bold lead-in of a header fact) can fill an argument. */
 const rich = (values: RichValues): RichValues => values;
+
+/** The kind's word, from the catalogue: alert kinds are kebab-case and their keys are the camelCase form. */
+function alertKindLabel(kind: Person['alerts'][number]['kind']): string {
+  return tKey(`person.alerts.kind.${kind.replace(/-([a-z])/g, (_m, letter: string) => letter.toUpperCase())}`);
+}
 
 function alertTone(kind: Person['alerts'][number]['kind']) {
   switch (kind) {
@@ -80,6 +86,8 @@ export function PersonRecord({ personId }: { personId: string }) {
   const [alerting, setAlerting] = useState(false);
   const [editing, setEditing] = useState(false);
   const [recordingDeath, setRecordingDeath] = useState(false);
+  const [addingEvent, setAddingEvent] = useState(false);
+  const mode = useLayoutMode();
   const [unmerging, setUnmerging] = useState<string | null>(null);
   const standing = standingMerges(data, personId);
   const [voice, setVoice] = useState<{ kind: ViewsRecord['kind']; method: string; content: string }>(() => ({ kind: 'child-voice', method: t('person.recordViews.methodDefault'), content: '' }));
@@ -185,12 +193,218 @@ export function PersonRecord({ personId }: { personId: string }) {
     toast({ title: t('person.recordViews.toast.title'), text: t('person.recordViews.toast.text'), tone: 'success' });
   }
 
+  const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString();
+  const recentEvents = [...model.events].sort((a, b) => (a.occurredAt < b.occurredAt ? 1 : -1));
+  const recent = recentEvents.slice(0, 5);
+  const recentCount = recentEvents.filter((e) => e.occurredAt >= ninetyDaysAgo).length;
+  const rows = composeRows(
+    [
+      [
+        { id: 'clocks', span: 4 },
+        { id: 'alerts', span: 4 },
+        { id: 'contacts', span: 4, present: seeable.length > 0 },
+      ],
+      [
+        { id: 'household', span: 8 },
+        { id: 'voice', span: 4 },
+      ],
+      [
+        { id: 'recent', span: 8 },
+        { id: 'plans', span: 4, present: seeable.length > 0 },
+      ],
+      [{ id: 'history', span: 12 }],
+    ],
+    mode,
+  );
+  void placedSpans;
+
+  function renderCard(id: string) {
+    switch (id) {
+      case 'clocks':
+        return (
+          <Sheet empty={clocks.length === 0} data-testid="card-clocks">
+            <SheetHead
+              title={t('person.overview.clocks.title')}
+              meta={clocks.length === 0 ? t('person.overview.clocks.none') : t('person.overview.clocks.running', { count: clocks.length })}
+              actions={
+                clocks.length === 0 && open.length === 0 ? (
+                  <Button size="sm" variant="secondary" icon={<FolderPlus size={14} aria-hidden="true" />} onClick={() => setStarting(true)}>
+                    {t('processes.open.open')}
+                  </Button>
+                ) : undefined
+              }
+            />
+            {clocks.length > 0 ? (
+              <SheetBody>
+                <div className={styles.clockList}>
+                  {clocks.map((c) => (
+                    <AppLink key={c.triggerId} href={processPath(c.process.id)} className={styles.clockLink}>
+                      <ClockNumeral daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={t('person.overview.clocks.sub', { date: formatDate(c.dueAt), detail: (c.overridden ? c.overrideReason : c.sourceRef) ?? '' })} size="sm" />
+                    </AppLink>
+                  ))}
+                </div>
+              </SheetBody>
+            ) : null}
+          </Sheet>
+        );
+      case 'alerts':
+        return (
+          <Sheet empty={person!.alerts.length === 0} data-testid="card-alerts">
+            <SheetHead
+              title={t('person.overview.alerts.title')}
+              meta={person!.alerts.length === 0 ? t('person.overview.alerts.none') : t('person.overview.alerts.count', { count: person!.alerts.length })}
+              actions={
+                <Button size="sm" variant="secondary" icon={<ShieldAlert size={14} aria-hidden="true" />} onClick={() => setAlerting(true)}>
+                  {t('person.alerts.add')}
+                </Button>
+              }
+            />
+            {person!.alerts.length > 0 ? (
+              <SheetBody>
+                <ul className={styles.alertList}>
+                  {person!.alerts.map((a) => (
+                    <li key={a.id} className={styles.alertRow}>
+                      <Pill size="sm" tone={alertTone(a.kind)}>
+                        {alertKindLabel(a.kind)}
+                      </Pill>
+                      {a.text.trim().toLowerCase() === alertKindLabel(a.kind).toLowerCase() ? null : <span className={styles.alertText}>{a.text}</span>}
+                      <span className={styles.contactMeta}>
+                        {t('person.overview.alerts.dates', { hasTo: a.to ? 'yes' : 'no', from: formatDate(a.from), to: a.to ? formatDate(a.to) : '' })}. {t('person.overview.alerts.scope', { scope: a.visibleTo && a.visibleTo.length > 0 ? 'some' : 'all', agencies: (a.visibleTo ?? []).join(', ') })}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </SheetBody>
+            ) : null}
+          </Sheet>
+        );
+      case 'contacts': {
+        const contacts = seeable.flatMap((p) => membersByAgency(data, p).flatMap((g) => g.members.map((m) => ({ p, g, m }))));
+        return (
+          <Sheet empty={contacts.length === 0} data-testid="card-contacts">
+            <SheetHead title={t('person.overview.contacts.title')} meta={contacts.length === 0 ? t('person.overview.contacts.none') : t('person.overview.contacts.meta')} />
+            {contacts.length > 0 ? (
+              <SheetBody>
+                <div className={styles.contacts}>
+                  {contacts.map(({ p, g, m }) => {
+                    const last = data.audit.find((a) => a.userId === m.membership.userId && a.processId === p.id);
+                    return (
+                      <div key={`${p.id}-${m.membership.userId}`} className={styles.contact}>
+                        <AgencyMark agency={g.agency} hideLabel />
+                        <span className={styles.contactName}>{m.user ? userName(m.user) : m.membership.userId}</span>
+                        <span className={styles.contactMeta}>
+                          {t('person.overview.contacts.role', { caseRole: m.membership.caseRole, process: processShort(p.type), role: m.user ? roleLabel(m.user.roleId) : '' })} {t('person.overview.contacts.lastContact', { phone: m.user?.phone ?? '', date: last ? formatDate(last.at) : t('common.values.notRecorded') })}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </SheetBody>
+            ) : null}
+          </Sheet>
+        );
+      }
+      case 'household':
+        return <HouseholdNetworkCard person={person!} concernIds={concernIds} data-testid="card-household" />;
+      case 'voice':
+        return (
+          <Sheet tone="paper" empty={!latestVoice} data-testid="card-voice">
+            <SheetHead
+              title={t('person.overview.voice.title')}
+              meta={latestVoice ? t('person.overview.voice.latestOf', { count: views.length }) : t('person.overview.voice.none')}
+              actions={
+                latestVoice ? (
+                  <Button size="sm" variant="quiet" onClick={() => setTab('voice')}>
+                    {t('person.overview.voice.all')}
+                  </Button>
+                ) : (
+                  <Button size="sm" variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={() => setRecording(true)}>
+                    {t('person.overview.voice.record')}
+                  </Button>
+                )
+              }
+            />
+            {latestVoice ? (
+              <SheetBody>
+                <VoiceBlock record={latestVoice} personName={person!.preferredName ?? person!.givenName} size="sm" />
+              </SheetBody>
+            ) : null}
+          </Sheet>
+        );
+      case 'recent':
+        return (
+          <Sheet empty={recent.length === 0} data-testid="card-recent">
+            <SheetHead
+              title={t('person.overview.recent.title')}
+              meta={recent.length === 0 ? t('person.overview.recent.none') : t('person.overview.recent.meta', { count: recentCount, date: formatDate(recent[0]!.occurredAt) })}
+              actions={
+                recent.length > 0 ? (
+                  <Button size="sm" variant="quiet" icon={<ArrowUpRight size={14} aria-hidden="true" />} onClick={() => navigate(chronologyPath(person!.id))}>
+                    {t('person.overview.recent.all')}
+                  </Button>
+                ) : (
+                  <Button size="sm" variant="secondary" icon={<FilePlus size={14} aria-hidden="true" />} onClick={() => setAddingEvent(true)}>
+                    {t('person.overview.recent.add')}
+                  </Button>
+                )
+              }
+            />
+            {recent.length > 0 ? (
+              <SheetBody>
+                <ul className={styles.recentList}>
+                  {recent.map((e) => (
+                    <li key={e.id} className={styles.recentRow}>
+                      <span className={styles.recentDate}>{formatDate(e.occurredAt)}</span>
+                      <span className={styles.recentTitle}>{e.title}</span>
+                      <span className={styles.contactMeta}>{agencyShort(e.agency)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </SheetBody>
+            ) : null}
+          </Sheet>
+        );
+      case 'plans':
+        return (
+          <Sheet empty={plans.length === 0} data-testid="card-plans">
+            <SheetHead title={t('person.overview.plans.title')} meta={plans.length === 0 ? t('person.overview.plans.none') : t('person.overview.plans.active', { count: plans.length })} />
+            {plans.length > 0 ? (
+              <SheetBody>
+                <div className={styles.planList}>
+                  {plans.map((pl) => {
+                    const actions = data.actions.filter((a) => a.planId === pl.id);
+                    const done = actions.filter((a) => a.status === 'complete').length;
+                    const overdue = actions.filter((a) => a.status !== 'complete' && a.status !== 'cancelled' && a.due < now.toISOString().slice(0, 10)).length;
+                    return (
+                      <AppLink key={pl.id} href={processPath(pl.processId)} className={styles.plan} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <span className={styles.planTitle}>{pl.title}</span>
+                        <Pill size="sm" tone={overdue > 0 ? 'critical' : 'neutral'}>
+                          {t('person.overview.plans.progress', { done, total: actions.length, overdue })}
+                        </Pill>
+                        <span className={styles.planMeta}>
+                          {t('person.overview.plans.meta', { type: planTypeLabel(pl.type), coordinator: pl.coordinatorName, agreed: formatDate(pl.agreedAt), hasReview: pl.reviewDate ? 'yes' : 'no', review: pl.reviewDate ? formatDate(pl.reviewDate) : '', outcomes: pl.outcomes.length })}
+                        </span>
+                      </AppLink>
+                    );
+                  })}
+                </div>
+              </SheetBody>
+            ) : null}
+          </Sheet>
+        );
+      case 'history':
+        return <RecordHistory record={person!} retire={{ collection: 'people', id: person!.id, label: fullName(person!) }} data-testid="card-history" />;
+      default:
+        return null;
+    }
+  }
+
   const state = dev ?? (allRestricted ? 'restricted' : 'ready');
 
   return (
     <div className="page">
       <header className={styles.header} data-testid="person-header">
-        <div data-testid="person-identity">
+        <div className={styles.identity} data-testid="person-identity">
           <p className={styles.kicker}>{t('person.screenName')}</p>
           <div className={styles.nameRow}>
             <h1 className={styles.name}>{fullName(person)}</h1>
@@ -237,56 +451,61 @@ export function PersonRecord({ personId }: { personId: string }) {
             </div>
           ) : null}
         </div>
-        <div className={styles.badges}>
-          {open.length === 0 ? <span className={styles.badgeNext}>{t('person.header.noOpenProcess')}</span> : null}
-          {open.map((p) => {
-            const access = accessOf(p);
-            const next = nextMeetingFor(p);
-            if (access.level === 'none')
+        {/*
+          Status and actions, one region, top-aligned with the identity. The status strip is the one
+          place the record says which cases are open (the overview does not repeat it), and the
+          action row beneath it is three buttons and a menu: the things done on most visits at one
+          weight, and the rare and consequential one click further away (D-231).
+        */}
+        <div className={styles.status} data-testid="person-status">
+          <div className={styles.strip} role="group" aria-label={t('person.header.status')} data-testid="status-strip">
+            {open.length === 0 ? <span className={styles.stripNone}>{t('person.header.noOpenProcess')}</span> : null}
+            {open.map((p) => {
+              const access = accessOf(p);
+              const next = nextMeetingFor(p);
+              if (access.level === 'none')
+                return (
+                  <Pill key={p.id} tone="restricted" icon={<Lock size={14} aria-hidden="true" />}>
+                    {t('person.header.restrictedProcess')}
+                  </Pill>
+                );
               return (
-                <Pill key={p.id} tone="restricted" icon={<Lock size={14} aria-hidden="true" />}>
-                  {t('person.header.restrictedProcess')}
-                </Pill>
+                <span key={p.id} className={styles.badge}>
+                  <AppLink href={processPath(p.id)} style={{ textDecoration: 'none' }}>
+                    <ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.accessRestriction === 'restricted'} />
+                  </AppLink>
+                  <div className={styles.badgeNext}>{next ? t('person.header.nextMeeting', { title: next.title.split(':')[0] ?? '', date: formatDate(next.scheduledAt) }) : access.level === 'presence' ? t('person.header.notOnCase') : t('person.header.noMeeting')}</div>
+                </span>
               );
-            return (
-              <span key={p.id} className={styles.badge}>
-                <AppLink href={processPath(p.id)} style={{ textDecoration: 'none' }}>
-                  <ProcessMark type={p.type} stage={stageLabel(p.type, p.stage)} restricted={p.accessRestriction === 'restricted'} />
-                </AppLink>
-                <div className={styles.badgeNext}>{next ? t('person.header.nextMeeting', { title: next.title.split(':')[0] ?? '', date: formatDate(next.scheduledAt) }) : access.level === 'presence' ? t('person.header.notOnCase') : t('person.header.noMeeting')}</div>
-              </span>
-            );
-          })}
+            })}
+          </div>
+          <div className={styles.recordActions} data-testid="record-actions">
+            <Button size="sm" variant="primary" icon={<FolderPlus size={14} aria-hidden="true" />} onClick={() => setStarting(true)} data-testid="start-process">
+              {t('processes.open.open')}
+            </Button>
+            <Button size="sm" variant="secondary" icon={<Pencil size={14} aria-hidden="true" />} onClick={() => setEditing(true)} data-testid="edit-person">
+              {t('person.edit.action')}
+            </Button>
+            <Button size="sm" variant="secondary" icon={<ShieldAlert size={14} aria-hidden="true" />} onClick={() => setAlerting(true)} data-testid="add-alert">
+              {t('person.alerts.add')}
+            </Button>
+            <Menu
+              label={t('person.header.more')}
+              size="sm"
+              data-testid="person-more"
+              items={[
+                ...standing.map((m) => ({ id: `unmerge-${m.id}`, label: t('person.merge.undo', { name: `${m.mergedPerson.givenName} ${m.mergedPerson.familyName}` }), icon: <RotateCcw size={14} aria-hidden="true" />, onSelect: () => setUnmerging(m.id), 'data-testid': 'unmerge-open' })),
+                { id: 'merge', label: t('person.merge.open'), icon: <Merge size={14} aria-hidden="true" />, onSelect: () => setMerging(true), 'data-testid': 'merge-open' },
+                ...(person.death ? [] : [{ id: 'death', label: t('person.death.action'), icon: <HeartOff size={14} aria-hidden="true" />, onSelect: () => setRecordingDeath(true), destructive: true, separatorBefore: true, 'data-testid': 'record-death' }]),
+              ]}
+            />
+          </div>
         </div>
         {followedMerge ? (
           <p className={styles.followed} role="status" data-testid="followed-merge">
             {t('person.merge.followed', { name: `${followedMerge.mergedPerson.givenName} ${followedMerge.mergedPerson.familyName}`, date: formatDate(followedMerge.at.slice(0, 10)) })}
           </p>
         ) : null}
-        <div className={styles.recordActions}>
-          <Button size="sm" variant="primary" icon={<FolderPlus size={14} aria-hidden="true" />} onClick={() => setStarting(true)} data-testid="start-process">
-            {t('processes.open.open')}
-          </Button>
-          <Button size="sm" variant="secondary" icon={<Pencil size={14} aria-hidden="true" />} onClick={() => setEditing(true)} data-testid="edit-person">
-            {t('person.edit.action')}
-          </Button>
-          <Button size="sm" variant="secondary" icon={<ShieldAlert size={14} aria-hidden="true" />} onClick={() => setAlerting(true)} data-testid="add-alert">
-            {t('person.alerts.add')}
-          </Button>
-          {person.death ? null : (
-            <Button size="sm" variant="quiet" icon={<HeartOff size={14} aria-hidden="true" />} onClick={() => setRecordingDeath(true)} data-testid="record-death">
-              {t('person.death.action')}
-            </Button>
-          )}
-          <Button size="sm" variant="secondary" icon={<Merge size={14} aria-hidden="true" />} onClick={() => setMerging(true)} data-testid="merge-open">
-            {t('person.merge.open')}
-          </Button>
-          {standing.map((m) => (
-            <Button key={m.id} size="sm" variant="quiet" icon={<RotateCcw size={14} aria-hidden="true" />} onClick={() => setUnmerging(m.id)} data-testid="unmerge-open">
-              {t('person.merge.undo', { name: `${m.mergedPerson.givenName} ${m.mergedPerson.familyName}` })}
-            </Button>
-          ))}
-        </div>
       </header>
 
       <ScreenState
@@ -298,81 +517,19 @@ export function PersonRecord({ personId }: { personId: string }) {
         </div>
 
         <TabPanel id="overview" active={tab === 'overview'} idPrefix="p360">
-          <div className={styles.overview}>
-            <Sheet>
-              <SheetHead title={t('person.overview.clocks.title')} meta={clocks.length === 0 ? t('person.overview.clocks.none') : t('person.overview.clocks.running', { count: clocks.length })} />
-              <SheetBody>
-                <div className={styles.clockList}>
-                  {clocks.map((c) => (
-                    <AppLink key={c.triggerId} href={processPath(c.process.id)} className={styles.clockLink}>
-                      <ClockNumeral daysRemaining={c.daysRemaining} band={c.band} status={c.status} label={c.label} sub={t('person.overview.clocks.sub', { date: formatDate(c.dueAt), detail: (c.overridden ? c.overrideReason : c.sourceRef) ?? '' })} size="sm" />
-                    </AppLink>
-                  ))}
-                  {clocks.length === 0 ? <span className={styles.contactMeta}>{t('person.overview.clocks.hint')}</span> : null}
+          {/*
+            One grid, twelve columns, spans decided once from the card order and re-packed when a
+            card is absent, so a row is never left with an empty third (docs/DESIGN.md 4.4, D-229).
+            Each card is a renderer keyed by id; the rows below are the composition.
+          */}
+          <div className={styles.grid} data-testid="person-overview">
+            {rows.map((row, r) =>
+              row.map((card) => (
+                <div key={card.id} className={styles[`span${card.span}` as keyof typeof styles]} data-card={card.id} data-row={r} data-span={card.span}>
+                  {renderCard(card.id)}
                 </div>
-              </SheetBody>
-            </Sheet>
-            <div className={styles.homeAndNetwork}>
-              <HouseholdPanel person={person} />
-              <NetworkPanel person={person} />
-            </div>
-            <Sheet>
-              <SheetHead title={t('person.overview.network.title')} meta={t('person.overview.network.meta')} />
-              <SheetBody>
-                <NetworkGraph person={person} concernIds={concernIds} on={now.toISOString().slice(0, 10)} />
-              </SheetBody>
-            </Sheet>
-            <div className={styles.overviewWide}>
-              <RecordHistory record={person} retire={{ collection: 'people', id: person.id, label: fullName(person) }} />
-            </div>
-            <Sheet tone="paper">
-              <SheetHead title={t('person.overview.voice.title')} meta={latestVoice ? t('person.overview.voice.latestOf', { count: views.length }) : t('person.overview.voice.none')} actions={<Button size="sm" variant="quiet" onClick={() => setTab('voice')}>{t('person.overview.voice.all')}</Button>} />
-              <SheetBody>
-                {latestVoice ? <VoiceBlock record={latestVoice} personName={person.preferredName ?? person.givenName} size="sm" /> : <span className={styles.contactMeta}>{t('person.overview.voice.placeholder')}</span>}
-              </SheetBody>
-            </Sheet>
-            <Sheet className={styles.overviewWide}>
-              <SheetHead title={t('person.overview.contacts.title')} meta={t('person.overview.contacts.meta')} />
-              <SheetBody>
-                <div className={styles.contacts}>
-                  {seeable.flatMap((p) => membersByAgency(data, p).flatMap((g) => g.members.map((m) => ({ p, g, m })))).map(({ p, g, m }) => {
-                    const last = data.audit.find((a) => a.userId === m.membership.userId && a.processId === p.id);
-                    return (
-                      <div key={`${p.id}-${m.membership.userId}`} className={styles.contact}>
-                        <AgencyMark agency={g.agency} />
-                        <span className={styles.contactName}>{m.user ? userName(m.user) : m.membership.userId}</span>
-                        <span className={styles.contactMeta}>{t('person.overview.contacts.role', { caseRole: m.membership.caseRole, process: processShort(p.type), role: m.user ? roleLabel(m.user.roleId) : '' })}</span>
-                        <span className={styles.contactMeta}>{t('person.overview.contacts.lastContact', { phone: m.user?.phone ?? '', date: last ? formatDate(last.at) : t('common.values.notRecorded') })}</span>
-                      </div>
-                    );
-                  })}
-                  {seeable.length === 0 ? <span className={styles.contactMeta}>{t('person.overview.contacts.none')}</span> : null}
-                </div>
-              </SheetBody>
-            </Sheet>
-            <Sheet className={styles.overviewWide}>
-              <SheetHead title={t('person.overview.plans.title')} meta={plans.length === 0 ? t('person.overview.plans.none') : t('person.overview.plans.active', { count: plans.length })} />
-              <SheetBody>
-                <div className={styles.planList}>
-                  {plans.map((pl) => {
-                    const actions = data.actions.filter((a) => a.planId === pl.id);
-                    const done = actions.filter((a) => a.status === 'complete').length;
-                    const overdue = actions.filter((a) => a.status !== 'complete' && a.status !== 'cancelled' && a.due < now.toISOString().slice(0, 10)).length;
-                    return (
-                      <AppLink key={pl.id} href={processPath(pl.processId)} className={styles.plan} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <span className={styles.planTitle}>{pl.title}</span>
-                        <Pill size="sm" tone={overdue > 0 ? 'critical' : 'neutral'}>
-                          {t('person.overview.plans.progress', { done, total: actions.length, overdue })}
-                        </Pill>
-                        <span className={styles.planMeta}>
-                          {t('person.overview.plans.meta', { type: planTypeLabel(pl.type), coordinator: pl.coordinatorName, agreed: formatDate(pl.agreedAt), hasReview: pl.reviewDate ? 'yes' : 'no', review: pl.reviewDate ? formatDate(pl.reviewDate) : '', outcomes: pl.outcomes.length })}
-                        </span>
-                      </AppLink>
-                    );
-                  })}
-                </div>
-              </SheetBody>
-            </Sheet>
+              )),
+            )}
           </div>
         </TabPanel>
 
@@ -596,6 +753,7 @@ export function PersonRecord({ personId }: { personId: string }) {
       </Dialog>
 
       {starting ? <StartProcessDialog person={person} open onClose={() => setStarting(false)} /> : null}
+      {addingEvent ? <AddEventDialog open onClose={() => setAddingEvent(false)} personId={person.id} processIds={open.map((p) => p.id)} recentEvents={recent} /> : null}
       {alerting ? <AddAlertDialog person={person} open onClose={() => setAlerting(false)} /> : null}
       {editing ? <EditPersonDialog person={person} open onClose={() => setEditing(false)} /> : null}
       {recordingDeath ? <RecordDeathDialog person={person} open onClose={() => setRecordingDeath(false)} /> : null}

@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, isExcludedParty, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, involvementNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyTransition, buildMeeting, classificationFor, formatDate, heldTransitionFor, meetingTypeLabel, scheduleRoute, stagePayload, stageLabel, transitionById, transitionLabel, validateSchedule, type Creates, type InformationRequest, type InvolvementRequest, type MeetingType, type MissingThing, type PermissionDecision, type ScheduleInput, type TransitionOutcome } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, isExcludedParty, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type Household, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, involvementNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyTransition, buildMeeting, classificationFor, formatDate, heldTransitionFor, meetingTypeLabel, scheduleRoute, stagePayload, stageLabel, transitionById, transitionLabel, validateSchedule, type Creates, type InformationRequest, type InvolvementRequest, type MeetingType, type MissingThing, type PermissionDecision, type ScheduleInput, type TransitionOutcome } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -154,6 +154,18 @@ interface AppState {
   addToHousehold: (householdId: string, personId: string, from: string, note: string, notify: boolean) => WriteResult;
   endHouseholdMembership: (householdId: string, personId: string, to: string, reason: string) => WriteResult;
   setHouseholdLabel: (householdId: string, label: string) => WriteResult;
+  /**
+   * A household of one, created from the address on the record. A person who lives somewhere has
+   * a household, and the card that says "no household recorded" about a person whose address is
+   * known was reading the absence of this record as a fact about them (D-230).
+   */
+  createHousehold: (personId: string, addressId: string, from: string, label?: string) => WriteResult;
+  /**
+   * A move. The address history closes the old period and opens the new one, the household follows
+   * when the person is its only member and is left behind (with a household of one started at the
+   * new address) when they are not, and the chronology carries the move as a fact.
+   */
+  recordMove: (personId: string, addressId: string, on: string, note: string) => WriteResult;
   /**
    * Relationships, stored once and read from both ends.
    *
@@ -1219,6 +1231,83 @@ export const useAppStore = create<AppState>((set, get) => ({
       act: 'edit',
       targetType: 'person',
       targetLabel: label.trim(),
+    });
+  },
+  createHousehold: (personId, addressId, from, label) => {
+    const { data } = get();
+    const person = data.people.find((p) => p.id === personId);
+    if (!person) return { ok: false, errors: ['personMissing'], nearMatches: [], effects: [] };
+    if (person.householdId && data.households.some((h) => h.id === person.householdId)) return { ok: false, errors: ['householdExists'], nearMatches: [], effects: [] };
+    const address = data.addresses.find((a) => a.id === addressId);
+    if (!address) return { ok: false, errors: ['addressMissing'], nearMatches: [], effects: [] };
+    const name = `${person.givenName} ${person.familyName}`;
+    const household: Household = { id: get().newId('hh'), synthetic: true, addressId, members: [{ personId, from }], label: label ?? t('person.household.labelFor', { family: person.familyName, town: address.town }) };
+    const result = get().write({ collection: 'households', record: household, intent: 'create', act: 'create', targetType: 'person', targetLabel: name, rules: [] });
+    if (!result.ok) return result;
+    upsert(get, set, 'people', {
+      ...person,
+      householdId: household.id,
+      addressHistory: person.addressHistory.some((a) => a.addressId === addressId && !a.to) ? person.addressHistory : [{ addressId, from }, ...person.addressHistory],
+    });
+    return result;
+  },
+  recordMove: (personId, addressId, on, note) => {
+    const { data } = get();
+    const person = data.people.find((p) => p.id === personId);
+    if (!person) return { ok: false, errors: ['personMissing'], nearMatches: [], effects: [] };
+    if (!on) return { ok: false, errors: ['moveDateRequired'], nearMatches: [], effects: [] };
+    const address = data.addresses.find((a) => a.id === addressId);
+    if (!address) return { ok: false, errors: ['addressMissing'], nearMatches: [], effects: [] };
+    const current = [...person.addressHistory].sort((a, b) => (a.from < b.from ? 1 : -1)).find((a) => !a.to);
+    if (current?.addressId === addressId) return { ok: false, errors: ['moveSameAddress'], nearMatches: [], effects: [] };
+
+    const name = `${person.givenName} ${person.familyName}`;
+    const line = [address.line1, address.town, address.postcode].filter(Boolean).join(', ');
+    const household = data.households.find((h) => h.id === person.householdId);
+    const alone = household ? membersOn(household, on).every((m) => m.personId === personId) : true;
+    const touched = household ? processesTouchedByHousehold(data, household.id, on) : [];
+    let householdId = person.householdId;
+
+    if (household && alone) {
+      const moved = get().write({ collection: 'households', record: { ...household, addressId }, intent: 'update', act: 'edit', targetType: 'person', targetLabel: name, rules: [] });
+      if (!moved.ok) return moved;
+    } else {
+      if (household) {
+        const left = get().write({
+          collection: 'households',
+          record: { ...household, members: household.members.map((m) => (m.personId === personId && !m.to ? { ...m, to: on, endedReason: t('person.household.moveReason', { address: line }) } : m)) },
+          intent: 'update',
+          act: 'edit',
+          targetType: 'person',
+          targetLabel: name,
+          rules: [],
+        });
+        if (!left.ok) return left;
+      }
+      const fresh: Household = { id: get().newId('hh'), synthetic: true, addressId, members: [{ personId, from: on }], label: t('person.household.labelFor', { family: person.familyName, town: address.town }) };
+      const created = get().write({ collection: 'households', record: fresh, intent: 'create', act: 'create', targetType: 'person', targetLabel: name, rules: [] });
+      if (!created.ok) return created;
+      householdId = fresh.id;
+    }
+
+    return get().write({
+      collection: 'people',
+      record: { ...person, householdId, addressHistory: [{ addressId, from: on }, ...person.addressHistory.map((a) => (a.to ? a : { ...a, to: on }))] },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'person',
+      targetLabel: name,
+      rules: [],
+      event: {
+        eventType: 'move.address',
+        significance: 'moderate',
+        visibility: 'integrated',
+        title: t('person.household.eventMove', { name, address: line }),
+        detail: note.trim() || t('person.household.eventMoveDetail', { name, address: line, date: on }),
+        subjectIds: [personId],
+        occurredAt: `${on}T00:00:00Z`,
+        linkedProcessIds: touched.map((p) => p.id),
+      },
     });
   },
   saveRelationship: (relationship, decisions = []) => {

@@ -7,12 +7,18 @@ export type SheetTone = 'default' | 'paper' | 'well' | 'accent' | 'restricted';
 export interface SheetProps extends HTMLAttributes<HTMLElement> {
   tone?: SheetTone;
   selected?: boolean;
+  /**
+   * The card has nothing to show. It keeps the height of its title: the one-line statement of what is
+   * missing goes in the head's meta line and the action that fixes it in the head's action slot, and
+   * no body is rendered. A card-sized panel explaining an absence is what this replaces (D-229).
+   */
+  empty?: boolean;
   as?: 'section' | 'article' | 'div' | 'aside';
 }
 
-export function Sheet({ tone = 'default', selected, as: Tag = 'section', className, children, ...rest }: SheetProps) {
+export function Sheet({ tone = 'default', selected, empty, as: Tag = 'section', className, children, ...rest }: SheetProps) {
   return (
-    <Tag className={cn(styles.sheet, className)} data-tone={tone} data-state={selected ? 'selected' : undefined} {...rest}>
+    <Tag className={cn(styles.sheet, className)} data-tone={tone} data-state={selected ? 'selected' : undefined} data-empty={empty ? 'true' : undefined} {...rest}>
       {children}
     </Tag>
   );

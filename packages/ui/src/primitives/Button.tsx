@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 import { cn } from '../cn';
 import styles from './Button.module.css';
 
@@ -11,11 +11,13 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: ReactNode;
   iconEnd?: ReactNode;
   loading?: boolean;
+  ref?: Ref<HTMLButtonElement>;
 }
 
-export function Button({ variant = 'secondary', size = 'md', icon, iconEnd, loading = false, className, children, disabled, type = 'button', ...rest }: ButtonProps) {
+export function Button({ variant = 'secondary', size = 'md', icon, iconEnd, loading = false, className, children, disabled, type = 'button', ref, ...rest }: ButtonProps) {
   return (
     <button
+      ref={ref}
       type={type}
       className={cn(styles.button, className)}
       data-variant={variant}

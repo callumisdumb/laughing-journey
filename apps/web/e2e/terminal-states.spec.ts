@@ -122,6 +122,8 @@ test.describe('editing a person record', () => {
     await page.getByTestId('edit-person-submit').click();
     await expect(page.getByText('Record updated')).toBeVisible();
 
+    // The history is collapsed to its title and count until asked for (D-229).
+    await page.getByTestId('history-toggle').click();
     const history = page.getByTestId('record-history');
     await expect(history).toContainText('dateOfBirth');
     await expect(history).toContainText('Was:');
@@ -186,6 +188,7 @@ test.describe('recording a death', () => {
     await page.goto('/people/per_marion_fraser');
     await waitForData(page);
 
+    await page.getByTestId('person-more').click();
     await page.getByTestId('record-death').click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -204,13 +207,16 @@ test.describe('recording a death', () => {
     await expect(page.getByTestId('died')).toContainText('Died');
     await expect(page.getByTestId('died')).toContainText('Moira Gilmour');
     // The action is gone, because a death is recorded once.
+    await page.getByTestId('person-more').click();
     await expect(page.getByTestId('record-death')).toHaveCount(0);
+    await page.keyboard.press('Escape');
   });
 
   test('refuses a date in the future', async ({ page }) => {
     await signInAs(page, 'usr_moira_gilmour');
     await page.goto('/people/per_marion_fraser');
     await waitForData(page);
+    await page.getByTestId('person-more').click();
     await page.getByTestId('record-death').click();
     await page.getByTestId('death-date').fill('2030-01-01');
     await page.getByTestId('death-note').fill('Marion died at home. Confirmed by her GP this morning.');

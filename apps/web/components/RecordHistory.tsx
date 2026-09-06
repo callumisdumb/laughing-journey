@@ -3,7 +3,8 @@
 import { formatDateTime, history, isRecordedInError, type Correctable } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, Pill, Sheet, SheetBody, SheetHead } from '@mas/ui';
-import { FileX } from 'lucide-react';
+import { ChevronDown, ChevronUp, FileX } from 'lucide-react';
+import { useState, type HTMLAttributes } from 'react';
 import { useRetire, type RetireTarget } from '@/lib/retire';
 import styles from './RecordHistory.module.css';
 
@@ -17,26 +18,38 @@ import styles from './RecordHistory.module.css';
  *
  * Nested values are named rather than printed. "clocks changed" is useful; a page of JSON is not.
  */
-export function RecordHistory({ record, headingLevel = 2, retire }: { record: Correctable; headingLevel?: 2 | 3; retire?: RetireTarget }) {
+export function RecordHistory({ record, headingLevel = 2, retire, ...rest }: { record: Correctable; headingLevel?: 2 | 3; retire?: RetireTarget } & HTMLAttributes<HTMLElement>) {
   const t = useT();
   const open = useRetire((s) => s.retire);
   const entries = history(record);
   const retired = isRecordedInError(record);
+  // Collapsed to its title and count until asked for: the history is the audit's answer, not the
+  // record's first page, and on a record created a minute ago there is nothing to open (D-229).
+  const [shown, setShown] = useState(false);
+  const empty = entries.length === 0 && !retired;
 
   return (
-    <Sheet>
+    <Sheet empty={empty} {...rest}>
       <SheetHead
         title={t('person.history.title')}
         meta={t('person.history.meta', { count: entries.length })}
         headingLevel={headingLevel}
         actions={
-          retire && !retired ? (
-            <Button size="sm" variant="quiet" icon={<FileX size={14} aria-hidden="true" />} onClick={() => open(retire)} data-testid="retire-record">
-              {t('common.recordedInError.action')}
-            </Button>
-          ) : null
+          <>
+            {entries.length > 0 ? (
+              <Button size="sm" variant="quiet" icon={shown ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />} aria-expanded={shown} onClick={() => setShown((v) => !v)} data-testid="history-toggle">
+                {shown ? t('person.history.hide') : t('person.history.show', { count: entries.length })}
+              </Button>
+            ) : null}
+            {retire && !retired ? (
+              <Button size="sm" variant="quiet" icon={<FileX size={14} aria-hidden="true" />} onClick={() => open(retire)} data-testid="retire-record">
+                {t('common.recordedInError.action')}
+              </Button>
+            ) : null}
+          </>
         }
       />
+      {empty ? null : (
       <SheetBody>
         {record.recordedInError ? (
           <div className={styles.retired} data-testid="retired-badge">
@@ -52,9 +65,7 @@ export function RecordHistory({ record, headingLevel = 2, retire }: { record: Co
             </span>
           </div>
         ) : null}
-        {entries.length === 0 ? (
-          <p className={styles.empty}>{t('person.history.empty')}</p>
-        ) : (
+        {entries.length === 0 || !shown ? null : (
           <ol className={styles.list} data-testid="record-history">
             {entries.map((entry, i) => (
               <li key={`${entry.at}-${i}`} className={styles.entry}>
@@ -75,6 +86,7 @@ export function RecordHistory({ record, headingLevel = 2, retire }: { record: Co
           </ol>
         )}
       </SheetBody>
+      )}
     </Sheet>
   );
 }

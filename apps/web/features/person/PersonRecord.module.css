@@ -11,11 +11,43 @@
    * header empty. Below compact the header stacks and the actions row comes back to column 1 (D-200).
    */
   grid-template-columns: minmax(min(28ch, 100%), 1fr) auto;
+  grid-template-areas: 'identity status' 'followed followed';
   gap: var(--header-gap) var(--content-gutter);
   align-items: start;
   margin-bottom: var(--density-gap);
   padding-bottom: var(--density-pad);
   border-bottom: 2px solid var(--color-ink-1);
+}
+
+.identity {
+  grid-area: identity;
+  min-width: 0;
+}
+
+/*
+ * Status and actions: one region, top-aligned with the identity, its contents ranged right so the
+ * marks and the buttons share an edge with the page. The strip says which cases are open and the
+ * row beneath it is three buttons and a menu, at one weight each (D-231).
+ */
+.status {
+  display: flex;
+  flex-direction: column;
+  grid-area: status;
+  gap: 10px;
+  align-items: flex-end;
+  min-width: 0;
+}
+
+.strip {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+}
+
+.stripNone {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
 }
 
 /* The screen's own name, above the person's. Person record, not Person360: the product name and the
@@ -24,8 +56,6 @@
   margin: 0 0 2px;
   font-size: var(--text-xs);
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: var(--color-ink-3);
 }
 
@@ -68,33 +98,37 @@
   margin-top: 10px;
 }
 
-.badges {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-end;
-}
-
 .badge {
   text-align: right;
 }
 
+/* Below standard the two regions stack, identity first, and everything ranges left (D-200, D-231). */
+:root[data-layout='compact'] .header,
 :root[data-layout='narrow'] .header {
   grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'identity' 'status' 'followed';
 }
 
-:root[data-layout='narrow'] .badges {
-  gap: 8px 18px;
+:root[data-layout='compact'] .status,
+:root[data-layout='narrow'] .status,
+:root[data-layout='compact'] .strip,
+:root[data-layout='narrow'] .strip {
   align-items: flex-start;
+}
+
+:root[data-layout='compact'] .strip,
+:root[data-layout='narrow'] .strip {
+  gap: 8px 18px;
   flex-flow: row wrap;
 }
 
+:root[data-layout='compact'] .badge,
 :root[data-layout='narrow'] .badge {
   text-align: left;
 }
 
+:root[data-layout='compact'] .recordActions,
 :root[data-layout='narrow'] .recordActions {
-  grid-column: 1;
   justify-content: flex-start;
 }
 
@@ -103,14 +137,81 @@
   color: var(--color-ink-3);
 }
 
-.overview {
+/*
+ * The overview: one twelve-column grid, the only grid on the tab. Each cell's span is decided by the
+ * composition in the component (`composeRows`), never by the card, and the span classes below are
+ * the whole vocabulary a card can be given (docs/DESIGN.md 4.4, D-229).
+ */
+.grid {
   display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 5fr) minmax(0, 3fr);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--density-gap) var(--content-gutter);
+  align-items: start;
 }
 
-.overviewWide {
+.grid > * {
+  min-width: 0;
+}
+
+.span1 { grid-column: span 1; }
+.span2 { grid-column: span 2; }
+.span3 { grid-column: span 3; }
+.span4 { grid-column: span 4; }
+.span5 { grid-column: span 5; }
+.span6 { grid-column: span 6; }
+.span7 { grid-column: span 7; }
+.span8 { grid-column: span 8; }
+.span9 { grid-column: span 9; }
+.span10 { grid-column: span 10; }
+.span11 { grid-column: span 11; }
+.span12 { grid-column: span 12; }
+
+.alertList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alertRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 10px;
+  align-items: baseline;
+}
+
+.alertRow > :last-child {
   grid-column: 1 / -1;
+}
+
+.alertText {
+  font-weight: 600;
+}
+
+.recentList {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recentRow {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: baseline;
+  font-size: var(--text-sm);
+}
+
+.recentDate {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-3);
+}
+
+.recentTitle {
+  font-weight: 600;
 }
 
 .clockList {
@@ -125,20 +226,29 @@
   color: inherit;
 }
 
+/* Key contacts as rows rather than tiles: a third of the width holds one tile per line, and eight
+   tiles made the card a tower beside two collapsed neighbours. A row is a mark, a name and two lines. */
 .contacts {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 10px;
+  gap: 0;
 }
 
 .contact {
   display: grid;
-  gap: 2px;
-  padding: 10px 12px;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0 10px;
+  align-items: baseline;
+  padding: 6px 0;
   font-size: var(--text-sm);
-  background: var(--color-paper-0);
-  border: 1px solid var(--color-line-1);
-  border-radius: var(--radius-md);
+  border-bottom: 1px solid var(--color-line-1);
+}
+
+.contact:last-child {
+  border-bottom: none;
+}
+
+.contact > .contactMeta {
+  grid-column: 2;
 }
 
 .contactName {
@@ -212,30 +322,22 @@
   margin: 8px 0;
 }
 
-@media (width <= 1279px) {
-  .overview {
-    grid-template-columns: 1fr;
-  }
-}
-
 /*
- * Actions on the record itself, as against actions on a panel inside it. They sit under the process
- * badges rather than beside the name, because a merge is rare and destructive and should not share
- * a line with the person's name.
+ * Actions on the record itself, as against actions on a panel inside it. Three buttons and a menu,
+ * under the status strip: the merge and the death are in the menu because they are rare and
+ * consequential and should not share a line with Start a process at the same weight.
  */
 .recordActions {
   display: flex;
   flex-wrap: wrap;
-  grid-column: 2;
   gap: 8px;
   justify-content: flex-end;
-  margin-top: 4px;
 }
 
 /* You arrived here by following a reference to a record that was merged into this one. Said plainly,
    because otherwise the reader is looking at a different name from the one they clicked. */
 .followed {
-  grid-column: 1 / -1;
+  grid-area: followed;
   margin: 0;
   padding: 6px 12px;
   font-size: var(--text-sm);
@@ -245,23 +347,6 @@
   border-inline-start: 3px solid var(--color-accent-1);
 }
 
-/*
- * Household and network, side by side and across the full width.
- *
- * They are two answers to two different questions and belong next to each other, and both carry a
- * list with actions on every row, which a third of a three column grid cannot hold without the
- * buttons wrapping under the names.
- */
-.homeAndNetwork {
-  display: grid;
-
-  /* `min()` so the track never demands more than the window: at 400 percent zoom a 1280px viewport
-     is 320px, and a bare 22rem minimum takes the page sideways. */
-  grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
-  grid-column: 1 / -1;
-  gap: var(--density-gap) var(--content-gutter);
-  align-items: start;
-}
 
 /*
  * A death, in the header facts rather than as a pill. It changes what every other fact on the line

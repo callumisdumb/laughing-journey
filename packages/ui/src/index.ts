@@ -13,6 +13,7 @@ export * from './primitives/ClockNumeral';
 export * from './primitives/VoiceBlock';
 export * from './primitives/Stepper';
 export * from './primitives/Dialog';
+export * from './primitives/Menu';
 export * from './primitives/Toast';
 export * from './primitives/Table';
 export * from './primitives/Term';

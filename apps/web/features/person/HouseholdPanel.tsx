@@ -1,173 +1,15 @@
 'use client';
 
-import { formatDate, membersOn, networkOn, householdOn, householdOnlyMembers, processesTouchedByHousehold, processLabel, type Person } from '@mas/domain';
+import { membersOn, processesTouchedByHousehold, processLabel, type Person } from '@mas/domain';
 import { useT } from '@mas/messages';
-import { Button, CheckboxField, Dialog, Pill, Sheet, SheetBody, SheetHead, TextField, TextareaField, DateField, useToast } from '@mas/ui';
-import { HousePlus, LogOut, Pencil } from 'lucide-react';
+import { Button, CheckboxField, Dialog, TextField, TextareaField, DateField } from '@mas/ui';
 import { useMemo, useState } from 'react';
 import { PersonPicker } from '@/components/PersonPicker';
-import { PersonLink } from '@/components/EntityLink';
-import { KnownElsewhere } from './KnownElsewhere';
 import { fullName } from '@/lib/selectors';
-import { useAppStore, useData, useNow } from '@/lib/store';
-import { useWriteErrors } from '@/lib/writeErrors';
+import { useData, useNow } from '@/lib/store';
 import styles from './HouseholdPanel.module.css';
 
-/**
- * The household: people at an address, with dates.
- *
- * Kept separate from the wider network on purpose. Marion Fraser's nephew is network and not
- * household, and that distinction is the whole point of her case; Kayleigh Docherty's children are
- * both. A single list of "people around this person" loses the fact that decides whether somebody is
- * in the room every evening or visits once a fortnight.
- *
- * Everything here is managed from the panel rather than from a separate screen, because the moment a
- * practitioner learns a household has changed is the moment they are looking at it.
- */
-export function HouseholdPanel({ person }: { person: Person }) {
-  const t = useT();
-  const data = useData();
-  const now = useNow();
-  const on = now.toISOString().slice(0, 10);
-  const addToHousehold = useAppStore((s) => s.addToHousehold);
-  const endMembership = useAppStore((s) => s.endHouseholdMembership);
-  const setLabel = useAppStore((s) => s.setHouseholdLabel);
-  const readErrors = useWriteErrors();
-  const { toast } = useToast();
-
-  const [adding, setAdding] = useState(false);
-  const [ending, setEnding] = useState<Person | null>(null);
-  const [renaming, setRenaming] = useState(false);
-
-  const household = householdOn(data, person, on);
-  const ties = networkOn(data, person.id, on);
-  const unrelated = householdOnlyMembers(data, person.id, on);
-
-  if (!household) {
-    return (
-      <Sheet>
-        <SheetHead title={t('person.household.title')} meta={t('person.household.none')} />
-        <SheetBody>
-          <p className={styles.hint}>{t('person.household.noneHint')}</p>
-        </SheetBody>
-      </Sheet>
-    );
-  }
-
-  const address = household.address ? [household.address.line1, household.address.line2, household.address.town, household.address.postcode].filter(Boolean).join(', ') : '';
-  /*
-   * Who is in the household now, which means whose membership has not ended. `membersOn` answers the
-   * question about a day, and by that measure somebody who left this morning was there today; on the
-   * screen that reads as the removal not having worked.
-   */
-  const others = household.household.members.filter((m) => m.personId !== person.id && !m.to);
-  const past = household.household.members.filter((m) => m.to);
-
-  return (
-    <Sheet>
-      <SheetHead
-        title={household.label ?? t('person.household.title')}
-        meta={`${address ? t('person.household.at', { address }) : ''} ${t('person.household.membersCount', { count: household.members.length })}`.trim()}
-        actions={
-          <>
-            <Button size="sm" variant="quiet" icon={<Pencil size={14} aria-hidden="true" />} onClick={() => setRenaming(true)} data-testid="household-rename">
-              {t('person.household.editLabel')}
-            </Button>
-            <Button size="sm" variant="secondary" icon={<HousePlus size={14} aria-hidden="true" />} onClick={() => setAdding(true)} data-testid="household-add">
-              {t('person.household.add')}
-            </Button>
-          </>
-        }
-      />
-      <SheetBody>
-        <ul className={styles.members} data-testid="household-members">
-          {others.map((membership) => {
-            const member = data.people.find((p) => p.id === membership.personId);
-            if (!member) return null;
-            const tie = ties.household.find((x) => x.other.id === member.id);
-            return (
-              <li key={member.id} className={styles.member}>
-                <span className={styles.memberName}>
-                  <PersonLink person={member} />
-                </span>
-                <span className={styles.memberMeta}>
-                  <KnownElsewhere person={member} />
-                  {tie ? null : <Pill size="sm" tone="outline">{t('person.network.noRelationship')}</Pill>}
-                  <span className={styles.since}>{t('person.household.since', { date: formatDate(membership.from) })}</span>
-                </span>
-                <Button size="sm" variant="quiet" icon={<LogOut size={14} aria-hidden="true" />} onClick={() => setEnding(member)} data-testid={`household-end-${member.id}`}>
-                  {t('person.household.end')}
-                </Button>
-              </li>
-            );
-          })}
-          {others.length === 0 ? <li className={styles.hint}>{t('person.household.none')}</li> : null}
-        </ul>
-
-        {past.length > 0 ? (
-          <details className={styles.past}>
-            <summary>{t('person.household.past')}</summary>
-            <ul className={styles.pastList}>
-              {past.map((membership) => {
-                const member = data.people.find((p) => p.id === membership.personId);
-                return (
-                  <li key={`${membership.personId}-${membership.from}`}>
-                    {t('person.household.pastRow', { name: member ? fullName(member) : membership.personId, from: formatDate(membership.from), to: formatDate(membership.to ?? on) })}
-                    {membership.endedReason ? <span className={styles.reason}>{membership.endedReason}</span> : null}
-                  </li>
-                );
-              })}
-            </ul>
-          </details>
-        ) : null}
-        {unrelated.length > 0 ? <p className={styles.hint}>{t('person.network.recordRelationship')}</p> : null}
-      </SheetBody>
-
-      {adding ? (
-        <AddToHouseholdDialog
-          open
-          householdId={household.household.id}
-          label={household.label ?? address}
-          exclude={household.members.map((m) => m.personId)}
-          onClose={() => setAdding(false)}
-          onSave={(personId, from, note, notify) => {
-            const result = addToHousehold(household.household.id, personId, from, note, notify);
-            if (result.ok) {
-              const joined = data.people.find((p) => p.id === personId);
-              toast({ title: t('person.household.done.addedTitle'), text: t('person.household.done.addedText', { name: joined ? fullName(joined) : personId, date: formatDate(from) }), tone: 'success' });
-            }
-            return readErrors(result.errors);
-          }}
-        />
-      ) : null}
-
-      {ending ? (
-        <EndMembershipDialog
-          member={ending}
-          label={household.label ?? address}
-          affected={processesTouchedByHousehold(data, household.household.id, on).length}
-          onClose={() => setEnding(null)}
-          onSave={(to, reason) => {
-            const result = endMembership(household.household.id, ending.id, to, reason);
-            if (result.ok) toast({ title: t('person.household.done.endedTitle'), text: t('person.household.done.endedText', { name: fullName(ending), date: formatDate(to) }), tone: 'success' });
-            return readErrors(result.errors);
-          }}
-        />
-      ) : null}
-
-      {renaming ? (
-        <RenameHouseholdDialog
-          open
-          label={household.label ?? ''}
-          onClose={() => setRenaming(false)}
-          onSave={(label) => readErrors(setLabel(household.household.id, label).errors)}
-        />
-      ) : null}
-    </Sheet>
-  );
-}
-
-function AddToHouseholdDialog({
+export function AddToHouseholdDialog({
   open,
   householdId,
   label,
@@ -255,7 +97,7 @@ function AddToHouseholdDialog({
   );
 }
 
-function EndMembershipDialog({ member, label, affected, onClose, onSave }: { member: Person; label: string; affected: number; onClose: () => void; onSave: (to: string, reason: string) => string[] }) {
+export function EndMembershipDialog({ member, label, affected, onClose, onSave }: { member: Person; label: string; affected: number; onClose: () => void; onSave: (to: string, reason: string) => string[] }) {
   const t = useT();
   const now = useNow();
   const [to, setTo] = useState(now.toISOString().slice(0, 10));
@@ -297,7 +139,7 @@ function EndMembershipDialog({ member, label, affected, onClose, onSave }: { mem
   );
 }
 
-function RenameHouseholdDialog({ open, label, onClose, onSave }: { open: boolean; label: string; onClose: () => void; onSave: (label: string) => string[] }) {
+export function RenameHouseholdDialog({ open, label, onClose, onSave }: { open: boolean; label: string; onClose: () => void; onSave: (label: string) => string[] }) {
   const t = useT();
   const [value, setValue] = useState(label);
   const [errors, setErrors] = useState<string[]>([]);

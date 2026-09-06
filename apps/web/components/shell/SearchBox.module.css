@@ -87,8 +87,6 @@
 .tag {
   margin-right: 6px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: var(--color-ink-2);
 }
 

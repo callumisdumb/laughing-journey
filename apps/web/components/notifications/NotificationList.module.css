@@ -23,8 +23,6 @@
   padding: 0 4px;
   font-size: var(--text-xs);
   font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
   color: var(--color-ink-3);
 }
 

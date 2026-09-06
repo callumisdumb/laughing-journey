@@ -3186,6 +3186,7 @@
       "actionIncomplete": "Every action needs a title and a due date.",
       "actionProcessRequired": "Choose the case the action belongs to.",
       "actionTitleRequired": "Say what the action is, in at least a few words.",
+      "addressMissing": "Choose an address that is on the system.",
       "advocacyRequired": "Say whether independent advocacy was offered, and whether the adult accepted it.",
       "agenciesRequired": "Name at least one agency.",
       "alertEndsBeforeStart": "An alert cannot stop showing before it starts.",
@@ -3245,6 +3246,7 @@
       "holdFormPending": "The outcome form for this meeting is not built yet.",
       "householdAlreadyMember": "They are already recorded as living there on that date.",
       "householdEndReasonRequired": "Say why in a phrase. It goes on the record.",
+      "householdExists": "This person already has a household.",
       "householdLabelRequired": "Give the household a name.",
       "householdMissing": "That household is no longer on the record.",
       "householdNotAMember": "They are not currently recorded as living there.",
@@ -3294,6 +3296,8 @@
       "mergeSameRecord": "A record cannot be merged into itself.",
       "mergeSurvivorMissing": "The record that would survive no longer exists.",
       "mhoRequired": "Nominate the Mental Health Officer.",
+      "moveDateRequired": "Give the date of the move.",
+      "moveSameAddress": "That is the address already on the record.",
       "nameRequired": "A given name and a family name are both needed.",
       "noChildrenOnReferral": "No children are named on the referral, so there is no child concern to open.",
       "noInvestigationRouteRequired": "Where no investigation follows, say whether the case closes or goes to a single agency, and why.",
@@ -4445,6 +4449,7 @@
         "confirmedReason": "Added after confirming they are not the person on the must-not-receive register",
         "generate": "Generate from need-to-know",
         "meta": "Generated from need-to-know for this stage. Every invitee carries the reason.",
+        "none": "Nobody invited yet",
         "person": "{required, select, yes {{name}, {role}} other {{name}, {role} (optional)}}",
         "reason": "{reason}{hasRule, select, yes { (rule {rowId})} other {}}",
         "title": "Invite list",
@@ -5336,6 +5341,7 @@
       "chi": "CHI (synthetic) {chi}",
       "interpreter": "{language} interpreter",
       "knownAs": "known as {name}",
+      "more": "More",
       "moves": "({count, plural, one {# move} other {# moves}})",
       "nextMeeting": "Next: {title} {date}",
       "noCommunicationNeeds": "No communication needs recorded",
@@ -5343,15 +5349,17 @@
       "noOpenProcess": "No open process",
       "notOnCase": "You are not on this case",
       "restrictedProcess": "Restricted process",
+      "status": "Case status",
       "unborn": "Unborn",
       "unbornDue": "{unborn}, due {date}",
       "unbornDueUnknown": "{unborn}, due date not recorded"
     },
     "history": {
-      "empty": "Nothing has been changed on this record since it was created.",
       "entry": "{change}",
+      "hide": "Hide the changes",
       "meta": "{count, plural, =0 {No recorded changes} one {One recorded change} other {# recorded changes}}",
       "reason": "Reason: {reason}",
+      "show": "Show {count, plural, one {# change} other {# changes}}",
       "title": "History of this record",
       "was": "Was: {values}",
       "wasBlank": "blank",
@@ -5366,7 +5374,8 @@
       "addPerson": "Who is moving in?",
       "addSubmit": "Add them to the household",
       "addTitle": "Add someone to {label}",
-      "at": "at {address}",
+      "alone": "Lives alone at {address}",
+      "aloneNoAddress": "No address recorded",
       "done": {
         "addedText": "{name} is recorded as living there from {date}.",
         "addedTitle": "Household updated",
@@ -5384,17 +5393,33 @@
       "eventJoinDetail": "{name} was recorded as living at {address} from {date}.",
       "eventLeave": "{name} left the household",
       "eventLeaveDetail": "{name} was recorded as having left the household on {date}. {reason}",
+      "eventMove": "{name} moved to {address}",
+      "eventMoveDetail": "{name} moved to {address} on {date}.",
+      "inThis": "In this household",
       "labelField": "What is this household called?",
+      "labelFor": "{family} household, {town}",
       "labelHint": "How people refer to it, such as Docherty household, 14 Vennel Brae.",
       "labelSubmit": "Save the name",
       "membersCount": "{count, plural, =0 {Nobody recorded} one {One person} other {# people}}",
-      "none": "No household recorded",
-      "noneHint": "A person can be on this system without one. Record where they live when it is known.",
+      "move": "Record a move",
+      "moveDialog": {
+        "household": "{alone, select, yes {The household moves with them: they are its only member.} other {They leave the household at {address}. The others stay, and a household of one starts at the new address.}}",
+        "note": "Note",
+        "noteHint": "Optional. Goes into the chronology entry the move writes.",
+        "on": "Date of the move (dd Mon yyyy)",
+        "refused": "The move was not recorded",
+        "submit": "Record the move",
+        "title": "Record a move for {name}",
+        "to": "New address",
+        "toastText": "{name} is at {address} from {date}.",
+        "toastTitle": "Move recorded",
+        "toPlaceholder": "Choose an address"
+      },
+      "moveReason": "Moved to {address}",
       "past": "Previously in the household",
       "pastRow": "{name}, {from} to {to}",
       "shareReason": "{what}. Shared with this recipient at {level} for {process} because the need-to-know matrix says so.",
-      "since": "since {date}",
-      "title": "Household"
+      "since": "since {date}"
     },
     "list": {
       "ageBands": {
@@ -5498,7 +5523,6 @@
     "network": {
       "add": "Record a relationship",
       "addTitle": "Record a relationship for {name}",
-      "asAt": "As at {date}",
       "consequences": {
         "affected": "{count, plural, one {One open case is affected} other {# open cases are affected}}",
         "decisionReason": "Why?",
@@ -5529,6 +5553,7 @@
       "exclusionStandsAudit": "Confirmed that the exclusion stands after a relationship change. {reason}",
       "from": "From what date?",
       "fromHint": "Leave blank if it is not known.",
+      "hideDiagram": "Hide the diagram",
       "inverse": {
         "attorneyFor": "grants power to",
         "auntOrUncleOf": "nephew or niece",
@@ -5552,10 +5577,8 @@
         "household": "Same household",
         "wider": "Wider network"
       },
-      "listItem": "{name}: {relation}{household, select, yes {, same household} other {}}",
+      "nobody": "Nobody recorded outside the household",
       "noInverse": "This relationship has no clean opposite in the vocabulary, so their record shows it as recorded here rather than a guess.",
-      "none": "Nobody else recorded",
-      "noneHint": "Family elsewhere, a former partner, a carer, an attorney, a guardian, a friend. This is where the picture is usually thinnest.",
       "noRelationship": "In the household, no relationship recorded",
       "notes": "Anything worth recording",
       "ofThe": "of",
@@ -5588,6 +5611,7 @@
         "unbornChildOf": "unborn child"
       },
       "save": "Save the relationship",
+      "showDiagram": "Show the diagram",
       "title": "Wider network",
       "type": "What is the relationship?"
     },
@@ -5597,8 +5621,14 @@
       "title": "Person not found"
     },
     "overview": {
+      "alerts": {
+        "count": "{count, plural, one {# active} other {# active}}",
+        "dates": "{hasTo, select, yes {From {from} to {to}} other {From {from}}}",
+        "none": "None recorded",
+        "scope": "{scope, select, all {Everyone who can open the record} other {Only {agencies}}}",
+        "title": "Alerts"
+      },
       "clocks": {
-        "hint": "Clocks start when a process reaches a stage with a statutory or local timescale.",
         "none": "No statutory clocks running",
         "running": "{count} running",
         "sub": "Due {date}. {detail}",
@@ -5622,11 +5652,18 @@
         "progress": "{done} of {total} done{overdue, plural, =0 {} other {, # overdue}}",
         "title": "Current plans"
       },
+      "recent": {
+        "add": "Add a chronology entry",
+        "all": "Open the chronology",
+        "meta": "{count, plural, =0 {Nothing in the last 90 days} one {# entry in the last 90 days} other {# entries in the last 90 days}}. Latest {date}",
+        "none": "Nothing recorded yet",
+        "title": "Recent chronology"
+      },
       "voice": {
         "all": "All",
         "latestOf": "Latest of {count}",
         "none": "Nothing recorded yet",
-        "placeholder": "The person's own words belong here, dated and attributed.",
+        "record": "Record their words",
         "title": "Views and voice"
       }
     },
@@ -6561,6 +6598,7 @@
       "eventDetail": "{title}, with {count, plural, one {# outcome} other {# outcomes}}.",
       "eventTitle": "{type} agreed",
       "name": "What the plan is called",
+      "noActions": "No actions yet",
       "noFurtherAction": "It has been agreed that no further action is required",
       "noFurtherActionHint": "Only then may an adult protection plan be recorded without a review date.",
       "none": "No plan yet",

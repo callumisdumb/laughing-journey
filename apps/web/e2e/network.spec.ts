@@ -41,7 +41,9 @@ test.describe('household and network', () => {
     await waitForData(page);
 
     await expect(page.getByTestId('network-ties')).toContainText('Duncan');
-    await expect(page.getByTestId('household-members')).not.toContainText('Duncan');
+    // Marion lives alone: the card says so in its head and lists no household section at all (D-230).
+    await expect(page.getByTestId('card-household')).toContainText('Lives alone');
+    await expect(page.getByTestId('household-members')).toHaveCount(0);
   });
 
   test('recording a relationship to the perpetrator says who it excludes, before the save button', async ({ page }) => {

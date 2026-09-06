@@ -6,19 +6,16 @@ import {
   exclusionsRestingOn,
   formatDate,
   inverseOf,
-  networkOn,
   processLabel,
   withRelationship,
   type Person,
   type Relationship,
 } from '@mas/domain';
 import { tKey, useT } from '@mas/messages';
-import { Button, Dialog, Pill, RadioGroup, SelectField, Sheet, SheetBody, SheetHead, TextareaField, DateField, useToast } from '@mas/ui';
-import { CalendarOff, Pencil, TriangleAlert, UserPlus } from 'lucide-react';
+import { Button, Dialog, Pill, RadioGroup, SelectField, TextareaField, DateField, useToast } from '@mas/ui';
+import { TriangleAlert } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { PersonPicker } from '@/components/PersonPicker';
-import { PersonLink } from '@/components/EntityLink';
-import { KnownElsewhere } from './KnownElsewhere';
 import { fullName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useNow, type PartyDecision } from '@/lib/store';
 import { useWriteErrors } from '@/lib/writeErrors';
@@ -29,94 +26,7 @@ const segment = (type: Relationship['type']) => type.replace(/-([a-z])/g, (_m, l
 const relationWord = (type: Relationship['type']) => tKey(`person.network.relation.${segment(type)}`);
 const inverseWord = (type: Relationship['type']) => tKey(`person.network.inverse.${segment(type)}`);
 
-/**
- * The wider network: everyone who matters who is not in the household.
- *
- * Relationships are stored once and read from both ends, so recording that Kayleigh is Lily's mother
- * puts "Kayleigh Docherty, mother" on Lily's record without a second record that could drift. Ending
- * one sets a date and never deletes, because a former partner is a former partner from a date and
- * that date is often the most important fact on the record.
- */
-export function NetworkPanel({ person }: { person: Person }) {
-  const t = useT();
-  const data = useData();
-  const now = useNow();
-  const on = now.toISOString().slice(0, 10);
-  const [editing, setEditing] = useState<Relationship | null>(null);
-  const [adding, setAdding] = useState(false);
-  const [endingTie, setEndingTie] = useState<Relationship | null>(null);
-
-  const ties = networkOn(data, person.id, on);
-
-  return (
-    <Sheet>
-      <SheetHead
-        title={t('person.network.title')}
-        meta={ties.network.length === 0 ? t('person.network.none') : t('person.network.asAt', { date: formatDate(on) })}
-        actions={
-          <Button size="sm" variant="secondary" icon={<UserPlus size={14} aria-hidden="true" />} onClick={() => setAdding(true)} data-testid="network-add">
-            {t('person.network.add')}
-          </Button>
-        }
-      />
-      <SheetBody>
-        <ul className={styles.ties} data-testid="network-ties">
-          {ties.network.map((tie) => (
-            <li key={tie.relationship.id} className={styles.tie}>
-              <span className={styles.tieName}>
-                <PersonLink person={tie.other} />
-              </span>
-              <span className={styles.tieRelation}>
-                {tie.subjectIsFrom ? inverseWord(tie.relationship.type) : relationWord(tie.relationship.type)}
-                {tie.relationship.from ? <span className={styles.tieDate}>{t('person.household.since', { date: formatDate(tie.relationship.from) })}</span> : null}
-                <KnownElsewhere person={tie.other} />
-              </span>
-              <span className={styles.tieActions}>
-                <Button size="sm" variant="quiet" icon={<Pencil size={14} aria-hidden="true" />} onClick={() => setEditing(tie.relationship)} data-testid={`network-edit-${tie.other.id}`}>
-                  {t('common.actions.edit')}
-                </Button>
-                <Button size="sm" variant="quiet" icon={<CalendarOff size={14} aria-hidden="true" />} onClick={() => setEndingTie(tie.relationship)} data-testid={`network-end-${tie.other.id}`}>
-                  {t('person.network.endRelationship')}
-                </Button>
-              </span>
-            </li>
-          ))}
-          {ties.network.length === 0 ? <li className={styles.hint}>{t('person.network.noneHint')}</li> : null}
-        </ul>
-
-        {ties.ended.length > 0 ? (
-          <details className={styles.ended}>
-            <summary>{t('person.network.endedTitle')}</summary>
-            <ul className={styles.endedList}>
-              {ties.ended.map((tie) => (
-                <li key={tie.relationship.id}>
-                  <PersonLink person={tie.other} />
-                  <span className={styles.tieRelation}>
-                    {tie.subjectIsFrom ? inverseWord(tie.relationship.type) : relationWord(tie.relationship.type)}
-                    {tie.relationship.to ? <span className={styles.tieDate}>{t('person.network.endedOn', { date: formatDate(tie.relationship.to) })}</span> : null}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </details>
-        ) : null}
-      </SheetBody>
-
-      {adding || editing ? <RelationshipDialog person={person} relationship={editing} onClose={() => { setAdding(false); setEditing(null); }} /> : null}
-      {endingTie ? <EndRelationshipDialog person={person} relationship={endingTie} onClose={() => setEndingTie(null)} /> : null}
-    </Sheet>
-  );
-}
-
-/**
- * Recording or editing a relationship, with what it does to the exclusion registers shown before the
- * save button rather than discovered afterwards.
- *
- * The parties register derives a MARAC perpetrator's family and associates from relationship
- * records, so recording that somebody is Ryan Kerr's brother excludes them from that MARAC without
- * anybody typing the word exclusion. That is correct behaviour and it must never be silent.
- */
-function RelationshipDialog({ person, relationship, onClose }: { person: Person; relationship: Relationship | null; onClose: () => void }) {
+export function RelationshipDialog({ person, relationship, onClose }: { person: Person; relationship: Relationship | null; onClose: () => void }) {
   const t = useT();
   const data = useData();
   const config = useConfig();
@@ -240,7 +150,7 @@ function RelationshipDialog({ person, relationship, onClose }: { person: Person;
  * former partner is frequently the whole risk. So the decision is asked explicitly, defaults to the
  * exclusion standing, and is written onto the case with a name and a reason either way.
  */
-function EndRelationshipDialog({ person, relationship, onClose }: { person: Person; relationship: Relationship; onClose: () => void }) {
+export function EndRelationshipDialog({ person, relationship, onClose }: { person: Person; relationship: Relationship; onClose: () => void }) {
   const t = useT();
   const data = useData();
   const config = useConfig();

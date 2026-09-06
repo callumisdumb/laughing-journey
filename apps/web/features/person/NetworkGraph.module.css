@@ -5,10 +5,12 @@
   overflow: hidden;
 }
 
+/* Sized by its viewBox, which the component sets from what it draws, and never taller than this. */
 .svg {
   display: block;
   width: 100%;
   height: auto;
+  max-height: 360px;
 }
 
 .edge {
@@ -61,6 +63,10 @@
   color: var(--color-ink-3);
 }
 
+.legendNote {
+  flex-basis: 100%;
+}
+
 .legendItem {
   display: inline-flex;
   gap: 6px;
@@ -85,37 +91,4 @@
 .swatch[data-kind='concern'] {
   border-color: var(--color-risk-high);
   border-style: dashed;
-}
-
-/*
- * The list of people around this person, which is now real content rather than a hidden
- * alternative to the diagram: it is the only way to reach a relative's record from here.
- */
-.people {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 8px;
-  margin: 12px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.person {
-  display: inline-flex;
-  gap: 6px;
-  align-items: baseline;
-  padding: 4px 10px;
-  font-size: var(--text-sm);
-  background: var(--color-paper-2);
-  border: 1px solid transparent;
-  border-radius: var(--radius-pill);
-}
-
-/* Household is a solid edge in the diagram, so it is a solid border here. */
-.person[data-household='true'] {
-  border-color: var(--color-line-2);
-}
-
-.personRelation {
-  color: var(--color-ink-3);
 }

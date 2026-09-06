@@ -18,6 +18,7 @@ test.describe('merge and unmerge', () => {
     await page.goto('/people/per_aiden_boyle');
     await waitForData(page);
 
+    await page.getByTestId('person-more').click();
     await page.getByTestId('merge-open').click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -42,6 +43,7 @@ test.describe('merge and unmerge', () => {
     await signInAs(page, 'usr_janet_kerr');
     await page.goto('/people/per_aiden_boyle');
     await waitForData(page);
+    await page.getByTestId('person-more').click();
     await page.getByTestId('merge-open').click();
     await page.getByTestId('merge-other-query').fill('Maisie');
     await page.getByTestId('merge-other-results').getByRole('button').first().click();
@@ -59,6 +61,7 @@ test.describe('merge and unmerge', () => {
 
     await page.goto('/people/per_aiden_boyle');
     await waitForData(page);
+    await page.getByTestId('person-more').click();
     await page.getByTestId('merge-open').click();
     await page.getByTestId('merge-other-query').fill('Maisie');
     await page.getByTestId('merge-other-results').getByRole('button').first().click();
@@ -76,6 +79,8 @@ test.describe('merge and unmerge', () => {
     // The undo is offered on the surviving record, and it is a real path.
     await page.goto('/people/per_aiden_boyle');
     await waitForData(page);
+    // The undo lives in the More menu with the other rare actions (D-231).
+    await page.getByTestId('person-more').click();
     await expect(page.getByTestId('unmerge-open')).toBeVisible();
     await capture(page, { phase: PHASE, screen: 'merge-standing' });
     await page.getByTestId('unmerge-open').click();
@@ -101,6 +106,7 @@ test.describe('merge and unmerge', () => {
     await signInAs(page, 'usr_janet_kerr');
     await page.goto('/people/per_aiden_boyle');
     await waitForData(page);
+    await page.getByTestId('person-more').click();
     await page.getByTestId('merge-open').click();
     await page.getByTestId('merge-other-query').fill('Maisie');
     await page.getByTestId('merge-other-results').getByRole('button').first().click();
@@ -120,6 +126,7 @@ test.describe('merge and unmerge', () => {
     await signInAs(page, 'usr_janet_kerr');
     await page.goto('/people/per_aiden_boyle');
     await waitForData(page);
+    await page.getByTestId('person-more').click();
     await page.getByTestId('merge-open').click();
     await page.getByTestId('merge-other-query').fill('Zzzzz');
     await expect(page.getByRole('dialog').getByText(/Nothing matches/)).toBeVisible();

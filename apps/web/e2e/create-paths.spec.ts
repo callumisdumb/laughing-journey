@@ -86,7 +86,8 @@ test.describe('alerts', () => {
     await page.getByTestId('alert-text').fill('Two large dogs loose in the back garden. Telephone before visiting.');
     await page.getByTestId('alert-submit').click();
 
-    await expect(page.getByText('Alert added')).toBeVisible();
+    // Exact, because the recent chronology card on the record now carries "Alert added: Other" as well.
+    await expect(page.getByText('Alert added', { exact: true })).toBeVisible();
     await expect(page.getByText('Two large dogs loose in the back garden.').first()).toBeVisible();
   });
 });
@@ -236,7 +237,8 @@ test.describe('the global create action', () => {
     await expect(page.getByTestId('alert-text')).toBeVisible();
     await page.getByTestId('alert-text').fill('Two large dogs loose in the back garden. Telephone before visiting.');
     await page.getByTestId('alert-submit').click();
-    await expect(page.getByText('Alert added')).toBeVisible();
+    // Exact, because the recent chronology card on the record now carries "Alert added: Other" as well.
+    await expect(page.getByText('Alert added', { exact: true })).toBeVisible();
   });
 
   test('takes a create that lives on a screen to that screen rather than faking a dialog', async ({ page }) => {

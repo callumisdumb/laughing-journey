@@ -65,6 +65,7 @@ export function AddPersonDialog({ open, onClose, onCreated }: { open: boolean; o
   const grants = useGrants();
   const write = useAppStore((s) => s.write);
   const newId = useAppStore((s) => s.newId);
+  const createHousehold = useAppStore((s) => s.createHousehold);
   const readErrors = useWriteErrors();
   const retire = useRetire((s) => s.retire);
   const { toast } = useToast();
@@ -184,6 +185,10 @@ export function AddPersonDialog({ open, onClose, onCreated }: { open: boolean; o
       setErrors(result.errors);
       return;
     }
+    // A person who lives somewhere has a household. Created with the record, as a household of one,
+    // so the card that names it never says "no household recorded" about somebody whose address is
+    // known (D-230). Refusals here are not the person's refusal: the record exists either way.
+    if (person.addressHistory[0]) createHousehold(person.id, person.addressHistory[0].addressId, person.addressHistory[0].from);
     // The one honest shortcut on a create: for the few seconds the toast is up, the record that was
     // just made can be sent to the correction path. Not an undo, which would delete it. The dialog
     // it opens still asks for the reason, because the reason is what makes it a correction.

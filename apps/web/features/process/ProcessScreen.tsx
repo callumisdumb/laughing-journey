@@ -260,8 +260,9 @@ export function ProcessScreen({ processId }: { processId: string }) {
                 )}
               </div>
               <div className={styles.side}>
-                <Sheet>
+                <Sheet empty={clocks.length === 0}>
                   <SheetHead title={t('processes.clocks.title')} meta={clocks.length === 0 ? t('processes.clocks.none') : t('processes.clocks.running', { count: clocks.filter((c) => c.status !== 'complete').length })} />
+                  {clocks.length === 0 ? null : (
                   <SheetBody>
                     <div className={styles.clockList}>
                       {clocks.map((c) => (
@@ -271,6 +272,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                       ))}
                     </div>
                   </SheetBody>
+                  )}
                 </Sheet>
                 {/*
                   Who this case is about, as against who is working it. The two were conflated: the
@@ -322,11 +324,11 @@ export function ProcessScreen({ processId }: { processId: string }) {
                     </SheetBody>
                   </Sheet>
                 ) : null}
-                <Sheet>
-                  <SheetHead title={t('processes.parties.title')} meta={t('processes.parties.meta', { count: parties.length })} actions={<Button size="sm" variant="secondary" icon={<UserPlus size={14} aria-hidden="true" />} onClick={() => setRegisterOpen(true)} data-testid="add-register-entry">{t('processes.parties.add')}</Button>} />
+                <Sheet empty={parties.length === 0}>
+                  <SheetHead title={t('processes.parties.title')} meta={parties.length === 0 ? t('processes.parties.empty') : t('processes.parties.meta', { count: parties.length })} actions={<Button size="sm" variant="secondary" icon={<UserPlus size={14} aria-hidden="true" />} onClick={() => setRegisterOpen(true)} data-testid="add-register-entry">{t('processes.parties.add')}</Button>} />
+                  {parties.length === 0 ? null : (
                   <SheetBody>
                     <div className={styles.members}>
-                      {parties.length === 0 ? <span className={styles.memberMeta}>{t('processes.parties.empty')}</span> : null}
                       {parties.map((party) => {
                         const person = party.personId ? personById(data, party.personId) : undefined;
                         return (
@@ -342,6 +344,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                       })}
                     </div>
                   </SheetBody>
+                  )}
                 </Sheet>
                 {access.level === 'full' ? <InvolvementRequests process={process} /> : null}
                 <Sheet>
@@ -364,8 +367,9 @@ export function ProcessScreen({ processId }: { processId: string }) {
                     </div>
                   </SheetBody>
                 </Sheet>
-                <Sheet tone="paper">
+                <Sheet tone="paper" empty={views.length === 0}>
                   <SheetHead title={t('processes.views.title')} meta={views.length === 0 ? t('processes.views.none') : t('processes.views.count', { count: views.length })} />
+                  {views.length === 0 ? null : (
                   <SheetBody>
                     <div className={styles.voices}>
                       {views.slice(0, 2).map((v) => {
@@ -374,9 +378,11 @@ export function ProcessScreen({ processId }: { processId: string }) {
                       })}
                     </div>
                   </SheetBody>
+                  )}
                 </Sheet>
-                <Sheet>
+                <Sheet empty={meetings.length === 0}>
                   <SheetHead title={t('processes.meetings.title')} meta={t('processes.meetings.meta', { count: meetings.length })} actions={process.status === 'open' && access.level === 'full' ? <Button size="sm" variant="secondary" icon={<CalendarPlus size={14} aria-hidden="true" />} onClick={() => setScheduling(true)} data-testid="schedule-meeting">{t('processes.meetings.schedule')}</Button> : undefined} />
+                  {meetings.length === 0 ? null : (
                   <SheetBody>
                     <div className={styles.meetingList}>
                       {meetings.map((m) => (
@@ -390,9 +396,11 @@ export function ProcessScreen({ processId }: { processId: string }) {
                       ))}
                     </div>
                   </SheetBody>
+                  )}
                 </Sheet>
-                <Sheet>
+                <Sheet empty={shares.length === 0}>
                   <SheetHead title={t('processes.sharing.title')} meta={t('processes.sharing.meta', { count: shares.length })} />
+                  {shares.length === 0 ? null : (
                   <SheetBody>
                     <ul className={styles.members}>
                       {shares.slice(0, 6).map((s) => (
@@ -408,17 +416,20 @@ export function ProcessScreen({ processId }: { processId: string }) {
                       ))}
                     </ul>
                   </SheetBody>
+                  )}
                 </Sheet>
               </div>
               <div className={styles.wide}>
-                <Sheet>
+                <Sheet empty={plans.length === 0 && actions.length === 0}>
                   <SheetHead title={t('processes.plans.title')} meta={plans.length === 0 ? t('processes.plans.none') : plans.map((p) => t('processes.plans.plan', { title: p.title, status: planStatusLabel(p.status) })).join('; ')} actions={<span className={styles.sheetActions}><Button size="sm" variant="secondary" icon={<Plus size={14} aria-hidden="true" />} onClick={() => setPlanOpen(true)} data-testid="add-plan">{t('processes.plans.add')}</Button>{process.status === 'open' ? <Button size="sm" variant="primary" icon={<Plus size={14} aria-hidden="true" />} onClick={() => setActionFor({})} data-testid="add-action">{t('processes.plans.addAction')}</Button> : null}</span>} />
+                  {plans.length === 0 && actions.length === 0 ? null : (
                   <SheetBody flush>
                     {plans.length > 0 ? (
                       <ul className={styles.planList}>
                         {plans.map((p) => (
                           <li key={p.id} className={styles.planRow}>
                             <span>{t('processes.plans.planRow', { title: p.title, status: planStatusLabel(p.status), hasReview: p.reviewDate ? 'yes' : 'no', date: p.reviewDate ? formatDate(p.reviewDate) : '' })}</span>
+                            {data.actions.some((a) => a.planId === p.id) ? null : <span className={styles.memberMeta}>{t('processes.plans.noActions')}</span>}
                             {process.status === 'open' ? (
                               <Button size="sm" variant="quiet" onClick={() => setActionFor({ planId: p.id })} aria-label={t('processes.plans.addActionTo', { title: p.title })} data-testid={`add-action-plan-${p.id}`}>
                                 {t('processes.plans.addAction')}
@@ -468,6 +479,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
                       </Table>
                     </TableWrap>
                   </SheetBody>
+                  )}
                 </Sheet>
               </div>
             </div>

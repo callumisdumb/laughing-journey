@@ -6,7 +6,7 @@ import { waitForData } from './helpers';
  * search, a case on them through the eligibility and permission gates, a persona switch that
  * keeps the demo clock, and a select that finds an option by part of its label.
  */
-export async function createPerson(page: Page, givenName: string, familyName: string, dateOfBirth: string): Promise<void> {
+export async function createPerson(page: Page, givenName: string, familyName: string, dateOfBirth: string, opts: { address?: boolean } = {}): Promise<void> {
   await page.goto('/people');
   await waitForData(page);
   await page.getByTestId('add-person').click();
@@ -18,6 +18,8 @@ export async function createPerson(page: Page, givenName: string, familyName: st
   await dialog.getByLabel(/Date of birth/).fill(dateOfBirth);
   await page.getByTestId('create-person-search').click();
   await page.getByTestId('create-person-none-match').click();
+  // The first address on the list, when asked: where somebody lives is part of the minimum a record starts with.
+  if (opts.address) await dialog.getByLabel('Address', { exact: true }).selectOption({ index: 1 });
   await page.getByTestId('create-person-submit').click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await waitForData(page);

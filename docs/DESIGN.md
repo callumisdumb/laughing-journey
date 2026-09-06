@@ -66,7 +66,7 @@ Rules: sentence case everywhere; no all-caps; no letter-spacing tricks; prose pa
 
 - Rail: 72px collapsed, 248px expanded, persisted. Bottom of the rail carries the user's agency glyph and persona.
 - Top bar: 56px. Global search on the left, a clocks chip (count of clocks due within 7 days, colour by worst band), notifications, persona switcher marked "Demo".
-- Content: 12-column grid, 24px gutters, max 1200px, `data-width="wide"` for the chronology removes the max.
+- Content: 12-column grid, 24px gutters, max 1200px in every layout mode, centred; `data-width="wide"` for the chronology removes the max. The person record is capped like every prose-heavy screen and its chronology tab opens wide.
 - Context drawer: 360px, collapsible to a 40px tab. Sections stack: Who is involved, Need to know, Lawful basis, Audit. The drawer reacts to selection: a chronology event, a person, a share, an action.
 - Density: `data-density="comfortable|compact"` on the root scales row heights (40 to 32), panel padding (20 to 12) and the base size stays 0.875rem. Density is CSS variables only.
 
@@ -99,6 +99,43 @@ What is not allowed is the third thing: text sliced off with no ellipsis and no 
 ### 4.3 Reflow
 
 Minimum viewport 1024px for the product as designed. WCAG 2.2 1.4.10 is met below that rather than declared out of scope: a 1280px viewport at 400 percent zoom is a 320px one, so `narrow` is the reflow mode. At 320 the document never scrolls sideways and neither does the record region; content with a real minimum width, a nine-column chronology row, a nine-stage stepper, a wide table, scrolls inside its own box. The spec asserts both halves, because a record region that scrolls horizontally is 1.4.10 failing in disguise.
+
+### 4.4 Composing cards
+
+One grid per screen, never one per section. A screen that composes cards declares a single twelve-column grid in its own CSS module, gives every card an explicit span from a stated order, and re-packs a row when a card in it is absent, so the remaining cards take its columns rather than leaving them empty. No card decides its own width, and no section under the grid has a grid of its own for cards (a list inside a card may). Empty cards collapse: a card with nothing to show has the height of its title, the one-line statement of what is missing sits in the title's meta line, and the action that fixes it sits in the title's action slot. A card whose absence changes nothing (there is no case, so there are no case members) is absent, and the row closes over it.
+
+The person record overview, at `wide`. The header carries the status strip (open cases as marks with their next dates, or one line saying nothing is open) so the overview does not repeat it.
+
+```
++-- header ------------------------------------------------------------------------+
+| Person record                              | [CP: Child's plan  next 14 Sep 2026]|
+| Aiden Boyle  Also Aidy                     | [Start a process] [Edit] [Add alert]|
+| 7 years, born 14 Mar 2019 . 12 Brae Wynd . |                              [More v]|
+| CHI . No communication needs               |                                     |
++--------------------------------------------+-------------------------------------+
+| Overview | Chronology | Processes | Views and voice | Documents | Sharing and audit
++----------------------------------------------------------------------------------+
+| Clocks              4  | Alerts             4  | Key contacts by agency        4  |
+| 12 days to review CPPM | Lone visits not      | Social work: Janet Kerr          |
+|   due 14 Sep 2026      |  advised, to 30 Nov  | Health: Sunita Rao               |
++------------------------+-----------------------+----------------------------------+
+| Household and network                        8 | Views and voice              4  |
+| Docherty household, 14 Vennel Brae . 3 people  | "I like school and my gran"      |
+| In this household: Lily, Mason, Ryan Kerr      |   Aiden, 20 Aug 2026             |
+| Wider network: Senga Docherty, gran            |                                  |
+| [Show the diagram]                             |                                  |
++------------------------------------------------+----------------------------------+
+| Recent chronology                            8 | Current plans                4  |
+| 28 Aug  Core group met (social work)           | Child's plan . 3 of 5 done       |
+| 20 Aug  Views recorded (social work)           |                                  |
++------------------------------------------------+----------------------------------+
+| History of this record . 2 changes . [Show]                                  12  |
++----------------------------------------------------------------------------------+
+```
+
+Spans by mode: `wide` as drawn; `standard` turns every 4 into 6 and every 8 into 12, so a row of three 4s becomes two 6s and a 12; `compact` and `narrow` are all 12. A row is re-packed from what is present: with no case there are no key contacts and no plans, so the first row is Clocks 6 and Alerts 6, and the chronology row is Recent chronology 12. The packing is one function, `composeRows` in `apps/web/lib/composition.ts`, and its unit test holds every mode to rows that sum to twelve.
+
+The empty record, which is every person for the first minute of their existence: the header with the identity and "No open process" beside the primary action, Clocks and Alerts collapsed to their titles with Start a process and Add an alert beside them, the household card saying she lives alone at her address with the four actions that populate it, Views and voice and Recent chronology collapsed with the action that records the first entry, and History collapsed to its title. Nothing says "nothing" more than once per card, and no card explains the absence in a second sentence.
 
 ## 5. Components (packages/ui)
 
@@ -170,23 +207,29 @@ The button that creates the record is not on the screen until the second one has
 
 The count is computed, not written. A warning triangle over "this affects many records" is true and useless; twenty-six is a number a practitioner can compare against what they expect. The comparison runs the real union function rather than describing what it will do, and a value the surviving record gains is marked with a rule as well as a tint.
 
-### 5.3 Household and network, side by side
+### 5.3 Household and network, one card
 
-Two panels rather than one, because they answer two different questions and the difference is the substance of several of the scenarios.
+One card, because the three it replaced (a household list, a wider network list and a diagram of both) were three answers to one question, stacked, each with its own empty state. The distinction the scenarios rest on survives inside it: the household is the people at an address with dates, and the wider network is everyone else who matters. Marion Fraser's nephew is network and not household; Kayleigh Docherty's children are both.
 
 ```
-+-- Docherty household, 14 Vennel Brae ------+  +-- Wider network ---------+
-| 3 people    [Rename] [Add someone]         |  | [Record a relationship]  |
-| Lily Docherty      since 20 Jan 2023  [x]  |  | Senga Docherty           |
-| Mason Docherty     since 20 Jan 2023  [x]  |  |   mother, since 1995     |
-| Ryan Kerr   (no relationship recorded)[x]  |  |   [Edit] [Ended]         |
-| > Previously in the household              |  | > Ended relationships    |
-+---------------------------------------------+  +--------------------------+
++-- Docherty household, 14 Vennel Brae, Ardvale ---------------------------------+
+| 3 people      [Add someone to the household] [Record a relationship]          |
+|               [Record a move] [Rename the household]        [Show the diagram] |
+| In this household                                                              |
+|   Lily Docherty     daughter, since 20 Jan 2023            [Record that they left]
+|   Mason Docherty    son, since 20 Jan 2023                 [Record that they left]
+|   Ryan Kerr         in the household, no relationship recorded   [Record that they left]
+| Wider network                                                                  |
+|   Senga Docherty    mother, since 1995                     [Edit] [Record that it ended]
+| > Previously in the household   > Ended relationships                          |
++--------------------------------------------------------------------------------+
 ```
+
+The header names the household and its address, and its meta line counts the people. For a household of one it says she lives alone at the address, never that no household is recorded about a person whose address is known; where there is no household record yet, the first "Add someone" creates one from the address on the record. The diagram is a toggle, shown only when there are two or more nodes, and it sizes to what it draws with a maximum height rather than reserving a canvas for one dot.
 
 A row carries a mark where the person is themselves subject to a process the reader cannot open, and a different mark where they must not receive information about a case the subject is on. The second is why the name beside it is not a link.
 
-Every action opens a dialog that computes its consequences before the button: a household change lists the open cases it touches and offers to tell them, and a relationship change says who it will exclude from which case, in words, from the product's own rules.
+Every action opens a dialog that computes its consequences before the button: a household change lists the open cases it touches and offers to tell them, a move carries the household with the person when they are its only member, and a relationship change says who it will exclude from which case, in words, from the product's own rules.
 
 ### 5.4 The global create action
 
@@ -220,25 +263,7 @@ The case list offers only cases the reader can actually open. A case reference t
 
 ### 6.1 Person record
 
-```
-+----------------------------------------------------------------------+ drawer
-| Aiden Boyle                                  [CP: registered] [next] | Who is
-| Also Aidy   7 years, born 14 Mar 2019   12 Brae Wynd, Craiglarrick (3 moves)   involved
-| Needs: none recorded    Alerts: [!] Lone visits not advised            |
-| ---------------------------------------------------------------------- | Social
-| Overview | Chronology | Processes | Views and voice | Documents | Sharing| work: ..
-+----------------------------------------------------------------------+ Police:..
-| Clocks                    | Household and network      | Views        | Health:..
-| 12  days to review CPPM   | [graph: mother, father,    | "I like      | Education:
-|     due 14 Sep 2026       |  gran, sibling]            |  school and  |
-| 3   actions overdue       | key contacts by agency     |  my gran"    | Need to
-|                           | with last contact          |  Aiden, 20 Aug| know:
-+---------------------------+----------------------------+--------------+ this stage
-| Chronology (last 90 days)  ...lanes preview, click to open wide...     |
-+----------------------------------------------------------------------+
-```
-
-The header is a cover sheet: name in display type, the essential facts in one line, alerts as pills with icons, process badges on the right with stage and next date. No avatar, no photo. Tabs are text with a heather underline.
+The composition is drawn in 4.4. The header is two regions on one top edge: identity on the left (the screen name in sentence case, the name in display type, known-as, age and date of birth, address, CHI, communication needs, alerts as pills with icons) and status and actions on the right (the status strip, then one row of three buttons and a menu: Start a process as the primary, Edit the record and Add an alert as secondary, and More holding Merge with another record and, last and separated, Record a death). No avatar, no photo. Tabs are text with a heather underline. At `compact` and below the two regions stack, identity first, and the identity region keeps its 28ch floor in every mode.
 
 ### 6.2 Integrated chronology (wide)
 

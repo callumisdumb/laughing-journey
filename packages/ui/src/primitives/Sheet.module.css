@@ -51,6 +51,11 @@
   min-width: 0;
 }
 
+/* An empty card is its head and nothing else, so the head carries the bottom padding the body would have. */
+.sheet[data-empty='true'] > .head {
+  padding-bottom: var(--sheet-pad);
+}
+
 .head[data-divided='true'] {
   padding-bottom: calc(var(--sheet-pad) * 0.6);
   border-bottom: 1px solid var(--color-line-1);

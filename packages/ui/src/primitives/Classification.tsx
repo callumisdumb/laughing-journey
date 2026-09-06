@@ -21,7 +21,7 @@ export function ClassificationMarking({ classification, className }: { classific
   const text = marking(classification);
   if (!text) return null;
   return (
-    <div className={cn(styles.print, className)} role="note" aria-label={t('common.marks.classification', { level: text })}>
+    <div className={cn(styles.print, className)} data-marking="true" role="note" aria-label={t('common.marks.classification', { level: text })}>
       {text}
     </div>
   );
@@ -37,7 +37,7 @@ export function ClassificationTag({ classification, className }: { classificatio
   const text = marking(classification);
   if (!text || !isMarked(classification)) return null;
   return (
-    <span className={cn(styles.tag, className)} aria-label={t('common.marks.classification', { level: text })}>
+    <span className={cn(styles.tag, className)} data-marking="true" aria-label={t('common.marks.classification', { level: text })}>
       <Lock size={12} aria-hidden="true" />
       {text}
     </span>
