@@ -383,6 +383,32 @@ export function MinutesPrintPack({ meetingId }: { meetingId: string }) {
         </>
       ),
     },
+    ...((meeting.minute.addenda ?? []).length > 0
+      ? [
+          {
+            id: 'corrections',
+            weight: 3 + (meeting.minute.addenda ?? []).length * 4,
+            node: (
+              <>
+                <h2>{t('print.minutes.corrections.title')}</h2>
+                <ol className={styles.decisions} data-testid="pack-corrections">
+                  {(meeting.minute.addenda ?? []).map((a, i) => (
+                    <li key={a.id} className={styles.decision}>
+                      <p className={styles.text}>
+                        <strong>{t('print.minutes.corrections.entry', { n: i + 1, at: formatDateTime(a.at), by: a.byName })}</strong>
+                      </p>
+                      <p className={styles.text}>{t('print.minutes.corrections.recorded', { text: a.recorded })}</p>
+                      <p className={styles.text}>{t('print.minutes.corrections.nowRecorded', { text: a.nowRecorded })}</p>
+                      {a.reason ? <p className={styles.text}>{t('print.minutes.corrections.reason', { text: a.reason })}</p> : null}
+                      <p className={styles.muted}>{t('print.minutes.corrections.sent', { count: a.sharingRecordIds.length })}</p>
+                    </li>
+                  ))}
+                </ol>
+              </>
+            ),
+          },
+        ]
+      : []),
     {
       id: 'signatures',
       weight: 12,

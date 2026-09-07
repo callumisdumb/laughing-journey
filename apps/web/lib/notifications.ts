@@ -146,6 +146,19 @@ function textFor(t: Translate, data: Dataset, config: Config, n: Notification, n
       const stage = process ? stageLabel(process.type, keySuffix(n) || process.stage) : keySuffix(n);
       return t('notifications.summary.stageChanged', { reference, stage, hasName: by ? 'yes' : 'no', name });
     }
+    case 'invitation-responded': {
+      // The responder wrote the record, so they are its author; the answer is the key's last segment (D-239).
+      const meeting = data.meetings.find((m) => m.id === n.sourceId);
+      return t('notifications.summary.invitationResponded', { name, status: keySuffix(n), title: meeting?.title ?? '', date: meeting ? formatDateTime(meeting.scheduledAt) : '' });
+    }
+    case 'minute-corrected': {
+      const meeting = data.meetings.find((m) => m.id === n.sourceId);
+      return t('notifications.summary.minuteCorrected', { title: meeting?.title ?? '', level });
+    }
+    case 'lead-reallocated': {
+      const lead = process?.leadUserId ? data.users.find((u) => u.id === process.leadUserId) : undefined;
+      return t('notifications.summary.leadReallocated', { name, reference, former: keySuffix(n) === 'former' ? 'yes' : 'no', lead: lead ? userName(lead) : '' });
+    }
     case 'membership-added':
       return t('notifications.summary.membershipAdded', { name, reference });
     case 'membership-removed':

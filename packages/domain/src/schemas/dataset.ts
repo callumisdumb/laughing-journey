@@ -3,6 +3,7 @@ import { actionSchema, planSchema, riskAssessmentSchema, viewsRecordSchema } fro
 import { auditEntrySchema } from './audit';
 import { chronologyAnalysisSchema, chronologyEventSchema } from './chronology';
 import { connectorEventSchema } from './connector';
+import { documentSchema } from './document';
 import { inboundChangeSchema, outboundWriteSchema } from './outbox';
 import { meetingSchema } from './meeting';
 import { notificationSchema } from './notification';
@@ -40,6 +41,8 @@ export const datasetSchema = z.object({
    * notification that vanishes on a reload was never a notification (D-207).
    */
   notifications: z.array(notificationSchema),
+  /** Files attached to a person, a case, a meeting or a chronology event, each classified from its parent (D-243). */
+  documents: z.array(documentSchema),
   connectorEvents: z.array(connectorEventSchema),
   /**
    * Outbound writes awaiting authorisation, in flight, acknowledged or failed. Persisted rather

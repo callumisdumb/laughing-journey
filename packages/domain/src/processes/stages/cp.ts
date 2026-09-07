@@ -1,7 +1,8 @@
 import { t } from '@mas/messages';
+import { stageLabel } from '../../config/labels';
 import { CP_CONCERNS, CP_DEREGISTRATION_REASONS, type Agency, type CpConcern, type CpDeregistrationReason } from '../../enums';
 import type { CpProcess } from '../../schemas/process';
-import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransitionContext, type TransitionOutcome } from './shared';
+import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransitionContext, type TransitionOutcome, type ReturnInput } from './shared';
 import { chairAndMinuteTaker } from './asp';
 
 /**
@@ -444,6 +445,25 @@ export const CP_TRANSITIONS: Array<Transition<CpProcess, never>> = [
     requires: () => [],
     validate: (input: { reasonId: string; note: string }) => [...(input.reasonId ? [] : ['closureReasonRequired']), ...requireText(input.note, 'closureNoteRequired')],
     apply: (process, input: { reasonId: string; note: string }) => outcome(process, 'closed', t('processes.transitions.summary.close', { reason: input.reasonId }), { followOn: [{ kind: 'close', reasonId: input.reasonId, note: input.note }], outbound: null }),
+  },
+  {
+    // The way back from an investigation to the IRD, where the IRD is reconvened: the reason goes
+    // on the stage entry, the initial planning meeting clock the IRD started is completed with it,
+    // and the reconvened IRD's decisions start it again (D-241).
+    id: 'cp-return-to-ird',
+    process: 'cp',
+    from: ['investigation'],
+    to: ['ird'],
+    roles: ['team-leader', 'social-worker-children', 'detective-sergeant-ppu'],
+    requires: (process) => (process.detail.ird ? [] : [{ code: 'irdNotConvened', creates: { kind: 'transition', transition: 'cp-convene-ird' } }]),
+    validate: (input: ReturnInput) => requireText(input.reason, 'rationaleRequired'),
+    apply: (process, input: ReturnInput, ctx) => {
+      const summary = t('processes.transitions.summary.returned', { stage: stageLabel('cp', 'ird'), reason: input.reason });
+      return outcome(moved(process, 'ird', ctx, summary), 'ird', summary, {
+        clocks: { completes: ['cp.cppm.initial'], starts: [], note: t('processes.transitions.clockNote.returned') },
+        followOn: [{ kind: 'offer', creates: { kind: 'dialog', dialog: 'schedule-meeting', meetingType: 'ird' } }],
+      });
+    },
   },
 ];
 

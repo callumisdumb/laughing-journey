@@ -4,6 +4,7 @@ import { OPENING_STAGE, buildOpeningProcess, openingClassification, type Opening
 import type { AspProcess, AwiProcess, CpProcess, MappaProcess, MaracProcess, Process } from '../schemas/process';
 import { processSchema } from '../schemas/process';
 import { MEETING_TYPES_BY_PROCESS, TRANSITIONS, applyTransition, canRecordTransition, heldTransitionFor, heldTransitionsFor, reachableStages, scheduleRoute, transitionById, transitionsFrom, whatHappensNext, type PlanInput, type ScheduleInput, type TransitionContext } from './transitions';
+import type { AnyTransition } from './stages/shared';
 
 /**
  * Every transition, driven: a permitted actor records it from the right stage on a record that
@@ -73,7 +74,7 @@ describe('the registry', () => {
         expect(transition.roles.length, transition.id).toBeGreaterThan(0);
       }
     }
-    expect(ids.size).toBe(49);
+    expect(ids.size).toBe(52);
   });
   it('reaches every stage of every type through some transition, so no stage needs a picker', () => {
     for (const type of Object.keys(TRANSITIONS) as ProcessType[]) {
@@ -504,5 +505,62 @@ describe('scheduling routes (D-213)', () => {
     const out = ok(open('marac'), 'marac-schedule-meeting', { ...schedule, leftOff: [{ name: 'A Perpetrator', reason: 'Excluded party' }] }, 'marac-coordinator');
     const meeting = out.followOn.find((f) => f.kind === 'meeting');
     expect(meeting && meeting.kind === 'meeting' ? meeting.meeting.leftOff : undefined).toEqual([{ name: 'A Perpetrator', reason: 'Excluded party' }]);
+  });
+});
+
+describe('returning a case a stage (D-241)', () => {
+  const testedAsp = (process: AspProcess): AspProcess => ({ ...process, detail: { ...process.detail, threePointTest: { ...process.detail.threePointTest, outcome: 'met', a: { met: 'yes', reasoning: 'Adult at risk of harm' } } } });
+  const ird = { significantHarm: { decided: true, decision: 'Significant harm likely', rationale: 'Injuries not consistent with the account.' }, investigationNeeded: { decided: true, decision: 'Investigate', rationale: 'Joint investigation needed to establish the facts.' }, jii: { decided: true, decision: 'JII', rationale: 'The child can give an account.', plannerName: 'DS Mackay' }, medical: { decided: true, decision: 'JPFE', rationale: 'Physical injuries need forensic examination.', kind: 'jpfe' as const }, emergencyMeasures: { decided: false, decision: 'None', rationale: 'The child is safe with the grandmother tonight.', measure: 'none' as const }, reporterReferral: { decided: true, decision: 'Refer', rationale: 'Compulsory measures may be needed.' }, parentsInformed: { decided: false, decision: 'Withhold', rationale: 'Telling the parents now would compromise the investigation.', withheld: 'Criminal investigation' }, childViewsSought: 'Spoken to at school with the teacher present.', siblingsConsidered: ['per_sibling'], contributions: [{ agency: 'police' as const, byName: 'DS Mackay', summary: 'Two prior domestic calls.' }, { agency: 'health' as const, byName: 'Dr Farouk', summary: 'Missed two appointments.' }] };
+
+  it('returns an ASP investigation to the inquiry with the reason on the stage entry, reopens the inquiry outcome and starts no clock', () => {
+    const inquiry = ok(ok(testedAsp(open('asp') as AspProcess), 'asp-screening-decision', { outcome: 'proceed-to-inquiry', rationale: 'The concern is credible and recent.' }, 'team-leader').process, 'asp-open-inquiry', { agenciesToContact: ['health'], interAgencyDiscussion: false, purpose: 'Inquiry under section 4 into the concern.' }, 'council-officer-asp').process;
+    const investigation = ok(inquiry, 'asp-inquiry-outcome', { outcome: 'proceed-to-investigation', action: 'criteria-ongoing', rationale: 'Harm is continuing and the adult cannot protect herself.', consent: { status: 'sought-and-given', note: 'Agreed on the 2nd' }, capacity: { assessed: true, summary: 'Has capacity for this decision' }, unduePressure: { considered: true, found: false, reasoning: 'None found' }, advocacy: { offered: true, accepted: true } }, 'council-officer-asp').process as AspProcess;
+    expect(investigation.stage).toBe('investigation');
+    expect((record(investigation, 'asp-return-to-inquiry', { reason: '' }, 'team-leader') as { errors: string[] }).errors).toEqual(['rationaleRequired']);
+    expect(record(investigation, 'asp-return-to-inquiry', { reason: 'The investigation was opened on a misread of the bank records.' }, 'gp', 'health').ok).toBe(false);
+    const returned = ok(investigation, 'asp-return-to-inquiry', { reason: 'The investigation was opened on a misread of the bank records.' }, 'team-leader');
+    const process = returned.process as AspProcess;
+    expect(process.stage).toBe('inquiry');
+    expect(process.stageHistory.at(-1)?.stage).toBe('inquiry');
+    expect(process.stageHistory.at(-1)?.note).toContain('misread of the bank records');
+    expect(process.detail.inquiry?.outcome).toBe('pending');
+    expect(returned.clocks.starts).toEqual([]);
+    expect(returned.clocks.completes).toEqual([]);
+    expect(returned.clocks.note).toBeTruthy();
+    // The inquiry outcome can be recorded again from the returned stage.
+    expect(whatHappensNext(process, ctxFor('council-officer-asp').actor).map((n) => n.transition.id)).toContain('asp-inquiry-outcome');
+  });
+
+  it('returns a CP investigation to the IRD, completes the planning meeting clock the IRD started and offers the reconvened IRD', () => {
+    const investigation = ok(ok(open('cp'), 'cp-convene-ird', { ...schedule, outOfHours: false }, 'social-worker-children').process, 'cp-ird-decisions', ird, 'team-leader').process as CpProcess;
+    expect(investigation.stage).toBe('investigation');
+    const returned = ok(investigation, 'cp-return-to-ird', { reason: 'The IRD is to be reconvened: health could not attend and the medical has changed the picture.' }, 'team-leader');
+    expect(returned.process.stage).toBe('ird');
+    expect(returned.clocks.completes).toEqual(['cp.cppm.initial']);
+    expect(returned.clocks.starts).toEqual([]);
+    expect(returned.followOn).toContainEqual({ kind: 'offer', creates: { kind: 'dialog', dialog: 'schedule-meeting', meetingType: 'ird' } });
+    expect((record(open('cp'), 'cp-return-to-ird', { reason: 'Reconvene.' }, 'team-leader') as { errors: string[] }).errors).toEqual(['transitionNotFromThisStage']);
+  });
+
+  it('returns a MARAC action plan to the meeting, where the case is re-heard, and the heard transition fires again', () => {
+    const sent = ok(ok(open('marac'), 'marac-schedule-meeting', schedule, 'marac-coordinator').process, 'marac-send-research-requests', { agencies: ['health'], wording: 'MARAC case list wording for the meeting on the 15th.', dueAt: '2026-09-12' }, 'marac-coordinator').process;
+    const heard = ok(sent, 'marac-heard', { meetingId: 'mtg_m', informationShared: [{ agency: 'police', summary: 'Three calls in a year.' }], riskDiscussion: 'High risk; the perpetrator has breached bail.' }, 'marac-coordinator');
+    const planned = ok(heard.process, 'marac-record-action-plan', { plan, flags: [{ agency: 'health', system: 'EMIS', receiptRef: 'F1' }], matac: { considered: true, referred: false }, dsdas: { considered: true, note: 'Considered.' }, flagExpiresAt: '2027-09-15' }, 'marac-coordinator').process as MaracProcess;
+    expect(planned.stage).toBe('action-plan');
+    const returned = ok(planned, 'marac-return-to-meeting', { reason: 'Re-heard at the next MARAC after a further incident.' }, 'marac-coordinator');
+    expect(returned.process.stage).toBe('meeting');
+    expect(returned.followOn).toContainEqual({ kind: 'offer', creates: { kind: 'dialog', dialog: 'schedule-meeting', meetingType: 'marac' } });
+    const again = ok(returned.process, 'marac-heard', { meetingId: 'mtg_m2', informationShared: [{ agency: 'police', summary: 'A further call.' }], riskDiscussion: 'Risk remains high.' }, 'marac-coordinator');
+    expect(again.process.stage).toBe('meeting');
+    expect(whatHappensNext(again.process, ctxFor('marac-coordinator').actor).map((n) => n.transition.id)).toContain('marac-record-action-plan');
+  });
+
+  it('is reachable backwards in every table it appears in, and nowhere else', () => {
+    const returns = (Object.values(TRANSITIONS) as AnyTransition[][]).flat().filter((tr) => tr.id.includes('return-to'));
+    expect(returns.map((tr) => tr.id).sort()).toEqual(['asp-return-to-inquiry', 'cp-return-to-ird', 'marac-return-to-meeting']);
+    for (const tr of returns) {
+      const stages = STAGES_BY_PROCESS[tr.process] as readonly string[];
+      for (const from of tr.from) for (const to of tr.to) expect(stages.indexOf(to), tr.id).toBeLessThan(stages.indexOf(from));
+    }
   });
 });

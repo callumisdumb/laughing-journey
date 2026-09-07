@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, isExcludedParty, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type Household, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, involvementNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyTransition, buildMeeting, classificationFor, formatDate, heldTransitionFor, meetingTypeLabel, scheduleRoute, stagePayload, stageLabel, transitionById, transitionLabel, validateSchedule, type Creates, type InformationRequest, type InvolvementRequest, type MeetingType, type MissingThing, type PermissionDecision, type ScheduleInput, type TransitionOutcome } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, isExcludedParty, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, leadPayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type Document, type Household, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, involvementNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyTransition, buildMeeting, bytesOnRecord, canLeadProcess, classificationFor, documentClassification, documentProcessId, documentRefusals, planHouseholdMove, formatDate, heldTransitionFor, meetingTypeLabel, scheduleRoute, stagePayload, stageLabel, transitionById, transitionLabel, validateSchedule, type Creates, type InformationRequest, type InvolvementRequest, type MeetingType, type MissingThing, type PermissionDecision, type ScheduleInput, type TransitionOutcome } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -235,6 +235,16 @@ interface AppState {
   requestInvolvement: (processId: string, reason: string) => WriteResult;
   /** Decide a request to be involved; accepted, the requester joins the case's members. */
   decideInvolvement: (requestId: string, decision: 'accepted' | 'declined', note?: string) => WriteResult;
+  /** Answer your own invitation: accept, decline with a reason, or send somebody from your agency instead (D-239). */
+  respondToInvitation: (meetingId: string, response: { status: 'accepted' | 'declined' | 'substitute'; reason?: string; substituteUserId?: string }) => WriteResult;
+  /** Move the lead of a case to somebody in the lead agency whose role may lead it, with the reason (D-240). */
+  reallocateLead: (processId: string, userId: string, reason: string) => WriteResult;
+  /** Correct an approved minute by addendum, sent to the original distribution at their levels (D-242). */
+  correctMinute: (meetingId: string, input: { recorded: string; nowRecorded: string; reason?: string }) => WriteResult;
+  /** Attach a file to a person, a case, a meeting or a chronology event, classified from its parent (D-243). */
+  attachDocument: (input: { parent: Document['parent']; name: string; mimeType: string; size: number; dataUri: string; note?: string }) => WriteResult & { document?: Document };
+  /** Move everybody in a household to one address on one date, leaving named people behind (D-244). */
+  moveHousehold: (householdId: string, addressId: string, on: string, note: string, stayBehind: Array<{ personId: string; addressId?: string }>) => WriteResult;
   /** Accept a case opened in a source system, which creates the matching process here. */
   acceptInbound: (id: string) => WriteResult & { process?: Process };
   declineInbound: (id: string, reason: string) => WriteResult;
@@ -305,6 +315,7 @@ const TARGET_TYPES: Record<Collection, AuditEntry['targetType']> = {
   inbound: 'inbox',
   audit: 'config',
   notifications: 'sharing',
+  documents: 'document',
 };
 
 /**
@@ -377,6 +388,7 @@ const EMPTY: Dataset = {
   inbound: [],
   audit: [],
   notifications: [],
+  documents: [],
 };
 
 /**
@@ -2031,6 +2043,278 @@ export const useAppStore = create<AppState>((set, get) => ({
       reason: note.trim() || undefined,
       versionChange: label,
     });
+  },
+  respondToInvitation: (meetingId, response) => {
+    const { config, data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const meeting = data.meetings.find((m) => m.id === meetingId);
+    if (!meeting) return { ok: false, errors: ['meetingMissing'], nearMatches: [], effects: [] };
+    if (meeting.status !== 'scheduled') return { ok: false, errors: ['meetingNotScheduled'], nearMatches: [], effects: [] };
+    const process = data.processes.find((p) => p.id === meeting.processId);
+    if (!process) return { ok: false, errors: ['processMissing'], nearMatches: [], effects: [] };
+    const index = meeting.invitees.findIndex((i) => i.userId === user.id);
+    if (index < 0) return { ok: false, errors: ['invitationMissing'], nearMatches: [], effects: [] };
+    const invitee = meeting.invitees[index]!;
+    const reason = response.reason?.trim() ?? '';
+    const at = get().now().toISOString();
+    const errors: string[] = [];
+    if (response.status === 'declined' && reason.length < 5) errors.push('invitationDeclineReasonRequired');
+    let substitute: User | undefined;
+    if (response.status === 'substitute') {
+      substitute = data.users.find((u) => u.id === response.substituteUserId);
+      if (!substitute) errors.push('substituteRequired');
+      else if (substitute.id === user.id) errors.push('substituteSelf');
+      else if (substitute.agency !== user.agency) errors.push('substituteSameAgency');
+      else if (substitute.roleId === 'system-administrator' || isExcludedParty(process, { userId: substitute.id }, config.exclusions, process.stage, data.relationships)) errors.push('substituteExcluded');
+    }
+    if (errors.length > 0) return { ok: false, errors, nearMatches: [], effects: [] };
+
+    const answered = {
+      ...invitee,
+      attendance: response.status === 'accepted' ? ('accepted' as const) : ('declined' as const),
+      response: { status: response.status, reason: reason || undefined, at, substitute: substitute ? { userId: substitute.id, name: `${substitute.givenName} ${substitute.familyName}`, agency: substitute.agency, role: roleLabel(substitute.roleId) } : undefined },
+    };
+    const invitees = meeting.invitees.map((i, j) => (j === index ? answered : i));
+    // The substitute is seated as an invitee of their own, told like any other, and checked against
+    // the register by the pipeline like any other recipient; the seat carries who sent them.
+    if (substitute && !invitees.some((i) => i.userId === substitute.id)) {
+      invitees.push({ userId: substitute.id, name: `${substitute.givenName} ${substitute.familyName}`, agency: substitute.agency, role: roleLabel(substitute.roleId), required: invitee.required, attendance: 'invited', reason: t('meetings.invitation.substituteReason', { name: `${user.givenName} ${user.familyName}` }), needToKnowRowId: invitee.needToKnowRowId });
+    }
+    const label = t(`meetings.invitation.audit.${response.status}`, { name: `${user.givenName} ${user.familyName}`, title: meeting.title, substitute: substitute ? `${substitute.givenName} ${substitute.familyName}` : '' });
+    return get().write({
+      collection: 'meetings',
+      record: { ...meeting, invitees },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'meeting',
+      targetLabel: label,
+      processId: process.id,
+      reason: reason || undefined,
+      versionChange: label,
+      recipients: substitute ? [{ userId: substitute.id, name: `${substitute.givenName} ${substitute.familyName}` }] : undefined,
+      recipientProcess: substitute ? process : undefined,
+    });
+  },
+  reallocateLead: (processId, userId, reason) => {
+    const { data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const process = data.processes.find((p) => p.id === processId);
+    if (!process) return { ok: false, errors: ['processMissing'], nearMatches: [], effects: [] };
+    if (process.status !== 'open') return { ok: false, errors: ['processNotOpen'], nearMatches: [], effects: [] };
+    // The lead moves at the hand of the lead, or of somebody in the lead agency who could hold it.
+    if (process.leadUserId !== user.id && !(user.agency === process.leadAgency && canLeadProcess(user.roleId, process.type))) return { ok: false, errors: ['leadNotYours'], nearMatches: [], effects: [] };
+    const next = data.users.find((u) => u.id === userId);
+    const errors: string[] = [];
+    if (!next) errors.push('leadWrongAgency');
+    else {
+      if (next.id === process.leadUserId) errors.push('leadSameUser');
+      if (next.agency !== process.leadAgency) errors.push('leadWrongAgency');
+      if (!canLeadProcess(next.roleId, process.type)) errors.push('leadWrongRole');
+    }
+    if (reason.trim().length < 5) errors.push('leadReasonRequired');
+    if (errors.length > 0 || !next) return { ok: false, errors, nearMatches: [], effects: [] };
+
+    const at = get().now().toISOString();
+    const byName = `${user.givenName} ${user.familyName}`;
+    const nextName = `${next.givenName} ${next.familyName}`;
+    const former = data.users.find((u) => u.id === process.leadUserId);
+    const formerName = former ? `${former.givenName} ${former.familyName}` : agencyShort(process.leadAgency);
+    const leadRole = t('processes.lead.caseRole');
+    // Membership follows the lead: the new lead joins or is re-labelled, the former lead keeps their
+    // seat under their own role, because leaving the case is a separate decision (D-240).
+    const members = process.members.map((m) => (m.userId === process.leadUserId && m.caseRole === leadRole ? { ...m, caseRole: former ? roleLabel(former.roleId) : m.caseRole } : m));
+    const seated = members.find((m) => m.userId === next.id);
+    const updated = seated ? members.map((m) => (m.userId === next.id ? { ...m, caseRole: leadRole, reason: t('processes.lead.memberReason', { name: byName, reason: reason.trim() }) } : m)) : [...members, { userId: next.id, caseRole: leadRole, agency: next.agency, since: at.slice(0, 10), reason: t('processes.lead.memberReason', { name: byName, reason: reason.trim() }) }];
+    const label = t('processes.lead.audit', { from: formerName, to: nextName });
+    return get().write({
+      collection: 'processes',
+      record: { ...process, leadUserId: next.id, members: updated },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'process',
+      targetLabel: label,
+      processId: process.id,
+      reason: reason.trim(),
+      versionChange: label,
+      recipients: [{ userId: next.id, name: nextName }],
+      recipientProcess: process,
+      event: {
+        eventType: 'social-work.allocation',
+        significance: 'moderate',
+        visibility: 'integrated',
+        title: t('processes.lead.eventTitle', { reference: process.reference, to: nextName }),
+        detail: t('processes.lead.eventDetail', { from: formerName, to: nextName, by: byName, reason: reason.trim() }),
+        subjectIds: process.subjectIds,
+        occurredAt: at,
+        linkedProcessIds: [process.id],
+      },
+      outbound: connectorsForIntent('stage-change', CONNECTOR_IDS).map((connectorId) => ({ connectorId, intent: 'stage-change' as const, payload: leadPayload({ ...process, leadUserId: next.id }, nextName), summary: t('connectors.outbox.proposedLead', { reference: process.reference, name: nextName }), discriminator: `lead:${next.id}` })),
+    });
+  },
+  correctMinute: (meetingId, input) => {
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const meeting = get().data.meetings.find((m) => m.id === meetingId);
+    if (!meeting) return { ok: false, errors: ['meetingMissing'], nearMatches: [], effects: [] };
+    const process = get().data.processes.find((p) => p.id === meeting.processId);
+    if (!process) return { ok: false, errors: ['processMissing'], nearMatches: [], effects: [] };
+    if (meeting.minute.status !== 'chair-approved' && meeting.minute.status !== 'distributed') return { ok: false, errors: ['minuteNotApproved'], nearMatches: [], effects: [] };
+    const errors: string[] = [];
+    if (input.recorded.trim().length < 3) errors.push('addendumRecordedRequired');
+    if (input.nowRecorded.trim().length < 3) errors.push('addendumNowRecordedRequired');
+    if (errors.length > 0) return { ok: false, errors, nearMatches: [], effects: [] };
+    const at = get().now().toISOString();
+    const byName = `${user.givenName} ${user.familyName}`;
+    // The correction goes where the minute went: one sharing record per original recipient at the
+    // level they were given, under a lawful basis of its own, and nothing to anybody who was not
+    // on the list. An approved minute not yet distributed has nobody to send to, and says so.
+    const sent = meeting.minute.status === 'distributed' ? meeting.distribution.filter((d) => d.sharingRecordId) : [];
+    const shareIds = sent.map(() => get().newId('shr'));
+    const addendum = { id: get().newId('add'), at, byUserId: user.id, byName, recorded: input.recorded.trim(), nowRecorded: input.nowRecorded.trim(), reason: input.reason?.trim() || undefined, sharingRecordIds: shareIds };
+    const label = t('meetings.correction.audit', { title: meeting.title, count: sent.length });
+    const result = get().write({
+      collection: 'meetings',
+      record: { ...meeting, minute: { ...meeting.minute, addenda: [...(meeting.minute.addenda ?? []), addendum] } },
+      intent: 'update',
+      act: sent.length > 0 ? 'share' : 'edit',
+      targetType: 'meeting',
+      targetLabel: label,
+      processId: process.id,
+      reason: addendum.reason,
+      versionChange: label,
+      lawfulBasis: sent.length > 0 ? { id: get().newId('lb'), purpose: t('meetings.correction.purpose', { title: meeting.title }), necessity: t('meetings.correction.necessity'), processes: [process] } : undefined,
+      sharingRecords: sent.map((d, i) => ({ id: shareIds[i]!, recipient: { userId: d.recipientUserId, name: d.recipientName, agency: d.agency, role: d.role }, detailLevel: d.detailLevel, fields: d.fields, reason: d.reason, summary: t('meetings.correction.shareSummary', { title: meeting.title, level: detailLevelLabel(d.detailLevel) }) })),
+      event: {
+        eventType: 'sharing',
+        significance: 'moderate',
+        visibility: 'integrated',
+        title: t('meetings.correction.eventTitle', { title: meeting.title }),
+        detail: t('meetings.correction.eventDetail', { recorded: addendum.recorded, nowRecorded: addendum.nowRecorded, by: byName, count: sent.length }),
+        subjectIds: meeting.subjectIds,
+        occurredAt: at,
+        linkedProcessIds: [process.id],
+      },
+    });
+    return result;
+  },
+  attachDocument: (input) => {
+    const { config, data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const { parent } = input;
+    const exists =
+      parent.kind === 'person' ? data.people.some((p) => p.id === parent.id) : parent.kind === 'process' ? data.processes.some((p) => p.id === parent.id) : parent.kind === 'meeting' ? data.meetings.some((m) => m.id === parent.id) : data.events.some((e) => e.id === parent.id);
+    if (!exists) return { ok: false, errors: ['documentParentMissing'], nearMatches: [], effects: [] };
+    const refusals = documentRefusals({ name: input.name, size: input.size, mimeType: input.mimeType, totalOnRecord: bytesOnRecord(data.documents, parent) });
+    if (refusals.length > 0) return { ok: false, errors: refusals, nearMatches: [], effects: [] };
+    const processId = documentProcessId(parent, data);
+    const document: Document = {
+      id: get().newId('doc'),
+      synthetic: true,
+      parent,
+      processId,
+      name: input.name.trim(),
+      mimeType: input.mimeType,
+      size: input.size,
+      dataUri: input.dataUri,
+      note: input.note?.trim() || undefined,
+      classification: documentClassification(config, parent, data),
+      addedAt: get().now().toISOString(),
+      addedByUserId: user.id,
+      addedByName: `${user.givenName} ${user.familyName}`,
+    };
+    const result = get().write({ collection: 'documents', record: document, intent: 'create', act: 'attach', targetType: 'document', targetLabel: t('documents.audit.attached', { name: document.name, size: Math.round(document.size / 1000) }), processId });
+    return result.ok ? { ...result, document } : result;
+  },
+  moveHousehold: (householdId, addressId, on, note, stayBehind) => {
+    const { config, data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const household = data.households.find((h) => h.id === householdId);
+    if (!household) return { ok: false, errors: ['householdMissing'], nearMatches: [], effects: [] };
+    const address = data.addresses.find((a) => a.id === addressId);
+    if (!address) return { ok: false, errors: ['addressMissing'], nearMatches: [], effects: [] };
+    for (const stay of stayBehind) if (stay.addressId && !data.addresses.some((a) => a.id === stay.addressId)) return { ok: false, errors: ['addressMissing'], nearMatches: [], effects: [] };
+    const line = (a: typeof address) => [a.line1, a.town, a.postcode].filter(Boolean).join(', ');
+    const planned = planHouseholdMove({
+      household,
+      people: data.people.filter((p) => household.members.some((m) => m.personId === p.id)),
+      addressId,
+      on,
+      stayBehind,
+      newId: get().newId,
+      labelFor: (person) => t('person.household.labelFor', { family: person.familyName, town: data.addresses.find((a) => a.id === stayBehind.find((s) => s.personId === person.id)?.addressId)?.town ?? address.town }),
+      endedReason: t('person.household.moveHousehold.stayedReason', { address: line(address) }),
+    });
+    if (!planned.ok) return { ok: false, errors: planned.errors, nearMatches: [], effects: [] };
+    const { plan } = planned;
+    const touched = processesTouchedByHousehold(data, householdId, on);
+    const effects: WriteEffect[] = [];
+    const moved = get().write({ collection: 'households', record: plan.household, intent: 'update', act: 'edit', targetType: 'person', targetLabel: t('person.household.moveHousehold.audit', { count: plan.moving.length, address: line(address) }), rules: [], versionChange: t('person.household.moveHousehold.audit', { count: plan.moving.length, address: line(address) }) });
+    if (!moved.ok) return moved;
+    effects.push(...moved.effects);
+    // One chronology event per person who moved, each on their own record, so a chronology read for
+    // any one of them carries the move without a search through the household.
+    for (const person of plan.moving) {
+      const name = `${person.givenName} ${person.familyName}`;
+      const written = get().write({
+        collection: 'people',
+        record: person,
+        intent: 'update',
+        act: 'edit',
+        targetType: 'person',
+        targetLabel: name,
+        rules: [],
+        event: {
+          eventType: 'move.address',
+          significance: 'moderate',
+          visibility: 'integrated',
+          title: t('person.household.eventMove', { name, address: line(address) }),
+          detail: note.trim() || t('person.household.moveHousehold.eventDetail', { name, address: line(address), date: on, count: plan.moving.length }),
+          subjectIds: [person.id],
+          occurredAt: `${on}T00:00:00Z`,
+          linkedProcessIds: touched.map((p) => p.id),
+        },
+        shares: touched.flatMap((process) => notifyShares(process, config, t('person.household.eventMove', { name, address: line(address) }))),
+      });
+      if (!written.ok) return { ...written, effects: [...effects, ...written.effects] };
+      effects.push(...written.effects);
+    }
+    const created = new Set<string>();
+    for (const left of plan.left) {
+      const name = `${left.person.givenName} ${left.person.familyName}`;
+      if (left.household && !created.has(left.household.id)) {
+        created.add(left.household.id);
+        const fresh = get().write({ collection: 'households', record: left.household, intent: 'create', act: 'create', targetType: 'person', targetLabel: name, rules: [] });
+        if (!fresh.ok) return { ...fresh, effects: [...effects, ...fresh.effects] };
+        effects.push(...fresh.effects);
+      }
+      const to = left.household ? data.addresses.find((a) => a.id === left.household!.addressId) : undefined;
+      const written = get().write({
+        collection: 'people',
+        record: left.person,
+        intent: 'update',
+        act: 'edit',
+        targetType: 'person',
+        targetLabel: name,
+        rules: [],
+        event: {
+          eventType: to ? 'move.address' : 'household.change',
+          significance: 'high',
+          visibility: 'integrated',
+          title: to ? t('person.household.eventMove', { name, address: line(to) }) : t('person.household.eventLeave', { name }),
+          detail: to ? t('person.household.moveHousehold.stayedTo', { name, address: line(to), date: on, household: line(address) }) : t('person.household.moveHousehold.stayedNowhere', { name, date: on, household: line(address) }),
+          subjectIds: [left.person.id],
+          occurredAt: `${on}T00:00:00Z`,
+          linkedProcessIds: touched.map((p) => p.id),
+        },
+      });
+      if (!written.ok) return { ...written, effects: [...effects, ...written.effects] };
+      effects.push(...written.effects);
+    }
+    return { ...moved, effects };
   },
   acceptInbound: (id) => {
     const { data } = get();

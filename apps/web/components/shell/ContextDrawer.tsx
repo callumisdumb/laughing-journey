@@ -3,7 +3,7 @@
 import { accessRestrictionLabel, actionStatusLabel, identifiesSubject, agencyShort, classificationLabel, effectiveClassification, formatDate, analysisKindLabel, attendanceLabel, channelLabel, classificationFor, consentStatusLabel, contextFor, detailLevelLabel, exclusionPartyLabel, formatDateTime, partyRegister, recipientView, resolveNeedToKnow, roleLabel, shareStatusLabel, significanceLabel, stageLabel, marking, visibilityLabel, type CaseParty, type Config, type ClassifiedRecord, type Process } from '@mas/domain';
 import { useT, type Translator } from '@mas/messages';
 import { AgencyMark, Dialog, IconButton, Pill, RiskBand } from '@mas/ui';
-import { ArrowRight, Ban, Bell, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Scale, ShieldCheck, Users } from 'lucide-react';
+import { ArrowRight, Ban, Bell, Eye, FileCheck2, PanelRightClose, PanelRightOpen, Paperclip, Scale, ShieldCheck, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { PractitionerLink } from '@/components/EntityLink';
 import { NotificationList } from '@/components/notifications/NotificationList';
@@ -13,6 +13,7 @@ import { useSelection } from '@/lib/selection';
 import { accessForUser, fullName, membersByAgency, personById, processById, processesInvolving, userById, userName } from '@/lib/selectors';
 import { useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
 import { useTransitionsNarrative } from '@/features/process/transitions/TransitionPanel';
+import { DocumentList } from '@/features/documents/DocumentList';
 import styles from './ContextDrawer.module.css';
 
 /**
@@ -427,6 +428,9 @@ function useDrawerContent(): { title: string; body: ReactNode } {
               </>
             ) : null}
           </dl>
+        </Section>
+        <Section title={t('documents.list.title')} icon={<Paperclip size={14} aria-hidden="true" />}>
+          <DocumentList parent={{ kind: 'event', id: ev.id }} targetLabel={t('documents.target.event', { title: ev.title })} compact />
         </Section>
         <Section title={t('nav.drawer.section.lawfulBasisInclusion')} icon={<Scale size={14} aria-hidden="true" />}>
           {basis ? (

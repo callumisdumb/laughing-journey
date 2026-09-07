@@ -1,7 +1,8 @@
 import { t } from '@mas/messages';
+import { stageLabel } from '../../config/labels';
 import { ASP_INQUIRY_ACTIONS, type Agency, type AspInquiryAction, type ConsentStatus } from '../../enums';
 import type { AspProcess } from '../../schemas/process';
-import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransitionContext } from './shared';
+import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransitionContext, type ReturnInput } from './shared';
 
 /**
  * Adult support and protection, from an adult concern to closure (task section 1.2).
@@ -344,6 +345,23 @@ export const ASP_TRANSITIONS: Array<Transition<AspProcess, never>> = [
     requires: () => [],
     validate: (input: { reasonId: string; note: string }) => [...(input.reasonId ? [] : ['closureReasonRequired']), ...requireText(input.note, 'closureNoteRequired')],
     apply: (process, input: { reasonId: string; note: string }) => outcome(process, 'closed', t('processes.transitions.summary.close', { reason: input.reasonId }), { followOn: [{ kind: 'close', reasonId: input.reasonId, note: input.note }], outbound: null }),
+  },
+  {
+    // The way back from an investigation that should not have started: to the inquiry, with the
+    // reason on the stage entry. The inquiry outcome is then recorded again (D-241).
+    id: 'asp-return-to-inquiry',
+    process: 'asp',
+    from: ['investigation'],
+    to: ['inquiry'],
+    roles: ['team-leader', 'council-officer-asp'],
+    requires: (process) => (process.detail.inquiry ? [] : [{ code: 'inquiryNotOpened', creates: { kind: 'transition', transition: 'asp-open-inquiry' } }]),
+    validate: (input: ReturnInput) => requireText(input.reason, 'rationaleRequired'),
+    apply: (process, input: ReturnInput, ctx) => {
+      const summary = t('processes.transitions.summary.returned', { stage: stageLabel('asp', 'inquiry'), reason: input.reason });
+      const inquiry = { ...process.detail.inquiry!, outcome: 'pending' as const, decidedAt: undefined };
+      const next: AspProcess = { ...process, detail: { ...process.detail, inquiry } };
+      return outcome(moved(next, 'inquiry', ctx, summary), 'inquiry', summary, { clocks: { completes: [], starts: [], note: t('processes.transitions.clockNote.returned') } });
+    },
   },
 ];
 

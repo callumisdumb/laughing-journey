@@ -69,6 +69,15 @@ export interface ScheduleInput {
   leftOff?: Array<{ name: string; reason: string }>;
 }
 
+/**
+ * A return to an earlier stage: the one way back the engine offers beside reopening, and only for
+ * the pairs each process genuinely allows (D-241). A reason is required, the stage entry carries
+ * it, the milestone says so, and the clocks are the table's, never set by hand.
+ */
+export interface ReturnInput {
+  reason: string;
+}
+
 export interface PlanInput {
   title: string;
   outcomes: string[];

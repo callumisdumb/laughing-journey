@@ -12,8 +12,40 @@ export const inviteeSchema = z.object({
   /** Why they are invited: the need-to-know row that generated the invite. */
   reason: z.string(),
   needToKnowRowId: z.string().optional(),
+  /**
+   * What the invitee said to the invitation, where they have said anything. Accepting or declining
+   * sets the attendance to match, so the chair's attendance list starts from the answers; a
+   * substitute is seated as an invitee of their own, with this invitee declined and the substitute
+   * named here, and goes through the same need-to-know check as anybody else added (D-239).
+   */
+  response: z
+    .object({
+      status: z.enum(['accepted', 'declined', 'substitute']),
+      reason: z.string().optional(),
+      at: isoDateTime,
+      substitute: z.object({ userId: idSchema, name: z.string(), agency: z.enum(AGENCIES), role: z.string() }).optional(),
+    })
+    .optional(),
 });
 export type Invitee = z.infer<typeof inviteeSchema>;
+
+/**
+ * A correction to an approved minute. The minute itself is never edited: a correction is an
+ * addendum, dated and attributed, that says what was recorded and what is now recorded, and goes
+ * to everybody on the original distribution list at the level they were given (D-242).
+ */
+export const minuteAddendumSchema = z.object({
+  id: idSchema,
+  at: isoDateTime,
+  byUserId: idSchema.optional(),
+  byName: z.string(),
+  recorded: z.string().min(1),
+  nowRecorded: z.string().min(1),
+  reason: z.string().optional(),
+  /** The sharing records the correction went out under, one per original recipient. */
+  sharingRecordIds: z.array(idSchema),
+});
+export type MinuteAddendum = z.infer<typeof minuteAddendumSchema>;
 
 export const agendaItemSchema = z.object({
   id: idSchema,
@@ -115,6 +147,7 @@ export const meetingSchema = z.object({
     draftedAt: isoDateTime.optional(),
     approvedAt: isoDateTime.optional(),
     distributedAt: isoDateTime.optional(),
+    addenda: z.array(minuteAddendumSchema).optional(),
   }),
   distribution: z.array(distributionSchema),
   reviewDate: isoDate.optional(),

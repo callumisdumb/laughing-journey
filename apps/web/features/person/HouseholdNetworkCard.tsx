@@ -23,7 +23,7 @@ import {
   TextareaField,
   useToast,
 } from '@mas/ui';
-import { CalendarOff, HousePlus, LogOut, Network, Pencil, Truck, UserPlus } from 'lucide-react';
+import { CalendarOff, HousePlus, LogOut, Network, Pencil, Truck, UserPlus, Users } from 'lucide-react';
 import { useState, type HTMLAttributes } from 'react';
 import { PersonLink } from '@/components/EntityLink';
 import { fullName } from '@/lib/selectors';
@@ -32,6 +32,7 @@ import { useWriteErrors } from '@/lib/writeErrors';
 import { AddToHouseholdDialog, EndMembershipDialog, RenameHouseholdDialog } from './HouseholdPanel';
 import { KnownElsewhere } from './KnownElsewhere';
 import { EndRelationshipDialog, RelationshipDialog } from './NetworkPanel';
+import { MoveHouseholdDialog } from './MoveHouseholdDialog';
 import { NetworkGraph, inverseWord, networkNodes, relationWord } from './NetworkGraph';
 import styles from './HouseholdNetworkCard.module.css';
 
@@ -72,6 +73,7 @@ export function HouseholdNetworkCard({
   const [editing, setEditing] = useState<Relationship | null>(null);
   const [endingTie, setEndingTie] = useState<Relationship | null>(null);
   const [moving, setMoving] = useState(false);
+  const [movingAll, setMovingAll] = useState(false);
   const [diagram, setDiagram] = useState(false);
 
   const household = householdOn(data, person, on);
@@ -156,6 +158,17 @@ export function HouseholdNetworkCard({
       >
         {t('person.household.move')}
       </Button>
+      {household && household.members.length > 1 ? (
+        <Button
+          size="sm"
+          variant="secondary"
+          icon={<Users size={14} aria-hidden="true" />}
+          onClick={() => setMovingAll(true)}
+          data-testid="household-move-all"
+        >
+          {t('person.household.moveHousehold.action')}
+        </Button>
+      ) : null}
       {household ? (
         <Button
           size="sm"
@@ -444,6 +457,9 @@ export function HouseholdNetworkCard({
           fromAddress={address}
           onClose={() => setMoving(false)}
         />
+      ) : null}
+      {movingAll && household ? (
+        <MoveHouseholdDialog household={household.household} fromAddress={address} onClose={() => setMovingAll(false)} />
       ) : null}
     </Sheet>
   );

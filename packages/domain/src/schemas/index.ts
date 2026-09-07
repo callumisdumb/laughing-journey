@@ -12,3 +12,4 @@ export * from './connector';
 export * from './outbox';
 export * from './config';
 export * from './dataset';
+export * from './document';

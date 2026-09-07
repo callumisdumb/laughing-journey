@@ -22,8 +22,8 @@ Everything here is driven end to end by a test that creates the thing from nothi
 | Worklist | Actions and inbox items waiting on you; bulk **Mark complete** for actions. |
 | Notifications (the bell, or the Notifications page) | Everything sent to you or to a role you hold; **Mark all read**; dismiss. What you read depends on your access to the case it concerns. |
 | People, then a person record | The header: identity on the left, the case status and the action row on the right. **Start a process**, **Edit the record**, **Add an alert**, and **More** for the rare actions (Merge with another record, Record a death). The overview: clocks, alerts, key contacts, the Household and network card (add someone, record a relationship, record a move, rename, show the diagram), views and voice, recent chronology, current plans, and the history of the record collapsed until opened. |
-| Processes, then a case record | The stepper, **What happens next**, the panels for that process type, plans, clocks, membership, **Close the case**, **Reopen the case**, and at presence level **Ask to be involved**. |
-| Meetings | Every meeting you can read; **Schedule a meeting** (it asks for the case first); the meeting workspace with its Before, During and After phases. |
+| Processes, then a case record | The stepper, **What happens next** (including the three ways back a stage), the panels for that process type, plans, clocks, membership, attachments, **Reallocate lead**, **Close the case**, **Reopen the case**, and at presence level **Ask to be involved**. |
+| Meetings | Every meeting you can read; **Schedule a meeting** (it asks for the case first); the meeting workspace with its Before (your invitation, invites, requests, the pack and its attachments), During and After (the minute, its corrections, distribution) phases. |
 | Actions | Every action you can read; **Add an action**; **Take** a role's action; reassign, complete, cancel. |
 | Sharing | Outbound shares; the **Inbound** tab, where requests made of you or your agency wait with a **Respond** button. |
 | The create button in the top bar | "What would you like to record?" Hands over to the screens' own dialogs for a person, a case, a meeting, an action, a plan, a chronology entry, the person's own words, an alert, a protection order, a disclosure, a visit, an investigation or a register entry. |
@@ -215,6 +215,30 @@ An ASP case at Adult concern. The reference on your screen is the one to use; no
 
 Switch persona at any point to see what the others were told: the allocated worker reads the sentence with the reference and the recorder, a role whose row gives presence reads that a case they are linked to has changed, and the perpetrator of a MARAC, or a MAPPA victim, reads nothing at all.
 
-## 16. What you cannot do yet
+## 16. Answering an invitation
+
+Open the meeting you were invited to. **Your invitation** is the first card of the Before phase and reads what you were invited as and why. **Accept**, **Decline** (with a reason the chair reads) or **Send somebody instead** (a colleague from your own agency; they are seated through the same need-to-know check as anybody else and told like any invitee, and the list shows who sent them). **Send answer**. The chair is told in their bell, the invite list shows your answer beside the reason for your seat, and the chair's attendance list in the During phase starts from the answers. **Change your answer** until the meeting is held.
+
+## 17. Reallocating the lead
+
+On the case, **Reallocate lead** in the header. It is there for the lead worker and for anybody in the lead agency whose role could hold the lead. Choose the new lead worker (only people in the lead agency whose role may lead a case of this kind are listed, and never an excluded party), say why, and **Reallocate**. The header and the drawer name the new lead at once; they join the members as "Lead worker" and the former lead keeps their seat under their own role; both are told; the chronology and the ledger carry the reason; and, where the connector for the source system allows the intent, the outbox proposes the new allocated worker, which is authorised like any other proposal.
+
+## 18. Returning a case a stage
+
+Three decisions go backwards and nothing else does. On an adult protection case at investigation, **Return to inquiry** puts the case back at the inquiry with the inquiry outcome to be recorded again. On a child protection case at investigation, **Return to IRD** is for an IRD that is to be reconvened: the initial planning meeting clock the IRD started is completed by the return and starts again from the reconvened IRD's decisions, and the reconvened IRD is offered next. On a MARAC case at action plan, **Return to meeting** is for a case that is to be re-heard: a further MARAC is offered, and hearing it records the action plan again. Each asks for a reason, puts it on the stage entry, the chronology and the ledger, and starts no clock, which the form says before the button. Closing and reopening is still the only other way to move a case that has gone wrong, and it returns the case to the stage it had reached.
+
+## 19. Correcting a minute
+
+Once a minute is chair-approved, **Correct the minute** in the After phase. The minute is not edited. A correction is an addendum: what the minute recorded, what is now recorded, and why. It goes to everybody the minute went to at the level they were given (one sharing record each, each told), and to nobody else; an approved minute not yet distributed takes the correction with nobody to send to and says so. The corrections are listed under the minute and are the last section of the printed pack, each saying how many people it went to.
+
+## 20. Attaching a file
+
+**Attach a file** is on a person record's Documents tab, on a case's Attachments card, on a meeting's pack and, for a chronology event, in the context drawer when the event is selected. Choose the file (up to 1 MB, and up to 4 MB on one record), say what it is, and **Attach**. The file takes the classification of what it is attached to, and that marking goes on the file name when anybody downloads it. Attaching is in the audit log. The dialog says, in as many words, that nothing here scans the file: a deployment scans every upload before it is stored, and that is the deployment's requirement. A person's Documents tab lists their own files and the files on the cases, meetings and events about them, each saying where it is attached.
+
+## 21. Moving a household
+
+On the household card, **Record a move** moves one person, and takes the household with them only when they live alone. **Move the household** appears when somebody else lives there: one new address, one date, everybody ticked moves, and each of them gets the move on their own chronology. Untick anybody staying behind and say where they are going, or leave it as not known; they leave the household on the date with an event of their own, and start a household at the address they gave (two people staying at the same address stay together). Address history is kept for everyone.
+
+## 22. What you cannot do yet
 
 `docs/HANDOVER.md` section 6 keeps the list of what practitioners still cannot do through the product, and it is kept there rather than here so there is one copy.

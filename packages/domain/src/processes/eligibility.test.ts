@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { PROCESS_TYPES, ROLE_DEFINITIONS, type RoleId } from '../enums';
 import type { Person } from '../schemas/person';
-import { ADULT_AGE, CHILD_AGE, canOpenProcess, eligibilityFor, eligibilityForAll, isYoungAdult } from './eligibility';
+import { ADULT_AGE, CHILD_AGE, canOpenProcess, eligibilityFor, eligibilityForAll, isYoungAdult, canLeadProcess } from './eligibility';
 
 const NOW = new Date('2026-09-04T10:00:00+01:00');
 
@@ -181,5 +181,17 @@ describe('canOpenProcess', () => {
         }
       }
     }
+  });
+});
+
+describe('canLeadProcess (D-240)', () => {
+  it('admits the roles that may open the type, in any agency, and refuses oversight and the rest', () => {
+    expect(canLeadProcess('council-officer-asp', 'asp')).toBe(true);
+    expect(canLeadProcess('social-worker-adults', 'asp')).toBe(true);
+    expect(canLeadProcess('social-worker-children', 'asp')).toBe(false);
+    expect(canLeadProcess('social-worker-children', 'cp')).toBe(true);
+    expect(canLeadProcess('inspector', 'cp')).toBe(false);
+    expect(canLeadProcess('caldicott-guardian', 'asp')).toBe(false);
+    expect(canLeadProcess('system-administrator', 'marac')).toBe(false);
   });
 });

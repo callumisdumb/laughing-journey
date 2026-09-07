@@ -10,7 +10,7 @@ export const auditEntrySchema = z.object({
   userName: z.string(),
   agency: z.enum(AGENCIES),
   act: z.enum(AUDIT_ACTS),
-  targetType: z.enum(['person', 'process', 'event', 'meeting', 'sharing', 'report', 'config', 'session', 'inbox']),
+  targetType: z.enum(['person', 'process', 'event', 'meeting', 'sharing', 'report', 'config', 'session', 'inbox', 'document']),
   targetId: z.string(),
   targetLabel: z.string(),
   processId: idSchema.optional(),

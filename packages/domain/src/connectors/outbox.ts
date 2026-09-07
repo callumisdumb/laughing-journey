@@ -268,6 +268,15 @@ export function stagePayload(process: Process): PayloadField[] {
   ];
 }
 
+/** The lead worker, for a source system that holds an allocated worker on the episode (D-240). */
+export function leadPayload(process: Process, leadName: string): PayloadField[] {
+  return [
+    { field: 'Episode.CaseReference', value: process.reference, from: 'process.reference' },
+    { field: 'Episode.Stage', value: process.stage, from: 'process.stage' },
+    { field: 'Episode.AllocatedWorker', value: leadName, from: 'process.leadUserId' },
+  ];
+}
+
 /** The payload for a closure: the reference, the date and the coded reason the return reads. */
 export function closurePayload(process: Process): PayloadField[] {
   return [

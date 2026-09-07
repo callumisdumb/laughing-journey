@@ -22,6 +22,7 @@ import { EventList } from '@/features/chronology/EventList';
 import { LanesChart } from '@/features/chronology/LanesChart';
 import { useChronologyStore } from '@/features/chronology/state';
 import { useChronology } from '@/features/chronology/useChronology';
+import { DocumentList, documentsFor } from '@/features/documents/DocumentList';
 import { HouseholdNetworkCard } from './HouseholdNetworkCard';
 import { AddAlertDialog } from './AddAlertDialog';
 import { EditPersonDialog } from './EditPersonDialog';
@@ -594,12 +595,27 @@ export function PersonRecord({ personId }: { personId: string }) {
 
         <TabPanel id="documents" active={tab === 'documents'} idPrefix="p360">
           {(() => {
+            const seeableMeetings = data.meetings.filter((m) => seeable.some((p) => p.id === m.processId));
+            const attachedElsewhere = data.documents.filter((d) => !d.recordedInError && d.parent.kind !== 'person' && ((d.parent.kind === 'process' && seeable.some((p) => p.id === d.parent.id)) || (d.parent.kind === 'meeting' && seeableMeetings.some((m) => m.id === d.parent.id)) || (d.parent.kind === 'event' && model.visible.some((e) => e.id === d.parent.id))));
+            const targetOf = (d: (typeof attachedElsewhere)[number]) => (d.parent.kind === 'process' ? t('documents.target.process', { reference: seeable.find((p) => p.id === d.parent.id)?.reference ?? '' }) : d.parent.kind === 'meeting' ? t('documents.target.meeting', { title: seeableMeetings.find((m) => m.id === d.parent.id)?.title ?? '' }) : t('documents.target.event', { title: model.visible.find((e) => e.id === d.parent.id)?.title ?? '' }));
             const docs = [
+              ...attachedElsewhere.map((d) => ({ id: d.id, label: d.name, kind: t('person.documents.kindAttachment'), source: t('person.documents.attachedTo', { target: targetOf(d) }), date: d.addedAt })),
               ...model.visible.flatMap((e) => e.evidenceRefs.map((r) => ({ id: `${e.id}-${r.ref}`, label: r.label ?? r.ref, kind: evidenceKindLabel(r.kind), source: t('person.documents.source', { agency: agencyShort(e.agency), title: e.title }), date: e.occurredAt }))),
-              ...data.meetings.filter((m) => seeable.some((p) => p.id === m.processId)).flatMap((m) => m.pack.filter((pk) => pk.included).map((pk) => ({ id: `${m.id}-${pk.id}`, label: pk.label, kind: packItemKindLabel(pk.kind), source: m.title, date: m.scheduledAt }))),
+              ...seeableMeetings.flatMap((m) => m.pack.filter((pk) => pk.included).map((pk) => ({ id: `${m.id}-${pk.id}`, label: pk.label, kind: packItemKindLabel(pk.kind), source: m.title, date: m.scheduledAt }))),
             ];
-            if (docs.length === 0) return <EmptyState title={t('person.documents.empty.title')} text={t('person.documents.empty.text')} />;
+            const own = documentsFor(data.documents, { kind: 'person', id: person.id });
+            const attachments = (
+              <Sheet empty={own.length === 0}>
+                <SheetHead title={t('documents.list.title')} meta={own.length === 0 ? t('documents.list.empty') : t('documents.list.meta', { count: own.length, size: Math.max(1, Math.round(own.reduce((n, d) => n + d.size, 0) / 1000)) })} />
+                <SheetBody>
+                  <DocumentList parent={{ kind: 'person', id: person.id }} targetLabel={t('documents.target.person', { name: `${person.givenName} ${person.familyName}` })} />
+                </SheetBody>
+              </Sheet>
+            );
+            if (docs.length === 0) return <div className="stack">{attachments}<EmptyState title={t('person.documents.empty.title')} text={t('person.documents.empty.text')} /></div>;
             return (
+              <div className="stack">
+              {attachments}
               <TableWrap className={styles.docs}>
                 <Table>
                   <thead>
@@ -622,6 +638,7 @@ export function PersonRecord({ personId }: { personId: string }) {
                   </tbody>
                 </Table>
               </TableWrap>
+              </div>
             );
           })()}
         </TabPanel>

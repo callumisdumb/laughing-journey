@@ -1,7 +1,8 @@
 import { t } from '@mas/messages';
+import { stageLabel } from '../../config/labels';
 import type { Agency } from '../../enums';
 import type { MaracProcess } from '../../schemas/process';
-import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition } from './shared';
+import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type ReturnInput } from './shared';
 import { chairAndMinuteTaker } from './asp';
 
 /**
@@ -133,7 +134,7 @@ export const MARAC_TRANSITIONS: Array<Transition<MaracProcess, never>> = [
   {
     id: 'marac-heard',
     process: 'marac',
-    from: ['research'],
+    from: ['research', 'meeting'],
     to: ['meeting'],
     roles: ['marac-coordinator', 'chair'],
     firedBy: ['marac'],
@@ -232,5 +233,24 @@ export const MARAC_TRANSITIONS: Array<Transition<MaracProcess, never>> = [
     requires: () => [],
     validate: (input: { reasonId: string; note: string }) => [...(input.reasonId ? [] : ['closureReasonRequired']), ...requireText(input.note, 'closureNoteRequired')],
     apply: (process, input: { reasonId: string; note: string }) => outcome(process, 'closed', t('processes.transitions.summary.close', { reason: input.reasonId }), { followOn: [{ kind: 'close', reasonId: input.reasonId, note: input.note }], outbound: null }),
+  },
+  {
+    // The way back from an action plan to the meeting, where the case is to be re-heard: the reason
+    // goes on the stage entry and a further MARAC is scheduled from the meeting stage, which is why
+    // the heard transition also fires from it (D-241).
+    id: 'marac-return-to-meeting',
+    process: 'marac',
+    from: ['action-plan'],
+    to: ['meeting'],
+    roles: ['marac-coordinator', 'chair'],
+    requires: (process) => (process.detail.actionPlanId ? [] : [{ code: 'maracNotHeard', creates: { kind: 'transition', transition: 'marac-heard' } }]),
+    validate: (input: ReturnInput) => requireText(input.reason, 'rationaleRequired'),
+    apply: (process, input: ReturnInput, ctx) => {
+      const summary = t('processes.transitions.summary.returned', { stage: stageLabel('marac', 'meeting'), reason: input.reason });
+      return outcome(moved(process, 'meeting', ctx, summary), 'meeting', summary, {
+        clocks: { completes: [], starts: [], note: t('processes.transitions.clockNote.returned') },
+        followOn: [{ kind: 'offer', creates: { kind: 'dialog', dialog: 'schedule-meeting', meetingType: 'marac' } }],
+      });
+    },
   },
 ];

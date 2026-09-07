@@ -59,7 +59,7 @@ Outline written in Phase 0. From Phase 1 the entity tables below are regenerated
 
 ## Generated tables
 
-Generated on 2026-09-05 by `pnpm docs:data-model`. Do not edit below this line.
+Generated on 2026-09-06 by `pnpm docs:data-model`. Do not edit below this line.
 
 ### Organisation
 
@@ -414,12 +414,12 @@ Variant 5
 | Field | Type | Required |
 |---|---|---|
 | `concern` | object { raisedAt, source, sourceAgency, decisionInQuestion, summary } | yes |
-| `capacityAssessments` | array of object { id, decision, assessedAt, assessorName, assessorRole, outcome, evidence, communicationSupport } | yes |
+| `capacityAssessments` | array of object { id, decision, assessedAt, assessorName, assessorRole, outcome, evidence, communicationSupport, primaryDiagnosis } | yes |
 | `willAndPreferences` | object { recordedAt, byName, pastWishes, presentWishes, communicationMethod, consultedOthers } | no |
 | `opgResult` | object { checkedAt, reference, powerOfAttorney, guardianship } | no |
 | `routeDecision` | object { route, decidedAt, byName, rationale, s13za } | no |
 | `application` | object { applicant, applicantName, solicitor, powersSought, mhoUserId, mhoNotifiedAt, mhoReport, medicalReports, suitabilityReport, court, interimOrder } | no |
-| `orders` | array of object { id, kind, grantedAt, expiresAt, guardianName, powers, supervisingOfficerUserId, opgRegisteredAt, mwcNotifiedAt } | yes |
+| `orders` | array of object { id, kind, grantedAt, expiresAt, guardianName, powers, renewal, supervisingOfficerUserId, opgRegisteredAt, mwcNotifiedAt } | yes |
 | `supervisionVisits` | array of object { at, byName, summary } | yes |
 | `investigations` | array of object { section, openedAt, summary, status } | yes |
 
@@ -490,7 +490,7 @@ Variant 5
 | `chairName` | string | yes |
 | `minuteTakerUserId` | string | no |
 | `minuteTakerName` | string | no |
-| `invitees` | array of object { userId, name, agency, role, required, attendance, reason, needToKnowRowId } | yes |
+| `invitees` | array of object { userId, name, agency, role, required, attendance, reason, needToKnowRowId, response } | yes |
 | `agenda` | array of object { id, order, title, status, note } | yes |
 | `preMeetingRequests` | array of object { id, agency, toName, toUserId, sentAt, dueAt, status, returnSummary, returnedAt } | yes |
 | `pack` | array of object { id, kind, label, ref, windowFrom, windowTo, included } | yes |
@@ -498,7 +498,7 @@ Variant 5
 | `decisions` | array of object { id, question, decision, rationale, dissent, decidedByName, decidedByUserId, decidedAt } | yes |
 | `actionIds` | array of string | yes |
 | `viewsRecordIds` | array of string | yes |
-| `minute` | object { status, draftedAt, approvedAt, distributedAt } | yes |
+| `minute` | object { status, draftedAt, approvedAt, distributedAt, addenda } | yes |
 | `distribution` | array of object { id, recipientName, recipientUserId, agency, role, detailLevel, fields, sharingRecordId, reason } | yes |
 | `reviewDate` | string (date) | no |
 | `subjectAttendance` | string | no |
@@ -722,7 +722,7 @@ Variant 5
 | `synthetic` | literal true | yes |
 | `toUserId` | string | no |
 | `toRole` | object { agency, roleId } | no |
-| `kind` | enum (23 values) | yes |
+| `kind` | enum (26 values) | yes |
 | `sourceType` | enum (9 values) | yes |
 | `sourceId` | string | yes |
 | `processId` | string | no |
@@ -807,8 +807,8 @@ Variant 5
 | `userId` | string | yes |
 | `userName` | string | yes |
 | `agency` | enum (11 values) | yes |
-| `act` | enum (19 values) | yes |
-| `targetType` | enum (9 values) | yes |
+| `act` | enum (20 values) | yes |
+| `targetType` | enum (10 values) | yes |
 | `targetId` | string | yes |
 | `targetLabel` | string | yes |
 | `processId` | string | no |

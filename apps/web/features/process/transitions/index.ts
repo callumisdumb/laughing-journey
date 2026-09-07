@@ -4,6 +4,7 @@ import { ASP_INQUIRY_OUTCOME, ASP_INVESTIGATORY_STEP, ASP_OPEN_INQUIRY, ASP_PROT
 import { CP_BIRTH, CP_DEREGISTER, CP_RECORD_JII, CP_RECORD_MEDICAL } from './CpForms';
 import { MAPPA_EXIT, MAPPA_RECORD_RETURN, MAPPA_REQUEST_RETURNS } from './MappaForms';
 import { MARAC_ACTION_PLAN, MARAC_IDAA_FEEDBACK, MARAC_LINK_CP_CONCERN, MARAC_RESEARCH_REQUESTS, MARAC_RESEARCH_RETURN, MARAC_TRANSFER } from './MaracForms';
+import { RETURN_A_STAGE } from './ReturnForms';
 
 /**
  * The form each transition opens from the case (D-217), keyed on the transition id. Transitions
@@ -38,6 +39,9 @@ export const TRANSITION_FORMS: Readonly<Record<string, TransitionForm>> = {
   'awi-record-report': AWI_RECORD_REPORT,
   'awi-court-event': AWI_COURT_EVENT,
   'awi-begin-supervision': AWI_BEGIN_SUPERVISION,
+  'asp-return-to-inquiry': RETURN_A_STAGE,
+  'cp-return-to-ird': RETURN_A_STAGE,
+  'marac-return-to-meeting': RETURN_A_STAGE,
 };
 
 export type { TransitionForm, TransitionFormContext, TransitionFormProps } from './registry';

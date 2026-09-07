@@ -127,6 +127,23 @@ export function meetingNotifications(before: Meeting | undefined, after: Meeting
       out.push(draft('minute-distributed', 'meeting', after.id, { toUserId: entry.recipientUserId }, { ...base, detailLevel: entry.detailLevel, lawfulBasisId: share?.lawfulBasisId, keySuffix: entry.id }));
     }
   }
+  // An invitee's answer reaches the chair, once per answer; a substitute is a new invitee and is told above.
+  const responded = new Map((before?.invitees ?? []).filter((i) => i.userId && i.response).map((i) => [i.userId as string, i.response?.at]));
+  for (const invitee of after.invitees) {
+    if (!invitee.userId || !invitee.response || !after.chairUserId || after.chairUserId === invitee.userId) continue;
+    if (responded.get(invitee.userId) === invitee.response.at) continue;
+    out.push(draft('invitation-responded', 'meeting', after.id, { toUserId: after.chairUserId }, { ...base, keySuffix: `${invitee.userId}:${Date.parse(invitee.response.at)}:${invitee.response.status}` }));
+  }
+  // A correction to the minute goes to everybody the minute went to, at the level they were given.
+  const addendaBefore = new Set((before?.minute.addenda ?? []).map((a) => a.id));
+  for (const addendum of after.minute.addenda ?? []) {
+    if (addendaBefore.has(addendum.id)) continue;
+    for (const entry of after.distribution) {
+      if (!entry.recipientUserId || !entry.sharingRecordId) continue;
+      const share = sharingRecords.find((s) => s.id === entry.sharingRecordId);
+      out.push(draft('minute-corrected', 'meeting', after.id, { toUserId: entry.recipientUserId }, { ...base, detailLevel: entry.detailLevel, lawfulBasisId: share?.lawfulBasisId, keySuffix: `${addendum.id}:${entry.id}` }));
+    }
+  }
   const requestsBefore = new Map((before?.preMeetingRequests ?? []).map((r) => [r.id, r]));
   for (const request of after.preMeetingRequests) {
     const previous = requestsBefore.get(request.id);
@@ -153,6 +170,11 @@ export interface ProcessContext {
 export function processNotifications(before: Process | undefined, after: Process, ctx: ProcessContext): NotificationDraft[] {
   const out: NotificationDraft[] = [];
   const base = { processId: after.id, subjectId: after.subjectIds[0] };
+  // The lead moved: the new lead and the old one are both told, once per reallocation.
+  if (before && before.leadUserId !== after.leadUserId && after.leadUserId) {
+    out.push(draft('lead-reallocated', 'process', after.id, { toUserId: after.leadUserId }, { ...base, keySuffix: after.leadUserId }));
+    if (before.leadUserId) out.push(draft('lead-reallocated', 'process', after.id, { toUserId: before.leadUserId }, { ...base, keySuffix: `${after.leadUserId}:former` }));
+  }
   if (before && before.stage !== after.stage) {
     for (const member of after.members) {
       out.push(draft('stage-changed', 'process', after.id, { toUserId: member.userId }, { ...base, keySuffix: after.stage }));

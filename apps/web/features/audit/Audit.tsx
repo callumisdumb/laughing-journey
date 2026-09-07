@@ -45,6 +45,7 @@ const ACT_TONES: Record<AuditAct, PillTone> = {
   close: 'low',
   reopen: 'medium',
   'recorded-in-error': 'high', 'stage-change': 'accent',
+  attach: 'outline',
 };
 
 function targetHref(data: Dataset, a: AuditEntry): string | undefined {

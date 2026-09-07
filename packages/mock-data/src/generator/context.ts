@@ -38,6 +38,7 @@ export function createContext(seed: string, nowIso: string): BuildContext {
     informationRequests: [],
     involvementRequests: [],
     notifications: [],
+    documents: [],
     connectorEvents: [],
     outbox: [],
     inbound: [],

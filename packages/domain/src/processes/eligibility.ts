@@ -154,6 +154,15 @@ const OPENERS: Record<ProcessType, readonly RoleId[]> = {
 const CANNOT_OPEN: ReadonlyArray<NonNullable<(typeof ROLE_DEFINITIONS)[RoleId]['oversight']>> = ['read-only', 'audit', 'redacted', 'admin'];
 const OVERSIGHT_KEYS = { 'read-only': 'readOnly', audit: 'audit', redacted: 'redacted', admin: 'admin' } as const;
 
+/**
+ * Who may be allocated the lead of a case: a role that may open the type and is not an oversight
+ * role, in the lead agency. The reallocation dialog lists exactly these people (D-240).
+ */
+export function canLeadProcess(roleId: RoleId, type: ProcessType): boolean {
+  const role = ROLE_DEFINITIONS[roleId];
+  return Boolean(role) && !role.oversight && OPENERS[type].includes(roleId);
+}
+
 export function canOpenProcess(roleId: RoleId, type: ProcessType): PermissionDecision {
   const role = ROLE_DEFINITIONS[roleId];
   if (!role) return { allowed: false, reason: tKey('permissions.create.unknownRole'), route: tKey('permissions.create.routeAskAdmin') };

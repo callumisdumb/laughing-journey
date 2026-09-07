@@ -3,7 +3,7 @@
 import { AGENCIES, DETAIL_LEVELS, agencyShort, nearMatchesOnRegister, attendanceLabel, contextFor, detailLevelLabel, formatDate, formatDateTime, formatTime, isExcludedParty, meetingStatusLabel, meetingTypeLabel, minuteStatusLabel, packItemKindLabel, processShort, researchStatusLabel, resolveNeedToKnow, roleLabel, stageLabel, transitionLabel, type Action, type Agency, type DetailLevel, type Meeting } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { AgencyMark, Button, CheckboxField, ClockNumeral, DateField, Dialog, EmptyState, Pill, ProcessMark, RestrictedState, SelectField, Sheet, SheetBody, SheetHead, TextField, TextareaField, VoiceBlock, useToast } from '@mas/ui';
-import { CalendarClock, CheckCircle2, Maximize2, Minimize2, Play, Printer, RotateCcw, Send, UserPlus, XCircle } from 'lucide-react';
+import { CalendarClock, CheckCircle2, FilePenLine, Maximize2, Minimize2, Play, Printer, RotateCcw, Send, UserPlus, XCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { NearMatchDialog, type NearMatchList, type PendingNearMatch } from '@/components/NearMatchDialog';
@@ -20,6 +20,9 @@ import { useWriteErrors } from '@/lib/writeErrors';
 import { proposeInvitees } from '@/lib/invites';
 import { HoldMeetingDialog } from './HoldMeetingDialog';
 import { CancelMeetingDialog, RescheduleMeetingDialog } from './MeetingChangeDialogs';
+import { CorrectMinuteDialog } from './CorrectMinuteDialog';
+import { InvitationCard } from './InvitationCard';
+import { DocumentList } from '@/features/documents/DocumentList';
 import { MinutesPrintPack } from './MinutesPrintPack';
 import { ScheduleMeetingDialog } from './ScheduleMeetingDialog';
 import styles from './MeetingWorkspace.module.css';
@@ -63,6 +66,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   const [rescheduleOpen, setRescheduleOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
   const [reconveneOpen, setReconveneOpen] = useState(false);
+  const [correcting, setCorrecting] = useState(false);
 
   useEffect(() => {
     select({ kind: 'meeting', id: meetingId });
@@ -394,6 +398,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       <ScreenState state={state}>
         {phase === 'before' ? (
           <div className={styles.grid}>
+            <InvitationCard meeting={meeting} process={process} user={user} guard={(name, add) => guardAdd(name, 'invitees', add)} />
             <Sheet className={styles.col6} empty={meeting.invitees.length === 0}>
               <SheetHead title={t('meetings.before.invites.title')} meta={meeting.invitees.length === 0 ? t('meetings.before.invites.none') : t('meetings.before.invites.meta')} actions={<Button size="sm" variant="secondary" icon={<UserPlus size={14} aria-hidden="true" />} onClick={generateInvites}>{t('meetings.before.invites.generate')}</Button>} />
               {meeting.invitees.length > 0 ? (
@@ -407,7 +412,10 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                       <Pill size="sm" tone={i.attendance === 'accepted' || i.attendance === 'present' ? 'low' : i.attendance === 'declined' || i.attendance === 'apologies' ? 'medium' : 'outline'}>
                         {attendanceLabel(i.attendance)}
                       </Pill>
-                      <span className={styles.inviteeMeta}>{t('meetings.before.invites.reason', { reason: i.reason, hasRule: i.needToKnowRowId ? 'yes' : 'no', rowId: i.needToKnowRowId ?? '' })}</span>
+                      <span className={styles.inviteeMeta}>
+                        {t('meetings.before.invites.reason', { reason: i.reason, hasRule: i.needToKnowRowId ? 'yes' : 'no', rowId: i.needToKnowRowId ?? '' })}
+                        {i.response ? <> {t('meetings.invitation.responseTag', { status: i.response.status, hasReason: i.response.reason ? 'yes' : 'no', reason: i.response.reason ?? '', substitute: i.response.substitute?.name ?? '' })}</> : null}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -462,6 +470,8 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                     </span>
                   </div>
                 ))}
+                <h3 className={styles.sharedHead}>{t('documents.list.title')}</h3>
+                <DocumentList parent={{ kind: 'meeting', id: meeting.id }} targetLabel={t('documents.target.meeting', { title: meeting.title })} canAttach={access.level === 'full'} />
               </SheetBody>
             </Sheet>
           </div>
@@ -638,7 +648,22 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   <Button variant="secondary" icon={<Printer size={16} aria-hidden="true" />} onClick={() => navigate(`${route.path}?view=print`)}>
                     {t('meetings.after.minute.print')}
                   </Button>
+                  <Button variant="secondary" icon={<FilePenLine size={16} aria-hidden="true" />} disabled={meeting.minute.status !== 'chair-approved' && meeting.minute.status !== 'distributed'} onClick={() => setCorrecting(true)} data-testid="correct-minute">
+                    {t('meetings.correction.action')}
+                  </Button>
                 </div>
+                {(meeting.minute.addenda ?? []).length > 0 ? (
+                  <div className={styles.form} style={{ marginTop: 12 }} data-testid="minute-corrections">
+                    <h3 className={styles.sharedHead}>{t('meetings.correction.listTitle')}</h3>
+                    <ul className="stack">
+                      {(meeting.minute.addenda ?? []).map((a) => (
+                        <li key={a.id} className={styles.meta}>
+                          {t('meetings.correction.entry', { at: formatDateTime(a.at), by: a.byName, recorded: a.recorded, nowRecorded: a.nowRecorded, hasReason: a.reason ? 'yes' : 'no', reason: a.reason ?? '', count: a.sharingRecordIds.length })}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
                 <div className={styles.form} style={{ marginTop: 12 }}>
                   <div className="cluster" style={{ alignItems: 'flex-end' }}>
                     <DateField label={t('meetings.after.minute.reviewDate')} hint={null} value={reviewDate} onChange={setReviewDate} />
@@ -716,6 +741,7 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
       {holdOpen ? <HoldMeetingDialog open onClose={() => setHoldOpen(false)} meeting={meeting} process={process} onHeld={() => setPhase('after')} /> : null}
       {rescheduleOpen ? <RescheduleMeetingDialog open onClose={() => setRescheduleOpen(false)} meeting={meeting} /> : null}
       {cancelOpen ? <CancelMeetingDialog open onClose={() => setCancelOpen(false)} meeting={meeting} /> : null}
+      {correcting ? <CorrectMinuteDialog open onClose={() => setCorrecting(false)} meeting={meeting} /> : null}
       {reconveneOpen ? <ScheduleMeetingDialog open onClose={() => setReconveneOpen(false)} process={process} reconvene={meeting} /> : null}
     </div>
   );
