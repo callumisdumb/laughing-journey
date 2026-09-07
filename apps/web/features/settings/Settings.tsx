@@ -1,12 +1,14 @@
 'use client';
 
-import { agencyLabel, roleLabel } from '@mas/domain';
+import { agencyLabel, formatDate, roleLabel } from '@mas/domain';
 import { useT, type MessageKey } from '@mas/messages';
-import { AgencyMark, Button, ConfirmDialog, KeyValue, RadioGroup, Sheet, SheetBody, SheetHead, Switch, useToast } from '@mas/ui';
+import { AgencyMark, Button, ConfirmDialog, DateField, KeyValue, RadioGroup, SelectField, Sheet, SheetBody, SheetHead, Switch, useToast } from '@mas/ui';
 import { useEffect, useState } from 'react';
 import { useAppearance, type Density, type ThemePreference } from '@/lib/appearance';
 import { useSelection } from '@/lib/selection';
-import { useAppStore, useCurrentUser, useData } from '@/lib/store';
+import { useAppStore, useCurrentUser, useData, useNow } from '@/lib/store';
+import { userName } from '@/lib/selectors';
+import { useWriteErrors } from '@/lib/writeErrors';
 import styles from './Settings.module.css';
 import { DemoClock } from '@/components/DemoClock';
 
@@ -68,6 +70,31 @@ export function Settings() {
   const resetDemo = useAppStore((s) => s.resetDemo);
   const audit = useAppStore((s) => s.audit);
   const select = useSelection((s) => s.select);
+  const now = useNow();
+  const setOutOfOffice = useAppStore((s) => s.setOutOfOffice);
+  const readErrors = useWriteErrors();
+  const [oooFrom, setOooFrom] = useState(user?.outOfOffice?.from ?? now.toISOString().slice(0, 10));
+  const [oooTo, setOooTo] = useState(user?.outOfOffice?.to ?? '');
+  const [oooDelegate, setOooDelegate] = useState(user?.outOfOffice?.delegateUserId ?? '');
+  const [oooErrors, setOooErrors] = useState<string[]>([]);
+
+  function saveOutOfOffice() {
+    const result = setOutOfOffice({ from: oooFrom, to: oooTo, delegateUserId: oooDelegate || undefined });
+    if (!result.ok) {
+      setOooErrors(result.errors);
+      return;
+    }
+    setOooErrors([]);
+    const delegate = data.users.find((u) => u.id === oooDelegate);
+    toast({ title: t('settings.outOfOffice.toastTitle'), text: t('settings.outOfOffice.toastText', { name: delegate ? `${delegate.givenName} ${delegate.familyName}` : '', to: formatDate(oooTo) }), tone: 'success' });
+  }
+
+  function clearOutOfOffice() {
+    setOutOfOffice(null);
+    setOooErrors([]);
+    toast({ title: t('settings.outOfOffice.toastCleared'), text: t('settings.outOfOffice.meta'), tone: 'success' });
+  }
+
   const { toast } = useToast();
   // AppRoot only mounts screens after the store is ready on the client, so localStorage is safe to read here.
   const [prefs, setPrefs] = useState<NotificationPrefs>(() => readPrefs());
@@ -150,6 +177,56 @@ export function Settings() {
                   <span className={styles.prefHint}>{t(item.hint)}</span>
                 </div>
               ))}
+            </div>
+          </SheetBody>
+        </Sheet>
+
+        {/* Out of office, with a delegate copied what you are told (D-254). Nothing leaves the product. */}
+        <Sheet>
+          <SheetHead title={t('settings.outOfOffice.title')} meta={t('settings.outOfOffice.meta')} divided />
+          <SheetBody>
+            <div className="stack" data-testid="out-of-office">
+              {user?.outOfOffice ? (
+                <p data-testid="out-of-office-set">
+                  {t('settings.outOfOffice.away', {
+                    from: formatDate(user.outOfOffice.from),
+                    to: formatDate(user.outOfOffice.to),
+                    hasDelegate: user.outOfOffice.delegateUserId ? 'yes' : 'no',
+                    delegate: (() => {
+                      const d = data.users.find((u) => u.id === user.outOfOffice?.delegateUserId);
+                      return d ? userName(d) : '';
+                    })(),
+                  })}
+                </p>
+              ) : null}
+              {oooErrors.length > 0 ? (
+                <p role="alert" data-testid="out-of-office-errors">
+                  {readErrors(oooErrors).join(' ')}
+                </p>
+              ) : null}
+              <div className="cluster" style={{ alignItems: 'flex-end' }}>
+                <DateField label={t('settings.outOfOffice.from')} hint={null} value={oooFrom} onChange={setOooFrom} data-testid="ooo-from" />
+                <DateField label={t('settings.outOfOffice.until')} hint={null} value={oooTo} onChange={setOooTo} data-testid="ooo-to" />
+                <SelectField
+                  label={t('settings.outOfOffice.delegate')}
+                  hint={t('settings.outOfOffice.delegateHint')}
+                  value={oooDelegate}
+                  onChange={(e) => setOooDelegate(e.target.value)}
+                  placeholder={t('common.values.none')}
+                  options={data.users.filter((u) => u.id !== user?.id && u.roleId !== 'system-administrator').map((u) => ({ value: u.id, label: userName(u) }))}
+                  data-testid="ooo-delegate"
+                />
+              </div>
+              <div className="cluster">
+                <Button variant="secondary" onClick={saveOutOfOffice} data-testid="ooo-save">
+                  {t('settings.outOfOffice.save')}
+                </Button>
+                {user?.outOfOffice ? (
+                  <Button variant="quiet" onClick={clearOutOfOffice} data-testid="ooo-clear">
+                    {t('settings.outOfOffice.clear')}
+                  </Button>
+                ) : null}
+              </div>
             </div>
           </SheetBody>
         </Sheet>

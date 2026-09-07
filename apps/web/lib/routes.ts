@@ -31,6 +31,7 @@ export const STATIC_ROUTES = [
   'admin/agencies',
   'admin/users',
   'admin/markings',
+  'admin/digest',
   'admin/defaults',
   'settings',
   'help',

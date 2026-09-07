@@ -53,6 +53,7 @@ function sectionCounts(config: Config, data: Dataset, t: Translator): Record<Adm
     'server-view': t('admin.overview.counts.serverView', { records: data.processes.length }),
     'audit-chain': t('admin.overview.counts.auditChain', { entries: data.audit.length }),
     disclosure: t('admin.overview.counts.disclosure', { threshold: 2, holders: 5 }),
+    digest: t('admin.overview.counts.digest', { count: data.notifications.length }),
     defaults: t('admin.overview.counts.defaults', { theme: config.defaults.theme, density: config.defaults.density, hours: config.breakGlassHours }),
   };
 }

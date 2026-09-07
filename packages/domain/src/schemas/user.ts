@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { AGENCIES, PROCESS_TYPES, ROLES } from '../enums';
-import { idSchema, syntheticSchema } from './common';
+import { idSchema, isoDate, syntheticSchema } from './common';
 
 export const userSchema = z.object({
   id: idSchema,
@@ -24,5 +24,21 @@ export const userSchema = z.object({
   blurb: z.string(),
   /** Persona shown by default on sign-in for the organisation. */
   featured: z.boolean().optional(),
+  /**
+   * Out of office, with a delegate who receives a copy of what this person is told (D-254).
+   *
+   * The copy is a notification of its own addressed to the delegate, rendered at the delegate's own
+   * level rather than the absent person's: a delegate who could not read the case is told that
+   * something happened on it and no more, which is the same rule every other recipient is under.
+   * Nothing is forwarded outside the product, because nothing leaves the product at all.
+   */
+  outOfOffice: z
+    .object({
+      from: isoDate,
+      to: isoDate,
+      delegateUserId: idSchema.optional(),
+      note: z.string().max(300).optional(),
+    })
+    .optional(),
 });
 export type User = z.infer<typeof userSchema>;

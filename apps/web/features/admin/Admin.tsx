@@ -11,6 +11,7 @@ import { Agencies } from './Agencies';
 import { Calendar } from './Calendar';
 import { Copy } from './Copy';
 import { Defaults } from './Defaults';
+import { Digest } from './Digest';
 import { Forms } from './Forms';
 import { ChainVerification } from './ChainVerification';
 import { Markings } from './Markings';
@@ -83,6 +84,9 @@ export function Admin({ section }: AdminProps) {
         break;
       case 'disclosure':
         body = <StatutoryDisclosure />;
+        break;
+      case 'digest':
+        body = <Digest />;
         break;
       case 'defaults':
         body = <Defaults />;

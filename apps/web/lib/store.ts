@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, isExcludedParty, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, leadPayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type Document, type Household, type ReferralCorrection, type ReturnKind, type Submission, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, involvementNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyReferralCorrections, applyTransition, buildMeeting, bytesOnRecord, canLeadProcess, clocksCompletedBySubmission, referralFields, submissionFor, submissionRefusals, classificationFor, documentClassification, documentProcessId, documentRefusals, planHouseholdMove, formatDate, heldTransitionFor, meetingTypeLabel, scheduleRoute, stagePayload, stageLabel, transitionById, transitionLabel, validateSchedule, type Creates, type InformationRequest, type InvolvementRequest, type MeetingType, type MissingThing, type PermissionDecision, type ScheduleInput, type TransitionOutcome } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, isExcludedParty, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, leadPayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type Document, type Household, type ReferralCorrection, type ReturnKind, type Submission, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, involvementNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyReferralCorrections, applyTransition, delegateCopies, buildMeeting, bytesOnRecord, canLeadProcess, clocksCompletedBySubmission, referralFields, submissionFor, submissionRefusals, classificationFor, documentClassification, documentProcessId, documentRefusals, planHouseholdMove, formatDate, heldTransitionFor, meetingTypeLabel, scheduleRoute, stagePayload, stageLabel, transitionById, transitionLabel, validateSchedule, type Creates, type InformationRequest, type InvolvementRequest, type MeetingType, type MissingThing, type PermissionDecision, type ScheduleInput, type TransitionOutcome } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -245,6 +245,8 @@ interface AppState {
   attachDocument: (input: { parent: Document['parent']; name: string; mimeType: string; size: number; dataUri: string; note?: string }) => WriteResult & { document?: Document };
   /** Move everybody in a household to one address on one date, leaving named people behind (D-244). */
   moveHousehold: (householdId: string, addressId: string, on: string, note: string, stayBehind: Array<{ personId: string; addressId?: string }>) => WriteResult;
+  /** Mark yourself out of office, with somebody covering who is copied what you are told (D-254). */
+  setOutOfOffice: (input: { from: string; to: string; delegateUserId?: string; note?: string } | null) => WriteResult;
   /** Change the reason on a request to be involved that nobody has decided yet (D-246). */
   amendInvolvement: (requestId: string, reason: string) => WriteResult;
   /** Withdraw your own request to be involved; the lead is told it is off their list (D-246). */
@@ -599,7 +601,10 @@ function notify(get: () => AppState, set: Setter, drafts: readonly NotificationD
   const at = get().now().toISOString();
   const held = new Set(data.notifications.map((n) => n.key));
   const written: Notification[] = [];
-  for (const d of drafts) {
+  // A delegate is told what the person they are covering is told, as a notification of their own,
+  // so it renders at the delegate's level and goes through the same admissibility check (D-254).
+  const all = [...drafts, ...delegateCopies(drafts, data.users, at.slice(0, 10))];
+  for (const d of all) {
     if (held.has(d.key)) continue;
     const process = d.processId && d.processId !== ctx.process?.id ? data.processes.find((p) => p.id === d.processId) : ctx.process;
     if (!admissible(d, { actorUserId: ctx.actorUserId, process, exclusions: config.exclusions, relationships: data.relationships, users: data.users })) continue;
@@ -2215,7 +2220,15 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
     const { parent } = input;
     const exists =
-      parent.kind === 'person' ? data.people.some((p) => p.id === parent.id) : parent.kind === 'process' ? data.processes.some((p) => p.id === parent.id) : parent.kind === 'meeting' ? data.meetings.some((m) => m.id === parent.id) : data.events.some((e) => e.id === parent.id);
+      parent.kind === 'person'
+        ? data.people.some((p) => p.id === parent.id)
+        : parent.kind === 'process'
+          ? data.processes.some((p) => p.id === parent.id)
+          : parent.kind === 'meeting'
+            ? data.meetings.some((m) => m.id === parent.id)
+            : parent.kind === 'action'
+              ? data.actions.some((a) => a.id === parent.id)
+              : data.events.some((e) => e.id === parent.id);
     if (!exists) return { ok: false, errors: ['documentParentMissing'], nearMatches: [], effects: [] };
     const refusals = documentRefusals({ name: input.name, size: input.size, mimeType: input.mimeType, totalOnRecord: bytesOnRecord(data.documents, parent) });
     if (refusals.length > 0) return { ok: false, errors: refusals, nearMatches: [], effects: [] };
@@ -2325,6 +2338,35 @@ export const useAppStore = create<AppState>((set, get) => ({
       effects.push(...written.effects);
     }
     return { ...moved, effects };
+  },
+  setOutOfOffice: (input) => {
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    if (input) {
+      const errors: string[] = [];
+      if (!input.from || !input.to || input.to < input.from) errors.push('outOfOfficeDatesRequired');
+      if (!input.delegateUserId) errors.push('delegateRequired');
+      if (input.delegateUserId === user.id) errors.push('delegateSelf');
+      const delegate = get().data.users.find((u) => u.id === input.delegateUserId);
+      // A delegate who is an excluded party on a case the absent person holds would receive copies
+      // about it, so the register refuses the delegation rather than the copies (D-254).
+      if (delegate) {
+        const { config, data } = get();
+        const excluded = data.processes.some((p) => user.caseMemberships.includes(p.id) && isExcludedParty(p, { userId: delegate.id }, config.exclusions, p.stage, data.relationships));
+        if (excluded) errors.push('delegateExcluded');
+      }
+      if (errors.length > 0) return { ok: false, errors, nearMatches: [], effects: [] };
+    }
+    const label = input ? t('settings.outOfOffice.toastTitle') : t('settings.outOfOffice.toastCleared');
+    return get().write({
+      collection: 'users',
+      record: { ...user, outOfOffice: input ? { from: input.from, to: input.to, delegateUserId: input.delegateUserId, note: input.note?.trim() || undefined } : undefined },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'config',
+      targetLabel: label,
+      versionChange: label,
+    });
   },
   amendInvolvement: (requestId, reason) => {
     const user = get().currentUser();

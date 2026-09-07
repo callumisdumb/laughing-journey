@@ -388,3 +388,30 @@ export function addressedTo(n: Pick<Notification, 'toUserId' | 'toRole'>, user: 
   return false;
 }
 
+/**
+ * The copies an out-of-office delegate receives (D-254).
+ *
+ * A delegate is told what the absent person is told, as a notification of their own, so it renders
+ * at the delegate's level rather than the absent person's and an excluded delegate is refused by
+ * the same check as anybody else. Nothing is forwarded outside the product: there is no email, and
+ * this is the product saying so by only ever writing another notification.
+ *
+ * The key carries the absent person, so two people away at once do not collapse into one copy, and
+ * a delegate who is themselves the recipient is never sent a second copy of their own notification.
+ */
+export function delegateCopies(drafts: readonly NotificationDraft[], users: readonly Pick<User, 'id' | 'outOfOffice'>[], today: string): NotificationDraft[] {
+  const away = new Map<string, string>();
+  for (const user of users) {
+    const oo = user.outOfOffice;
+    if (oo?.delegateUserId && oo.from <= today && oo.to >= today) away.set(user.id, oo.delegateUserId);
+  }
+  if (away.size === 0) return [];
+  const out: NotificationDraft[] = [];
+  for (const draft of drafts) {
+    if (!draft.toUserId) continue;
+    const delegate = away.get(draft.toUserId);
+    if (!delegate || delegate === draft.toUserId) continue;
+    out.push({ ...draft, toUserId: delegate, key: `${draft.key}:delegate:${draft.toUserId}` });
+  }
+  return out;
+}
