@@ -173,6 +173,24 @@ Generated on 2026-09-07 by `pnpm docs:data-model`. Do not edit below this line.
 | `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
 | `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
+### PersonMerge
+
+| Field | Type | Required |
+|---|---|---|
+| `id` | string | yes |
+| `synthetic` | literal true | yes |
+| `survivorId` | string | yes |
+| `mergedId` | string | yes |
+| `mergedPerson` | object { id, synthetic, givenName, familyName, preferredName, aliases, pronouns, lifeStage, dateOfBirth, dateOfBirthPrecision, expectedDeliveryDate, sex, chi, addressHistory, householdId, communicationNeeds, alerts, contact, gpPractice, school, deceased, death, createdAt, createdAfterReviewing, versions, recordedInError } | yes |
+| `survivorBefore` | object { id, synthetic, givenName, familyName, preferredName, aliases, pronouns, lifeStage, dateOfBirth, dateOfBirthPrecision, expectedDeliveryDate, sex, chi, addressHistory, householdId, communicationNeeds, alerts, contact, gpPractice, school, deceased, death, createdAt, createdAfterReviewing, versions, recordedInError } | yes |
+| `repointed` | array of string | yes |
+| `at` | string (date-time) | yes |
+| `byUserId` | string | yes |
+| `byName` | string | yes |
+| `reason` | string | yes |
+| `undoneAt` | string (date-time) | no |
+| `undoneReason` | string | no |
+
 ### Process (discriminated by type)
 
 Variant 1
@@ -741,6 +759,47 @@ Variant 5
 | `dismissedAt` | string (date-time) | no |
 | `createdByUserId` | string | no |
 | `key` | string | yes |
+
+### Document
+
+| Field | Type | Required |
+|---|---|---|
+| `id` | string | yes |
+| `synthetic` | literal true | yes |
+| `parent` | object { kind, id } | yes |
+| `processId` | string | no |
+| `name` | string | yes |
+| `mimeType` | string | yes |
+| `size` | integer | yes |
+| `dataUri` | string | yes |
+| `note` | string | no |
+| `classification` | object { level, sensitive, handling } | yes |
+| `addedAt` | string (date-time) | yes |
+| `addedByUserId` | string | no |
+| `addedByName` | string | yes |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
+
+### Submission
+
+| Field | Type | Required |
+|---|---|---|
+| `id` | string | yes |
+| `synthetic` | literal true | yes |
+| `kind` | "asp" \| "cp" \| "marac" \| "mappa" \| "awi" | yes |
+| `periodId` | string | yes |
+| `periodLabel` | string | yes |
+| `recipient` | string | yes |
+| `route` | string | no |
+| `submittedOn` | string (date) | yes |
+| `reference` | string | no |
+| `note` | string | no |
+| `submittedByUserId` | string | no |
+| `submittedByName` | string | yes |
+| `recordedAt` | string (date-time) | yes |
+| `nmdsQuarter` | "q1" \| "q2" \| "q3" \| "q4" | no |
+| `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
+| `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
 ### ConnectorEvent
 
