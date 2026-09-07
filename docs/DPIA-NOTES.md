@@ -90,6 +90,7 @@ Article 32(2) asks for the risks of the processing to be taken into account, in 
 - The connector gateway as a separately deployed component inside each agency's network. The encryption boundary it implies is structural in the code and asserted by a test, but nothing is deployed.
 - Scheduled key rotation. Rotation on demand is implemented; there is no scheduler in a product with no backend.
 - Penetration testing and independent cryptographic review. Neither has happened. A safeguarding deployment should have both, and the DPIA should say so.
+- Notification outside the product. Nothing is emailed, texted or pushed, so nothing carrying case information leaves by that route and there is no processor to assess. A deployment that adds email is adding a new disclosure channel, with a new recipient list, a new retention question and a new breach surface, and it needs its own assessment before it is switched on. The digest in Admin, "The digest that does not go out", shows exactly what such a deployment would have sent, as counts of notifications by kind and recipient and never their content, so the size of that decision can be seen before it is taken (D-254).
 
 ## 7. Articles 33 and 34: breach notification, and the limit of the encryption argument
 
@@ -127,6 +128,7 @@ It is generated rather than written because a hand-written inventory is wrong th
 - **"So it is not really end to end encrypted."** Record content is. The product as a whole is not, and no screen in it says it is. `docs/SECURITY.md` section 1 gives the exact claim.
 - **"What happens if somebody loses their laptop?"** The device key is in the OS keychain and the local store is sealed under it. The user revokes the device themselves from Settings. Cached wrapped keys expire at the end of the offline grace period, seeded at 72 hours; that window is the residual risk and it is configuration.
 - **"Does this stop a colleague looking up their neighbour?"** Yes, if the colleague is not on the case, and that is the headline defence. It does not stop a colleague who is on the case from misusing what they see; nothing cryptographic does, and the product says so rather than implying otherwise.
+- **"One of our workers is on leave. Does their cover see their cases?"** Only what the cover is already entitled to see. Setting out of office copies each personal notification to the named delegate as a notification of their own, and it renders at the delegate's own level through the same admissibility check as any other, so somebody who could not read the case is told that a case they are covering changed and no more. It is a new flow of personal data between two workers, so it is dated, it stops when the dates end, and it is the person's own setting rather than an administrator's (D-254).
 - **"Do we still have to report a breach?"** Assume yes and assess it on the facts. Article 34(3)(a) may remove the duty to tell the individuals; it does not remove the duty to consider telling the ICO.
 
 ## Provenance
