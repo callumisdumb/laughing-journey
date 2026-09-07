@@ -70,6 +70,8 @@ function annexTableSpec(table: AnnexTable, cells: Record<string, Cell[]>): Table
     columns: annexColumns(table),
     numeric: Array.from({ length: width }, (_, i) => i + 1),
     rows: table.rows.map((row) => [annexRowLabel(table, row), ...(row.group ? blank : (cells[row.id] ?? notHeld))]),
+    // Tables 6 to 9 end in the annex's own total row; the disclosure control must know it (D-237).
+    totalRow: table.rows.at(-1)?.id === 'total',
   };
 }
 

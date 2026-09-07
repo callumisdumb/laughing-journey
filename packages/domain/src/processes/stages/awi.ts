@@ -39,7 +39,7 @@ export type CourtEventInput =
   | { event: 'lodged'; at: string }
   | { event: 'interim-granted'; at: string; expiresAt: string }
   | { event: 'hearing-set'; at: string }
-  | { event: 'order-granted'; at: string; order: { kind: NonNullable<AwiDetail['orders']>[number]['kind']; expiresAt?: string; guardianName: string; powers: string[] } };
+  | { event: 'order-granted'; at: string; order: { kind: NonNullable<AwiDetail['orders']>[number]['kind']; expiresAt?: string; guardianName: string; powers: string[]; renewal?: boolean } };
 
 export interface BeginSupervisionInput {
   supervisingOfficerUserId: string;
@@ -214,7 +214,7 @@ export const AWI_TRANSITIONS: Array<Transition<AwiProcess, never>> = [
           return outcome(next, 'application', summary, { eventType: 'legal.hearing' });
         }
         case 'order-granted': {
-          const order = { id: ctx.newId('ord'), kind: input.order.kind, grantedAt: input.at.slice(0, 10), expiresAt: input.order.expiresAt, guardianName: input.order.guardianName, powers: input.order.powers };
+          const order = { id: ctx.newId('ord'), kind: input.order.kind, grantedAt: input.at.slice(0, 10), expiresAt: input.order.expiresAt, guardianName: input.order.guardianName, powers: input.order.powers, renewal: input.order.renewal ?? false };
           const next: AwiProcess = { ...process, detail: { ...process.detail, orders: [...process.detail.orders, order] } };
           return outcome(moved(next, 'order', ctx, summary), 'order', summary, {
             clocks: { completes: ['awi.interim.warning', 'awi.interim.maximum', 'awi.mho.report'], starts: [], note: t('processes.transitions.clockNote.orderGranted') },

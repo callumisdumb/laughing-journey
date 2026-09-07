@@ -155,11 +155,15 @@ const RULES: ClockRuleData[] = [
   },
   {
     /**
-     * The four quarterly submission deadlines for the ASP National Minimum Dataset. The workbook's
-     * own notes give a worked example against "August 12th, the Scottish Government submission date
-     * for returns", and say the current deadlines live on the ASP data collection web page rather
-     * than in the workbook, so these dates are configuration seeded from the product owner and
-     * marked to verify against that page each year.
+     * The four quarterly NMDS submission deadlines for 2026-27.
+     *
+     * The guidance does not print them: its worked example names "August 12th" for Q1 and says the
+     * current dates live on the ASP data collection web page. That page (iriss.org.uk/aspdataset,
+     * "Quarterly data return dates for 2026/27", read live on 06 Sep 2026) gives 14.08.26, 13.11.26,
+     * 12.02.27 and 14.05.27, with anticipated reporting to Adult Protection Committees in February
+     * 2027 after Q2 and August 2027 after Q4, and returns go to ASPData@gov.scot (docs/RESEARCH.md
+     * 9.1). The page also says an update to the guidance document is pending for summer 2026, so
+     * the dates and the guidance edition are checked against it each year.
      *
      * The clock runs from the last day of the quarter, so Q1 (1 April to 30 June) is due 45 calendar
      * days later. That is the shape the deadline takes, not a rule stated anywhere: the published
@@ -171,11 +175,9 @@ const RULES: ClockRuleData[] = [
     amount: 45,
     kind: 'deadline',
     warnDays: 14,
-    source: 'ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page',
-    sourceRef: 'Actions can be tracked up to the submission date you have been provided with for each quarterly data return. If 100 inquiries were begun in Quarter 1 (1 April - 30 June inclusive) we ask you to record what actions were taken, tracking these up to August 12th, the Scottish Government submission date for returns. Deadline seeded as 14 Aug 2026 for Q1 2026/27',
-    confidence: 'verify',
-    todoVerify: true,
-    localNote: 'Confirm the four 2026-27 submission dates against the ASP data collection web page, which the guidance names as the source rather than printing them.',
+    source: 'ASP data collection web page (iriss.org.uk/aspdataset), Quarterly data return dates for 2026/27, read live 06 Sep 2026',
+    sourceRef: 'Quarter 1: data collection period 01.04.26 to 30.06.26 inclusive, return deadline 14.08.26, anticipated reporting to APCs not applicable',
+    confidence: 'high',
   },
   {
     id: 'asp.nmds.q2',
@@ -184,11 +186,9 @@ const RULES: ClockRuleData[] = [
     amount: 44,
     kind: 'deadline',
     warnDays: 14,
-    source: 'ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page',
-    sourceRef: 'Q2 2026/27 covers 1 July to 30 September; deadline seeded as 13 Nov 2026',
-    confidence: 'verify',
-    todoVerify: true,
-    localNote: 'Confirm against the ASP data collection web page.',
+    source: 'ASP data collection web page (iriss.org.uk/aspdataset), Quarterly data return dates for 2026/27, read live 06 Sep 2026',
+    sourceRef: 'Quarter 2: data collection period 01.07.26 to 30.09.26 inclusive, return deadline 13.11.26, anticipated reporting to APCs February 2027',
+    confidence: 'high',
   },
   {
     id: 'asp.nmds.q3',
@@ -197,11 +197,9 @@ const RULES: ClockRuleData[] = [
     amount: 43,
     kind: 'deadline',
     warnDays: 14,
-    source: 'ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page',
-    sourceRef: 'Q3 2026/27 covers 1 October to 31 December; deadline seeded as 12 Feb 2027',
-    confidence: 'verify',
-    todoVerify: true,
-    localNote: 'Confirm against the ASP data collection web page.',
+    source: 'ASP data collection web page (iriss.org.uk/aspdataset), Quarterly data return dates for 2026/27, read live 06 Sep 2026',
+    sourceRef: 'Quarter 3: data collection period 01.10.26 to 31.12.26 inclusive, return deadline 12.02.27, anticipated reporting to APCs not applicable',
+    confidence: 'high',
   },
   {
     id: 'asp.nmds.q4',
@@ -210,11 +208,9 @@ const RULES: ClockRuleData[] = [
     amount: 44,
     kind: 'deadline',
     warnDays: 14,
-    source: 'ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page',
-    sourceRef: 'Q4 2026/27 covers 1 January to 31 March; deadline seeded as 14 May 2027',
-    confidence: 'verify',
-    todoVerify: true,
-    localNote: 'Confirm against the ASP data collection web page.',
+    source: 'ASP data collection web page (iriss.org.uk/aspdataset), Quarterly data return dates for 2026/27, read live 06 Sep 2026',
+    sourceRef: 'Quarter 4: data collection period 01.01.27 to 31.03.27 inclusive, return deadline 14.05.27, anticipated reporting to APCs August 2027',
+    confidence: 'high',
   },
   {
     // The three ASP protection orders and their statutory durations, from the NMDS Annex 2 glossary

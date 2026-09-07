@@ -172,3 +172,17 @@ describe('overrides', () => {
     expect(applyOverride(OFFICIAL, lower).classification).toEqual(OFFICIAL);
   });
 });
+
+describe('MARAC case documentation', () => {
+  /**
+   * SafeLives' MARAC administration templates instruct that documentation containing victim data be
+   * marked "RESTRICTED WHEN COMPLETED". RESTRICTED was abolished in 2014 (docs/RESEARCH.md 5.15);
+   * the current equivalent is Official-Sensitive, and that is what a completed referral, research
+   * return, meeting record and action plan carry here (D-235).
+   */
+  it.each(['referral', 'research-return', 'meeting-minute', 'action-plan'] as const)('marks a completed MARAC %s Official-Sensitive, the current equivalent of RESTRICTED WHEN COMPLETED', (artefact) => {
+    const { classification, reasons } = classify({ process: 'marac', artefact });
+    expect(marking(classification)).toBe('OFFICIAL-SENSITIVE');
+    expect(reasons).toContain('marac-record');
+  });
+});

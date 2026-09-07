@@ -1006,6 +1006,7 @@
   },
   "audit": {
     "acts": {
+      "attach": "Attach",
       "breakGlass": "Break-glass",
       "classificationLower": "Classification lowered",
       "classificationRaise": "Classification raised",
@@ -1091,6 +1092,7 @@
     },
     "targets": {
       "config": "Configuration",
+      "document": "Document",
       "event": "Chronology event",
       "inbox": "Connector inbox",
       "meeting": "Meeting",
@@ -1740,6 +1742,7 @@
       "parkedVersion": "Parked",
       "proposedClosure": "Close the episode for {reference}",
       "proposedEpisode": "Open the episode for {reference}",
+      "proposedLead": "Record {name} as the allocated worker for {reference}",
       "proposedStage": "Move the episode for {reference} to {stage}",
       "purposeLine": "{name}, {date}. {purpose}",
       "relayed": "{bytes} bytes of ciphertext relayed. The platform cannot read the payload.",
@@ -2141,6 +2144,36 @@
       "zoomOut": "Zoom out"
     }
   },
+  "documents": {
+    "attach": "Attach a file",
+    "audit": {
+      "attached": "Attached {name} ({size} kB)"
+    },
+    "chosen": "{name}, {size} kB. It will be marked {classification}.",
+    "classificationNote": "Classified as the record is: {classification}. The marking goes on the file name when it is downloaded.",
+    "dialogTitle": "Attach a file to {target}",
+    "download": "Download {name}",
+    "file": "File",
+    "fileHint": "Up to {limit} kB per file and {record} kB per record. The file is held on the record itself.",
+    "list": {
+      "empty": "Nothing attached.",
+      "item": "{size} kB, {classification}. Added {at} by {by}.",
+      "meta": "{count, plural, one {# file} other {# files}}, {size} kB",
+      "title": "Attachments"
+    },
+    "note": "What it is (optional)",
+    "noteHint": "A line that says what the file shows, for the list.",
+    "scanning": "Nothing here scans the file for malware. A production deployment scans every upload before it is stored; that is a requirement on the deployment, not a feature of this mockup.",
+    "submit": "Attach",
+    "target": {
+      "event": "the event \"{title}\"",
+      "meeting": "{title}",
+      "person": "{name}",
+      "process": "{reference}"
+    },
+    "toastText": "{name} is on the record, marked {classification}.",
+    "toastTitle": "File attached"
+  },
   "domain": {
     "access": {
       "breakGlassActive": "Break-glass access is active. Every read is audited.",
@@ -2349,6 +2382,16 @@
       "present": "Present",
       "remote": "Remote"
     },
+    "awiDiagnosticGroups": {
+      "acquiredBrainInjury": "Acquired Brain Injury",
+      "alcoholRelatedBrainDamage": "Alcohol Related Brain Damage",
+      "dementia": "Dementia/Alzheimer's Disease",
+      "inabilityToCommunicate": "Inability to communicate",
+      "learningDisability": "Learning Disability",
+      "mentalIllness": "Mental Illness",
+      "other": "Other",
+      "unknown": "Unknown"
+    },
     "awiOrderKinds": {
       "combinedGuardianship": "Combined guardianship",
       "financialGuardianship": "Financial guardianship",
@@ -2406,22 +2449,22 @@
         "trigger": "Adult concern received"
       },
       "aspNmdsQ1": {
-        "description": "The ASP National Minimum Dataset return for quarter 1 (1 April to 30 June) is due to the Scottish Government 45 calendar days after the quarter ends. The published dates live on the ASP data collection web page and are confirmed against it each year.",
+        "description": "The ASP National Minimum Dataset return for quarter 1 (1 April to 30 June) is due to the Scottish Government 45 calendar days after the quarter ends, on 14 August 2026. The dates are published on the ASP data collection web page and were read from it on 06 September 2026; they are checked against it each year.",
         "label": "ASP NMDS quarter 1 return",
         "trigger": "Quarter 1 ended (30 June)"
       },
       "aspNmdsQ2": {
-        "description": "The ASP National Minimum Dataset return for quarter 2 (1 July to 30 September) is due to the Scottish Government 44 calendar days after the quarter ends. The published dates live on the ASP data collection web page and are confirmed against it each year.",
+        "description": "The ASP National Minimum Dataset return for quarter 2 (1 July to 30 September) is due to the Scottish Government 44 calendar days after the quarter ends, on 13 November 2026. The dates are published on the ASP data collection web page and were read from it on 06 September 2026; they are checked against it each year.",
         "label": "ASP NMDS quarter 2 return",
         "trigger": "Quarter 2 ended (30 September)"
       },
       "aspNmdsQ3": {
-        "description": "The ASP National Minimum Dataset return for quarter 3 (1 October to 31 December) is due to the Scottish Government 43 calendar days after the quarter ends. The published dates live on the ASP data collection web page and are confirmed against it each year.",
+        "description": "The ASP National Minimum Dataset return for quarter 3 (1 October to 31 December) is due to the Scottish Government 43 calendar days after the quarter ends, on 12 February 2027. The dates are published on the ASP data collection web page and were read from it on 06 September 2026; they are checked against it each year.",
         "label": "ASP NMDS quarter 3 return",
         "trigger": "Quarter 3 ended (31 December)"
       },
       "aspNmdsQ4": {
-        "description": "The ASP National Minimum Dataset return for quarter 4 (1 January to 31 March) is due to the Scottish Government 44 calendar days after the quarter ends. The published dates live on the ASP data collection web page and are confirmed against it each year.",
+        "description": "The ASP National Minimum Dataset return for quarter 4 (1 January to 31 March) is due to the Scottish Government 44 calendar days after the quarter ends, on 14 May 2027. The dates are published on the ASP data collection web page and were read from it on 06 September 2026; they are checked against it each year.",
         "label": "ASP NMDS quarter 4 return",
         "trigger": "Quarter 4 ended (31 March)"
       },
@@ -2799,13 +2842,16 @@
       "clockWarning": "Clock warning",
       "exclusionNearMatch": "Register near match",
       "inboxArrived": "Inbox",
+      "invitationResponded": "Invitation answered",
       "involvementDecided": "Involvement decided",
       "involvementRequested": "Involvement requested",
+      "leadReallocated": "Lead worker changed",
       "meetingCancelled": "Meeting cancelled",
       "meetingChanged": "Meeting changed",
       "meetingInvited": "Meeting invitation",
       "membershipAdded": "Added to a case",
       "membershipRemoved": "Removed from a case",
+      "minuteCorrected": "Minute corrected",
       "minuteDistributed": "Minute distributed",
       "request": "Request",
       "requestReturned": "Request returned",
@@ -3013,6 +3059,22 @@
         "label": "Women's Aid worker"
       }
     },
+    "safeLivesSources": {
+      "adultSupportAndProtection": "Adult support and protection cases",
+      "childrenAndFamiliesSocialWork": "Children and families social work case referrals",
+      "education": "Education cases",
+      "housing": "Housing cases",
+      "idaa": "IDAA case referrals",
+      "justiceSocialWork": "Justice social work cases",
+      "mash": "MASH cases",
+      "mentalHealth": "Mental health cases",
+      "other": "Other cases",
+      "police": "Police case referrals",
+      "primaryCare": "Primary care service cases",
+      "secondaryCare": "Secondary care service or acute trust cases",
+      "substanceMisuse": "Substance misuse cases",
+      "voluntarySector": "Voluntary sector cases"
+    },
     "shareStatuses": {
       "queued": "Queued",
       "read": "Read",
@@ -3087,6 +3149,7 @@
       "aspOpenInquiry": "Open inquiry (s4)",
       "aspRecordProtectionPlan": "Record protection plan",
       "aspRecordSupportPlan": "Record support plan",
+      "aspReturnToInquiry": "Return to inquiry",
       "aspReviewOutcome": "Record review outcome",
       "aspScheduleCaseConference": "Schedule case conference",
       "aspScheduleReview": "Schedule review",
@@ -3110,6 +3173,7 @@
       "cpIrdDecisions": "Record IRD decisions",
       "cpRecordJii": "Record joint investigative interview",
       "cpRecordMedical": "Record medical examination",
+      "cpReturnToIrd": "Return to IRD",
       "cpReviewCppmHeld": "Review planning meeting held",
       "cpScheduleCppm": "Schedule planning meeting",
       "cpScheduleReviewCppm": "Schedule review planning meeting",
@@ -3126,6 +3190,7 @@
       "maracLinkCpConcern": "Open a child concern",
       "maracRecordActionPlan": "Record action plan",
       "maracRecordResearchReturn": "Record research return",
+      "maracReturnToMeeting": "Return to meeting",
       "maracScheduleMeeting": "Schedule MARAC",
       "maracSendResearchRequests": "Send research requests",
       "maracTransfer": "Transfer to another area"
@@ -3186,6 +3251,8 @@
       "actionIncomplete": "Every action needs a title and a due date.",
       "actionProcessRequired": "Choose the case the action belongs to.",
       "actionTitleRequired": "Say what the action is, in at least a few words.",
+      "addendumNowRecordedRequired": "Say what is now recorded.",
+      "addendumRecordedRequired": "Say what the minute recorded.",
       "addressMissing": "Choose an address that is on the system.",
       "advocacyRequired": "Say whether independent advocacy was offered, and whether the adult accepted it.",
       "agenciesRequired": "Name at least one agency.",
@@ -3236,6 +3303,12 @@
       "disclosureFactRequired": "List at least one fact. A disclosure with nothing listed cannot be limited to what was decided.",
       "disclosureRationaleRequired": "Say why this person needs to know, in a sentence.",
       "disclosureRecipientRequired": "Name who would be told.",
+      "documentEmpty": "Choose a file. An empty one cannot be attached.",
+      "documentNameRequired": "The file needs a name.",
+      "documentParentMissing": "The record this file attaches to is not here.",
+      "documentRecordFull": "This record has reached its 4 MB attachment limit. Remove something first, or attach the file to a related record.",
+      "documentTooLarge": "The file is too large. One file can be up to 1 MB.",
+      "documentTypeRequired": "The file has no type.",
       "dsdasRequired": "Record whether the Disclosure Scheme for Domestic Abuse Scotland was considered.",
       "excluded": "{name} is on the exclusion register for this case and cannot be added.",
       "exitKindRequired": "Choose how the case leaves MAPPA.",
@@ -3264,6 +3337,8 @@
       "investigationInFuture": "An investigation cannot be opened on a future date.",
       "investigationNotOpened": "No investigation has been opened. Record the outcome that opens one first.",
       "investigationSummaryRequired": "Say what is being investigated, in a sentence.",
+      "invitationDeclineReasonRequired": "Say why you cannot attend, in a sentence. The chair reads it.",
+      "invitationMissing": "You are not on this meeting's invitation list.",
       "inviteesRequired": "Invite at least one person.",
       "involvementDecided": "That request has already been decided.",
       "involvementExcluded": "You are recorded as a party who must not receive anything about this case.",
@@ -3271,14 +3346,21 @@
       "involvementNotYours": "Only somebody on the case decides who joins it.",
       "involvementPending": "You have already asked. The lead has not decided yet.",
       "involvementReasonRequired": "Say why you need to be involved, in at least ten characters.",
+      "irdNotConvened": "No IRD has been convened. Convene the IRD first.",
       "irdTripartiteRequired": "An IRD needs social work, police and health. Invite all three.",
       "jiiDecisionRequired": "Record the decision on a joint investigative interview, with the reasoning.",
       "lawfulBasisRequired": "Say the lawful basis for asking for the records.",
+      "leadNotYours": "Only the lead worker, or somebody in the lead agency whose role could hold the lead, can reallocate it.",
       "leadProfessionalRequired": "Name the lead professional.",
+      "leadReasonRequired": "Say why the lead is changing, in a sentence. It is audited.",
+      "leadSameUser": "That person is already the lead worker.",
+      "leadWrongAgency": "The lead worker has to be in the lead agency.",
+      "leadWrongRole": "That role cannot lead this kind of case.",
       "levelRequired": "Choose level 2 or level 3.",
       "mappaMeetingRequired": "No MAPPA meeting is scheduled. Schedule one first.",
       "mappaNotReferred": "The case has not been referred to level 2 or 3. Refer it first.",
       "maracMeetingRequired": "No MARAC is scheduled, so there is nothing for the research to count back from. Schedule the meeting first.",
+      "maracNotHeard": "The case has not been heard at a MARAC. Record the meeting first.",
       "maracPlanRequired": "No action plan has been recorded. Record it first.",
       "matacRequired": "Record whether a MATAC referral was considered.",
       "medicalDecisionRequired": "Record the decision on a medical examination, with the reasoning.",
@@ -3296,7 +3378,9 @@
       "mergeSameRecord": "A record cannot be merged into itself.",
       "mergeSurvivorMissing": "The record that would survive no longer exists.",
       "mhoRequired": "Nominate the Mental Health Officer.",
+      "minuteNotApproved": "Only an approved minute can be corrected. Edit the draft instead.",
       "moveDateRequired": "Give the date of the move.",
+      "moveNobodyMoving": "Everybody was left behind, so nobody is moving.",
       "moveSameAddress": "That is the address already on the record.",
       "nameRequired": "A given name and a family name are both needed.",
       "noChildrenOnReferral": "No children are named on the referral, so there is no child concern to open.",
@@ -3370,6 +3454,10 @@
       "sharesNeedLawfulBasis": "A share cannot be written without a lawful basis under it.",
       "sharesNeedProcess": "A share has to belong to a case.",
       "significantHarmDecisionRequired": "Record the significant harm decision, with the reasoning.",
+      "substituteExcluded": "That person cannot be seated at this meeting.",
+      "substituteRequired": "Choose who will attend in your place.",
+      "substituteSameAgency": "A substitute has to be from your own agency.",
+      "substituteSelf": "You cannot nominate yourself.",
       "summaryRequired": "Write a summary.",
       "supervisingOfficerRequired": "Name the supervising officer.",
       "threePointTestRequired": "The three-point test has not been recorded. Record it first.",
@@ -3408,6 +3496,11 @@
       },
       "decision": {
         "label": "The specific decision"
+      },
+      "diagnosis": {
+        "hint": "The category the Commission tables guardianships by. Leave it unset where no diagnosis is known; the report then reads Unknown.",
+        "label": "Primary diagnostic group (Mental Welfare Commission)",
+        "notRecorded": "Not recorded"
       },
       "event": {
         "detail": "Decision in question: {decision}. Outcome: {outcome}. Assessor: {assessor}.",
@@ -3812,7 +3905,7 @@
       "term": "RA"
     },
     "restrictedTerm": {
-      "definition": "RESTRICTED was a level of the old Government Protective Marking Scheme and was abolished on 2 April 2014, when the six-tier scheme (Unclassified, Protect, Restricted, Confidential, Secret, Top Secret) was replaced by the three-level Government Security Classification scheme. Official absorbed everything up to and including it, and there is no direct mapping between the two schemes. This product does not use it as a classification, and any document that still does is working to a scheme that has been gone for over a decade.",
+      "definition": "RESTRICTED was a level of the old Government Protective Marking Scheme and was abolished on 2 April 2014, when the six-tier scheme (Unclassified, Protect, Restricted, Confidential, Secret, Top Secret) was replaced by the three-level Government Security Classification scheme. Official absorbed everything up to and including it, and there is no direct mapping between the two schemes. This product does not use it as a classification, and any document that still does is working to a scheme that has been gone for over a decade. One survives in a sector template: SafeLives' MARAC administration templates instruct that documentation containing victim data be marked RESTRICTED WHEN COMPLETED. That is the 2014 marking outliving the scheme it belonged to, and a practitioner will quote it. This product marks completed MARAC case documentation (the referral, a research return, the meeting record and the action plan) OFFICIAL-SENSITIVE, which is the current equivalent.",
       "term": "RESTRICTED (abolished 2014)"
     },
     "rm2000": {
@@ -4510,6 +4603,25 @@
       "toastText": "Clocks completed: {completed}. Clocks started: {started}. Minute is now a draft.",
       "toastTitle": "Meeting closed"
     },
+    "correction": {
+      "action": "Correct the minute",
+      "audit": "Minute of {title} corrected by addendum, sent to {count, plural, =0 {nobody} one {# recipient} other {# recipients}}",
+      "dialogTitle": "Correct the minute of {title}",
+      "entry": "{at}, {by}. Recorded: \"{recorded}\". Now recorded: \"{nowRecorded}\".{hasReason, select, yes { {reason}} other {}} Sent to {count, plural, =0 {nobody} one {# recipient} other {# recipients}}.",
+      "eventDetail": "Recorded: {recorded} Now recorded: {nowRecorded} Corrected by {by}; sent to {count, plural, =0 {nobody} one {# recipient} other {# recipients}}.",
+      "eventTitle": "Minute of {title} corrected",
+      "intro": "The minute is not edited. A correction is an addendum, dated and in your name, sent to everybody the minute went to at the level they were given{count, plural, =0 { (nobody yet: the minute has not been distributed)} one { (# recipient)} other { (# recipients)}}, and shown beneath the minute in the pack.",
+      "listTitle": "Corrections",
+      "necessity": "A distributed minute that is wrong stays wrong in every copy until the correction reaches the same people at the same level. Nothing goes to anybody who did not hold the minute.",
+      "nowRecorded": "What is now recorded",
+      "purpose": "Correct the record of {title} for everybody who holds it",
+      "reason": "Why (optional)",
+      "recorded": "What the minute recorded",
+      "shareSummary": "Correction to the minute of {title}, at {level}",
+      "submit": "Record the correction",
+      "toastText": "{count, plural, =0 {The correction is on the minute and in the pack.} one {The correction went to # recipient at their level.} other {The correction went to # recipients at their levels.}}",
+      "toastTitle": "Minute corrected"
+    },
     "during": {
       "actions": {
         "action": "Action",
@@ -4592,6 +4704,36 @@
       "title": "Close: {title}",
       "transition": "Closing this meeting records {transition}{moves, select, yes {, which moves the case to {stage}} other {}}.",
       "wrongStage": "{transition} is recorded from {stages}; this case is at {stage}. Record what comes first, then close the meeting."
+    },
+    "invitation": {
+      "accept": "Accept",
+      "answered": "{status, select, accepted {You accepted on {at}.} declined {You declined on {at}. {reason}} other {{substitute} will attend in your place, nominated on {at}.}}",
+      "audit": {
+        "accepted": "{name} accepted the invitation to {title}",
+        "declined": "{name} declined the invitation to {title}",
+        "substitute": "{name} nominated {substitute} to attend {title} in their place"
+      },
+      "changeAnswer": "Change your answer",
+      "decline": "Decline",
+      "declineReason": "Why you cannot attend",
+      "declineReasonHint": "A sentence. The chair reads it.",
+      "intro": "You are invited as {role}. {reason}",
+      "meta": "{status, select, none {Not answered yet} accepted {Accepted} declined {Declined} other {Substitute nominated}}",
+      "responseTag": "{status, select, accepted {Accepted} declined {Declined{hasReason, select, yes {: {reason}} other {}}} other {Sending {substitute}}}",
+      "submit": "Send answer",
+      "substitute": "Send somebody instead",
+      "substituteHint": "Somebody from your own agency. They are seated through the same need-to-know check as anybody else, and told.",
+      "substituteNote": "Anything the chair should know (optional)",
+      "substitutePlaceholder": "Choose a colleague",
+      "substituteReason": "Attending in place of {name}",
+      "substituteWho": "Who will attend in your place",
+      "title": "Your invitation",
+      "toast": {
+        "accepted": "Invitation accepted",
+        "declined": "Invitation declined",
+        "substitute": "Substitute nominated"
+      },
+      "toastText": "The chair has been told."
     },
     "list": {
       "columns": {
@@ -5103,13 +5245,16 @@
       "clockWarning": "{clock} on {reference} is due on {date}.",
       "exclusionNearMatch": "A name added on {reference} resembles a case-role register entry. The decision is in the audit ledger.",
       "inboxArrived": "{title} arrived from {system} for your agency to review.",
+      "invitationResponded": "{status, select, accepted {{name} accepted the invitation to {title} on {date}.} declined {{name} declined the invitation to {title} on {date}.} other {{name} has nominated a substitute for {title} on {date}.}}",
       "involvementDecided": "Your request to be involved in {reference} was {decision, select, accepted {accepted} other {declined}}.",
       "involvementRequested": "{name} asked to be involved in {reference}.",
+      "leadReallocated": "{former, select, yes {{name} reallocated {reference} from you to {lead}.} other {{name} made you the lead worker on {reference}.}}",
       "meetingCancelled": "{title} has been cancelled.",
       "meetingChanged": "{title} has moved to {date}.",
       "meetingInvited": "You are invited to {title} on {date}.",
       "membershipAdded": "{name} added you to {reference}.",
       "membershipRemoved": "{name} removed you from {reference}.",
+      "minuteCorrected": "The minute of {title} has been corrected. You have the correction at {level}.",
       "minuteDistributed": "The minute of {title} has been distributed to you at {level}.",
       "presence": "A case you are linked to changed. Your access to it is presence only, so nothing more is shown here.",
       "request": "{name} asked {you, select, agency {your agency} other {you}} for information on {reference}.",
@@ -5298,6 +5443,7 @@
       "version": "Death recorded"
     },
     "documents": {
+      "attachedTo": "Attached to {target}",
       "columns": {
         "date": "Date",
         "document": "Document",
@@ -5308,6 +5454,7 @@
         "text": "Evidence references and meeting pack items appear here as the record grows.",
         "title": "No documents"
       },
+      "kindAttachment": "Attachment",
       "source": "{agency} event: {title}"
     },
     "edit": {
@@ -5414,6 +5561,28 @@
         "toastText": "{name} is at {address} from {date}.",
         "toastTitle": "Move recorded",
         "toPlaceholder": "Choose an address"
+      },
+      "moveHousehold": {
+        "action": "Move the household",
+        "audit": "Household of {count, plural, one {# person} other {# people}} moved to {address}",
+        "dialogTitle": "Move the household",
+        "eventDetail": "{name} moved with the household to {address} on {date} ({count, plural, one {# person} other {# people}} moved).",
+        "intro": "{count, plural, one {# person lives} other {# people live}} here. Everybody ticked moves to the new address on the date and gets the move on their own chronology. Untick anybody staying behind and say where they are going, or leave it blank where the record does not know. Address history is kept for everyone.",
+        "moving": "{name} moves",
+        "note": "Note (optional)",
+        "on": "Moving on",
+        "stayAddress": "Where {name} is going",
+        "stayAddressNone": "Not known",
+        "stayedNowhere": "{name} stayed behind when the household moved to {household} on {date}. Their new address is not known.",
+        "stayedReason": "Stayed behind when the household moved to {address}",
+        "stayedTo": "{name} stayed behind when the household moved to {household} on {date}, and moved to {address}.",
+        "stays": "{name} stays behind",
+        "submit": "Move {count, plural, one {# person} other {# people}}",
+        "to": "New address",
+        "toastText": "{count, plural, one {# person} other {# people}} moved to {address} on {date}{left, plural, =0 {} one {, # stayed behind} other {, # stayed behind}}.",
+        "toastTitle": "Household moved",
+        "toPlaceholder": "Choose the address",
+        "who": "Who is moving"
       },
       "moveReason": "Moved to {address}",
       "past": "Previously in the household",
@@ -5864,6 +6033,14 @@
       "controls": {
         "back": "Back to the meeting"
       },
+      "corrections": {
+        "entry": "Correction {n}, {at}, {by}",
+        "nowRecorded": "Now recorded: {text}",
+        "reason": "Reason: {text}",
+        "recorded": "Recorded: {text}",
+        "sent": "Sent to {count, plural, =0 {nobody, because the minute had not been distributed} one {# recipient of the original distribution, at their level} other {# recipients of the original distribution, at their levels}}.",
+        "title": "Corrections to this minute"
+      },
       "cover": {
         "chair": "Chair",
         "dateTime": "Date and time",
@@ -6165,7 +6342,9 @@
         "order": "The order",
         "orderExpires": "Order expires",
         "orderKind": "Kind of order",
-        "powers": "Powers granted"
+        "powers": "Powers granted",
+        "renewal": "Renewal of an existing guardianship order",
+        "renewalHint": "The Commission reports new and renewed orders apart. Tick this where the sheriff renewed an order that was already in force."
       },
       "awiPowers": {
         "attorney": "Attorney",
@@ -6361,12 +6540,18 @@
         "title": "Plan title"
       },
       "rationale": "Rationale",
-      "rationaleHint": "Why this decision, in the words you would want read back at a review."
+      "rationaleHint": "Why this decision, in the words you would want read back at a review.",
+      "return": {
+        "consequence": "{process, select, asp {The inquiry outcome is then recorded again.} cp {Convene the reconvened IRD next. The initial planning meeting clock completes with this return and starts again from the reconvened IRD's decisions.} other {Schedule the further MARAC next. The case is heard again and the action plan recorded again.}}",
+        "reason": "Why the case is returning",
+        "reasonHint": "A sentence or two. It goes on the stage entry and the chronology. The clocks the earlier stage started are unchanged."
+      }
     },
     "head": {
       "askToBeInvolved": "Ask to be involved",
       "born": "born {date}",
       "lead": "Lead: {agency}",
+      "leadName": "Lead worker {name}",
       "nextMeeting": "Next: {title}, {date}",
       "opened": "Opened {date}",
       "requestSent": {
@@ -6407,6 +6592,23 @@
         "pending": "Pending"
       },
       "submit": "Send request"
+    },
+    "lead": {
+      "action": "Reallocate lead",
+      "audit": "Lead worker reallocated from {from} to {to}",
+      "caseRole": "Lead worker",
+      "dialogTitle": "Reallocate the lead of {reference}",
+      "eventDetail": "Lead worker changed from {from} to {to} by {by}. {reason}",
+      "eventTitle": "{reference}: lead worker now {to}",
+      "intro": "The lead is {hasLead, select, yes {{name}} other {not allocated}}, in {agency}. Only people in the lead agency whose role may lead a {type} case are listed. Both are told, the case's membership follows, and the change is proposed to the source system where the connector allows it.",
+      "memberReason": "Lead reallocated by {name}: {reason}",
+      "reason": "Why",
+      "reasonHint": "A sentence. It is audited and both people read it.",
+      "submit": "Reallocate",
+      "to": "New lead worker",
+      "toastText": "{name} is now the lead worker. Both have been told.",
+      "toastTitle": "Lead reallocated",
+      "toPlaceholder": "Choose a person"
     },
     "linked": {
       "item": "{stage}. Led by {agency}. {status}.",
@@ -6505,6 +6707,8 @@
       "openExisting": "Open {reference}",
       "perpetrator": "Perpetrator",
       "perpetratorHint": "The person the referral names as the perpetrator. They are recorded as a party who must not receive anything about this case.",
+      "referralSource": "Referral source (SafeLives return)",
+      "referralSourceHint": "The column this referral is counted in on the quarterly SafeLives return. Proposed from the referring agency; change it where the service is known.",
       "repeatLede": "A further MARAC referral within twelve months of the last is a repeat, which is a SafeLives measure this product reports. The previous referral was received on {date}. The flag is set on the new referral; you do not need to remember it.",
       "repeatTitle": "This is a repeat referral",
       "shareReason": "{reference} was opened. Shared because the need-to-know matrix entitles this recipient at the opening stage of a {process} case.",
@@ -6691,6 +6895,7 @@
         "orderGranted": "Order granted",
         "researchComplete": "Every research return is in",
         "researchSent": "Research requests sent",
+        "returned": "A return starts no clock. What the earlier stage started still runs, and the clocks this stage's outcome starts will run again from the new outcome.",
         "reviewHeld": "Review held",
         "screeningDecided": "Screening decision recorded"
       },
@@ -6753,6 +6958,7 @@
         "reportRecorded": "Report recorded: {kind}",
         "researchReturned": "Research returned by {agency}{nothingKnown, select, yes { (nothing known)} other {}}",
         "researchSent": "Research requests sent to {count, plural, one {# agency} other {# agencies}}, due {date}",
+        "returned": "Returned to {stage}. {reason}",
         "returnPurpose": "Pre-meeting return for MAPPA {reference}",
         "returnRecorded": "Pre-meeting return from {agency}{nothingKnown, select, yes { (nothing known)} other {}}",
         "returnsRequested": "Pre-meeting returns requested from {count, plural, one {# agency} other {# agencies}}, due {date}",
@@ -6905,6 +7111,15 @@
         "council": "Council (Chief Social Work Officer)",
         "private": "Private applicant"
       },
+      "categories": {
+        "age": "Age",
+        "diagnosis": "Diagnostic group",
+        "diagnosticCategories": "Diagnostic categories",
+        "gender": "Gender",
+        "guardian": "Guardian",
+        "guardianType": "Guardian type",
+        "length": "Length of order"
+      },
       "chart": {
         "summary": "Applications by route and applicant: {applications, plural, one {# application} other {# applications}} started in the period, {council} by the council and {private} private.",
         "title": "Applications by route and applicant",
@@ -6914,18 +7129,27 @@
       "columns": {
         "age": "Age against the limits",
         "application": "Application",
+        "category": "Category",
         "daysFromApplication": "Days from application",
+        "diagnosis": "Category of diagnosis",
         "granted": "Granted",
+        "grouping": "Grouping",
+        "guardianships": "Guardianships",
         "mhoNotified": "MHO notified",
         "order": "Order",
+        "orders": "Orders",
+        "percent": "%",
         "reportDue": "Report due",
         "sought": "Sought",
-        "status": "Status"
+        "status": "Guardianship status",
+        "timeBand": "Time from application to grant"
       },
       "figures": {
         "applications": "Applications started",
         "applicationsNote": "{count} by the council",
         "concerns": "Capacity concerns raised",
+        "granted": "Guardianship orders granted",
+        "grantedNote": "{renewals, plural, =0 {no renewals} one {# renewal} other {# renewals}}; {private, plural, one {# private} other {# private}}",
         "interim": "Interim orders sought",
         "interimNote": "{count} granted",
         "median": "Median days, application to order",
@@ -6934,8 +7158,24 @@
         "mhoLate": "{count} late or overdue",
         "mhoNoneDue": "none due",
         "mhoRunning": "{count} still running, none late",
-        "mhoValue": "{onTime} of {total}",
-        "orders": "Orders granted"
+        "mhoValue": "{onTime} of {total}"
+      },
+      "groups": {
+        "age16to24": "16 to 24",
+        "age25to44": "25 to 44",
+        "age45to64": "45 to 64",
+        "age65Plus": "65 and over",
+        "female": "Female",
+        "fourToFive": "4 to 5 years",
+        "indefinite": "Indefinite",
+        "localAuthority": "Local authority",
+        "male": "Male",
+        "new": "New",
+        "overFive": "More than 5 years",
+        "private": "Private",
+        "renewal": "Renewal",
+        "unknownGender": "Unknown or not stated",
+        "zeroToThree": "0 to 3 years"
       },
       "hint": "{count, plural, one {# concern or application} other {# concerns and applications}}",
       "interim": {
@@ -6944,7 +7184,7 @@
         "notListed": "not yet listed",
         "notYetGranted": "Not yet granted"
       },
-      "lede": "How guardianship applications are moving: route and applicant, the Mental Health Officer report against the 21 day rule, interim orders against the statutory limits, and the days from application to order, computed from the AWI records in the record store.",
+      "lede": "The Mental Welfare Commission's guardianship tables computed from the AWI records in the record store: orders granted by the characteristics of Table 1, the time from application to grant in the Commission's four bands, new against renewed orders, guardian type by primary diagnosis, and the guardianships in force at the period end. Then the local measures: the Mental Health Officer report against the 21 day rule, interim orders against the statutory limits, and the route decisions.",
       "measures": {
         "assessments": "Capacity assessments completed",
         "concerns": "Capacity concerns raised",
@@ -6957,7 +7197,8 @@
         "s13Considered": "Section 13ZA considered"
       },
       "meta": {
-        "computed": "Computed {dateTime} from the local record store: {records, plural, one {# AWI record} other {# AWI records}} in total, {applications, plural, one {# application} other {# applications}} started in the period."
+        "computed": "Computed {dateTime} from the local record store: {records, plural, one {# AWI record} other {# AWI records}} in total, {applications, plural, one {# application} other {# applications}} started in the period.",
+        "fieldSet": "Field set from the Mental Welfare Commission's Adults with Incapacity Act monitoring report 2024-25 (Table 1, Table 2 and Appendix B), read from the report itself; the welfare, financial and combined split from the Office of the Public Guardian's performance page."
       },
       "mho": {
         "late": "Submitted {date}, {days, plural, one {# day} other {# days}} late",
@@ -6973,7 +7214,7 @@
         "welfareGuardianship": "Welfare guardianship order"
       },
       "periodLabel": "Reporting year to date, from 1 April",
-      "purpose": "How guardianship applications are moving: route and applicant, the Mental Health Officer report against the 21 day rule in section 57(4), interim orders and their age, and the days from application to order.",
+      "purpose": "The Mental Welfare Commission's guardianship tables for the partnership (orders granted by gender, age, guardian type, length and diagnosis; time from application to grant; new against renewed; guardianships in force at 31 March), the Office of the Public Guardian's welfare, financial and combined split, and the local measures: the MHO report against the 21 day rule, interim orders and their age, and the route decisions.",
       "recipient": "The Chief Social Work Officer and the MHO service, with the figures the Mental Welfare Commission and the Office of the Public Guardian collect.",
       "routes": {
         "guardianshipCombined": "Welfare and financial guardianship",
@@ -6987,32 +7228,47 @@
       },
       "sections": {
         "decisions": "Capacity concerns and route decisions",
+        "extant": "Guardianships in force at {date}",
+        "extantNote": "The stock rather than the flow, as the Commission's Table A1 counts it on 31 March: {count, plural, =0 {no guardianship orders in force} one {# guardianship order in force} other {# guardianship orders in force}} on the last day of the period, by guardian, age, gender, length and diagnostic category.",
+        "granted": "Guardianship orders granted in the period",
+        "grantedNote": "The Commission's Table 1: {count, plural, =0 {no guardianship orders granted in the period} one {# guardianship order granted in the period} other {# guardianship orders granted in the period}}, by gender, age at grant, guardian type, length of order and primary diagnostic group. Welfare, financial and combined guardianships; interim and intervention orders are not guardianships. An adult with no diagnosis recorded reads Unknown.",
+        "guardianType": "Guardian type by primary diagnosis",
+        "guardianTypeNote": "The Commission's Table 2: local authority against private guardianship orders granted in the period, by category of diagnosis, each as a share of that row.",
         "interim": "Interim orders",
         "interimNote": "Interim orders run for 3 months by default and cannot exceed 6 months in total; the age is measured to {date}.",
         "mho": "Mental Health Officer reports against the 21 day rule",
         "mhoNoRule": "No MHO report rule is configured; 21 calendar days assumed.",
         "mhoNote": "{rule} Applications are shown by reference, never by name.",
         "mhoRule": "{label}: {reference} ({source}).",
-        "orders": "Orders granted in the period",
-        "ordersMedian": "Median {days, plural, one {# day} other {# days}} from application to order across {orders, plural, one {# order} other {# orders}}.",
-        "ordersNone": "No orders were granted in the period, so no median time from application to order can be given.",
-        "routes": "Applications by route and applicant",
-        "routesNote": "An application starts when the Mental Health Officer is notified under section 57(3); the route comes from the route decision."
+        "renewals": "New and renewed orders",
+        "renewalsNote": "The Commission reports the share of orders granted that renewed an existing guardianship rather than starting one, and renewals by diagnostic group.",
+        "routes": "Applications by route and applicant, and orders by kind",
+        "routesNote": "The welfare, financial and combined split the Office of the Public Guardian publishes, with the interim and intervention orders beside it.",
+        "timeliness": "Time between application and granting of the order",
+        "timelinessNone": "No guardianship orders were granted in the period, so no band holds anything and no median can be given.",
+        "timelinessNote": "From the day the application was lodged with the court (or, where that is not recorded, the day the MHO was notified) to the day the order was granted, in the four bands the Commission reports. Median {days, plural, one {# day} other {# days}} across {orders, plural, one {# order} other {# orders}}."
       },
       "sources": {
         "act": "Adults with Incapacity (Scotland) Act 2000, section 57 (legislation.gov.uk).",
-        "mwc": "Mental Welfare Commission for Scotland, Adults with Incapacity Act monitoring reports 2023-24 and 2024-25 (mwcscot.org.uk).",
+        "mwc": "Mental Welfare Commission for Scotland, Adults with Incapacity Act monitoring report 2024-25 (October 2025, mwcscot.org.uk; docs/templates/MWC-AWI-Monitoring-Report-2024-25.pdf): Table 1, Table 2 and Appendix B Tables A1 to A13, read from the report on 06 Sep 2026.",
         "opg": "Office of the Public Guardian (Scotland), guardianship orders performance 2024-2025 and 2023-2024 (publicguardian-scotland.gov.uk)."
       },
       "tables": {
+        "extantEmpty": "No guardianship orders in force",
+        "grantedEmpty": "No guardianship orders granted in period",
         "interimEmpty": "No interim orders sought in period",
         "mhoEmpty": "No applications with an MHO report in period",
-        "ordersEmpty": "No orders granted in period, so no median can be given"
+        "ordersEmpty": "No orders granted in period, so no median can be given",
+        "ordersTitle": "Each order granted in the period",
+        "renewalsByDiagnosisTitle": "By diagnostic group"
       },
-      "title": "AWI application timeliness",
-      "verify": {
-        "publications": "The Mental Welfare Commission monitoring report and the Office of the Public Guardian performance pages publish orders granted or registered by type (welfare, financial, combined), private against local authority guardians, order duration and the number of adults subject to guardianship. Neither publishes MHO report timeliness or time from application to order at national level, so those two measures are local and their layout is the platform's own."
-      }
+      "timeBands": {
+        "fiveToSix": "5 to 6 months",
+        "overSix": "More than six months",
+        "threeToFour": "3 to 4 months",
+        "twoMonthsOrLess": "Two months or less"
+      },
+      "title": "AWI application timeliness"
     },
     "chart": {
       "data": "Data for {title}",
@@ -7174,6 +7430,9 @@
         "population": "The child population used for the rate per 1,000 is fictional; replace it with the National Records of Scotland estimate for the area."
       }
     },
+    "disclosure": {
+      "footnote": "* {count, plural, one {# count is} other {# counts are}} suppressed: any count of five or fewer, and where one such count could be recovered from a total, the next smallest with it. The Mental Welfare Commission's rule, adopted for every report so a partnership can publish it."
+    },
     "figures": {
       "noneInPeriod": "none in period"
     },
@@ -7191,6 +7450,7 @@
       "text": "Nothing in the record store falls in this period ({period}). The period in progress holds {activity}."
     },
     "index": {
+      "disclosure": "Every report suppresses counts of five or fewer, printing * in their place, so what it shows can be published; the two returns to national bodies carry the counts they ask for.",
       "emptyText": "Reports are generated from the record store. Reset the demo data from Settings if the store is empty.",
       "emptyTitle": "No reports available",
       "footnote": "The dataset behind this demonstration holds eight worked scenarios and a background population, so every count is small. Counts are never padded and a period with nothing in it shows zeros.",
@@ -7414,11 +7674,11 @@
     "marac": {
       "chart": {
         "series": "Referrals",
-        "summary": "Referrals by agency: {referrals, plural, one {# referral} other {# referrals}}{breakdown}.",
+        "summary": "Referrals by source: {referrals, plural, one {# referral} other {# referrals}}{breakdown}.",
         "summaryBreakdown": ", {list}",
-        "summaryItem": "{count} from {agency}",
-        "title": "Referrals by agency",
-        "xLabel": "Referring agency",
+        "summaryItem": "{count} {source}",
+        "title": "Referrals by source",
+        "xLabel": "Referral source",
         "yLabel": "Referrals"
       },
       "columns": {
@@ -7427,7 +7687,7 @@
         "derived": "How it is derived",
         "linkOrOutcome": "Link or outcome",
         "referrals": "Referrals",
-        "referringAgency": "Referring agency",
+        "referralSource": "Referral source (template column)",
         "riskIdentification": "Risk identification",
         "share": "Share of referrals",
         "shareOrRate": "Share or rate"
@@ -7470,8 +7730,10 @@
       },
       "meta": {
         "computed": "Computed {dateTime} from the local record store: {records, plural, one {# MARAC record} other {# MARAC records}} in total, {referrals} referred in the period.",
+        "fieldSet": "Field set from the SafeLives MARAC data template, Scotland 2025, read from the template itself.",
         "population": "Rate per 10,000 uses an adult female population of {population} for Clydeshore, which is fictional and can be changed above."
       },
+      "openReturn": "Open the SafeLives return file",
       "periodLabel": "Four quarters, rolling",
       "populationHint": "Clydeshore does not exist. Change the figure and the rate per 10,000 recalculates.",
       "populationLabel": "Adult female population (fictional)",
@@ -7483,47 +7745,38 @@
         "overrides": "Professional judgement overrides of the tool score"
       },
       "sections": {
-        "agency": "Referrals by agency",
-        "agencyNote": "The agency that made the referral, from the referral record.",
         "cases": "Cases, repeats and children",
         "casesNote": "SafeLives counts cases discussed at each meeting; referrals are shown as well because a case referred late in a quarter is discussed in the next.",
         "links": "Links, flags and outcomes",
         "risk": "Risk identification",
+        "source": "Referrals by source",
+        "sourceNote": "The SafeLives referral source recorded on each referral, one of the fourteen columns of the Scotland template. It is proposed from the referring agency and corrected on the referral form.",
         "victims": "Victim characteristics",
-        "victimsNote": "Counts only. Where the record store holds no field, the return says so rather than guessing."
+        "victimsNote": "Counts only, in the template's columns U to AF. {count} of them are left blank on the return, because the record store holds no field for them."
       },
       "sources": {
-        "guidance": "SafeLives, MARAC data: guidance for MARACs, and the MARAC data template workbook (safelives.org.uk).",
-        "keyFindings": "SafeLives, Marac data key findings April 2024 to March 2025 (safelives.org.uk).",
-        "spotlight": "SafeLives, Spotlight on older people and domestic abuse (safelives.org.uk)."
+        "guidance": "SafeLives, MARAC data: guidance for MARACs and the MARAC data platform (safelives.org.uk).",
+        "keyFindings": "SafeLives, Marac data key findings April 2024 to March 2025 (safelives.org.uk): the published aggregate of the same return.",
+        "template": "SafeLives, MARAC data template, Scotland 2025 (New-Marac-data-template-Scotland-2025.xlsx, safelives.org.uk, downloaded 06 Sep 2026): the 32 columns of the return, read from the file."
       },
       "tables": {
-        "agencyEmpty": "No referrals in period"
+        "sourceEmpty": "No referrals in period"
       },
       "title": "MARAC SafeLives return",
-      "verify": {
-        "olderThreshold": "The older victim threshold of 61 follows the SafeLives spotlight on older people; confirm it against the current dataset definitions.",
-        "template": "SafeLives publishes guidance and a data template workbook for MARACs; the field list here (cases, repeats, children, referral agency, older, male, minority ethnic, LGBT and disabled victims, cases per 10,000 adult women) follows the quarterly key findings reports and should be checked against the current workbook."
-      },
       "victims": {
-        "disability": "Victims with a disability",
-        "interpreter": "Victims who need an interpreter",
-        "interpreterHow": "Communication needs on the person record",
-        "lgbt": "LGBT victims",
-        "male": "Male victims",
         "maleHow": "Sex on the person record",
-        "minority": "Minority ethnic victims",
         "notRecorded": "Not recorded",
-        "notRecordedHow": "The record store has no field for this yet, so no number is given",
-        "older": "Victims aged 61 or over at referral",
-        "olderHow": "Date of birth on the person record; SafeLives counts older victims from 61"
+        "notRecordedHow": "The record store holds no field for this, by design, so the return leaves the cell blank rather than writing nought",
+        "olderHow": "Date of birth on the person record: aged 65 or over on the day the referral was received, the template's own threshold",
+        "perpetratorHow": "Date of birth of the person named as the perpetrator on the referral: under 18 on the day it was received",
+        "youngHow": "Date of birth on the person record: aged 16 or 17 on the day the referral was received"
       }
     },
     "meta": {
-      "period": "Period {period}.",
-      "verify": "Field set to verify against the current template."
+      "period": "Period {period}."
     },
     "nmds": {
+      "apc": "{hasApc, select, yes {Anticipated reporting to Adult Protection Committees: {when}.} other {No reporting to Adult Protection Committees is anticipated after this quarter's return.}}",
       "audit": "ASP data workbook {quarter} 2026-27: {written} cells written, {refused} refused",
       "backToReport": "Back to the ASP report",
       "blockEmptyText": "Nothing in this quarter falls under this indicator.",
@@ -7582,6 +7835,7 @@
         "row": "Workbook row",
         "value": "Figure"
       },
+      "datesSource": "Return dates from the ASP data collection web page (iriss.org.uk/aspdataset), read 06 Sep 2026. Returns go to ASPData@gov.scot.",
       "failuresWarning": "{count, plural, one {One consistency check does not match} other {# consistency checks do not match}}. Look at the figures above before you send this return.",
       "filled": {
         "text": "{written} cells written. {refused, plural, =0 {Nothing was refused.} one {One cell was refused because the workbook computes it.} other {# cells were refused because the workbook computes them.}}",
@@ -7658,6 +7912,98 @@
       "yearTo31Jul": "Year to 31 Jul {year}",
       "yearTo31Mar": "Year to 31 Mar {year}",
       "yearToDate": "Reporting year to date: {range}"
+    },
+    "safeLives": {
+      "audit": "SafeLives return, {quarter}: {rows, plural, one {# row} other {# rows}}, {cells, plural, one {# cell} other {# cells}}",
+      "backToReport": "Back to the MARAC report",
+      "blankCell": "Left blank",
+      "blankMeta": "{count} columns",
+      "blankText": "The record store holds no ethnicity, no sexual orientation or gender identity and no disability flag, by design, so these cells are left empty rather than written as nought. A blank tells SafeLives the figure was not collected; a zero would tell them there were none.",
+      "blankTitle": "Left blank on purpose",
+      "checkDetail": "{counted} against {expected}",
+      "checkRow": "{date}: {label}",
+      "checks": {
+        "children": "Cases with children within cases discussed",
+        "repeats": "Repeat cases within cases discussed",
+        "sources": "Referral sources add up to cases discussed"
+      },
+      "checksMeta": "Per meeting: repeats and cases with children cannot exceed the cases discussed, and the fourteen source columns must add up to them.",
+      "checksNone": "Nothing to check until a MARAC is held in the quarter.",
+      "checkStates": {
+        "fail": "Fails",
+        "pass": "Passes"
+      },
+      "checksTitle": "Arithmetic checks",
+      "chooseTemplate": "Choose the Scotland template",
+      "classification": "Aggregate counts per meeting that name nobody: Official, unmarked.",
+      "columns": {
+        "casesDiscussed": "Cases discussed",
+        "casesWithChildren": "Number of cases with children in the household",
+        "childrenInHousehold": "Number of children in the household",
+        "disabled": "Disabled victim cases",
+        "ethnicityAsian": "Victims from Asian or Asian British ethnic groups",
+        "ethnicityBlack": "Victims from Black, Black British, Caribbean or African ethnic groups",
+        "ethnicityMixed": "Victims from mixed or multiple ethnic groups",
+        "ethnicityOther": "Victims from any other ethnic group",
+        "ethnicityOtherWhite": "Victims from other White ethnic groups (exclude White British)",
+        "harmingUnder18": "Harming others under 18 years old cases",
+        "lgbtq": "LGBTQ+ community cases",
+        "maleVictims": "Male victims cases",
+        "maracName": "MARAC Name",
+        "meetingDate": "Meeting date",
+        "minoritisedTotal": "Total Black, Asian and racially minoritised cases",
+        "repeatCases": "Number of repeat cases",
+        "victims16or17": "Victims 16 or 17 years old cases",
+        "victims65Plus": "Victims aged 65+ years"
+      },
+      "emptyText": "The return has no rows. Choose another quarter, or hold the meeting first.",
+      "emptyTitle": "No MARAC meetings were held in this quarter",
+      "failuresWarning": "{count, plural, one {# check fails} other {# checks fail}}. The file can still be written; fix the referral records first, because the platform will not.",
+      "filled": {
+        "text": "{rows, plural, one {# row} other {# rows}} written, {cells, plural, one {# cell} other {# cells}} in all.",
+        "title": "Return filled"
+      },
+      "headersRow": "{cell}: expected \"{expected}\", found \"{found}\"",
+      "headersTitle": "{count, plural, one {# header} other {# headers}} did not match the Scotland template, so nothing was written.",
+      "lede": "The quarterly return to SafeLives' MARAC data platform: one row per meeting held in the quarter, written into the Scotland template. Check every row before you upload it; every column after the date is a count, and nothing in it names anyone.",
+      "meta": "{maracName}. {from} to {to}: {count, plural, =0 {no MARAC meetings held} one {# MARAC meeting held} other {# MARAC meetings held}}.",
+      "preview": {
+        "cell": "Cell",
+        "column": "Column",
+        "value": "Value"
+      },
+      "quarter": "Q{quarter} {year}, {from} to {to}",
+      "quarterLabel": "Quarter",
+      "refused": {
+        "headers": "The header row is not the Scotland template's. Check the file: the UK template heads the source columns differently.",
+        "noSheet": "That workbook has no sheet.",
+        "notEmpty": "That copy already holds rows under its header. Choose a blank copy of the template.",
+        "title": "Return not written",
+        "unreadable": "That file could not be read as a workbook."
+      },
+      "rowMeta": "{count, plural, one {# case} other {# cases}}: {references}",
+      "rowTitle": "Row {row}: {date}, {title}",
+      "save": "Save the filled return",
+      "short": {
+        "adultSupportAndProtection": "ASP",
+        "childrenAndFamiliesSocialWork": "C&F social work",
+        "education": "Education",
+        "housing": "Housing",
+        "idaa": "IDAA",
+        "justiceSocialWork": "Justice SW",
+        "mash": "MASH",
+        "mentalHealth": "Mental health",
+        "other": "Other",
+        "police": "Police",
+        "primaryCare": "Primary care",
+        "secondaryCare": "Secondary care",
+        "substanceMisuse": "Substance misuse",
+        "voluntarySector": "Voluntary"
+      },
+      "templateMeta": "{rows, plural, =0 {No rows} one {# row} other {# rows}}, {cells, plural, one {# cell} other {# cells}} to write under the header.",
+      "templateNote": "Choose a blank copy of New-Marac-data-template-Scotland-2025.xlsx from disk. The file is not bundled: SafeLives publishes and revises it, and the header row is checked against the one this return expects before anything is written.",
+      "templateTitle": "The template",
+      "title": "MARAC data template return"
     },
     "table": {
       "empty": "None in period"

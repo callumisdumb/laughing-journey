@@ -418,6 +418,9 @@ export const AUDIT_ACTS = [
   // A stage moved by a recorded decision (D-211). Its own act, because "when did this case move and
   // who moved it" is the question an inspector asks first.
   'stage-change',
+  // A file attached to a record, and one downloaded from it. Its own act because "what left the
+  // product as a file, and who took it" is the question a data protection officer asks (D-243).
+  'attach',
 ] as const;
 export type AuditAct = (typeof AUDIT_ACTS)[number];
 
@@ -761,6 +764,46 @@ export type LsiServiceType = (typeof LSI_SERVICE_TYPES)[number];
 
 export function lsiServiceTypeLabel(type: LsiServiceType): string {
   return tKey(`domain.lsiServiceTypes.${keySegment(type)}`);
+}
+
+/**
+ * The primary diagnostic groups of the Mental Welfare Commission's Adults with Incapacity Act
+ * monitoring report (2024-25, Table 1 and Table 2; docs/RESEARCH.md 9.3), which the AWI report
+ * tables orders by. Recorded on a capacity assessment where the assessor knows it; a report row for
+ * an adult with none recorded reads Unknown, as the Commission's own Table 2 does.
+ */
+export const AWI_DIAGNOSTIC_GROUPS = ['learning-disability', 'dementia', 'acquired-brain-injury', 'alcohol-related-brain-damage', 'mental-illness', 'other', 'inability-to-communicate'] as const;
+export type AwiDiagnosticGroup = (typeof AWI_DIAGNOSTIC_GROUPS)[number];
+
+export function awiDiagnosticGroupLabel(group: AwiDiagnosticGroup | 'unknown'): string {
+  return tKey(`domain.awiDiagnosticGroups.${keySegment(group)}`);
+}
+
+/**
+ * Referral sources of the SafeLives MARAC data return, Scotland template, in the order of its
+ * columns G to T (docs/RESEARCH.md 9.2). The label of each is the template's own column header,
+ * held verbatim in the catalogue. A MARAC referral carries one of these from the day it is opened.
+ */
+export const SAFELIVES_SOURCES = [
+  'police',
+  'idaa',
+  'childrenAndFamiliesSocialWork',
+  'primaryCare',
+  'secondaryCare',
+  'education',
+  'housing',
+  'mentalHealth',
+  'justiceSocialWork',
+  'voluntarySector',
+  'substanceMisuse',
+  'adultSupportAndProtection',
+  'mash',
+  'other',
+] as const;
+export type SafeLivesSource = (typeof SAFELIVES_SOURCES)[number];
+
+export function safeLivesSourceLabel(source: SafeLivesSource): string {
+  return tKey(`domain.safeLivesSources.${source}`);
 }
 
 /**

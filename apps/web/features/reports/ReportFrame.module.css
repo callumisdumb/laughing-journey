@@ -58,3 +58,10 @@
   color: var(--color-ink-2);
   list-style: disc;
 }
+
+/* The disclosure footnote: one line under the headline figures, shown only when something was suppressed. */
+.disclosure {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}

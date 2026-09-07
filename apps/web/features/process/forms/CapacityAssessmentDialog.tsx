@@ -1,8 +1,8 @@
 'use client';
 
-import { capacityAssessmentFormSchema, capacityOutcomeLabel, type AwiProcess, type CapacityAssessmentForm } from '@mas/domain';
+import { AWI_DIAGNOSTIC_GROUPS, awiDiagnosticGroupLabel, capacityAssessmentFormSchema, capacityOutcomeLabel, type AwiProcess, type CapacityAssessmentForm } from '@mas/domain';
 import { useT } from '@mas/messages';
-import { Button, DateField, Dialog, RadioGroup, TextField, TextareaField, useToast } from '@mas/ui';
+import { Button, DateField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -24,7 +24,7 @@ export function CapacityAssessmentDialog({ open, onClose, process }: { open: boo
   const [refusals, setRefusals] = useState<string[]>([]);
   const form = useForm<CapacityAssessmentForm>({
     resolver: zodResolver(capacityAssessmentFormSchema),
-    defaultValues: { decision: process.detail.concern.decisionInQuestion, assessedAt: now.toISOString().slice(0, 10), assessorName: user ? `${user.givenName} ${user.familyName}` : '', assessorRole: user?.jobTitle ?? '', understands: 'partly', retains: 'partly', weighs: 'partly', communicates: 'yes', acts: 'partly', evidence: '', outcome: 'fluctuating', wishesConsidered: process.detail.willAndPreferences?.presentWishes ?? '' },
+    defaultValues: { decision: process.detail.concern.decisionInQuestion, assessedAt: now.toISOString().slice(0, 10), assessorName: user ? `${user.givenName} ${user.familyName}` : '', assessorRole: user?.jobTitle ?? '', understands: 'partly', retains: 'partly', weighs: 'partly', communicates: 'yes', acts: 'partly', evidence: '', outcome: 'fluctuating', wishesConsidered: process.detail.willAndPreferences?.presentWishes ?? '', primaryDiagnosis: '' },
   });
   const errors = form.formState.errors;
 
@@ -52,6 +52,7 @@ export function CapacityAssessmentDialog({ open, onClose, process }: { open: boo
               outcome: v.outcome,
               evidence: t('forms.capacity.evidenceRecord', { evidence: v.evidence, understands: v.understands, retains: v.retains, weighs: v.weighs, communicates: v.communicates, acts: v.acts, wishes: v.wishesConsidered }),
               communicationSupport: v.communicationSupport || undefined,
+              primaryDiagnosis: v.primaryDiagnosis || undefined,
             },
           ],
         },
@@ -109,6 +110,7 @@ export function CapacityAssessmentDialog({ open, onClose, process }: { open: boo
           <TextField label={t('forms.capacity.role.label')} required {...form.register('assessorRole')} error={errors.assessorRole?.message} />
         </div>
         <TextField label={t('forms.capacity.communication.label')} {...form.register('communicationSupport')} hint={t('forms.capacity.communication.hint')} />
+        <SelectField label={t('forms.capacity.diagnosis.label')} hint={t('forms.capacity.diagnosis.hint')} {...form.register('primaryDiagnosis')} options={[{ value: '', label: t('forms.capacity.diagnosis.notRecorded') }, ...AWI_DIAGNOSTIC_GROUPS.map((g) => ({ value: g, label: awiDiagnosticGroupLabel(g) }))]} data-testid="capacity-diagnosis" />
         {FUNCTIONAL.map((item) => (
           <Controller key={item} control={form.control} name={item} render={({ field }) => <RadioGroup legend={t(`forms.capacity.functional.${item}` as const)} name={item} value={field.value} onChange={field.onChange} orientation="horizontal" options={[{ value: 'yes', label: t('common.answers.yes') }, { value: 'partly', label: t('forms.capacity.answers.partly') }, { value: 'no', label: t('common.answers.no') }]} />} />
         ))}

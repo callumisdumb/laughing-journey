@@ -31,6 +31,8 @@ export interface TableSpec {
   rows: Array<Array<string | number>>;
   /** Copy for an empty table. Defaults to the catalogue's reports.table.empty. */
   empty?: string;
+  /** The last row totals the rows above it, which the disclosure control needs to know (D-237). */
+  totalRow?: boolean;
 }
 
 export interface ChartSeries {
@@ -87,6 +89,8 @@ export interface ReportModel {
   /** The headline count used to decide whether the period is empty. */
   activity: number;
   hint?: { text: string; periodId: string };
+  /** Set once the disclosure control has run: how many cells and figures it suppressed. */
+  disclosure?: { suppressed: number };
 }
 
 export interface ReportCatalogueEntry {

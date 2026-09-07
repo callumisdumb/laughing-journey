@@ -1,14 +1,26 @@
 /**
  * MARAC SafeLives return fields, computed from MARAC referrals and meetings. SafeLives collects
  * meeting-level counts, so nothing here identifies a victim.
+ *
+ * The field set is the Scotland template's (docs/templates/New-Marac-data-template-Scotland-2025.xlsx,
+ * docs/RESEARCH.md 9.2): the fourteen referral sources of its columns G to T, and the victim and
+ * perpetrator characteristics of its columns U to AF. Older victims are counted from 65, the
+ * template's own threshold. What the record store does not hold (ethnicity, sexual orientation and
+ * gender identity, disability) is shown as not recorded, never as nought.
  */
-import { AGENCIES, agencyShort, type Dataset, formatDateTime, localDateOf, type MaracProcess, OFFICIAL } from '@mas/domain';
-import { formatNumber, t } from '@mas/messages';
+import { SAFELIVES_COLUMNS, SAFELIVES_NOT_HELD, SAFELIVES_SOURCES, SAFELIVES_SOURCE_AGENCY, formatDateTime, localDateOf, safeLivesColumnHeader, safeLivesSourceLabel, type Dataset, type MaracProcess, type SafeLivesColumn, type SafeLivesSource, OFFICIAL } from '@mas/domain';
+import { formatNumber, t, tKey } from '@mas/messages';
 import { agencyColourVar } from '@mas/ui';
 import { personById } from '@/lib/selectors';
 import { ageOn } from './helpers';
 import { countBy, pct, per10k, scaleColour, sum, type ChartSpec, type ReportModel, type ReportSection, type TableSpec } from './model';
 import { inPeriod, type Period } from './period';
+
+/** The chart's axis label for a source: short, so fourteen fit; the data table carries the full header. */
+const shortSourceLabel = (source: SafeLivesSource) => tKey(`reports.safeLives.short.${source}`);
+
+/** The characteristic columns of the template, U to AF, in order. */
+const CHARACTERISTIC_COLUMNS = SAFELIVES_COLUMNS.slice(SAFELIVES_COLUMNS.indexOf('minoritisedTotal')) as readonly SafeLivesColumn[];
 
 export function maracModel(data: Dataset, now: Date, period: Period, population: number): ReportModel {
   const maracs = data.processes.filter((p): p is MaracProcess => p.type === 'marac');
@@ -21,15 +33,24 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
   const judgement = referrals.filter((p) => p.detail.referral.professionalJudgementReferral);
   const withChildren = referrals.filter((p) => p.detail.referral.childPersonIds.length > 0);
   const children = sum(referrals.map((p) => p.detail.referral.childPersonIds.length));
-  const byAgency = countBy(referrals, (p) => p.detail.referral.referringAgency);
-  const agencies = AGENCIES.filter((a) => (byAgency.get(a) ?? 0) > 0);
-  const police = byAgency.get('police') ?? 0;
+  const bySource = countBy(referrals, (p) => p.detail.safeLivesReturn.referralSource);
+  const sources = SAFELIVES_SOURCES.filter((s) => (bySource.get(s) ?? 0) > 0);
+  const police = bySource.get('police') ?? 0;
   const populationLabel = formatNumber(population);
 
-  const victims = referrals.map((p) => ({ p, v: personById(data, p.detail.referral.victimPersonId) }));
+  const on = (p: MaracProcess) => localDateOf(p.detail.referral.receivedAt);
+  const victims = referrals.map((p) => ({ p, v: personById(data, p.detail.referral.victimPersonId), h: personById(data, p.detail.referral.perpetratorPersonId) }));
+  const age = (dob: string | undefined, day: string) => (dob ? ageOn(dob, day) : undefined);
   const male = victims.filter(({ v }) => v?.sex === 'male').length;
-  const older = victims.filter(({ p, v }) => v?.dateOfBirth && ageOn(v.dateOfBirth, localDateOf(p.detail.referral.receivedAt)) >= 61).length;
-  const interpreter = victims.filter(({ v }) => v?.communicationNeeds.interpreterLanguage).length;
+  const young = victims.filter(({ p, v }) => [16, 17].includes(age(v?.dateOfBirth, on(p)) ?? -1)).length;
+  const harmingUnder18 = victims.filter(({ p, h }) => (age(h?.dateOfBirth, on(p)) ?? 99) < 18).length;
+  const older = victims.filter(({ p, v }) => (age(v?.dateOfBirth, on(p)) ?? -1) >= 65).length;
+  const counted: Partial<Record<SafeLivesColumn, [number, string]>> = {
+    maleVictims: [male, t('reports.marac.victims.maleHow')],
+    victims16or17: [young, t('reports.marac.victims.youngHow')],
+    harmingUnder18: [harmingUnder18, t('reports.marac.victims.perpetratorHow')],
+    victims65Plus: [older, t('reports.marac.victims.olderHow')],
+  };
 
   const risk = referrals.map((p) => data.riskAssessments.find((r) => r.id === p.detail.referral.riskAssessmentId));
   const dash = risk.filter((r) => r?.tool === 'dash').length;
@@ -44,26 +65,31 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
   const dsdas = referrals.filter((p) => p.detail.links.dsdasConsidered).length;
   const transfers = maracs.filter((p) => p.detail.transfer && inPeriod(p.detail.transfer.at, period)).length;
 
+  const colourOf = (source: SafeLivesSource) => {
+    const agency = SAFELIVES_SOURCE_AGENCY[source];
+    return agency ? agencyColourVar(agency) : scaleColour(1);
+  };
   const chart: ChartSpec = {
-    id: 'marac-by-agency',
+    id: 'marac-by-source',
     kind: 'bar',
     title: t('reports.marac.chart.title'),
-    summary: t('reports.marac.chart.summary', { referrals: referrals.length, breakdown: agencies.length > 0 ? t('reports.marac.chart.summaryBreakdown', { list: agencies.map((a) => t('reports.marac.chart.summaryItem', { count: byAgency.get(a) ?? 0, agency: agencyShort(a) })).join(', ') }) : '' }),
-    categories: agencies.map((a) => agencyShort(a)),
-    categoryColours: agencies.map((a) => agencyColourVar(a)),
-    categoryLegend: agencies.map((a) => ({ key: a, label: agencyShort(a), colour: agencyColourVar(a), agency: a })),
+    summary: t('reports.marac.chart.summary', { referrals: referrals.length, breakdown: sources.length > 0 ? t('reports.marac.chart.summaryBreakdown', { list: sources.map((s) => t('reports.marac.chart.summaryItem', { count: bySource.get(s) ?? 0, source: shortSourceLabel(s) })).join(', ') }) : '' }),
+    categories: sources.map((s) => shortSourceLabel(s)),
+    categoryLabels: sources.map((s) => safeLivesSourceLabel(s)),
+    categoryColours: sources.map((s) => colourOf(s)),
+    categoryLegend: sources.map((s) => ({ key: s, label: shortSourceLabel(s), colour: colourOf(s), agency: SAFELIVES_SOURCE_AGENCY[s] })),
     series: [{ key: 'referrals', label: t('reports.marac.chart.series'), colour: scaleColour(0) }],
-    values: [agencies.map((a) => byAgency.get(a) ?? 0)],
+    values: [sources.map((s) => bySource.get(s) ?? 0)],
     xLabel: t('reports.marac.chart.xLabel'),
     yLabel: t('reports.marac.chart.yLabel'),
   };
 
-  const agencyTable: TableSpec = {
-    id: 'marac-agency-table',
-    columns: [t('reports.marac.columns.referringAgency'), t('reports.marac.columns.referrals'), t('reports.marac.columns.share')],
+  const sourceTable: TableSpec = {
+    id: 'marac-source-table',
+    columns: [t('reports.marac.columns.referralSource'), t('reports.marac.columns.referrals'), t('reports.marac.columns.share')],
     numeric: [1, 2],
-    rows: agencies.map((a) => [agencyShort(a), byAgency.get(a) ?? 0, pct(byAgency.get(a) ?? 0, referrals.length)]),
-    empty: t('reports.marac.tables.agencyEmpty'),
+    rows: sources.map((s) => [safeLivesSourceLabel(s), bySource.get(s) ?? 0, pct(bySource.get(s) ?? 0, referrals.length)]),
+    empty: t('reports.marac.tables.sourceEmpty'),
   };
 
   const casesTable: TableSpec = {
@@ -85,18 +111,16 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
     ],
   };
 
+  // The template's characteristic columns, U to AF, in its order and its words.
   const victimTable: TableSpec = {
     id: 'marac-victims',
     columns: [t('reports.marac.columns.characteristic'), t('reports.marac.columns.cases'), t('reports.marac.columns.derived')],
     numeric: [1],
-    rows: [
-      [t('reports.marac.victims.male'), male, t('reports.marac.victims.maleHow')],
-      [t('reports.marac.victims.older'), older, t('reports.marac.victims.olderHow')],
-      [t('reports.marac.victims.minority'), t('reports.marac.victims.notRecorded'), t('reports.marac.victims.notRecordedHow')],
-      [t('reports.marac.victims.interpreter'), interpreter, t('reports.marac.victims.interpreterHow')],
-      [t('reports.marac.victims.lgbt'), t('reports.marac.victims.notRecorded'), t('reports.marac.victims.notRecordedHow')],
-      [t('reports.marac.victims.disability'), t('reports.marac.victims.notRecorded'), t('reports.marac.victims.notRecordedHow')],
-    ],
+    rows: CHARACTERISTIC_COLUMNS.map((column) => {
+      const known = counted[column];
+      if (known) return [safeLivesColumnHeader(column), known[0], known[1]];
+      return [safeLivesColumnHeader(column), t('reports.marac.victims.notRecorded'), t('reports.marac.victims.notRecordedHow')];
+    }),
   };
 
   const riskTable: TableSpec = {
@@ -126,9 +150,9 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
   };
 
   const sections: ReportSection[] = [
-    { id: 'agency', title: t('reports.marac.sections.agency'), note: t('reports.marac.sections.agencyNote'), chart, tables: [agencyTable] },
+    { id: 'source', title: t('reports.marac.sections.source'), note: t('reports.marac.sections.sourceNote'), chart, tables: [sourceTable] },
     { id: 'cases', title: t('reports.marac.sections.cases'), note: t('reports.marac.sections.casesNote'), tables: [casesTable] },
-    { id: 'victims', title: t('reports.marac.sections.victims'), note: t('reports.marac.sections.victimsNote'), tables: [victimTable] },
+    { id: 'victims', title: t('reports.marac.sections.victims'), note: t('reports.marac.sections.victimsNote', { count: SAFELIVES_NOT_HELD.length }), tables: [victimTable] },
     { id: 'risk', title: t('reports.marac.sections.risk'), tables: [riskTable] },
     { id: 'links', title: t('reports.marac.sections.links'), tables: [linksTable] },
   ];
@@ -141,9 +165,9 @@ export function maracModel(data: Dataset, now: Date, period: Period, population:
     // Annex 2: aggregate counts that name no one are routine Official and carry no marking (D-058).
     classification: OFFICIAL,
     accessRestriction: 'none',
-    meta: [t('reports.meta.period', { period: period.label }), t('reports.marac.meta.computed', { dateTime: formatDateTime(now), records: maracs.length, referrals: referrals.length }), t('reports.marac.meta.population', { population: populationLabel }), t('reports.meta.verify')],
-    verify: [t('reports.marac.verify.template'), t('reports.marac.verify.olderThreshold')],
-    sources: [t('reports.marac.sources.guidance'), t('reports.marac.sources.keyFindings'), t('reports.marac.sources.spotlight')],
+    meta: [t('reports.meta.period', { period: period.label }), t('reports.marac.meta.computed', { dateTime: formatDateTime(now), records: maracs.length, referrals: referrals.length }), t('reports.marac.meta.population', { population: populationLabel }), t('reports.marac.meta.fieldSet')],
+    verify: [],
+    sources: [t('reports.marac.sources.template'), t('reports.marac.sources.guidance'), t('reports.marac.sources.keyFindings')],
     figures: [
       { id: 'referrals', label: t('reports.marac.figures.referrals'), value: String(referrals.length) },
       { id: 'discussed', label: t('reports.marac.figures.discussed'), value: String(discussed.length), note: t('reports.marac.figures.discussedNote', { count: meetingsHeld }) },

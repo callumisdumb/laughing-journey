@@ -344,7 +344,7 @@ export function seedKayleighDocherty(ctx: BuildContext): void {
         dsdasConsidered: true,
         dsdasNote: 'Not applicable to Kayleigh: she already knows Ryan Kerr\'s history. To be reconsidered if he forms a new relationship (Right to Know route via MATAC).',
       },
-      safeLivesReturn: { referralSource: 'Police Scotland', repeat: true, childrenCount: 2, outcomeCodes: [] },
+      safeLivesReturn: { referralSource: 'police', repeat: true, childrenCount: 2, outcomeCodes: [] },
     },
   };
   marac.parties.push(...partiesFromRoles(marac, ctx.data.relationships).filter((p) => p.party === 'perpetrator-associates'));

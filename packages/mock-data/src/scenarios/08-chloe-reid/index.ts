@@ -451,7 +451,8 @@ export function seedChloeReid(ctx: BuildContext): void {
         dsdasConsidered: true,
         dsdasNote: 'Power to Tell disclosure made to Chloe on 31 Aug 2026 by DC Sutherland: the outline of Jordan Blake\'s March 2025 conviction and the non-harassment order. Chloe said she had not known about the order.',
       },
-      safeLivesReturn: { referralSource: 'Health (midwifery)', repeat: false, childrenCount: 0, outcomeCodes: [] },
+      // A community midwife's referral counts as secondary care in the SafeLives return: maternity is a health board service, not a practice (docs/RESEARCH.md 9.2).
+      safeLivesReturn: { referralSource: 'secondaryCare', repeat: false, childrenCount: 0, outcomeCodes: [] },
     },
   };
   marac.parties.push(...partiesFromRoles(marac, ctx.data.relationships).filter((p) => p.party === 'perpetrator-associates'));

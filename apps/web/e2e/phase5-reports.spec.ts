@@ -3,15 +3,13 @@ import { capture, expectNoAxeViolations, setAppearance, signInAs, waitForData } 
 
 const PHASE = 'phase-5';
 
-const TO_VERIFY = 'Field set to verify against the current template';
-
 const REPORTS = [
-  // ASP, CP and MAPPA now cite the template their field set came from; MARAC and AWI still await theirs.
+  // ASP, CP, MAPPA and MARAC cite the template their field set came from; AWI cites the Commission's tables.
   { kind: 'asp', title: 'ASP biennial report figures', user: 'usr_moira_gilmour', chart: /Referrals by quarter and source agency/, fieldSet: 'Field set from the ASP data workbook 2026-27, read from the workbook itself' },
   { kind: 'cp', title: 'Child Protection Register statistics', user: 'usr_janet_kerr', chart: /Registrations and de-registrations by month/, fieldSet: "Field set from Children's Social Work Statistics: Child Protection 2024-25" },
-  { kind: 'marac', title: 'MARAC SafeLives return', user: 'usr_karen_findlay', chart: /Referrals by agency/, fieldSet: TO_VERIFY },
+  { kind: 'marac', title: 'MARAC SafeLives return', user: 'usr_karen_findlay', chart: /Referrals by source/, fieldSet: 'Field set from the SafeLives MARAC data template, Scotland 2025, read from the template itself' },
   { kind: 'mappa', title: 'MAPPA annual report counts', user: 'usr_priya_sharif', chart: /Offenders by level and category/, fieldSet: 'Annex 3 of the MAPPA National Guidance (2022) sets Tables 1 to 9' },
-  { kind: 'awi', title: 'AWI application timeliness', user: 'usr_graeme_dunlop', chart: /Applications by route and applicant/, fieldSet: TO_VERIFY },
+  { kind: 'awi', title: 'AWI application timeliness', user: 'usr_graeme_dunlop', chart: /Applications by route and applicant/, fieldSet: "Field set from the Mental Welfare Commission's Adults with Incapacity Act monitoring report 2024-25" },
 ] as const;
 
 test.describe('reports', () => {
@@ -64,7 +62,11 @@ test.describe('reports', () => {
     const table8 = page.getByRole('region', { name: /^Table 8:/ });
     await expect(table8.getByRole('row')).toHaveCount(23); // 22 rows plus the header
     await expect(table8.getByRole('row', { name: /Gypsy Traveller/ })).toContainText('0');
-    await expect(table8.getByRole('row', { name: /Data Not held/ })).toContainText('100.0');
+    // Four offenders under "Data Not held" is a count of five or fewer, so the cell and its percentage are
+    // suppressed and the footnote says why (D-237): the rule holds on the annex's own table too.
+    await expect(table8.getByRole('row', { name: /Data Not held/ })).toContainText('*');
+    await expect(table8.getByRole('row', { name: /Data Not held/ })).not.toContainText('100.0');
+    await expect(page.getByText(/suppressed: any count of five or fewer/).first()).toBeVisible();
     // The note is the section's, printed above the table rather than inside its region.
     await expect(page.getByText(/The dataset holds no ethnicity, by design/)).toBeVisible();
     // Table 5 has no Level 1 row: Category 3 offenders cannot be managed at Level 1.

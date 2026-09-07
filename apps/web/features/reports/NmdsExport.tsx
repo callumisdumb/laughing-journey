@@ -20,6 +20,7 @@ import {
   aspInquiryActionLabel,
   aspReferralSourceLabel,
   formatDate,
+  formatMonth,
   harmTypeLabel,
   lsiServiceTypeLabel,
   classify,
@@ -287,6 +288,9 @@ export function NmdsExport() {
           days: Math.abs(days),
           overdue: days < 0 ? 'yes' : 'no',
         })}
+      </p>
+      <p className={styles.meta}>
+        {t('reports.nmds.apc', { hasApc: range.apcReporting ? 'yes' : 'no', when: range.apcReporting ? formatMonth(range.apcReporting) : '' })} {t('reports.nmds.datesSource')}
       </p>
 
       <Sheet>

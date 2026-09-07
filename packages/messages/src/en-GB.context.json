@@ -3120,6 +3120,9 @@
   },
   "audit": {
     "acts": {
+      "attach": {
+        "where": "Audit log, the act column, for a file attached to a record"
+      },
       "breakGlass": {
         "maxLength": 16,
         "where": "Act pill and act filter option on the Audit screen for a break-glass grant"
@@ -3382,6 +3385,9 @@
       "config": {
         "maxLength": 20,
         "where": "Muted target type under the target in an audit row"
+      },
+      "document": {
+        "where": "Audit log, the target column, for an attached file"
       },
       "event": {
         "maxLength": 20,
@@ -5365,6 +5371,9 @@
       "proposedEpisode": {
         "where": "Two-way connectors: connectors.outbox.proposedEpisode"
       },
+      "proposedLead": {
+        "where": "Outbox: the proposal a lead reallocation makes to the source system"
+      },
       "proposedStage": {
         "where": "Outbox proposal summary for a stage change proposed to the source system."
       },
@@ -6534,6 +6543,80 @@
       }
     }
   },
+  "documents": {
+    "attach": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    },
+    "audit": {
+      "attached": {
+        "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+      }
+    },
+    "chosen": {
+      "where": "Attach a file dialog, the line under the file field once a file is chosen"
+    },
+    "classificationNote": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    },
+    "dialogTitle": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    },
+    "download": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    },
+    "file": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    },
+    "fileHint": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    },
+    "list": {
+      "empty": {
+        "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+      },
+      "item": {
+        "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+      },
+      "meta": {
+        "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+      },
+      "title": {
+        "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+      }
+    },
+    "note": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    },
+    "noteHint": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    },
+    "scanning": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    },
+    "submit": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    },
+    "target": {
+      "event": {
+        "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+      },
+      "meeting": {
+        "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+      },
+      "person": {
+        "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+      },
+      "process": {
+        "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+      }
+    },
+    "toastText": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    },
+    "toastTitle": {
+      "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
+    }
+  },
   "domain": {
     "access": {
       "breakGlassActive": {
@@ -7191,6 +7274,39 @@
       "remote": {
         "maxLength": 12,
         "where": "Attendance of an invitee in the meeting workspace, drawer and minutes"
+      }
+    },
+    "awiDiagnosticGroups": {
+      "acquiredBrainInjury": {
+        "verbatim": true,
+        "where": "Primary diagnostic group as Table 1 of the Mental Welfare Commission's Adults with Incapacity Act monitoring report 2024-25 prints it; a row label on the AWI report and an option on the capacity assessment dialog"
+      },
+      "alcoholRelatedBrainDamage": {
+        "verbatim": true,
+        "where": "Primary diagnostic group as Table 1 of the Mental Welfare Commission's Adults with Incapacity Act monitoring report 2024-25 prints it; a row label on the AWI report and an option on the capacity assessment dialog"
+      },
+      "dementia": {
+        "verbatim": true,
+        "where": "Primary diagnostic group as Table 1 of the Mental Welfare Commission's Adults with Incapacity Act monitoring report 2024-25 prints it; a row label on the AWI report and an option on the capacity assessment dialog"
+      },
+      "inabilityToCommunicate": {
+        "verbatim": true,
+        "where": "Primary diagnostic group as Table 1 of the Mental Welfare Commission's Adults with Incapacity Act monitoring report 2024-25 prints it; a row label on the AWI report and an option on the capacity assessment dialog"
+      },
+      "learningDisability": {
+        "verbatim": true,
+        "where": "Primary diagnostic group as Table 1 of the Mental Welfare Commission's Adults with Incapacity Act monitoring report 2024-25 prints it; a row label on the AWI report and an option on the capacity assessment dialog"
+      },
+      "mentalIllness": {
+        "verbatim": true,
+        "where": "Primary diagnostic group as Table 1 of the Mental Welfare Commission's Adults with Incapacity Act monitoring report 2024-25 prints it; a row label on the AWI report and an option on the capacity assessment dialog"
+      },
+      "other": {
+        "verbatim": true,
+        "where": "Primary diagnostic group as Table 1 of the Mental Welfare Commission's Adults with Incapacity Act monitoring report 2024-25 prints it; a row label on the AWI report and an option on the capacity assessment dialog"
+      },
+      "unknown": {
+        "where": "Row label of the AWI report's diagnosis tables for an adult with no diagnostic group recorded; the Commission's Table 2 prints Unknown"
       }
     },
     "awiOrderKinds": {
@@ -8515,6 +8631,9 @@
         "maxLength": 28,
         "where": "Kind label of a inboxArrived notification, on the panel row and the Home counts"
       },
+      "invitationResponded": {
+        "where": "Notification kind label: an invitee answered a meeting invitation"
+      },
       "involvementDecided": {
         "maxLength": 28,
         "where": "Kind label of a involvementDecided notification, on the panel row and the Home counts"
@@ -8522,6 +8641,9 @@
       "involvementRequested": {
         "maxLength": 28,
         "where": "Kind label of a involvementRequested notification, on the panel row and the Home counts"
+      },
+      "leadReallocated": {
+        "where": "Notification kind label: the lead worker on a case changed"
       },
       "meetingCancelled": {
         "maxLength": 28,
@@ -8542,6 +8664,9 @@
       "membershipRemoved": {
         "maxLength": 28,
         "where": "Kind label of a membershipRemoved notification, on the panel row and the Home counts"
+      },
+      "minuteCorrected": {
+        "where": "Notification kind label: an approved minute was corrected by addendum"
       },
       "minuteDistributed": {
         "maxLength": 28,
@@ -9044,6 +9169,78 @@
         }
       }
     },
+    "safeLivesSources": {
+      "adultSupportAndProtection": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column R header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Adult Social Care\": the alternative wording for a deployment outside Scotland"
+      },
+      "childrenAndFamiliesSocialWork": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column I header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Children's Social Care\": the alternative wording for a deployment outside Scotland"
+      },
+      "education": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column L header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Education\": the alternative wording for a deployment outside Scotland"
+      },
+      "housing": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column M header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Housing\": the alternative wording for a deployment outside Scotland"
+      },
+      "idaa": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column H header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"IDVA\": the alternative wording for a deployment outside Scotland"
+      },
+      "justiceSocialWork": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column O header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Probation\": the alternative wording for a deployment outside Scotland"
+      },
+      "mash": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column S header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"MASH\": the alternative wording for a deployment outside Scotland"
+      },
+      "mentalHealth": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column N header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Mental Health\": the alternative wording for a deployment outside Scotland"
+      },
+      "other": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column T header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Other\": the alternative wording for a deployment outside Scotland"
+      },
+      "police": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column G header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Police\": the alternative wording for a deployment outside Scotland"
+      },
+      "primaryCare": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column J header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Primary Care Service\": the alternative wording for a deployment outside Scotland"
+      },
+      "secondaryCare": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column K header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Secondary Care/ Acute trust\": the alternative wording for a deployment outside Scotland"
+      },
+      "substanceMisuse": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column Q header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Substance Abuse\": the alternative wording for a deployment outside Scotland"
+      },
+      "voluntarySector": {
+        "screenshot": "safelives/safelives-return-light-comfortable.png",
+        "verbatim": true,
+        "where": "Column P header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim, and the label of that referral source on the MARAC referral form and report. The UK template (docs/templates/New-Marac-data-template-2025.xlsx) heads this column \"Voluntary Sector\": the alternative wording for a deployment outside Scotland"
+      }
+    },
     "shareStatuses": {
       "queued": {
         "maxLength": 12,
@@ -9280,6 +9477,9 @@
       "aspRecordSupportPlan": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
       },
+      "aspReturnToInquiry": {
+        "where": "Stage engine: the ASP transition that returns an investigation to the inquiry"
+      },
       "aspReviewOutcome": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
       },
@@ -9349,6 +9549,9 @@
       "cpRecordMedical": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
       },
+      "cpReturnToIrd": {
+        "where": "Stage engine: the CP transition that returns an investigation to a reconvened IRD"
+      },
       "cpReviewCppmHeld": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
       },
@@ -9396,6 +9599,9 @@
       },
       "maracRecordResearchReturn": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "maracReturnToMeeting": {
+        "where": "Stage engine: the MARAC transition that returns an action plan to the meeting for a re-hearing"
       },
       "maracScheduleMeeting": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
@@ -9552,6 +9758,12 @@
       "actionTitleRequired": {
         "where": "Refusal from the action pipeline, shown in the add, reassign and cancel dialogs."
       },
+      "addendumNowRecordedRequired": {
+        "where": "Correct the minute dialog, refusal"
+      },
+      "addendumRecordedRequired": {
+        "where": "Correct the minute dialog, refusal"
+      },
       "addressMissing": {
         "where": "A create or edit dialog, refusal summary at the top of the body"
       },
@@ -9702,6 +9914,24 @@
       "disclosureRecipientRequired": {
         "where": "Refusal listed on a record dialog"
       },
+      "documentEmpty": {
+        "where": "Attach a file dialog, refusal"
+      },
+      "documentNameRequired": {
+        "where": "Attach a file dialog, refusal"
+      },
+      "documentParentMissing": {
+        "where": "Attach a file dialog, refusal"
+      },
+      "documentRecordFull": {
+        "where": "Attach a file dialog, refusal when the record's 4 MB cap would be passed"
+      },
+      "documentTooLarge": {
+        "where": "Attach a file dialog, refusal when the file is over 1 MB"
+      },
+      "documentTypeRequired": {
+        "where": "Attach a file dialog, refusal"
+      },
       "dsdasRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
@@ -9786,6 +10016,12 @@
       "investigationSummaryRequired": {
         "where": "Refusal listed on a record dialog"
       },
+      "invitationDeclineReasonRequired": {
+        "where": "Your invitation card on the meeting workspace, refusal"
+      },
+      "invitationMissing": {
+        "where": "Your invitation card on the meeting workspace, refusal"
+      },
       "inviteesRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
@@ -9807,6 +10043,9 @@
       "involvementReasonRequired": {
         "where": "Refusals from the write pipeline for involvement requests."
       },
+      "irdNotConvened": {
+        "where": "What happens next: the return to IRD before an IRD exists"
+      },
       "irdTripartiteRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
@@ -9816,8 +10055,23 @@
       "lawfulBasisRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
+      "leadNotYours": {
+        "where": "Reallocate the lead dialog, refusal"
+      },
       "leadProfessionalRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "leadReasonRequired": {
+        "where": "Reallocate the lead dialog, refusal"
+      },
+      "leadSameUser": {
+        "where": "Reallocate the lead dialog, refusal"
+      },
+      "leadWrongAgency": {
+        "where": "Reallocate the lead dialog, refusal"
+      },
+      "leadWrongRole": {
+        "where": "Reallocate the lead dialog, refusal"
       },
       "levelRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -9830,6 +10084,9 @@
       },
       "maracMeetingRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "maracNotHeard": {
+        "where": "What happens next: the action plan or the return before the case has been heard"
       },
       "maracPlanRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -9882,8 +10139,14 @@
       "mhoRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
+      "minuteNotApproved": {
+        "where": "Correct the minute dialog, refusal"
+      },
       "moveDateRequired": {
         "where": "A create or edit dialog, refusal summary at the top of the body"
+      },
+      "moveNobodyMoving": {
+        "where": "Move the household dialog, refusal"
       },
       "moveSameAddress": {
         "where": "A create or edit dialog, refusal summary at the top of the body"
@@ -10104,6 +10367,18 @@
       "significantHarmDecisionRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
+      "substituteExcluded": {
+        "where": "Your invitation card, refusal when the substitute is an excluded party"
+      },
+      "substituteRequired": {
+        "where": "Your invitation card, refusal"
+      },
+      "substituteSameAgency": {
+        "where": "Your invitation card, refusal"
+      },
+      "substituteSelf": {
+        "where": "Your invitation card, refusal"
+      },
       "summaryRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
@@ -10202,6 +10477,17 @@
           "maxLength": 30,
           "screenshot": "phase-3/process-awi-capacity-form-light-comfortable.png",
           "where": "Label of the decision field on the capacity assessment form"
+        }
+      },
+      "diagnosis": {
+        "hint": {
+          "where": "Hint under the diagnostic group select on the capacity assessment dialog"
+        },
+        "label": {
+          "where": "Label of the diagnostic group select on the capacity assessment dialog"
+        },
+        "notRecorded": {
+          "where": "The empty option of the diagnostic group select on the capacity assessment dialog"
         }
       },
       "event": {
@@ -13532,6 +13818,59 @@
         "where": "Toast title after the meeting is closed"
       }
     },
+    "correction": {
+      "action": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "audit": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "dialogTitle": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "entry": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "eventDetail": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "eventTitle": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "intro": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "listTitle": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "necessity": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "nowRecorded": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "purpose": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "reason": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "recorded": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "shareSummary": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "submit": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "toastText": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      },
+      "toastTitle": {
+        "where": "Correct the minute dialog, its list under the minute and the audit and chronology lines it writes"
+      }
+    },
     "during": {
       "actions": {
         "action": {
@@ -13822,6 +14161,84 @@
       },
       "wrongStage": {
         "where": "First line of the close meeting dialog when the meeting's transition fires from a stage the case has not reached"
+      }
+    },
+    "invitation": {
+      "accept": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "answered": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "audit": {
+        "accepted": {
+          "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+        },
+        "declined": {
+          "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+        },
+        "substitute": {
+          "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+        }
+      },
+      "changeAnswer": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "decline": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "declineReason": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "declineReasonHint": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "intro": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "meta": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "responseTag": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "submit": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "substitute": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "substituteHint": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "substituteNote": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "substitutePlaceholder": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "substituteReason": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "substituteWho": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "title": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+      },
+      "toast": {
+        "accepted": {
+          "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+        },
+        "declined": {
+          "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+        },
+        "substitute": {
+          "where": "Your invitation card on the meeting workspace, and the invitee list tag"
+        }
+      },
+      "toastText": {
+        "where": "Your invitation card on the meeting workspace, and the invitee list tag"
       }
     },
     "list": {
@@ -15347,11 +15764,17 @@
       "inboxArrived": {
         "where": "Rendered text of a inboxArrived notification, in the panel, on Home and in the drawer"
       },
+      "invitationResponded": {
+        "where": "Notification text to the chair when an invitee answers"
+      },
       "involvementDecided": {
         "where": "Rendered text of a involvementDecided notification, in the panel, on Home and in the drawer"
       },
       "involvementRequested": {
         "where": "Rendered text of a involvementRequested notification, in the panel, on Home and in the drawer"
+      },
+      "leadReallocated": {
+        "where": "Notification text to the new lead and the former lead"
       },
       "meetingCancelled": {
         "where": "Rendered text of a meetingCancelled notification, in the panel, on Home and in the drawer"
@@ -15367,6 +15790,9 @@
       },
       "membershipRemoved": {
         "where": "Rendered text of a membershipRemoved notification, in the panel, on Home and in the drawer"
+      },
+      "minuteCorrected": {
+        "where": "Notification text to each original recipient of a corrected minute"
       },
       "minuteDistributed": {
         "where": "Rendered text of a minuteDistributed notification, in the panel, on Home and in the drawer"
@@ -15913,6 +16339,9 @@
       }
     },
     "documents": {
+      "attachedTo": {
+        "where": "Person record, Documents tab"
+      },
       "columns": {
         "date": {
           "maxLength": 12,
@@ -15945,6 +16374,9 @@
           "screenshot": "phase-2/person-360-light-comfortable.png",
           "where": "Empty state title on the Documents tab"
         }
+      },
+      "kindAttachment": {
+        "where": "Person record, Documents tab"
       },
       "source": {
         "screenshot": "phase-2/person-360-light-comfortable.png",
@@ -16276,6 +16708,68 @@
         },
         "toPlaceholder": {
           "where": "Record a move dialog"
+        }
+      },
+      "moveHousehold": {
+        "action": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "audit": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "dialogTitle": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "eventDetail": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "intro": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "moving": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "note": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "on": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "stayAddress": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "stayAddressNone": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "stayedNowhere": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "stayedReason": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "stayedTo": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "stays": {
+          "where": "Move the household dialog, the checkbox label once somebody is unticked"
+        },
+        "submit": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "to": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "toastText": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "toastTitle": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "toPlaceholder": {
+          "where": "Move the household dialog and the records it writes"
+        },
+        "who": {
+          "where": "Move the household dialog and the records it writes"
         }
       },
       "moveReason": {
@@ -17741,6 +18235,26 @@
           "where": "Button above the minutes print pack that returns to the meeting workspace; not printed"
         }
       },
+      "corrections": {
+        "entry": {
+          "where": "Minutes print pack, corrections section"
+        },
+        "nowRecorded": {
+          "where": "Minutes print pack, corrections section"
+        },
+        "reason": {
+          "where": "Minutes print pack, corrections section"
+        },
+        "recorded": {
+          "where": "Minutes print pack, corrections section"
+        },
+        "sent": {
+          "where": "Minutes print pack, corrections section"
+        },
+        "title": {
+          "where": "Minutes print pack, corrections section"
+        }
+      },
       "cover": {
         "chair": {
           "maxLength": 16,
@@ -18613,6 +19127,12 @@
         },
         "powers": {
           "where": "The record court event form on an adults with incapacity case."
+        },
+        "renewal": {
+          "where": "Checkbox label on the AWI court event form when an order is granted"
+        },
+        "renewalHint": {
+          "where": "Hint under the renewal checkbox on the AWI court event form"
         }
       },
       "awiPowers": {
@@ -19127,6 +19647,17 @@
       },
       "rationaleHint": {
         "where": "Hint under the rationale field on a transition form"
+      },
+      "return": {
+        "consequence": {
+          "where": "Return to an earlier stage, the transition form"
+        },
+        "reason": {
+          "where": "Return to an earlier stage, the transition form"
+        },
+        "reasonHint": {
+          "where": "Return to an earlier stage, the transition form"
+        }
       }
     },
     "head": {
@@ -19143,6 +19674,9 @@
         "maxLength": 30,
         "screenshot": "phase-3/process-cp-light-comfortable.png",
         "where": "Lead agency in the reference line of the process header"
+      },
+      "leadName": {
+        "where": "Case header, the lead worker line"
       },
       "nextMeeting": {
         "screenshot": "phase-3/process-cp-light-comfortable.png",
@@ -19250,6 +19784,53 @@
       },
       "submit": {
         "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      }
+    },
+    "lead": {
+      "action": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "audit": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "caseRole": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "dialogTitle": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "eventDetail": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "eventTitle": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "intro": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "memberReason": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "reason": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "reasonHint": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "submit": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "to": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "toastText": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "toastTitle": {
+        "where": "Reallocate the lead dialog and the records it writes"
+      },
+      "toPlaceholder": {
+        "where": "Reallocate the lead dialog and the records it writes"
       }
     },
     "linked": {
@@ -19541,6 +20122,12 @@
       },
       "perpetratorHint": {
         "where": "The start process dialog on a person record, when MARAC is chosen."
+      },
+      "referralSource": {
+        "where": "Label of the SafeLives referral source select on the start-a-process dialog, shown for a MARAC referral"
+      },
+      "referralSourceHint": {
+        "where": "Hint under the SafeLives referral source select on the start-a-process dialog"
       },
       "repeatLede": {
         "where": "Start a process dialog, the MARAC repeat warning"
@@ -20074,6 +20661,9 @@
         "researchSent": {
           "where": "Note on a clock the stage engine completes or starts."
         },
+        "returned": {
+          "where": "Clock note on a return transition"
+        },
         "reviewHeld": {
           "where": "Note on a clock the stage engine completes or starts."
         },
@@ -20247,6 +20837,9 @@
         },
         "researchSent": {
           "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "returned": {
+          "where": "Stage entry and chronology summary of a return transition"
         },
         "returnPurpose": {
           "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
@@ -20725,6 +21318,29 @@
           "where": "Series label in the AWI applications chart and its data table"
         }
       },
+      "categories": {
+        "age": {
+          "where": "Category cell of the AWI report's Table 1 or Table A1 block"
+        },
+        "diagnosis": {
+          "where": "Category cell of the AWI report's Table 1 or Table A1 block"
+        },
+        "diagnosticCategories": {
+          "where": "Category cell of the AWI report's Table 1 or Table A1 block"
+        },
+        "gender": {
+          "where": "Category cell of the AWI report's Table 1 or Table A1 block"
+        },
+        "guardian": {
+          "where": "Category cell of the AWI report's Table 1 or Table A1 block"
+        },
+        "guardianType": {
+          "where": "Category cell of the AWI report's Table 1 or Table A1 block"
+        },
+        "length": {
+          "where": "Category cell of the AWI report's Table 1 or Table A1 block"
+        }
+      },
       "chart": {
         "summary": {
           "where": "Accessible name of the AWI applications chart with the totals by applicant"
@@ -20751,13 +21367,25 @@
           "maxLength": 16,
           "where": "Column header in the AWI MHO report, interim order and orders granted tables"
         },
+        "category": {
+          "where": "Column header on the AWI report's Commission tables"
+        },
         "daysFromApplication": {
           "maxLength": 24,
           "where": "Column header in the AWI orders granted table"
         },
+        "diagnosis": {
+          "where": "Column header on the AWI report's Commission tables"
+        },
         "granted": {
           "maxLength": 12,
           "where": "Column header in the AWI interim orders and orders granted tables"
+        },
+        "grouping": {
+          "where": "Column header on the AWI report's Commission tables"
+        },
+        "guardianships": {
+          "where": "Column header on the AWI report's Commission tables"
         },
         "mhoNotified": {
           "maxLength": 16,
@@ -20766,6 +21394,12 @@
         "order": {
           "maxLength": 12,
           "where": "Column header in the AWI orders granted table"
+        },
+        "orders": {
+          "where": "Column header on the AWI report's Commission tables"
+        },
+        "percent": {
+          "where": "Column header on the AWI report's Commission tables"
         },
         "reportDue": {
           "maxLength": 16,
@@ -20776,8 +21410,10 @@
           "where": "Column header in the AWI interim orders table"
         },
         "status": {
-          "maxLength": 12,
-          "where": "Column header in the AWI MHO reports table"
+          "where": "Column header on the AWI report's Commission tables"
+        },
+        "timeBand": {
+          "where": "Column header on the AWI report's Commission tables"
         }
       },
       "figures": {
@@ -20792,6 +21428,12 @@
           "maxLength": 28,
           "screenshot": "phase-5/report-awi-light-comfortable.png",
           "where": "Headline figure label on the AWI report"
+        },
+        "granted": {
+          "where": "Headline figure label on the AWI report"
+        },
+        "grantedNote": {
+          "where": "Note under the guardianship orders granted headline figure"
         },
         "interim": {
           "maxLength": 24,
@@ -20824,10 +21466,53 @@
         },
         "mhoValue": {
           "where": "Value of the MHO reports figure on the AWI report: reports on time out of reports due"
+        }
+      },
+      "groups": {
+        "age16to24": {
+          "where": "Grouping label on the AWI report's Commission tables"
         },
-        "orders": {
-          "maxLength": 20,
-          "where": "Headline figure label on the AWI report"
+        "age25to44": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "age45to64": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "age65Plus": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "female": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "fourToFive": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "indefinite": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "localAuthority": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "male": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "new": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "overFive": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "private": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "renewal": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "unknownGender": {
+          "where": "Grouping label on the AWI report's Commission tables"
+        },
+        "zeroToThree": {
+          "where": "Grouping label on the AWI report's Commission tables"
         }
       },
       "hint": {
@@ -20850,8 +21535,7 @@
         }
       },
       "lede": {
-        "screenshot": "phase-5/report-awi-light-comfortable.png",
-        "where": "Lede under the AWI report title"
+        "where": "Lede under the AWI report heading"
       },
       "measures": {
         "assessments": {
@@ -20885,6 +21569,9 @@
       "meta": {
         "computed": {
           "where": "Meta line under the AWI report controls: when it was computed and from how many records"
+        },
+        "fieldSet": {
+          "where": "Last sentence of the AWI report's meta line, naming the report the field set came from"
         }
       },
       "mho": {
@@ -20928,7 +21615,7 @@
         "where": "Period line on the AWI card of the reports index"
       },
       "purpose": {
-        "where": "Purpose paragraph on the AWI card of the reports index"
+        "where": "Purpose paragraph on the AWI report's index card"
       },
       "recipient": {
         "where": "Who receives it line on the AWI card of the reports index"
@@ -20971,6 +21658,24 @@
         "decisions": {
           "where": "Section title on the AWI report"
         },
+        "extant": {
+          "where": "Title of an AWI report section"
+        },
+        "extantNote": {
+          "where": "Note under an AWI report section title"
+        },
+        "granted": {
+          "where": "Title of an AWI report section"
+        },
+        "grantedNote": {
+          "where": "Note under an AWI report section title"
+        },
+        "guardianType": {
+          "where": "Title of an AWI report section"
+        },
+        "guardianTypeNote": {
+          "where": "Note under an AWI report section title"
+        },
         "interim": {
           "where": "Section title on the AWI report"
         },
@@ -20989,21 +21694,26 @@
         "mhoRule": {
           "where": "First part of the MHO section note on the AWI report: the configured clock rule, its reference and source"
         },
-        "orders": {
-          "where": "Section title on the AWI report"
+        "renewals": {
+          "where": "Title of an AWI report section"
         },
-        "ordersMedian": {
-          "where": "Note under the orders granted section title on the AWI report when orders were granted"
-        },
-        "ordersNone": {
-          "where": "Note under the orders granted section title on the AWI report when no order was granted"
+        "renewalsNote": {
+          "where": "Note under an AWI report section title"
         },
         "routes": {
-          "screenshot": "phase-5/report-awi-light-comfortable.png",
-          "where": "Section title on the AWI report"
+          "where": "Title of an AWI report section"
         },
         "routesNote": {
-          "where": "Note under the applications by route section title on the AWI report"
+          "where": "Note under an AWI report section title"
+        },
+        "timeliness": {
+          "where": "Title of an AWI report section"
+        },
+        "timelinessNone": {
+          "where": "Note under an AWI report section title"
+        },
+        "timelinessNote": {
+          "where": "Note under an AWI report section title"
         }
       },
       "sources": {
@@ -21011,13 +21721,19 @@
           "where": "Source listed in the field set and sources panel of the AWI report"
         },
         "mwc": {
-          "where": "Source listed in the field set and sources panel of the AWI report"
+          "where": "Source line on the AWI report and its print pack citing the Commission report"
         },
         "opg": {
           "where": "Source listed in the field set and sources panel of the AWI report"
         }
       },
       "tables": {
+        "extantEmpty": {
+          "where": "Empty row of an AWI report table"
+        },
+        "grantedEmpty": {
+          "where": "Empty row of an AWI report table"
+        },
         "interimEmpty": {
           "where": "Empty row of the AWI interim orders table"
         },
@@ -21026,17 +21742,32 @@
         },
         "ordersEmpty": {
           "where": "Empty row of the AWI orders granted table"
+        },
+        "ordersTitle": {
+          "where": "Title of a table inside an AWI report section"
+        },
+        "renewalsByDiagnosisTitle": {
+          "where": "Title of a table inside an AWI report section"
+        }
+      },
+      "timeBands": {
+        "fiveToSix": {
+          "where": "Band label of the AWI report's time-from-application-to-grant table, as the Commission words it"
+        },
+        "overSix": {
+          "where": "Band label of the AWI report's time-from-application-to-grant table, as the Commission words it"
+        },
+        "threeToFour": {
+          "where": "Band label of the AWI report's time-from-application-to-grant table, as the Commission words it"
+        },
+        "twoMonthsOrLess": {
+          "where": "Band label of the AWI report's time-from-application-to-grant table, as the Commission words it"
         }
       },
       "title": {
         "maxLength": 36,
         "screenshot": "phase-5/report-awi-light-comfortable.png",
         "where": "Title of the AWI report on the index card, the report screen, its print pack and the audit entry"
-      },
-      "verify": {
-        "publications": {
-          "where": "Verification note in the field set and sources panel of the AWI report"
-        }
       }
     },
     "chart": {
@@ -21582,6 +22313,11 @@
         }
       }
     },
+    "disclosure": {
+      "footnote": {
+        "where": "Footnote under the headline figures of a report, on screen and in the print pack, when the disclosure control suppressed something"
+      }
+    },
     "figures": {
       "noneInPeriod": {
         "maxLength": 20,
@@ -21630,6 +22366,9 @@
       }
     },
     "index": {
+      "disclosure": {
+        "where": "Second footnote at the foot of the Reports index, stating the disclosure rule once"
+      },
       "emptyText": {
         "where": "Empty state text on the reports index"
       },
@@ -22534,9 +23273,8 @@
           "maxLength": 12,
           "where": "Column header in the MARAC referrals by agency table"
         },
-        "referringAgency": {
-          "maxLength": 20,
-          "where": "Column header in the MARAC referrals by agency table"
+        "referralSource": {
+          "where": "First column header of the MARAC report's referrals-by-source table"
         },
         "riskIdentification": {
           "maxLength": 24,
@@ -22671,9 +23409,15 @@
         "computed": {
           "where": "Meta line under the MARAC report controls: when it was computed and from how many records"
         },
+        "fieldSet": {
+          "where": "Last sentence of the MARAC report's meta line, naming the template the field set came from"
+        },
         "population": {
           "where": "Meta line under the MARAC report controls: the fictional population behind the rate"
         }
+      },
+      "openReturn": {
+        "where": "Button on the MARAC report that opens the SafeLives return file screen"
       },
       "periodLabel": {
         "maxLength": 32,
@@ -22707,13 +23451,6 @@
         }
       },
       "sections": {
-        "agency": {
-          "screenshot": "phase-5/report-marac-light-comfortable.png",
-          "where": "Section title on the MARAC report"
-        },
-        "agencyNote": {
-          "where": "Note under the referrals by agency section title on the MARAC report"
-        },
         "cases": {
           "where": "Section title on the MARAC report"
         },
@@ -22725,6 +23462,12 @@
         },
         "risk": {
           "where": "Section title on the MARAC report"
+        },
+        "source": {
+          "where": "Title of the MARAC report's referrals-by-source section"
+        },
+        "sourceNote": {
+          "where": "Note under the MARAC report's referrals-by-source section title"
         },
         "victims": {
           "where": "Section title on the MARAC report"
@@ -22740,13 +23483,13 @@
         "keyFindings": {
           "where": "Source listed in the field set and sources panel of the MARAC report"
         },
-        "spotlight": {
-          "where": "Source listed in the field set and sources panel of the MARAC report"
+        "template": {
+          "where": "Source line on the MARAC report and its print pack citing the SafeLives Scotland template"
         }
       },
       "tables": {
-        "agencyEmpty": {
-          "where": "Empty row of the MARAC referrals by agency table"
+        "sourceEmpty": {
+          "where": "Empty row of the MARAC report's referrals-by-source table"
         }
       },
       "title": {
@@ -22754,40 +23497,9 @@
         "screenshot": "phase-5/report-marac-light-comfortable.png",
         "where": "Title of the MARAC report on the index card, the report screen, its print pack and the audit entry"
       },
-      "verify": {
-        "olderThreshold": {
-          "where": "Verification note in the field set and sources panel of the MARAC report"
-        },
-        "template": {
-          "where": "Verification note in the field set and sources panel of the MARAC report"
-        }
-      },
       "victims": {
-        "disability": {
-          "verbatim": true,
-          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
-        },
-        "interpreter": {
-          "verbatim": true,
-          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
-        },
-        "interpreterHow": {
-          "where": "How it is derived cell for the interpreter row of the MARAC victim characteristics table"
-        },
-        "lgbt": {
-          "verbatim": true,
-          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
-        },
-        "male": {
-          "verbatim": true,
-          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
-        },
         "maleHow": {
           "where": "How it is derived cell for the male victims row of the MARAC victim characteristics table"
-        },
-        "minority": {
-          "verbatim": true,
-          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
         },
         "notRecorded": {
           "maxLength": 16,
@@ -22796,24 +23508,26 @@
         "notRecordedHow": {
           "where": "How it is derived cell for a field the record store does not hold in the MARAC victim characteristics table"
         },
-        "older": {
-          "verbatim": true,
-          "where": "Row label in the MARAC victim characteristics table; a SafeLives return field"
-        },
         "olderHow": {
           "where": "How it is derived cell for the older victims row of the MARAC victim characteristics table"
+        },
+        "perpetratorHow": {
+          "where": "How it is derived cell for the harming others under 18 row of the MARAC victim characteristics table"
+        },
+        "youngHow": {
+          "where": "How it is derived cell for the victims 16 or 17 row of the MARAC victim characteristics table"
         }
       }
     },
     "meta": {
       "period": {
         "where": "First meta line under the controls of the ASP, MARAC, MAPPA and AWI reports: the period"
-      },
-      "verify": {
-        "where": "Last meta line under the controls of the ASP, CP, MARAC and AWI reports: the field set still needs verifying"
       }
     },
     "nmds": {
+      "apc": {
+        "where": "Line under the quarter's deadline on the ASP data workbook return, naming when Adult Protection Committees can expect the reporting"
+      },
       "audit": {
         "where": "Audit entry label when the ASP data workbook is filled"
       },
@@ -22973,6 +23687,9 @@
           "maxLength": 16,
           "where": "Column header of a return preview table: value"
         }
+      },
+      "datesSource": {
+        "where": "Line under the quarter's deadline on the ASP data workbook return, citing the web page the return dates were read from"
       },
       "failuresWarning": {
         "where": "Warning shown above the fill controls when a consistency check fails"
@@ -23185,6 +23902,300 @@
       },
       "yearToDate": {
         "where": "Reporting period option for the AWI reporting year to date"
+      }
+    },
+    "safeLives": {
+      "audit": {
+        "where": "Audit entry label for filling the SafeLives return"
+      },
+      "backToReport": {
+        "where": "Link beside the quarter select back to the MARAC report"
+      },
+      "blankCell": {
+        "where": "Value cell of a preview row the return leaves blank"
+      },
+      "blankMeta": {
+        "where": "Meta of the card listing the columns the return leaves blank"
+      },
+      "blankText": {
+        "where": "Body of the card listing the columns the return leaves blank, saying why"
+      },
+      "blankTitle": {
+        "where": "Title of the card listing the columns the return leaves blank"
+      },
+      "checkDetail": {
+        "where": "The two sides of an arithmetic check, at the end of its line"
+      },
+      "checkRow": {
+        "where": "One line of the arithmetic checks list: the meeting date and the check"
+      },
+      "checks": {
+        "children": {
+          "where": "Arithmetic check label on the SafeLives return file screen"
+        },
+        "repeats": {
+          "where": "Arithmetic check label on the SafeLives return file screen"
+        },
+        "sources": {
+          "where": "Arithmetic check label on the SafeLives return file screen"
+        }
+      },
+      "checksMeta": {
+        "where": "Meta of the arithmetic checks card on the SafeLives return file screen"
+      },
+      "checksNone": {
+        "where": "Body of the arithmetic checks card when no meeting was held in the quarter"
+      },
+      "checkStates": {
+        "fail": {
+          "where": "Pill beside an arithmetic check that fails"
+        },
+        "pass": {
+          "where": "Pill beside an arithmetic check that passes"
+        }
+      },
+      "checksTitle": {
+        "where": "Title of the arithmetic checks card on the SafeLives return file screen"
+      },
+      "chooseTemplate": {
+        "where": "Button and file input label on the template card"
+      },
+      "classification": {
+        "where": "Second sentence of the meta line on the SafeLives return file screen"
+      },
+      "columns": {
+        "casesDiscussed": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column C header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "casesWithChildren": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column F header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "childrenInHousehold": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column E header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "disabled": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column W header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "ethnicityAsian": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column AB header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "ethnicityBlack": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column AC header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "ethnicityMixed": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column AD header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "ethnicityOther": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column AF header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "ethnicityOtherWhite": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column AE header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "harmingUnder18": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column Z header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "lgbtq": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column V header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "maleVictims": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column X header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "maracName": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column A header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "meetingDate": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column B header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "minoritisedTotal": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column U header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "repeatCases": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column D header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "victims16or17": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column Y header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        },
+        "victims65Plus": {
+          "screenshot": "safelives/safelives-return-light-comfortable.png",
+          "verbatim": true,
+          "where": "Column AA header of the SafeLives MARAC data template, Scotland 2025 (docs/templates/New-Marac-data-template-Scotland-2025.xlsx), verbatim; also a row label in the MARAC report's victim characteristics table and the return preview"
+        }
+      },
+      "emptyText": {
+        "where": "Empty state text on the SafeLives return file screen when the quarter holds no meeting"
+      },
+      "emptyTitle": {
+        "where": "Empty state title on the SafeLives return file screen when the quarter holds no meeting"
+      },
+      "failuresWarning": {
+        "where": "Warning on the template card when an arithmetic check fails"
+      },
+      "filled": {
+        "text": {
+          "where": "Toast text once the return is filled: rows and cells"
+        },
+        "title": {
+          "where": "Toast title once the return is filled"
+        }
+      },
+      "headersRow": {
+        "where": "One line of the refusal list: the cell, the expected header and the one found"
+      },
+      "headersTitle": {
+        "where": "Title of the refusal list when the chosen file has different headers from the Scotland template"
+      },
+      "lede": {
+        "where": "Lede under the SafeLives return file heading"
+      },
+      "meta": {
+        "where": "Meta line on the SafeLives return file screen: the MARAC name, the quarter and how many meetings it holds"
+      },
+      "preview": {
+        "cell": {
+          "where": "Second column header of the per-meeting preview table"
+        },
+        "column": {
+          "where": "First column header of the per-meeting preview table"
+        },
+        "value": {
+          "where": "Third column header of the per-meeting preview table"
+        }
+      },
+      "quarter": {
+        "where": "An option of the quarter select on the SafeLives return file screen: the financial-year quarter and its dates"
+      },
+      "quarterLabel": {
+        "where": "Label of the quarter select on the SafeLives return file screen"
+      },
+      "refused": {
+        "headers": {
+          "where": "Toast text when the header row is not the Scotland template"
+        },
+        "noSheet": {
+          "where": "Toast text when the chosen workbook has no sheet"
+        },
+        "notEmpty": {
+          "where": "Toast text when the chosen copy already holds rows"
+        },
+        "title": {
+          "where": "Toast title when the chosen file is refused"
+        },
+        "unreadable": {
+          "where": "Toast text when the chosen file is not a workbook"
+        }
+      },
+      "rowMeta": {
+        "where": "Meta of one meeting block: the case references behind the row (shown, never written)"
+      },
+      "rowTitle": {
+        "where": "Title of one meeting block on the SafeLives return file screen: its row, date and meeting title"
+      },
+      "save": {
+        "where": "Primary button on the template card once the return is filled"
+      },
+      "short": {
+        "adultSupportAndProtection": {
+          "maxLength": 18,
+          "where": "Axis label for the adult support and protection cases column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "childrenAndFamiliesSocialWork": {
+          "maxLength": 18,
+          "where": "Axis label for the children and families social work case referrals column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "education": {
+          "maxLength": 18,
+          "where": "Axis label for the education cases column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "housing": {
+          "maxLength": 18,
+          "where": "Axis label for the housing cases column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "idaa": {
+          "maxLength": 18,
+          "where": "Axis label for the idaa case referrals column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "justiceSocialWork": {
+          "maxLength": 18,
+          "where": "Axis label for the justice social work cases column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "mash": {
+          "maxLength": 18,
+          "where": "Axis label for the mash cases column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "mentalHealth": {
+          "maxLength": 18,
+          "where": "Axis label for the mental health cases column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "other": {
+          "maxLength": 18,
+          "where": "Axis label for the other cases column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "police": {
+          "maxLength": 18,
+          "where": "Axis label for the police case referrals column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "primaryCare": {
+          "maxLength": 18,
+          "where": "Axis label for the primary care service cases column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "secondaryCare": {
+          "maxLength": 18,
+          "where": "Axis label for the secondary care service or acute trust cases column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "substanceMisuse": {
+          "maxLength": 18,
+          "where": "Axis label for the substance misuse cases column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        },
+        "voluntarySector": {
+          "maxLength": 18,
+          "where": "Axis label for the voluntary sector cases column on the MARAC report's referrals-by-source chart; the data table carries the full header"
+        }
+      },
+      "templateMeta": {
+        "where": "Meta of the template card: rows and cells to write"
+      },
+      "templateNote": {
+        "where": "Note in the template card on where the template comes from and what is checked"
+      },
+      "templateTitle": {
+        "where": "Title of the template card on the SafeLives return file screen"
+      },
+      "title": {
+        "where": "Heading of the SafeLives return file screen (/reports/marac?safelives=1)"
       }
     },
     "table": {

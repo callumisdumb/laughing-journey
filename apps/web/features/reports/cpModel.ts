@@ -190,6 +190,7 @@ export function cpModel(data: Dataset, now: Date, period: Period, childPopulatio
       ...SEX_ROWS.map((r): [string, number, string] => [sexRowLabel(r), sexCounts.get(r) ?? 0, pct(sexCounts.get(r) ?? 0)]),
       [t('reports.cp.rows.total'), atEnd.length, pct(atEnd.length)],
     ],
+  totalRow: true,
   };
 
   // The publication reports the register as a rate per 1,000 children aged 0 to 17, using NRS
@@ -232,6 +233,7 @@ export function cpModel(data: Dataset, now: Date, period: Period, childPopulatio
       ...SINCE_BANDS.map((b): [string, number] => [sinceBandLabel(b), sinceCounts.get(b) ?? 0]),
       [t('reports.cp.rows.total'), registrations.length],
     ],
+  totalRow: true,
   };
 
   const reasonTable: TableSpec = {
@@ -251,6 +253,7 @@ export function cpModel(data: Dataset, now: Date, period: Period, childPopulatio
       ...AGE_BANDS.map((b): [string, number, string] => [ageBandLabel(b), ageCounts.get(b) ?? 0, pct(ageCounts.get(b) ?? 0)]),
       [t('reports.cp.rows.total'), atEnd.length, pct(atEnd.length)],
     ],
+  totalRow: true,
   };
 
   const concernTable: TableSpec = {

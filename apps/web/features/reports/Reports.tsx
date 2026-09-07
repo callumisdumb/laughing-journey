@@ -17,6 +17,7 @@ import { ReportMappa } from './ReportMappa';
 import { ReportMarac } from './ReportMarac';
 import { NmdsExport } from './NmdsExport';
 import { ReportPrintPack } from './ReportPrintPack';
+import { SafeLivesExport } from './SafeLivesExport';
 import styles from './Reports.module.css';
 
 function ReportsIndex() {
@@ -64,6 +65,7 @@ function ReportsIndex() {
         </ul>
       </ScreenState>
       <p className={styles.footnote}>{t('reports.index.footnote')}</p>
+      <p className={styles.footnote} data-testid="reports-disclosure-rule">{t('reports.index.disclosure')}</p>
     </div>
   );
 }
@@ -83,7 +85,7 @@ function ReportNotFound({ kind }: { kind: string }) {
   );
 }
 
-/** Route table for /reports and /reports/<kind>, including the ?print=1 pack and the ?nmds=1 return. */
+/** Route table for /reports and /reports/<kind>, including the ?print=1 pack and the ?nmds=1 and ?safelives=1 returns. */
 export function Reports({ kind }: { kind?: string }) {
   const route = useRoute();
   const select = useSelection((s) => s.select);
@@ -96,6 +98,7 @@ export function Reports({ kind }: { kind?: string }) {
   if (!isReportKind(kind)) return <ReportNotFound kind={kind} />;
   if (route.query.get('print') === '1') return <ReportPrintPack kind={kind} />;
   if (kind === 'asp' && route.query.get('nmds') === '1') return <NmdsExport />;
+  if (kind === 'marac' && route.query.get('safelives') === '1') return <SafeLivesExport />;
   switch (kind) {
     case 'asp':
       return <ReportAsp />;

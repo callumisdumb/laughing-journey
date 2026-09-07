@@ -7,6 +7,7 @@ import {
   ASP_HARM_LOCATIONS,
   ASP_INQUIRY_ACTIONS,
   ASP_REFERRAL_SOURCES,
+  AWI_DIAGNOSTIC_GROUPS,
   CASE_PARTY_SOURCES,
   ACCESS_RESTRICTIONS,
   CONSENT_STATUSES,
@@ -17,6 +18,7 @@ import {
   LSI_SERVICE_TYPES,
   MAPPA_CATEGORIES,
   MAPPA_LEVELS,
+  SAFELIVES_SOURCES,
   TRAFFICKING_KINDS,
 } from '../enums';
 import { CLASSIFICATION_LEVELS } from '../classification/classify';
@@ -374,7 +376,8 @@ export const maracDetailSchema = z.object({
     dsdasNote: z.string().optional(),
   }),
   safeLivesReturn: z.object({
-    referralSource: z.string(),
+    /** The SafeLives source column this referral is counted in (docs/RESEARCH.md 9.2). */
+    referralSource: z.enum(SAFELIVES_SOURCES),
     repeat: z.boolean(),
     childrenCount: z.number().int(),
     outcomeCodes: z.array(z.string()),
@@ -480,6 +483,8 @@ export const capacityAssessmentSchema = z.object({
   outcome: z.enum(['has-capacity', 'lacks-capacity', 'fluctuating', 'pending']),
   evidence: z.string(),
   communicationSupport: z.string().optional(),
+  /** The Commission's primary diagnostic group, where the assessor knows it; the AWI report reads Unknown otherwise. */
+  primaryDiagnosis: z.enum(AWI_DIAGNOSTIC_GROUPS).optional(),
 });
 
 export const awiDetailSchema = z.object({
@@ -532,6 +537,8 @@ export const awiDetailSchema = z.object({
     expiresAt: isoDate.optional(),
     guardianName: z.string(),
     powers: z.array(z.string()),
+    /** A renewal of an existing order rather than a new one; the Commission reports the two apart. Absent means new. */
+    renewal: z.boolean().optional(),
     supervisingOfficerUserId: idSchema.optional(),
     opgRegisteredAt: isoDate.optional(),
     mwcNotifiedAt: isoDate.optional(),

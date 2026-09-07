@@ -9,6 +9,7 @@ import { setQuery, useNavigate, useRoute } from '@/lib/router';
 import { useAppStore, useConfig, useData, useNow } from '@/lib/store';
 import { buildModel, parseChildPopulation, parsePopulation } from './buildModel';
 import { Chart } from './Chart';
+import { withDisclosureControl } from './disclosure';
 import type { ReportKind, ReportSection, TableSpec } from './model';
 import { resolvePeriod } from './period';
 import styles from './ReportPrintPack.module.css';
@@ -62,7 +63,8 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
   const navigate = useNavigate();
   const audit = useAppStore((s) => s.audit);
   const period = resolvePeriod(kind, now, route.query.get('period'));
-  const model = buildModel(kind, data, config, now, period, { population: parsePopulation(route.query), childPopulation: parseChildPopulation(route.query) });
+  // The pack prints what the screen shows: every count through the disclosure control (D-237).
+  const model = withDisclosureControl(buildModel(kind, data, config, now, period, { population: parsePopulation(route.query), childPopulation: parseChildPopulation(route.query) }));
 
   useEffect(() => {
     audit({ act: 'export', targetType: 'report', targetId: `${kind}:${period.id}`, targetLabel: t('print.reports.auditLabel', { title: model.title, period: period.label }) });
@@ -145,6 +147,7 @@ export function ReportPrintPack({ kind }: { kind: ReportKind }) {
             ))}
           </tbody>
         </table>
+        {model.disclosure && model.disclosure.suppressed > 0 ? <p className={styles.note}>{t('reports.disclosure.footnote', { count: model.disclosure.suppressed })}</p> : null}
         <h2>{t('reports.frame.sourcesTitle')}</h2>
         <ul className={styles.list}>
           {model.verify.map((v) => (

@@ -13,7 +13,8 @@
  * dialogs afterwards, and what an opening needs is enough to be a valid record of the concern.
  */
 import { classify } from '../classification/classify';
-import type { Agency, ProcessType, Stage } from '../enums';
+import type { Agency, ProcessType, RoleId, SafeLivesSource, Stage } from '../enums';
+import { safeLivesSourceFor } from '../safelives/columns';
 import { tKey } from '@mas/messages';
 import type { Classification } from '../classification/classify';
 import type { AspDetail, AwiDetail, CpDetail, MappaDetail, MaracDetail, Process } from '../schemas/process';
@@ -111,7 +112,19 @@ export interface OpeningInput {
   byName: string;
   byUserId?: string;
   /** MARAC only: the three people the referral is about, and the assessment behind it. */
-  marac?: { victimPersonId: string; perpetratorPersonId: string; childPersonIds: string[]; riskAssessmentId?: string; repeat: boolean; previousHearingAt?: string; professionalJudgement: boolean };
+  marac?: {
+    victimPersonId: string;
+    perpetratorPersonId: string;
+    childPersonIds: string[];
+    riskAssessmentId?: string;
+    repeat: boolean;
+    previousHearingAt?: string;
+    professionalJudgement: boolean;
+    /** The SafeLives source column, where the form chose one; otherwise derived from the agency and the referrer's role. */
+    referralSource?: SafeLivesSource;
+    /** The referrer's role where they hold one, which decides the source within an agency. */
+    referrerRoleId?: RoleId;
+  };
   /** MAPPA only: what makes them a subject. */
   mappa?: { category: MappaDetail['category']; level: MappaDetail['level']; leadResponsibleAuthority: MappaDetail['leadResponsibleAuthority']; visorReference: string };
   /** AWI only: the decision the person may lack capacity for. */
@@ -183,7 +196,7 @@ export function openingDetail(input: OpeningInput): Process['detail'] {
         // Agency flags are placed after the meeting, so a new referral has none.
         flags: [],
         links: { matacConsidered: false, dsdasConsidered: false },
-        safeLivesReturn: { referralSource: source, repeat: m.repeat, childrenCount: m.childPersonIds.length, outcomeCodes: [] },
+        safeLivesReturn: { referralSource: m.referralSource ?? safeLivesSourceFor(sourceAgency, m.referrerRoleId), repeat: m.repeat, childrenCount: m.childPersonIds.length, outcomeCodes: [] },
       };
       return detail;
     }

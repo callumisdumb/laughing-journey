@@ -24,12 +24,17 @@ import {
 } from '@mas/domain';
 import { parseISO } from 'date-fns';
 
-/** The four quarters of 2026-27, as closed ranges of ISO calendar dates. */
-export const NMDS_QUARTER_RANGES: Record<NmdsQuarter, { from: string; to: string; due: string }> = {
+/**
+ * The four quarters of 2026-27, as closed ranges of ISO calendar dates, with the return deadline and
+ * the month the ASP data collection web page anticipates reporting to Adult Protection Committees.
+ * Read from iriss.org.uk/aspdataset ("Quarterly data return dates for 2026/27") on 06 Sep 2026;
+ * docs/RESEARCH.md 9.1. The deadline clocks in packages/domain/src/clocks/rules.ts carry the same dates.
+ */
+export const NMDS_QUARTER_RANGES: Record<NmdsQuarter, { from: string; to: string; due: string; apcReporting?: string }> = {
   q1: { from: '2026-04-01', to: '2026-06-30', due: '2026-08-14' },
-  q2: { from: '2026-07-01', to: '2026-09-30', due: '2026-11-13' },
+  q2: { from: '2026-07-01', to: '2026-09-30', due: '2026-11-13', apcReporting: '2027-02' },
   q3: { from: '2026-10-01', to: '2026-12-31', due: '2027-02-12' },
-  q4: { from: '2027-01-01', to: '2027-03-31', due: '2027-05-14' },
+  q4: { from: '2027-01-01', to: '2027-03-31', due: '2027-05-14', apcReporting: '2027-08' },
 };
 
 function within(isoValue: string | undefined, quarter: NmdsQuarter): boolean {

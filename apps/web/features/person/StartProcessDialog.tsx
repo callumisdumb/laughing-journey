@@ -22,6 +22,10 @@ import {
   type Agency,
   type Person,
   type ProcessType,
+  SAFELIVES_SOURCES,
+  safeLivesSourceFor,
+  safeLivesSourceLabel,
+  type SafeLivesSource,
 } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, Dialog, Pill, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
@@ -66,6 +70,9 @@ export function StartProcessDialog({ person, open, onClose }: { person: Person; 
   const [summary, setSummary] = useState('');
   const [secondCaseReason, setSecondCaseReason] = useState('');
   const [perpetrator, setPerpetrator] = useState<Person | null>(null);
+  /** The SafeLives source column the referral counts in; proposed from the agency until the coordinator picks one. */
+  const [referralSource, setReferralSource] = useState<SafeLivesSource | ''>('');
+  const effectiveSource: SafeLivesSource = referralSource || safeLivesSourceFor(sourceAgency);
   const [errors, setErrors] = useState<string[]>([]);
 
   const answers = useMemo(() => eligibilityForAll(person, now), [person, now]);
@@ -101,7 +108,7 @@ export function StartProcessDialog({ person, open, onClose }: { person: Person; 
        * would put the victim on her own must-not-receive register (D-223); the assessment and the
        * children are recorded on the case afterwards.
        */
-      marac: type === 'marac' ? { victimPersonId: person.id, perpetratorPersonId: perpetrator?.id ?? '', childPersonIds: [], riskAssessmentId: undefined, repeat: repeat.repeat, previousHearingAt: repeat.previousAt?.slice(0, 10), professionalJudgement: true } : undefined,
+      marac: type === 'marac' ? { victimPersonId: person.id, perpetratorPersonId: perpetrator?.id ?? '', childPersonIds: [], riskAssessmentId: undefined, repeat: repeat.repeat, previousHearingAt: repeat.previousAt?.slice(0, 10), professionalJudgement: true, referralSource: effectiveSource } : undefined,
       mappa: type === 'mappa' ? { category: 1, level: 1, leadResponsibleAuthority: 'police', visorReference: '' } : undefined,
       preBirth: type === 'cp' && person.lifeStage === 'unborn' && person.expectedDeliveryDate ? { expectedDeliveryDate: person.expectedDeliveryDate, motherPersonId: person.id } : undefined,
     });
@@ -227,6 +234,9 @@ export function StartProcessDialog({ person, open, onClose }: { person: Person; 
             </div>
             <TextareaField label={t('processes.open.summary')} hint={t('processes.open.summaryHint')} value={summary} onChange={(e) => setSummary(e.target.value)} rows={3} required data-testid="process-summary" />
             {type === 'marac' ? <PersonPicker label={t('processes.open.perpetrator')} hint={t('processes.open.perpetratorHint')} value={perpetrator} onChange={setPerpetrator} exclude={[person.id]} idPrefix="process-perpetrator" /> : null}
+            {type === 'marac' ? (
+              <SelectField label={t('processes.open.referralSource')} hint={t('processes.open.referralSourceHint')} value={effectiveSource} onChange={(e) => setReferralSource(e.target.value as SafeLivesSource)} options={SAFELIVES_SOURCES.map((s) => ({ value: s, label: safeLivesSourceLabel(s) }))} data-testid="process-referral-source" />
+            ) : null}
 
             <div className={styles.consequences} data-testid="process-consequences">
               <h4 className={styles.consequencesTitle}>

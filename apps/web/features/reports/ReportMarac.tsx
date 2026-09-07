@@ -1,7 +1,8 @@
 'use client';
 
 import { useT } from '@mas/messages';
-import { TextField } from '@mas/ui';
+import { Button, TextField } from '@mas/ui';
+import { FileSpreadsheet } from 'lucide-react';
 import { useState } from 'react';
 import { setQuery, useNavigate } from '@/lib/router';
 import { useData } from '@/lib/store';
@@ -48,6 +49,11 @@ export function ReportMarac() {
           }}
           hint={t('reports.marac.populationHint')}
         />
+      }
+      extraControls={
+        <Button variant="secondary" icon={<FileSpreadsheet size={16} aria-hidden="true" />} onClick={() => navigate('/reports/marac?safelives=1')}>
+          {t('reports.marac.openReturn')}
+        </Button>
       }
     />
   );

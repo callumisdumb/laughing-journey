@@ -190,6 +190,7 @@ function CourtEventForm({ value, onChange }: TransitionFormProps<CourtValue>) {
             <DateField label={t('processes.forms.awiCourt.orderExpires')} value={value.order.expiresAt ?? ''} onChange={(d) => onChange({ ...value, order: { ...value.order, expiresAt: d || undefined } })} data-testid="transition-order-expiry" />
           </div>
           <TextField label={t('processes.forms.awiCourt.guardian')} value={value.order.guardianName} onChange={(e) => onChange({ ...value, order: { ...value.order, guardianName: e.target.value } })} required data-testid="transition-guardian" />
+          <CheckboxField label={t('processes.forms.awiCourt.renewal')} hint={t('processes.forms.awiCourt.renewalHint')} checked={value.order.renewal ?? false} onChange={(e) => onChange({ ...value, order: { ...value.order, renewal: e.target.checked } })} data-testid="transition-order-renewal" />
           <TextareaField label={t('processes.forms.awiCourt.powers')} hint={t('processes.forms.oneALine')} value={value.powersText ?? ''} onChange={(e) => onChange({ ...value, powersText: e.target.value, order: { ...value.order, powers: lines(e.target.value) } })} rows={3} required data-testid="transition-powers" />
         </fieldset>
       ) : null}

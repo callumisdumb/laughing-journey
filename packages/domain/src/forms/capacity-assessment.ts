@@ -1,5 +1,6 @@
 import { t } from '@mas/messages';
 import { z } from 'zod';
+import { AWI_DIAGNOSTIC_GROUPS } from '../enums';
 
 /**
  * Capacity assessment under the Adults with Incapacity (Scotland) Act 2000.
@@ -21,6 +22,8 @@ export const capacityAssessmentFormSchema = z
     evidence: z.string().min(40, { error: () => t('errors.capacity.evidence', { min: 40 }) }).max(2000),
     outcome: z.enum(['has-capacity', 'lacks-capacity', 'fluctuating']),
     wishesConsidered: z.string().min(10, { error: () => t('errors.capacity.wishes') }).max(1200),
+    /** The Commission's primary diagnostic group, optional: an empty choice is not recorded. */
+    primaryDiagnosis: z.enum(AWI_DIAGNOSTIC_GROUPS).or(z.literal('')).optional(),
   })
   .superRefine((v, ctx) => {
     const allYes = [v.understands, v.retains, v.weighs, v.communicates, v.acts].every((x) => x === 'yes');

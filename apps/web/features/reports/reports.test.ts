@@ -1,8 +1,9 @@
-import { DEFAULT_CONFIG, demoNow } from '@mas/domain';
+import { DEFAULT_CONFIG, SUPPRESSED, demoNow } from '@mas/domain';
 import { t } from '@mas/messages';
 import { buildDataset } from '@mas/mock-data';
 import { describe, expect, it } from 'vitest';
 import { buildModel } from './buildModel';
+import { withDisclosureControl } from './disclosure';
 import { ETHNICITY_NOT_HELD_ROW, ETHNICITY_ZERO_ROWS, MAPPA_ANNEX3_TABLES, annexTitle } from './mappaAnnex3';
 import type { AnnexTable } from './mappaAnnex3';
 import type { ReportKind } from './model';
@@ -83,7 +84,6 @@ describe('report figures are computed from the seed, never typed in', () => {
     expect(since.find((r) => r[0] === t('reports.cp.sinceBands.never'))?.[1]).toBe(1);
 
     expect(y2026.model.meta.join(' ')).toContain(t('reports.cp.meta.fieldSet'));
-    expect(y2026.model.meta.join(' ')).not.toContain(t('reports.meta.verify'));
   });
 
   it('ASP: nothing in the biennium to 31 Mar 2026, three referrals in the biennium in progress', () => {
@@ -112,7 +112,6 @@ describe('report figures are computed from the seed, never typed in', () => {
     expect(y2027.map['late']).toBe('0');
     expect(y2027.map['orders']).toBe('1');
     expect(y2027.model.meta.join(' ')).toContain(t('reports.mappa.meta.fieldSet'));
-    expect(y2027.model.meta.join(' ')).not.toContain(t('reports.meta.verify'));
 
     // Nine sections, one per table, in the annex order with the catalogue's table titles, and the only chart sits on Table 3.
     expect(y2027.model.sections.map((s) => s.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `table-${n}`));
@@ -178,5 +177,75 @@ describe('report figures are computed from the seed, never typed in', () => {
     expect(ytd.map['interim']).toBe('1');
     expect(ytd.map['median']).toBe(notApplicable);
     expect(ytd.model.sections.find((s) => s.id === 'mho')?.tables[0]?.rows[0]?.[3]).toBe(t('reports.awi.mho.running', { days: 12 }));
+  });
+});
+
+describe("the AWI report on the Commission's tables", () => {
+  /** Ishbel Grant's application with a welfare guardianship granted to the council, on a dementia diagnosis. */
+  function withOrder() {
+    const d = buildDataset({});
+    return {
+      ...d,
+      processes: d.processes.map((p) => {
+        if (p.type !== 'awi' || !p.detail.application || p.detail.application.applicant !== 'council') return p;
+        const assessments = p.detail.capacityAssessments.map((a, i) => (i === 0 ? { ...a, primaryDiagnosis: 'dementia' as const } : a));
+        return { ...p, detail: { ...p.detail, capacityAssessments: assessments, orders: [{ id: 'ord_test', kind: 'welfare-guardianship' as const, grantedAt: '2026-08-31', expiresAt: '2029-08-30', guardianName: 'Clydeshore Council', powers: ['residence'], renewal: false }] } };
+      }),
+    };
+  }
+
+  it('tables an order granted in the period by gender, age, guardian type, length and diagnosis, and bands its timeliness', () => {
+    const period = resolvePeriod('awi', now, null);
+    const model = buildModel('awi', withOrder(), DEFAULT_CONFIG, now, period, { population: 41000, childPopulation: 18500 });
+    expect(model.figures.find((f) => f.id === 'granted')?.value).toBe('1');
+    const table1 = model.sections.find((s) => s.id === 'granted')?.tables[0];
+    const row = (group: string) => table1?.rows.find((r) => r[1] === group);
+    expect(row(t('reports.awi.groups.female'))?.slice(2)).toEqual([1, '100.0%']);
+    expect(row(t('reports.awi.groups.male'))?.slice(2)).toEqual([0, '0.0%']);
+    expect(row(t('reports.awi.groups.age65Plus'))?.slice(2)).toEqual([1, '100.0%']);
+    expect(row(t('reports.awi.groups.localAuthority'))?.slice(2)).toEqual([1, '100.0%']);
+    expect(row(t('reports.awi.groups.zeroToThree'))?.slice(2)).toEqual([1, '100.0%']);
+    expect(row(t('domain.awiDiagnosticGroups.dementia'))?.slice(2)).toEqual([1, '100.0%']);
+    expect(row(t('domain.awiDiagnosticGroups.unknown'))?.slice(2)).toEqual([0, '0.0%']);
+    // Lodged 28 Aug, granted 31 Aug: two months or less.
+    const bands = model.sections.find((s) => s.id === 'timeliness')?.tables[0]?.rows ?? [];
+    expect(bands.map((r) => r[1])).toEqual([1, 0, 0, 0]);
+    // New, not renewed; local authority guardian on a dementia diagnosis; in force at the period end.
+    expect(model.sections.find((s) => s.id === 'renewals')?.tables[0]?.rows.map((r) => r[1])).toEqual([1, 0]);
+    const table2 = model.sections.find((s) => s.id === 'guardian-type')?.tables[0]?.rows.find((r) => r[0] === t('domain.awiDiagnosticGroups.dementia'));
+    expect(table2?.slice(1)).toEqual([1, '100.0%', 0, '0.0%']);
+    const extant = model.sections.find((s) => s.id === 'extant')?.tables[0];
+    expect(extant?.rows.find((r) => r[1] === t('reports.awi.groups.localAuthority'))?.[2]).toBe(1);
+    expect(model.meta.join(' ')).toContain(t('reports.awi.meta.fieldSet'));
+    expect(model.verify).toEqual([]);
+  });
+
+  it('reads Unknown for an adult with no diagnosis recorded, and empties every Commission table when nothing was granted', () => {
+    const model = figures('awi', null).model;
+    const table1 = model.sections.find((s) => s.id === 'granted')?.tables[0];
+    expect(table1?.rows.every((r) => r[2] === 0)).toBe(true);
+    expect(table1?.rows.some((r) => r[1] === t('domain.awiDiagnosticGroups.unknown'))).toBe(true);
+    expect(model.sections.map((s) => s.id)).toEqual(['granted', 'timeliness', 'renewals', 'guardian-type', 'extant', 'routes', 'mho', 'interim', 'decisions']);
+  });
+});
+
+describe('disclosure control on a report', () => {
+  it('suppresses every small count a reader would see and counts what it hid', () => {
+    const raw = figures('cp', null).model;
+    const shown = withDisclosureControl(raw);
+    // One registration in the year: the headline reads *, and so does every table cell that says one.
+    expect(raw.figures.find((f) => f.id === 'registrations')?.value).toBe('1');
+    expect(shown.figures.find((f) => f.id === 'registrations')?.value).toBe(SUPPRESSED);
+    const sexRows = shown.sections.find((s) => s.id === 'age')?.tables[0]?.rows ?? [];
+    expect(sexRows.find((r) => r[0] === t('reports.cp.sexRows.male'))?.slice(1)).toEqual([SUPPRESSED, SUPPRESSED]);
+    expect(shown.disclosure?.suppressed).toBeGreaterThan(0);
+    // The raw model is untouched, so the figures above still trace to the seed.
+    expect(raw.disclosure).toBeUndefined();
+    expect(raw.figures.find((f) => f.id === 'registrations')?.value).toBe('1');
+  });
+
+  it('leaves a report with nothing small alone', () => {
+    const empty = withDisclosureControl(figures('asp', null).model);
+    expect(empty.disclosure?.suppressed).toBe(0);
   });
 });

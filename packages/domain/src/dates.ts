@@ -73,6 +73,12 @@ export function parseTypedDate(text: string): string | undefined {
   return undefined;
 }
 
+/** "February 2027" for a calendar month (yyyy-MM); empty for an empty or invalid value. */
+export function formatMonth(isoMonth: string): string {
+  const d = parse(isoMonth, 'yyyy-MM', new Date(2000, 0, 1));
+  return isValid(d) ? format(d, 'MMMM yyyy') : '';
+}
+
 /** dd Mon yyyy for a calendar date (yyyy-MM-dd) without any time zone shift; empty for an empty or invalid value. */
 export function formatCalendarDate(iso: string): string {
   const d = parse(iso, 'yyyy-MM-dd', new Date(2000, 0, 1));
