@@ -115,12 +115,17 @@ export const involvementRequestSchema = z.object({
   requesterRoleId: z.enum(ROLES),
   /** Why they need to be on the case, in their words; the lead reads it and the membership carries it. */
   reason: z.string(),
-  status: z.enum(['pending', 'accepted', 'declined']),
+  status: z.enum(['pending', 'accepted', 'declined', 'withdrawn']),
   createdAt: isoDateTime,
   decidedAt: isoDateTime.optional(),
   decidedByUserId: idSchema.optional(),
   decidedByName: z.string().optional(),
   decisionNote: z.string().optional(),
+  /** Amendments the requester made before it was decided, oldest first, each with what it said before (D-246). */
+  amendments: z.array(z.object({ at: isoDateTime, was: z.string() })).optional(),
+  withdrawnAt: isoDateTime.optional(),
+  /** Why they withdrew it, where they said; the lead reads it beside the request they were about to decide. */
+  withdrawnReason: z.string().optional(),
   ...correctable,
 });
 export type InvolvementRequest = z.infer<typeof involvementRequestSchema>;

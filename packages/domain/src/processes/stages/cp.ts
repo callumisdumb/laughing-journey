@@ -2,7 +2,7 @@ import { t } from '@mas/messages';
 import { stageLabel } from '../../config/labels';
 import { CP_CONCERNS, CP_DEREGISTRATION_REASONS, type Agency, type CpConcern, type CpDeregistrationReason } from '../../enums';
 import type { CpProcess } from '../../schemas/process';
-import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransitionContext, type TransitionOutcome, type ReturnInput } from './shared';
+import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransferInput, type TransitionContext, type TransitionOutcome, type ReturnInput } from './shared';
 import { chairAndMinuteTaker } from './asp';
 
 /**
@@ -462,6 +462,26 @@ export const CP_TRANSITIONS: Array<Transition<CpProcess, never>> = [
       return outcome(moved(process, 'ird', ctx, summary), 'ird', summary, {
         clocks: { completes: ['cp.cppm.initial'], starts: [], note: t('processes.transitions.clockNote.returned') },
         followOn: [{ kind: 'offer', creates: { kind: 'dialog', dialog: 'schedule-meeting', meetingType: 'ird' } }],
+      });
+    },
+  },
+  {
+    // The way a case leaves this authority (D-248): everything stops here, the record says where it
+    // went and who is receiving it, and the clocks stop with it. The receiving authority opens its
+    // own case in its own system; nothing here pretends to have sent anything.
+    id: 'cp-transfer',
+    process: 'cp',
+    from: ['concern', 'ird', 'investigation', 'cppm', 'childs-plan', 'review', 'deregistered'],
+    to: ['transferred'],
+    roles: ['social-worker-children', 'team-leader', 'cswo', 'chair'],
+    requires: () => [],
+    validate: (input: TransferInput) => [...requireText(input.toArea, 'areaRequired', 3), ...requireText(input.receivingCoordinator, 'coordinatorRequired', 3)],
+    apply: (process, input: TransferInput, ctx) => {
+      const summary = t('processes.transitions.summary.transferred', { area: input.toArea, coordinator: input.receivingCoordinator });
+      const next = { ...process, status: 'transferred' as const };
+      return outcome(moved(next, 'transferred', ctx, summary), 'transferred', summary, {
+        clocks: { completes: process.clocks.filter((c) => !c.completedAt).map((c) => c.ruleId), starts: [], note: summary },
+        outbound: null,
       });
     },
   },

@@ -56,12 +56,13 @@ import {
   type Step,
 } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { Archive, CalendarPlus, Lock, Plus, RotateCcw, ShieldCheck, UserCog, UserPlus } from 'lucide-react';
+import { Archive, CalendarPlus, FileEdit, Lock, Plus, RotateCcw, ShieldCheck, UserCog, UserPlus } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { composeRows } from '@/lib/composition';
 import { useLayoutMode } from '@/lib/layout';
 import { AppLink } from '@/components/AppLink';
 import { DocumentList, documentsFor } from '@/features/documents/DocumentList';
+import { CorrectReferralDialog } from './CorrectReferralDialog';
 import { ReallocateLeadDialog } from './ReallocateLeadDialog';
 import { PersonLink, PractitionerLink } from '@/components/EntityLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
@@ -90,7 +91,7 @@ import { readProcessDetail } from '@/lib/vault';
 import { AddPlanDialog } from './AddPlanDialog';
 import { AddActionDialog } from '@/features/actions/AddActionDialog';
 import { ScheduleMeetingDialog } from '@/features/meetings/ScheduleMeetingDialog';
-import { AskToBeInvolvedDialog, InvolvementRequests } from './Involvement';
+import { AskToBeInvolvedDialog, InvolvementRequests, YourInvolvementRequest } from './Involvement';
 import { TransitionPanel } from './transitions/TransitionPanel';
 import { OutboundStatus } from './OutboundStatus';
 import { CloseProcessDialog, ReopenProcessDialog } from './CloseProcessDialog';
@@ -129,6 +130,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
   const [closing, setClosing] = useState(false);
   const [reopening, setReopening] = useState(false);
   const [reallocating, setReallocating] = useState(false);
+  const [correctingReferral, setCorrectingReferral] = useState(false);
   const [classifySensitive, setClassifySensitive] = useState(true);
   const [classifyReason, setClassifyReason] = useState('');
   const write = useAppStore((s) => s.write);
@@ -385,6 +387,16 @@ export function ProcessScreen({ processId }: { processId: string }) {
             {t('processes.classification.change')}
           </Button>
         ) : null}
+        {access.level === 'full' && process.status === 'open' ? (
+          <Button
+            variant="quiet"
+            icon={<FileEdit size={16} aria-hidden="true" />}
+            onClick={() => setCorrectingReferral(true)}
+            data-testid="correct-referral"
+          >
+            {t('processes.referral.action')}
+          </Button>
+        ) : null}
         {access.level === 'full' && process.status === 'open' && canReallocate ? (
           <Button
             variant="secondary"
@@ -600,7 +612,14 @@ export function ProcessScreen({ processId }: { processId: string }) {
           </Sheet>
         );
       case 'involvement':
-        return <>{access.level === 'full' ? <InvolvementRequests process={process} /> : null}</>;
+        // The lead's list of requests to decide, and, for a requester at any level, their own
+        // pending request with the two things they may still do to it (D-246).
+        return (
+          <>
+            {access.level === 'full' ? <InvolvementRequests process={process} /> : null}
+            <YourInvolvementRequest process={process} />
+          </>
+        );
       case 'documents':
         return (
           <Sheet empty={documents.length === 0}>
@@ -930,7 +949,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
       ],
       [
         { id: 'linked', span: 6, present: linked.length > 0 },
-        { id: 'involvement', span: 6, present: access.level === 'full' },
+        { id: 'involvement', span: 6, present: access.level === 'full' || pendingInvolvement },
       ],
       [{ id: 'documents', span: 12, present: access.level === 'full' }],
     ],
@@ -969,6 +988,8 @@ export function ProcessScreen({ processId }: { processId: string }) {
                 reason: access.reason,
               })}
             </p>
+            {/* A requester reads the case at presence level, and their own request is theirs to change (D-246). */}
+            <YourInvolvementRequest process={process} />
           </div>
         ) : (
           <>
@@ -1256,6 +1277,7 @@ export function ProcessScreen({ processId }: { processId: string }) {
         <AskToBeInvolvedDialog open onClose={() => setAsking(false)} process={process} />
       ) : null}
       {reallocating ? <ReallocateLeadDialog process={process} open onClose={() => setReallocating(false)} /> : null}
+      {correctingReferral ? <CorrectReferralDialog process={process} open onClose={() => setCorrectingReferral(false)} /> : null}
       {actionFor ? (
         <AddActionDialog
           process={process}

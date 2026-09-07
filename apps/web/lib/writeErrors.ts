@@ -245,6 +245,16 @@ const KEYS = [
   'documentTypeRequired',
   'documentParentMissing',
   'moveNobodyMoving',
+  'referralUnchanged',
+  'referralFieldNotCorrectable',
+  'submissionAlreadyRecorded',
+  'submissionRecipientRequired',
+  'submissionDateRequired',
+  'submissionDateInFuture',
+  'submissionNotYours',
+  'involvementNotYours',
+  'involvementNotPending',
+  'involvementAmendReasonRequired',
 ] as const;
 
 export type WriteErrorCode = (typeof KEYS)[number];

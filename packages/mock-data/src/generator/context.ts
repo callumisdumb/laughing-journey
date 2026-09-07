@@ -39,6 +39,7 @@ export function createContext(seed: string, nowIso: string): BuildContext {
     involvementRequests: [],
     notifications: [],
     documents: [],
+    submissions: [],
     connectorEvents: [],
     outbox: [],
     inbound: [],

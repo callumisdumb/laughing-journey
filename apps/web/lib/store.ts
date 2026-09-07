@@ -4,7 +4,7 @@
  * In-memory dataset hydrated from the deterministic generator, with an overlay of user changes
  * persisted to localStorage (and the Tauri store in the desktop shell). Reset clears the overlay.
  */
-import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, isExcludedParty, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, leadPayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type Document, type Household, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, involvementNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyTransition, buildMeeting, bytesOnRecord, canLeadProcess, classificationFor, documentClassification, documentProcessId, documentRefusals, planHouseholdMove, formatDate, heldTransitionFor, meetingTypeLabel, scheduleRoute, stagePayload, stageLabel, transitionById, transitionLabel, validateSchedule, type Creates, type InformationRequest, type InvolvementRequest, type MeetingType, type MissingThing, type PermissionDecision, type ScheduleInput, type TransitionOutcome } from '@mas/domain';
+import { DEFAULT_CONFIG, DEMO_NOW_ISO, OPENING_STAGE, isExcludedParty, buildOpeningProcess, canOpenProcess, contextFor, detailLevelLabel, eligibilityFor, exclusionsRestingOn, clockRuleLabel, nextReference, registerUpdateLabel, openProcessesOfType, openingClassification, openingClockRuleIds, processLabel, isValidIso, membersOn, mergePeople, mergeRefusals, parseDemoNow, partyRegister, processesTouchedByHousehold, resolveNeedToKnow, roleLabel, unmergePeople, withPartyEntry, withRecordedInError, withVersion, proposalRefusals, proposeWrite, closurePayload, connectorsForIntent, episodePayload, leadPayload, CONNECTOR_IDS, authorisationRefusals, authoriseWrite, canTransition, echoedWrite, markAcknowledged, markDeadLetter, markSent, outboundIntentLabel, type OutboundWrite, type InboundChange, applyDeath, closeProcess, closeRefusals, closureReasonsFor, deathRefusals, reopenProcess, reopenRefusals, type CloseInput, type Correctable, type DeathConsequence, type DeathInput, type AuditEntry, type ChronologyEvent, type ClassifiedRecord, type Config, type ClockTrigger, type Dataset, type Document, type Household, type ReferralCorrection, type ReturnKind, type Submission, type OpeningInput, type Action, type Agency, type ConnectorEvent, type ConnectorId, type Meeting, type Notification, type NotificationDraft, type Person, type PersonMerge, type Process, type ProcessType, type Relationship, type SharingRecord, type User, actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, informationRequestNotifications, involvementNotifications, matrixShareNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications, agencyShort, applyReferralCorrections, applyTransition, buildMeeting, bytesOnRecord, canLeadProcess, clocksCompletedBySubmission, referralFields, submissionFor, submissionRefusals, classificationFor, documentClassification, documentProcessId, documentRefusals, planHouseholdMove, formatDate, heldTransitionFor, meetingTypeLabel, scheduleRoute, stagePayload, stageLabel, transitionById, transitionLabel, validateSchedule, type Creates, type InformationRequest, type InvolvementRequest, type MeetingType, type MissingThing, type PermissionDecision, type ScheduleInput, type TransitionOutcome } from '@mas/domain';
 import { t } from '@mas/messages';
 import { DEFAULT_SEED, buildDataset } from '@mas/mock-data';
 import { APPEARANCE_KEY, useAppearance } from '@/lib/appearance';
@@ -245,6 +245,14 @@ interface AppState {
   attachDocument: (input: { parent: Document['parent']; name: string; mimeType: string; size: number; dataUri: string; note?: string }) => WriteResult & { document?: Document };
   /** Move everybody in a household to one address on one date, leaving named people behind (D-244). */
   moveHousehold: (householdId: string, addressId: string, on: string, note: string, stayBehind: Array<{ personId: string; addressId?: string }>) => WriteResult;
+  /** Change the reason on a request to be involved that nobody has decided yet (D-246). */
+  amendInvolvement: (requestId: string, reason: string) => WriteResult;
+  /** Withdraw your own request to be involved; the lead is told it is off their list (D-246). */
+  withdrawInvolvement: (requestId: string, reason: string) => WriteResult;
+  /** Correct the referral or concern a case was opened on, with a reason (D-245). */
+  correctReferral: (processId: string, corrections: ReferralCorrection[], reason: string) => WriteResult;
+  /** Record that a return was sent, which completes the deadline clock it answers (D-247). */
+  recordSubmission: (input: { kind: ReturnKind; periodId: string; periodLabel: string; recipient: string; route?: string; submittedOn: string; reference?: string; note?: string; nmdsQuarter?: 'q1' | 'q2' | 'q3' | 'q4' }) => WriteResult & { submission?: Submission };
   /** Accept a case opened in a source system, which creates the matching process here. */
   acceptInbound: (id: string) => WriteResult & { process?: Process };
   declineInbound: (id: string, reason: string) => WriteResult;
@@ -316,6 +324,7 @@ const TARGET_TYPES: Record<Collection, AuditEntry['targetType']> = {
   audit: 'config',
   notifications: 'sharing',
   documents: 'document',
+  submissions: 'submission',
 };
 
 /**
@@ -389,6 +398,7 @@ const EMPTY: Dataset = {
   audit: [],
   notifications: [],
   documents: [],
+  submissions: [],
 };
 
 /**
@@ -2316,6 +2326,133 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
     return { ...moved, effects };
   },
+  amendInvolvement: (requestId, reason) => {
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const request = get().data.involvementRequests.find((r) => r.id === requestId);
+    if (!request) return { ok: false, errors: ['involvementMissing'], nearMatches: [], effects: [] };
+    if (request.requesterUserId !== user.id) return { ok: false, errors: ['involvementNotYours'], nearMatches: [], effects: [] };
+    if (request.status !== 'pending') return { ok: false, errors: ['involvementNotPending'], nearMatches: [], effects: [] };
+    if (reason.trim().length < 10) return { ok: false, errors: ['involvementAmendReasonRequired'], nearMatches: [], effects: [] };
+    const process = get().data.processes.find((p) => p.id === request.processId);
+    const at = get().now().toISOString();
+    const label = t('processes.involvement.amendAudit', { reference: process?.reference ?? request.processId, name: `${user.givenName} ${user.familyName}` });
+    return get().write({
+      collection: 'involvementRequests',
+      record: { ...request, reason: reason.trim(), amendments: [...(request.amendments ?? []), { at, was: request.reason }] },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'process',
+      targetLabel: label,
+      processId: request.processId,
+      versionChange: label,
+    });
+  },
+  withdrawInvolvement: (requestId, reason) => {
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const request = get().data.involvementRequests.find((r) => r.id === requestId);
+    if (!request) return { ok: false, errors: ['involvementMissing'], nearMatches: [], effects: [] };
+    if (request.requesterUserId !== user.id) return { ok: false, errors: ['involvementNotYours'], nearMatches: [], effects: [] };
+    if (request.status !== 'pending') return { ok: false, errors: ['involvementNotPending'], nearMatches: [], effects: [] };
+    const process = get().data.processes.find((p) => p.id === request.processId);
+    const at = get().now().toISOString();
+    const label = t('processes.involvement.withdrawAudit', { reference: process?.reference ?? request.processId, name: `${user.givenName} ${user.familyName}` });
+    return get().write({
+      collection: 'involvementRequests',
+      record: { ...request, status: 'withdrawn', withdrawnAt: at, withdrawnReason: reason.trim() || undefined },
+      intent: 'update',
+      act: 'edit',
+      targetType: 'process',
+      targetLabel: label,
+      processId: request.processId,
+      reason: reason.trim() || undefined,
+      versionChange: label,
+    });
+  },
+  correctReferral: (processId, corrections, reason) => {
+    const { data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const process = data.processes.find((p) => p.id === processId);
+    if (!process) return { ok: false, errors: ['processMissing'], nearMatches: [], effects: [] };
+    const applied = applyReferralCorrections(process, corrections);
+    if (!applied.ok) return { ok: false, errors: applied.errors, nearMatches: [], effects: [] };
+    const labels = referralFields(process.type);
+    const changed = corrections.filter((c) => c.value !== referralValueOf(process, c.field)).map((c) => referralFieldLabel(labels.find((f) => f.id === c.field)?.label ?? c.field));
+    const fields = changed.join(', ');
+    const at = get().now().toISOString();
+    const label = t('processes.referral.audit', { reference: process.reference, fields });
+    return get().write({
+      collection: 'processes',
+      record: { ...process, detail: applied.detail } as Process,
+      intent: 'correct',
+      act: 'edit',
+      targetType: 'process',
+      targetLabel: label,
+      processId: process.id,
+      reason: reason.trim(),
+      versionChange: t('processes.referral.version', { fields }),
+      event: {
+        eventType: 'social-work.contact',
+        significance: 'moderate',
+        visibility: 'integrated',
+        title: t('processes.referral.eventTitle', { reference: process.reference }),
+        detail: t('processes.referral.eventDetail', { fields, by: `${user.givenName} ${user.familyName}`, reason: reason.trim() }),
+        subjectIds: process.subjectIds,
+        occurredAt: at,
+        linkedProcessIds: [process.id],
+      },
+    });
+  },
+  recordSubmission: (input) => {
+    const { data } = get();
+    const user = get().currentUser();
+    if (!user) return { ok: false, errors: ['noUser'], nearMatches: [], effects: [] };
+    const now = get().now();
+    const refusals = submissionRefusals({ recipient: input.recipient, submittedOn: input.submittedOn, today: now.toISOString().slice(0, 10), existing: submissionFor(data.submissions, input.kind, input.periodId) });
+    if (refusals.length > 0) return { ok: false, errors: refusals, nearMatches: [], effects: [] };
+    const submission: Submission = {
+      id: get().newId('sub'),
+      synthetic: true,
+      kind: input.kind,
+      periodId: input.periodId,
+      periodLabel: input.periodLabel,
+      recipient: input.recipient.trim(),
+      route: input.route?.trim() || undefined,
+      submittedOn: input.submittedOn,
+      reference: input.reference?.trim() || undefined,
+      note: input.note?.trim() || undefined,
+      submittedByUserId: user.id,
+      submittedByName: `${user.givenName} ${user.familyName}`,
+      recordedAt: now.toISOString(),
+      nmdsQuarter: input.nmdsQuarter,
+    };
+    const label = t('reports.submission.audit', { title: reportTitle(input.kind), period: submission.periodLabel, recipient: submission.recipient });
+    // The deadline clocks are on the cases the return counts, so completing them is a write per
+    // case rather than one on the submission: the clock lives where the work does (D-247).
+    const completes = clocksCompletedBySubmission(submission);
+    const result = get().write({ collection: 'submissions', record: submission, intent: 'create', act: 'submit', targetType: 'submission', targetLabel: label });
+    if (!result.ok) return result;
+    const effects = [...result.effects];
+    if (completes.length > 0) {
+      for (const process of get().data.processes.filter((p) => p.clocks.some((c) => completes.includes(c.ruleId) && !c.completedAt))) {
+        const written = get().write({
+          collection: 'processes',
+          record: process,
+          intent: 'update',
+          act: 'edit',
+          targetType: 'process',
+          targetLabel: label,
+          processId: process.id,
+          versionChange: t('reports.submission.version', { recipient: submission.recipient }),
+          clockTransition: { completes, starts: [], note: t('reports.submission.clockNote', { recipient: submission.recipient, date: submission.submittedOn }) },
+        });
+        effects.push(...written.effects);
+      }
+    }
+    return { ...result, effects, submission };
+  },
   acceptInbound: (id) => {
     const { data } = get();
     const user = get().currentUser();
@@ -2549,4 +2686,42 @@ function scheduleOutsideTheEngine(get: () => AppState, process: Process, type: M
 function subjectNameOf(get: () => AppState, process: Process): string {
   const person = get().data.people.find((p) => p.id === process.subjectIds[0]);
   return person ? `${person.givenName} ${person.familyName}` : process.title;
+}
+
+/** The value a referral field holds now, for naming the fields a correction actually changed. */
+function referralValueOf(process: Process, field: string): string {
+  const parts = field.split('.');
+  let node: unknown = process.detail;
+  for (const part of parts) {
+    if (node === null || typeof node !== 'object') return '';
+    node = (node as Record<string, unknown>)[part];
+  }
+  // Every correctable field is a string, a date string or a coded value. Anything else is a caller
+  // asking for a field that is not on the list, and the empty string refuses it in the form.
+  return typeof node === 'string' ? node : typeof node === 'number' || typeof node === 'boolean' ? String(node) : '';
+}
+
+/** A return's name, for the ledger line a submission writes. */
+const REPORT_TITLE_KEYS = { asp: 'reports.asp.title', cp: 'reports.cp.title', marac: 'reports.marac.title', mappa: 'reports.mappa.title', awi: 'reports.awi.title' } as const;
+function reportTitle(kind: ReturnKind): string {
+  return t(REPORT_TITLE_KEYS[kind]);
+}
+
+/** A referral field's name, from the fixed set the correction form offers (D-245). */
+const REFERRAL_FIELD_KEYS = {
+  byName: 'processes.referral.fields.byName',
+  decisionInQuestion: 'processes.referral.fields.decisionInQuestion',
+  notifiedAt: 'processes.referral.fields.notifiedAt',
+  raisedAt: 'processes.referral.fields.raisedAt',
+  receivedAt: 'processes.referral.fields.receivedAt',
+  referrerName: 'processes.referral.fields.referrerName',
+  referringAgency: 'processes.referral.fields.referringAgency',
+  source: 'processes.referral.fields.source',
+  sourceAgency: 'processes.referral.fields.sourceAgency',
+  sourceReference: 'processes.referral.fields.sourceReference',
+  summary: 'processes.referral.fields.summary',
+} as const;
+export function referralFieldLabel(label: string): string {
+  const key = REFERRAL_FIELD_KEYS[label as keyof typeof REFERRAL_FIELD_KEYS];
+  return key ? t(key) : label;
 }

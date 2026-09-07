@@ -41,6 +41,7 @@ export const NOTIFICATION_KINDS = [
   'exclusion-near-match',
   'involvement-requested',
   'involvement-decided',
+  'involvement-withdrawn',
   'clock-warning',
   'clock-breached',
 ] as const;

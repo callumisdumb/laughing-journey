@@ -3190,6 +3190,9 @@
       "stageChange": {
         "where": "Audit ledger act filter and row label for a stage moved by the engine."
       },
+      "submit": {
+        "where": "Audit log, the act and target columns"
+      },
       "unmerge": {
         "where": "Audit ledger, act column and act filter"
       }
@@ -3421,6 +3424,9 @@
       "sharing": {
         "maxLength": 20,
         "where": "Muted target type under the target in an audit row"
+      },
+      "submission": {
+        "where": "Audit log, the act and target columns"
       }
     }
   },
@@ -8642,6 +8648,9 @@
         "maxLength": 28,
         "where": "Kind label of a involvementRequested notification, on the panel row and the Home counts"
       },
+      "involvementWithdrawn": {
+        "where": "Notification kind label: a request to be involved was withdrawn"
+      },
       "leadReallocated": {
         "where": "Notification kind label: the lead worker on a case changed"
       },
@@ -9492,6 +9501,9 @@
       "aspScreeningDecision": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
       },
+      "aspTransfer": {
+        "where": "Stage engine: the ASP transition that transfers a case to another authority"
+      },
       "awiBeginSupervision": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
       },
@@ -9521,6 +9533,9 @@
       },
       "awiRouteDecision": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "awiTransfer": {
+        "where": "Stage engine: the AWI transition that transfers a case to another authority"
       },
       "cpBirth": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
@@ -9560,6 +9575,9 @@
       },
       "cpScheduleReviewCppm": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "cpTransfer": {
+        "where": "Stage engine: the CP transition that transfers a case to another authority"
       },
       "mappaExit": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
@@ -10025,6 +10043,9 @@
       "inviteesRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
+      "involvementAmendReasonRequired": {
+        "where": "Change or withdraw a request to be involved, refusals"
+      },
       "involvementDecided": {
         "where": "Refusals from the write pipeline for involvement requests."
       },
@@ -10034,8 +10055,11 @@
       "involvementMissing": {
         "where": "Refusals from the write pipeline for involvement requests."
       },
+      "involvementNotPending": {
+        "where": "Change or withdraw a request to be involved, refusals"
+      },
       "involvementNotYours": {
-        "where": "Refusals from the write pipeline for involvement requests."
+        "where": "Change or withdraw a request to be involved, refusals"
       },
       "involvementPending": {
         "where": "Refusals from the write pipeline for involvement requests."
@@ -10289,6 +10313,12 @@
       "referenceRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
+      "referralFieldNotCorrectable": {
+        "where": "Correct the referral and Mark as submitted dialogs, refusals"
+      },
+      "referralUnchanged": {
+        "where": "Correct the referral and Mark as submitted dialogs, refusals"
+      },
       "registerNameRequired": {
         "where": "Refusal listed on a record dialog"
       },
@@ -10366,6 +10396,21 @@
       },
       "significantHarmDecisionRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "submissionAlreadyRecorded": {
+        "where": "Correct the referral and Mark as submitted dialogs, refusals"
+      },
+      "submissionDateInFuture": {
+        "where": "Correct the referral and Mark as submitted dialogs, refusals"
+      },
+      "submissionDateRequired": {
+        "where": "Correct the referral and Mark as submitted dialogs, refusals"
+      },
+      "submissionNotYours": {
+        "where": "Correct the referral and Mark as submitted dialogs, refusals"
+      },
+      "submissionRecipientRequired": {
+        "where": "Correct the referral and Mark as submitted dialogs, refusals"
       },
       "substituteExcluded": {
         "where": "Your invitation card, refusal when the substitute is an excluded party"
@@ -15773,6 +15818,9 @@
       "involvementRequested": {
         "where": "Rendered text of a involvementRequested notification, in the panel, on Home and in the drawer"
       },
+      "involvementWithdrawn": {
+        "where": "Notification text to the lead when a request is withdrawn"
+      },
       "leadReallocated": {
         "where": "Notification text to the new lead and the former lead"
       },
@@ -19658,6 +19706,23 @@
         "reasonHint": {
           "where": "Return to an earlier stage, the transition form"
         }
+      },
+      "transfer": {
+        "area": {
+          "where": "Transfer to another authority form"
+        },
+        "areaHint": {
+          "where": "Transfer to another authority form"
+        },
+        "consequence": {
+          "where": "Transfer to another authority form, said before the button"
+        },
+        "coordinator": {
+          "where": "Transfer to another authority form"
+        },
+        "coordinatorHint": {
+          "where": "Transfer to another authority form"
+        }
       }
     },
     "head": {
@@ -19709,6 +19774,27 @@
     "involvement": {
       "accept": {
         "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "amend": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "amendAudit": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "amendDialogTitle": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "amended": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "amendIntro": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "amendSubmit": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "amendToast": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
       },
       "audit": {
         "decided": {
@@ -19780,10 +19866,43 @@
         },
         "pending": {
           "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+        },
+        "withdrawn": {
+          "where": "The status pill on a request to be involved that the requester withdrew"
         }
       },
       "submit": {
         "where": "Asking to be involved in a case from its header at presence level, and the requests sheet on the case for the people who decide them."
+      },
+      "withdraw": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "withdrawAudit": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "withdrawDialogTitle": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "withdrawIntro": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "withdrawn": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "withdrawReason": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "withdrawSubmit": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "withdrawToast": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "withdrawToastText": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
+      },
+      "yours": {
+        "where": "The requester’s own card on a case they have asked to join, and its two dialogs"
       }
     },
     "lead": {
@@ -20461,6 +20580,82 @@
     "presence": {
       "summary": {
         "where": "The only body text for a user with presence-level access to a process, with the need-to-know reason appended"
+      }
+    },
+    "referral": {
+      "action": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "audit": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "dialogTitle": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "eventDetail": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "eventTitle": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "fields": {
+        "byName": {
+          "where": "Correct the referral dialog on a case, and the records it writes"
+        },
+        "decisionInQuestion": {
+          "where": "Correct the referral dialog on a case, and the records it writes"
+        },
+        "notifiedAt": {
+          "where": "Correct the referral dialog on a case, and the records it writes"
+        },
+        "raisedAt": {
+          "where": "Correct the referral dialog on a case, and the records it writes"
+        },
+        "receivedAt": {
+          "where": "Correct the referral dialog on a case, and the records it writes"
+        },
+        "referrerName": {
+          "where": "Correct the referral dialog on a case, and the records it writes"
+        },
+        "referringAgency": {
+          "where": "Correct the referral dialog on a case, and the records it writes"
+        },
+        "source": {
+          "where": "Correct the referral dialog on a case, and the records it writes"
+        },
+        "sourceAgency": {
+          "where": "Correct the referral dialog on a case, and the records it writes"
+        },
+        "sourceReference": {
+          "where": "Correct the referral dialog on a case, and the records it writes"
+        },
+        "summary": {
+          "where": "Correct the referral dialog on a case, and the records it writes"
+        }
+      },
+      "fixed": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "intro": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "reason": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "reasonHint": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "submit": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "toastText": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "toastTitle": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
+      },
+      "version": {
+        "where": "Correct the referral dialog on a case, and the records it writes"
       }
     },
     "reopen": {
@@ -24196,6 +24391,68 @@
       },
       "title": {
         "where": "Heading of the SafeLives return file screen (/reports/marac?safelives=1)"
+      }
+    },
+    "submission": {
+      "action": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "audit": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "clockNote": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "dialogTitle": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "done": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "eventless": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "intro": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "nmdsQuarter": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "nmdsQuarterHint": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "note": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "recipient": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "recipientHint": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "reference": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "route": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "routeHint": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "submit": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "submittedOn": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "toastText": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "toastTitle": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
+      },
+      "version": {
+        "where": "Mark as submitted dialog on a report, and the records it writes"
       }
     },
     "table": {

@@ -7,6 +7,7 @@ import { documentSchema } from './document';
 import { inboundChangeSchema, outboundWriteSchema } from './outbox';
 import { meetingSchema } from './meeting';
 import { notificationSchema } from './notification';
+import { submissionSchema } from './submission';
 import { addressSchema, householdSchema, organisationSchema, personMergeSchema, personSchema, relationshipSchema, teamSchema } from './person';
 import { processSchema } from './process';
 import { informationRequestSchema, involvementRequestSchema, lawfulBasisRecordSchema, sharingRecordSchema } from './sharing';
@@ -43,6 +44,7 @@ export const datasetSchema = z.object({
   notifications: z.array(notificationSchema),
   /** Files attached to a person, a case, a meeting or a chronology event, each classified from its parent (D-243). */
   documents: z.array(documentSchema),
+  submissions: z.array(submissionSchema),
   connectorEvents: z.array(connectorEventSchema),
   /**
    * Outbound writes awaiting authorisation, in flight, acknowledged or failed. Persisted rather

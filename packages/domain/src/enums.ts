@@ -60,6 +60,8 @@ export const ASP_STAGES = [
   'protection-plan',
   'support-plan',
   'review',
+  // A case that has gone to another authority: the record stops here and says where it went (D-248).
+  'transferred',
   'closed',
 ] as const;
 export const CP_STAGES = [
@@ -70,6 +72,8 @@ export const CP_STAGES = [
   'childs-plan',
   'review',
   'deregistered',
+  // A case that has gone to another authority: the record stops here and says where it went (D-248).
+  'transferred',
   'closed',
 ] as const;
 export const MARAC_STAGES = [
@@ -96,6 +100,8 @@ export const AWI_STAGES = [
   'application',
   'order',
   'supervision',
+  // A case that has gone to another authority: the record stops here and says where it went (D-248).
+  'transferred',
   'closed',
 ] as const;
 
@@ -421,6 +427,9 @@ export const AUDIT_ACTS = [
   // A file attached to a record, and one downloaded from it. Its own act because "what left the
   // product as a file, and who took it" is the question a data protection officer asks (D-243).
   'attach',
+  // Sending a return to the body that receives it is an act on the outside world, not an export of
+  // a file: the ledger keeps the two apart so "when did we send Q2" is one filter (D-247).
+  'submit',
 ] as const;
 export type AuditAct = (typeof AUDIT_ACTS)[number];
 

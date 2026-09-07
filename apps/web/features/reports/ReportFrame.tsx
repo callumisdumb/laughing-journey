@@ -1,16 +1,19 @@
 'use client';
 
+import { formatDate, submissionFor } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, SelectField, Sheet, SheetBody, SheetHead } from '@mas/ui';
-import { Printer } from 'lucide-react';
-import { useMemo, type ReactNode } from 'react';
+import { Printer, Send } from 'lucide-react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { setQuery, useNavigate, useRoute } from '@/lib/router';
+import { useData } from '@/lib/store';
 import { Chart } from './Chart';
 import { withDisclosureControl } from './disclosure';
 import { FigureGrid } from './FigureGrid';
-import type { ReportModel } from './model';
+import { reportCatalogue, type ReportModel } from './model';
+import { SubmitReturnDialog } from './SubmitReturnDialog';
 import type { Period } from './period';
 import { SectionTable } from './SectionTable';
 import styles from './ReportFrame.module.css';
@@ -34,6 +37,10 @@ export function ReportFrame({ model: raw, periods, onPeriod, controls, extraCont
   const navigate = useNavigate();
   const dev = useDevState();
   const printHref = `/reports/${model.kind}${setQuery(route.query, { print: '1' })}`;
+  const data = useData();
+  const [submitting, setSubmitting] = useState(false);
+  const submitted = submissionFor(data.submissions, model.kind, model.period.id);
+  const catalogue = reportCatalogue().find((r) => r.kind === model.kind);
 
   return (
     <div className="page">
@@ -43,6 +50,16 @@ export function ReportFrame({ model: raw, periods, onPeriod, controls, extraCont
           <p className="page-lede">{model.lede}</p>
         </div>
         <div className={styles.actions}>
+          {/* Recording that a return was sent (D-247): the product sends nothing, and the button says so in the dialog. */}
+          {submitted ? (
+            <span className={styles.hint} data-testid="submission-done">
+              {t('reports.submission.done', { recipient: submitted.recipient, date: formatDate(submitted.submittedOn), by: submitted.submittedByName, hasReference: submitted.reference ? 'yes' : 'no', reference: submitted.reference ?? '' })}
+            </span>
+          ) : (
+            <Button variant="secondary" size="lg" icon={<Send size={16} aria-hidden="true" />} onClick={() => setSubmitting(true)} data-testid="mark-submitted">
+              {t('reports.submission.action')}
+            </Button>
+          )}
           <Button variant="primary" size="lg" icon={<Printer size={16} aria-hidden="true" />} onClick={() => navigate(printHref)}>
             {t('reports.frame.print')}
           </Button>
@@ -101,6 +118,17 @@ export function ReportFrame({ model: raw, periods, onPeriod, controls, extraCont
           </Sheet>
         </div>
       </ScreenState>
+      {submitting ? (
+        <SubmitReturnDialog
+          open
+          onClose={() => setSubmitting(false)}
+          kind={model.kind}
+          title={model.title}
+          periodId={model.period.id}
+          periodLabel={model.period.label}
+          defaultRecipient={catalogue?.recipient ?? ''}
+        />
+      ) : null}
     </div>
   );
 }

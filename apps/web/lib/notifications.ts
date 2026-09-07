@@ -175,6 +175,10 @@ function textFor(t: Translate, data: Dataset, config: Config, n: Notification, n
       return t('notifications.summary.exclusionNearMatch', { reference });
     case 'involvement-requested':
       return t('notifications.summary.involvementRequested', { name, reference });
+    case 'involvement-withdrawn': {
+      const request = data.involvementRequests.find((r) => r.id === n.sourceId);
+      return t('notifications.summary.involvementWithdrawn', { name: request?.requesterName ?? name, reference });
+    }
     case 'involvement-decided':
       return t('notifications.summary.involvementDecided', { reference, decision: keySuffix(n) === 'accepted' ? 'accepted' : 'declined' });
     case 'clock-warning':

@@ -219,7 +219,14 @@ export function informationRequestNotifications(before: InformationRequest | und
 export function involvementNotifications(before: InvolvementRequest | undefined, after: InvolvementRequest, leadUserId: string | undefined): NotificationDraft[] {
   const base = { processId: after.processId };
   if (!before) return leadUserId ? [draft('involvement-requested', 'involvement', after.id, { toUserId: leadUserId }, base)] : [];
+  // Withdrawn is the requester's own act, so the person told is the lead who was going to decide it,
+  // not the requester who did it (D-246).
+  if (before.status === 'pending' && after.status === 'withdrawn') return leadUserId ? [draft('involvement-withdrawn', 'involvement', after.id, { toUserId: leadUserId }, base)] : [];
   if (before.status === 'pending' && after.status !== 'pending') return [draft('involvement-decided', 'involvement', after.id, { toUserId: after.requesterUserId }, { ...base, keySuffix: after.status })];
+  // An amendment is a new reason on a request the lead has not decided: they are told once per amendment.
+  if (after.status === 'pending' && (after.amendments ?? []).length > (before.amendments ?? []).length) {
+    return leadUserId ? [draft('involvement-requested', 'involvement', after.id, { toUserId: leadUserId }, { ...base, keySuffix: `amended:${(after.amendments ?? []).length}` })] : [];
+  }
   return [];
 }
 

@@ -2,7 +2,7 @@ import { t } from '@mas/messages';
 import { stageLabel } from '../../config/labels';
 import type { Agency } from '../../enums';
 import type { MaracProcess } from '../../schemas/process';
-import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type ReturnInput } from './shared';
+import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransferInput, type ReturnInput } from './shared';
 import { chairAndMinuteTaker } from './asp';
 
 /**
@@ -51,11 +51,6 @@ export interface LinkCpConcernInput {
 export interface IdaaFeedbackInput {
   summary: string;
   victimResponse?: string;
-}
-
-export interface TransferInput {
-  toArea: string;
-  receivingCoordinator: string;
 }
 
 const PROTOCOL_AGENCIES = ['marac-coordinator', 'domestic-abuse-officer', 'detective-sergeant-ppu', 'social-worker-children', 'social-worker-adults', 'team-leader', 'idaa', 'housing-officer', 'gp', 'health-visitor', 'cp-nurse-adviser', 'education-cp-lead', 'womens-aid-worker', 'midwife', 'cmhn', 'justice-social-worker'] as const;

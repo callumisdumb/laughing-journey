@@ -3,7 +3,7 @@
 import { agencyShort, formatDateTime, roleLabel, type InvolvementRequest, type Process } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, Dialog, Pill, Sheet, SheetBody, SheetHead, TextField, TextareaField, useToast } from '@mas/ui';
-import { UserCheck, UserX } from 'lucide-react';
+import { Pencil, UserCheck, UserMinus, UserX } from 'lucide-react';
 import { useState } from 'react';
 import { PractitionerLink } from '@/components/EntityLink';
 import { useAppStore, useCurrentUser, useData } from '@/lib/store';
@@ -62,6 +62,119 @@ export function AskToBeInvolvedDialog({ process, open, onClose }: { process: Pro
   );
 }
 
+/**
+ * The requester's own pending request, with the two things they may do to it before it is decided
+ * (D-246): change the reason the lead will read, or withdraw it. Shown to the requester only; the
+ * lead sees the same request in the list below, with the decision buttons.
+ */
+export function YourInvolvementRequest({ process }: { process: Process }) {
+  const t = useT();
+  const data = useData();
+  const user = useCurrentUser();
+  const amend = useAppStore((s) => s.amendInvolvement);
+  const withdraw = useAppStore((s) => s.withdrawInvolvement);
+  const readErrors = useWriteErrors();
+  const { toast } = useToast();
+  const [amending, setAmending] = useState(false);
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [reason, setReason] = useState('');
+  const [errors, setErrors] = useState<string[]>([]);
+  const request = data.involvementRequests.find((r) => r.processId === process.id && r.requesterUserId === user?.id && r.status === 'pending');
+  const lead = data.users.find((u) => u.id === process.leadUserId);
+  if (!request) return null;
+
+  function open(kind: 'amend' | 'withdraw') {
+    setErrors([]);
+    setReason(kind === 'amend' ? request!.reason : '');
+    if (kind === 'amend') setAmending(true);
+    else setWithdrawing(true);
+  }
+
+  function submitAmend() {
+    const result = amend(request!.id, reason);
+    if (!result.ok) {
+      setErrors(result.errors);
+      return;
+    }
+    toast({ title: t('processes.involvement.amendToast'), text: t('processes.involvement.amendIntro'), tone: 'success' });
+    setAmending(false);
+  }
+
+  function submitWithdraw() {
+    const result = withdraw(request!.id, reason);
+    if (!result.ok) {
+      setErrors(result.errors);
+      return;
+    }
+    toast({ title: t('processes.involvement.withdrawToast'), text: t('processes.involvement.withdrawToastText', { hasLead: lead ? 'yes' : 'no', name: lead ? `${lead.givenName} ${lead.familyName}` : '' }), tone: 'success' });
+    setWithdrawing(false);
+  }
+
+  return (
+    <Sheet tone="well" data-testid="your-involvement-request">
+      <SheetHead title={t('processes.involvement.sheetTitle')} meta={t('processes.involvement.pending', { name: lead ? `${lead.givenName} ${lead.familyName}` : agencyShort(process.leadAgency) })} />
+      <SheetBody>
+        <div className="stack">
+          <p>{t('processes.involvement.yours', { at: formatDateTime(request.createdAt), reason: request.reason })}</p>
+          {(request.amendments ?? []).length > 0 ? <p className={styles.memberMeta}>{t('processes.involvement.amended', { count: (request.amendments ?? []).length, at: formatDateTime(request.amendments!.at(-1)!.at) })}</p> : null}
+          <div className="cluster">
+            <Button size="sm" variant="secondary" icon={<Pencil size={14} aria-hidden="true" />} onClick={() => open('amend')} data-testid="involve-amend">
+              {t('processes.involvement.amend')}
+            </Button>
+            <Button size="sm" variant="quiet" icon={<UserMinus size={14} aria-hidden="true" />} onClick={() => open('withdraw')} data-testid="involve-withdraw">
+              {t('processes.involvement.withdraw')}
+            </Button>
+          </div>
+        </div>
+      </SheetBody>
+
+      <Dialog
+        open={amending}
+        onClose={() => setAmending(false)}
+        title={t('processes.involvement.amendDialogTitle', { reference: process.reference })}
+        errors={readErrors(errors)}
+        actions={
+          <>
+            <Button variant="quiet" onClick={() => setAmending(false)}>
+              {t('common.actions.cancel')}
+            </Button>
+            <Button variant="primary" onClick={submitAmend} data-testid="involve-amend-submit">
+              {t('processes.involvement.amendSubmit')}
+            </Button>
+          </>
+        }
+      >
+        <div className="stack">
+          <p>{t('processes.involvement.amendIntro')}</p>
+          <TextareaField label={t('processes.involvement.reason')} hint={t('processes.involvement.reasonHint')} value={reason} onChange={(e) => setReason(e.target.value)} rows={4} required data-testid="involve-amend-reason" />
+        </div>
+      </Dialog>
+
+      <Dialog
+        open={withdrawing}
+        onClose={() => setWithdrawing(false)}
+        title={t('processes.involvement.withdrawDialogTitle', { reference: process.reference })}
+        errors={readErrors(errors)}
+        actions={
+          <>
+            <Button variant="quiet" onClick={() => setWithdrawing(false)}>
+              {t('common.actions.cancel')}
+            </Button>
+            <Button variant="primary" onClick={submitWithdraw} data-testid="involve-withdraw-submit">
+              {t('processes.involvement.withdrawSubmit')}
+            </Button>
+          </>
+        }
+      >
+        <div className="stack">
+          <p>{t('processes.involvement.withdrawIntro')}</p>
+          <TextareaField label={t('processes.involvement.withdrawReason')} value={reason} onChange={(e) => setReason(e.target.value)} rows={2} data-testid="involve-withdraw-reason" />
+        </div>
+      </Dialog>
+    </Sheet>
+  );
+}
+
 /** The requests on this case, for the people who decide them. Nothing to show when nobody has asked. */
 export function InvolvementRequests({ process }: { process: Process }) {
   const t = useT();
@@ -99,7 +212,8 @@ export function InvolvementRequests({ process }: { process: Process }) {
               </span>
               <span className={styles.memberMeta}>{t('processes.involvement.request', { role: roleLabel(r.requesterRoleId), agency: agencyShort(r.requesterAgency), when: formatDateTime(r.createdAt) })}</span>
               <span className={styles.memberMeta}>{r.reason}</span>
-              {r.status !== 'pending' ? <span className={styles.memberMeta}>{t('processes.involvement.decidedBy', { name: r.decidedByName ?? '', when: r.decidedAt ? formatDateTime(r.decidedAt) : '', hasNote: r.decisionNote ? 'yes' : 'no', note: r.decisionNote ?? '' })}</span> : null}
+              {r.status === 'withdrawn' ? <span className={styles.memberMeta}>{t('processes.involvement.withdrawn', { at: r.withdrawnAt ? formatDateTime(r.withdrawnAt) : '', hasReason: r.withdrawnReason ? 'yes' : 'no', reason: r.withdrawnReason ?? '' })}</span> : null}
+              {r.status !== 'pending' && r.status !== 'withdrawn' ? <span className={styles.memberMeta}>{t('processes.involvement.decidedBy', { name: r.decidedByName ?? '', when: r.decidedAt ? formatDateTime(r.decidedAt) : '', hasNote: r.decisionNote ? 'yes' : 'no', note: r.decisionNote ?? '' })}</span> : null}
               {r.status === 'pending' ? (
                 <div className="stack" style={{ marginTop: 6 }}>
                   <TextField label={t('processes.involvement.note')} hint={t('processes.involvement.noteHint')} value={notes[r.id] ?? ''} onChange={(e) => setNotes({ ...notes, [r.id]: e.target.value })} data-testid={`involve-note-${r.id}`} />

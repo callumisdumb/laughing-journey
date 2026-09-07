@@ -2,7 +2,7 @@ import { t } from '@mas/messages';
 import { stageLabel } from '../../config/labels';
 import { ASP_INQUIRY_ACTIONS, type Agency, type AspInquiryAction, type ConsentStatus } from '../../enums';
 import type { AspProcess } from '../../schemas/process';
-import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransitionContext, type ReturnInput } from './shared';
+import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransferInput, type TransitionContext, type ReturnInput } from './shared';
 
 /**
  * Adult support and protection, from an adult concern to closure (task section 1.2).
@@ -361,6 +361,26 @@ export const ASP_TRANSITIONS: Array<Transition<AspProcess, never>> = [
       const inquiry = { ...process.detail.inquiry!, outcome: 'pending' as const, decidedAt: undefined };
       const next: AspProcess = { ...process, detail: { ...process.detail, inquiry } };
       return outcome(moved(next, 'inquiry', ctx, summary), 'inquiry', summary, { clocks: { completes: [], starts: [], note: t('processes.transitions.clockNote.returned') } });
+    },
+  },
+  {
+    // The way a case leaves this authority (D-248): everything stops here, the record says where it
+    // went and who is receiving it, and the clocks stop with it. The receiving authority opens its
+    // own case in its own system; nothing here pretends to have sent anything.
+    id: 'asp-transfer',
+    process: 'asp',
+    from: ['concern', 'screening', 'inquiry', 'investigation', 'case-conference', 'protection-plan', 'support-plan', 'review'],
+    to: ['transferred'],
+    roles: ['council-officer-asp', 'team-leader', 'cswo'],
+    requires: () => [],
+    validate: (input: TransferInput) => [...requireText(input.toArea, 'areaRequired', 3), ...requireText(input.receivingCoordinator, 'coordinatorRequired', 3)],
+    apply: (process, input: TransferInput, ctx) => {
+      const summary = t('processes.transitions.summary.transferred', { area: input.toArea, coordinator: input.receivingCoordinator });
+      const next = { ...process, status: 'transferred' as const };
+      return outcome(moved(next, 'transferred', ctx, summary), 'transferred', summary, {
+        clocks: { completes: process.clocks.filter((c) => !c.completedAt).map((c) => c.ruleId), starts: [], note: summary },
+        outbound: null,
+      });
     },
   },
 ];

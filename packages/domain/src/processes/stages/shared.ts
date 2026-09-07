@@ -283,3 +283,12 @@ export function validatePlan(input: PlanInput | undefined): string[] {
 export function destinationLabels(process: Pick<Process, 'type'>, transition: Pick<AnyTransition, 'to'>): string[] {
   return transition.to.map((stage) => stageLabel(process.type, stage));
 }
+
+/**
+ * A case leaving this authority (D-248). The area and the person receiving it are typed by the
+ * practitioner: the product has no directory of other authorities and does not pretend to.
+ */
+export interface TransferInput {
+  toArea: string;
+  receivingCoordinator: string;
+}

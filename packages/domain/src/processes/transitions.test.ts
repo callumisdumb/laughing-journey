@@ -74,7 +74,7 @@ describe('the registry', () => {
         expect(transition.roles.length, transition.id).toBeGreaterThan(0);
       }
     }
-    expect(ids.size).toBe(52);
+    expect(ids.size).toBe(55);
   });
   it('reaches every stage of every type through some transition, so no stage needs a picker', () => {
     for (const type of Object.keys(TRANSITIONS) as ProcessType[]) {
@@ -97,7 +97,7 @@ describe('the registry', () => {
   });
   it('whatHappensNext answers the four questions for each transition the stage carries', () => {
     const next = whatHappensNext(open('asp'), { roleId: 'team-leader' });
-    expect(next.map((n) => n.transition.id)).toEqual(['asp-screening-decision', 'asp-close']);
+    expect(next.map((n) => n.transition.id)).toEqual(['asp-screening-decision', 'asp-close', 'asp-transfer']);
     expect(next[0]?.permission.allowed).toBe(true);
     expect(next[0]?.leadsTo).toEqual(['Screening', 'Inquiry using investigatory powers']);
     const socialWorker = whatHappensNext(open('asp'), { roleId: 'social-worker-children' });
@@ -562,5 +562,46 @@ describe('returning a case a stage (D-241)', () => {
       const stages = STAGES_BY_PROCESS[tr.process] as readonly string[];
       for (const from of tr.from) for (const to of tr.to) expect(stages.indexOf(to), tr.id).toBeLessThan(stages.indexOf(from));
     }
+  });
+});
+
+describe('transferring a case to another authority (D-248)', () => {
+  const testedAsp = (process: AspProcess): AspProcess => ({ ...process, detail: { ...process.detail, threePointTest: { ...process.detail.threePointTest, outcome: 'met', a: { met: 'yes', reasoning: 'Adult at risk of harm' } } } });
+
+  it('offers a transfer from every stage of the four types that have one, and never from closed', () => {
+    for (const [type, id] of [['asp', 'asp-transfer'], ['cp', 'cp-transfer'], ['awi', 'awi-transfer'], ['marac', 'marac-transfer']] as const) {
+      const transition = transitionById(id)!;
+      expect(transition.process).toBe(type);
+      expect(transition.to).toEqual(['transferred']);
+      expect(transition.from).not.toContain('closed');
+      expect(transition.from).not.toContain('transferred');
+      // Every stage the type can be at before it leaves is a stage it can leave from.
+      const stages = (STAGES_BY_PROCESS[type] as readonly string[]).filter((s) => s !== 'closed' && s !== 'transferred');
+      expect([...transition.from].sort()).toEqual([...stages].sort());
+    }
+  });
+
+  it('stops the clocks, sets the status and records where the case went', () => {
+    const investigation = ok(testedAsp(open('asp') as AspProcess), 'asp-screening-decision', { outcome: 'emergency-action', rationale: 'Immediate risk of serious harm tonight.' }, 'team-leader').process;
+    const withClock = { ...investigation, clocks: [{ id: 'clk_1', ruleId: 'asp.inquiry.decision', triggeredAt: AT }] } as AspProcess;
+    const refused = record(withClock, 'asp-transfer', { toArea: '', receivingCoordinator: '' }, 'team-leader') as { errors: string[] };
+    expect(refused.errors).toEqual(['areaRequired', 'coordinatorRequired']);
+    expect(record(withClock, 'asp-transfer', { toArea: 'Lochbrae Council', receivingCoordinator: 'A Officer' }, 'gp', 'health').ok).toBe(false);
+
+    const out = ok(withClock, 'asp-transfer', { toArea: 'Lochbrae Council', receivingCoordinator: 'Iain Rae, council officer' }, 'team-leader');
+    expect(out.process.status).toBe('transferred');
+    expect(out.to).toBe('transferred');
+    expect(out.clocks.completes).toEqual(['asp.inquiry.decision']);
+    expect(out.summary).toContain('Lochbrae Council');
+    expect(out.summary).toContain('Iain Rae');
+    // A transferred case proposes nothing to the source systems: the other authority is not on them.
+    expect(out.outbound).toBeNull();
+  });
+
+  it('transfers a child protection case and an adults with incapacity case the same way', () => {
+    const cp = ok(open('cp'), 'cp-transfer', { toArea: 'Lochbrae Council', receivingCoordinator: 'A Team Leader' }, 'team-leader');
+    expect(cp.process.status).toBe('transferred');
+    const awi = ok(open('awi'), 'awi-transfer', { toArea: 'Lochbrae Council', receivingCoordinator: 'A Social Worker' }, 'mho');
+    expect(awi.process.status).toBe('transferred');
   });
 });

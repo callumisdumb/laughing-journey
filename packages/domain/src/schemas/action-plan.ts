@@ -19,6 +19,38 @@ export const actionSchema = z.object({
   ownerRoleId: z.enum(ROLES).optional(),
   ownerName: z.string(),
   ownerAgency: z.enum(AGENCIES),
+  /**
+   * An owner outside the partnership: a landlord, an advocate's line manager, a service the case
+   * depends on but nobody here holds an account for (D-250). The product tells them nothing, which
+   * is the point of recording them as external rather than as a user: the action sits on the case's
+   * own list with the contact beside it, and somebody here chases it.
+   */
+  externalOwner: z
+    .object({
+      name: z.string().min(2).max(120),
+      organisation: z.string().min(2).max(160),
+      contact: z.string().max(200).optional(),
+      /** Who here is answerable for chasing it, because an action nobody here owns is an action nobody does. */
+      chasedByUserId: idSchema.optional(),
+      chasedByName: z.string(),
+    })
+    .optional(),
+  /**
+   * A repeating action: completing this one creates the next, due the interval on (D-250). The chain
+   * is kept so a reader can see it is a series rather than seven identical actions somebody typed.
+   */
+  recurrence: z
+    .object({
+      every: z.number().int().min(1).max(52),
+      unit: z.enum(['days', 'weeks', 'months']),
+      /** Nothing recurs for ever: the series stops here, and the last one says so. */
+      until: isoDate.optional(),
+      /** The action this one followed, where it is not the first of its series. */
+      previousActionId: idSchema.optional(),
+      /** The action completing this one created. */
+      nextActionId: idSchema.optional(),
+    })
+    .optional(),
   due: isoDate,
   status: z.enum(ACTION_STATUSES),
   completedAt: isoDateTime.optional(),

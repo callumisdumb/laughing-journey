@@ -13,3 +13,4 @@ export * from './outbox';
 export * from './config';
 export * from './dataset';
 export * from './document';
+export * from './submission';

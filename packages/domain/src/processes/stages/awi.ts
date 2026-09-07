@@ -1,7 +1,7 @@
 import { t } from '@mas/messages';
 import { londonToIso } from '../../dates';
 import type { AwiDetail, AwiProcess } from '../../schemas/process';
-import { moved, outcome, requireText, type MissingThing, type Transition } from './shared';
+import { moved, outcome, requireText, type MissingThing, type Transition, type TransferInput } from './shared';
 
 /**
  * Adults with incapacity, from a capacity concern to supervision and closure (task section 1.6).
@@ -275,5 +275,25 @@ export const AWI_TRANSITIONS: Array<Transition<AwiProcess, never>> = [
     requires: () => [],
     validate: (input: { reasonId: string; note: string }) => [...(input.reasonId ? [] : ['closureReasonRequired']), ...requireText(input.note, 'closureNoteRequired')],
     apply: (process, input: { reasonId: string; note: string }) => outcome(process, 'closed', t('processes.transitions.summary.close', { reason: input.reasonId }), { followOn: [{ kind: 'close', reasonId: input.reasonId, note: input.note }], outbound: null }),
+  },
+  {
+    // The way a case leaves this authority (D-248): everything stops here, the record says where it
+    // went and who is receiving it, and the clocks stop with it. The receiving authority opens its
+    // own case in its own system; nothing here pretends to have sent anything.
+    id: 'awi-transfer',
+    process: 'awi',
+    from: ['capacity-concern', 'existing-powers', 'route-decision', 'application', 'order', 'supervision'],
+    to: ['transferred'],
+    roles: ['social-worker-adults', 'team-leader', 'mho', 'cswo'],
+    requires: () => [],
+    validate: (input: TransferInput) => [...requireText(input.toArea, 'areaRequired', 3), ...requireText(input.receivingCoordinator, 'coordinatorRequired', 3)],
+    apply: (process, input: TransferInput, ctx) => {
+      const summary = t('processes.transitions.summary.transferred', { area: input.toArea, coordinator: input.receivingCoordinator });
+      const next = { ...process, status: 'transferred' as const };
+      return outcome(moved(next, 'transferred', ctx, summary), 'transferred', summary, {
+        clocks: { completes: process.clocks.filter((c) => !c.completedAt).map((c) => c.ruleId), starts: [], note: summary },
+        outbound: null,
+      });
+    },
   },
 ];

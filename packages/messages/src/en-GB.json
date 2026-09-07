@@ -1025,6 +1025,7 @@
       "share": "Share",
       "signIn": "Sign in",
       "stageChange": "Stage moved",
+      "submit": "Return submitted",
       "unmerge": "Merge undone"
     },
     "columns": {
@@ -1100,7 +1101,8 @@
       "process": "Process",
       "report": "Report",
       "session": "Session",
-      "sharing": "Share"
+      "sharing": "Share",
+      "submission": "Return"
     }
   },
   "awi": {
@@ -2845,6 +2847,7 @@
       "invitationResponded": "Invitation answered",
       "involvementDecided": "Involvement decided",
       "involvementRequested": "Involvement requested",
+      "involvementWithdrawn": "Request withdrawn",
       "leadReallocated": "Lead worker changed",
       "meetingCancelled": "Meeting cancelled",
       "meetingChanged": "Meeting changed",
@@ -3154,6 +3157,7 @@
       "aspScheduleCaseConference": "Schedule case conference",
       "aspScheduleReview": "Schedule review",
       "aspScreeningDecision": "Record screening decision",
+      "aspTransfer": "Transfer to another authority",
       "awiBeginSupervision": "Begin supervision",
       "awiCheckExistingPowers": "Check existing powers",
       "awiClose": "Close",
@@ -3164,6 +3168,7 @@
       "awiRecordReport": "Record report",
       "awiRecordVisit": "Record supervision visit",
       "awiRouteDecision": "Record route decision",
+      "awiTransfer": "Transfer to another authority",
       "cpBirth": "Record the birth",
       "cpClose": "Close",
       "cpConveneIrd": "Convene IRD",
@@ -3177,6 +3182,7 @@
       "cpReviewCppmHeld": "Review planning meeting held",
       "cpScheduleCppm": "Schedule planning meeting",
       "cpScheduleReviewCppm": "Schedule review planning meeting",
+      "cpTransfer": "Transfer to another authority",
       "mappaExit": "Exit MAPPA",
       "mappaMeetingHeld": "MAPPA meeting held",
       "mappaRecordDisclosure": "Record disclosure decision",
@@ -3340,10 +3346,12 @@
       "invitationDeclineReasonRequired": "Say why you cannot attend, in a sentence. The chair reads it.",
       "invitationMissing": "You are not on this meeting's invitation list.",
       "inviteesRequired": "Invite at least one person.",
+      "involvementAmendReasonRequired": "Give the amended reason, in a sentence or two.",
       "involvementDecided": "That request has already been decided.",
       "involvementExcluded": "You are recorded as a party who must not receive anything about this case.",
       "involvementMissing": "That request is not on the record.",
-      "involvementNotYours": "Only somebody on the case decides who joins it.",
+      "involvementNotPending": "That request has already been decided.",
+      "involvementNotYours": "Only the person who asked can change or withdraw it.",
       "involvementPending": "You have already asked. The lead has not decided yet.",
       "involvementReasonRequired": "Say why you need to be involved, in at least ten characters.",
       "irdNotConvened": "No IRD has been convened. Convene the IRD first.",
@@ -3428,6 +3436,8 @@
       "recordMissing": "That record is no longer there.",
       "recordsRequired": "Say which records are being asked for.",
       "referenceRequired": "Give the Public Guardian reference.",
+      "referralFieldNotCorrectable": "That field is not part of the referral record. The person the case is about is changed by a merge or a recorded-in-error; a wrongly named perpetrator is corrected on the case-role register.",
+      "referralUnchanged": "Nothing has been changed.",
       "registerNameRequired": "Give the name the entry is keyed on.",
       "registerReasonRequired": "Say why they must not receive information.",
       "relationshipDuplicate": "That relationship is already recorded between these two people.",
@@ -3454,6 +3464,11 @@
       "sharesNeedLawfulBasis": "A share cannot be written without a lawful basis under it.",
       "sharesNeedProcess": "A share has to belong to a case.",
       "significantHarmDecisionRequired": "Record the significant harm decision, with the reasoning.",
+      "submissionAlreadyRecorded": "This return is already recorded as submitted for that period.",
+      "submissionDateInFuture": "A return cannot have been sent on a date that has not happened.",
+      "submissionDateRequired": "Say the date it was sent.",
+      "submissionNotYours": "Only somebody who can read the return can record it as submitted.",
+      "submissionRecipientRequired": "Say who it was sent to.",
       "substituteExcluded": "That person cannot be seated at this meeting.",
       "substituteRequired": "Choose who will attend in your place.",
       "substituteSameAgency": "A substitute has to be from your own agency.",
@@ -5248,6 +5263,7 @@
       "invitationResponded": "{status, select, accepted {{name} accepted the invitation to {title} on {date}.} declined {{name} declined the invitation to {title} on {date}.} other {{name} has nominated a substitute for {title} on {date}.}}",
       "involvementDecided": "Your request to be involved in {reference} was {decision, select, accepted {accepted} other {declined}}.",
       "involvementRequested": "{name} asked to be involved in {reference}.",
+      "involvementWithdrawn": "{name} withdrew their request to be involved in {reference}.",
       "leadReallocated": "{former, select, yes {{name} reallocated {reference} from you to {lead}.} other {{name} made you the lead worker on {reference}.}}",
       "meetingCancelled": "{title} has been cancelled.",
       "meetingChanged": "{title} has moved to {date}.",
@@ -6545,6 +6561,13 @@
         "consequence": "{process, select, asp {The inquiry outcome is then recorded again.} cp {Convene the reconvened IRD next. The initial planning meeting clock completes with this return and starts again from the reconvened IRD's decisions.} other {Schedule the further MARAC next. The case is heard again and the action plan recorded again.}}",
         "reason": "Why the case is returning",
         "reasonHint": "A sentence or two. It goes on the stage entry and the chronology. The clocks the earlier stage started are unchanged."
+      },
+      "transfer": {
+        "area": "Receiving authority",
+        "areaHint": "The council or partnership taking the case on.",
+        "consequence": "Everything on this case stops here: the clocks complete, the stage becomes Transferred, and the record says where it went and to whom. The receiving authority opens its own case in its own system. Nothing is sent from here.",
+        "coordinator": "Who is receiving it",
+        "coordinatorHint": "The named person you have handed it to, so the record says who rather than where alone."
       }
     },
     "head": {
@@ -6563,6 +6586,13 @@
     },
     "involvement": {
       "accept": "Accept",
+      "amend": "Change your reason",
+      "amendAudit": "Request to be involved in {reference} amended by {name}",
+      "amendDialogTitle": "Change why you need to be on {reference}",
+      "amended": "{count, plural, one {Amended once} other {Amended # times}}, most recently {at}.",
+      "amendIntro": "The lead has not decided this yet. Changing the reason replaces what they will read; the request keeps what it said before.",
+      "amendSubmit": "Save the new reason",
+      "amendToast": "Reason changed. The lead has been told.",
       "audit": {
         "decided": "Involvement request from {name} {decision}",
         "joined": "{name} joined the case on request",
@@ -6589,9 +6619,20 @@
       "status": {
         "accepted": "Accepted",
         "declined": "Declined",
-        "pending": "Pending"
+        "pending": "Pending",
+        "withdrawn": "Withdrawn"
       },
-      "submit": "Send request"
+      "submit": "Send request",
+      "withdraw": "Withdraw the request",
+      "withdrawAudit": "Request to be involved in {reference} withdrawn by {name}",
+      "withdrawDialogTitle": "Withdraw your request on {reference}",
+      "withdrawIntro": "The request comes off the lead's list and they are told it was withdrawn. You can ask again later.",
+      "withdrawn": "Withdrawn {at}.{hasReason, select, yes { {reason}} other {}}",
+      "withdrawReason": "Why (optional)",
+      "withdrawSubmit": "Withdraw it",
+      "withdrawToast": "Request withdrawn",
+      "withdrawToastText": "{hasLead, select, yes {{name} has been told.} other {The case's members have been told.}}",
+      "yours": "Your request, sent {at}. {reason}"
     },
     "lead": {
       "action": "Reallocate lead",
@@ -6822,6 +6863,34 @@
     },
     "presence": {
       "summary": "You can see that a {process} process exists at the {stage} stage, led by {agency}. {reason}"
+    },
+    "referral": {
+      "action": "Correct the referral",
+      "audit": "Referral corrected on {reference}: {fields}",
+      "dialogTitle": "Correct the referral on {reference}",
+      "eventDetail": "{fields} corrected by {by}. {reason}",
+      "eventTitle": "Referral record corrected on {reference}",
+      "fields": {
+        "byName": "Recorded by",
+        "decisionInQuestion": "Decision in question",
+        "notifiedAt": "Notified",
+        "raisedAt": "Raised",
+        "receivedAt": "Received",
+        "referrerName": "Referrer",
+        "referringAgency": "Referring agency",
+        "source": "Source",
+        "sourceAgency": "Source agency",
+        "sourceReference": "Their reference",
+        "summary": "Summary"
+      },
+      "fixed": "The person the case is about, and on a MARAC the perpetrator, are not corrected here: a wrong subject is a merge or a recorded-in-error, and a wrong perpetrator is corrected on the case-role register.",
+      "intro": "The referral is a record of what somebody said, and it can be taken down wrong. Correcting it keeps both readings: the version history shows what it said before, and the chronology carries the correction.",
+      "reason": "Why it is being corrected",
+      "reasonHint": "A sentence. It is audited and sits on the version history.",
+      "submit": "Record the correction",
+      "toastText": "{count, plural, one {# field} other {# fields}} corrected. The version history keeps what it said before.",
+      "toastTitle": "Referral corrected",
+      "version": "Referral corrected: {fields}"
     },
     "reopen": {
       "action": "Reopen the case",
@@ -8004,6 +8073,28 @@
       "templateNote": "Choose a blank copy of New-Marac-data-template-Scotland-2025.xlsx from disk. The file is not bundled: SafeLives publishes and revises it, and the header row is checked against the one this return expects before anything is written.",
       "templateTitle": "The template",
       "title": "MARAC data template return"
+    },
+    "submission": {
+      "action": "Mark as submitted",
+      "audit": "{title} for {period} recorded as submitted to {recipient}",
+      "clockNote": "Submitted to {recipient} on {date}",
+      "dialogTitle": "Mark the {title} as submitted",
+      "done": "Submitted to {recipient} on {date} by {by}.{hasReference, select, yes { Their reference: {reference}.} other {}}",
+      "eventless": "Recording a submission changes no case record: it is a note that a return left, and the deadline clock it answers.",
+      "intro": "The product does not send returns. This records that you did: what went, where, when, and whatever reference came back.{hasClock, select, yes { It completes the submission clock for this quarter.} other {}}",
+      "nmdsQuarter": "Which quarter this answers",
+      "nmdsQuarterHint": "The ASP return has a deadline clock per quarter. Naming the quarter completes it.",
+      "note": "Note (optional)",
+      "recipient": "Sent to",
+      "recipientHint": "The body that receives it, as you addressed it.",
+      "reference": "Their reference (optional)",
+      "route": "How it was sent (optional)",
+      "routeHint": "Secure email, the portal, a courier: whatever it was.",
+      "submit": "Record the submission",
+      "submittedOn": "Date sent",
+      "toastText": "{title} for {period} is recorded as submitted.{clocks, plural, =0 {} one { # clock completed.} other { # clocks completed.}}",
+      "toastTitle": "Return recorded as submitted",
+      "version": "Recorded as submitted to {recipient}"
     },
     "table": {
       "empty": "None in period"

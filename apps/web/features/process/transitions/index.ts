@@ -5,6 +5,7 @@ import { CP_BIRTH, CP_DEREGISTER, CP_RECORD_JII, CP_RECORD_MEDICAL } from './CpF
 import { MAPPA_EXIT, MAPPA_RECORD_RETURN, MAPPA_REQUEST_RETURNS } from './MappaForms';
 import { MARAC_ACTION_PLAN, MARAC_IDAA_FEEDBACK, MARAC_LINK_CP_CONCERN, MARAC_RESEARCH_REQUESTS, MARAC_RESEARCH_RETURN, MARAC_TRANSFER } from './MaracForms';
 import { RETURN_A_STAGE } from './ReturnForms';
+import { TRANSFER_TO_AUTHORITY } from './TransferForm';
 
 /**
  * The form each transition opens from the case (D-217), keyed on the transition id. Transitions
@@ -42,6 +43,9 @@ export const TRANSITION_FORMS: Readonly<Record<string, TransitionForm>> = {
   'asp-return-to-inquiry': RETURN_A_STAGE,
   'cp-return-to-ird': RETURN_A_STAGE,
   'marac-return-to-meeting': RETURN_A_STAGE,
+  'asp-transfer': TRANSFER_TO_AUTHORITY,
+  'cp-transfer': TRANSFER_TO_AUTHORITY,
+  'awi-transfer': TRANSFER_TO_AUTHORITY,
 };
 
 export type { TransitionForm, TransitionFormContext, TransitionFormProps } from './registry';
