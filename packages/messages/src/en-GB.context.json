@@ -19,6 +19,12 @@
       "casePlaceholder": {
         "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
       },
+      "chasedBy": {
+        "where": "Add an action dialog: the external owner and the recurrence"
+      },
+      "chasedByHint": {
+        "where": "Add an action dialog: the external owner and the recurrence"
+      },
       "detail": {
         "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
       },
@@ -28,11 +34,32 @@
       "due": {
         "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
       },
+      "every": {
+        "where": "Add an action dialog: the external owner and the recurrence"
+      },
+      "externalContact": {
+        "where": "Add an action dialog: the external owner and the recurrence"
+      },
+      "externalHint": {
+        "where": "Add an action dialog: the external owner and the recurrence"
+      },
+      "externalName": {
+        "where": "Add an action dialog: the external owner and the recurrence"
+      },
+      "externalNobodyTold": {
+        "where": "Add an action dialog: the external owner and the recurrence"
+      },
+      "externalOrganisation": {
+        "where": "Add an action dialog: the external owner and the recurrence"
+      },
       "noCases": {
         "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
       },
       "owner": {
         "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "ownerExternal": {
+        "where": "Add an action dialog: the external owner and the recurrence"
       },
       "ownerHint": {
         "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
@@ -54,6 +81,12 @@
       },
       "planNone": {
         "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "repeats": {
+        "where": "Add an action dialog: the external owner and the recurrence"
+      },
+      "repeatsHint": {
+        "where": "Add an action dialog: the external owner and the recurrence"
       },
       "role": {
         "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
@@ -81,6 +114,23 @@
       },
       "toastTitle": {
         "where": "The add action dialog, reached from the Actions screen, a case, a plan and the global create menu."
+      },
+      "unit": {
+        "where": "Add an action dialog: the external owner and the recurrence"
+      },
+      "units": {
+        "days": {
+          "where": "Add an action dialog: the external owner and the recurrence"
+        },
+        "months": {
+          "where": "Add an action dialog: the external owner and the recurrence"
+        },
+        "weeks": {
+          "where": "Add an action dialog: the external owner and the recurrence"
+        }
+      },
+      "until": {
+        "where": "Add an action dialog: the external owner and the recurrence"
       }
     },
     "audit": {
@@ -177,6 +227,17 @@
       },
       "toPlaceholder": {
         "where": "Placeholder of the escalate to field"
+      }
+    },
+    "external": {
+      "chasedBy": {
+        "where": "Action lists, an action owned outside the partnership"
+      },
+      "contact": {
+        "where": "Action lists, an action owned outside the partnership"
+      },
+      "owner": {
+        "where": "Action lists, an action owned outside the partnership"
       }
     },
     "list": {
@@ -354,6 +415,20 @@
       },
       "toastTitle": {
         "where": "The reassign dialog on the Actions screen."
+      }
+    },
+    "recurrence": {
+      "created": {
+        "where": "Action lists and the completion toast, a repeating action"
+      },
+      "ended": {
+        "where": "Action lists and the completion toast, a repeating action"
+      },
+      "label": {
+        "where": "Action lists and the completion toast, a repeating action"
+      },
+      "series": {
+        "where": "Action lists and the completion toast, a repeating action"
       }
     },
     "take": {
@@ -1174,6 +1249,34 @@
           "screenshot": "phase-5/admin-defaults-light-comfortable.png",
           "where": "Hint under the follow-the-device option"
         }
+      }
+    },
+    "digest": {
+      "column": {
+        "count": {
+          "where": "Admin: the digest outbox, what a deployment with email would have sent"
+        },
+        "kind": {
+          "where": "Admin: the digest outbox, what a deployment with email would have sent"
+        },
+        "recipient": {
+          "where": "Admin: the digest outbox, what a deployment with email would have sent"
+        }
+      },
+      "empty": {
+        "where": "Admin: the digest outbox, what a deployment with email would have sent"
+      },
+      "meta": {
+        "where": "Admin: the digest outbox, what a deployment with email would have sent"
+      },
+      "note": {
+        "where": "Admin: the digest outbox, what a deployment with email would have sent"
+      },
+      "title": {
+        "where": "Admin: the digest outbox, what a deployment with email would have sent"
+      },
+      "total": {
+        "where": "Admin: the digest outbox, what a deployment with email would have sent"
       }
     },
     "disclosure": {
@@ -2136,6 +2239,9 @@
           "notes": "The holiday counts moved to the Calendar card.",
           "where": "Admin overview, the count on the Defaults card."
         },
+        "digest": {
+          "where": "Admin overview card for the digest section, the count line"
+        },
         "disclosure": {
           "where": "Count line on the Admin overview card for the statutory disclosure section"
         },
@@ -2232,6 +2338,14 @@
           "maxLength": 24,
           "screenshot": "phase-5/admin-light-comfortable.png",
           "where": "Admin section name: sub-navigation link, overview card title and section heading"
+        }
+      },
+      "digest": {
+        "description": {
+          "where": "Admin overview card for the digest section"
+        },
+        "label": {
+          "where": "Admin navigation and heading for the digest section"
         }
       },
       "disclosure": {
@@ -2953,6 +3067,12 @@
         "screenshot": "phase-3/process-asp-lsi-light-comfortable.png",
         "where": "Meta of the LSI workspace: provider, strand count and who has been notified"
       },
+      "openedMeta": {
+        "where": "ASP case screen, the Large Scale Investigation card"
+      },
+      "planningDecision": {
+        "where": "ASP case screen, the Large Scale Investigation card"
+      },
       "strandLead": {
         "maxLength": 40,
         "screenshot": "phase-3/process-asp-lsi-light-comfortable.png",
@@ -3628,8 +3748,14 @@
       }
     },
     "orders": {
+      "appeal": {
+        "where": "AWI case screen, the orders card: what has happened to an order since it was granted"
+      },
       "item": {
         "where": "After the guardian name on each order: when granted, expiry and powers"
+      },
+      "lifecycleTitle": {
+        "where": "AWI case screen, the orders card: what has happened to an order since it was granted"
       },
       "meta": {
         "maxLength": 16,
@@ -3648,6 +3774,12 @@
         "maxLength": 40,
         "where": "Under an order: when the OPG registered it"
       },
+      "recalled": {
+        "where": "AWI case screen, the orders card: what has happened to an order since it was granted"
+      },
+      "renewed": {
+        "where": "AWI case screen, the orders card: what has happened to an order since it was granted"
+      },
       "supervising": {
         "maxLength": 50,
         "where": "Under an order: the supervising officer"
@@ -3656,6 +3788,9 @@
         "maxLength": 20,
         "screenshot": "phase-3/process-awi-light-comfortable.png",
         "where": "Sheet title of the order register card on an AWI process"
+      },
+      "varied": {
+        "where": "AWI case screen, the orders card: what has happened to an order since it was granted"
       }
     },
     "route": {
@@ -6603,6 +6738,9 @@
       "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
     },
     "target": {
+      "action": {
+        "where": "Attach a file dialog title, when attaching evidence to an action"
+      },
       "event": {
         "where": "Attach a file dialog and the attachments list on a person, case, meeting and chronology event"
       },
@@ -7648,6 +7786,17 @@
           "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
         }
       },
+      "awiOrderRenewalDue": {
+        "description": {
+          "where": "Admin, Timescales: the order renewal rule"
+        },
+        "label": {
+          "where": "Admin, Timescales: the order renewal rule"
+        },
+        "trigger": {
+          "where": "Admin, Timescales: the order renewal rule"
+        }
+      },
       "cpCoregroupEscalate": {
         "description": {
           "where": "Plain-language description of the rule in Help and the Admin timescales dialog"
@@ -7766,6 +7915,17 @@
         },
         "trigger": {
           "where": "What starts the clock, in the Admin timescales dialog and the Help timescales table"
+        }
+      },
+      "mappaLevel1Review": {
+        "description": {
+          "where": "Admin, Timescales: the level 1 MAPPA review rule"
+        },
+        "label": {
+          "where": "Admin, Timescales: the level 1 MAPPA review rule"
+        },
+        "trigger": {
+          "where": "Admin, Timescales: the level 1 MAPPA review rule"
         }
       },
       "mappaLevel2Review": {
@@ -9319,6 +9479,9 @@
         "supportPlan": {
           "maxLength": 24,
           "where": "Stage name for ASP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "transferred": {
+          "where": "Stepper and stage pills: an ASP case transferred to another authority"
         }
       },
       "awi": {
@@ -9349,6 +9512,9 @@
         "supervision": {
           "maxLength": 24,
           "where": "Stage name for AWI on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "transferred": {
+          "where": "Stepper and stage pills: an AWI case transferred to another authority"
         }
       },
       "cp": {
@@ -9383,6 +9549,9 @@
         "review": {
           "maxLength": 24,
           "where": "Stage name for CP on process marks, the stage stepper, tables and the need-to-know drawer"
+        },
+        "transferred": {
+          "where": "Stepper and stage pills: a CP case transferred to another authority"
         }
       },
       "mappa": {
@@ -9465,6 +9634,9 @@
       }
     },
     "transitions": {
+      "aspAddLsiStrand": {
+        "where": "Stage engine: the two LSI transitions"
+      },
       "aspCaseConferenceHeld": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
       },
@@ -9479,6 +9651,9 @@
       },
       "aspOpenInquiry": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "aspOpenLsi": {
+        "where": "Stage engine: the two LSI transitions"
       },
       "aspRecordProtectionPlan": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
@@ -9519,6 +9694,12 @@
       "awiOpenApplication": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
       },
+      "awiRecallOrder": {
+        "where": "Stage engine: the four order lifecycle transitions"
+      },
+      "awiRecordAppeal": {
+        "where": "Stage engine: the four order lifecycle transitions"
+      },
       "awiRecordCapacityAssessment": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
       },
@@ -9531,11 +9712,17 @@
       "awiRecordVisit": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
       },
+      "awiRenewOrder": {
+        "where": "Stage engine: the four order lifecycle transitions"
+      },
       "awiRouteDecision": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
       },
       "awiTransfer": {
         "where": "Stage engine: the AWI transition that transfers a case to another authority"
+      },
+      "awiVaryOrder": {
+        "where": "Stage engine: the four order lifecycle transitions"
       },
       "cpBirth": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
@@ -9581,6 +9768,9 @@
       },
       "mappaExit": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
+      },
+      "mappaLevel1Review": {
+        "where": "Stage engine: the level 1 review transition"
       },
       "mappaMeetingHeld": {
         "where": "Name of a stage transition: the button on the stepper, the drawer’s What happens next list and the ledger."
@@ -9806,6 +9996,9 @@
       "alreadyRecordedInError": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"
       },
+      "appellantRequired": {
+        "where": "Order lifecycle forms, refusals"
+      },
       "applicantRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
@@ -9849,10 +10042,13 @@
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
       "chairRequired": {
-        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+        "where": "The LSI forms, refusals"
       },
       "changeNoteRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "chaserRequired": {
+        "where": "Add an action dialog, refusals"
       },
       "childRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -9920,6 +10116,15 @@
       "deathNoteRequired": {
         "where": "Refusal listed on a closure, reopening, death or retirement dialog"
       },
+      "delegateExcluded": {
+        "where": "Out of office card in Settings, refusals"
+      },
+      "delegateRequired": {
+        "where": "Out of office card in Settings, refusals"
+      },
+      "delegateSelf": {
+        "where": "Out of office card in Settings, refusals"
+      },
       "deregistrationReasonRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
@@ -9964,6 +10169,9 @@
       },
       "expiryRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "externalOwnerRequired": {
+        "where": "Add an action dialog, refusals"
       },
       "guardianRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -10100,8 +10308,20 @@
       "levelRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
+      "lsiAlreadyOpen": {
+        "where": "The LSI forms, refusals"
+      },
+      "lsiChairSeniorityRequired": {
+        "where": "The LSI forms, refusals"
+      },
+      "lsiNotOpen": {
+        "where": "The LSI forms, refusals"
+      },
       "mappaMeetingRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "mappaNotLevel1": {
+        "where": "What happens next: the level 1 review offered on a case at another level"
       },
       "mappaNotReferred": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -10209,7 +10429,7 @@
         "where": "Refusal listed on a record dialog"
       },
       "orderRequired": {
-        "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+        "where": "Order lifecycle forms, refusals"
       },
       "outboxLawfulBasisRequired": {
         "where": "Two-way connectors: errors.write.outboxLawfulBasisRequired"
@@ -10225,6 +10445,9 @@
       },
       "outcomeRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "outOfOfficeDatesRequired": {
+        "where": "Out of office card in Settings, refusals"
       },
       "parentsDecisionRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -10294,6 +10517,9 @@
       },
       "proportionalityRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "providerRequired": {
+        "where": "The LSI forms, refusals"
       },
       "purposeRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
@@ -10388,6 +10614,9 @@
       "searchRequired": {
         "where": "Add a person dialog, refusal summary at the top of the body"
       },
+      "settingRequired": {
+        "where": "The LSI forms, refusals"
+      },
       "sharesNeedLawfulBasis": {
         "where": "Refusal summary when a write asks for sharing records without a lawful basis"
       },
@@ -10396,6 +10625,9 @@
       },
       "significantHarmDecisionRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
+      },
+      "subjectRequired": {
+        "where": "The LSI forms, refusals"
       },
       "submissionAlreadyRecorded": {
         "where": "Correct the referral and Mark as submitted dialogs, refusals"
@@ -13731,9 +13963,27 @@
           "screenshot": "phase-4/meeting-before-light-comfortable.png",
           "where": "Compact date field label in the send a request form; the format sits in the label because the row has no hint"
         },
+        "external": {
+          "where": "Send a pre-meeting request: the choice of an external recipient"
+        },
+        "externalContact": {
+          "where": "Send a pre-meeting request, external recipient"
+        },
+        "externalHint": {
+          "where": "Send a pre-meeting request, external recipient"
+        },
+        "externalName": {
+          "where": "Send a pre-meeting request, external recipient"
+        },
+        "externalOrganisation": {
+          "where": "Send a pre-meeting request, external recipient"
+        },
         "meta": {
           "screenshot": "phase-4/meeting-before-light-comfortable.png",
           "where": "Meta line of the requests sheet: how many requests are back out of the total"
+        },
+        "onBehalfNote": {
+          "where": "The request list, under a return recorded on somebody's behalf"
         },
         "overdue": {
           "maxLength": 12,
@@ -13743,6 +13993,24 @@
         "packLabel": {
           "screenshot": "phase-4/meeting-before-light-comfortable.png",
           "where": "Label of the pack item added when a request is returned, with the agency short name"
+        },
+        "receivedByEmail": {
+          "where": "Record a return dialog"
+        },
+        "receivedByInPerson": {
+          "where": "Record a return dialog"
+        },
+        "receivedByLetter": {
+          "where": "Record a return dialog"
+        },
+        "receivedBySecurePortal": {
+          "where": "Record a return dialog"
+        },
+        "receivedByTelephone": {
+          "where": "Record a return dialog"
+        },
+        "receivedHow": {
+          "where": "Record a return dialog"
         },
         "recordReturn": {
           "maxLength": 20,
@@ -13779,8 +14047,15 @@
         "toastText": {
           "where": "Toast body after an information request is sent, with the recipient name or agency"
         },
+        "toastTextExternal": {
+          "notes": "The product sends nothing. The toast says so and names who has to chase it.",
+          "where": "Toast after sending a pre-meeting information request to somebody outside the partnership, in the meeting workspace."
+        },
         "toastTitle": {
           "where": "Toast title after an information request is sent"
+        },
+        "toExternal": {
+          "where": "The request list, naming an external recipient"
         },
         "toPlaceholder": {
           "maxLength": 20,
@@ -19391,6 +19666,70 @@
           "where": "Label of the time field on the medical examination form"
         }
       },
+      "lsiOpen": {
+        "agencies": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "careInspectorateNotified": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "chair": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "chairSeniority": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "chairSeniorityHint": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "commissioning": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "csNumber": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "csNumberHint": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "decision": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "decisionHint": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "hint": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "hospitalCode": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "hospitalCodeHint": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "provider": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "serviceType": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "setting": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        }
+      },
+      "lsiStrand": {
+        "concern": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "hint": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "lead": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        },
+        "subject": {
+          "where": "Open a Large Scale Investigation, and add an adult to it"
+        }
+      },
       "mappaExit": {
         "area": {
           "where": "The exit form on a MAPPA case."
@@ -19409,6 +19748,32 @@
         },
         "noteHint": {
           "where": "The exit form on a MAPPA case."
+        }
+      },
+      "mappaLevel1Review": {
+        "hint": {
+          "where": "Record a level 1 review form"
+        },
+        "outcome": {
+          "where": "Record a level 1 review form"
+        },
+        "outcomeReferUp": {
+          "where": "Record a level 1 review form"
+        },
+        "outcomeUnchanged": {
+          "where": "Record a level 1 review form"
+        },
+        "referReason": {
+          "where": "Record a level 1 review form"
+        },
+        "referReasonHint": {
+          "where": "Record a level 1 review form"
+        },
+        "summary": {
+          "where": "Record a level 1 review form"
+        },
+        "summaryHint": {
+          "where": "Record a level 1 review form"
         }
       },
       "mappaReturn": {
@@ -19627,6 +19992,59 @@
       },
       "oneALine": {
         "where": "A hint under any list field on a transition form that takes one entry a line."
+      },
+      "orderLifecycle": {
+        "appealAllowed": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "appealLodged": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "appealOutcome": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "appealRefused": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "appealWithdrawn": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "appellant": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "at": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "atHint": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "expiresAt": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "hintAppeal": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "hintRecall": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "hintRenew": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "hintVary": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "order": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "powers": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "powersHint": {
+          "where": "Renew, vary, recall and appeal forms"
+        },
+        "summary": {
+          "where": "Renew, vary, recall and appeal forms"
+        }
       },
       "plan": {
         "actionDue": {
@@ -20776,6 +21194,12 @@
         "leadProfessionalReason": {
           "where": "Case role and reason written on a membership the stage engine adds."
         },
+        "lsiChair": {
+          "where": "Case membership and the chronology summaries the LSI transitions write"
+        },
+        "lsiChairReason": {
+          "where": "Case membership and the chronology summaries the LSI transitions write"
+        },
         "mho": {
           "where": "Case role and reason written on a membership the stage engine adds."
         },
@@ -20997,11 +21421,20 @@
         "jii": {
           "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
         },
+        "lsiOpened": {
+          "where": "Case membership and the chronology summaries the LSI transitions write"
+        },
+        "lsiStrand": {
+          "where": "Case membership and the chronology summaries the LSI transitions write"
+        },
         "mappaExit": {
           "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
         },
         "mappaHeld": {
           "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "mappaLevel1Review": {
+          "where": "Stage entry and chronology summary of a level 1 review"
         },
         "mappaReferred": {
           "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
@@ -21017,6 +21450,18 @@
         },
         "nothingKnown": {
           "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
+        },
+        "orderAppealed": {
+          "where": "Stage entry and chronology summaries of the order lifecycle"
+        },
+        "orderRecalled": {
+          "where": "Stage entry and chronology summaries of the order lifecycle"
+        },
+        "orderRenewed": {
+          "where": "Stage entry and chronology summaries of the order lifecycle"
+        },
+        "orderVaried": {
+          "where": "Stage entry and chronology summaries of the order lifecycle"
         },
         "planRecorded": {
           "where": "One-line record of a transition: the stage entry note, the ledger line and the chronology milestone."
@@ -24780,6 +25225,44 @@
         "maxLength": 24,
         "screenshot": "phase-5/settings-light-comfortable.png",
         "where": "Heading of the notifications sheet"
+      }
+    },
+    "outOfOffice": {
+      "away": {
+        "where": "Settings: the out of office card"
+      },
+      "clear": {
+        "where": "Settings: the out of office card"
+      },
+      "delegate": {
+        "where": "Settings: the out of office card"
+      },
+      "delegateHint": {
+        "where": "Settings: the out of office card"
+      },
+      "from": {
+        "where": "Settings: the out of office card"
+      },
+      "meta": {
+        "where": "Settings: the out of office card"
+      },
+      "save": {
+        "where": "Settings: the out of office card"
+      },
+      "title": {
+        "where": "Settings: the out of office card"
+      },
+      "toastCleared": {
+        "where": "Settings: the out of office card"
+      },
+      "toastText": {
+        "where": "Settings: the out of office card"
+      },
+      "toastTitle": {
+        "where": "Settings: the out of office card"
+      },
+      "until": {
+        "where": "Settings, the out of office card: the date you are back"
       }
     },
     "reset": {

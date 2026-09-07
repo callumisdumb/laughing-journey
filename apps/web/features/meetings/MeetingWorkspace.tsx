@@ -31,6 +31,16 @@ type Phase = 'before' | 'during' | 'after';
 /** What changed on the meeting, for the ledger line and the version entry (meetings.audit.updated). */
 type MeetingChange = 'invites' | 'request' | 'returned' | 'shared' | 'decision' | 'action' | 'pack' | 'agenda' | 'views' | 'attendance' | 'minuteDraft' | 'minuteApproved' | 'reviewDate' | 'distribution' | 'distributionLevel' | 'distributed';
 const ATTENDANCE: Meeting['invitees'][number]['attendance'][] = ['invited', 'accepted', 'declined', 'present', 'remote', 'apologies', 'absent'];
+/** The value the recipient picker uses for somebody outside the partnership (D-249). */
+const EXTERNAL = 'external';
+const RECEIVED_HOW = ['telephone', 'email', 'letter', 'in-person', 'secure-portal'] as const;
+const RECEIVED_HOW_KEYS = {
+  telephone: 'meetings.before.requests.receivedByTelephone',
+  email: 'meetings.before.requests.receivedByEmail',
+  letter: 'meetings.before.requests.receivedByLetter',
+  'in-person': 'meetings.before.requests.receivedByInPerson',
+  'secure-portal': 'meetings.before.requests.receivedBySecurePortal',
+} as const;
 
 export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   const t = useT();
@@ -58,8 +68,8 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
   const [shareForm, setShareForm] = useState({ summary: '', relevance: '' });
   const [decisionForm, setDecisionForm] = useState({ question: '', decision: '', rationale: '', dissentBy: '', dissentText: '' });
   const [actionForm, setActionForm] = useState({ title: '', owner: '', due: '' });
-  const [requestForm, setRequestForm] = useState({ agency: 'health' as Agency, to: '', due: '' });
-  const [returning, setReturning] = useState<{ id: string; summary: string } | null>(null);
+  const [requestForm, setRequestForm] = useState({ agency: 'health' as Agency, to: '', due: '', externalName: '', externalOrganisation: '', externalContact: '' });
+  const [returning, setReturning] = useState<{ id: string; summary: string; how: 'telephone' | 'email' | 'letter' | 'in-person' | 'secure-portal' } | null>(null);
   const [pendingMatch, setPendingMatch] = useState<PendingNearMatch | null>(null);
   const [reviewDate, setReviewDate] = useState(meeting?.reviewDate ?? '');
   const [holdOpen, setHoldOpen] = useState(false);
@@ -184,18 +194,23 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
 
   function sendRequest() {
     if (!requestForm.due) return;
-    const to = data.users.find((u) => u.id === requestForm.to);
-    const toName = to ? userName(to) : agencyShort(requestForm.agency);
+    const external = requestForm.to === EXTERNAL;
+    if (external && (requestForm.externalName.trim().length < 2 || requestForm.externalOrganisation.trim().length < 2)) return;
+    const to = external ? undefined : data.users.find((u) => u.id === requestForm.to);
+    // An agency nobody holds an account for is named rather than picked, and the return is recorded
+    // here on their behalf when it arrives (D-249).
+    const toName = external ? requestForm.externalName.trim() : to ? userName(to) : agencyShort(requestForm.agency);
     guardAdd(toName, 'request', () => {
-      update('request', { preMeetingRequests: [...meeting!.preMeetingRequests, { id: newId('pmr'), agency: requestForm.agency, toName, toUserId: to?.id, sentAt: now.toISOString(), dueAt: requestForm.due, status: 'sent' }] });
-      setRequestForm({ agency: 'health', to: '', due: '' });
-      toast({ title: t('meetings.before.requests.toastTitle'), text: t('meetings.before.requests.toastText', { name: toName }), tone: 'success' });
+      update('request', { preMeetingRequests: [...meeting!.preMeetingRequests, { id: newId('pmr'), agency: requestForm.agency, toName, toUserId: to?.id, external: external ? { organisation: requestForm.externalOrganisation.trim(), contact: requestForm.externalContact.trim() || undefined } : undefined, sentAt: now.toISOString(), dueAt: requestForm.due, status: 'sent' }] });
+      setRequestForm({ agency: 'health', to: '', due: '', externalName: '', externalOrganisation: '', externalContact: '' });
+      // Nobody outside the partnership has a worklist, so the confirmation says who has to chase it.
+      toast({ title: t('meetings.before.requests.toastTitle'), text: t(external ? 'meetings.before.requests.toastTextExternal' : 'meetings.before.requests.toastText', { name: toName }), tone: 'success' });
     });
   }
 
   function recordReturn() {
     if (!returning) return;
-    update('returned', { preMeetingRequests: meeting!.preMeetingRequests.map((r) => (r.id === returning.id ? { ...r, status: 'returned', returnSummary: returning.summary, returnedAt: now.toISOString() } : r)), pack: [...meeting!.pack, { id: newId('pk'), kind: 'report', label: t('meetings.before.requests.packLabel', { agency: agencyShort(meeting!.preMeetingRequests.find((r) => r.id === returning.id)?.agency ?? 'health') }), ref: returning.id, included: true }] });
+    update('returned', { preMeetingRequests: meeting!.preMeetingRequests.map((r) => (r.id === returning.id ? { ...r, status: 'returned', returnSummary: returning.summary, returnedAt: now.toISOString(), recordedOnBehalf: r.toUserId === user!.id ? undefined : { byUserId: user!.id, byName: userName(user!), how: returning.how } } : r)), pack: [...meeting!.pack, { id: newId('pk'), kind: 'report', label: t('meetings.before.requests.packLabel', { agency: agencyShort(meeting!.preMeetingRequests.find((r) => r.id === returning.id)?.agency ?? 'health') }), ref: returning.id, included: true }] });
     setReturning(null);
     toast({ title: t('meetings.before.requests.returnedToast'), tone: 'success' });
   }
@@ -427,21 +442,24 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
               <SheetBody>
                 <div className={styles.invitees}>
                   {meeting.preMeetingRequests.map((r) => (
-                    <div key={r.id} className={styles.invitee}>
+                    <div key={r.id} className={styles.invitee} data-testid="pre-meeting-request">
                       <span className={styles.inviteeName}>
-                        <AgencyMark agency={r.agency} hideLabel /> {r.toName}
+                        <AgencyMark agency={r.agency} hideLabel /> {r.external ? t('meetings.before.requests.toExternal', { name: r.toName, organisation: r.external.organisation }) : r.toName}
                       </span>
                       <span className="cluster">
                         <Pill size="sm" tone={r.status === 'returned' ? 'low' : r.status === 'nothing-known' ? 'outline' : r.dueAt < now.toISOString().slice(0, 10) ? 'critical' : 'medium'}>
                           {r.status === 'sent' && r.dueAt < now.toISOString().slice(0, 10) ? t('meetings.before.requests.overdue') : researchStatusLabel(r.status)}
                         </Pill>
                         {r.status === 'sent' || r.status === 'overdue' ? (
-                          <Button size="sm" variant="quiet" onClick={() => setReturning({ id: r.id, summary: '' })}>
+                          <Button size="sm" variant="quiet" onClick={() => setReturning({ id: r.id, summary: '', how: 'email' })} data-testid="record-return">
                             {t('meetings.before.requests.recordReturn')}
                           </Button>
                         ) : null}
                       </span>
-                      <span className={styles.inviteeMeta}>{t('meetings.before.requests.sentDue', { sent: formatDate(r.sentAt), due: formatDate(r.dueAt), summary: r.returnSummary ?? '' })}</span>
+                      <span className={styles.inviteeMeta}>
+                        {t('meetings.before.requests.sentDue', { sent: formatDate(r.sentAt), due: formatDate(r.dueAt), summary: r.returnSummary ?? '' })}
+                        {r.recordedOnBehalf ? <> {t('meetings.before.requests.onBehalfNote', { name: r.recordedOnBehalf.byName, how: t(RECEIVED_HOW_KEYS[r.recordedOnBehalf.how]) })}</> : null}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -449,12 +467,23 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
                   <strong>{t('meetings.before.requests.sendTitle')}</strong>
                   <div className="cluster" style={{ alignItems: 'flex-end' }}>
                     <SelectField label={t('meetings.before.requests.agency')} value={requestForm.agency} onChange={(e) => setRequestForm({ ...requestForm, agency: e.target.value as Agency, to: '' })} options={AGENCIES.map((a) => ({ value: a, label: agencyShort(a) }))} />
-                    <SelectField label={t('meetings.before.requests.to')} value={requestForm.to} onChange={(e) => setRequestForm({ ...requestForm, to: e.target.value })} placeholder={t('meetings.before.requests.toPlaceholder')} options={personas.filter((u) => u.agency === requestForm.agency).map((u) => ({ value: u.id, label: `${userName(u)}, ${roleLabel(u.roleId)}` }))} />
+                    <SelectField label={t('meetings.before.requests.to')} value={requestForm.to} onChange={(e) => setRequestForm({ ...requestForm, to: e.target.value })} placeholder={t('meetings.before.requests.toPlaceholder')} options={[...personas.filter((u) => u.agency === requestForm.agency).map((u) => ({ value: u.id, label: `${userName(u)}, ${roleLabel(u.roleId)}` })), { value: EXTERNAL, label: t('meetings.before.requests.external') }]} data-testid="request-to" />
                     <DateField label={t('meetings.before.requests.due')} hint={null} value={requestForm.due} onChange={(due) => setRequestForm({ ...requestForm, due })} />
-                    <Button variant="secondary" icon={<Send size={14} aria-hidden="true" />} onClick={sendRequest} disabled={!requestForm.due}>
+                    <Button variant="secondary" icon={<Send size={14} aria-hidden="true" />} onClick={sendRequest} disabled={!requestForm.due} data-testid="request-send">
                       {t('meetings.before.requests.send')}
                     </Button>
                   </div>
+                  {requestForm.to === EXTERNAL ? (
+                    <div className="stack" data-testid="request-external">
+                      <p className={styles.meta}>{t('meetings.before.requests.externalHint')}</p>
+                      <div className="cluster" style={{ alignItems: 'flex-end' }}>
+                        <TextField label={t('meetings.before.requests.externalName')} value={requestForm.externalName} onChange={(e) => setRequestForm({ ...requestForm, externalName: e.target.value })} required data-testid="request-external-name" />
+                        <TextField label={t('meetings.before.requests.externalOrganisation')} value={requestForm.externalOrganisation} onChange={(e) => setRequestForm({ ...requestForm, externalOrganisation: e.target.value })} required data-testid="request-external-organisation" />
+                        <TextField label={t('meetings.before.requests.externalContact')} value={requestForm.externalContact} onChange={(e) => setRequestForm({ ...requestForm, externalContact: e.target.value })} data-testid="request-external-contact" />
+                      </div>
+                    </div>
+                  ) : null}
+
                 </div>
               </SheetBody>
             </Sheet>
@@ -734,7 +763,15 @@ export function MeetingWorkspace({ meetingId }: { meetingId: string }) {
           </>
         }
       >
-        <TextareaField label={t('meetings.returnDialog.summary')} required value={returning?.summary ?? ''} onChange={(e) => setReturning(returning ? { ...returning, summary: e.target.value } : null)} />
+        <TextareaField label={t('meetings.returnDialog.summary')} required value={returning?.summary ?? ''} onChange={(e) => setReturning(returning ? { ...returning, summary: e.target.value } : null)} data-testid="return-summary" />
+        {/* How it reached you, so a return recorded on somebody's behalf says how it arrived (D-249). */}
+        <SelectField
+          label={t('meetings.before.requests.receivedHow')}
+          value={returning?.how ?? 'email'}
+          onChange={(e) => setReturning(returning ? { ...returning, how: e.target.value as (typeof RECEIVED_HOW)[number] } : null)}
+          options={RECEIVED_HOW.map((h) => ({ value: h, label: t(RECEIVED_HOW_KEYS[h]) }))}
+          data-testid="return-how"
+        />
       </Dialog>
 
       <NearMatchDialog pending={pendingMatch} onClose={resolveNearMatch} />

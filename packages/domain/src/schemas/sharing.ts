@@ -95,7 +95,22 @@ export const informationRequestSchema = z.object({
   status: z.enum(['open', 'responded', 'declined']),
   createdAt: isoDateTime,
   dueAt: isoDate.optional(),
-  response: z.object({ at: isoDateTime, byName: z.string(), text: z.string(), fieldsProvided: z.array(z.string()) }).optional(),
+  /**
+   * An external contact: an agency nobody in the partnership holds an account for. The request is
+   * still a record of what was asked and why, and the return is recorded here by the person who
+   * asked, on their behalf, saying how it arrived (D-249).
+   */
+  external: z.object({ name: z.string().min(2).max(120), organisation: z.string().min(2).max(160), contact: z.string().max(200).optional() }).optional(),
+  response: z
+    .object({
+      at: isoDateTime,
+      byName: z.string(),
+      text: z.string(),
+      fieldsProvided: z.array(z.string()),
+      /** Recorded by somebody here on the responder's behalf, and how it reached them (D-249). */
+      recordedOnBehalf: z.object({ byUserId: idSchema.optional(), byName: z.string(), how: z.enum(['telephone', 'email', 'letter', 'in-person', 'secure-portal']) }).optional(),
+    })
+    .optional(),
   ...correctable,
 });
 export type InformationRequest = z.infer<typeof informationRequestSchema>;

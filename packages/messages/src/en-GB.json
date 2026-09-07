@@ -7,11 +7,20 @@
       "case": "Case",
       "caseHint": "The case the action belongs to. Only cases you can work on are offered.",
       "casePlaceholder": "Choose a case",
+      "chasedBy": "Who here is chasing it",
+      "chasedByHint": "An action nobody here owns is an action nobody does. The case's list sits under this person.",
       "detail": "Detail",
       "detailHint": "Anything the owner needs to know to do it.",
       "due": "Due (dd Mon yyyy)",
+      "every": "Every",
+      "externalContact": "How to reach them (optional)",
+      "externalHint": "A landlord, a private provider, a service nobody here holds an account for.",
+      "externalName": "Their name",
+      "externalNobodyTold": "Nothing is sent to them. The product tells people who sign in to it, and this person does not. You give them the action yourself, and the case says who here is chasing it.",
+      "externalOrganisation": "Organisation",
       "noCases": "There is no open case you can work on.",
       "owner": "Owner",
+      "ownerExternal": "Somebody outside the partnership",
       "ownerHint": "People this case permits. Members of the case come first.",
       "ownerKind": "Who owns it",
       "ownerPerson": "A named person",
@@ -19,6 +28,8 @@
       "ownerRole": "Everybody holding a role",
       "plan": "Plan",
       "planNone": "Not under a plan",
+      "repeats": "This repeats",
+      "repeatsHint": "Completing it creates the next one, due the interval after this one.",
       "role": "Role",
       "roleHint": "Every holder sees it on their worklist until one of them takes it.",
       "roleOption": "{role}, {agency} ({count, plural, one {# person} other {# people}})",
@@ -27,7 +38,14 @@
       "title": "Add an action",
       "titleFor": "Add an action to {reference}",
       "toastText": "{owner} has been told.",
-      "toastTitle": "Action added"
+      "toastTitle": "Action added",
+      "unit": "Unit",
+      "units": {
+        "days": "days",
+        "months": "months",
+        "weeks": "weeks"
+      },
+      "until": "Until (optional)"
     },
     "audit": {
       "complete": "Action complete: {title}",
@@ -63,6 +81,11 @@
       "toastTitle": "Escalated to {name}",
       "toHint": "{process} action owned by {owner}.",
       "toPlaceholder": "Team leader or chair by name"
+    },
+    "external": {
+      "chasedBy": "Outside the partnership. {name} is chasing it.",
+      "contact": "Contact: {contact}",
+      "owner": "{name}, {organisation}"
     },
     "list": {
       "add": "Add action",
@@ -117,6 +140,12 @@
       "title": "Reassign an action",
       "toastText": "Both the new owner and the previous one have been told.",
       "toastTitle": "Reassigned to {owner}"
+    },
+    "recurrence": {
+      "created": "Next one created, due {date}.",
+      "ended": "That was the last of the series.",
+      "label": "Repeats every {count, plural, one {# {unit}} other {# {unit}}}{hasUntil, select, yes {, until {until}} other {}}",
+      "series": "{first, select, yes {First of a series} other {One of a series}}"
     },
     "take": {
       "audit": "Action taken by {name}: {title}",
@@ -391,6 +420,18 @@
         "light": "Cream paper, warm ink.",
         "system": "Light or dark from the operating system."
       }
+    },
+    "digest": {
+      "column": {
+        "count": "Would have been sent",
+        "kind": "Kind",
+        "recipient": "To"
+      },
+      "empty": "Nothing would have left the product.",
+      "meta": "Every notification the product wrote, counted by kind and recipient. This is what a deployment with email would have sent, and the product sends none of it.",
+      "note": "Counts only, never content: the digest names kinds and recipients, and no case, person or summary. A deployment that adds email adds it here, and adds a data protection impact assessment with it.",
+      "title": "The digest that does not go out",
+      "total": "{count, plural, one {# notification} other {# notifications}} to {people, plural, one {# person} other {# people}}, none sent."
     },
     "disclosure": {
       "audit": "{purpose} through escrow, authorised by {holders}",
@@ -690,6 +731,7 @@
         "auditChain": "{entries, plural, one {# ledger entry} other {# ledger entries}}, signed and chained",
         "calendar": "{national} national holidays and {council} council local, {from} to {to}",
         "defaults": "Theme {theme}, density {density}, break-glass {hours} hours",
+        "digest": "{count, plural, one {# notification} other {# notifications}} written, none sent",
         "disclosure": "{threshold} of {holders} holders, in different organisations",
         "forms": "{count, plural, one {# form} other {# forms}} across {processes, plural, one {# process} other {# processes}}",
         "markings": "{count, plural, one {# marking} other {# markings}}",
@@ -726,6 +768,10 @@
       "defaults": {
         "description": "Theme, density, break-glass window, bank holidays and ASP eligibility.",
         "label": "Defaults"
+      },
+      "digest": {
+        "description": "Every notification the product wrote, counted by kind and recipient: what a deployment with email would have sent, and what this one does not.",
+        "label": "The digest that does not go out"
       },
       "disclosure": {
         "description": "Produce a record under a subject access request or a court order, through escrow and under split control.",
@@ -953,6 +999,8 @@
     },
     "lsi": {
       "meta": "Provider {provider}. {count, plural, one {# strand} other {# strands}}. Care Inspectorate {notified, select, yes {notified} other {not notified}}. Commissioning {involved, select, yes {involved} other {not involved}}.",
+      "openedMeta": "Opened {date}, chaired by {chair}. {count, plural, =0 {No strands recorded yet} one {# strand} other {# strands}}.",
+      "planningDecision": "What the planning meeting agreed",
       "strandLead": "Lead: {name}.",
       "title": "Large Scale Investigation: {setting}"
     },
@@ -1158,13 +1206,18 @@
       "title": "Existing powers (OPG register)"
     },
     "orders": {
+      "appeal": "Appeal {outcome, select, allowed {allowed} refused {refused} withdrawn {withdrawn} other {lodged}} by {appellant}, {date}",
       "item": "Granted {granted}{hasExpiry, select, yes {, expires {expires}} other {}}. Powers: {powers}.",
+      "lifecycleTitle": "Since it was granted",
       "meta": "{count, plural, one {# order} other {# orders}}",
       "mwcNotified": "MWC notified {date}.",
       "none": "No order in force",
       "opgRegistered": "OPG registered {date}.",
+      "recalled": "Recalled {date}. {summary}",
+      "renewed": "Renewed {date}, now expires {expires}",
       "supervising": "Supervising officer {name}.",
-      "title": "Order register"
+      "title": "Order register",
+      "varied": "Powers varied {date}. {summary}"
     },
     "route": {
       "meta": "{date}, {name}",
@@ -2168,6 +2221,7 @@
     "scanning": "Nothing here scans the file for malware. A production deployment scans every upload before it is stored; that is a requirement on the deployment, not a feature of this mockup.",
     "submit": "Attach",
     "target": {
+      "action": "the action \"{title}\"",
       "event": "the event \"{title}\"",
       "meeting": "{title}",
       "person": "{name}",
@@ -2510,6 +2564,11 @@
         "label": "MHO report",
         "trigger": "MHO notified of guardianship application"
       },
+      "awiOrderRenewalDue": {
+        "description": "An order with an expiry runs out on it, and an adult whose guardianship lapses has no guardian. This counts back from the expiry so the renewal is prepared in time rather than discovered late. It is completed by a renewal or a recall. The expiry is the order's own; the 90 day lead time is the product's and is marked to verify.",
+        "label": "Renewal due before expiry",
+        "trigger": "The order's expiry date, set when it is granted, renewed or varied"
+      },
       "cpCoregroupEscalate": {
         "description": "A significant change or concern within the plan is escalated to the lead professional and the CPPM chair within 3 calendar days.",
         "label": "Core group concern escalated to the chair",
@@ -2559,6 +2618,11 @@
         "description": "The pre-birth plan is reviewed within 3 months of the pre-birth CPPM; after the birth the review may be deferred on professional judgement, with the reason recorded.",
         "label": "Review of the pre-birth plan",
         "trigger": "Pre-birth CPPM held"
+      },
+      "mappaLevel1Review": {
+        "description": "How often a case managed at level 1 is looked at again by the lead responsible authority. There is no national interval: the guidance sets intervals for levels 2 and 3 and leaves level 1 to local arrangements, so this is the area's own figure and is marked to verify.",
+        "label": "Level 1 review",
+        "trigger": "The case being managed at level 1, and each level 1 review after that"
       },
       "mappaLevel2Review": {
         "description": "Level 2 cases are reviewed no less than once every 12 weeks.",
@@ -3099,7 +3163,8 @@
         "protectionPlan": "Protection plan",
         "review": "Review",
         "screening": "Screening",
-        "supportPlan": "Support plan"
+        "supportPlan": "Support plan",
+        "transferred": "Transferred"
       },
       "awi": {
         "application": "Application",
@@ -3108,7 +3173,8 @@
         "existingPowers": "Existing powers",
         "order": "Order",
         "routeDecision": "Route decision",
-        "supervision": "Supervision"
+        "supervision": "Supervision",
+        "transferred": "Transferred"
       },
       "cp": {
         "childsPlan": "Child's plan",
@@ -3118,7 +3184,8 @@
         "deregistered": "De-registered",
         "investigation": "Investigation",
         "ird": "IRD",
-        "review": "Review"
+        "review": "Review",
+        "transferred": "Transferred"
       },
       "mappa": {
         "exit": "Exit",
@@ -3145,11 +3212,13 @@
       "sexualExploitation": "Sexual exploitation"
     },
     "transitions": {
+      "aspAddLsiStrand": "Add an adult to the investigation",
       "aspCaseConferenceHeld": "Case conference held",
       "aspClose": "Close",
       "aspInquiryOutcome": "Record inquiry outcome",
       "aspInvestigatoryStep": "Record investigatory step",
       "aspOpenInquiry": "Open inquiry (s4)",
+      "aspOpenLsi": "Open a Large Scale Investigation",
       "aspRecordProtectionPlan": "Record protection plan",
       "aspRecordSupportPlan": "Record support plan",
       "aspReturnToInquiry": "Return to inquiry",
@@ -3163,12 +3232,16 @@
       "awiClose": "Close",
       "awiCourtEvent": "Record court event",
       "awiOpenApplication": "Open application",
+      "awiRecallOrder": "Recall the order",
+      "awiRecordAppeal": "Record an appeal",
       "awiRecordCapacityAssessment": "Record capacity assessment",
       "awiRecordInvestigation": "Record investigation (s10 or s12)",
       "awiRecordReport": "Record report",
       "awiRecordVisit": "Record supervision visit",
+      "awiRenewOrder": "Renew the order",
       "awiRouteDecision": "Record route decision",
       "awiTransfer": "Transfer to another authority",
+      "awiVaryOrder": "Vary the powers",
       "cpBirth": "Record the birth",
       "cpClose": "Close",
       "cpConveneIrd": "Convene IRD",
@@ -3184,6 +3257,7 @@
       "cpScheduleReviewCppm": "Schedule review planning meeting",
       "cpTransfer": "Transfer to another authority",
       "mappaExit": "Exit MAPPA",
+      "mappaLevel1Review": "Record a level 1 review",
       "mappaMeetingHeld": "MAPPA meeting held",
       "mappaRecordDisclosure": "Record disclosure decision",
       "mappaRecordReturn": "Record pre-meeting return",
@@ -3267,6 +3341,7 @@
       "alertTextRequired": "Write the alert in a sentence. It is read by somebody about to knock on the door.",
       "alreadyMember": "You are already on this case.",
       "alreadyRecordedInError": "This has already been recorded in error.",
+      "appellantRequired": "Say who lodged the appeal.",
       "applicantRequired": "Name the applicant.",
       "applicationNotOpened": "No application has been opened. Open the application first.",
       "areaRequired": "Name the receiving area.",
@@ -3283,6 +3358,7 @@
       "capacityRequired": "Say whether capacity was assessed, and what was found.",
       "chairRequired": "Name the chair.",
       "changeNoteRequired": "Say what changed. A significant change with no note cannot be escalated.",
+      "chaserRequired": "Say who here is chasing it.",
       "childRequired": "Choose at least one child named on the referral.",
       "childViewsRequired": "Record how the child’s views were sought.",
       "chiNeedsDateOfBirth": "A CHI number is built from the date of birth, so record that first.",
@@ -3305,6 +3381,9 @@
       "deathBeforeBirth": "A date of death cannot be before the date of birth.",
       "deathInFuture": "A date of death cannot be in the future.",
       "deathNoteRequired": "Say what happened in a sentence. It goes on the chronology and on every case that closes.",
+      "delegateExcluded": "That person cannot cover you: they are an excluded party on one of your cases.",
+      "delegateRequired": "Choose who is covering.",
+      "delegateSelf": "You cannot be your own delegate.",
       "deregistrationReasonRequired": "Choose a de-registration reason from the national list.",
       "disclosureFactRequired": "List at least one fact. A disclosure with nothing listed cannot be limited to what was decided.",
       "disclosureRationaleRequired": "Say why this person needs to know, in a sentence.",
@@ -3320,6 +3399,7 @@
       "exitKindRequired": "Choose how the case leaves MAPPA.",
       "expectedDeliveryPast": "An expected delivery date in the past means the baby has been born. Record the birth rather than a due date.",
       "expiryRequired": "Give the date the interim order expires.",
+      "externalOwnerRequired": "Give the name and the organisation.",
       "guardianRequired": "Name the guardian.",
       "holderRequired": "Name who holds the records.",
       "holdFormPending": "The outcome form for this meeting is not built yet.",
@@ -3365,7 +3445,11 @@
       "leadWrongAgency": "The lead worker has to be in the lead agency.",
       "leadWrongRole": "That role cannot lead this kind of case.",
       "levelRequired": "Choose level 2 or level 3.",
+      "lsiAlreadyOpen": "A Large Scale Investigation is already open on this case.",
+      "lsiChairSeniorityRequired": "The decision to proceed to a Large Scale Investigation is taken in a multi-agency meeting chaired by a senior officer of the council. Confirm the chair is one, or record the decision that meeting took first.",
+      "lsiNotOpen": "No Large Scale Investigation is open on this case.",
       "mappaMeetingRequired": "No MAPPA meeting is scheduled. Schedule one first.",
+      "mappaNotLevel1": "This case is not managed at level 1. Levels 2 and 3 are reviewed at their meetings.",
       "mappaNotReferred": "The case has not been referred to level 2 or 3. Refer it first.",
       "maracMeetingRequired": "No MARAC is scheduled, so there is nothing for the research to count back from. Schedule the meeting first.",
       "maracNotHeard": "The case has not been heard at a MARAC. Record the meeting first.",
@@ -3401,12 +3485,13 @@
       "notRegistered": "The child is not on the register. Hold the planning meeting first.",
       "noUser": "Nobody is signed in, so this cannot be recorded against anyone.",
       "orderRationaleRequired": "Give the reasoning in a sentence. It is the part a sheriff would read.",
-      "orderRequired": "No order has been granted. Record the court event first.",
+      "orderRequired": "Choose the order this concerns.",
       "outboxLawfulBasisRequired": "Choose the lawful basis this write rests on.",
       "outboxMissing": "That write is no longer in the outbox.",
       "outboxNotAuthorisable": "This write is not in a state that can be authorised.",
       "outboxPurposeRequired": "Say why this is being written, in a sentence. It is a disclosure into another organisation's record.",
       "outcomeRequired": "Choose an outcome.",
+      "outOfOfficeDatesRequired": "Give the dates you are away.",
       "parentsDecisionRequired": "Record whether the parents are informed, with the reasoning.",
       "parentsExcludedReasonRequired": "Say why the parents are not invited.",
       "parentsWithheldReasonRequired": "Say why information is withheld from the parents.",
@@ -3430,6 +3515,7 @@
       "processNotYourRole": "Your role does not open this process. The refusal above says who does.",
       "progressRequired": "Record the progress against the plan.",
       "proportionalityRequired": "Confirm the return is relevant, necessary and proportionate before it is shared.",
+      "providerRequired": "Name the provider.",
       "purposeRequired": "Say why the agencies are being asked, in a sentence.",
       "rationaleRequired": "Give your reasoning, in a sentence or two.",
       "reasonRequired": "Say why in a sentence. A change made after the fact needs a reason on the record.",
@@ -3461,9 +3547,11 @@
       "screeningAlreadyRecorded": "The screening decision has already been recorded.",
       "screeningNotProceed": "The screening decision was not to proceed to inquiry.",
       "searchRequired": "Search first. This product does not create a person record without one.",
+      "settingRequired": "Name the setting.",
       "sharesNeedLawfulBasis": "A share cannot be written without a lawful basis under it.",
       "sharesNeedProcess": "A share has to belong to a case.",
       "significantHarmDecisionRequired": "Record the significant harm decision, with the reasoning.",
+      "subjectRequired": "Choose the adult this strand is about.",
       "submissionAlreadyRecorded": "This return is already recorded as submitted for that period.",
       "submissionDateInFuture": "A return cannot have been sent on a date that has not happened.",
       "submissionDateRequired": "Say the date it was sent.",
@@ -4576,9 +4664,21 @@
       "requests": {
         "agency": "Agency",
         "due": "Due (dd Mon yyyy)",
+        "external": "Somebody outside the partnership",
+        "externalContact": "How to reach them (optional)",
+        "externalHint": "An agency nobody here holds an account for: a private provider, an out-of-area team, an advocacy service. You send the request yourself and record what comes back.",
+        "externalName": "Their name",
+        "externalOrganisation": "Organisation",
         "meta": "{returned} of {total} back",
+        "onBehalfNote": "Recorded by {name} on their behalf, received by {how}.",
         "overdue": "overdue",
         "packLabel": "{agency} report",
+        "receivedByEmail": "Email",
+        "receivedByInPerson": "In person",
+        "receivedByLetter": "Letter",
+        "receivedBySecurePortal": "Secure portal",
+        "receivedByTelephone": "Telephone",
+        "receivedHow": "How the return reached you",
         "recordReturn": "Record return",
         "returnedToast": "Return recorded and added to the pack",
         "send": "Send request",
@@ -4587,7 +4687,9 @@
         "title": "Pre-meeting information requests and returns",
         "to": "To",
         "toastText": "{name} will see it on their worklist with the purpose and lawful basis.",
+        "toastTextExternal": "Nothing was sent. {name} is outside the partnership, so chase the request yourself and record what comes back here.",
         "toastTitle": "Information request sent",
+        "toExternal": "{name}, {organisation} (outside the partnership)",
         "toPlaceholder": "Choose a person"
       }
     },
@@ -6442,6 +6544,30 @@
         "summary": "Summary of findings",
         "time": "Time"
       },
+      "lsiOpen": {
+        "agencies": "Agencies involved",
+        "careInspectorateNotified": "The Care Inspectorate has been notified",
+        "chair": "Chair of the meeting that decided",
+        "chairSeniority": "The chair is a senior officer of the council",
+        "chairSeniorityHint": "The national minimum dataset glossary expects this decision to be taken in a multi-agency meeting chaired by a senior officer of the council. The record refuses an investigation whose chair is not one.",
+        "commissioning": "Commissioning is involved",
+        "csNumber": "Care Inspectorate CS number",
+        "csNumberHint": "Indicator 19b of the return, where the service is registered.",
+        "decision": "What the meeting decided",
+        "decisionHint": "The scope of the investigation and what each agency is doing.",
+        "hint": "This turns one adult's inquiry into an investigation into a setting. The adults inside it are added as strands, each with their own concern and lead.",
+        "hospitalCode": "NHS hospital location code",
+        "hospitalCodeHint": "Indicator 19c of the return, where the setting is an NHS hospital.",
+        "provider": "Provider",
+        "serviceType": "Service type",
+        "setting": "Setting under investigation"
+      },
+      "lsiStrand": {
+        "concern": "The concern about this adult",
+        "hint": "One adult inside the investigation. The return counts the investigation once and the adults in it separately.",
+        "lead": "Who is leading on this adult",
+        "subject": "Which adult"
+      },
       "mappaExit": {
         "area": "Receiving MAPPA area",
         "areaHint": "The area the case transfers to.",
@@ -6449,6 +6575,16 @@
         "kindHint": "Each kind is counted in the annual report. A level down returns the case to single-agency management; a transfer names the receiving area.",
         "note": "Note",
         "noteHint": "Why, in enough words for the annual report and the audit."
+      },
+      "mappaLevel1Review": {
+        "hint": "Level 1 has no meeting: the lead responsible authority looks at the case and records what it found. The review clock restarts either way.",
+        "outcome": "What the review found",
+        "outcomeReferUp": "Refer up for level 2 or 3 management",
+        "outcomeUnchanged": "Unchanged: level 1 management continues",
+        "referReason": "Why it should be managed at a higher level",
+        "referReasonHint": "The referral form opens next. The level is decided at the meeting, never here.",
+        "summary": "What the review found",
+        "summaryHint": "What has changed, or that nothing has, and what you checked."
       },
       "mappaReturn": {
         "agency": "Agency",
@@ -6533,6 +6669,25 @@
         "hint": "Transferring completes every running clock on this case and tells the receiving coordinator. The record stays here, read only."
       },
       "oneALine": "One a line.",
+      "orderLifecycle": {
+        "appealAllowed": "Allowed",
+        "appealLodged": "Lodged, not yet decided",
+        "appealOutcome": "Where it has got to",
+        "appealRefused": "Refused",
+        "appealWithdrawn": "Withdrawn",
+        "appellant": "Who lodged it",
+        "at": "Date of the court's decision",
+        "atHint": "The court's date, which is rarely the day you are recording it.",
+        "expiresAt": "New expiry date",
+        "hintAppeal": "An appeal is recorded whatever becomes of it. It does not by itself change the powers: a variation or a recall does that.",
+        "hintRecall": "The order ends on the date the court recalled it. Its expiry clock stops and supervision returns to the order stage.",
+        "hintRenew": "A renewal keeps the same order and gives it a new expiry. The Commission counts renewals apart from new orders, so this is recorded as a renewal rather than a second order.",
+        "hintVary": "The order stands and what it authorises changes. The powers it had before are kept on the record.",
+        "order": "Which order",
+        "powers": "The powers as varied",
+        "powersHint": "One per line, as the interlocutor sets them out.",
+        "summary": "What the court decided"
+      },
       "plan": {
         "actionDue": "Due (dd Mon yyyy)",
         "actionOwner": "Owner",
@@ -6936,6 +7091,8 @@
         "coordinatorReason": "Coordinates the plan",
         "leadProfessional": "Lead professional",
         "leadProfessionalReason": "Lead professional for the child’s plan",
+        "lsiChair": "Chair, Large Scale Investigation",
+        "lsiChairReason": "Chaired the multi-agency meeting that decided to proceed to a Large Scale Investigation",
         "mho": "Mental Health Officer",
         "mhoReason": "Nominated for the application",
         "minuteTaker": "Minute taker",
@@ -7015,13 +7172,20 @@
         "irdDecided": "IRD decisions recorded: significant harm {harm, select, yes {yes} other {no}}, investigation {investigation, select, yes {yes} other {no}}",
         "irdNoInvestigation": "IRD decided no investigation, route {route}: {reason}",
         "jii": "Joint investigative interview held on {date}",
+        "lsiOpened": "Large Scale Investigation opened into {setting}, {provider}",
+        "lsiStrand": "{setting}: adult added to the investigation, now {count, plural, one {# strand} other {# strands}}",
         "mappaExit": "Exit by {kind}: {note}",
         "mappaHeld": "MAPPA meeting held at level {level}; review due {review}",
+        "mappaLevel1Review": "{outcome, select, referUp {Level 1 review: referring up for level 2 or 3 management. {note}} other {Level 1 review: unchanged, level 1 management continues. {note}}}",
         "mappaReferred": "Referred to level {level}: {reason}",
         "maracHeard": "Heard at MARAC with {count, plural, one {# agency} other {# agencies}} sharing",
         "maracPlan": "Action plan recorded with {actions, plural, one {# action} other {# actions}} and {flags, plural, =0 {no flags} one {# flag} other {# flags}}",
         "medical": "Medical examination ({kind}) on {date}",
         "nothingKnown": "Nothing known to this agency.",
+        "orderAppealed": "{kind} appealed by {appellant}: {outcome, select, allowed {allowed} refused {refused} withdrawn {withdrawn} other {lodged}}",
+        "orderRecalled": "{kind} recalled {date}. {note}",
+        "orderRenewed": "{kind} renewed to {until}. {note}",
+        "orderVaried": "{kind}: powers varied. {note}",
         "planRecorded": "Plan recorded: {title}, {count, plural, =0 {no actions} one {# action} other {# actions}}",
         "powersChecked": "Existing powers checked: power of attorney {poa, select, yes {yes} other {no}}, guardianship {guardianship, select, yes {yes} other {no}}",
         "reportRecorded": "Report recorded: {kind}",
@@ -8212,6 +8376,20 @@
         "label": "New shares to me"
       },
       "title": "Notifications"
+    },
+    "outOfOffice": {
+      "away": "You are away from {from} to {to}{hasDelegate, select, yes {, covered by {delegate}} other {, with nobody covering}}.",
+      "clear": "I am back",
+      "delegate": "Who is covering",
+      "delegateHint": "They receive a copy of what you are told, at their own level: a delegate who could not read the case is told a case they are covering changed, and no more. Nothing is forwarded outside the product.",
+      "from": "Away from",
+      "meta": "A copy of what you are told, to somebody covering you. Still inside the product: nothing is emailed.",
+      "save": "Save",
+      "title": "Out of office",
+      "toastCleared": "Marked as back",
+      "toastText": "{name} will receive a copy of what you are told until {to}.",
+      "toastTitle": "Out of office set",
+      "until": "Back on"
     },
     "reset": {
       "auditReason": "Every local change discarded; the eight scenarios regenerated from the seed",

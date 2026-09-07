@@ -90,11 +90,19 @@ export const preMeetingRequestSchema = z.object({
   agency: z.enum(AGENCIES),
   toName: z.string(),
   toUserId: idSchema.optional(),
+  /**
+   * An agency nobody in the partnership holds an account for: a private provider, an out-of-area
+   * team, an advocacy service. The request is recorded and sent outside the product, and its return
+   * is recorded here by the person who asked, on their behalf, saying how it arrived (D-249).
+   */
+  external: z.object({ organisation: z.string().min(2).max(160), contact: z.string().max(200).optional() }).optional(),
   sentAt: isoDateTime,
   dueAt: isoDate,
   status: z.enum(['sent', 'returned', 'nothing-known', 'overdue']),
   returnSummary: z.string().optional(),
   returnedAt: isoDateTime.optional(),
+  /** Who recorded the return on the responder's behalf, and how it reached them (D-249). */
+  recordedOnBehalf: z.object({ byUserId: idSchema.optional(), byName: z.string(), how: z.enum(['telephone', 'email', 'letter', 'in-person', 'secure-portal']) }).optional(),
 });
 
 export const packItemSchema = z.object({
