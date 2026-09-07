@@ -6,6 +6,9 @@ import { MAPPA_EXIT, MAPPA_RECORD_RETURN, MAPPA_REQUEST_RETURNS } from './MappaF
 import { MARAC_ACTION_PLAN, MARAC_IDAA_FEEDBACK, MARAC_LINK_CP_CONCERN, MARAC_RESEARCH_REQUESTS, MARAC_RESEARCH_RETURN, MARAC_TRANSFER } from './MaracForms';
 import { RETURN_A_STAGE } from './ReturnForms';
 import { TRANSFER_TO_AUTHORITY } from './TransferForm';
+import { AWI_RECALL_ORDER, AWI_RECORD_APPEAL, AWI_RENEW_ORDER, AWI_VARY_ORDER } from './AwiOrderForms';
+import { ASP_ADD_LSI_STRAND, ASP_OPEN_LSI } from './LsiForms';
+import { MAPPA_LEVEL1_REVIEW } from './MappaForms';
 
 /**
  * The form each transition opens from the case (D-217), keyed on the transition id. Transitions
@@ -46,6 +49,13 @@ export const TRANSITION_FORMS: Readonly<Record<string, TransitionForm>> = {
   'asp-transfer': TRANSFER_TO_AUTHORITY,
   'cp-transfer': TRANSFER_TO_AUTHORITY,
   'awi-transfer': TRANSFER_TO_AUTHORITY,
+  'awi-renew-order': AWI_RENEW_ORDER,
+  'awi-vary-order': AWI_VARY_ORDER,
+  'awi-recall-order': AWI_RECALL_ORDER,
+  'awi-record-appeal': AWI_RECORD_APPEAL,
+  'asp-open-lsi': ASP_OPEN_LSI,
+  'asp-add-lsi-strand': ASP_ADD_LSI_STRAND,
+  'mappa-level1-review': MAPPA_LEVEL1_REVIEW,
 };
 
 export type { TransitionForm, TransitionFormContext, TransitionFormProps } from './registry';

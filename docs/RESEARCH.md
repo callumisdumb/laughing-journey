@@ -168,8 +168,10 @@ The verification table lives in `docs/HANDOVER.md` section 3 and nowhere else: e
 | marac.research.return | 1.13 |
 | marac.flag.expiry | 1.15 |
 | marac.repeat.window | 1.14 |
+| mappa.level1.review | 9.4 (local; the guidance sets no interval for level 1) |
 | mappa.level2.review | 1.1, 1.2 |
 | mappa.level3.review | 1.1, 1.3 |
+| awi.order.renewal.due | 9.5 (the order's own expiry; the 90 day lead time is the product's, marked local) |
 | awi.mho.report | 1.17 |
 | awi.interim.warning | 1.18 (superseded), 6.5 |
 | awi.interim.maximum | 1.18, 6.5 |
@@ -571,3 +573,26 @@ Three of the five items the handover listed as waiting on the product owner were
 - Statistical disclosure control: the report suppresses any count of five or fewer and any secondary count that would allow it to be recovered, printing an asterisk with a footnote. The report's own footnotes disagree on the boundary (Table A3 says n<=5; Tables A4, A5 and A6 say n<5); the product adopts five or fewer, the stricter reading (`docs/NOTES.md`).
 - Consequence: the AWI report is rebuilt on these tables (D-236) and every report and print pack applies the suppression rule from one domain function (D-237). A capacity assessment may record the Commission's primary diagnostic group; where none is recorded the report reads Unknown, as Table 2 does. An order granted records whether it renewed an existing one.
 - Confidence: High for every field set above, read from the report.
+
+### 9.4 MAPPA level 1 review interval, and why it is local
+
+Read on 07 Sep 2026, against the MAPPA National Guidance 2022 already held (5.12, supplied verbatim by the product owner on 03 Sep 2026).
+
+The guidance sets review intervals for the two levels that meet: level 2 no less than once every 12 weeks, level 3 no less than once every 6 weeks. For level 1 it sets none, because level 1 is ordinary agency management by the lead responsible authority rather than a multi-agency meeting: the guidance describes it as managed through the responsible authority's own arrangements, and leaves the frequency of review to those arrangements.
+
+That is a real gap for a product rather than a gap in the guidance. A case at level 1 that never meets and counts down to nothing is a case nobody looks at again, which is the failure mode a public protection product exists to prevent. So `mappa.level1.review` carries a local interval, seeded at 12 months, marked `local` and `TODO(verify)` in the rule, in Admin, Timescales and in the verification table, and `mappa-level1-review` restarts it whether the review finds the case unchanged or refers it up (D-251).
+
+- Confidence: local. The 12 month figure is this product's, not the guidance's, and the area's own MAPPA operating procedures decide it.
+- To verify: the Clydeshore equivalent's MAPPA operating procedures, section on level 1 management.
+
+### 9.5 The renewal lead time before a guardianship expires
+
+Read on 07 Sep 2026, against the Adults with Incapacity (Scotland) Act 2000 already held (1.18, 6.5).
+
+Sections 58 and 60 let the sheriff specify the period an order runs for, and section 60 provides for renewal on an application made before it expires. Neither the Act nor the Commission's monitoring report sets a lead time for making that application: it is a matter for the local authority's own practice, and the Commission's report counts renewals without saying when they were begun.
+
+A guardianship that lapses leaves an adult without a guardian, so the product counts back from the order's own expiry date rather than waiting for it: `awi.order.renewal.due` is due 90 days before expiry, warns at 30, and is completed by a renewal or a recall (D-252).
+
+- Confidence: local. The expiry is the order's own and is High; the 90 day lead time is the product's.
+- To verify: the area's own AWI procedures, section on renewals.
+

@@ -10055,6 +10055,10 @@
       "capacityRequired": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."
       },
+      "caseHasNoOrder": {
+        "notes": "Sits beside a button that opens the court event where an order is recorded.",
+        "where": "Refusal on the what-happens-next panel when a guardianship order decision is offered on a case that has no order yet."
+      },
       "chairRequired": {
         "where": "The LSI forms, refusals"
       },
@@ -10411,6 +10415,10 @@
       },
       "nameRequired": {
         "where": "Add a person dialog, refusal summary at the top of the body"
+      },
+      "newExpiryRequired": {
+        "notes": "The order's new expiry, not the interim order's.",
+        "where": "Refusal in the renewal form when the new expiry date is missing."
       },
       "noChildrenOnReferral": {
         "where": "Refusal from the stage engine, shown in the transition form and in the toast (apps/web/lib/writeErrors.ts)."

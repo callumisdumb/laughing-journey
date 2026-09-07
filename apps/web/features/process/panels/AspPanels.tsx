@@ -78,6 +78,13 @@ export function AspPanels({ process }: { process: AspProcess }) {
               })}
             />
             <SheetBody>
+              {/* When the investigation was opened, who chaired the decision, and what it agreed (D-253). */}
+              {d.lsi.openedAt ? (
+                <p className={styles.strandMeta} data-testid="lsi-opened">
+                  {t('asp.lsi.openedMeta', { date: formatDate(d.lsi.openedAt), chair: userName(userById(data, d.lsi.chairUserId)!), count: d.lsi.strands.length })}
+                </p>
+              ) : null}
+              {d.lsi.planningDecision ? <p className={styles.strandMeta}>{t('asp.lsi.planningDecision')}: {d.lsi.planningDecision}</p> : null}
               <div className={styles.pills} style={{ marginBottom: 10 }}>
                 {d.lsi.agenciesInvolved.map((a) => (
                   <Pill key={a} size="sm" tone="outline">

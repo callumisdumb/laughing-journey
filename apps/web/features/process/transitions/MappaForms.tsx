@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENCIES, MAPPA_EXIT_KINDS, agencyShort, mappaExitKindLabel, researchStatusLabel, type Agency, type ExitInput, type MappaProcess, type PreMeetingReturnInput, type PreMeetingReturnsInput } from '@mas/domain';
+import { AGENCIES, MAPPA_EXIT_KINDS, agencyShort, mappaExitKindLabel, researchStatusLabel, type Agency, type ExitInput, type Level1ReviewInput, type MappaProcess, type PreMeetingReturnInput, type PreMeetingReturnsInput } from '@mas/domain';
 import { useT } from '@mas/messages';
 import { Button, CheckboxField, DateField, RadioGroup, SelectField, TextField, TextareaField } from '@mas/ui';
 import { Plus, X } from 'lucide-react';
@@ -84,3 +84,32 @@ export const MAPPA_RECORD_RETURN = transitionForm<PreMeetingReturnInput>((proces
   return { agency: (outstanding.find((r) => r.agency === user?.agency) ?? outstanding[0])?.agency ?? 'housing', summary: '', nothingKnown: false };
 }, ReturnForm);
 export const MAPPA_EXIT = transitionForm<ExitInput>(() => ({ kind: 'level-down', note: '' }), ExitForm);
+
+/**
+ * A level 1 review (D-251). No meeting: the lead responsible authority says what it found and
+ * whether the case should go up, and the referral form opens next where it should.
+ */
+function Level1ReviewForm({ value, onChange }: TransitionFormProps<Level1ReviewInput>) {
+  const t = useT();
+  return (
+    <div className="stack">
+      <p className={styles.hint}>{t('processes.forms.mappaLevel1Review.hint')}</p>
+      <RadioGroup
+        legend={t('processes.forms.mappaLevel1Review.outcome')}
+        name="level1-outcome"
+        value={value.outcome}
+        onChange={(v) => onChange({ ...value, outcome: v as Level1ReviewInput['outcome'] })}
+        options={[
+          { value: 'unchanged', label: t('processes.forms.mappaLevel1Review.outcomeUnchanged') },
+          { value: 'refer-up', label: t('processes.forms.mappaLevel1Review.outcomeReferUp') },
+        ]}
+      />
+      <TextareaField label={t('processes.forms.mappaLevel1Review.summary')} hint={t('processes.forms.mappaLevel1Review.summaryHint')} value={value.summary} onChange={(e) => onChange({ ...value, summary: e.target.value })} rows={3} required data-testid="transition-summary" />
+      {value.outcome === 'refer-up' ? (
+        <TextareaField label={t('processes.forms.mappaLevel1Review.referReason')} hint={t('processes.forms.mappaLevel1Review.referReasonHint')} value={value.referReason ?? ''} onChange={(e) => onChange({ ...value, referReason: e.target.value })} rows={2} required data-testid="transition-refer-reason" />
+      ) : null}
+    </div>
+  );
+}
+
+export const MAPPA_LEVEL1_REVIEW = transitionForm<Level1ReviewInput>(() => ({ outcome: 'unchanged', summary: '' }), Level1ReviewForm);

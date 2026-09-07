@@ -2,6 +2,7 @@ import { t } from '@mas/messages';
 import { stageLabel } from '../../config/labels';
 import { ASP_INQUIRY_ACTIONS, type Agency, type AspInquiryAction, type ConsentStatus } from '../../enums';
 import type { AspProcess } from '../../schemas/process';
+import type { LsiServiceType } from '../../enums';
 import { buildMeeting, buildPlan, caseName, moved, outcome, requireText, validatePlan, validateSchedule, type MissingThing, type PlanInput, type ScheduleInput, type Transition, type TransferInput, type TransitionContext, type ReturnInput } from './shared';
 
 /**
@@ -81,6 +82,30 @@ function investigationSkeleton(process: AspProcess, ctx: TransitionContext): Non
       advocacy: { offered: false },
     }
   );
+}
+
+/** Opening a Large Scale Investigation from the case it grew out of (D-253). */
+export interface OpenLsiInput {
+  setting: string;
+  provider: string;
+  serviceType: LsiServiceType;
+  careInspectorateCsNumber?: string;
+  nhsHospitalLocationCode?: string;
+  agenciesInvolved: Agency[];
+  careInspectorateNotified: boolean;
+  commissioningInvolved: boolean;
+  chairUserId: string;
+  chairIsSeniorCouncilOfficer: boolean;
+  /** The planning meeting that took the decision, where it was held in the product. */
+  meetingId?: string;
+  decision: string;
+}
+
+/** One adult inside a Large Scale Investigation (D-253). */
+export interface LsiStrandInput {
+  subjectId: string;
+  concern: string;
+  leadUserId?: string;
 }
 
 export const ASP_TRANSITIONS: Array<Transition<AspProcess, never>> = [
@@ -361,6 +386,76 @@ export const ASP_TRANSITIONS: Array<Transition<AspProcess, never>> = [
       const inquiry = { ...process.detail.inquiry!, outcome: 'pending' as const, decidedAt: undefined };
       const next: AspProcess = { ...process, detail: { ...process.detail, inquiry } };
       return outcome(moved(next, 'inquiry', ctx, summary), 'inquiry', summary, { clocks: { completes: [], starts: [], note: t('processes.transitions.clockNote.returned') } });
+    },
+  },
+  {
+    /**
+     * Opening a Large Scale Investigation (D-253): the decision that this is no longer one adult's
+     * inquiry but an investigation into a setting. The NMDS glossary expects it to be taken in a
+     * multi-agency meeting chaired by a senior officer of the council, so the record carries the
+     * chair and the meeting, and refuses an LSI whose chair is not one.
+     */
+    id: 'asp-open-lsi',
+    process: 'asp',
+    from: ['inquiry', 'investigation', 'case-conference'],
+    to: ['investigation'],
+    // The Adult Protection Committee's lead officer is an oversight role: they read the investigation
+    // and count it in the return, and they do not record decisions on cases (D-253).
+    roles: ['council-officer-asp', 'team-leader', 'cswo'],
+    requires: (process) => (process.detail.lsi ? [{ code: 'lsiAlreadyOpen' }] : []),
+    validate: (input: OpenLsiInput) => [
+      ...requireText(input.setting, 'settingRequired', 3),
+      ...requireText(input.provider, 'providerRequired', 3),
+      ...(input.chairUserId ? [] : ['chairRequired']),
+      ...(input.chairIsSeniorCouncilOfficer ? [] : ['lsiChairSeniorityRequired']),
+      ...requireText(input.decision, 'rationaleRequired'),
+    ],
+    apply: (process, input: OpenLsiInput, ctx) => {
+      const summary = t('processes.transitions.summary.lsiOpened', { setting: input.setting, provider: input.provider });
+      const next: AspProcess = {
+        ...process,
+        detail: {
+          ...process.detail,
+          lsi: {
+            setting: input.setting,
+            provider: input.provider,
+            serviceType: input.serviceType,
+            careInspectorateCsNumber: input.careInspectorateCsNumber,
+            nhsHospitalLocationCode: input.nhsHospitalLocationCode,
+            strands: [],
+            agenciesInvolved: input.agenciesInvolved,
+            careInspectorateNotified: input.careInspectorateNotified,
+            commissioningInvolved: input.commissioningInvolved,
+            chairUserId: input.chairUserId,
+            chairIsSeniorCouncilOfficer: true,
+            openedAt: ctx.at.slice(0, 10),
+            planningMeetingId: input.meetingId,
+            planningDecision: input.decision,
+          },
+        },
+      };
+      return outcome(moved(next, 'investigation', ctx, summary), 'investigation', summary, {
+        addMembers: [{ userId: input.chairUserId, caseRole: t('processes.transitions.caseRole.lsiChair'), agency: 'social-work', reason: t('processes.transitions.caseRole.lsiChairReason') }],
+        eventType: 'social-work.assessment',
+      });
+    },
+  },
+  {
+    // A strand is one adult inside the investigation: their own concern, their own lead, their own
+    // status. The LSI is the setting; the strands are the people, and the return counts both.
+    id: 'asp-add-lsi-strand',
+    process: 'asp',
+    from: ['investigation', 'case-conference', 'protection-plan', 'support-plan', 'review'],
+    to: ['investigation', 'case-conference', 'protection-plan', 'support-plan', 'review'],
+    roles: ['council-officer-asp', 'team-leader', 'social-worker-adults', 'cswo'],
+    repeatable: true,
+    requires: (process) => (process.detail.lsi ? [] : [{ code: 'lsiNotOpen', creates: { kind: 'transition', transition: 'asp-open-lsi' } }]),
+    validate: (input: LsiStrandInput) => [...(input.subjectId ? [] : ['subjectRequired']), ...requireText(input.concern, 'summaryRequired')],
+    apply: (process, input: LsiStrandInput, ctx) => {
+      const lsi = process.detail.lsi!;
+      const summary = t('processes.transitions.summary.lsiStrand', { setting: lsi.setting, count: lsi.strands.length + 1 });
+      const next: AspProcess = { ...process, detail: { ...process.detail, lsi: { ...lsi, strands: [...lsi.strands, { subjectId: input.subjectId, concern: input.concern, status: 'open' as const, leadUserId: input.leadUserId }] } } };
+      return outcome(moved(next, process.stage, ctx, summary), process.stage, summary, { eventType: 'social-work.assessment' });
     },
   },
   {

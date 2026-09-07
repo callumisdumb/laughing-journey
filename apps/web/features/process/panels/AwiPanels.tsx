@@ -455,6 +455,24 @@ export function AwiPanels({ process }: { process: AwiProcess }) {
                         .join(' ')}
                     </span>
                   </span>
+                                  {(o.lifecycle ?? []).length > 0 ? (
+                    <ul className={styles.listMeta} data-testid={`order-lifecycle-${o.id}`}>
+                      <li>
+                        <strong>{t('awi.orders.lifecycleTitle')}</strong>
+                      </li>
+                      {(o.lifecycle ?? []).map((entry, n) => (
+                        <li key={`${entry.kind}-${entry.at}-${n}`}>
+                          {entry.kind === 'renewed'
+                            ? t('awi.orders.renewed', { date: formatDate(entry.at), expires: o.expiresAt ? formatDate(o.expiresAt) : '' })
+                            : entry.kind === 'varied'
+                              ? t('awi.orders.varied', { date: formatDate(entry.at), summary: entry.summary })
+                              : entry.kind === 'recalled'
+                                ? t('awi.orders.recalled', { date: formatDate(entry.at), summary: entry.summary })
+                                : t('awi.orders.appeal', { outcome: entry.appealOutcome ?? 'lodged', appellant: entry.appellant ?? '', date: formatDate(entry.at) })}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </li>
               ))}
             </ul>

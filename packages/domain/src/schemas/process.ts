@@ -237,6 +237,12 @@ export const aspDetailSchema = z.object({
      */
     chairUserId: idSchema,
     chairIsSeniorCouncilOfficer: z.literal(true),
+    /** When the multi-agency meeting decided to proceed to an LSI, and what it decided (D-253). */
+    openedAt: isoDate.optional(),
+    /** The planning meeting that took the decision, where one was held here. */
+    planningMeetingId: idSchema.optional(),
+    /** What the planning meeting agreed: the scope, and what each agency is doing. */
+    planningDecision: z.string().optional(),
   }).optional(),
 });
 export type AspDetail = z.infer<typeof aspDetailSchema>;
@@ -466,7 +472,7 @@ export const mappaDetailSchema = z.object({
     status: z.enum(['requested', 'returned', 'nothing-known']),
     summary: z.string().optional(),
   })),
-  reviewSchedule: z.object({ lastMeetingId: idSchema.optional(), lastMeetingAt: isoDate.optional(), nextDueAt: isoDate.optional() }),
+  reviewSchedule: z.object({ lastMeetingId: idSchema.optional(), lastMeetingAt: isoDate.optional(), nextDueAt: isoDate.optional(), /** The last level 1 review, which has no meeting to date it (D-251). */ lastReviewAt: isoDate.optional() }),
   exit: z.object({ at: isoDate, kind: z.enum(['level-down', 'deregistration', 'transfer']), note: z.string() }).optional(),
   significantCaseReviewTrigger: z.string().optional(),
 });
@@ -542,6 +548,26 @@ export const awiDetailSchema = z.object({
     supervisingOfficerUserId: idSchema.optional(),
     opgRegisteredAt: isoDate.optional(),
     mwcNotifiedAt: isoDate.optional(),
+    /** Recalled before its expiry: the order ends on this date and its expiry clock stops (D-252). */
+    recalledAt: isoDate.optional(),
+    /**
+     * What has happened to the order since it was granted: renewals, variations, the recall and any
+     * appeal, oldest first, each with the court's date and the date it was recorded here (D-252).
+     */
+    lifecycle: z
+      .array(
+        z.object({
+          kind: z.enum(['renewed', 'varied', 'recalled', 'appealed']),
+          at: isoDate,
+          recordedAt: isoDateTime,
+          summary: z.string(),
+          /** What the powers were before a variation, so the record keeps both readings. */
+          powersBefore: z.array(z.string()).optional(),
+          appellant: z.string().optional(),
+          appealOutcome: z.enum(['lodged', 'allowed', 'refused', 'withdrawn']).optional(),
+        }),
+      )
+      .optional(),
   })),
   supervisionVisits: z.array(z.object({ at: isoDate, byName: z.string(), summary: z.string() })),
   investigations: z.array(z.object({ section: z.enum(['s10', 's12']), openedAt: isoDate, summary: z.string(), status: z.enum(['open', 'closed']) })),

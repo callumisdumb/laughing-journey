@@ -308,6 +308,24 @@ const RULES: ClockRuleData[] = [
     confidence: 'high',
   },
   {
+    /**
+     * Level 1 is managed by the lead responsible authority without a meeting, which is why the
+     * national guidance sets no interval for it: it names review intervals for levels 2 and 3 and
+     * leaves level 1 to local arrangements. A case that never meets and never counts down is a case
+     * nobody looks at again, so the product carries a local interval and marks it as local (D-251).
+     * TODO(verify): the Clydeshore equivalent's own MAPPA operating procedures set this figure.
+     */
+    id: 'mappa.level1.review',
+    process: 'mappa',
+    unit: 'months',
+    amount: 12,
+    kind: 'review',
+    warnDays: 28,
+    source: 'Local: no national interval exists for level 1, which the MAPPA National Guidance 2022 leaves to local arrangements',
+    sourceRef: 'Seeded at 12 months as the interval a partnership would recognise; confirm against the area procedures (docs/RESEARCH.md 9.4)',
+    confidence: 'local',
+  },
+  {
     id: 'mappa.level2.review',
     process: 'mappa',
     unit: 'weeks',
@@ -328,6 +346,25 @@ const RULES: ClockRuleData[] = [
     source: 'MAPPA National Guidance 2022 (refreshed 31 March 2022)',
     sourceRef: 'Level 3 cases reviewed no less than once every 6 weeks',
     confidence: 'high',
+  },
+  {
+    /**
+     * An order with an expiry runs out on it, and an adult whose guardianship lapses has no
+     * guardian: the renewal application has to be made before that day, not discovered after it.
+     * The rule is the order's own date rather than an interval, so it is triggered with the expiry
+     * as its instant and counted back from, so the clock is due 90 days before the order runs out.
+     * Completed by a renewal or a recall (D-252).
+     */
+    id: 'awi.order.renewal.due',
+    process: 'awi',
+    unit: 'calendar-days',
+    amount: 90,
+    direction: 'before',
+    kind: 'deadline',
+    warnDays: 30,
+    source: 'Adults with Incapacity (Scotland) Act 2000 s58 and s60: an order runs for the period the sheriff specifies',
+    sourceRef: 'The expiry is the order\'s own. The 90 day lead time is the product\'s, so a renewal is prepared rather than discovered late; confirm the area\'s own lead time (docs/RESEARCH.md 9.5)',
+    confidence: 'local',
   },
   {
     id: 'awi.mho.report',

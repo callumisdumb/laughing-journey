@@ -1,6 +1,7 @@
 import { t } from '@mas/messages';
 import { londonToIso } from '../../dates';
 import type { AwiDetail, AwiProcess } from '../../schemas/process';
+import { awiOrderKindLabel } from '../../config/labels';
 import { moved, outcome, requireText, type MissingThing, type Transition, type TransferInput } from './shared';
 
 /**
@@ -40,6 +41,25 @@ export type CourtEventInput =
   | { event: 'interim-granted'; at: string; expiresAt: string }
   | { event: 'hearing-set'; at: string }
   | { event: 'order-granted'; at: string; order: { kind: NonNullable<AwiDetail['orders']>[number]['kind']; expiresAt?: string; guardianName: string; powers: string[]; renewal?: boolean } };
+
+/**
+ * The life of an order after it is granted (D-252). A guardianship is renewed before it expires,
+ * varied when the powers no longer fit, and recalled when it is no longer needed; an appeal is a
+ * fact about the order that the record has to carry whether or not it succeeds. Each is recorded
+ * against the order it concerns, because an adult may hold more than one.
+ */
+export interface OrderLifecycleInput {
+  orderId: string;
+  /** The court's date for the act, which is rarely the day it is recorded. */
+  at: string;
+  summary: string;
+  /** A renewal's new expiry, and a variation's new powers. */
+  expiresAt?: string;
+  powers?: string[];
+  /** An appeal: who lodged it, and what became of it where it is already known. */
+  appellant?: string;
+  appealOutcome?: 'lodged' | 'allowed' | 'refused' | 'withdrawn';
+}
 
 export interface BeginSupervisionInput {
   supervisingOfficerUserId: string;
@@ -230,7 +250,7 @@ export const AWI_TRANSITIONS: Array<Transition<AwiProcess, never>> = [
     from: ['order', 'route-decision'],
     to: ['supervision'],
     roles: ['social-worker-adults', 'team-leader', 'mho'],
-    requires: (process) => (process.detail.orders.length > 0 || process.detail.routeDecision?.route === 's13za' ? [] : [{ code: 'orderRequired', creates: { kind: 'transition', transition: 'awi-court-event' } }]),
+    requires: (process) => (process.detail.orders.length > 0 || process.detail.routeDecision?.route === 's13za' ? [] : [{ code: 'caseHasNoOrder', creates: { kind: 'transition', transition: 'awi-court-event' } }]),
     validate: (input: BeginSupervisionInput) => [...(input.supervisingOfficerUserId ? [] : ['supervisingOfficerRequired']), ...(input.firstVisitAt ? [] : ['dateRequired'])],
     apply: (process, input: BeginSupervisionInput, ctx) => {
       const summary = t('processes.transitions.summary.supervisionBegun', { officer: input.supervisingOfficerName, date: input.firstVisitAt.slice(0, 10) });
@@ -264,6 +284,87 @@ export const AWI_TRANSITIONS: Array<Transition<AwiProcess, never>> = [
     requires: () => [],
     validate: () => [],
     apply: (process) => outcome(process, process.stage, t('processes.transitions.summary.investigationOffered'), { followOn: [{ kind: 'offer', creates: { kind: 'dialog', dialog: 'awi-investigation' } }], outbound: null }),
+  },
+  {
+    // Renewing an order before it expires: a new expiry, and the Commission counts it as a renewal
+    // rather than a new order, which is why the flag is on the order and not inferred from dates.
+    id: 'awi-renew-order',
+    process: 'awi',
+    from: ['order', 'supervision'],
+    to: ['order', 'supervision'],
+    roles: ['mho', 'social-worker-adults', 'team-leader'],
+    repeatable: true,
+    requires: (process) => (process.detail.orders.length > 0 ? [] : [{ code: 'caseHasNoOrder', creates: { kind: 'transition', transition: 'awi-court-event' } }]),
+    validate: (input: OrderLifecycleInput) => [...(input.orderId ? [] : ['orderRequired']), ...(input.at ? [] : ['dateRequired']), ...(input.expiresAt ? [] : ['newExpiryRequired']), ...requireText(input.summary, 'summaryRequired')],
+    apply: (process, input: OrderLifecycleInput, ctx) => {
+      const order = process.detail.orders.find((o) => o.id === input.orderId);
+      const summary = t('processes.transitions.summary.orderRenewed', { kind: order ? awiOrderKindLabel(order.kind) : '', until: input.expiresAt ?? '', note: input.summary });
+      const orders = process.detail.orders.map((o) => (o.id === input.orderId ? { ...o, expiresAt: input.expiresAt, renewal: true, lifecycle: [...(o.lifecycle ?? []), { kind: 'renewed' as const, at: input.at, summary: input.summary, recordedAt: ctx.at }] } : o));
+      const next: AwiProcess = { ...process, detail: { ...process.detail, orders } };
+      return outcome(moved(next, process.stage, ctx, summary), process.stage, summary, {
+        clocks: { completes: ['awi.order.renewal.due'], starts: [{ ruleId: 'awi.order.renewal.due', triggeredAt: `${input.expiresAt}T00:00:00Z` }], note: summary },
+        eventType: 'legal.guardianship',
+      });
+    },
+  },
+  {
+    // Varying the powers: the order stands, what it authorises changes, and the record keeps both.
+    id: 'awi-vary-order',
+    process: 'awi',
+    from: ['order', 'supervision'],
+    to: ['order', 'supervision'],
+    roles: ['mho', 'social-worker-adults', 'team-leader'],
+    repeatable: true,
+    requires: (process) => (process.detail.orders.length > 0 ? [] : [{ code: 'caseHasNoOrder', creates: { kind: 'transition', transition: 'awi-court-event' } }]),
+    validate: (input: OrderLifecycleInput) => [...(input.orderId ? [] : ['orderRequired']), ...(input.at ? [] : ['dateRequired']), ...((input.powers ?? []).length > 0 ? [] : ['powersRequired']), ...requireText(input.summary, 'summaryRequired')],
+    apply: (process, input: OrderLifecycleInput, ctx) => {
+      const order = process.detail.orders.find((o) => o.id === input.orderId);
+      const summary = t('processes.transitions.summary.orderVaried', { kind: order ? awiOrderKindLabel(order.kind) : '', note: input.summary });
+      const orders = process.detail.orders.map((o) => (o.id === input.orderId ? { ...o, powers: input.powers ?? o.powers, lifecycle: [...(o.lifecycle ?? []), { kind: 'varied' as const, at: input.at, summary: input.summary, recordedAt: ctx.at, powersBefore: o.powers }] } : o));
+      const next: AwiProcess = { ...process, detail: { ...process.detail, orders } };
+      return outcome(moved(next, process.stage, ctx, summary), process.stage, summary, { eventType: 'legal.guardianship' });
+    },
+  },
+  {
+    // Recall: the order ends before its expiry, so the expiry clock stops with it. Supervision of a
+    // recalled order has nothing left to supervise, and the case goes back to the order stage.
+    id: 'awi-recall-order',
+    process: 'awi',
+    from: ['order', 'supervision'],
+    to: ['order'],
+    roles: ['mho', 'team-leader'],
+    repeatable: true,
+    requires: (process) => (process.detail.orders.some((o) => !o.recalledAt) ? [] : [{ code: 'caseHasNoOrder', creates: { kind: 'transition', transition: 'awi-court-event' } }]),
+    validate: (input: OrderLifecycleInput) => [...(input.orderId ? [] : ['orderRequired']), ...(input.at ? [] : ['dateRequired']), ...requireText(input.summary, 'summaryRequired')],
+    apply: (process, input: OrderLifecycleInput, ctx) => {
+      const order = process.detail.orders.find((o) => o.id === input.orderId);
+      const summary = t('processes.transitions.summary.orderRecalled', { kind: order ? awiOrderKindLabel(order.kind) : '', date: input.at, note: input.summary });
+      const orders = process.detail.orders.map((o) => (o.id === input.orderId ? { ...o, recalledAt: input.at, lifecycle: [...(o.lifecycle ?? []), { kind: 'recalled' as const, at: input.at, summary: input.summary, recordedAt: ctx.at }] } : o));
+      const next: AwiProcess = { ...process, detail: { ...process.detail, orders } };
+      return outcome(moved(next, 'order', ctx, summary), 'order', summary, {
+        clocks: { completes: ['awi.order.renewal.due'], starts: [], note: summary },
+        eventType: 'legal.guardianship',
+      });
+    },
+  },
+  {
+    // An appeal is a fact about the order, recorded whatever its outcome; it does not by itself
+    // change the powers, which is what the variation and the recall are for.
+    id: 'awi-record-appeal',
+    process: 'awi',
+    from: ['application', 'order', 'supervision'],
+    to: ['application', 'order', 'supervision'],
+    roles: ['mho', 'social-worker-adults', 'team-leader'],
+    repeatable: true,
+    requires: (process) => (process.detail.orders.length > 0 ? [] : [{ code: 'caseHasNoOrder', creates: { kind: 'transition', transition: 'awi-court-event' } }]),
+    validate: (input: OrderLifecycleInput) => [...(input.orderId ? [] : ['orderRequired']), ...(input.at ? [] : ['dateRequired']), ...requireText(input.appellant ?? '', 'appellantRequired', 2), ...requireText(input.summary, 'summaryRequired')],
+    apply: (process, input: OrderLifecycleInput, ctx) => {
+      const order = process.detail.orders.find((o) => o.id === input.orderId);
+      const summary = t('processes.transitions.summary.orderAppealed', { kind: order ? awiOrderKindLabel(order.kind) : '', appellant: input.appellant ?? '', outcome: input.appealOutcome ?? 'lodged' });
+      const orders = process.detail.orders.map((o) => (o.id === input.orderId ? { ...o, lifecycle: [...(o.lifecycle ?? []), { kind: 'appealed' as const, at: input.at, summary: input.summary, recordedAt: ctx.at, appellant: input.appellant, appealOutcome: input.appealOutcome ?? 'lodged' }] } : o));
+      const next: AwiProcess = { ...process, detail: { ...process.detail, orders } };
+      return outcome(moved(next, process.stage, ctx, summary), process.stage, summary, { eventType: 'legal.guardianship' });
+    },
   },
   {
     id: 'awi-close',

@@ -51,6 +51,13 @@ export interface MappaMeetingHeldInput {
   reviewDate: string;
 }
 
+/** A level 1 review: what the lead responsible authority found, and whether it goes up (D-251). */
+export interface Level1ReviewInput {
+  outcome: 'unchanged' | 'refer-up';
+  summary: string;
+  referReason?: string;
+}
+
 export interface ExitInput {
   kind: 'level-down' | 'deregistration' | 'transfer';
   note: string;
@@ -161,6 +168,32 @@ export const MAPPA_TRANSITIONS: Array<Transition<MappaProcess, never>> = [
       return outcome(moved(next, 'managed', ctx, summary), 'managed', summary, {
         clocks: { completes: ['mappa.level2.review', 'mappa.level3.review'], starts: input.level === 1 ? [] : [{ ruleId: reviewRule }], note: t('processes.transitions.clockNote.mappaHeld') },
         followOn: [{ kind: 'plan', plan, actions }],
+        eventType: 'process.mappa-level',
+      });
+    },
+  },
+  {
+    /**
+     * A level 1 review (D-251): the lead responsible authority looks at the case again, without a
+     * meeting, and either says it is unchanged or refers it up. The clock restarts either way, so a
+     * case managed at level 1 is never a case nobody looks at again.
+     */
+    id: 'mappa-level1-review',
+    process: 'mappa',
+    from: ['notification', 'managed'],
+    to: ['notification', 'managed'],
+    roles: ['mappa-coordinator', 'offender-management', 'justice-social-worker'],
+    repeatable: true,
+    requires: (process) => (process.detail.level === 1 ? [] : [{ code: 'mappaNotLevel1' }]),
+    validate: (input: Level1ReviewInput) => [...requireText(input.summary, 'summaryRequired'), ...(input.outcome === 'refer-up' ? requireText(input.referReason, 'rationaleRequired') : [])],
+    apply: (process, input: Level1ReviewInput, ctx) => {
+      const summary = t('processes.transitions.summary.mappaLevel1Review', { outcome: input.outcome === 'refer-up' ? 'referUp' : 'unchanged', note: input.summary });
+      const next: MappaProcess = { ...process, detail: { ...process.detail, reviewSchedule: { ...process.detail.reviewSchedule, lastReviewAt: ctx.at.slice(0, 10) } } };
+      // Referring up is the referral transition's job, and it is offered rather than done here: the
+      // level a case is managed at is decided at a meeting, never by the person who asked (D-225).
+      return outcome(moved(next, process.stage, ctx, summary), process.stage, summary, {
+        clocks: { completes: ['mappa.level1.review'], starts: [{ ruleId: 'mappa.level1.review' }], note: summary },
+        followOn: input.outcome === 'refer-up' ? [{ kind: 'offer', creates: { kind: 'transition', transition: 'mappa-refer-level' } }] : [],
         eventType: 'process.mappa-level',
       });
     },

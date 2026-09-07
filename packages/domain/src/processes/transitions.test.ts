@@ -74,7 +74,7 @@ describe('the registry', () => {
         expect(transition.roles.length, transition.id).toBeGreaterThan(0);
       }
     }
-    expect(ids.size).toBe(55);
+    expect(ids.size).toBe(62);
   });
   it('reaches every stage of every type through some transition, so no stage needs a picker', () => {
     for (const type of Object.keys(TRANSITIONS) as ProcessType[]) {
@@ -350,7 +350,7 @@ describe('MARAC', () => {
 describe('MAPPA', () => {
   it('a level 1 case sits at notification and needs a risk assessment before a referral up', () => {
     const mappa = open('mappa');
-    expect(whatHappensNext(mappa, { roleId: 'mappa-coordinator' }).map((n) => n.transition.id)).toEqual(['mappa-refer-level', 'mappa-record-disclosure', 'mappa-exit']);
+    expect(whatHappensNext(mappa, { roleId: 'mappa-coordinator' }).map((n) => n.transition.id)).toEqual(['mappa-refer-level', 'mappa-level1-review', 'mappa-record-disclosure', 'mappa-exit']);
     const refused = record(mappa, 'mappa-refer-level', { level: 2, reason: 'Escalating risk to a known victim.', riskAssessmentId: 'ra_1', referringAuthority: 'police' }, 'offender-management', 'police');
     expect((refused as { missing: Array<{ code: string }> }).missing[0]?.code).toBe('riskAssessmentRequired');
     const assessed = { ...mappa, riskAssessmentIds: ['ra_1'] } as MappaProcess;
@@ -603,5 +603,105 @@ describe('transferring a case to another authority (D-248)', () => {
     expect(cp.process.status).toBe('transferred');
     const awi = ok(open('awi'), 'awi-transfer', { toArea: 'Lochbrae Council', receivingCoordinator: 'A Social Worker' }, 'mho');
     expect(awi.process.status).toBe('transferred');
+  });
+});
+
+describe('the life of a guardianship order (D-252)', () => {
+  const granted = (): AwiProcess => {
+    const process = open('awi') as AwiProcess;
+    return { ...process, stage: 'order', stageHistory: [...process.stageHistory, { stage: 'order', at: AT, byName: 'Test' }], detail: { ...process.detail, orders: [{ id: 'ord_1', kind: 'welfare-guardianship', grantedAt: '2023-09-01', expiresAt: '2026-09-01', guardianName: 'A Guardian', powers: ['Decide where the adult lives'] }] } };
+  };
+
+  it('renews an order to a new expiry, counts it as a renewal, and restarts the renewal clock from it', () => {
+    const process = granted();
+    expect((record(process, 'awi-renew-order', { orderId: 'ord_1', at: '', summary: '' }, 'mho') as { errors: string[] }).errors).toEqual(['dateRequired', 'newExpiryRequired', 'summaryRequired']);
+    const out = ok(process, 'awi-renew-order', { orderId: 'ord_1', at: '2026-08-20', expiresAt: '2029-08-20', summary: 'Renewed for three years on the same powers.' }, 'mho');
+    const order = (out.process as AwiProcess).detail.orders[0]!;
+    expect(order.expiresAt).toBe('2029-08-20');
+    expect(order.renewal).toBe(true);
+    expect(order.lifecycle?.at(-1)).toMatchObject({ kind: 'renewed', at: '2026-08-20' });
+    expect(out.clocks.completes).toEqual(['awi.order.renewal.due']);
+    expect(out.clocks.starts[0]).toMatchObject({ ruleId: 'awi.order.renewal.due', triggeredAt: '2029-08-20T00:00:00Z' });
+    // The stage does not move: the case carries on where it was.
+    expect(out.to).toBe('order');
+  });
+
+  it('varies the powers, keeping what they were before', () => {
+    const out = ok(granted(), 'awi-vary-order', { orderId: 'ord_1', at: '2026-08-20', powers: ['Decide where the adult lives', 'Consent to medical treatment'], summary: 'Welfare powers extended to treatment decisions.' }, 'mho');
+    const order = (out.process as AwiProcess).detail.orders[0]!;
+    expect(order.powers).toEqual(['Decide where the adult lives', 'Consent to medical treatment']);
+    expect(order.lifecycle?.at(-1)).toMatchObject({ kind: 'varied', powersBefore: ['Decide where the adult lives'] });
+    expect((record(granted(), 'awi-vary-order', { orderId: 'ord_1', at: '2026-08-20', powers: [], summary: 'x' }, 'mho') as { errors: string[] }).errors).toContain('powersRequired');
+  });
+
+  it('recalls an order, stopping its clock and returning supervision to the order stage', () => {
+    const supervising = { ...granted(), stage: 'supervision' } as AwiProcess;
+    const out = ok(supervising, 'awi-recall-order', { orderId: 'ord_1', at: '2026-08-25', summary: 'Recalled: the adult has regained capacity for these decisions.' }, 'mho');
+    const order = (out.process as AwiProcess).detail.orders[0]!;
+    expect(order.recalledAt).toBe('2026-08-25');
+    expect(out.to).toBe('order');
+    expect(out.clocks.completes).toEqual(['awi.order.renewal.due']);
+    expect(out.clocks.starts).toEqual([]);
+  });
+
+  it('records an appeal without changing the powers, and needs to know who lodged it', () => {
+    expect((record(granted(), 'awi-record-appeal', { orderId: 'ord_1', at: '2026-08-20', summary: 'Appeal lodged.' }, 'mho') as { errors: string[] }).errors).toContain('appellantRequired');
+    const out = ok(granted(), 'awi-record-appeal', { orderId: 'ord_1', at: '2026-08-20', appellant: "The adult's sister", appealOutcome: 'lodged', summary: 'Appeal against the welfare powers.' }, 'mho');
+    const order = (out.process as AwiProcess).detail.orders[0]!;
+    expect(order.lifecycle?.at(-1)).toMatchObject({ kind: 'appealed', appellant: "The adult's sister", appealOutcome: 'lodged' });
+    expect(order.powers).toEqual(['Decide where the adult lives']);
+  });
+
+  it('offers none of the four until an order exists, and says what records one', () => {
+    const before = open('awi');
+    for (const id of ['awi-renew-order', 'awi-vary-order', 'awi-recall-order', 'awi-record-appeal']) {
+      const transition = transitionById(id)!;
+      expect(transition.requires(before)[0]).toMatchObject({ code: 'caseHasNoOrder', creates: { kind: 'transition', transition: 'awi-court-event' } });
+    }
+  });
+});
+
+describe('a Large Scale Investigation through the engine (D-253)', () => {
+  const tested = (process: AspProcess): AspProcess => ({ ...process, detail: { ...process.detail, threePointTest: { ...process.detail.threePointTest, outcome: 'met', a: { met: 'yes', reasoning: 'Adult at risk of harm' } } } });
+  const inquiry = () => ok(ok(tested(open('asp') as AspProcess), 'asp-screening-decision', { outcome: 'proceed-to-inquiry', rationale: 'The concern is credible and recent.' }, 'team-leader').process, 'asp-open-inquiry', { agenciesToContact: ['health'], interAgencyDiscussion: true, purpose: 'Inquiry under section 4 into the concern.' }, 'council-officer-asp').process as AspProcess;
+  const lsiInput = { setting: 'Whinbrae House', provider: 'Clydeshore Care Partnership', serviceType: 'care-home' as const, careInspectorateCsNumber: 'CS2019000123', agenciesInvolved: ['social-work', 'health', 'regulator'] as const, careInspectorateNotified: true, commissioningInvolved: true, chairUserId: 'usr_cswo', chairIsSeniorCouncilOfficer: true, decision: 'Investigate medication administration across the home; five adults identified so far.' };
+
+  it('refuses an investigation whose chair is not a senior council officer, and one with no setting', () => {
+    const process = inquiry();
+    const refused = record(process, 'asp-open-lsi', { ...lsiInput, agenciesInvolved: [...lsiInput.agenciesInvolved], chairIsSeniorCouncilOfficer: false }, 'team-leader') as { errors: string[] };
+    expect(refused.errors).toEqual(['lsiChairSeniorityRequired']);
+    const empty = record(process, 'asp-open-lsi', { ...lsiInput, agenciesInvolved: [...lsiInput.agenciesInvolved], setting: '', provider: '', decision: '' }, 'team-leader') as { errors: string[] };
+    expect(empty.errors).toEqual(['settingRequired', 'providerRequired', 'rationaleRequired']);
+  });
+
+  it('opens the investigation, seats the chair on the case and records what the meeting decided', () => {
+    const out = ok(inquiry(), 'asp-open-lsi', { ...lsiInput, agenciesInvolved: [...lsiInput.agenciesInvolved] }, 'team-leader');
+    const lsi = (out.process as AspProcess).detail.lsi!;
+    expect(lsi.setting).toBe('Whinbrae House');
+    expect(lsi.serviceType).toBe('care-home');
+    expect(lsi.careInspectorateCsNumber).toBe('CS2019000123');
+    expect(lsi.chairIsSeniorCouncilOfficer).toBe(true);
+    expect(lsi.openedAt).toBe(AT.slice(0, 10));
+    expect(lsi.planningDecision).toContain('medication administration');
+    expect(lsi.strands).toEqual([]);
+    expect(out.to).toBe('investigation');
+    expect(out.addMembers[0]).toMatchObject({ userId: 'usr_cswo' });
+    // A second one is refused: an investigation into a setting is opened once.
+    expect(transitionById('asp-open-lsi')!.requires(out.process)[0]).toMatchObject({ code: 'lsiAlreadyOpen' });
+  });
+
+  it('adds an adult to it, each with their own concern and lead, and offers the opening first where there is none', () => {
+    const opened = ok(inquiry(), 'asp-open-lsi', { ...lsiInput, agenciesInvolved: [...lsiInput.agenciesInvolved] }, 'team-leader').process;
+    expect(transitionById('asp-add-lsi-strand')!.requires(inquiry())[0]).toMatchObject({ code: 'lsiNotOpen', creates: { kind: 'transition', transition: 'asp-open-lsi' } });
+    expect((record(opened, 'asp-add-lsi-strand', { subjectId: '', concern: '' }, 'council-officer-asp') as { errors: string[] }).errors).toEqual(['subjectRequired', 'summaryRequired']);
+
+    const one = ok(opened, 'asp-add-lsi-strand', { subjectId: 'per_wilma', concern: 'Money missing from her personal allowance account.', leadUserId: 'usr_stuart' }, 'council-officer-asp');
+    const two = ok(one.process, 'asp-add-lsi-strand', { subjectId: 'per_jean', concern: 'Donepezil omitted on six consecutive evenings.' }, 'council-officer-asp');
+    const lsi = (two.process as AspProcess).detail.lsi!;
+    expect(lsi.strands).toHaveLength(2);
+    expect(lsi.strands[0]).toMatchObject({ subjectId: 'per_wilma', status: 'open', leadUserId: 'usr_stuart' });
+    expect(two.summary).toContain('2 strands');
+    // The stage does not move: strands are added to an investigation that is already running.
+    expect(two.to).toBe('investigation');
   });
 });
