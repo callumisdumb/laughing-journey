@@ -7,7 +7,7 @@ import type { Meeting } from '../schemas/meeting';
 import type { Process } from '../schemas/process';
 import type { SharingRecord } from '../schemas/sharing';
 import type { User } from '../schemas/user';
-import { actionClockNotifications, actionNotifications, addressedTo, admissible, breakGlassNotifications, clockNotifications, inboxNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications } from './derive';
+import { actionClockNotifications, actionNotifications, addressedTo, admissible, delegateCopies, breakGlassNotifications, clockNotifications, inboxNotifications, meetingNotifications, nearMatchNotifications, processNotifications, sharingNotifications } from './derive';
 
 const AT = '2026-09-02T09:00:00Z';
 const MOIRA = 'usr_moira';
@@ -307,5 +307,36 @@ describe('the smaller composers', () => {
     expect(addressedTo({ toRole: { agency: 'social-work', roleId: 'any' } }, janet)).toBe(true);
     expect(addressedTo({ toRole: { agency: 'social-work', roleId: 'team-leader' } }, janet)).toBe(false);
     expect(addressedTo({ toRole: { agency: 'health', roleId: 'any' } }, janet)).toBe(false);
+  });
+});
+
+describe('delegateCopies (D-254)', () => {
+  const drafts = [
+    { kind: 'action-assigned', sourceType: 'action', sourceId: 'act_1', toUserId: 'usr_away', detailLevel: 'full', key: 'action-assigned:act_1:usr_away' },
+    { kind: 'share', sourceType: 'sharing', sourceId: 'shr_1', toRole: { agency: 'health', roleId: 'gp' }, detailLevel: 'full', key: 'share:shr_1:health:gp' },
+  ] as unknown as Parameters<typeof delegateCopies>[0];
+  const users = [
+    { id: 'usr_away', outOfOffice: { from: '2026-09-01', to: '2026-09-14', delegateUserId: 'usr_cover' } },
+    { id: 'usr_cover' },
+    { id: 'usr_past', outOfOffice: { from: '2026-01-01', to: '2026-01-14', delegateUserId: 'usr_cover' } },
+  ] as unknown as Parameters<typeof delegateCopies>[1];
+
+  it('copies a personal notification to the delegate, keyed on who is away', () => {
+    const copies = delegateCopies(drafts, users, '2026-09-07');
+    expect(copies).toHaveLength(1);
+    expect(copies[0]).toMatchObject({ kind: 'action-assigned', toUserId: 'usr_cover' });
+    expect(copies[0]!.key).toBe('action-assigned:act_1:usr_away:delegate:usr_away');
+  });
+
+  it('copies nothing outside the dates, nothing role-addressed, and nothing where there is no delegate', () => {
+    expect(delegateCopies(drafts, users, '2026-10-01')).toEqual([]);
+    expect(delegateCopies(drafts, [{ id: 'usr_away', outOfOffice: { from: '2026-09-01', to: '2026-09-14' } }], '2026-09-07')).toEqual([]);
+    const roleOnly = delegateCopies([drafts[1]!], users, '2026-09-07');
+    expect(roleOnly).toEqual([]);
+  });
+
+  it('never copies to the person who is already the recipient', () => {
+    const self = [{ id: 'usr_away', outOfOffice: { from: '2026-09-01', to: '2026-09-14', delegateUserId: 'usr_away' } }] as unknown as Parameters<typeof delegateCopies>[1];
+    expect(delegateCopies(drafts, self, '2026-09-07')).toEqual([]);
   });
 });
