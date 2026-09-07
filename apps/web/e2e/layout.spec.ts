@@ -421,3 +421,70 @@ test.describe('the person record composition', () => {
     expect(result.menus).toBe(1);
   });
 });
+
+test.describe('the process dashboards compose on one grid', () => {
+  /** Every process type, read by a persona who holds full access to the seeded case. */
+  const DASHBOARDS = [
+    { type: 'asp', user: 'usr_moira_gilmour', path: '/processes/prc_asp_marion' },
+    { type: 'cp', user: 'usr_janet_kerr', path: '/processes/prc_cp_aiden' },
+    { type: 'marac', user: 'usr_karen_findlay', path: '/processes/prc_marac_docherty' },
+    { type: 'mappa', user: 'usr_priya_sharif', path: '/processes/prc_mappa_derek' },
+    { type: 'awi', user: 'usr_graeme_dunlop', path: '/processes/prc_awi_ishbel' },
+  ] as const;
+  const WIDTHS = [
+    { w: 1920, h: 1080, mode: 'wide' },
+    { w: 1440, h: 900, mode: 'standard' },
+    { w: 1100, h: 800, mode: 'compact' },
+  ] as const;
+
+  for (const { w, h, mode } of WIDTHS) {
+    for (const dashboard of DASHBOARDS) {
+      test(`${dashboard.type} at ${w} (${mode})`, async ({ page }) => {
+        await page.setViewportSize({ width: w, height: h });
+        await signInAs(page, dashboard.user);
+        await page.goto(dashboard.path);
+        await waitForData(page);
+        expect(await page.evaluate(() => document.documentElement.dataset.layout)).toBe(mode);
+
+        const result = await page.evaluate(() => {
+          const grid = document.querySelector<HTMLElement>('[data-testid="process-grid"]')!;
+          const g = grid.getBoundingClientRect();
+          const style = getComputedStyle(grid);
+          const tracks = style.gridTemplateColumns.split(' ').length;
+          const gap = parseFloat(style.columnGap) || 0;
+          const track = (g.width - gap * (tracks - 1)) / tracks;
+          const misaligned: string[] = [];
+          const rows = new Map<number, number>();
+          for (const cell of Array.from(grid.children) as HTMLElement[]) {
+            // A panel's closed dialog is rendered where the panel is and takes no cell; it is not a card.
+            if (cell.tagName === 'DIALOG' || getComputedStyle(cell).display === 'none') continue;
+            const r = cell.getBoundingClientRect();
+            const span = Number(cell.dataset.span);
+            const expectedWidth = span * track + (span - 1) * gap;
+            const k = Math.round((r.right - g.left + gap) / (track + gap));
+            const boundary = g.left + k * track + (k - 1) * gap;
+            if (Math.abs(r.right - boundary) > 1 || Math.abs(r.width - expectedWidth) > 1) misaligned.push(`${cell.dataset.card}: ${Math.round(r.left - g.left)} to ${Math.round(r.right - g.left)} of ${Math.round(g.width)}`);
+            const top = Math.round(r.top);
+            rows.set(top, (rows.get(top) ?? 0) + span);
+          }
+          const short = [...rows.entries()].filter(([, used]) => tracks - used > 1).map(([top, used]) => `row at ${top}: ${used} of ${tracks}`);
+          // No section under the grid lays cards out in a grid of its own: a multi-column grid whose
+          // direct children are cards is the thing this round removed (D-238).
+          const nested: string[] = [];
+          for (const el of Array.from(grid.querySelectorAll<HTMLElement>('*'))) {
+            const cs = getComputedStyle(el);
+            if (cs.display !== 'grid' || cs.gridTemplateColumns.split(' ').length < 2) continue;
+            if (Array.from(el.children).some((c) => c.matches('[data-sheet]'))) nested.push(`${el.tagName}.${String(el.className).split(' ')[0]}`);
+          }
+          return { tracks, cells: grid.children.length, misaligned, short, nested };
+        });
+
+        expect(result.tracks).toBe(12);
+        expect(result.cells).toBeGreaterThan(8);
+        expect(result.misaligned, 'a cell whose right edge is not on a grid column boundary').toEqual([]);
+        expect(result.short, 'a grid row more than one column short of twelve').toEqual([]);
+        expect(result.nested, 'a section inside the record with a grid of cards of its own').toEqual([]);
+      });
+    }
+  }
+});

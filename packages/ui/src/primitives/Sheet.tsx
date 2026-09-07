@@ -18,7 +18,7 @@ export interface SheetProps extends HTMLAttributes<HTMLElement> {
 
 export function Sheet({ tone = 'default', selected, empty, as: Tag = 'section', className, children, ...rest }: SheetProps) {
   return (
-    <Tag className={cn(styles.sheet, className)} data-tone={tone} data-state={selected ? 'selected' : undefined} data-empty={empty ? 'true' : undefined} {...rest}>
+    <Tag className={cn(styles.sheet, className)} data-sheet="true" data-tone={tone} data-state={selected ? 'selected' : undefined} data-empty={empty ? 'true' : undefined} {...rest}>
       {children}
     </Tag>
   );

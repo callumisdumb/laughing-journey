@@ -4,11 +4,6 @@
   gap: var(--density-gap) var(--content-gutter);
 }
 
-.stack {
-  display: grid;
-  gap: var(--density-gap);
-}
-
 .limbs {
   display: grid;
   gap: 12px;

@@ -135,6 +135,34 @@ The person record overview, at `wide`. The header carries the status strip (open
 
 Spans by mode: `wide` as drawn; `standard` turns every 4 into 6 and every 8 into 12, so a row of three 4s becomes two 6s and a 12; `compact` and `narrow` are all 12. A row is re-packed from what is present: with no case there are no key contacts and no plans, so the first row is Clocks 6 and Alerts 6, and the chronology row is Recent chronology 12. The packing is one function, `composeRows` in `apps/web/lib/composition.ts`, and its unit test holds every mode to rows that sum to twelve.
 
+The process record, the same way. The stepper and the transition panel sit above the grid because they are the record's spine rather than cards; everything under them is a cell of one twelve-column grid. The screen's own cards are packed by `composeRows` (clocks, who the case is about, who is working it; linked cases and involvement requests where there are any; views, meetings and sharing; the plan and its actions) and each type panel is a cell that declares the span it takes at `wide`, placed by `GridCell` from the same rule. No panel group has a grid of its own any more: a pair that used to sit in a two-column grid inside the main column is two cells of six (D-238). A list inside a card may still be a grid; a card may not be inside one.
+
+```
++-- stepper: Adult concern > Screening > Inquiry (s4) > Inquiry using powers > ... -----------+
++-- What happens next: [Record investigatory step] [Schedule case conference] ---------------+
+| Clocks                 4 | Who this case is about  4 | Who is working it            4  |
+| 11 days to initial case  | Marion Fraser            | Social work: Moira Gilmour        |
+|   conference, 17 Sep     | Nephew (register)        | Health: Amira Farouk              |
++--------------------------+---------------------------+-----------------------------------+
+| Adult concern                                                                        12  |
+| Received 12 Aug 2026 from the GP . Financial harm, self-neglect . Own home . Police no   |
++------------------------------------------------------------------------------------------+
+| Three-point test                                                                     12  |
++--------------------------------------------+---------------------------------------------+
+| Screening and inquiry                    6 | Consent, capacity, undue pressure         6 |
++--------------------------------------------+---------------------------------------------+
+| Investigation under s7 to s10                                                        12  |
++------------------------------------------------------------------------------------------+
+| Protection orders considered                                                         12  |
++--------------------------+---------------------------+-----------------------------------+
+| Views and voice        4 | Meetings                4 | Shared from this case          4  |
++--------------------------+---------------------------+-----------------------------------+
+| Plans and actions                                                                    12  |
++------------------------------------------------------------------------------------------+
+```
+
+The spans by type, at `wide`: adult support and protection as drawn, with the Large Scale Investigation and the closure at twelve where they exist; child protection with the pre-birth and IRD cards at twelve, then investigation and planning meeting as sixes, then core group and the child's plan as sixes; MARAC with the referral, checklist and research at twelve, the meeting and the agency flags as sixes, feedback and links at twelve; MAPPA with the banner at twelve, level at four beside identifiers at eight, notification requirements and licence as sixes, risk assessments and the risk management plan at twelve, the environmental risk assessment and pre-meeting returns as sixes, disclosures and exit at twelve; adults with incapacity with concern and assessments at twelve, will and preferences beside the OPG check as sixes, route and application at twelve, orders beside supervision as sixes. At `standard` a six stays a six and a four becomes one; at `compact` everything is twelve.
+
 The empty record, which is every person for the first minute of their existence: the header with the identity and "No open process" beside the primary action, Clocks and Alerts collapsed to their titles with Start a process and Add an alert beside them, the household card saying she lives alone at her address with the four actions that populate it, Views and voice and Recent chronology collapsed with the action that records the first entry, and History collapsed to its title. Nothing says "nothing" more than once per card, and no card explains the absence in a second sentence.
 
 ## 5. Components (packages/ui)

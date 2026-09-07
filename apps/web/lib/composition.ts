@@ -9,9 +9,9 @@ import type { LayoutMode } from './layout';
  * (there is no case, so there are no key contacts) hands its columns to the cards beside it rather
  * than leaving them empty, and a narrower mode reflows the same declaration rather than a second one.
  *
- * The modes: `wide` uses the spans as declared; `standard` turns every span of four or less into six
- * and everything wider into twelve, so a row of three fours becomes two sixes and a twelve; `compact`
- * and `narrow` are all twelve. Whatever the mode, a line is filled greedily and then scaled to twelve,
+ * The modes: `wide` uses the spans as declared; `standard` turns every span of six or less into six
+ * and everything wider into twelve, so a row of three fours becomes two sixes and a twelve and a pair
+ * of sixes stays a pair; `compact` and `narrow` are all twelve. Whatever the mode, a line is filled greedily and then scaled to twelve,
  * which is what keeps the assertion "no row has more than one empty column" true by construction
  * rather than by inspection (D-229).
  */
@@ -30,12 +30,13 @@ export interface PlacedCard {
 
 export const GRID_COLUMNS = 12;
 
-function spanFor(span: number, mode: LayoutMode): number {
+/** The span one card takes in a mode, before its row is packed. A cell that stands alone in the grid uses this directly. */
+export function spanAt(span: number, mode: LayoutMode): number {
   switch (mode) {
     case 'wide':
       return Math.min(GRID_COLUMNS, Math.max(1, span));
     case 'standard':
-      return span <= 4 ? 6 : GRID_COLUMNS;
+      return span <= 6 ? 6 : GRID_COLUMNS;
     default:
       return GRID_COLUMNS;
   }
@@ -59,7 +60,7 @@ function fill(line: PlacedCard[]): PlacedCard[] {
 export function composeRows(rows: readonly (readonly CardSlot[])[], mode: LayoutMode): PlacedCard[][] {
   const out: PlacedCard[][] = [];
   for (const row of rows) {
-    const present = row.filter((c) => c.present !== false).map((c) => ({ id: c.id, span: spanFor(c.span, mode) }));
+    const present = row.filter((c) => c.present !== false).map((c) => ({ id: c.id, span: spanAt(c.span, mode) }));
     if (present.length === 0) continue;
     let line: PlacedCard[] = [];
     let used = 0;
