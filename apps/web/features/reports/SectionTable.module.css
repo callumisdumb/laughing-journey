@@ -1,0 +1,20 @@
+.block {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.note {
+  max-width: none;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.lead {
+  font-weight: 700;
+}

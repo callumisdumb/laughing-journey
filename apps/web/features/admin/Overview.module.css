@@ -1,0 +1,69 @@
+.areaForm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px var(--content-gutter);
+}
+
+.errors {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 10px 14px 10px 28px;
+  font-size: var(--text-sm);
+  color: var(--color-risk-critical);
+  background: var(--color-risk-critical-soft);
+  border-radius: var(--radius-md);
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.sectionsHeading {
+  margin-bottom: 10px;
+  font-size: var(--text-md);
+  font-weight: 700;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--density-gap) var(--content-gutter);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: calc(var(--density-pad) * 0.8) var(--density-pad);
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-1);
+  border-radius: var(--radius-lg);
+}
+
+.cardTitle {
+  font-size: var(--text-md);
+  font-weight: 700;
+}
+
+.cardText {
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.cardCount {
+  margin-top: 4px;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-3);
+}
+
+@media (width <= 1279px) {
+  .areaForm,
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}

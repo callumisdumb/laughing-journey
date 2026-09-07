@@ -1,0 +1,82 @@
+# Continuous integration for Person360.
+#
+# Two jobs. "checks" is the gate every commit has to pass locally too: install with the lockfile,
+# build the static export first (the dialog margin guard in `pnpm lint` reads it and fails without
+# it, D-203), then typecheck, lint and unit tests. Lint runs with zero warnings allowed. "playwright"
+# takes the export the first job built, installs Chromium, and runs the layout, dialog, flow and
+# cross-persona suites against it, which is the product being driven end to end by the personas.
+#
+# Nothing here reaches the network at runtime: the product is offline by design (brief section 2),
+# and the only downloads are the toolchain's own.
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build the static export
+        run: pnpm build
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Lint, with no warnings allowed
+        run: pnpm lint
+      - name: Unit tests
+        run: pnpm test
+      - name: Keep the export for the browser job
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-export
+          path: apps/web/out
+          retention-days: 3
+          if-no-files-found: error
+
+  playwright:
+    name: Playwright against the export
+    runs-on: ubuntu-latest
+    needs: checks
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Fetch the export
+        uses: actions/download-artifact@v4
+        with:
+          name: web-export
+          path: apps/web/out
+      - name: Install Chromium
+        run: pnpm --filter @mas/web exec playwright install --with-deps chromium
+      - name: Layout, dialogs, flows and cross-persona suites
+        run: pnpm --filter @mas/web exec playwright test e2e/layout.spec.ts e2e/dialogs.spec.ts e2e/flows.spec.ts e2e/cross-persona.spec.ts --reporter=line
+      - name: Keep the traces of any failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: apps/web/test-results
+          retention-days: 7
+          if-no-files-found: ignore

@@ -1,0 +1,490 @@
+import { expect, test, type Page } from '@playwright/test';
+import { createPerson } from './driven';
+import { capture, expectNoAxeViolations, setAppearance, signInAs, waitForData } from './helpers';
+
+const PHASE = 'layout';
+
+/**
+ * The layout suite.
+ *
+ * The layout broke below 1440 for one reason: the grid's column widths came from media queries in
+ * the stylesheet and the components' own states came from the appearance store, so the two could
+ * disagree, and did. At 1100px the rail's track was 72px while the rail still rendered its expanded
+ * contents, which want 125px: a clipped rail, not a collapsed one. The drawer had the mirror of it,
+ * holding 360px at an 800px viewport and leaving the record 368px.
+ *
+ * So these assertions are about agreement, not appearance. The mode the width picks, the track that
+ * mode gives each column, and whether the component in that track actually fits inside it.
+ */
+const MODES = [
+  { w: 1920, h: 1080, mode: 'wide', rail: 'column', drawer: 'column' },
+  { w: 1600, h: 1000, mode: 'wide', rail: 'column', drawer: 'column' },
+  { w: 1440, h: 900, mode: 'standard', rail: 'column', drawer: 'column' },
+  { w: 1280, h: 800, mode: 'standard', rail: 'column', drawer: 'column' },
+  { w: 1100, h: 800, mode: 'compact', rail: 'column', drawer: 'overlay' },
+  { w: 1024, h: 700, mode: 'compact', rail: 'column', drawer: 'overlay' },
+  { w: 900, h: 700, mode: 'narrow', rail: 'overlay', drawer: 'overlay' },
+  { w: 640, h: 700, mode: 'narrow', rail: 'overlay', drawer: 'overlay' },
+] as const;
+
+/** The screens with the most to fit: three-column, wide tables, a nine-stage stepper, a nine-column list. */
+const SCREENS = [
+  { name: 'person', user: 'usr_janet_kerr', path: '/people/per_aiden_boyle' },
+  { name: 'process', user: 'usr_moira_gilmour', path: '/processes/prc_asp_marion' },
+  { name: 'chronology', user: 'usr_janet_kerr', path: '/people/per_aiden_boyle/chronology' },
+  { name: 'worklist', user: 'usr_janet_kerr', path: '/worklist' },
+  { name: 'timescales', user: 'usr_sam_ogilvie', path: '/admin/timescales' },
+] as const;
+
+async function open(page: Page, screen: (typeof SCREENS)[number]) {
+  await signInAs(page, screen.user);
+  await page.goto(screen.path);
+  await waitForData(page);
+}
+
+for (const { w, h, mode, rail, drawer } of MODES) {
+  test.describe(`layout at ${w}x${h}`, () => {
+    test.use({ viewport: { width: w, height: h } });
+
+    test(`is ${mode}, with the rail as a ${rail} and the drawer as a ${drawer}`, async ({ page }) => {
+      await open(page, SCREENS[0]);
+
+      expect(await page.evaluate(() => document.documentElement.dataset.layout)).toBe(mode);
+
+      // The rail: a column in the modes that dock it, a panel reached from the top bar otherwise.
+      const railCount = await page.locator('.app-shell > nav').count();
+      expect(railCount).toBe(rail === 'column' ? 1 : 0);
+      expect(await page.getByRole('button', { name: 'Open navigation' }).count()).toBe(rail === 'overlay' ? 1 : 0);
+
+      // The drawer, the same way.
+      const drawerCount = await page.locator('.app-shell > aside').count();
+      expect(drawerCount).toBe(drawer === 'column' ? 1 : 0);
+      expect(await page.getByRole('button', { name: 'Open the context panel' }).count()).toBe(drawer === 'overlay' ? 1 : 0);
+
+      // The bug this replaces: a side column whose contents are wider than the track it was given.
+      if (rail === 'column') {
+        const fits = await page.locator('.app-shell > nav').evaluate((el) => el.scrollWidth <= el.clientWidth);
+        expect(fits, 'the rail is clipped rather than collapsed: its contents are wider than its track').toBe(true);
+      }
+      if (drawer === 'column') {
+        const fits = await page.locator('.app-shell > aside').evaluate((el) => el.scrollWidth <= el.clientWidth);
+        expect(fits, 'the drawer is clipped: its contents are wider than its track').toBe(true);
+      }
+    });
+
+    for (const screen of SCREENS) {
+      test(`${screen.name} does not scroll the page sideways`, async ({ page }) => {
+        await open(page, screen);
+        // WCAG 2.2 1.4.10 in the form that matters here: the page never needs two-dimensional
+        // scrolling. Wide content is allowed, but it scrolls inside its own box.
+        const overflow = await page.evaluate(() => ({
+          doc: document.documentElement.scrollWidth,
+          view: window.innerWidth,
+          main: (() => {
+            const m = document.querySelector('.app-content');
+            return m ? { scroll: m.scrollWidth, client: m.clientWidth } : null;
+          })(),
+        }));
+        expect(overflow.doc, 'the document scrolls sideways').toBeLessThanOrEqual(overflow.view);
+        expect(overflow.main!.scroll, 'the record region scrolls sideways, which is 1.4.10 in disguise').toBeLessThanOrEqual(overflow.main!.client);
+      });
+    }
+  });
+}
+
+test.describe('reflow at 400 percent zoom', () => {
+  // WCAG 2.2 1.4.10 asks that content reflows at 400 percent on a 1280 by 1024 viewport. Zooming a
+  // 1280px window to 400 percent leaves 320 CSS pixels across, which is what this is.
+  test.use({ viewport: { width: 320, height: 256 } });
+
+  for (const screen of SCREENS) {
+    test(`${screen.name} reflows to one column with no sideways scrolling`, async ({ page }) => {
+      await open(page, screen);
+      expect(await page.evaluate(() => document.documentElement.dataset.layout)).toBe('narrow');
+
+      const result = await page.evaluate(() => {
+        const view = window.innerWidth;
+        const orphans: string[] = [];
+        for (const el of document.querySelectorAll('*')) {
+          const r = el.getBoundingClientRect();
+          if (r.width === 0 || r.right <= view + 1) continue;
+          // Only the outermost cause: a parent that overflows drags its children with it.
+          const pr = el.parentElement?.getBoundingClientRect();
+          if (pr && pr.right > view + 1) continue;
+          // Wide content is allowed to scroll inside a box of its own. What is not allowed is
+          // content wider than the window with nothing between it and the window but the record
+          // region, because then the whole record scrolls sideways.
+          let ancestor = el.parentElement;
+          let owned = false;
+          while (ancestor && ancestor !== document.body) {
+            if (ancestor.classList.contains('app-content')) break;
+            const ox = getComputedStyle(ancestor).overflowX;
+            if (ox === 'auto' || ox === 'scroll') {
+              owned = true;
+              break;
+            }
+            ancestor = ancestor.parentElement;
+          }
+          if (!owned) orphans.push(`${el.tagName}.${String(el.className).split(' ')[0]}`);
+        }
+        return { doc: document.documentElement.scrollWidth, view, orphans: [...new Set(orphans)] };
+      });
+
+      expect(result.doc).toBeLessThanOrEqual(result.view);
+      expect(result.orphans, 'content wider than the window with no scrolling box of its own').toEqual([]);
+    });
+  }
+});
+
+/**
+ * The truncation policy, asserted rather than described.
+ *
+ * Two ways text is allowed to not fit. It wraps, which is the default and what anything carrying a
+ * sentence must do. Or it truncates with a visible ellipsis and carries the whole string in a
+ * `title` or an accessible name, which is for identifiers in tight rows: a name in a table cell, a
+ * reference in the rail. What is not allowed is the third thing, text sliced off with no ellipsis
+ * and no way to read the rest, because that looks like the text ended there.
+ */
+test.describe('truncation', () => {
+  test.use({ viewport: { width: 1024, height: 700 } });
+
+  for (const screen of SCREENS) {
+    test(`${screen.name} never slices text without saying so`, async ({ page }) => {
+      await open(page, screen);
+      const sliced = await page.evaluate(() => {
+        const bad: string[] = [];
+        for (const el of document.querySelectorAll('*')) {
+          // Leaf text only: a container's scrollWidth says nothing about whether text is readable.
+          if (el.children.length > 0) continue;
+          const text = (el.textContent ?? '').trim();
+          if (text.length === 0) continue;
+          if (el.scrollWidth <= el.clientWidth + 1) continue;
+          const box = el.getBoundingClientRect();
+          // Visually hidden text is not truncated text. The idiom clips a 1px box, which trivially
+          // satisfies scrollWidth > clientWidth and says nothing about whether anyone can read it.
+          if (box.width <= 2 || box.height <= 2) continue;
+          const style = getComputedStyle(el);
+          if (style.textOverflow === 'ellipsis') continue;
+          // An element allowed to scroll is not truncated, it is scrolled.
+          if (style.overflowX === 'auto' || style.overflowX === 'scroll') continue;
+          const labelled = el.getAttribute('title') ?? el.getAttribute('aria-label');
+          if (labelled && labelled.includes(text.slice(0, 12))) continue;
+          bad.push(`${el.tagName}.${String(el.className).split(' ')[0]}: ${text.slice(0, 50)}`);
+        }
+        return [...new Set(bad)];
+      });
+      expect(sliced, 'text cut off with no ellipsis and no full string to read').toEqual([]);
+    });
+  }
+});
+
+/**
+ * The header holds its width, and the pills in it are never sliced.
+ *
+ * The truncation check above looks at leaf elements, and a pill with an icon is not a leaf: the
+ * person record's register alert was rendering "On t / Child / Prote / Regis" in a 100px column at
+ * 1024 and 900 and the suite passed. The identity column had collapsed to its longest word while the
+ * badge column took what its next-date text asked for. So this asserts the two things that failure
+ * needs: a grid child narrower than 20ch carrying wrapped text, and a pill or badge whose text
+ * reaches past its own box. At all four widths, on both two-column headers.
+ */
+test.describe('the header holds its width', () => {
+  const HEADERS = [
+    { name: 'person', user: 'usr_janet_kerr', path: '/people/per_aiden_boyle', header: 'person-header' },
+    { name: 'process', user: 'usr_moira_gilmour', path: '/processes/prc_asp_marion', header: 'process-header' },
+  ] as const;
+
+  for (const { w, h } of [MODES[2], MODES[3], MODES[5], MODES[6]] as const) {
+    for (const screen of HEADERS) {
+      test(`${screen.name} header at ${w}: the identity column keeps 28ch and nothing in a pill is sliced`, async ({ page }) => {
+        await page.setViewportSize({ width: w, height: h });
+        await open(page, screen);
+        const result = await page.evaluate((testId) => {
+          const header = document.querySelector<HTMLElement>(`[data-testid="${testId}"]`)!;
+          const identity = header.firstElementChild as HTMLElement;
+          // `ch` measured in the header's own font rather than assumed: a probe of twenty zeros.
+          const chars = (el: HTMLElement, n: number) => {
+            const probe = document.createElement('span');
+            probe.textContent = '0'.repeat(n);
+            probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap';
+            el.appendChild(probe);
+            const width = probe.getBoundingClientRect().width;
+            probe.remove();
+            return width;
+          };
+          const headerWidth = header.getBoundingClientRect().width;
+          const identityWidth = identity.getBoundingClientRect().width;
+          const floor = Math.min(chars(identity, 28), headerWidth);
+
+          // A grid child narrower than 20ch whose text has wrapped is the collapse, whatever its
+          // scrollWidth says: wrapped text never overflows sideways, it just becomes unreadable.
+          const squeezed: string[] = [];
+          for (const child of Array.from(header.children) as HTMLElement[]) {
+            const box = child.getBoundingClientRect();
+            if (box.width === 0 || (child.textContent ?? '').trim().length === 0) continue;
+            const lineHeight = parseFloat(getComputedStyle(child).lineHeight) || parseFloat(getComputedStyle(child).fontSize) * 1.4;
+            if (box.width < chars(child, 20) && child.scrollHeight > lineHeight * 2) squeezed.push(`${child.tagName}.${String(child.className).split(' ')[0]} at ${Math.round(box.width)}px`);
+          }
+
+          // Every pill and every process mark in the header: no text past the box, in either axis.
+          const sliced: string[] = [];
+          for (const el of Array.from(header.querySelectorAll<HTMLElement>('span[data-tone][data-size], [data-mark="process"]'))) {
+            const box = el.getBoundingClientRect();
+            if (box.width === 0) continue;
+            if (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1) {
+              sliced.push(`${(el.textContent ?? '').trim().slice(0, 40)} (overflows its box)`);
+              continue;
+            }
+            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+            let node = walker.nextNode();
+            while (node) {
+              const range = document.createRange();
+              range.selectNodeContents(node);
+              for (const rect of Array.from(range.getClientRects())) {
+                if (rect.width === 0) continue;
+                if (rect.right > box.right + 1 || rect.left < box.left - 1) sliced.push(`${(node.textContent ?? '').trim().slice(0, 40)} (text outside the pill)`);
+              }
+              node = walker.nextNode();
+            }
+          }
+          return { headerWidth, identityWidth, floor, squeezed, sliced: [...new Set(sliced)] };
+        }, screen.header);
+
+        expect(result.identityWidth, `the identity column is ${Math.round(result.identityWidth)}px in a ${Math.round(result.headerWidth)}px header`).toBeGreaterThanOrEqual(result.floor - 1);
+        expect(result.squeezed, 'a header column narrower than 20ch with its text wrapped inside it').toEqual([]);
+        expect(result.sliced, 'a pill or badge whose text is cut off by its own box').toEqual([]);
+      });
+    }
+  }
+});
+
+test.describe('the chrome as panels', () => {
+  test.use({ viewport: { width: 900, height: 700 } });
+
+  test('the rail opens as a panel, navigates, and closes itself', async ({ page }) => {
+    await open(page, SCREENS[0]);
+    await page.getByRole('button', { name: 'Open navigation' }).click();
+    const panel = page.locator('dialog[open]');
+    await expect(panel).toBeVisible();
+    // The full labels are back: a panel is not the icon rail with more room, it is the expanded one.
+    await expect(panel.getByRole('link', { name: 'Meetings' })).toBeVisible();
+    await panel.getByRole('link', { name: 'Meetings' }).click();
+    await expect(page.locator('dialog[open]')).toHaveCount(0);
+    await expect(page).toHaveURL(/\/meetings/);
+  });
+
+  test('the context panel shows the same need-to-know answer as the docked column', async ({ page }) => {
+    await open(page, SCREENS[0]);
+    await page.getByRole('button', { name: 'Open the context panel' }).click();
+    const panel = page.locator('dialog[open]');
+    await expect(panel).toBeVisible();
+    await expect(panel.getByRole('heading', { name: 'Who is involved' })).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('dialog[open]')).toHaveCount(0);
+  });
+});
+
+test.describe('layout appearance', () => {
+  for (const { w, h, mode } of [MODES[2], MODES[5], MODES[6]] as const) {
+    test(`${mode} at ${w}x${h}`, async ({ page }) => {
+      await page.setViewportSize({ width: w, height: h });
+      await open(page, SCREENS[0]);
+      await expectNoAxeViolations(page);
+      await capture(page, { phase: PHASE, screen: `person-${mode}-${w}`, theme: 'light' });
+    });
+  }
+});
+
+/**
+ * The person record's composition, asserted on a record created from nothing.
+ *
+ * Ailsa Muir is made through the search-first flow with a date of birth and an address, which is
+ * the state every person is in for the first minute of their existence in the product, and the one
+ * the composition round was prompted by. Six things hold at every width and in both themes: the
+ * overview is one twelve-column grid whose cards end on column boundaries and whose rows are never
+ * more than one column short; it never exceeds the width cap; a person with nobody around them gets
+ * no diagram and a household card no taller than its head; the header's two regions share a top
+ * edge (and stack at compact); nothing outside the classification marking is set in capitals; and
+ * the action row is three buttons and one menu (D-229 to D-232).
+ */
+test.describe('the person record composition', () => {
+  const WIDTHS = [
+    { w: 1440, h: 900, mode: 'standard' },
+    { w: 1920, h: 1080, mode: 'wide' },
+    { w: 2560, h: 1440, mode: 'wide' },
+    { w: 1100, h: 800, mode: 'compact' },
+  ] as const;
+  const CONTENT_MAX = 1200;
+  const HOUSEHOLD_EMPTY_MAX = 200;
+
+  for (const theme of ['light', 'dark'] as const) {
+    for (const { w, h, mode } of WIDTHS) {
+      test(`a new record at ${w} in ${theme} (${mode})`, async ({ page }) => {
+        await page.setViewportSize({ width: w, height: h });
+        await signInAs(page, 'usr_janet_kerr');
+        await createPerson(page, 'Ailsa', 'Muir', '12 Mar 1988', { address: true });
+        await setAppearance(page, theme, 'comfortable');
+        await page.waitForTimeout(120);
+        expect(await page.evaluate(() => document.documentElement.dataset.layout)).toBe(mode);
+
+        const result = await page.evaluate(() => {
+          const grid = document.querySelector<HTMLElement>('[data-testid="person-overview"]')!;
+          const g = grid.getBoundingClientRect();
+          const style = getComputedStyle(grid);
+          const tracks = style.gridTemplateColumns.split(' ').length;
+          const gap = parseFloat(style.columnGap) || 0;
+          const track = (g.width - gap * (tracks - 1)) / tracks;
+          const cells = Array.from(grid.children) as HTMLElement[];
+          const misaligned: string[] = [];
+          const rows = new Map<number, number>();
+          for (const cell of cells) {
+            const r = cell.getBoundingClientRect();
+            const span = Number(cell.dataset.span);
+            const expectedWidth = span * track + (span - 1) * gap;
+            // The right edge sits on a column boundary: some whole number of tracks from the left.
+            const k = Math.round((r.right - g.left + gap) / (track + gap));
+            const boundary = g.left + k * track + (k - 1) * gap;
+            if (Math.abs(r.right - boundary) > 1 || Math.abs(r.width - expectedWidth) > 1) misaligned.push(`${cell.dataset.card}: ${Math.round(r.left - g.left)} to ${Math.round(r.right - g.left)} of ${Math.round(g.width)}`);
+            const top = Math.round(r.top);
+            rows.set(top, (rows.get(top) ?? 0) + span);
+          }
+          const short = [...rows.entries()].filter(([, used]) => tracks - used > 1).map(([top, used]) => `row at ${top}: ${used} of ${tracks}`);
+
+          const identity = document.querySelector<HTMLElement>('[data-testid="person-identity"]')!.getBoundingClientRect();
+          const status = document.querySelector<HTMLElement>('[data-testid="person-status"]')!.getBoundingClientRect();
+          const household = document.querySelector<HTMLElement>('[data-testid="card-household"]')!.getBoundingClientRect();
+
+          const capitals: string[] = [];
+          for (const el of Array.from(document.body.querySelectorAll<HTMLElement>('*'))) {
+            const box = el.getBoundingClientRect();
+            if (box.width === 0 || box.height === 0) continue;
+            if (getComputedStyle(el).textTransform !== 'uppercase') continue;
+            if (el.closest('[data-marking]')) continue;
+            capitals.push(`${el.tagName}.${String(el.className).split(' ')[0]}: ${(el.textContent ?? '').trim().slice(0, 30)}`);
+          }
+
+          const row = document.querySelector<HTMLElement>('[data-testid="record-actions"]')!;
+          const buttons = row.querySelectorAll('button:not([aria-haspopup])').length;
+          const menus = row.querySelectorAll('button[aria-haspopup="menu"]').length;
+
+          return {
+            tracks,
+            gridWidth: g.width,
+            misaligned,
+            short,
+            identityTop: identity.top,
+            identityBottom: identity.bottom,
+            statusTop: status.top,
+            householdHeight: household.height,
+            graphs: document.querySelectorAll('[data-testid="network-graph"]').length,
+            capitals: [...new Set(capitals)],
+            buttons,
+            menus,
+          };
+        });
+
+        expect(result.tracks).toBe(12);
+        expect(result.misaligned, 'a card whose right edge is not on a grid column boundary').toEqual([]);
+        expect(result.short, 'a grid row more than one column short of twelve').toEqual([]);
+        expect(result.gridWidth, 'the overview is wider than the wide-mode cap').toBeLessThanOrEqual(CONTENT_MAX + 1);
+        expect(result.graphs, 'a person with no relationships renders a graph canvas').toBe(0);
+        expect(result.householdHeight, 'the household card of a person who lives alone is taller than its head').toBeLessThan(HOUSEHOLD_EMPTY_MAX);
+        if (mode === 'compact') {
+          expect(result.statusTop, 'at compact the status region should sit below the identity').toBeGreaterThanOrEqual(result.identityBottom - 1);
+        } else {
+          expect(Math.abs(result.statusTop - result.identityTop), 'the identity and status regions do not share a top edge').toBeLessThanOrEqual(2);
+        }
+        expect(result.capitals, 'text set in capitals outside the classification marking').toEqual([]);
+        expect(result.buttons, 'the action row should hold exactly three buttons').toBe(3);
+        expect(result.menus, 'the action row should hold exactly one menu').toBe(1);
+      });
+    }
+  }
+
+  test('a populated record keeps the same grid and action row', async ({ page }) => {
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await open(page, SCREENS[0]);
+    const result = await page.evaluate(() => {
+      const grid = document.querySelector<HTMLElement>('[data-testid="person-overview"]')!;
+      const tracks = getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+      const rows = new Map<number, number>();
+      for (const cell of Array.from(grid.children) as HTMLElement[]) {
+        const top = Math.round(cell.getBoundingClientRect().top);
+        rows.set(top, (rows.get(top) ?? 0) + Number(cell.dataset.span));
+      }
+      const row = document.querySelector<HTMLElement>('[data-testid="record-actions"]')!;
+      return { tracks, short: [...rows.values()].filter((used) => tracks - used > 1), buttons: row.querySelectorAll('button:not([aria-haspopup])').length, menus: row.querySelectorAll('button[aria-haspopup="menu"]').length };
+    });
+    expect(result.tracks).toBe(12);
+    expect(result.short).toEqual([]);
+    expect(result.buttons).toBe(3);
+    expect(result.menus).toBe(1);
+  });
+});
+
+test.describe('the process dashboards compose on one grid', () => {
+  /** Every process type, read by a persona who holds full access to the seeded case. */
+  const DASHBOARDS = [
+    { type: 'asp', user: 'usr_moira_gilmour', path: '/processes/prc_asp_marion' },
+    { type: 'cp', user: 'usr_janet_kerr', path: '/processes/prc_cp_aiden' },
+    { type: 'marac', user: 'usr_karen_findlay', path: '/processes/prc_marac_docherty' },
+    { type: 'mappa', user: 'usr_priya_sharif', path: '/processes/prc_mappa_derek' },
+    { type: 'awi', user: 'usr_graeme_dunlop', path: '/processes/prc_awi_ishbel' },
+  ] as const;
+  const WIDTHS = [
+    { w: 1920, h: 1080, mode: 'wide' },
+    { w: 1440, h: 900, mode: 'standard' },
+    { w: 1100, h: 800, mode: 'compact' },
+  ] as const;
+
+  for (const { w, h, mode } of WIDTHS) {
+    for (const dashboard of DASHBOARDS) {
+      test(`${dashboard.type} at ${w} (${mode})`, async ({ page }) => {
+        await page.setViewportSize({ width: w, height: h });
+        await signInAs(page, dashboard.user);
+        await page.goto(dashboard.path);
+        await waitForData(page);
+        expect(await page.evaluate(() => document.documentElement.dataset.layout)).toBe(mode);
+
+        const result = await page.evaluate(() => {
+          const grid = document.querySelector<HTMLElement>('[data-testid="process-grid"]')!;
+          const g = grid.getBoundingClientRect();
+          const style = getComputedStyle(grid);
+          const tracks = style.gridTemplateColumns.split(' ').length;
+          const gap = parseFloat(style.columnGap) || 0;
+          const track = (g.width - gap * (tracks - 1)) / tracks;
+          const misaligned: string[] = [];
+          const rows = new Map<number, number>();
+          for (const cell of Array.from(grid.children) as HTMLElement[]) {
+            // A panel's closed dialog is rendered where the panel is and takes no cell; it is not a card.
+            if (cell.tagName === 'DIALOG' || getComputedStyle(cell).display === 'none') continue;
+            const r = cell.getBoundingClientRect();
+            const span = Number(cell.dataset.span);
+            const expectedWidth = span * track + (span - 1) * gap;
+            const k = Math.round((r.right - g.left + gap) / (track + gap));
+            const boundary = g.left + k * track + (k - 1) * gap;
+            if (Math.abs(r.right - boundary) > 1 || Math.abs(r.width - expectedWidth) > 1) misaligned.push(`${cell.dataset.card}: ${Math.round(r.left - g.left)} to ${Math.round(r.right - g.left)} of ${Math.round(g.width)}`);
+            const top = Math.round(r.top);
+            rows.set(top, (rows.get(top) ?? 0) + span);
+          }
+          const short = [...rows.entries()].filter(([, used]) => tracks - used > 1).map(([top, used]) => `row at ${top}: ${used} of ${tracks}`);
+          // No section under the grid lays cards out in a grid of its own: a multi-column grid whose
+          // direct children are cards is the thing this round removed (D-238).
+          const nested: string[] = [];
+          for (const el of Array.from(grid.querySelectorAll<HTMLElement>('*'))) {
+            const cs = getComputedStyle(el);
+            if (cs.display !== 'grid' || cs.gridTemplateColumns.split(' ').length < 2) continue;
+            if (Array.from(el.children).some((c) => c.matches('[data-sheet]'))) nested.push(`${el.tagName}.${String(el.className).split(' ')[0]}`);
+          }
+          return { tracks, cells: grid.children.length, misaligned, short, nested };
+        });
+
+        expect(result.tracks).toBe(12);
+        expect(result.cells).toBeGreaterThan(8);
+        expect(result.misaligned, 'a cell whose right edge is not on a grid column boundary').toEqual([]);
+        expect(result.short, 'a grid row more than one column short of twelve').toEqual([]);
+        expect(result.nested, 'a section inside the record with a grid of cards of its own').toEqual([]);
+      });
+    }
+  }
+});

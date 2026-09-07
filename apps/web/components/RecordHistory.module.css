@@ -1,0 +1,55 @@
+/* A record's version history: one block per change, with the reason and the previous values. */
+
+.list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry {
+  display: grid;
+  gap: 2px;
+  padding-left: 12px;
+  border-left: 2px solid var(--color-line-2);
+}
+
+.change {
+  font-weight: 700;
+  color: var(--color-ink-1);
+}
+
+.who,
+.reason,
+.was {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.reason {
+  color: var(--color-ink-2);
+}
+
+.empty {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+/*
+ * The banner on a retired record. It goes at the top of the history rather than beside the name,
+ * because the point is that the record is still here and still readable, with the decision on it.
+ */
+.retired {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 4px 10px;
+  align-items: start;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  font-size: var(--text-sm);
+  background: var(--color-paper-1);
+  border-left: 3px solid var(--color-risk-critical);
+  border-radius: var(--radius-sm);
+}

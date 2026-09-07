@@ -1,0 +1,178 @@
+.chart {
+  --lane-height: 44px;
+  --label-width: 150px;
+
+  display: grid;
+  grid-template-columns: var(--label-width) minmax(0, 1fr);
+  min-width: 0;
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-1);
+  border-radius: var(--radius-lg);
+}
+
+.chart[data-compact='true'] {
+  --lane-height: 30px;
+  --label-width: 120px;
+}
+
+[data-density='compact'] .chart {
+  --lane-height: 34px;
+}
+
+.labels {
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+  border-right: 1px solid var(--color-line-1);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  height: var(--lane-height);
+  padding: 0 12px;
+  font-size: var(--text-sm);
+  border-bottom: 1px solid var(--color-line-1);
+}
+
+.label[data-lane='analysis'] {
+  font-weight: 700;
+  color: var(--color-accent-1);
+  background: var(--color-accent-soft);
+}
+
+.axisLabel {
+  height: 28px;
+}
+
+.svgWrap {
+  position: relative;
+  min-width: 0;
+  padding-top: 8px;
+  overflow: hidden;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  cursor: crosshair;
+  user-select: none;
+}
+
+.laneLine {
+  stroke: var(--color-line-1);
+}
+
+.analysisBand {
+  fill: var(--color-accent-soft);
+}
+
+.gridLine {
+  stroke: var(--color-line-1);
+  stroke-dasharray: 2 4;
+}
+
+.axisText {
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  fill: var(--color-ink-3);
+}
+
+.point {
+  outline: none;
+  cursor: pointer;
+}
+
+.point circle {
+  transition: r var(--dur-fast) var(--ease-standard);
+  fill: var(--color-paper-0);
+  stroke: var(--agency);
+  stroke-width: 2;
+}
+
+.point[data-significance='high'] circle {
+  fill: var(--agency);
+}
+
+.point[data-selected='true'] circle {
+  stroke: var(--color-ink-1);
+  stroke-width: 3;
+}
+
+.point:focus-visible circle {
+  stroke: var(--color-accent-1);
+  stroke-width: 3;
+}
+
+.point[data-highlight='true'] .halo {
+  fill: none;
+  stroke: var(--color-accent-1);
+  stroke-dasharray: 3 3;
+  stroke-width: 2;
+}
+
+.point[data-dim='true'] {
+  opacity: 0.35;
+}
+
+.glyph {
+  color: var(--color-paper-0);
+  pointer-events: none;
+}
+
+.span {
+  opacity: 0.08;
+  fill: var(--color-accent-1);
+}
+
+.spanLabel {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  fill: var(--color-accent-1);
+}
+
+.analysis {
+  outline: none;
+  cursor: pointer;
+}
+
+.analysis line {
+  stroke: var(--color-accent-1);
+  stroke-width: 2;
+}
+
+.analysis text {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  fill: var(--color-accent-1);
+}
+
+.analysis[data-selected='true'] line,
+.analysis:focus-visible line {
+  stroke-width: 4;
+}
+
+.brush {
+  opacity: 0.12;
+  pointer-events: none;
+  fill: var(--color-accent-1);
+}
+
+.brushHandle {
+  stroke: var(--color-accent-1);
+  stroke-width: 1.5;
+}
+
+.cluster {
+  font-size: 0.625rem;
+  font-weight: 700;
+  pointer-events: none;
+  fill: var(--color-ink-2);
+}
+
+.hint {
+  padding: 6px 12px;
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+  border-top: 1px solid var(--color-line-1);
+}

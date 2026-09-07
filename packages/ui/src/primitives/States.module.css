@@ -1,0 +1,104 @@
+.state {
+  --state-pad: calc(var(--density-pad) * 1.6);
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  max-width: 56ch;
+  padding: var(--state-pad);
+  color: var(--color-ink-2);
+  background: var(--color-paper-1);
+  border: 1px dashed var(--color-line-2);
+  border-radius: var(--radius-lg);
+}
+
+.state[data-kind='error'] {
+  border-color: var(--color-risk-critical);
+  border-style: solid;
+}
+
+.state[data-kind='restricted'] {
+  color: var(--color-ink-1);
+  background: var(--color-paper-2);
+  border-color: var(--color-ink-1);
+  border-style: solid;
+}
+
+.state[data-kind='offline'],
+.state[data-kind='stale'] {
+  border-color: var(--color-risk-medium);
+  border-style: solid;
+}
+
+.icon {
+  display: inline-flex;
+  color: var(--color-ink-3);
+}
+
+.state[data-kind='error'] .icon {
+  color: var(--color-risk-critical);
+}
+
+.state[data-kind='restricted'] .icon {
+  color: var(--color-ink-1);
+}
+
+.state[data-kind='offline'] .icon,
+.state[data-kind='stale'] .icon {
+  color: var(--color-risk-medium);
+}
+
+.title {
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--color-ink-1);
+}
+
+.text {
+  font-size: var(--text-base);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.skeleton {
+  display: block;
+  width: var(--skeleton-width, 100%);
+  height: var(--skeleton-height, 1em);
+  background: linear-gradient(90deg, var(--color-paper-2) 0%, var(--color-paper-1) 50%, var(--color-paper-2) 100%);
+  border-radius: var(--radius-sm);
+  animation: shimmer 1.4s var(--ease-standard) infinite;
+  background-size: 200% 100%;
+}
+
+.skeletonStack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* A looping shimmer is the first thing to go on a recording: it answers nothing and it compresses badly. */
+[data-recording='true'] .skeleton {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

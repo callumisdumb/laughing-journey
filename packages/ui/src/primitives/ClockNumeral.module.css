@@ -1,0 +1,79 @@
+.clock {
+  --clock-size: var(--text-3xl);
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 14px;
+  align-items: baseline;
+  min-width: 0;
+  color: var(--color-ink-1);
+}
+
+.clock[data-size='lg'] {
+  --clock-size: var(--text-4xl);
+}
+
+.clock[data-size='sm'] {
+  --clock-size: var(--text-xl);
+
+  gap: 0 10px;
+}
+
+.numeral {
+  grid-row: span 2;
+  font-family: var(--font-display);
+  font-size: var(--clock-size);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  font-variation-settings: 'wdth' 80;
+  line-height: 0.95;
+  color: var(--clock-colour, var(--color-ink-1));
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+
+.clock[data-band='critical'] {
+  --clock-colour: var(--color-risk-critical);
+}
+
+.clock[data-band='high'] {
+  --clock-colour: var(--color-risk-high);
+}
+
+.clock[data-band='medium'] {
+  --clock-colour: var(--color-risk-medium);
+}
+
+.clock[data-band='low'] {
+  --clock-colour: var(--color-ink-1);
+}
+
+.clock[data-status='complete'] {
+  --clock-colour: var(--color-ink-3);
+}
+
+.unit {
+  align-self: end;
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--clock-colour, var(--color-ink-1));
+}
+
+.label {
+  font-size: var(--text-base);
+  color: var(--color-ink-1);
+}
+
+.sub {
+  grid-column: 2;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.flag {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  margin-left: 6px;
+  font-weight: 700;
+  color: var(--clock-colour, var(--color-ink-2));
+}

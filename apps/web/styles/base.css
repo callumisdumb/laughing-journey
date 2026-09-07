@@ -1,0 +1,158 @@
+/* Reset, typography rhythm, focus rings, selection, scrollbars. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  font-size: 100%;
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.45;
+  color: var(--color-ink-1);
+  background: var(--color-paper-0);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizelegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+}
+
+h2 {
+  font-size: var(--text-lg);
+}
+
+h3 {
+  font-size: var(--text-md);
+}
+
+h4 {
+  font-size: var(--text-base);
+}
+
+p {
+  max-width: 70ch;
+  margin: 0;
+}
+
+a {
+  text-decoration: underline;
+  color: var(--color-accent-1);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  color: var(--color-accent-2);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+table {
+  font-variant-numeric: tabular-nums;
+  border-collapse: collapse;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 2px;
+}
+
+::selection {
+  color: var(--color-ink-1);
+  background: var(--color-accent-soft);
+}
+
+[data-theme='dark'] ::selection {
+  color: var(--color-ink-1);
+  background: var(--color-accent-soft);
+}
+
+* {
+  scrollbar-color: var(--color-line-2) transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-line-2);
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  background-clip: padding-box;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  border: 0;
+  clip-path: inset(50%);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.prose {
+  max-width: 70ch;
+}

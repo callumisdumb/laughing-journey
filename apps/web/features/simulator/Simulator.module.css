@@ -1,0 +1,231 @@
+/*
+ * A different product, on purpose.
+ *
+ * Plainer, denser, older: a menu bar it does not need, square corners, hairline borders, a status
+ * bar along the bottom and a table with no breathing room. None of the platform's tokens for
+ * spacing or radius are used here, because the contrast is the whole reason this screen exists and
+ * a simulator that inherited the product's design language would confuse a viewer about which
+ * window they are looking at.
+ *
+ * It still meets the same accessibility floor. Looking old is a design decision; being unusable is
+ * not, so the focus rings, the contrast and the keyboard path are all real.
+ */
+
+/* This product's palette, declared once. Nothing outside this file may use it. */
+.chrome {
+  --sim-ink: #111;
+  --sim-ink-2: #333;
+  --sim-desktop: #d6d3ce;
+  --sim-paper: #f2f0ec;
+  --sim-line: #9a968f;
+  --sim-line-soft: #ddd9d3;
+  --sim-chrome: #cfd8e3;
+  --sim-control: #e4e1dc;
+  --sim-control-hover: #f6f4f1;
+  --sim-title: #26405e;
+  --sim-title-dark: #16283c;
+  --sim-title-button: #3d5c82;
+  --sim-white: #fff;
+  --sim-link: #0b3d91;
+  --sim-selected: #cfe0f5;
+  --sim-warn-ink: #4a2800;
+  --sim-warn-bg: #ffe9a8;
+  --sim-warn-line: #b58900;
+
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  min-height: 100vh;
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: 0.75rem;
+  color: var(--sim-ink);
+  background: var(--sim-desktop);
+}
+
+.menubar {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 4px 8px;
+  color: var(--sim-white);
+  background: var(--sim-title);
+  border-bottom: 1px solid var(--sim-title-dark);
+}
+
+.appName {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.back {
+  margin-left: auto;
+  font: inherit;
+  color: var(--sim-white);
+  background: var(--sim-title-button);
+  border: 1px solid var(--sim-title-dark);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.back:focus-visible,
+.button:focus-visible,
+.linkButton:focus-visible,
+.input:focus-visible {
+  outline: 2px solid var(--sim-link);
+  outline-offset: 1px;
+}
+
+/*
+ * The one thing that is not in character. A viewer must never mistake this for a real system, so it
+ * says what it is in a colour the rest of the screen does not use.
+ */
+.banner {
+  padding: 4px 8px;
+  font-weight: bold;
+  color: var(--sim-warn-ink);
+  background: var(--sim-warn-bg);
+  border-bottom: 1px solid var(--sim-warn-line);
+}
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 1px;
+  min-height: 0;
+  background: var(--sim-line);
+}
+
+.list,
+.record {
+  min-width: 0;
+  overflow: auto;
+  background: var(--sim-paper);
+}
+
+.sectionHead {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 5px 8px;
+  background: var(--sim-chrome);
+  border-bottom: 1px solid var(--sim-line);
+}
+
+.sectionHead h1,
+.sectionHead h2 {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.button {
+  padding: 2px 8px;
+  font: inherit;
+  color: var(--sim-ink);
+  background: var(--sim-control);
+  border: 1px solid var(--sim-line);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--sim-control-hover);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 2px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--sim-line-soft);
+}
+
+.table th {
+  font-weight: bold;
+  background: var(--sim-control);
+  border-bottom: 1px solid var(--sim-line);
+}
+
+.table tr[data-selected='true'] {
+  background: var(--sim-selected);
+}
+
+.mono {
+  font-family: 'Courier New', monospace;
+}
+
+.linkButton {
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  color: var(--sim-link);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.form {
+  display: grid;
+  gap: 4px;
+  padding: 8px;
+}
+
+.field {
+  display: grid;
+  grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.fieldName {
+  font-family: 'Courier New', monospace;
+  color: var(--sim-ink-2);
+}
+
+.input {
+  padding: 2px 4px;
+  font: inherit;
+  background: var(--sim-white);
+  border: 1px solid var(--sim-line);
+  border-radius: 0;
+}
+
+.formActions {
+  margin-top: 8px;
+}
+
+.help {
+  margin: 0;
+  padding: 8px;
+  color: var(--sim-ink-2);
+}
+
+.people {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0 8px 8px;
+  list-style: none;
+}
+
+.statusbar {
+  display: flex;
+  gap: 12px;
+  padding: 3px 8px;
+  background: var(--sim-chrome);
+  border-top: 1px solid var(--sim-line);
+}
+
+.statusRight {
+  margin-left: auto;
+  color: var(--sim-ink-2);
+}
+
+.refusal {
+  margin: 0;
+  padding: 24px;
+}

@@ -1,0 +1,119 @@
+.button {
+  --btn-height: var(--control-height);
+  --btn-pad: 14px;
+
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--btn-height);
+  height: var(--btn-height);
+  padding: 0 var(--btn-pad);
+  font-size: var(--text-base);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--color-ink-1);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  transition: background-color var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard);
+}
+
+.button[data-size='lg'] {
+  --btn-height: var(--control-height-lg);
+  --btn-pad: 18px;
+
+  font-size: var(--text-md);
+}
+
+.button[data-size='sm'] {
+  --btn-height: 30px;
+  --btn-pad: 10px;
+
+  font-size: var(--text-sm);
+}
+
+.button[data-variant='primary'] {
+  color: var(--color-on-accent);
+  background: var(--color-accent-1);
+  border-color: var(--color-accent-1);
+}
+
+.button[data-variant='primary']:hover {
+  background: var(--color-accent-2);
+  border-color: var(--color-accent-2);
+}
+
+.button[data-variant='secondary'] {
+  background: var(--color-paper-1);
+  border-color: var(--color-line-3);
+}
+
+.button[data-variant='secondary']:hover {
+  background: var(--color-paper-2);
+}
+
+.button[data-variant='quiet'] {
+  color: var(--color-accent-1);
+}
+
+.button[data-variant='quiet']:hover {
+  background: var(--color-accent-soft);
+}
+
+.button[data-variant='danger'] {
+  color: var(--color-risk-critical);
+  background: var(--color-paper-1);
+  border-color: var(--color-risk-critical);
+}
+
+.button[data-variant='danger']:hover {
+  background: var(--color-risk-critical-soft);
+}
+
+.button:disabled,
+.button[data-state='loading'] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 2px;
+}
+
+.button[data-variant='primary']:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.iconButton {
+  --btn-pad: 0;
+
+  width: var(--btn-height);
+  padding: 0;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentcolor;
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+  border-right-color: transparent;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    opacity: 0.6;
+    animation: none;
+    border-right-color: currentcolor;
+  }
+}

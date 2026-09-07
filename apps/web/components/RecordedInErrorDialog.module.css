@@ -1,0 +1,17 @@
+/* Retiring a record. The copy carries the argument, so it gets the room rather than a warning icon. */
+
+.what {
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-ink-1);
+}
+
+.keeps {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  background: var(--color-paper-1);
+  border-left: 3px solid var(--color-line-3);
+  border-radius: var(--radius-sm);
+}

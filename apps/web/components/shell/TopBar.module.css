@@ -1,0 +1,146 @@
+.bar {
+  display: flex;
+  grid-area: topbar;
+  gap: 12px;
+  align-items: center;
+  height: var(--topbar-height);
+  padding: 0 var(--content-gutter);
+  background: var(--color-paper-0);
+  border-bottom: 1px solid var(--color-line-1);
+}
+
+.clocks {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px 0 10px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--color-ink-1);
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-pill);
+}
+
+.clocks[data-band='critical'] {
+  color: var(--color-risk-critical);
+  background: var(--color-risk-critical-soft);
+  border-color: transparent;
+}
+
+.clocks[data-band='high'] {
+  color: var(--color-risk-high);
+  background: var(--color-risk-high-soft);
+  border-color: transparent;
+}
+
+.clocks[data-band='medium'] {
+  color: var(--color-risk-medium);
+  background: var(--color-risk-medium-soft);
+  border-color: transparent;
+}
+
+.clocks:hover {
+  border-color: var(--color-ink-2);
+}
+
+.persona {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  height: 34px;
+  padding: 0 6px 0 10px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-ink-1);
+  background: transparent;
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-pill);
+}
+
+.persona:hover {
+  background: var(--color-paper-1);
+}
+
+.demoTag {
+  padding: 1px 6px;
+  font-size: var(--text-xs);
+  color: var(--color-accent-1);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-pill);
+}
+
+.notify {
+  position: relative;
+}
+
+/* The count sits on the bell and must never take the click that was meant for it. */
+.notifyBadge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  pointer-events: none;
+}
+
+.personaName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The count alone, shown only where the sentence does not fit. */
+.clocksCount {
+  display: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/**
+ * Below 1024 the bar sheds everything that is not the thing itself. This is the 400 percent zoom
+ * case as much as the small window one: a 1280px viewport at 400 percent is a 320px one, and WCAG
+ * 2.2 1.4.10 asks that nothing there needs scrolling in two directions. The top bar was what broke
+ * it, holding a 160px search box, a sentence about clocks, two icon buttons and a name in a row
+ * that could not wrap: 592px of content in a 320px window.
+ */
+:root[data-layout='narrow'] .bar {
+  gap: 6px;
+  padding: 0 10px;
+}
+
+:root[data-layout='narrow'] .clocksText,
+:root[data-layout='narrow'] .createText,
+:root[data-layout='narrow'] .personaName,
+:root[data-layout='narrow'] .demoTag {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+:root[data-layout='narrow'] .clocksCount {
+  display: inline;
+}
+
+:root[data-layout='narrow'] .clocks {
+  padding: 0 10px;
+}
+
+:root[data-layout='narrow'] .persona {
+  padding: 0 6px;
+}
+
+/*
+ * The global create action. At narrow the word is hidden and the plus stays, the same trade the
+ * clocks link makes: the icon is recognisable, and the word stays in the accessibility tree so the
+ * button keeps its name rather than becoming an unlabelled plus sign.
+ */
+.create {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+:root[data-layout='narrow'] .create {
+  padding: 0 10px;
+}

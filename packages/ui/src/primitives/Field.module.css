@@ -1,0 +1,186 @@
+.field {
+  --field-gap: 6px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--field-gap);
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-ink-1);
+}
+
+.required {
+  margin-left: 4px;
+  color: var(--color-risk-critical);
+}
+
+.hint {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.error {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--color-risk-critical);
+}
+
+.control {
+  width: 100%;
+  height: var(--control-height);
+  padding: 0 12px;
+  font-size: var(--text-base);
+  color: var(--color-ink-1);
+  background: var(--color-paper-0);
+  border: 1px solid var(--color-line-3);
+  border-radius: var(--radius-md);
+  transition: border-color var(--dur-fast) var(--ease-standard);
+}
+
+.control::placeholder {
+  color: var(--color-ink-3);
+}
+
+.control:hover {
+  border-color: var(--color-ink-2);
+}
+
+.control:focus-visible {
+  border-color: var(--color-accent-1);
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 1px;
+}
+
+.control[aria-invalid='true'] {
+  border-color: var(--color-risk-critical);
+}
+
+.control:disabled {
+  color: var(--color-ink-3);
+  background: var(--color-paper-2);
+  cursor: not-allowed;
+}
+
+.textarea {
+  min-height: calc(var(--control-height) * 2.4);
+  padding: 10px 12px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.select {
+  padding-right: 32px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-ink-2) 50%), linear-gradient(135deg, var(--color-ink-2) 50%, transparent 50%);
+  appearance: none;
+  background-position: calc(100% - 17px) 50%, calc(100% - 12px) 50%;
+  background-repeat: no-repeat;
+  background-size: 5px 5px, 5px 5px;
+}
+
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  min-height: 24px;
+  cursor: pointer;
+}
+
+.checkInput {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  cursor: pointer;
+  accent-color: var(--color-accent-1);
+}
+
+.checkInput:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 2px;
+}
+
+.checkText {
+  font-size: var(--text-base);
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.radioGroup[data-orientation='horizontal'] {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.legend {
+  margin-bottom: 6px;
+  padding: 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.switchTrack {
+  position: relative;
+  flex-shrink: 0;
+  width: 38px;
+  height: 22px;
+  background: var(--color-line-3);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+.switchTrack::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background: var(--color-paper-0);
+  border-radius: 50%;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+
+/* The real control covers the whole label so pointer, touch and automation hit it; the track beside it is the drawn state. */
+.switchInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.switchInput:checked + .switchTrack {
+  background: var(--color-accent-1);
+}
+
+.switchInput:checked + .switchTrack::after {
+  transform: translateX(16px);
+}
+
+.switchInput:focus-visible + .switchTrack {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 2px;
+}

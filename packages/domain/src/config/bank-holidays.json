@@ -1,0 +1,480 @@
+{
+  "source": "https://www.gov.uk/bank-holidays.json",
+  "division": "scotland",
+  "fetchedAt": "2026-09-03",
+  "coversFrom": "2019-01-01",
+  "coversTo": "2028-12-31",
+  "holidays": [
+    {
+      "date": "2019-01-01",
+      "title": "New Year’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2019-01-02",
+      "title": "2nd January",
+      "notes": ""
+    },
+    {
+      "date": "2019-04-19",
+      "title": "Good Friday",
+      "notes": ""
+    },
+    {
+      "date": "2019-05-06",
+      "title": "Early May bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2019-05-27",
+      "title": "Spring bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2019-08-05",
+      "title": "Summer bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2019-12-02",
+      "title": "St Andrew’s Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2019-12-25",
+      "title": "Christmas Day",
+      "notes": ""
+    },
+    {
+      "date": "2019-12-26",
+      "title": "Boxing Day",
+      "notes": ""
+    },
+    {
+      "date": "2020-01-01",
+      "title": "New Year’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2020-01-02",
+      "title": "2nd January",
+      "notes": ""
+    },
+    {
+      "date": "2020-04-10",
+      "title": "Good Friday",
+      "notes": ""
+    },
+    {
+      "date": "2020-05-08",
+      "title": "Early May bank holiday (VE day)",
+      "notes": ""
+    },
+    {
+      "date": "2020-05-25",
+      "title": "Spring bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2020-08-03",
+      "title": "Summer bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2020-11-30",
+      "title": "St Andrew’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2020-12-25",
+      "title": "Christmas Day",
+      "notes": ""
+    },
+    {
+      "date": "2020-12-28",
+      "title": "Boxing Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2021-01-01",
+      "title": "New Year’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2021-01-04",
+      "title": "2nd January",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2021-04-02",
+      "title": "Good Friday",
+      "notes": ""
+    },
+    {
+      "date": "2021-05-03",
+      "title": "Early May bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2021-05-31",
+      "title": "Spring bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2021-08-02",
+      "title": "Summer bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2021-11-30",
+      "title": "St Andrew’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2021-12-27",
+      "title": "Christmas Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2021-12-28",
+      "title": "Boxing Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2022-01-03",
+      "title": "New Year’s Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2022-01-04",
+      "title": "2nd January",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2022-04-15",
+      "title": "Good Friday",
+      "notes": ""
+    },
+    {
+      "date": "2022-05-02",
+      "title": "Early May bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2022-06-02",
+      "title": "Spring bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2022-06-03",
+      "title": "Platinum Jubilee bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2022-08-01",
+      "title": "Summer bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2022-09-19",
+      "title": "Bank Holiday for the State Funeral of Queen Elizabeth II",
+      "notes": ""
+    },
+    {
+      "date": "2022-11-30",
+      "title": "St Andrew’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2022-12-26",
+      "title": "Boxing Day",
+      "notes": ""
+    },
+    {
+      "date": "2022-12-27",
+      "title": "Christmas Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2023-01-02",
+      "title": "New Year’s Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2023-01-03",
+      "title": "2nd January",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2023-04-07",
+      "title": "Good Friday",
+      "notes": ""
+    },
+    {
+      "date": "2023-05-01",
+      "title": "Early May bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2023-05-08",
+      "title": "Bank holiday for the coronation of King Charles III",
+      "notes": ""
+    },
+    {
+      "date": "2023-05-29",
+      "title": "Spring bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2023-08-07",
+      "title": "Summer bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2023-11-30",
+      "title": "St Andrew’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2023-12-25",
+      "title": "Christmas Day",
+      "notes": ""
+    },
+    {
+      "date": "2023-12-26",
+      "title": "Boxing Day",
+      "notes": ""
+    },
+    {
+      "date": "2024-01-01",
+      "title": "New Year’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2024-01-02",
+      "title": "2nd January",
+      "notes": ""
+    },
+    {
+      "date": "2024-03-29",
+      "title": "Good Friday",
+      "notes": ""
+    },
+    {
+      "date": "2024-05-06",
+      "title": "Early May bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2024-05-27",
+      "title": "Spring bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2024-08-05",
+      "title": "Summer bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2024-12-02",
+      "title": "St Andrew’s Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2024-12-25",
+      "title": "Christmas Day",
+      "notes": ""
+    },
+    {
+      "date": "2024-12-26",
+      "title": "Boxing Day",
+      "notes": ""
+    },
+    {
+      "date": "2025-01-01",
+      "title": "New Year’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2025-01-02",
+      "title": "2nd January",
+      "notes": ""
+    },
+    {
+      "date": "2025-04-18",
+      "title": "Good Friday",
+      "notes": ""
+    },
+    {
+      "date": "2025-05-05",
+      "title": "Early May bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2025-05-26",
+      "title": "Spring bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2025-08-04",
+      "title": "Summer bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2025-12-01",
+      "title": "St Andrew’s Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2025-12-25",
+      "title": "Christmas Day",
+      "notes": ""
+    },
+    {
+      "date": "2025-12-26",
+      "title": "Boxing Day",
+      "notes": ""
+    },
+    {
+      "date": "2026-01-01",
+      "title": "New Year’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2026-01-02",
+      "title": "2nd January",
+      "notes": ""
+    },
+    {
+      "date": "2026-04-03",
+      "title": "Good Friday",
+      "notes": ""
+    },
+    {
+      "date": "2026-05-04",
+      "title": "Early May bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2026-05-25",
+      "title": "Spring bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2026-06-15",
+      "title": "World Cup bank holiday",
+      "notes": "One-off holiday for the men's World Cup"
+    },
+    {
+      "date": "2026-08-03",
+      "title": "Summer bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2026-11-30",
+      "title": "St Andrew’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2026-12-25",
+      "title": "Christmas Day",
+      "notes": ""
+    },
+    {
+      "date": "2026-12-28",
+      "title": "Boxing Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2027-01-01",
+      "title": "New Year’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2027-01-04",
+      "title": "2nd January",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2027-03-26",
+      "title": "Good Friday",
+      "notes": ""
+    },
+    {
+      "date": "2027-05-03",
+      "title": "Early May bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2027-05-31",
+      "title": "Spring bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2027-08-02",
+      "title": "Summer bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2027-11-30",
+      "title": "St Andrew’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2027-12-27",
+      "title": "Christmas Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2027-12-28",
+      "title": "Boxing Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2028-01-03",
+      "title": "New Year’s Day",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2028-01-04",
+      "title": "2nd January",
+      "notes": "Substitute day"
+    },
+    {
+      "date": "2028-04-14",
+      "title": "Good Friday",
+      "notes": ""
+    },
+    {
+      "date": "2028-05-01",
+      "title": "Early May bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2028-05-29",
+      "title": "Spring bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2028-08-07",
+      "title": "Summer bank holiday",
+      "notes": ""
+    },
+    {
+      "date": "2028-11-30",
+      "title": "St Andrew’s Day",
+      "notes": ""
+    },
+    {
+      "date": "2028-12-25",
+      "title": "Christmas Day",
+      "notes": ""
+    },
+    {
+      "date": "2028-12-26",
+      "title": "Boxing Day",
+      "notes": ""
+    }
+  ],
+  "corrections": []
+}

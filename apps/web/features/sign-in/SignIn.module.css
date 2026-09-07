@@ -1,0 +1,327 @@
+/*
+ * One surface, edge to edge.
+ *
+ * The screen this replaces was two panes that stopped: a paper-coloured left half ending at 597px
+ * and a bare right half with cards on it, with nothing crossing the join. `docs/NOTES.md` carries
+ * the critique. This is one composition instead: the masthead spans the full width in the darker
+ * paper, the choosing area sits on the lighter one below it, and the two are joined by a rule rather
+ * than by a colour change halfway across the screen.
+ */
+.screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: var(--color-ink-1);
+  background: var(--color-paper-0);
+}
+
+/*
+ * The masthead spans the window and its contents share the body's column, so the brand, the
+ * headline and the statement below the rule all sit on one left edge. Without that, the band is
+ * full width and its text is not, which is the same "two panes that stop" problem in a new coat.
+ */
+.masthead {
+  background: var(--color-paper-1);
+  border-bottom: 1px solid var(--color-line-1);
+}
+
+.mastheadInner {
+  width: 100%;
+  max-width: calc(var(--content-max) + var(--content-gutter) * 2);
+  margin: 0 auto;
+  padding: 40px var(--content-gutter) 32px;
+}
+
+.brand {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 26px;
+  color: var(--color-accent-1);
+}
+
+.brandText {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-ink-1);
+}
+
+/*
+ * Two and a quarter rem rather than three. The old headline was set as though the next screen were a
+ * landing page, in front of an application whose base size is 0.875rem; this one is large enough to
+ * lead and close enough to the product to belong to it.
+ */
+.headline {
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 62ch;
+  margin-top: 12px;
+  text-wrap: pretty;
+  color: var(--color-ink-2);
+}
+
+/*
+ * Its own size container: the sign-in screen renders outside the app shell, so the `record` container
+ * the rest of the product queries does not exist here. Naming it rather than relying on the nearest
+ * unnamed one, so a container added above it later cannot silently take over.
+ */
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--density-gap);
+  width: 100%;
+  max-width: calc(var(--content-max) + var(--content-gutter) * 2);
+  margin: 0 auto;
+  padding: var(--density-pad) var(--content-gutter) 40px;
+  container: signin / inline-size;
+}
+
+/* Second on the screen, not last, and in the same type as everything else rather than a footnote. */
+.statement {
+  max-width: 78ch;
+  padding-left: 14px;
+  border-left: 3px solid var(--color-accent-1);
+}
+
+.statementLead {
+  font-weight: 700;
+  text-wrap: pretty;
+}
+
+.statementText {
+  margin-top: 4px;
+  text-wrap: pretty;
+  color: var(--color-ink-2);
+}
+
+/*
+ * The persona used last time, offered before either question is asked. The one person who most wants
+ * to get straight in is the one who has done this before, and the old screen made them choose an
+ * organisation first to reach a tag saying they had been here already.
+ */
+.resume {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-lg);
+}
+
+.resumeIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.resumeText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 12rem;
+}
+
+.resumeTitle {
+  font-weight: 700;
+}
+
+.resumeMeta {
+  color: var(--color-ink-2);
+}
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--density-gap);
+}
+
+.filter {
+  position: relative;
+  max-width: 30rem;
+}
+
+.filterIcon {
+  position: absolute;
+  top: 34px;
+  left: 12px;
+  z-index: 1;
+  color: var(--color-ink-3);
+  pointer-events: none;
+}
+
+/*
+ * The class lands on the input itself (TextField spreads it onto the control), so the old
+ * `.filterField input` matched nothing and the glyph sat over the placeholder. The element
+ * selector keeps this rule ahead of the primitive's own padding.
+ */
+input.filterField {
+  padding-left: 36px;
+}
+
+.filterCount {
+  margin-top: 4px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+/*
+ * Both questions visible at once. Answering the first used to push the second below the fold at
+ * 900px, which on a projector is a scroll in the first ten seconds of a demonstration.
+ */
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  gap: var(--density-gap) var(--content-gutter);
+  align-items: start;
+}
+
+@container signin (width < 52rem) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.column {
+  min-width: 0;
+}
+
+.stepTitle {
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.stepMeta {
+  margin-top: 2px;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.stepHint {
+  margin-top: 2px;
+  font-size: var(--text-sm);
+  text-wrap: pretty;
+  color: var(--color-ink-3);
+}
+
+/*
+ * A list rather than a three across grid of thirteen equal cards. The organisation is the least
+ * interesting decision anybody makes on this screen and it was taking up two thirds of it.
+ */
+.orgs {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 26rem;
+  margin-top: 12px;
+  overflow-y: auto;
+}
+
+.org {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  text-align: start;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.org:hover {
+  background: var(--color-paper-1);
+}
+
+.org[aria-pressed='true'] {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent-1);
+}
+
+.org:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 1px;
+}
+
+.orgGlyph {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.orgText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.orgName {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.orgKind {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.personas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.persona {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 44px;
+  padding: 12px 14px;
+  text-align: start;
+  background: var(--color-paper-1);
+  border: 1px solid var(--color-line-1);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+}
+
+.persona:hover {
+  border-color: var(--color-accent-1);
+}
+
+.persona:focus-visible {
+  outline: 2px solid var(--color-accent-1);
+  outline-offset: 2px;
+}
+
+.persona[data-last='true'] {
+  border-color: var(--color-accent-1);
+  box-shadow: inset 3px 0 0 var(--color-accent-1);
+}
+
+.personaName {
+  font-weight: 700;
+}
+
+.personaRole {
+  font-size: var(--text-sm);
+  color: var(--color-accent-1);
+}
+
+.personaBlurb {
+  margin-top: 4px;
+  font-size: var(--text-sm);
+  text-wrap: pretty;
+  color: var(--color-ink-2);
+}

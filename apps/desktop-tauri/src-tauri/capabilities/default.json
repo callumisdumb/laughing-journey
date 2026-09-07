@@ -1,0 +1,16 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Least-privilege capability for the main window: local store, window state, theme and zoom. No shell, no network, no filesystem.",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-theme",
+    "core:window:allow-set-title",
+    "core:window:allow-set-min-size",
+    "core:webview:allow-set-webview-zoom",
+    "core:event:default",
+    "store:default",
+    "window-state:default"
+  ]
+}

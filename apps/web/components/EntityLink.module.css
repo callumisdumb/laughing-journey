@@ -1,0 +1,5 @@
+.banned {
+  margin-right: 4px;
+  color: var(--color-risk-critical);
+  vertical-align: -2px;
+}

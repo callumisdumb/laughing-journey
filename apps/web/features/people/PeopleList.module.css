@@ -1,0 +1,62 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: flex-end;
+  margin-bottom: var(--density-gap);
+}
+
+.filters > * {
+  min-width: 150px;
+}
+
+.filterSearch {
+  flex: 1 1 240px;
+}
+
+.name {
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--color-ink-1);
+}
+
+.name:hover {
+  text-decoration: underline;
+  color: var(--color-accent-1);
+}
+
+.sub {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.notOnCase {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.count {
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.agencies {
+  display: flex;
+  gap: 6px;
+}
+
+.headActions {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}

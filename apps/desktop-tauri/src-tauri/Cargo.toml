@@ -1,0 +1,30 @@
+[package]
+name = "mas-platform-desktop"
+version = "0.1.0"
+description = "Person360: multi-agency public protection for Scotland, desktop mockup shell"
+authors = ["mas-platform"]
+edition = "2021"
+rust-version = "1.77"
+
+[lib]
+name = "mas_platform_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.3", features = [] }
+
+[dependencies]
+tauri = { version = "2.11.5", features = [] }
+tauri-plugin-store = "2.4.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-window-state = "2.4.1"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

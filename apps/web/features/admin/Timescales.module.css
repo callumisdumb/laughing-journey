@@ -1,0 +1,104 @@
+.wrap {
+  border: 0;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.label {
+  display: block;
+  font-weight: 700;
+}
+
+.meta {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.trigger,
+.source {
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.timescale {
+  white-space: nowrap;
+}
+
+.amount {
+  display: block;
+  font-variant-numeric: tabular-nums;
+}
+
+.confidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.verify {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-risk-medium);
+}
+
+.localNote {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--text-xs);
+  color: var(--color-ink-2);
+}
+
+.sourceRef {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.ruleFacts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 14px;
+  margin: 0;
+  padding: 12px 14px;
+  font-size: var(--text-sm);
+  background: var(--color-paper-2);
+  border-radius: var(--radius-md);
+}
+
+.ruleFacts dt {
+  font-weight: 700;
+  color: var(--color-ink-2);
+}
+
+.ruleFacts dd {
+  margin: 0;
+}
+
+.dialogGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.hint {
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.errors {
+  margin: 0;
+  padding: 10px 14px 10px 28px;
+  font-size: var(--text-sm);
+  color: var(--color-risk-critical);
+  background: var(--color-risk-critical-soft);
+  border-radius: var(--radius-md);
+}
+
+@media (width <= 1279px) {
+  .dialogGrid {
+    grid-template-columns: 1fr;
+  }
+}

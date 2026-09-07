@@ -1,0 +1,55 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Person360",
+  "version": "0.1.0",
+  "identifier": "uk.person360.app",
+  "build": {
+    "frontendDist": "../../web/out",
+    "devUrl": "http://localhost:3000",
+    "beforeDevCommand": "pnpm --filter @mas/web dev",
+    "beforeBuildCommand": "pnpm --filter @mas/web build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Person360",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 1200,
+        "minHeight": 760,
+        "resizable": true,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; connect-src 'none'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "dmg",
+      "app",
+      "msi",
+      "nsis"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "Productivity",
+    "shortDescription": "Multi-agency public protection platform (mockup)",
+    "longDescription": "Demonstration build. Every person, case and number is synthetic. Runs fully offline.",
+    "windows": {
+      "webviewInstallMode": {
+        "type": "embedBootstrapper"
+      }
+    }
+  },
+  "plugins": {},
+  "mainBinaryName": "Person360"
+}

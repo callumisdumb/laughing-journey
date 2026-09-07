@@ -1,0 +1,52 @@
+/* An alert and, more importantly, who sees it. The scope gets its own block rather than a select. */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+  gap: 12px 16px;
+  align-items: start;
+}
+
+.scope {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.legend {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-ink-2);
+}
+
+.radio {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  font-size: var(--text-sm);
+}
+
+.hint {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}
+
+.agencies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 8px 12px;
+  background: var(--color-paper-1);
+  border-radius: var(--radius-sm);
+}
+
+.agency {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: var(--text-sm);
+}

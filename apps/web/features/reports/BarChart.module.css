@@ -1,0 +1,79 @@
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 360px;
+  overflow: visible;
+  font-family: var(--font-sans);
+}
+
+.grid {
+  stroke: var(--color-line-1);
+}
+
+.axis {
+  stroke: var(--color-line-2);
+}
+
+.axisText {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  fill: var(--color-ink-2);
+}
+
+.svg[data-dense='true'] .axisText {
+  font-size: 0.6875rem;
+}
+
+.axisTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  fill: var(--color-ink-2);
+}
+
+.bar {
+  fill: var(--series-colour, currentColor);
+}
+
+.valueText {
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  fill: var(--color-ink-1);
+}
+
+@media print {
+  .grid {
+    stroke: var(--color-print-rule);
+  }
+
+  .axis {
+    stroke: var(--color-print-ink);
+  }
+
+  .axisText,
+  .axisTitle,
+  .valueText {
+    fill: var(--color-print-ink);
+  }
+
+  .bar {
+    fill: var(--color-print-ink);
+  }
+
+  .series[data-series='1'] .bar {
+    opacity: 0.72;
+  }
+
+  .series[data-series='2'] .bar {
+    opacity: 0.5;
+  }
+
+  .series[data-series='3'] .bar {
+    opacity: 0.32;
+  }
+
+  .series[data-series='4'] .bar {
+    opacity: 0.2;
+  }
+}
