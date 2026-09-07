@@ -2,6 +2,10 @@
 
 .panel {
   display: grid;
+
+  /* The track is capped so a long transition name cannot push the panel wider than the screen
+     it sits on, which is what 400 percent zoom asks of it (D-251 added the longest names). */
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
   margin-bottom: var(--density-gap);
   padding: 12px 14px;
@@ -37,6 +41,7 @@
 .option {
   display: grid;
   gap: 4px;
+  min-width: 0;
   padding: 8px 10px;
   background: var(--color-paper-0);
   border: 1px solid var(--color-line-1);
@@ -45,6 +50,13 @@
 
 .option[data-state='refused'] {
   background: var(--color-paper-2);
+}
+
+/* A button's label does not wrap anywhere else in the product, and here it has to: at 400 percent
+   zoom the viewport is 320px and "Open a Large Scale Investigation" is wider than that on one line. */
+.optionButton {
+  text-align: left;
+  white-space: normal;
 }
 
 .optionMeta {

@@ -108,7 +108,7 @@ const GALLERY_WIDTH = 1280;
  * few points, drop the width, or split the sheet by round. It is not to quietly stop capturing.
  */
 const MAX_BYTES = 16 * 1024 * 1024;
-const QUALITY = 28;
+const QUALITY = 24;
 
 async function encode(path, width, quality) {
   const buffer = await sharp(path).resize({ width, withoutEnlargement: true }).webp({ quality }).toBuffer();

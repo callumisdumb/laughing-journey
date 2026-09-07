@@ -82,7 +82,7 @@ export function TransitionPanel({ process }: { process: Process }) {
           const refused = !a.permission.allowed || a.missing.length > 0 || kind === 'pending';
           return (
             <div key={a.transition.id} className={styles.option} data-state={refused ? 'refused' : 'open'} data-testid={`next-${a.transition.id}`}>
-              <Button variant={refused ? 'secondary' : 'primary'} size="sm" icon={<ArrowRight size={14} aria-hidden="true" />} disabled={refused} onClick={() => open(a)} data-testid={`next-${a.transition.id}-button`}>
+              <Button variant={refused ? 'secondary' : 'primary'} size="sm" className={styles.optionButton} icon={<ArrowRight size={14} aria-hidden="true" />} disabled={refused} onClick={() => open(a)} data-testid={`next-${a.transition.id}-button`}>
                 {transitionLabel(a.transition.id)}
               </Button>
               <span className={styles.optionMeta}>{a.leadsTo.length > 0 ? t('processes.next.leadsTo', { stage: a.leadsTo.join(', ') }) : t('processes.next.stays')}</span>
