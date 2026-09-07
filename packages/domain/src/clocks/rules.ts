@@ -324,6 +324,7 @@ const RULES: ClockRuleData[] = [
     source: 'Local: no national interval exists for level 1, which the MAPPA National Guidance 2022 leaves to local arrangements',
     sourceRef: 'Seeded at 12 months as the interval a partnership would recognise; confirm against the area procedures (docs/RESEARCH.md 9.4)',
     confidence: 'local',
+    todoVerify: true,
   },
   {
     id: 'mappa.level2.review',
@@ -354,6 +355,7 @@ const RULES: ClockRuleData[] = [
      * The rule is the order's own date rather than an interval, so it is triggered with the expiry
      * as its instant and counted back from, so the clock is due 90 days before the order runs out.
      * Completed by a renewal or a recall (D-252).
+     * TODO(verify): the lead time is the product's own; the area's own procedures set the figure.
      */
     id: 'awi.order.renewal.due',
     process: 'awi',
@@ -365,6 +367,7 @@ const RULES: ClockRuleData[] = [
     source: 'Adults with Incapacity (Scotland) Act 2000 s58 and s60: an order runs for the period the sheriff specifies',
     sourceRef: 'The expiry is the order\'s own. The 90 day lead time is the product\'s, so a renewal is prepared rather than discovered late; confirm the area\'s own lead time (docs/RESEARCH.md 9.5)',
     confidence: 'local',
+    todoVerify: true,
   },
   {
     id: 'awi.mho.report',

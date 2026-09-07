@@ -591,7 +591,7 @@ Read on 07 Sep 2026, against the Adults with Incapacity (Scotland) Act 2000 alre
 
 Sections 58 and 60 let the sheriff specify the period an order runs for, and section 60 provides for renewal on an application made before it expires. Neither the Act nor the Commission's monitoring report sets a lead time for making that application: it is a matter for the local authority's own practice, and the Commission's report counts renewals without saying when they were begun.
 
-A guardianship that lapses leaves an adult without a guardian, so the product counts back from the order's own expiry date rather than waiting for it: `awi.order.renewal.due` is due 90 days before expiry, warns at 30, and is completed by a renewal or a recall (D-252).
+A guardianship that lapses leaves an adult without a guardian, so the product counts back from the order's own expiry date rather than waiting for it: `awi.order.renewal.due` is due 90 days before expiry, warns at 30, and is completed by a renewal or a recall (D-252). The expiry is the order's own and is High; the 90 day lead time is the product's, so the rule is marked `local` and `TODO(verify)` in the rule, in Admin, Timescales and in the verification table, and the area's own procedures set the figure.
 
 - Confidence: local. The expiry is the order's own and is High; the 90 day lead time is the product's.
 - To verify: the area's own AWI procedures, section on renewals.
