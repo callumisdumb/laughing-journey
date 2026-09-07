@@ -8,7 +8,7 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=0",
     "test": "vitest run",
     "docs:data-model": "tsx scripts/generate-data-model.ts",
     "docs:verification-table": "tsx scripts/generate-verification-table.ts"

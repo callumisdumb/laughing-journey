@@ -93,8 +93,9 @@ function describe(file) {
  * browser downsamples it to the column width and the text stays crisp, and the lightbox, where it is
  * shown at full size. The page came down to 10.6 MB in the process, and at 309 captures went past
  * the limit again at quality 44, so the quality dropped to 36, and at 319 (the composition round's
- * before and after captures, six of them 2560 wide) to 32, the first of the three answers below
- * (D-228); at that setting a card is still readable in the grid. `loading="lazy"` keeps the
+ * before and after captures, six of them 2560 wide) to 32, and at 337 (the round that closed the
+ * list) to 28, each time the first of the three answers below (D-228); at that setting a card is
+ * still readable in the grid. `loading="lazy"` keeps the
  * decode cost to what is near the viewport, which is what makes one large source per card viable.
  */
 const GALLERY_WIDTH = 1280;
@@ -107,7 +108,7 @@ const GALLERY_WIDTH = 1280;
  * few points, drop the width, or split the sheet by round. It is not to quietly stop capturing.
  */
 const MAX_BYTES = 16 * 1024 * 1024;
-const QUALITY = 32;
+const QUALITY = 28;
 
 async function encode(path, width, quality) {
   const buffer = await sharp(path).resize({ width, withoutEnlargement: true }).webp({ quality }).toBuffer();

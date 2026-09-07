@@ -8,7 +8,7 @@ Everything in the dataset is fictional. Postcodes are in the Q, V and X ranges, 
 
 | Area | Where | State |
 |---|---|---|
-| Domain model, clocks, need-to-know, permissions, forms, the stage engine, notifications | `packages/domain` | Zod schemas are the source of truth; `docs/DATA-MODEL.md` is generated from them. Unit tests cover clocks, the 49 stage transitions (each driven through a permitted actor, a refused actor, a record that lacks what it needs and one that has it), the notification derivation, resolver, permissions, lenses and forms. |
+| Domain model, clocks, need-to-know, permissions, forms, the stage engine, notifications | `packages/domain` | Zod schemas are the source of truth; `docs/DATA-MODEL.md` is generated from them. Unit tests cover clocks, the 52 stage transitions (each driven through a permitted actor, a refused actor, a record that lacks what it needs and one that has it), the notification derivation, resolver, permissions, lenses and forms. |
 | Design system | `packages/ui`, `apps/web/styles/tokens.css`, `docs/DESIGN.md` | Warm paper, heather accent, Atkinson Hyperlegible, Bricolage Grotesque, JetBrains Mono for audit only. Light and dark, comfortable and compact. Contrast is checked by a script over every text and control pairing. |
 | Synthetic data | `packages/mock-data` | Deterministic generator (seed `clydeshore-2026`, demo now 02 Sep 2026 09:00), eight worked scenarios under `src/scenarios`, 58 background households, audit trail. |
 | Copy catalogue | `packages/messages`, `docs/MESSAGES.md` | Every user-visible string in `src/en-GB.json` with `src/en-GB.context.json` beside it; typed keys, ICU MessageFormat, three-layer overrides (bundled, local file, session) edited in Admin, Copy and labels; `pnpm messages:check` in lint. |
@@ -18,6 +18,7 @@ Everything in the dataset is fictional. Postcodes are in the Q, V and X ranges, 
 | Desktop shells | `apps/desktop-tauri`, `apps/desktop-electron` | Tauri 2 is the primary target (config, Rust menu, capabilities); Electron is the verified fallback. Both load `apps/web/out`. |
 | Tests | `apps/web/e2e`, package `*.test.ts`, `apps/web/lib/*.test.ts` | Playwright per phase and per round with axe on every captured screen, and the driven suites (`flows`, `meetings`, `actions`, `notifications`, `cross-persona`) that create a thing from nothing, drive it to its terminal state and read every consequence as a second persona (D-210). Vitest in domain, web (the store's pipeline, transitions and involvement), crypto, messages, ui, mock-data and connectors. |
 | Screenshots | `docs/SCREENSHOTS/<phase>/<screen>-<theme>-<density>.png` | Reviewed at the end of each phase; the index is in section 5. |
+| Continuous integration | `.github/workflows/ci.yml` | On every push and pull request, Node 22 with pnpm cached: `pnpm install --frozen-lockfile`, the static export first (the dialog margin guard reads it), `pnpm typecheck`, `pnpm lint` with every package's ESLint at `--max-warnings=0`, `pnpm test`; then a second job takes the export, installs Chromium and runs the layout, dialogs, flows and cross-persona suites against it. Any red step fails the run; a lint warning is a red step. |
 
 ## 2. Decisions
 
@@ -52,6 +53,7 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - TypeScript 5.9, ESLint 9.39, Playwright 1.62.1, TanStack Table 8.21 are pinned for the reasons in D-002, D-003, D-013, D-014 and D-038.
 - Every screen accepts `?state=` for designed states (D-012). Telemetry is off at the build level (D-018).
 - Electron is the demo build and Tauri stays configured (D-032); the Linux build container has no GTK or WebKitGTK, so the Tauri binary is not built here (D-007). See section 4.
+- CI is `.github/workflows/ci.yml` (added 06 Sep 2026): the same gate a contributor runs before a commit (`pnpm build`, then `pnpm typecheck && pnpm lint && pnpm test`, lint refusing any warning), and the four driven Playwright suites that exercise the product end to end against the export (`layout`, `dialogs`, `flows`, `cross-persona`). The other suites run locally with `pnpm e2e`; they are longer, capture the screenshots and are run before each round's push rather than on every commit.
 
 ### Records management
 - Every create and update goes through one pipeline, `store.write()`, which runs the ten steps of `docs/RECORDS.md` section 7 in order (D-110). Refusals are total and come first, so a refused write leaves no half-record, no orphan audit entry and no clock counting against something that does not exist (D-111). It returns codes; `apps/web/lib/writeErrors.ts` does the wording (D-119). This was not true until 04 Sep 2026: the raw `upsert` stayed public after the pipeline landed and eighteen older call sites kept using it, including the four statutory forms, the meeting workspace and the chronology. They are migrated, `upsert` is private to `store.ts`, and `apps/web/lib/write.test.ts` walks every source file so a direct write cannot come back (D-110, corrected). The pipeline also writes the lawful basis and the sharing records, completes clocks as well as starting them, and runs the exclusion check in reverse when a register entry is recorded (D-198). A connector delivering an event or an inbound change is the one other writer, through `store.receive`, and it is not audited as a person's act (D-199).
@@ -73,7 +75,7 @@ The full list with one line of rationale each is in `docs/DECISIONS.md`. The one
 - A notification is an output of the write pipeline and of the clock engine, never something a screen composes (D-207). It stores a kind, a pointer to its source, the recipient's detail level, the lawful basis where the thing announced reveals content, and a key; the sentence is rendered at read time from the catalogue and the record, so a presence-level recipient reads that a case they are linked to changed and nothing more. The actor is never told about their own act, an excluded party is never a recipient, and two drafts with one key are one notification. Twenty-three kinds. `packages/domain/src/notifications/derive.ts`, `apps/web/lib/notifications.ts`.
 - The clock engine is the third writer beside `write` and `receive` (D-208): warnings at `warnDays`, breaches at due, actions due, overdue and escalated, evaluated when the instant moves, after every process or action write, and once a minute on the live clock, keyed on the trigger so a hundred evaluations raise one warning. The seed carries its standing warnings already read, so a fresh seed writes nothing at boot and reset leaves an empty overlay. Reading, marking read and dismissing are the recipient's own state and are not audited (D-209).
 - "Works" means a driven test (D-210): created from nothing, driven through the interface to its terminal state, and read by a second persona. Seeded data is never the thing under test. `cross-persona.spec.ts`, the five driven walks in `flows.spec.ts` (F.2.1 to F.2.5), `meetings.spec.ts`, `actions.spec.ts`, `notifications.spec.ts`.
-- The stage engine is the only route to a stage (D-211). `packages/domain/src/processes/transitions.ts` and `stages/` hold 49 transitions across the five types, each with what it needs the record to hold, who records it, what it validates and writes, the clocks it completes and starts, where the case goes and what the store creates beside it (a meeting, a plan and its actions, information requests, a closure, a linked case). There is no stage picker; forward only, with reopen as the way back; a refusal names the roles that record it or the missing thing and the action that creates it. The stepper's offer is a panel of buttons, one per transition, and the drawer and the demo panel say the same thing as sentences (D-217). `docs/HOW-TO.md` is written from the tables. Two readings decided in code: the ASP inquiry decision clock completes at the screening decision, and a level 1 MAPPA case sits at notification with managed semantics and never meets.
+- The stage engine is the only route to a stage (D-211). `packages/domain/src/processes/transitions.ts` and `stages/` hold 52 transitions across the five types, each with what it needs the record to hold, who records it, what it validates and writes, the clocks it completes and starts, where the case goes and what the store creates beside it (a meeting, a plan and its actions, information requests, a closure, a linked case). There is no stage picker; forward, with three named returns (D-241) and reopen as the only other way back; a refusal names the roles that record it or the missing thing and the action that creates it. The stepper's offer is a panel of buttons, one per transition, and the drawer and the demo panel say the same thing as sentences (D-217). `docs/HOW-TO.md` is written from the tables. Two readings decided in code: the ASP inquiry decision clock completes at the screening decision, and a level 1 MAPPA case sits at notification with managed semantics and never meets.
 - An action may be given to any person the case permits or to every holder of a role, and membership is not the test (D-212); the test is the share recipient check. A role's action sits on every holder's worklist until one takes it, which is a reassignment. Cancelling keeps it. The escalation interval is configuration. `packages/domain/src/actions/assign.ts`.
 - A meeting is scheduled through the engine where the tables schedule its type from the case's stage, as a plain meeting where they do not, and is refused, naming the stages, where the case has not reached it (D-213). Holding a meeting is recording the decision it made: the close button opens the transition's outcome form and the meeting is marked held as a consequence; the old meeting clock table is deleted. The invite list is proposed by one module and everybody it leaves off is recorded on the meeting with the reason (D-214). A rescheduled CPPM moves its notice period and a cancelled one completes it (D-216).
 - What the driven walks found and fixed: recording a decision puts the recorder on the case (D-219); Home reads the case's members, not only the seeded list (D-218); the child protection decisions live in the meetings that make them (D-220); a MARAC child concern opens the child protection case authorised by the transition, and links to one already open (D-221, D-224); a response to a request the engine sent is the engine's own transition, so the MARAC research clock completes (D-222); a MARAC referral opens without a risk assessment and names its perpetrator (D-215, D-223); the MAPPA referral form records through the engine and the level waits for the meeting (D-225); a clock trigger is an instant and step 1 of the pipeline validates them (D-226); and "Ask to be involved" is a record the lead decides (D-227).
@@ -118,10 +120,10 @@ Every clock rule in `packages/domain/src/clocks/rules.ts` with its seeded value,
 | cp.prebirth.cppm | cp | Pre-birth concern raised | 28 calendar-days | high | National Guidance for Child Protection in Scotland 2021, Part 4 (unborn babies) (Within 28 calendar days of the concern and no later than 28 weeks gestation. The gestation cap is applied as a due date override on the process) |  |
 | asp.inquiry.decision | asp | Adult concern received | 5 working-days | local | Local procedures (the Code of Practice 2022 sets no national timescale) (West of Scotland inter-agency guidance and Edinburgh 2024 procedures use 5 working days) | TODO(verify) |
 | asp.caseconference.initial | asp | Adult concern received | 21 calendar-days | local | Local procedures (the Code of Practice 2022 sets no national timescale) (Highland 21 days; Orkney 20 days; Renfrewshire 20 working days) | TODO(verify) |
-| asp.nmds.q1 | asp | Quarter 1 ended (30 June) | 45 calendar-days | verify | ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page (Actions can be tracked up to the submission date you have been provided with for each quarterly data return. If 100 inquiries were begun in Quarter 1 (1 April - 30 June inclusive) we ask you to record what actions were taken, tracking these up to August 12th, the Scottish Government submission date for returns. Deadline seeded as 14 Aug 2026 for Q1 2026/27) | TODO(verify) |
-| asp.nmds.q2 | asp | Quarter 2 ended (30 September) | 44 calendar-days | verify | ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page (Q2 2026/27 covers 1 July to 30 September; deadline seeded as 13 Nov 2026) | TODO(verify) |
-| asp.nmds.q3 | asp | Quarter 3 ended (31 December) | 43 calendar-days | verify | ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page (Q3 2026/27 covers 1 October to 31 December; deadline seeded as 12 Feb 2027) | TODO(verify) |
-| asp.nmds.q4 | asp | Quarter 4 ended (31 March) | 44 calendar-days | verify | ASP National Minimum Dataset single guidance document, July 2025; ASP data collection web page (Q4 2026/27 covers 1 January to 31 March; deadline seeded as 14 May 2027) | TODO(verify) |
+| asp.nmds.q1 | asp | Quarter 1 ended (30 June) | 45 calendar-days | high | ASP data collection web page (iriss.org.uk/aspdataset), Quarterly data return dates for 2026/27, read live 06 Sep 2026 (Quarter 1: data collection period 01.04.26 to 30.06.26 inclusive, return deadline 14.08.26, anticipated reporting to APCs not applicable) |  |
+| asp.nmds.q2 | asp | Quarter 2 ended (30 September) | 44 calendar-days | high | ASP data collection web page (iriss.org.uk/aspdataset), Quarterly data return dates for 2026/27, read live 06 Sep 2026 (Quarter 2: data collection period 01.07.26 to 30.09.26 inclusive, return deadline 13.11.26, anticipated reporting to APCs February 2027) |  |
+| asp.nmds.q3 | asp | Quarter 3 ended (31 December) | 43 calendar-days | high | ASP data collection web page (iriss.org.uk/aspdataset), Quarterly data return dates for 2026/27, read live 06 Sep 2026 (Quarter 3: data collection period 01.10.26 to 31.12.26 inclusive, return deadline 12.02.27, anticipated reporting to APCs not applicable) |  |
+| asp.nmds.q4 | asp | Quarter 4 ended (31 March) | 44 calendar-days | high | ASP data collection web page (iriss.org.uk/aspdataset), Quarterly data return dates for 2026/27, read live 06 Sep 2026 (Quarter 4: data collection period 01.01.27 to 31.03.27 inclusive, return deadline 14.05.27, anticipated reporting to APCs August 2027) |  |
 | asp.order.banning.maximum | asp | Banning or temporary banning order granted | 6 months | high | Adult Support and Protection (Scotland) Act 2007; ASP National Minimum Dataset 2024-25 Annex 2 glossary (A banning or temporary banning order may last a period not exceeding 6 months. Serious harm must be evidenced. In urgency the council may apply to a justice of the peace rather than a sheriff) |  |
 | asp.order.assessment.validity | asp | Assessment order granted | 7 calendar-days | high | Adult Support and Protection (Scotland) Act 2007; ASP National Minimum Dataset 2024-25 Annex 2 glossary (An assessment order is valid for 7 days) |  |
 | asp.order.removal.validity | asp | Adult removed under a removal order | 7 calendar-days | high | Adult Support and Protection (Scotland) Act 2007; ASP National Minimum Dataset 2024-25 Annex 2 glossary (A removal order lasts a maximum of 7 days after the day the person is removed) |  |
@@ -151,7 +153,7 @@ Brief section 2 requires no runtime network. Both shells satisfy it: the web app
 
 ## 5. Screenshot index
 
-319 screenshots under `docs/SCREENSHOTS/<round>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 unless the round says otherwise (the `compare`, `recording` and `script` rounds are 1920 by 1080, which is what they are filmed at). Light comfortable is the default; dark and compact variants are listed where captured, and phase 6 holds the dark and compact sweep of every screen. **This section is generated by `pnpm contact-sheet`. Do not edit by hand.** `docs/CONTACT-SHEET.md` is the same list with the images, and `docs/CONTACT-SHEET.html` is a single self-contained file whose captures open at full size in a viewer; that one is gitignored.
+337 screenshots under `docs/SCREENSHOTS/<round>/<screen>-<theme>-<density>.png`, captured by the Playwright suites at 1440 by 900 unless the round says otherwise (the `compare`, `recording` and `script` rounds are 1920 by 1080, which is what they are filmed at). Light comfortable is the default; dark and compact variants are listed where captured, and phase 6 holds the dark and compact sweep of every screen. **This section is generated by `pnpm contact-sheet`. Do not edit by hand.** `docs/CONTACT-SHEET.md` is the same list with the images, and `docs/CONTACT-SHEET.html` is a single self-contained file whose captures open at full size in a viewer; that one is gitignored.
 
 ### phase-1
 
@@ -584,6 +586,14 @@ The working calendar behind every statutory clock: the national bank holiday lis
 | add from case | light comfortable |
 | taken | light comfortable |
 
+### attachments
+
+| Screen | Variants |
+|---|---|
+| attach dialog | light comfortable |
+| event attachment | light comfortable |
+| person documents | light comfortable |
+
 ### cross-persona
 
 | Screen | Variants |
@@ -596,6 +606,28 @@ The working calendar behind every statutory clock: the national bank holiday lis
 | janet panel | light comfortable |
 | janet worklist overdue | light comfortable |
 
+### household-move
+
+| Screen | Variants |
+|---|---|
+| move household dialog | light comfortable |
+| moved | light comfortable |
+
+### invitations
+
+| Screen | Variants |
+|---|---|
+| chair told | light comfortable |
+| substitute seated | light comfortable |
+| your invitation | light comfortable |
+
+### lead
+
+| Screen | Variants |
+|---|---|
+| reallocate dialog | light comfortable |
+| reallocated | light comfortable |
+
 ### meetings
 
 | Screen | Variants |
@@ -607,6 +639,14 @@ The working calendar behind every statutory clock: the national bank holiday lis
 | schedule dialog | light comfortable |
 | schedule refused | light comfortable |
 | scheduled | light comfortable |
+
+### minute-correction
+
+| Screen | Variants |
+|---|---|
+| corrected | light comfortable |
+| correction dialog | light comfortable |
+| pack corrections | light comfortable |
 
 ### notifications
 
@@ -625,6 +665,21 @@ The working calendar behind every statutory clock: the national bank holiday lis
 | person record new | dark comfortable, light comfortable |
 | person record populated | dark comfortable, light comfortable |
 
+### return-stage
+
+| Screen | Variants |
+|---|---|
+| return dialog | light comfortable |
+| returned | light comfortable |
+
+### safelives
+
+| Screen | Variants |
+|---|---|
+| safelives empty | light comfortable |
+| safelives refused | light comfortable |
+| safelives return | light comfortable |
+
 ## 6. Known gaps and TODO(verify)
 
 Everything marked here is either configuration seeded from research rather than a primary source, or a deliberate limit of a mockup with no backend.
@@ -642,25 +697,27 @@ Everything marked here is either configuration seeded from research rather than 
 
 ### Made to work on 05 Sep 2026, and what the documents had said
 The round's standard was a driven test (D-210), and the full record of each overclaim is in `docs/NOTES.md` ("What the documents said the product did"). In short:
-- **The bell counted seeded shares.** Notifications are now an entity the pipeline and the clock engine write, twenty-three kinds, rendered at the reader's level (D-207 to D-209).
+- **The bell counted seeded shares.** Notifications are now an entity the pipeline and the clock engine write, twenty-six kinds, rendered at the reader's level (D-207 to D-209).
 - **The stepper was a picture.** Stages were set by whichever form wrote `stage`. The stage engine is now the only route (D-211), and there is no stage picker.
 - **"Ask to be involved" was a toast.** It is a record the lead decides, with both sides told (D-227).
 - **Holding a meeting wrote a status.** It now records the decision the meeting made, and the meeting clock table that answered separately is deleted (D-213).
 - **The walks found nine more.** A MARAC research return never reached the case (D-222); the MAPPA referral form set the level before any meeting (D-225); a MARAC referral from the person record named the victim as the perpetrator (D-223); the coordinator's child concern opened nothing and said it had (D-224); an interim order under the 2000 Act poisoned the next write on the case (D-226); a team leader who screened a concern read the case at presence level a second later (D-219); Home's clocks missed a case opened that morning (D-218); a rescheduled planning meeting completed its own notice clock (D-216); and a referral without a risk assessment could not open at all (D-215). Each is a decision, a fix and a driven assertion.
 
 ### Composed on 06 Sep 2026
-Two captures of a freshly created person's record showed the overview laying itself out a section at a time, the household as three cards, the header floating its parts, five actions in three styles and a tracked-capitals eyebrow. The before captures and the critique are in `docs/NOTES.md`; the rules are D-229 to D-233 and `docs/DESIGN.md` 4.4. What changed: one twelve-column grid for the overview with rows re-packed when a card is absent and empty cards collapsed to their titles; one Household and network card with the diagram as a toggle, a household of one created with the person and Record a move; a two-region header with three buttons and a More menu; sentence case everywhere with a lint guard and a runtime assertion; and the same empty-state rule on a new process, an uninvited meeting and a plan with no actions. One thing the captures said that the export did not reproduce: at 2560 the page measures 1200 wide and centred, so the cap was kept and asserted rather than changed.
+Two captures of a freshly created person's record showed the overview laying itself out a section at a time, the household as three cards, the header floating its parts, five actions in three styles and a tracked-capitals eyebrow. The before captures and the critique are in `docs/NOTES.md`; the rules are D-229 to D-233 and `docs/DESIGN.md` 4.4. What changed: one twelve-column grid for the overview with rows re-packed when a card is absent and empty cards collapsed to their titles; one Household and network card with the diagram as a toggle, a household of one created with the person and Record a move; a two-region header with three buttons and a More menu; sentence case everywhere with a lint guard and a runtime assertion; and the same empty-state rule on a new process, an uninvited meeting and a plan with no actions. One thing the captures said that the export did not reproduce: at 2560 the page measures 1200 wide and centred, so the cap was kept and asserted rather than changed. The process record followed on the same day (D-238): every type panel is a cell of the screen's one grid, the pairs that had grids of their own are cells of six, and the layout suite holds all five dashboards to the same assertions as the person record.
+
+### Made to work on 06 Sep 2026
+Six things the list above had carried since the round of 05 Sep, each now a driven spec (`apps/web/e2e/invitations`, `lead`, `return-stage`, `minute-correction`, `attachments`, `household-move`) and a HOW-TO section (16 to 21):
+- **Answer an invitation** (D-239): accept, decline with a reason, or send a colleague from your agency, who is seated through need-to-know and told; the chair is told and the attendance list starts from the answers.
+- **Reallocate the lead** (D-240): from the case, with a reason, to somebody in the lead agency whose role may lead the type; both told, membership follows, header and drawer read it, audited, and proposed to the source system where the connector permits.
+- **Return a case a stage** (D-241): three named transitions (ASP investigation to inquiry, CP investigation to a reconvened IRD, MARAC action plan to a re-hearing), reason required, no clock started, the clocks by the rule table.
+- **Correct an approved minute** (D-242): by addendum, dated and attributed, sent to the original distribution at their levels, beneath the minute in the pack.
+- **Attach a file** (D-243) to a person, a case, a meeting or a chronology event: a data URI on the record, 1 MB a file and 4 MB a record, classified from the parent and marked on download, audited; nothing scans it, and the dialog says so.
+- **Move a household** (D-244): everybody on one date to one address, one event each, named people left behind with an address or none, address history kept.
 
 ### What practitioners still cannot do
 Listed here so nobody discovers it in a room. None of these is claimed anywhere in the product.
-- **Take a case back a stage.** The engine is forward only. A screening decision cannot be recorded twice, and nothing returns a case to an earlier stage; closing and reopening returns it to the stage it had reached.
 - **Edit a referral once the case is open**, beyond what a decision adds to it (a child concern adds the children it names, D-221). A wrong perpetrator on a MARAC referral is corrected on the case-role register, not on the referral.
-- **See the process dashboard's type panels on the one grid.** The record's composition is one grid (D-229), but the adult support and protection and adults with incapacity panel groups still pair their panels in a two-column grid of their own inside the main column. Recorded, not yet applied.
-- **Move the whole household at once when somebody else lives there.** Record a move takes the household with the person only when they are its only member; otherwise the person leaves it and starts a household of one, and the others are moved one at a time.
-- **Reallocate the lead worker.** The lead is set at opening and nothing changes it; membership grows by decisions and accepted requests, and the resolver.
-- **Respond to a meeting invitation.** No accept, decline or apologies ahead of the meeting; attendance is recorded at the meeting by the chair.
-- **Correct an approved minute.** `docs/RECORDS.md` specifies a correction with a re-distribution to the original list; it is not built. An approved minute is final in the product.
-- **Attach a file to anything.** The pack builder lists items and the minute is text; the only uploads are the copy catalogue import and the workbook round trip.
 - **Withdraw or amend a request to be involved.** One request at a time, decided by somebody on the case; a declined requester may ask again.
 - **Open a Large Scale Investigation, add a strand to one, or hold its planning meeting as a decision.** Scenario 7 is seeded; the LSI planning meeting, the ASP inter-agency discussion and the AWI multi-disciplinary discussion are held with their minute and nothing decided on the case.
 - **Transfer a child protection, adult protection or adults with incapacity case to another authority.** Only MARAC and MAPPA carry a transfer.
@@ -679,8 +736,8 @@ Listed here so nobody discovers it in a room. None of these is claimed anywhere 
 - ASP s52 council officer eligibility wording (`aspCouncilOfficerEligibility`): seeded from SSI 2008/306; confirm against the local rule.
 - Roles that may not receive Official-Sensitive content (`officialSensitiveWithheldFrom`): seeded from the roles that in this product only ever receive presence-level information, which is a guess at what a partnership would actually agree. Confirm against the information sharing agreement, which is what decides it. Stated as an exclusion list rather than a permission list on purpose (D-078), so a role added later is allowed rather than silently cut off.
 - The exclusion near-match threshold (0.82, `SIMILARITY_THRESHOLD` in `packages/domain/src/need-to-know/similarity.ts`): a constant, seeded to catch the four documented ways a name gets written differently and to leave unrelated names alone. A deployment should make it configuration and tune it against real name data, because the right value depends on the naming patterns in the area (D-084).
-- ASP: the field sets are now High. All nine were read from the supplied ASP data workbook 2026-27 (`docs/templates/`), which corrected nine of them; see `docs/RESEARCH.md` 5.14 and D-061. The four NMDS submission deadlines (`asp.nmds.q1` to `asp.nmds.q4`) are the only ASP item left to verify: the guidance says the current dates live on the ASP data collection web page rather than in the workbook, so they are seeded from the product owner and marked `confidence: 'verify'`.
-- Report field sets for the MARAC SafeLives return and the AWI timeliness report: the figures are computed from the dataset, but the column sets follow search extracts of the current templates because the source sites were unreachable through the session proxy. Each of those two says "Field set to verify against the current template" in its meta line; sources are in `docs/RESEARCH.md` 5.5 to 5.7 and 5.10 to 5.11. The CP register field sets are the 2024-25 publication's own (5.16) and wait on nothing.
+- ASP: High throughout. All nine field sets were read from the supplied ASP data workbook 2026-27 (`docs/templates/`), which corrected nine of them (`docs/RESEARCH.md` 5.14, D-061), and the four NMDS submission deadlines (`asp.nmds.q1` to `asp.nmds.q4`) were read from the ASP data collection web page on 06 Sep 2026 (9.1). Nothing about ASP is waiting on anyone. The page says an update to the guidance document is pending for summer 2026, so the return dates and the guidance edition are checked against it each year.
+- Report field sets: High for all five. The MARAC return is the SafeLives Scotland template's own 32 columns (`docs/templates/New-Marac-data-template-Scotland-2025.xlsx`, D-234, RESEARCH 9.2) and the AWI report is the Mental Welfare Commission's tables (`MWC-AWI-Monitoring-Report-2024-25.pdf`, D-236, RESEARCH 9.3), both read on 06 Sep 2026; the CP register field sets are the 2024-25 publication's own (5.16); ASP and MAPPA as above. Only the MARAC's name on the return is seeded (`Clydeshore MARAC`, in Admin).
 - Government Security Classification: High. Annex 2 of the MAPPA National Guidance, supplied verbatim (`docs/RESEARCH.md` 5.13). The handling instruction descriptors are the one thing to check against the organisation's own information security policy, because descriptor practice varies; they are editable in Admin.
 - MAPPA annual report: the field set is High (Annex 3 Tables 1 to 9, year 1 April to 31 March, D-048), and so is the wording: every title, row and column header is the annex's own, supplied verbatim by the product owner on 03 Sep 2026 from the 2022 guidance and held in the catalogue under `reports.mappaAnnex3` (125 keys, 114 of them flagged `verbatim` in the context file so an editor may correct them against a newer edition and may not paraphrase them). `apps/web/features/reports/mappaAnnex3.ts` holds the shape and cites `docs/RESEARCH.md` 5.12. Nothing about this report is waiting on anyone.
 
@@ -698,8 +755,9 @@ Listed here so nobody discovers it in a room. None of these is claimed anywhere 
 - Removing someone from a case rotates the key and stops future access. It cannot unread what they have already read, and the interface says so at the point of removal.
 
 ### Waiting on the product owner
+Two items, both the product owner's to supply; nothing else on this list waits on anyone.
 - Ayrshire values for the four local clocks (ASP inquiry decision, ASP initial case conference, ASP plan review, MARAC research return): seeded values stay until then and are marked to verify.
-- Official report templates for the MARAC return (the SafeLives MARAC data template workbook) and the AWI return (the Mental Welfare Commission monitoring tables), in `docs/templates/` (see the README there); each is reconciled against its template when it arrives. The three ASP documents arrived on 03 Sep 2026 and are reconciled; the CP register field sets were read from the 2024-25 publication (`docs/RESEARCH.md` 5.16) and the MAPPA tables from Annex 3 (5.12), so neither waits on a template.
+- The MARAC's name as SafeLives holds it, for column A of the return: seeded as `Clydeshore MARAC` in Admin (D-234) and changed there when known.
 
 ### What the shooting script needs that the product cannot do
 
