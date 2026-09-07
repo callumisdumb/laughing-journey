@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Action } from '../schemas/action-plan';
 import { nextOccurrence, seriesPosition } from './recurrence';
 
-const action = (over: Partial<Action> = {}): Action => ({ id: 'act_1', synthetic: true, processId: 'prc_1', title: 'Weekly visit', ownerName: 'A Worker', ownerAgency: 'social-work', due: '2026-09-07', status: 'open', createdAt: '2026-09-01T09:00:00Z', createdByName: 'A Worker', ...over }) as Action;
+const action = (over: Partial<Action> = {}): Action => ({ id: 'act_1', synthetic: true, processId: 'prc_1', title: 'Weekly visit', ownerName: 'A Worker', ownerAgency: 'social-work', due: '2026-09-07', status: 'open', createdAt: '2026-09-01T09:00:00Z', createdByName: 'A Worker', ...over });
 const at = '2026-09-10T14:00:00Z';
 let n = 0;
 const newId = (p: string) => `${p}_next${(n += 1)}`;

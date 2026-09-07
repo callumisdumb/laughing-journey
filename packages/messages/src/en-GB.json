@@ -45,6 +45,11 @@
         "months": "months",
         "weeks": "weeks"
       },
+      "unitsOne": {
+        "days": "day",
+        "months": "month",
+        "weeks": "week"
+      },
       "until": "Until (optional)"
     },
     "audit": {
@@ -144,7 +149,7 @@
     "recurrence": {
       "created": "Next one created, due {date}.",
       "ended": "That was the last of the series.",
-      "label": "Repeats every {count, plural, one {# {unit}} other {# {unit}}}{hasUntil, select, yes {, until {until}} other {}}",
+      "label": "Repeats every {count, plural, one {{unitOne}} other {# {unit}}}{hasUntil, select, yes {, until {until}} other {}}",
       "series": "{first, select, yes {First of a series} other {One of a series}}"
     },
     "take": {

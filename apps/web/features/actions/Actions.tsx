@@ -1,11 +1,12 @@
 'use client';
 
-import { actionStatusLabel, agencyShort, canRecordTransition, formatDate, formatDateTime, holdsRoleAction, ownsAction, processShort, relativeDays, roleLabel, transitionById, type Action, type Process, type User } from '@mas/domain';
+import { actionStatusLabel, agencyShort, canRecordTransition, formatDate, nextOccurrence, formatDateTime, holdsRoleAction, ownsAction, processShort, relativeDays, roleLabel, transitionById, type Action, type Process, type User } from '@mas/domain';
 import { useT, type RichValues } from '@mas/messages';
 import { AgencyMark, Button, Dialog, Pill, ProcessMark, SelectField, Table, TableWrap, TextField, TextareaField, useToast } from '@mas/ui';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
+import { DocumentList } from '@/features/documents/DocumentList';
 import { PersonLink, PractitionerLink } from '@/components/EntityLink';
 import { ScreenState, useDevState } from '@/components/ScreenState';
 import { RecordTransitionDialog } from '@/features/process/transitions/RecordTransitionDialog';
@@ -44,6 +45,7 @@ export function Actions() {
   const navigate = useNavigate();
   const grants = useGrants();
   const write = useAppStore((s) => s.write);
+  const newId = useAppStore((s) => s.newId);
   const readErrors = useWriteErrors();
   const select = useSelection((s) => s.select);
   const { toast } = useToast();
@@ -110,7 +112,16 @@ export function Actions() {
       toast({ title: t('actions.completeDialog.refused'), text: readErrors(result.errors).join(' '), tone: 'error' });
       return;
     }
-    toast({ title: t('actions.completeDialog.toastTitle'), text: t('actions.completeDialog.toastText'), tone: 'success' });
+    // A repeating action creates its next occurrence as it is completed, due the interval after the
+    // one just done rather than after today, so a late weekly stays weekly (D-250).
+    const next = nextOccurrence({ ...completing, status: 'complete', completedAt: now.toISOString(), evidence }, newId, now.toISOString());
+    if (next) {
+      const created = write({ collection: 'actions', record: next, intent: 'create', act: 'create', targetType: 'process', targetLabel: t('actions.add.audit', { title: next.title, owner: next.ownerName }), processId: next.processId, recipients: next.ownerUserId ? [{ userId: next.ownerUserId, name: next.ownerName }] : [], recipientProcess: data.processes.find((p) => p.id === next.processId) });
+      if (created.ok) {
+        write({ collection: 'actions', record: { ...completing, status: 'complete', completedAt: now.toISOString(), evidence, recurrence: completing.recurrence ? { ...completing.recurrence, nextActionId: next.id } : undefined }, intent: 'update', act: 'edit', targetType: 'process', targetLabel: label, processId: completing.processId, versionChange: label });
+      }
+    }
+    toast({ title: t('actions.completeDialog.toastTitle'), text: next ? t('actions.recurrence.created', { date: formatDate(next.due) }) : completing.recurrence ? t('actions.recurrence.ended') : t('actions.completeDialog.toastText'), tone: 'success' });
     setCompleting(null);
     setEvidence('');
   }
@@ -207,7 +218,19 @@ export function Actions() {
                           </span>
                         </td>
                         <td>
-                          <AgencyMark agency={a.ownerAgency} hideLabel /> {a.ownerUserId ? <PractitionerLink userId={a.ownerUserId}>{a.ownerName}</PractitionerLink> : a.ownerRoleId ? t('actions.list.roleOwner', { role: roleLabel(a.ownerRoleId), agency: agencyShort(a.ownerAgency) }) : a.ownerName}
+                          <AgencyMark agency={a.ownerAgency} hideLabel /> {a.ownerUserId ? <PractitionerLink userId={a.ownerUserId}>{a.ownerName}</PractitionerLink> : a.externalOwner ? t('actions.external.owner', { name: a.externalOwner.name, organisation: a.externalOwner.organisation }) : a.ownerRoleId ? t('actions.list.roleOwner', { role: roleLabel(a.ownerRoleId), agency: agencyShort(a.ownerAgency) }) : a.ownerName}
+                          {/* Nobody outside the partnership is told anything, so the case says who here is chasing it (D-250). */}
+                          {a.externalOwner ? (
+                            <span className={styles.ownerMeta} data-testid={`action-external-${a.id}`}>
+                              {t('actions.external.chasedBy', { name: a.externalOwner.chasedByName })}
+                              {a.externalOwner.contact ? ` ${t('actions.external.contact', { contact: a.externalOwner.contact })}` : ''}
+                            </span>
+                          ) : null}
+                          {a.recurrence ? (
+                            <span className={styles.ownerMeta} data-testid={`action-recurrence-${a.id}`}>
+                              {t('actions.recurrence.series', { first: a.recurrence.previousActionId ? 'no' : 'yes' })}. {t('actions.recurrence.label', { count: a.recurrence.every, unit: t(a.recurrence.unit === 'days' ? 'actions.add.units.days' : a.recurrence.unit === 'weeks' ? 'actions.add.units.weeks' : 'actions.add.units.months'), unitOne: t(a.recurrence.unit === 'days' ? 'actions.add.unitsOne.days' : a.recurrence.unit === 'weeks' ? 'actions.add.unitsOne.weeks' : 'actions.add.unitsOne.months'), hasUntil: a.recurrence.until ? 'yes' : 'no', until: a.recurrence.until ? formatDate(a.recurrence.until) : '' })}
+                            </span>
+                          ) : null}
                         </td>
                         <td className={overdue ? styles.overdue : undefined} style={{ whiteSpace: 'nowrap' }}>
                           {formatDate(a.due)}
@@ -280,6 +303,8 @@ export function Actions() {
       >
         <p style={{ marginBottom: 10 }}>{completing?.title}</p>
         <TextareaField label={t('actions.completeDialog.evidence')} required value={evidence} onChange={(e) => setEvidence(e.target.value)} hint={t('actions.completeDialog.evidenceHint')} />
+        {/* Evidence is text and, since D-250, files: the same attachment store as everything else. */}
+        {completing ? <DocumentList parent={{ kind: 'action', id: completing.id }} targetLabel={t('documents.target.action', { title: completing.title })} compact /> : null}
       </Dialog>
       <Dialog
         open={escalating !== null}

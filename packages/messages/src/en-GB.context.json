@@ -129,6 +129,20 @@
           "where": "Add an action dialog: the external owner and the recurrence"
         }
       },
+      "unitsOne": {
+        "days": {
+          "notes": "Read as \"Repeats every day\".",
+          "where": "The singular of the recurrence unit, used when an action repeats every single day."
+        },
+        "months": {
+          "notes": "Read as \"Repeats every month\".",
+          "where": "The singular of the recurrence unit, used when an action repeats every single month."
+        },
+        "weeks": {
+          "notes": "Read as \"Repeats every week\".",
+          "where": "The singular of the recurrence unit, used when an action repeats every single week."
+        }
+      },
       "until": {
         "where": "Add an action dialog: the external owner and the recurrence"
       }

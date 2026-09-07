@@ -14,7 +14,7 @@ import { classificationSchema, correctable, idSchema, isoDateTime, syntheticSche
  * scans the file: that is a production requirement, named in the dialog and the handover, not a
  * feature the mockup pretends to have (D-243).
  */
-export const DOCUMENT_PARENT_KINDS = ['person', 'process', 'meeting', 'event'] as const;
+export const DOCUMENT_PARENT_KINDS = ['person', 'process', 'meeting', 'event', 'action'] as const;
 export type DocumentParentKind = (typeof DOCUMENT_PARENT_KINDS)[number];
 
 /** Bytes. One file, and everything attached to one record. */

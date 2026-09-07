@@ -2,7 +2,7 @@
 
 import { agencyShort, assignableRoles, assignableUsers, assignmentRefusals, roleLabel, type Action, type Agency, type Process, type RoleId } from '@mas/domain';
 import { useT } from '@mas/messages';
-import { Button, DateField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
+import { Button, CheckboxField, DateField, Dialog, RadioGroup, SelectField, TextField, TextareaField, useToast } from '@mas/ui';
 import { useMemo, useState } from 'react';
 import { accessForUser, userName } from '@/lib/selectors';
 import { useAppStore, useConfig, useCurrentUser, useData, useGrants, useNow } from '@/lib/store';
@@ -14,7 +14,15 @@ import { useWriteErrors } from '@/lib/writeErrors';
  * One picker for the add and the reassign dialogs, so the rule about who may own an action on a
  * case is asked in one place (packages/domain/src/actions/assign.ts) and the two forms cannot drift.
  */
-export type Owner = { kind: 'person'; userId: string } | { kind: 'role'; agency: Agency; roleId: RoleId };
+export type Owner =
+  | { kind: 'person'; userId: string }
+  | { kind: 'role'; agency: Agency; roleId: RoleId }
+  /**
+   * Somebody outside the partnership: a landlord, a private provider, a service nobody here holds
+   * an account for. The product tells them nothing, which is why the case has to name who here is
+   * chasing it (D-250).
+   */
+  | { kind: 'external'; name: string; organisation: string; contact?: string; chasedByUserId: string };
 
 export function OwnerPicker({ process, value, onChange, idPrefix }: { process: Process; value: Owner | null; onChange: (owner: Owner | null) => void; idPrefix: string }) {
   const t = useT();
@@ -30,11 +38,12 @@ export function OwnerPicker({ process, value, onChange, idPrefix }: { process: P
         legend={t('actions.add.ownerKind')}
         name={`${idPrefix}-owner-kind`}
         value={kind}
-        onChange={(v) => onChange(v === 'role' ? { kind: 'role', agency: roles[0]?.agency ?? 'social-work', roleId: roles[0]?.roleId ?? 'social-worker-adults' } : { kind: 'person', userId: '' })}
+        onChange={(v) => onChange(v === 'external' ? { kind: 'external', name: '', organisation: '', chasedByUserId: people[0]?.id ?? '' } : v === 'role' ? { kind: 'role', agency: roles[0]?.agency ?? 'social-work', roleId: roles[0]?.roleId ?? 'social-worker-adults' } : { kind: 'person', userId: '' })}
         orientation="horizontal"
         options={[
           { value: 'person', label: t('actions.add.ownerPerson') },
           { value: 'role', label: t('actions.add.ownerRole'), hint: t('actions.add.roleHint') },
+          { value: 'external', label: t('actions.add.ownerExternal'), hint: t('actions.add.externalHint') },
         ]}
       />
       {kind === 'person' ? (
@@ -48,6 +57,22 @@ export function OwnerPicker({ process, value, onChange, idPrefix }: { process: P
           required
           data-testid={`${idPrefix}-owner`}
         />
+      ) : kind === 'external' ? (
+        <>
+          <p>{t('actions.add.externalNobodyTold')}</p>
+          <TextField label={t('actions.add.externalName')} value={value?.kind === 'external' ? value.name : ''} onChange={(e) => onChange(value?.kind === 'external' ? { ...value, name: e.target.value } : null)} required data-testid={`${idPrefix}-external-name`} />
+          <TextField label={t('actions.add.externalOrganisation')} value={value?.kind === 'external' ? value.organisation : ''} onChange={(e) => onChange(value?.kind === 'external' ? { ...value, organisation: e.target.value } : null)} required data-testid={`${idPrefix}-external-organisation`} />
+          <TextField label={t('actions.add.externalContact')} value={value?.kind === 'external' ? (value.contact ?? '') : ''} onChange={(e) => onChange(value?.kind === 'external' ? { ...value, contact: e.target.value } : null)} data-testid={`${idPrefix}-external-contact`} />
+          <SelectField
+            label={t('actions.add.chasedBy')}
+            hint={t('actions.add.chasedByHint')}
+            value={value?.kind === 'external' ? value.chasedByUserId : ''}
+            onChange={(e) => onChange(value?.kind === 'external' ? { ...value, chasedByUserId: e.target.value } : null)}
+            options={people.map((u) => ({ value: u.id, label: `${userName(u)} (${roleLabel(u.roleId)}, ${agencyShort(u.agency)})` }))}
+            required
+            data-testid={`${idPrefix}-chased-by`}
+          />
+        </>
       ) : (
         <SelectField
           label={t('actions.add.role')}
@@ -67,11 +92,24 @@ export function OwnerPicker({ process, value, onChange, idPrefix }: { process: P
 }
 
 /** The owner fields an action record carries, from a picker value. */
-export function ownerFields(data: ReturnType<typeof useData>, owner: Owner): Pick<Action, 'ownerUserId' | 'ownerRoleId' | 'ownerName' | 'ownerAgency'> | null {
+export function ownerFields(data: ReturnType<typeof useData>, owner: Owner): Pick<Action, 'ownerUserId' | 'ownerRoleId' | 'ownerName' | 'ownerAgency' | 'externalOwner'> | null {
   if (owner.kind === 'person') {
     const user = data.users.find((u) => u.id === owner.userId);
     if (!user) return null;
     return { ownerUserId: user.id, ownerRoleId: undefined, ownerName: userName(user), ownerAgency: user.agency };
+  }
+  if (owner.kind === 'external') {
+    const chaser = data.users.find((u) => u.id === owner.chasedByUserId);
+    if (!chaser || owner.name.trim().length < 2 || owner.organisation.trim().length < 2) return null;
+    // The owner is outside; the agency on the record is the chaser's, because the case's own list
+    // has to sit under somebody here (D-250).
+    return {
+      ownerUserId: undefined,
+      ownerRoleId: undefined,
+      ownerName: `${owner.name.trim()}, ${owner.organisation.trim()}`,
+      ownerAgency: chaser.agency,
+      externalOwner: { name: owner.name.trim(), organisation: owner.organisation.trim(), contact: owner.contact?.trim() || undefined, chasedByUserId: chaser.id, chasedByName: userName(chaser) },
+    };
   }
   return { ownerUserId: undefined, ownerRoleId: owner.roleId, ownerName: `${roleLabel(owner.roleId)}, ${agencyShort(owner.agency)}`, ownerAgency: owner.agency };
 }
@@ -120,6 +158,10 @@ export function AddActionDialog({ open, onClose, process: fixed, planId: fixedPl
   const [due, setDue] = useState('');
   const [planId, setPlanId] = useState(fixedPlanId ?? '');
   const [errors, setErrors] = useState<string[]>([]);
+  const [repeats, setRepeats] = useState(false);
+  const [every, setEvery] = useState('1');
+  const [unit, setUnit] = useState<'days' | 'weeks' | 'months'>('weeks');
+  const [until, setUntil] = useState('');
 
   const choices = useMemo(() => (user ? data.processes.filter((p) => p.status === 'open' && accessForUser(data, config, user, p, grants, now).level === 'full') : []), [data, config, user, grants, now]);
   const process = fixed ?? choices.find((p) => p.id === processId);
@@ -132,6 +174,8 @@ export function AddActionDialog({ open, onClose, process: fixed, planId: fixedPl
     if (title.trim().length < 5) refusals.push('actionTitleRequired');
     if (!due) refusals.push('actionDueRequired');
     if (!owner || (owner.kind === 'person' && !owner.userId)) refusals.push('assigneeMissing');
+    if (owner?.kind === 'external' && (owner.name.trim().length < 2 || owner.organisation.trim().length < 2)) refusals.push('externalOwnerRequired');
+    if (owner?.kind === 'external' && !owner.chasedByUserId) refusals.push('chaserRequired');
     if (refusals.length > 0 || !process || !owner) {
       setErrors(refusals);
       return;
@@ -152,6 +196,7 @@ export function AddActionDialog({ open, onClose, process: fixed, planId: fixedPl
       ...fields,
       due,
       status: 'open',
+      recurrence: repeats ? { every: Number(every) || 1, unit, until: until || undefined } : undefined,
       createdAt: now.toISOString(),
       createdByName: userName(user),
       createdByUserId: user.id,
@@ -164,7 +209,8 @@ export function AddActionDialog({ open, onClose, process: fixed, planId: fixedPl
       targetType: 'process',
       targetLabel: t('actions.add.audit', { title: record.title, owner: record.ownerName }),
       processId: process.id,
-      rules: assignmentRefusals(process, owner.kind === 'person' ? { userId: owner.userId } : { agency: owner.agency, roleId: owner.roleId }, ctx),
+      // An external owner is nobody here, so there is no assignment rule to apply and nobody to tell.
+      rules: owner.kind === 'external' ? [] : assignmentRefusals(process, owner.kind === 'person' ? { userId: owner.userId } : { agency: owner.agency, roleId: owner.roleId }, ctx),
       recipients: owner.kind === 'person' ? [{ userId: owner.userId, name: fields.ownerName }] : [],
       recipientProcess: process,
     });
@@ -205,6 +251,15 @@ export function AddActionDialog({ open, onClose, process: fixed, planId: fixedPl
         <TextareaField label={t('actions.add.detail')} hint={t('actions.add.detailHint')} value={detail} onChange={(e) => setDetail(e.target.value)} rows={2} data-testid="action-detail" />
         {process ? <OwnerPicker process={process} value={owner} onChange={setOwner} idPrefix="action" /> : null}
         <DateField label={t('actions.add.due')} hint={null} value={due} onChange={setDue} required data-testid="action-due" />
+        {/* A repeating action creates its next occurrence when this one is completed (D-250). */}
+        <CheckboxField label={t('actions.add.repeats')} hint={t('actions.add.repeatsHint')} checked={repeats} onChange={(e) => setRepeats(e.target.checked)} data-testid="action-repeats" />
+        {repeats ? (
+          <div className="cluster" style={{ alignItems: 'flex-end' }}>
+            <TextField label={t('actions.add.every')} type="number" min={1} max={52} value={every} onChange={(e) => setEvery(e.target.value)} data-testid="action-every" />
+            <SelectField label={t('actions.add.unit')} value={unit} onChange={(e) => setUnit(e.target.value as 'days' | 'weeks' | 'months')} options={[{ value: 'days', label: t('actions.add.units.days') }, { value: 'weeks', label: t('actions.add.units.weeks') }, { value: 'months', label: t('actions.add.units.months') }]} data-testid="action-unit" />
+            <DateField label={t('actions.add.until')} hint={null} value={until} onChange={setUntil} data-testid="action-until" />
+          </div>
+        ) : null}
         {process && plans.length > 0 && !fixedPlanId ? (
           <SelectField label={t('actions.add.plan')} value={planId} onChange={(e) => setPlanId(e.target.value)} options={[{ value: '', label: t('actions.add.planNone') }, ...plans.map((p) => ({ value: p.id, label: p.title }))]} data-testid="action-plan" />
         ) : null}
@@ -244,7 +299,8 @@ export function ReassignDialog({ action, process, open, onClose }: { action: Act
       targetLabel: label,
       processId: action.processId,
       versionChange: label,
-      rules: assignmentRefusals(process, owner.kind === 'person' ? { userId: owner.userId } : { agency: owner.agency, roleId: owner.roleId }, ctx),
+      // An external owner is nobody here: no assignment rule to apply, and nobody to tell (D-250).
+      rules: owner.kind === 'external' ? [] : assignmentRefusals(process, owner.kind === 'person' ? { userId: owner.userId } : { agency: owner.agency, roleId: owner.roleId }, ctx),
       recipients: owner.kind === 'person' ? [{ userId: owner.userId, name: fields.ownerName }] : [],
       recipientProcess: process,
     });

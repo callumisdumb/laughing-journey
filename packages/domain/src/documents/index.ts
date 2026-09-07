@@ -38,7 +38,7 @@ export function markedFileName(classification: Classification, name: string): st
  * highest of the cases a chronology event is linked to; the highest of the cases a person is the
  * subject of. Nothing behind it, and it is Official.
  */
-export function documentClassification(config: Config, parent: { kind: DocumentParentKind; id: string }, data: { processes: readonly Process[]; meetings: readonly Meeting[]; events: readonly ChronologyEvent[] }): Classification {
+export function documentClassification(config: Config, parent: { kind: DocumentParentKind; id: string }, data: { processes: readonly Process[]; meetings: readonly Meeting[]; events: readonly ChronologyEvent[]; actions?: readonly { id: string; processId: string }[] }): Classification {
   const highest = (processes: readonly Process[]): Classification => processes.map((p) => classificationFor(config, p)).reduce((best, c) => (classificationRank(c) > classificationRank(best) ? c : best), OFFICIAL_UNMARKED);
   switch (parent.kind) {
     case 'process':
@@ -51,15 +51,20 @@ export function documentClassification(config: Config, parent: { kind: DocumentP
       const event = data.events.find((e) => e.id === parent.id);
       return highest(data.processes.filter((p) => event?.linkedProcessIds.includes(p.id)));
     }
+    case 'action': {
+      const action = data.actions?.find((a) => a.id === parent.id);
+      return highest(data.processes.filter((p) => p.id === action?.processId));
+    }
     case 'person':
       return highest(data.processes.filter((p) => p.subjectIds.includes(parent.id)));
   }
 }
 
 /** The case a file belongs to for access purposes, from its parent; a person's file belongs to no one case. */
-export function documentProcessId(parent: { kind: DocumentParentKind; id: string }, data: { meetings: readonly Meeting[]; events: readonly ChronologyEvent[] }): string | undefined {
+export function documentProcessId(parent: { kind: DocumentParentKind; id: string }, data: { meetings: readonly Meeting[]; events: readonly ChronologyEvent[]; actions?: readonly { id: string; processId: string }[] }): string | undefined {
   if (parent.kind === 'process') return parent.id;
   if (parent.kind === 'meeting') return data.meetings.find((m) => m.id === parent.id)?.processId;
   if (parent.kind === 'event') return data.events.find((e) => e.id === parent.id)?.linkedProcessIds[0];
+  if (parent.kind === 'action') return data.actions?.find((a) => a.id === parent.id)?.processId;
   return undefined;
 }

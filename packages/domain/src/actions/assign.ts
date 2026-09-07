@@ -71,7 +71,12 @@ export function holdsRoleAction(action: Pick<Action, 'ownerUserId' | 'ownerRoleI
   return !action.ownerUserId && action.ownerRoleId !== undefined && action.ownerRoleId === user.roleId && action.ownerAgency === user.agency;
 }
 
-/** Whether an action sits on this person's list: owned by name, or assigned to a role they hold and untaken. */
-export function ownsAction(action: Pick<Action, 'ownerUserId' | 'ownerRoleId' | 'ownerAgency'>, user: Pick<User, 'id' | 'agency' | 'roleId'>): boolean {
-  return action.ownerUserId === user.id || holdsRoleAction(action, user);
+/**
+ * Whether an action sits on this person's list: owned by name, assigned to a role they hold and
+ * untaken, or given to somebody outside the partnership with this person chasing it (D-250). The
+ * last of those is the point of naming a chaser: an action nobody here owns is an action nobody
+ * does, so it has to appear on somebody's list and be completable by them.
+ */
+export function ownsAction(action: Pick<Action, 'ownerUserId' | 'ownerRoleId' | 'ownerAgency' | 'externalOwner'>, user: Pick<User, 'id' | 'agency' | 'roleId'>): boolean {
+  return action.ownerUserId === user.id || action.externalOwner?.chasedByUserId === user.id || holdsRoleAction(action, user);
 }

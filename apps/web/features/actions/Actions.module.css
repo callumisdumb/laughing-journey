@@ -56,3 +56,10 @@
   display: flex;
   gap: 6px;
 }
+
+/* An action owned outside the partnership, or one of a series: the line under the owner (D-250). */
+.ownerMeta {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--color-ink-3);
+}

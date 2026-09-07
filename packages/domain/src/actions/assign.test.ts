@@ -59,4 +59,11 @@ describe('who an action may be given to', () => {
     expect(ownsAction({ ownerUserId: 'usr_mark', ownerAgency: 'housing' }, mark)).toBe(true);
     expect(ownsAction(action, { id: 'usr_gp', agency: 'health', roleId: 'gp' })).toBe(false);
   });
+
+  it('puts an action given outside the partnership on the chaser\'s list, and nobody else\'s', () => {
+    const mark = { id: 'usr_mark', agency: 'housing' as const, roleId: 'housing-officer' as const };
+    const external = { ownerUserId: undefined, ownerAgency: 'housing' as const, externalOwner: { name: 'Dunlarrick Heating', organisation: 'Portlennan Housing Association', chasedByUserId: 'usr_mark', chasedByName: 'Mark Hepburn' } };
+    expect(ownsAction(external, mark)).toBe(true);
+    expect(ownsAction(external, { id: 'usr_gp', agency: 'health', roleId: 'gp' })).toBe(false);
+  });
 });
