@@ -239,6 +239,54 @@ Once a minute is chair-approved, **Correct the minute** in the After phase. The 
 
 On the household card, **Record a move** moves one person, and takes the household with them only when they live alone. **Move the household** appears when somebody else lives there: one new address, one date, everybody ticked moves, and each of them gets the move on their own chronology. Untick anybody staying behind and say where they are going, or leave it as not known; they leave the household on the date with an event of their own, and start a household at the address they gave (two people staying at the same address stay together). Address history is kept for everyone.
 
-## 22. What you cannot do yet
+## 22. Correcting a referral
+
+On the case, **Correct the referral** in the header. It lists the fields the opening record carries for that kind of case: the source, the summary, the dates and the categories the type asks for. It does not list the subject or the perpetrator, and it says where each of those is changed instead, because who a case is about is not a typographical matter. Change what is wrong, say why, and **Record the correction**. The version history keeps both readings and the chronology carries the correction, so nothing is quietly replaced. A correction that changes nothing is refused.
+
+## 23. Changing or withdrawing a request to be involved
+
+While your request to be involved is still waiting, **Your request** on the case is yours to change. **Amend it** replaces the reason the lead will read and keeps what it said before, so the lead sees you rewrote it. **Withdraw it** takes it off their list, with a reason they are told. You can ask again after withdrawing: a withdrawal is not a refusal. Once the lead has decided, the request is theirs and neither is offered.
+
+## 24. Marking a return as submitted
+
+On a return, **Mark as submitted** once you have sent it. The product sends nothing: this records that a person did. Name who you sent it to, how it went, the date, and any reference that came back. The deadline clock the quarter carries is completed by it, and the submission is in the audit log under its own act, so "when did we send Q2" is one filter. It refuses a date in the future, and refuses a second submission for the same period.
+
+## 25. Transferring a case to another authority
+
+On an adult protection, child protection or adults with incapacity case, **Transfer to another authority**. Name the receiving area and who there is holding it. The stage becomes Transferred, every running clock stops with the reason, and the case leaves your worklist and offers nothing further. Nothing is sent: the product has no route into another authority's system, and the dialog says so before the button. Make the handover the way you make it now, then record it here.
+
+## 26. Asking an agency nobody here holds an account for
+
+In the meeting workspace, the recipient list for a pre-meeting request ends with **Somebody outside the partnership**. Choose it for a private provider, an out-of-area team or an advocacy service, and name the person, the organisation and how to reach them. Nothing is sent, so send it yourself. When the answer comes back, **Record return** on their row: say what they told you and how it reached you. The row says you recorded it on their behalf and how it arrived, so nobody reads the pack as the provider's own words.
+
+## 27. An action for somebody outside, an action that repeats, evidence that is a file
+
+When you add an action, the owner can be **Somebody outside the partnership**: a landlord, a private provider, a service nobody here holds an account for. Name them and their organisation, and name who here is chasing it. Nothing is sent to them; the action sits on the chaser's list, and the chaser completes it.
+
+Tick **This repeats** for something that comes round: every so many days, weeks or months, with an end date if it has one. Completing it creates the next one, due that interval after the one you just did rather than the day you got round to it, and the series stops at its end date.
+
+When you complete an action, the evidence is a sentence and, where the proof came from outside, a file: **Attach a file** in the completion dialog puts a certificate or a receipt on the action itself.
+
+## 28. Reviewing a MAPPA case managed at level 1
+
+On a case at level 1, **Record a level 1 review**. Say what you found: what has changed, or that nothing has, and what you checked. The review clock restarts either way. If the case needs multi-agency management, choose **Refer up** and say why: the referral form is offered next, and the level itself is decided at the meeting and never here. There is no meeting at level 1, which is why this exists at all. The interval the clock uses is the area's own figure and is marked to verify.
+
+## 29. Renewing, varying, recalling or appealing an order
+
+On an adults with incapacity case that holds an order, four decisions sit under the order. **Renew the order** gives it a new expiry and is counted as a renewal rather than a second order, because the Commission counts them apart. **Vary the powers** keeps the order and changes what it authorises, and the record keeps the powers it had before. **Recall the order** ends it on the date the court recalled it, and its renewal clock stops. **Record an appeal** is a fact about the order whatever becomes of the appeal, and changes no powers by itself: use a variation or a recall for that. Each asks which order, the court's date and what the court decided. The renewal clock counts back from whichever expiry is current, so the renewal is prepared in time rather than discovered late.
+
+## 30. Opening a Large Scale Investigation
+
+On an adult protection case at inquiry, investigation or case conference, **Open a Large Scale Investigation** turns one adult's inquiry into an investigation into a setting. Name the setting and the provider, choose the service type, and give the Care Inspectorate CS number or the NHS hospital location code where the return asks for one. Tick the agencies involved, whether the Care Inspectorate has been notified and whether commissioning is in it, name the chair of the meeting that decided, and write what that meeting decided. The chair must be a senior officer of the council: the record refuses an investigation whose chair is not one, because that is what the national minimum dataset expects.
+
+Then **Add an adult to the investigation**, once for each adult inside it, with their own concern and their own lead. The return counts the investigation once and the adults in it separately, which is why each is its own strand rather than a line in the summary.
+
+## 31. Being away
+
+In Settings, **Out of office** takes the dates you are away and the name of whoever is covering you. They receive a copy of what you would have been told, as a notification of their own, at their own level: somebody who could not read the case is told a case they are covering changed, and no more. **I am back** stops it, and so does the end date.
+
+The product sends nothing outside itself: no email, no text, no push. An administrator can see exactly what a deployment with email would have sent, in Admin under **The digest that does not go out**, as counts of notifications by kind and recipient and never their content.
+
+## 32. What you cannot do yet
 
 `docs/HANDOVER.md` section 6 keeps the list of what practitioners still cannot do through the product, and it is kept there rather than here so there is one copy.

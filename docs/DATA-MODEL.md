@@ -59,7 +59,7 @@ Outline written in Phase 0. From Phase 1 the entity tables below are regenerated
 
 ## Generated tables
 
-Generated on 2026-09-06 by `pnpm docs:data-model`. Do not edit below this line.
+Generated on 2026-09-07 by `pnpm docs:data-model`. Do not edit below this line.
 
 ### Organisation
 
@@ -100,6 +100,7 @@ Generated on 2026-09-06 by `pnpm docs:data-model`. Do not edit below this line.
 | `caseMemberships` | array of string | yes |
 | `blurb` | string | yes |
 | `featured` | boolean | no |
+| `outOfOffice` | object { from, to, delegateUserId, note } | no |
 
 ### Address
 
@@ -353,7 +354,7 @@ Variant 5
 | `reviews` | array of object { meetingId, heldAt, decision, rationale, newReviewDate } | no |
 | `planId` | string | no |
 | `closure` | object { at, reason } | no |
-| `lsi` | object { setting, provider, serviceType, careInspectorateCsNumber, nhsHospitalLocationCode, strands, agenciesInvolved, careInspectorateNotified, commissioningInvolved, chairUserId, chairIsSeniorCouncilOfficer } | no |
+| `lsi` | object { setting, provider, serviceType, careInspectorateCsNumber, nhsHospitalLocationCode, strands, agenciesInvolved, careInspectorateNotified, commissioningInvolved, chairUserId, chairIsSeniorCouncilOfficer, openedAt, planningMeetingId, planningDecision } | no |
 
 ### CpDetail
 
@@ -405,7 +406,7 @@ Variant 5
 | `era` | object { status, proposedAddressId, assessorName, startedAt, concerns, conclusion } | no |
 | `disclosures` | array of object { id, recipient, recipientKind, status, factsToDisclose, rationale, decidedByName, decidedAt } | yes |
 | `preMeetingReturns` | array of object { agency, contact, requestedAt, status, summary } | yes |
-| `reviewSchedule` | object { lastMeetingId, lastMeetingAt, nextDueAt } | yes |
+| `reviewSchedule` | object { lastMeetingId, lastMeetingAt, nextDueAt, lastReviewAt } | yes |
 | `exit` | object { at, kind, note } | no |
 | `significantCaseReviewTrigger` | string | no |
 
@@ -419,7 +420,7 @@ Variant 5
 | `opgResult` | object { checkedAt, reference, powerOfAttorney, guardianship } | no |
 | `routeDecision` | object { route, decidedAt, byName, rationale, s13za } | no |
 | `application` | object { applicant, applicantName, solicitor, powersSought, mhoUserId, mhoNotifiedAt, mhoReport, medicalReports, suitabilityReport, court, interimOrder } | no |
-| `orders` | array of object { id, kind, grantedAt, expiresAt, guardianName, powers, renewal, supervisingOfficerUserId, opgRegisteredAt, mwcNotifiedAt } | yes |
+| `orders` | array of object { id, kind, grantedAt, expiresAt, guardianName, powers, renewal, supervisingOfficerUserId, opgRegisteredAt, mwcNotifiedAt, recalledAt, lifecycle } | yes |
 | `supervisionVisits` | array of object { at, byName, summary } | yes |
 | `investigations` | array of object { section, openedAt, summary, status } | yes |
 
@@ -492,7 +493,7 @@ Variant 5
 | `minuteTakerName` | string | no |
 | `invitees` | array of object { userId, name, agency, role, required, attendance, reason, needToKnowRowId, response } | yes |
 | `agenda` | array of object { id, order, title, status, note } | yes |
-| `preMeetingRequests` | array of object { id, agency, toName, toUserId, sentAt, dueAt, status, returnSummary, returnedAt } | yes |
+| `preMeetingRequests` | array of object { id, agency, toName, toUserId, external, sentAt, dueAt, status, returnSummary, returnedAt, recordedOnBehalf } | yes |
 | `pack` | array of object { id, kind, label, ref, windowFrom, windowTo, included } | yes |
 | `informationShared` | array of object { id, agency, byName, byUserId, at, summary, relevance, linkedEventIds } | yes |
 | `decisions` | array of object { id, question, decision, rationale, dissent, decidedByName, decidedByUserId, decidedAt } | yes |
@@ -541,6 +542,8 @@ Variant 5
 | `ownerRoleId` | enum (38 values) | no |
 | `ownerName` | string | yes |
 | `ownerAgency` | enum (11 values) | yes |
+| `externalOwner` | object { name, organisation, contact, chasedByUserId, chasedByName } | no |
+| `recurrence` | object { every, unit, until, previousActionId, nextActionId } | no |
 | `due` | string (date) | yes |
 | `status` | "open" \| "in-progress" \| "complete" \| "cancelled" | yes |
 | `completedAt` | string (date-time) | no |
@@ -689,7 +692,8 @@ Variant 5
 | `status` | "open" \| "responded" \| "declined" | yes |
 | `createdAt` | string (date-time) | yes |
 | `dueAt` | string (date) | no |
-| `response` | object { at, byName, text, fieldsProvided } | no |
+| `external` | object { name, organisation, contact } | no |
+| `response` | object { at, byName, text, fieldsProvided, recordedOnBehalf } | no |
 | `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
 | `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
@@ -705,12 +709,15 @@ Variant 5
 | `requesterAgency` | enum (11 values) | yes |
 | `requesterRoleId` | enum (38 values) | yes |
 | `reason` | string | yes |
-| `status` | "pending" \| "accepted" \| "declined" | yes |
+| `status` | "pending" \| "accepted" \| "declined" \| "withdrawn" | yes |
 | `createdAt` | string (date-time) | yes |
 | `decidedAt` | string (date-time) | no |
 | `decidedByUserId` | string | no |
 | `decidedByName` | string | no |
 | `decisionNote` | string | no |
+| `amendments` | array of object { at, was } | no |
+| `withdrawnAt` | string (date-time) | no |
+| `withdrawnReason` | string | no |
 | `versions` | array of object { at, byUserId, byName, change, reason, before } | no |
 | `recordedInError` | object { at, byUserId, byName, reason, auditEntryId } | no |
 
@@ -722,7 +729,7 @@ Variant 5
 | `synthetic` | literal true | yes |
 | `toUserId` | string | no |
 | `toRole` | object { agency, roleId } | no |
-| `kind` | enum (26 values) | yes |
+| `kind` | enum (27 values) | yes |
 | `sourceType` | enum (9 values) | yes |
 | `sourceId` | string | yes |
 | `processId` | string | no |
@@ -807,8 +814,8 @@ Variant 5
 | `userId` | string | yes |
 | `userName` | string | yes |
 | `agency` | enum (11 values) | yes |
-| `act` | enum (20 values) | yes |
-| `targetType` | enum (10 values) | yes |
+| `act` | enum (21 values) | yes |
+| `targetType` | enum (11 values) | yes |
 | `targetId` | string | yes |
 | `targetLabel` | string | yes |
 | `processId` | string | no |
